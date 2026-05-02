@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "poe_repair"
+version = "0.1.0"
+description = "Minimal proof-of-mechanism: M2 + C-PoE repair of SDXL PoE composition on cat+dog and butterfly+meadow at seed 42."
+requires-python = ">=3.10"
+dependencies = [
+    "torch",
+    "diffusers",
+    "transformers",
+    "accelerate",
+    "numpy",
+    "pillow",
+    "matplotlib",
+]
+
+[tool.setuptools.packages.find]
+include = ["poe_repair*"]
