@@ -1,22 +1,20 @@
-"""Single dispatcher for all sampling methods.
+"""Cached baseline dispatcher.
 
-Each method maps to one of the legacy samplers in `methods/_sampling.py`
-plus the right embeddings. `run_method(name, cell, ctx)` encapsulates the
-per-cell boilerplate: encode prompts, load latents, sample, write PNG +
-summary JSON. Idempotent — returns the existing PNG if already present.
+Idempotent per-cell wrapper for the four reference samplers used as
+baselines across the experiments. Each call writes one PNG under
+``outputs/<name>/pairs/<slug>/seed_<n>/<name>.png`` and a small JSON; if
+the PNG already exists it is reused.
 
 Recognised methods:
-    "solo_a"     — single CFG branch on cell.prompt_a
-    "solo_b"     — single CFG branch on cell.prompt_b
-    "poe"        — vanilla PoE
-    "mono"       — single CFG branch on the literal joint embedding e_J
-    "c_poe"      — conflict-angle damped PoE (gamma)
-    "m2_replace" — single CFG branch on the synthesised joint ê_J
-    "m2_c_poe"   — combined (alpha, lambda_j)
+    "solo_a"   — single CFG branch on cell.prompt_a (each subject alone)
+    "solo_b"   — single CFG branch on cell.prompt_b
+    "poe"      — vanilla PoE: ε̃_A + ε̃_B − ε_∅
+    "mono"     — single CFG branch on the literal joint embedding e_J
+                 (= encode("a cat and a dog" via the joint_template)).
 
-`solo_a`, `solo_b`, `mono`, and `m2_replace` all reuse `run_m2_replace`
-under the hood — they are single-branch CFG with different conditioning
-embeddings.
+The ê_J counterpart (synthesised joint) is NOT in the dispatcher because
+it depends on synthesizer state — call it explicitly through
+``poe_repair.composers.mono.run_mono_synth`` instead.
 """
 
 from __future__ import annotations
@@ -30,8 +28,6 @@ import torch
 from poe_repair.config import RunConfig, joint_prompt
 from poe_repair.methods._sampling import (
     initial_latents_for_pair,
-    run_c_poe,
-    run_m2_c_poe,
     run_m2_replace,
     run_vanilla_poe,
     write_decoded_image,
@@ -50,10 +46,10 @@ from poe_repair.runtime import (
 
 @dataclass
 class MethodCtx:
-    """Shared context across many `run_method` calls.
+    """Shared SDXL context across many ``run_method`` calls.
 
-    Holds SDXL models + scheduler so they are loaded once across cells and
-    methods. Lazily loads the M2 synthesizer when first requested.
+    Loads SDXL models + scheduler once. The synthesiser is loaded lazily
+    on first ``get_synth()`` call.
     """
 
     models: dict
@@ -69,7 +65,6 @@ class MethodCtx:
     def get_synth(self):
         if self.synth is None:
             from poe_repair.embeddings.infer import load_synthesizer
-
             cfg = RunConfig()
             self.synth = load_synthesizer(
                 cfg.paths.synthesizer_checkpoint,
@@ -89,7 +84,6 @@ def make_ctx(
     guidance_scale: float | None = None,
     joint_template: str | None = None,
 ) -> MethodCtx:
-    """Build a `MethodCtx` from `RunConfig` defaults; loads SDXL once."""
     cfg = RunConfig()
     device = device or infer_device(None)
     dtype = dtype or infer_dtype(cfg.dtype, device)
@@ -115,11 +109,9 @@ def run_method(
     cell: PairSeedCell,
     ctx: MethodCtx,
     *,
-    gamma: float = 2.0,
-    lambda_j: float = 1.0,
     overwrite: bool = False,
 ) -> Path:
-    """Run `name` on `cell`, save PNG + summary, return image path."""
+    """Run ``name`` on ``cell`` if its PNG isn't already on disk."""
     cell_dir = ensure_dir(
         ctx.output_root / name / "pairs" / cell.pair_slug / f"seed_{cell.seed}"
     )
@@ -135,15 +127,12 @@ def run_method(
         init_latents=init_latents,
         models=ctx.models,
         scheduler=ctx.scheduler,
-        seq_e=seq_e,
-        pool_e=pool_e,
+        seq_e=seq_e, pool_e=pool_e,
         guidance_scale=ctx.guidance_scale,
         num_inference_steps=ctx.num_inference_steps,
-        height=cell.height,
-        width=cell.width,
+        height=cell.height, width=cell.width,
         euler_init_noise_sigma=euler_sigma,
-        device=ctx.device,
-        dtype=ctx.dtype,
+        device=ctx.device, dtype=ctx.dtype,
     )
 
     t0 = time.time()
@@ -157,52 +146,16 @@ def run_method(
         seq_a, pool_a = _encode(cell.prompt_a, ctx)
         seq_b, pool_b = _encode(cell.prompt_b, ctx)
         out = run_vanilla_poe(
-            seq_a=seq_a, pool_a=pool_a, seq_b=seq_b, pool_b=pool_b, **common
+            seq_a=seq_a, pool_a=pool_a, seq_b=seq_b, pool_b=pool_b, **common,
         )
     elif name == "mono":
         joint = joint_prompt(cell.prompt_a, cell.prompt_b, template=ctx.joint_template)
         seq_j, pool_j = _encode(joint, ctx)
         out = run_m2_replace(seq_j=seq_j, pool_j=pool_j, **common)
-    elif name == "c_poe":
-        seq_a, pool_a = _encode(cell.prompt_a, ctx)
-        seq_b, pool_b = _encode(cell.prompt_b, ctx)
-        out = run_c_poe(
-            seq_a=seq_a, pool_a=pool_a, seq_b=seq_b, pool_b=pool_b,
-            gamma=gamma, **common,
-        )
-    elif name == "m2_replace":
-        from poe_repair.embeddings.infer import synthesize_joint
-
-        sout = synthesize_joint(
-            ctx.get_synth(),
-            prompt_a=cell.prompt_a, prompt_b=cell.prompt_b,
-            models=ctx.models, device=ctx.device, dtype=ctx.dtype,
-        )
-        out = run_m2_replace(
-            seq_j=sout.seq.to(ctx.device, ctx.dtype),
-            pool_j=sout.pooled.to(ctx.device, ctx.dtype),
-            **common,
-        )
-    elif name == "m2_c_poe":
-        from poe_repair.embeddings.infer import synthesize_joint
-
-        seq_a, pool_a = _encode(cell.prompt_a, ctx)
-        seq_b, pool_b = _encode(cell.prompt_b, ctx)
-        sout = synthesize_joint(
-            ctx.get_synth(),
-            prompt_a=cell.prompt_a, prompt_b=cell.prompt_b,
-            models=ctx.models, device=ctx.device, dtype=ctx.dtype,
-        )
-        out = run_m2_c_poe(
-            seq_a=seq_a, pool_a=pool_a, seq_b=seq_b, pool_b=pool_b,
-            seq_j=sout.seq.to(ctx.device, ctx.dtype),
-            pool_j=sout.pooled.to(ctx.device, ctx.dtype),
-            gamma=gamma, lambda_j=lambda_j, **common,
-        )
     else:
         raise ValueError(
             f"unknown method {name!r}; expected one of "
-            "{'solo_a','solo_b','poe','mono','c_poe','m2_replace','m2_c_poe'}"
+            "{'solo_a','solo_b','poe','mono'}"
         )
 
     write_decoded_image(out.image, image_path)

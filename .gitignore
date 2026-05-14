@@ -1,6 +1,12 @@
 *pycache*/
 *.npy
 *.pt
-outputs/
 checkpoints/
+dataset/
+claude/
 .claude/
+
+# Local results — actual data lives under /datasets/mmolefe/poe_repair_min/outputs/
+# Top-level entries here are symlinks. See docs/STORAGE.md.
+outputs/
+logs/

@@ -1,11 +1,34 @@
-"""Shared sampling primitives.
+"""Sampling primitives.
 
-Four samplers, one per "column" of the qualitative grid:
+Two roles:
 
-- ``run_vanilla_poe``  — eps_PoE = eps_A + eps_B - eps_uncond. Reference baseline.
-- ``run_m2_replace``   — single CFG branch on synthesised joint embedding ê_J.
-- ``run_c_poe``        — PoE pull modulated by max(0, cos<u_A, u_B>)^gamma.
-- ``run_m2_c_poe``     — combined: alpha·(u_A + u_B) + lambda_j·u_J.
+A. **Reference samplers** used by the experiments
+   - ``run_vanilla_poe``: ε = ε̃_A + ε̃_B − ε_∅ (CI baseline; the failure case)
+   - ``run_m2_replace``: single guided CFG branch on a joint embedding (= Mono).
+     Used both with the literal e_J ("a cat and a dog") and with the
+     synthesised ê_J from the residual-MLP synthesiser.
+   - ``run_beta_inject_online``: 4-branch (A, B, anchor, ∅) sched-M2 sampler.
+     ``beta_schedule`` controls how strongly the anchor pulls per step.
+
+B. **SDXL-faithful ports of published correction methods**, one per repo
+   under ``composition/``. Each is a single function that runs the
+   published algorithm with our SDXL conditional + scheduler. We do NOT
+   port their full pipeline machinery — only the algorithmic kernel,
+   line-numbered against their reference code.
+
+   - ``run_mono_focus`` ↔ ``composition/focus/src/{losses.py:controller_loss,
+     sd1/pipeline.py:1097-1103}`` — JS-divergence controller, additive
+     velocity correction.
+   - ``run_mono_aae_canonical`` ↔
+     ``composition/aae/pipeline_attend_and_excite.py:_perform_iterative_refinement_step``
+     — iterative latent refinement with AAE's threshold ramp.
+   - ``run_mono_p2p_reweight`` ↔ ``composition/p2p/prompt-to-prompt_stable.ipynb``
+     ``AttentionReweight`` cell — post-softmax cross-attn scaling. (Note:
+     canonical P2P Re-weight runs on a 2-prompt batch with attention
+     replacement; this is the simplified single-prompt amplifier variant
+     gated by ``cross_replace_steps``.)
+   - For CO3 we use ``composition/debottam_co3/composers/Co3.py`` directly
+     via ``poe_repair/composers/co3.py`` — no port needed, it's SDXL native.
 """
 
 from __future__ import annotations
@@ -13,10 +36,15 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
-import numpy as np
 import torch
+import torch.nn.functional as F
 from PIL import Image
 
+from poe_repair.methods._mcmc import (
+    MCMCCorrectorConfig,
+    run_corrector,
+    step_in_window,
+)
 from poe_repair.runtime import (
     LatentTrajectoryCollector,
     PairSeedCell,
@@ -29,8 +57,15 @@ from poe_repair.runtime import (
 )
 
 
+# ---------------------------------------------------------------------------
+# Common helpers
+# ---------------------------------------------------------------------------
+
+
 def add_time_ids(*, height, width, batch_size, device, dtype):
-    base = torch.tensor([[height, width, 0, 0, height, width]], dtype=dtype, device=device)
+    base = torch.tensor(
+        [[height, width, 0, 0, height, width]], dtype=dtype, device=device,
+    )
     return base.repeat(batch_size, 1)
 
 
@@ -43,12 +78,11 @@ class SamplerOutputs:
 
 
 def write_decoded_image(image_tensor: torch.Tensor, path: Path) -> Path:
-    """Save a VAE-decoded tensor (already in [0, 1] from decode_latents) as PNG.
+    """Write a [0, 1] decode_latents tensor as PNG.
 
-    The earlier vendored convention applied a redundant [-1, 1] -> [0, 1]
-    remap on top of input that was already in [0, 1], compressing every
-    pixel into [0.5, 1] — visibly washed-out edges / faded background.
-    Removed: input is clamped to [0, 1] and quantised directly.
+    The earlier vendored convention applied a redundant ``[-1, 1] -> [0, 1]``
+    remap on top of an input that was already in ``[0, 1]``, washing out
+    contrast. We clamp to ``[0, 1]`` and quantise directly.
     """
     arr = image_tensor.detach().float().clamp(0.0, 1.0)
     arr = (arr * 255.0).round().to(torch.uint8)
@@ -67,7 +101,7 @@ def initial_latents_for_pair(
     device: torch.device,
     dtype: torch.dtype,
 ) -> tuple[torch.Tensor, float]:
-    """Recover the same x_T used in the pilot for a fair comparison."""
+    """Recover x_T from disk if present; else from-seed fallback."""
     return load_shared_latents(
         pair_dir=cell.pair_dir,
         seed=cell.seed,
@@ -79,17 +113,33 @@ def initial_latents_for_pair(
     )
 
 
-def _conflict_modulation(
-    u_a: torch.Tensor, u_b: torch.Tensor, gamma: float, eps: float = 1e-8
-) -> tuple[torch.Tensor, torch.Tensor]:
-    """``cos_theta = <u_a, u_b> / (||u_a|| ||u_b||)``, ``alpha = max(0, cos_theta)^gamma``."""
-    flat_a = u_a.reshape(-1)
-    flat_b = u_b.reshape(-1)
-    num = torch.dot(flat_a, flat_b)
-    den = torch.linalg.vector_norm(flat_a) * torch.linalg.vector_norm(flat_b) + eps
-    cos_theta = num / den
-    alpha = torch.clamp(cos_theta, min=0.0).pow(gamma)
-    return cos_theta, alpha
+def _maybe_cap_correction(
+    correction: torch.Tensor,
+    eps_ref: torch.Tensor,
+    max_rel_norm: float | None,
+) -> tuple[torch.Tensor, float]:
+    """Cap a learned correction's norm to ``max_rel_norm × ||eps_ref||``.
+
+    Returns ``(possibly_scaled_correction, applied_scale)``. If
+    ``max_rel_norm`` is None / non-positive the correction is returned
+    unchanged with scale=1.0. The cap is on the un-scaled correction
+    (independent of any λ_t), so callers should still multiply by their
+    schedule afterwards.
+    """
+    if max_rel_norm is None or float(max_rel_norm) <= 0.0:
+        return correction, 1.0
+    ref_norm = float(eps_ref.float().norm().item())
+    cor_norm = float(correction.float().norm().item())
+    cap = float(max_rel_norm) * ref_norm
+    if cor_norm > cap and cor_norm > 0.0:
+        scale = cap / cor_norm
+        return correction * scale, float(scale)
+    return correction, 1.0
+
+
+# ---------------------------------------------------------------------------
+# A. Reference samplers
+# ---------------------------------------------------------------------------
 
 
 @torch.no_grad()
@@ -98,45 +148,334 @@ def run_vanilla_poe(
     init_latents: torch.Tensor,
     models: dict,
     scheduler,
-    seq_a: torch.Tensor,
-    pool_a: torch.Tensor,
-    seq_b: torch.Tensor,
-    pool_b: torch.Tensor,
-    seq_e: torch.Tensor,
-    pool_e: torch.Tensor,
+    seq_a: torch.Tensor, pool_a: torch.Tensor,
+    seq_b: torch.Tensor, pool_b: torch.Tensor,
+    seq_e: torch.Tensor, pool_e: torch.Tensor,
     guidance_scale: float,
     num_inference_steps: int,
-    height: int,
-    width: int,
+    height: int, width: int,
     euler_init_noise_sigma: float,
-    device: torch.device,
-    dtype: torch.dtype,
+    device: torch.device, dtype: torch.dtype,
 ) -> SamplerOutputs:
-    """eps_PoE = eps_A + eps_B - eps_uncond."""
+    """ε̃_PoE = ε̃_A + ε̃_B − ε_∅ — the CI baseline."""
     scheduler.set_timesteps(num_inference_steps)
     latents = (init_latents / euler_init_noise_sigma).to(device=device, dtype=dtype)
-    tracker = LatentTrajectoryCollector(num_inference_steps, 1, latents.shape[1], latents.shape[2], latents.shape[3])
+    tracker = LatentTrajectoryCollector(
+        num_inference_steps, 1, latents.shape[1], latents.shape[2], latents.shape[3]
+    )
     pe = torch.cat([seq_a, seq_b, seq_e], dim=0)
     pool = torch.cat([pool_a, pool_b, pool_e], dim=0)
-    cond = {"text_embeds": pool, "time_ids": add_time_ids(height=height, width=width, batch_size=3, device=device, dtype=dtype)}
+    cond = {
+        "text_embeds": pool,
+        "time_ids": add_time_ids(
+            height=height, width=width, batch_size=3, device=device, dtype=dtype,
+        ),
+    }
     unet = models["unet"]
     for step_index, timestep in enumerate(scheduler.timesteps):
         latent_input = scheduler.scale_model_input(latents.repeat(3, 1, 1, 1), timestep)
-        noise = unet(latent_input, timestep, encoder_hidden_states=pe, added_cond_kwargs=cond, timestep_cond=None).sample
+        noise = unet(
+            latent_input, timestep, encoder_hidden_states=pe,
+            added_cond_kwargs=cond, timestep_cond=None,
+        ).sample
         eps_a_raw, eps_b_raw, eps_uncond = noise.chunk(3)
         eps_a = guided_eps(eps_a_raw, eps_uncond, guidance_scale)
         eps_b = guided_eps(eps_b_raw, eps_uncond, guidance_scale)
         eps_p = poe_eps(eps_a, eps_b, eps_uncond)
         alpha_bar_t = scheduler.alphas_cumprod[int(timestep.item())].to(device=device, dtype=dtype)
         x0 = tweedie_mean(latents, alpha_bar_t, eps_p)
-        tracker.store_step(step_index, latents, eps_p, float(step_index) / float(num_inference_steps), int(timestep.item()))
-        # Standard DDIM: same eps for Tweedie x0 and the noise direction.
-        # The earlier vendored convention passed eps_uncond here, which
-        # partially undoes the conditioning each step.
-        latents = ddim_prev_from_x0_eps(scheduler=scheduler, timestep=timestep, step_index=step_index, x0=x0, eps=eps_p)
+        tracker.store_step(
+            step_index, latents, eps_p,
+            float(step_index) / float(num_inference_steps),
+            int(timestep.item()),
+        )
+        latents = ddim_prev_from_x0_eps(
+            scheduler=scheduler, timestep=timestep, step_index=step_index,
+            x0=x0, eps=eps_p,
+        )
     tracker.store_final(latents)
     image = decode_latents(models, latents).cpu()
     return SamplerOutputs(latents=latents, image=image, tracker=tracker, extras={})
+
+
+@torch.no_grad()
+def run_poe_mcmc_corrector(
+    *,
+    init_latents: torch.Tensor,
+    models: dict,
+    scheduler,
+    seq_a: torch.Tensor, pool_a: torch.Tensor,
+    seq_b: torch.Tensor, pool_b: torch.Tensor,
+    seq_e: torch.Tensor, pool_e: torch.Tensor,
+    guidance_scale: float,
+    num_inference_steps: int,
+    height: int, width: int,
+    euler_init_noise_sigma: float,
+    device: torch.device, dtype: torch.dtype,
+    corrector: MCMCCorrectorConfig,
+) -> SamplerOutputs:
+    """Vanilla PoE with K MCMC corrector steps on the composed score before
+    each DDIM step (Du et al. 2023, ICML — score-only variant; see
+    ``poe_repair/methods/_mcmc.py``).
+
+    At each denoising step ``t``:
+      1. If ``step_index ∈ corrector.window``, run K Langevin/UHA steps
+         using the composed PoE score ``s(x_t) = -ε̃_PoE(x_t) / σ_t``.
+      2. Compute ε̃_PoE one more time at the refined x_t and DDIM-step.
+    """
+    scheduler.set_timesteps(num_inference_steps)
+    latents = (init_latents / euler_init_noise_sigma).to(device=device, dtype=dtype)
+    tracker = LatentTrajectoryCollector(
+        num_inference_steps, 1, latents.shape[1], latents.shape[2], latents.shape[3]
+    )
+    pe = torch.cat([seq_a, seq_b, seq_e], dim=0)
+    pool = torch.cat([pool_a, pool_b, pool_e], dim=0)
+    cond = {
+        "text_embeds": pool,
+        "time_ids": add_time_ids(
+            height=height, width=width, batch_size=3, device=device, dtype=dtype,
+        ),
+    }
+    unet = models["unet"]
+
+    def composed_eps(x: torch.Tensor, timestep) -> torch.Tensor:
+        latent_input = scheduler.scale_model_input(x.repeat(3, 1, 1, 1), timestep)
+        noise = unet(
+            latent_input, timestep, encoder_hidden_states=pe,
+            added_cond_kwargs=cond, timestep_cond=None,
+        ).sample
+        eps_a_raw, eps_b_raw, eps_uncond = noise.chunk(3)
+        eps_a = guided_eps(eps_a_raw, eps_uncond, guidance_scale)
+        eps_b = guided_eps(eps_b_raw, eps_uncond, guidance_scale)
+        return poe_eps(eps_a, eps_b, eps_uncond)
+
+    corrector_steps_taken: list[int] = []
+    for step_index, timestep in enumerate(scheduler.timesteps):
+        alpha_bar_t = scheduler.alphas_cumprod[int(timestep.item())].to(
+            device=device, dtype=dtype,
+        )
+        sigma_t = float(torch.sqrt(1.0 - alpha_bar_t).item())
+
+        if step_in_window(step_index, corrector.window):
+            def _score_fn(x):
+                return -composed_eps(x, timestep) / max(sigma_t, 1e-8)
+            latents = run_corrector(
+                latents, _score_fn, sigma_t=sigma_t, cfg=corrector,
+            )
+            corrector_steps_taken.append(step_index)
+
+        eps_p = composed_eps(latents, timestep)
+        x0 = tweedie_mean(latents, alpha_bar_t, eps_p)
+        tracker.store_step(
+            step_index, latents, eps_p,
+            float(step_index) / float(num_inference_steps),
+            int(timestep.item()),
+        )
+        latents = ddim_prev_from_x0_eps(
+            scheduler=scheduler, timestep=timestep, step_index=step_index,
+            x0=x0, eps=eps_p,
+        )
+    tracker.store_final(latents)
+    image = decode_latents(models, latents).cpu()
+    return SamplerOutputs(
+        latents=latents, image=image, tracker=tracker,
+        extras={
+            "corrector_method": corrector.method,
+            "corrector_steps_per_call": corrector.num_corrector_steps,
+            "corrector_step_size_base": corrector.step_size_base,
+            "corrector_window": corrector.window,
+            "corrector_active_step_indices": corrector_steps_taken,
+        },
+    )
+
+
+@torch.no_grad()
+def run_poe_tempered(
+    *,
+    init_latents: torch.Tensor,
+    models: dict,
+    scheduler,
+    seq_a: torch.Tensor, pool_a: torch.Tensor,
+    seq_b: torch.Tensor, pool_b: torch.Tensor,
+    seq_e: torch.Tensor, pool_e: torch.Tensor,
+    guidance_scale: float,
+    num_inference_steps: int,
+    height: int, width: int,
+    euler_init_noise_sigma: float,
+    device: torch.device, dtype: torch.dtype,
+    beta_schedule: list[float],
+) -> SamplerOutputs:
+    """Annealed/tempered PoE composition.
+
+    ε_t = ε_∅ + β_t · (ε̃_PoE − ε_∅)
+
+    ``β_t = 1`` recovers vanilla PoE. ``β_t = 0`` falls back to
+    unconditional. Schedules with β ramping 0 → 1 across the trajectory
+    test the "PoE chimera is a sharpness / over-confidence" hypothesis.
+    """
+    if len(beta_schedule) != num_inference_steps:
+        raise ValueError(
+            f"beta_schedule has length {len(beta_schedule)}, expected "
+            f"{num_inference_steps}",
+        )
+    scheduler.set_timesteps(num_inference_steps)
+    latents = (init_latents / euler_init_noise_sigma).to(device=device, dtype=dtype)
+    tracker = LatentTrajectoryCollector(
+        num_inference_steps, 1, latents.shape[1], latents.shape[2], latents.shape[3]
+    )
+    pe = torch.cat([seq_a, seq_b, seq_e], dim=0)
+    pool = torch.cat([pool_a, pool_b, pool_e], dim=0)
+    cond = {
+        "text_embeds": pool,
+        "time_ids": add_time_ids(
+            height=height, width=width, batch_size=3, device=device, dtype=dtype,
+        ),
+    }
+    unet = models["unet"]
+    for step_index, timestep in enumerate(scheduler.timesteps):
+        latent_input = scheduler.scale_model_input(latents.repeat(3, 1, 1, 1), timestep)
+        noise = unet(
+            latent_input, timestep, encoder_hidden_states=pe,
+            added_cond_kwargs=cond, timestep_cond=None,
+        ).sample
+        eps_a_raw, eps_b_raw, eps_uncond = noise.chunk(3)
+        eps_a = guided_eps(eps_a_raw, eps_uncond, guidance_scale)
+        eps_b = guided_eps(eps_b_raw, eps_uncond, guidance_scale)
+        eps_p = poe_eps(eps_a, eps_b, eps_uncond)
+        beta = float(beta_schedule[step_index])
+        eps_t = eps_uncond + beta * (eps_p - eps_uncond)
+        alpha_bar_t = scheduler.alphas_cumprod[int(timestep.item())].to(
+            device=device, dtype=dtype,
+        )
+        x0 = tweedie_mean(latents, alpha_bar_t, eps_t)
+        tracker.store_step(
+            step_index, latents, eps_t,
+            float(step_index) / float(num_inference_steps),
+            int(timestep.item()),
+        )
+        latents = ddim_prev_from_x0_eps(
+            scheduler=scheduler, timestep=timestep, step_index=step_index,
+            x0=x0, eps=eps_t,
+        )
+    tracker.store_final(latents)
+    image = decode_latents(models, latents).cpu()
+    return SamplerOutputs(
+        latents=latents, image=image, tracker=tracker,
+        extras={"beta_schedule": list(beta_schedule)},
+    )
+
+
+@torch.no_grad()
+def run_delta_override(
+    *,
+    init_latents: torch.Tensor,
+    models: dict,
+    scheduler,
+    seq_a: torch.Tensor, pool_a: torch.Tensor,
+    seq_b: torch.Tensor, pool_b: torch.Tensor,
+    seq_e: torch.Tensor, pool_e: torch.Tensor,
+    guidance_scale: float,
+    num_inference_steps: int,
+    height: int, width: int,
+    euler_init_noise_sigma: float,
+    device: torch.device, dtype: torch.dtype,
+    delta_override: torch.Tensor,            # (T, B, C, H, W) — same as ε tensors
+    alpha_per_step: torch.Tensor | None = None,
+    window: tuple[int, int] | None = None,
+) -> SamplerOutputs:
+    """PoE forward with a pre-computed Δ_t override per step (D4-A / D4-A-t).
+
+        ε_t = ε̃_PoE + α_t · δ_override[t]   for step ∈ [window_lo, window_hi)
+              ε̃_PoE                          otherwise
+
+    Used by Thread C's D4-A substitution test: instead of computing
+    Δ_t = ε̃_J − ε̃_PoE inside the sampler (requires e_J), we *swap in* a
+    pre-computed Δ tensor (oracle / shared-mean / shuffle / zero) per step.
+
+    - ``delta_override`` shape ``(T, B, C, H, W)``: one Δ per step, in the
+      *same coordinates* as the cached training-cache Δ_t.
+    - ``alpha_per_step`` (default 1.0): optional per-step multiplier on the
+      override (used for D4-A's per-α sweep; zero entries reduce to plain
+      PoE at that step).
+    - ``window`` (default None = all steps): inclusive-lo / exclusive-hi
+      step-index range for active substitution. Steps outside revert to
+      plain PoE — this is how D4-A-t localises the substitution to a window.
+    """
+    if int(delta_override.shape[0]) != int(num_inference_steps):
+        raise ValueError(
+            f"delta_override has {int(delta_override.shape[0])} steps, "
+            f"expected {num_inference_steps}"
+        )
+    if alpha_per_step is None:
+        alpha_per_step = torch.ones(num_inference_steps, dtype=torch.float32)
+    if int(alpha_per_step.shape[0]) != int(num_inference_steps):
+        raise ValueError(
+            f"alpha_per_step has {int(alpha_per_step.shape[0])} entries, "
+            f"expected {num_inference_steps}"
+        )
+    alpha_list = [float(v) for v in alpha_per_step.tolist()]
+    lo = int(window[0]) if window is not None else 0
+    hi = int(window[1]) if window is not None else int(num_inference_steps)
+
+    scheduler.set_timesteps(num_inference_steps)
+    latents = (init_latents / euler_init_noise_sigma).to(device=device, dtype=dtype)
+    tracker = LatentTrajectoryCollector(
+        num_inference_steps, 1, latents.shape[1], latents.shape[2], latents.shape[3]
+    )
+    pe = torch.cat([seq_a, seq_b, seq_e], dim=0)
+    pool = torch.cat([pool_a, pool_b, pool_e], dim=0)
+    cond = {
+        "text_embeds": pool,
+        "time_ids": add_time_ids(
+            height=height, width=width, batch_size=3, device=device, dtype=dtype,
+        ),
+    }
+    unet = models["unet"]
+    alpha_used: list[float] = []
+    delta_norm_used: list[float] = []
+    for step_index, timestep in enumerate(scheduler.timesteps):
+        latent_input = scheduler.scale_model_input(latents.repeat(3, 1, 1, 1), timestep)
+        noise = unet(
+            latent_input, timestep, encoder_hidden_states=pe,
+            added_cond_kwargs=cond, timestep_cond=None,
+        ).sample
+        eps_a_raw, eps_b_raw, eps_uncond = noise.chunk(3)
+        eps_a = guided_eps(eps_a_raw, eps_uncond, guidance_scale)
+        eps_b = guided_eps(eps_b_raw, eps_uncond, guidance_scale)
+        eps_poe = poe_eps(eps_a, eps_b, eps_uncond)
+        if lo <= step_index < hi:
+            alpha = float(alpha_list[step_index])
+            delta_t = delta_override[step_index].to(device=device, dtype=dtype)
+            eps_t = eps_poe + alpha * delta_t
+            alpha_used.append(alpha)
+            delta_norm_used.append(float(delta_t.float().norm().item()))
+        else:
+            eps_t = eps_poe
+            alpha_used.append(0.0)
+            delta_norm_used.append(0.0)
+        alpha_bar_t = scheduler.alphas_cumprod[int(timestep.item())].to(
+            device=device, dtype=dtype,
+        )
+        x0 = tweedie_mean(latents, alpha_bar_t, eps_t)
+        tracker.store_step(
+            step_index, latents, eps_t,
+            float(step_index) / float(num_inference_steps),
+            int(timestep.item()),
+        )
+        latents = ddim_prev_from_x0_eps(
+            scheduler=scheduler, timestep=timestep, step_index=step_index,
+            x0=x0, eps=eps_t,
+        )
+    tracker.store_final(latents)
+    image = decode_latents(models, latents).cpu()
+    return SamplerOutputs(
+        latents=latents, image=image, tracker=tracker,
+        extras={
+            "alpha_per_step": alpha_used,
+            "delta_norm_per_step": delta_norm_used,
+            "window": (None if window is None else [lo, hi]),
+        },
+    )
 
 
 @torch.no_grad()
@@ -145,112 +484,305 @@ def run_m2_replace(
     init_latents: torch.Tensor,
     models: dict,
     scheduler,
-    seq_j: torch.Tensor,
-    pool_j: torch.Tensor,
-    seq_e: torch.Tensor,
-    pool_e: torch.Tensor,
+    seq_j: torch.Tensor, pool_j: torch.Tensor,
+    seq_e: torch.Tensor, pool_e: torch.Tensor,
     guidance_scale: float,
     num_inference_steps: int,
-    height: int,
-    width: int,
+    height: int, width: int,
     euler_init_noise_sigma: float,
-    device: torch.device,
-    dtype: torch.dtype,
+    device: torch.device, dtype: torch.dtype,
 ) -> SamplerOutputs:
-    """Single guided UNet branch using the synthesised joint embedding ê_J."""
+    """Single guided CFG branch on a joint embedding (Mono).
+
+    `seq_j` / `pool_j` is either the literal e_J = encode("a cat and a dog")
+    or the synthesised ê_J from the residual-MLP synthesiser. The sampler
+    is identical; only the embedding source differs.
+    """
     scheduler.set_timesteps(num_inference_steps)
     latents = (init_latents / euler_init_noise_sigma).to(device=device, dtype=dtype)
-    tracker = LatentTrajectoryCollector(num_inference_steps, 1, latents.shape[1], latents.shape[2], latents.shape[3])
-    pe_in = torch.cat([seq_j, seq_e], dim=0)
-    pool_in = torch.cat([pool_j, pool_e], dim=0)
-    cond = {"text_embeds": pool_in, "time_ids": add_time_ids(height=height, width=width, batch_size=2, device=device, dtype=dtype)}
+    tracker = LatentTrajectoryCollector(
+        num_inference_steps, 1, latents.shape[1], latents.shape[2], latents.shape[3]
+    )
+    pe = torch.cat([seq_j, seq_e], dim=0)
+    pool = torch.cat([pool_j, pool_e], dim=0)
+    cond = {
+        "text_embeds": pool,
+        "time_ids": add_time_ids(
+            height=height, width=width, batch_size=2, device=device, dtype=dtype,
+        ),
+    }
     unet = models["unet"]
-
     for step_index, timestep in enumerate(scheduler.timesteps):
         latent_input = scheduler.scale_model_input(latents.repeat(2, 1, 1, 1), timestep)
-        noise = unet(latent_input, timestep, encoder_hidden_states=pe_in, added_cond_kwargs=cond, timestep_cond=None).sample
+        noise = unet(
+            latent_input, timestep, encoder_hidden_states=pe,
+            added_cond_kwargs=cond, timestep_cond=None,
+        ).sample
         eps_j_raw, eps_uncond = noise.chunk(2)
         eps_j = guided_eps(eps_j_raw, eps_uncond, guidance_scale)
         alpha_bar_t = scheduler.alphas_cumprod[int(timestep.item())].to(device=device, dtype=dtype)
         x0 = tweedie_mean(latents, alpha_bar_t, eps_j)
-        tracker.store_step(step_index, latents, eps_j, float(step_index) / float(num_inference_steps), int(timestep.item()))
-        # Standard DDIM: pass the same composed/guided eps to ddim_prev as was
-        # used for Tweedie x0 (see notes on the eps_uncond convention bug).
-        latents = ddim_prev_from_x0_eps(scheduler=scheduler, timestep=timestep, step_index=step_index, x0=x0, eps=eps_j)
+        tracker.store_step(
+            step_index, latents, eps_j,
+            float(step_index) / float(num_inference_steps),
+            int(timestep.item()),
+        )
+        latents = ddim_prev_from_x0_eps(
+            scheduler=scheduler, timestep=timestep, step_index=step_index,
+            x0=x0, eps=eps_j,
+        )
     tracker.store_final(latents)
     image = decode_latents(models, latents).cpu()
     return SamplerOutputs(latents=latents, image=image, tracker=tracker, extras={})
 
 
+def _lambda_value(
+    schedule: str, step_index: int, num_steps: int, lambda_max: float,
+) -> float:
+    if schedule == "constant":
+        return float(lambda_max)
+    if schedule == "linear_decay":
+        frac = float(step_index) / float(max(1, num_steps))
+        return float(lambda_max) * max(0.0, 1.0 - frac)
+    if schedule == "early_only":
+        return float(lambda_max) if step_index < (num_steps // 5) else 0.0
+    raise ValueError(
+        f"unknown lambda_schedule {schedule!r}; expected one of "
+        "{'constant','linear_decay','early_only'}"
+    )
+
+
 @torch.no_grad()
-def run_c_poe(
+def run_teacher_residual(
     *,
     init_latents: torch.Tensor,
     models: dict,
     scheduler,
-    seq_a: torch.Tensor,
-    pool_a: torch.Tensor,
-    seq_b: torch.Tensor,
-    pool_b: torch.Tensor,
-    seq_e: torch.Tensor,
-    pool_e: torch.Tensor,
+    seq_a: torch.Tensor, pool_a: torch.Tensor,
+    seq_b: torch.Tensor, pool_b: torch.Tensor,
+    seq_j: torch.Tensor, pool_j: torch.Tensor,
+    seq_e: torch.Tensor, pool_e: torch.Tensor,
     guidance_scale: float,
     num_inference_steps: int,
-    height: int,
-    width: int,
+    height: int, width: int,
     euler_init_noise_sigma: float,
-    device: torch.device,
-    dtype: torch.dtype,
-    gamma: float = 2.0,
+    device: torch.device, dtype: torch.dtype,
+    lambda_schedule: str = "constant",
+    lambda_max: float = 1.0,
+    correction_window: tuple[int, int] | None = None,
+    save_residuals_dir: Path | None = None,
+    save_dtype: torch.dtype = torch.float16,
+    save_x0_estimates: bool = False,
+    adaptive_schedule: object | None = None,
+    attn_capture_dir: Path | None = None,
+    attn_token_indices: dict | None = None,
+    attn_resolution: int = 32,
 ) -> SamplerOutputs:
-    """C-PoE — conflict-aware composition.
+    """Teacher-residual sampler.
 
-    Per step:
-        u_A = eps_A - eps_uncond,  u_B = eps_B - eps_uncond
-        cos_theta = <u_A, u_B> / (||u_A|| ||u_B||)
-        alpha     = max(0, cos_theta)^gamma
-        eps_t     = eps_uncond + alpha * (u_A + u_B)
+    At each step, runs a single 4-branch UNet call (A, B, J, ∅), builds the
+    guided PoE prediction ``ε̃_PoE = ε̃_A + ε̃_B − ε_∅`` and the guided Mono
+    prediction ``ε̃_Mono = ε̃_J``, and steps with::
+
+        ε_final = ε̃_PoE + λ_t · (ε̃_Mono − ε̃_PoE)
+
+    With ``lambda_max=0`` this reduces to vanilla PoE; with ``lambda_max=1``
+    and ``schedule='constant'`` it reduces to literal-e_J Mono. Any value
+    in between blends the teacher residual ``Δ_t = ε̃_Mono − ε̃_PoE`` into
+    the PoE trajectory.
+
+    Args specific to this sampler:
+      lambda_schedule: 'constant' | 'linear_decay' | 'early_only'.
+      lambda_max:      peak λ.
+      correction_window: optional ``(start, end)`` step-index range outside
+        which λ is forced to 0. Inclusive start, exclusive end.
+      save_residuals_dir: if set, writes one ``.pt`` per step containing
+        ``{x_t, t, step_index, seq_a, seq_b, delta}`` for use as idea-2
+        training data. Stored in ``save_dtype`` to halve disk usage.
+      save_x0_estimates: if True (and ``save_residuals_dir`` set), also
+        persist the guided ``eps_poe`` and ``eps_j`` tensors per step so
+        downstream code can compute Tweedie ``x̂_0`` panels at any step.
+
+    Always populates ``extras['pmi_identity_residual_per_step']`` with the
+    relative residual of the algebraic identity
+    ``Δ_t == w · (ε_J + ε_∅ − ε_A − ε_B)`` (raw conditionals, raw uncond).
+    A flat-near-zero curve is the empirical proof that the deployed
+    teacher residual is the PMI gradient up to the known constant.
     """
+    if save_residuals_dir is not None:
+        save_residuals_dir = Path(save_residuals_dir)
+        save_residuals_dir.mkdir(parents=True, exist_ok=True)
+    if adaptive_schedule is not None:
+        adaptive_schedule.reset()
+    if attn_capture_dir is not None:
+        attn_capture_dir = Path(attn_capture_dir)
+        attn_capture_dir.mkdir(parents=True, exist_ok=True)
+
     scheduler.set_timesteps(num_inference_steps)
     latents = (init_latents / euler_init_noise_sigma).to(device=device, dtype=dtype)
-    tracker = LatentTrajectoryCollector(num_inference_steps, 1, latents.shape[1], latents.shape[2], latents.shape[3])
-    pe = torch.cat([seq_a, seq_b, seq_e], dim=0)
-    pool = torch.cat([pool_a, pool_b, pool_e], dim=0)
-    cond = {"text_embeds": pool, "time_ids": add_time_ids(height=height, width=width, batch_size=3, device=device, dtype=dtype)}
+    tracker = LatentTrajectoryCollector(
+        num_inference_steps, 1, latents.shape[1], latents.shape[2], latents.shape[3]
+    )
+    pe = torch.cat([seq_a, seq_b, seq_j, seq_e], dim=0)
+    pool = torch.cat([pool_a, pool_b, pool_j, pool_e], dim=0)
+    cond = {
+        "text_embeds": pool,
+        "time_ids": add_time_ids(
+            height=height, width=width, batch_size=4, device=device, dtype=dtype,
+        ),
+    }
     unet = models["unet"]
 
-    cos_theta_per_step: list[float] = []
-    alpha_per_step: list[float] = []
-
+    lambda_per_step: list[float] = []
+    delta_norm_per_step: list[float] = []
+    pmi_identity_residual_per_step: list[float] = []
+    basin_projection_per_step: list[float] = []
     for step_index, timestep in enumerate(scheduler.timesteps):
-        latent_input = scheduler.scale_model_input(latents.repeat(3, 1, 1, 1), timestep)
-        noise = unet(latent_input, timestep, encoder_hidden_states=pe, added_cond_kwargs=cond, timestep_cond=None).sample
-        eps_a_raw, eps_b_raw, eps_uncond = noise.chunk(3)
+        if adaptive_schedule is not None:
+            lam, proj_value = adaptive_schedule.alpha(
+                step_index=step_index, x_t=latents, base_alpha=lambda_max,
+            )
+            basin_projection_per_step.append(float(proj_value))
+        else:
+            lam = _lambda_value(
+                lambda_schedule, step_index, num_inference_steps, lambda_max,
+            )
+        if correction_window is not None:
+            t_start, t_end = correction_window
+            if step_index < int(t_start) or step_index >= int(t_end):
+                lam = 0.0
+        lambda_per_step.append(float(lam))
+
+        latent_input = scheduler.scale_model_input(latents.repeat(4, 1, 1, 1), timestep)
+        if attn_capture_dir is not None and attn_token_indices is not None:
+            with _CrossAttnRecorder(unet, keep_grad=False) as _attn_rec:
+                noise = unet(
+                    latent_input, timestep, encoder_hidden_states=pe,
+                    added_cond_kwargs=cond, timestep_cond=None,
+                ).sample
+                # attn_token_indices schema:
+                #   {"<token_key>_<branch_role>": {
+                #       "branch_index": int, "token_index": int}}
+                # File names: step_XXX_token_<tok>_branch_<role>.pt
+                # branch_index: 0=A, 1=B, 2=J, 3=∅ (matches `pe` cat order).
+                for save_key, spec in attn_token_indices.items():
+                    amap = _attn_rec.aggregate_token_map(
+                        int(spec["token_index"]),
+                        target_hw=(int(attn_resolution), int(attn_resolution)),
+                        branch_index=int(spec["branch_index"]),
+                        agg_resolution=int(attn_resolution),
+                    )
+                    if amap is None:
+                        continue
+                    fname = f"step_{step_index:03d}_token_{save_key}.pt"
+                    torch.save(
+                        {
+                            "map": amap.float().cpu(),
+                            "spec": dict(spec),
+                            "step_index": int(step_index),
+                            "timestep": int(timestep.item()),
+                        },
+                        attn_capture_dir / fname,
+                    )
+        else:
+            noise = unet(
+                latent_input, timestep, encoder_hidden_states=pe,
+                added_cond_kwargs=cond, timestep_cond=None,
+            ).sample
+        eps_a_raw, eps_b_raw, eps_j_raw, eps_uncond = noise.chunk(4)
         eps_a = guided_eps(eps_a_raw, eps_uncond, guidance_scale)
         eps_b = guided_eps(eps_b_raw, eps_uncond, guidance_scale)
-        u_a = eps_a - eps_uncond
-        u_b = eps_b - eps_uncond
-        cos_theta, alpha = _conflict_modulation(u_a, u_b, gamma)
-        eps_t = eps_uncond + alpha * (u_a + u_b)
-        alpha_bar_t = scheduler.alphas_cumprod[int(timestep.item())].to(device=device, dtype=dtype)
-        x0 = tweedie_mean(latents, alpha_bar_t, eps_t)
-        tracker.store_step(step_index, latents, eps_t, float(step_index) / float(num_inference_steps), int(timestep.item()))
-        # Standard DDIM: same eps_t for x0 and noise direction.
-        latents = ddim_prev_from_x0_eps(scheduler=scheduler, timestep=timestep, step_index=step_index, x0=x0, eps=eps_t)
-        cos_theta_per_step.append(float(cos_theta.detach().cpu()))
-        alpha_per_step.append(float(alpha.detach().cpu()))
+        eps_j = guided_eps(eps_j_raw, eps_uncond, guidance_scale)
+        eps_poe = poe_eps(eps_a, eps_b, eps_uncond)
+        delta = eps_j - eps_poe
+        delta_norm_per_step.append(float(delta.float().norm().item()))
 
+        # PMI identity check: Δ should equal w·(ε_J + ε_∅ − ε_A − ε_B) using
+        # the raw four UNet outputs. Algebraic derivation:
+        #   ε̃ = (1−w)ε_∅ + w·ε  ⇒  ε̃_J − (ε̃_A + ε̃_B − ε_∅)
+        #                          = w·(ε_J + ε_∅ − ε_A − ε_B).
+        # In score space this is −w·σ_t · ∇_{x_t} PMI(c_1; c_2 | x_t).
+        rhs = float(guidance_scale) * (
+            eps_j_raw + eps_uncond - eps_a_raw - eps_b_raw
+        )
+        delta_norm = float(delta.float().norm().item())
+        identity_err = float((delta - rhs).float().norm().item())
+        pmi_identity_residual_per_step.append(
+            identity_err / max(delta_norm, 1e-12)
+        )
+
+        if save_residuals_dir is not None:
+            payload = {
+                "x_t": latents.detach().to(save_dtype).cpu(),
+                "timestep": int(timestep.item()),
+                "step_index": int(step_index),
+                "seq_a": seq_a.detach().to(save_dtype).cpu(),
+                "pool_a": pool_a.detach().to(save_dtype).cpu(),
+                "seq_b": seq_b.detach().to(save_dtype).cpu(),
+                "pool_b": pool_b.detach().to(save_dtype).cpu(),
+                "delta": delta.detach().to(save_dtype).cpu(),
+                "guidance_scale": float(guidance_scale),
+                "eps_a_raw": eps_a_raw.detach().to(save_dtype).cpu(),
+                "eps_b_raw": eps_b_raw.detach().to(save_dtype).cpu(),
+                "eps_j_raw": eps_j_raw.detach().to(save_dtype).cpu(),
+                "eps_uncond": eps_uncond.detach().to(save_dtype).cpu(),
+            }
+            if save_x0_estimates:
+                payload["eps_poe"] = eps_poe.detach().to(save_dtype).cpu()
+                payload["eps_j"] = eps_j.detach().to(save_dtype).cpu()
+            torch.save(
+                payload,
+                save_residuals_dir / f"step_{step_index:03d}.pt",
+            )
+
+        if lam == 0.0:
+            eps_t = eps_poe
+        elif lam == 1.0:
+            eps_t = eps_j
+        else:
+            eps_t = eps_poe + float(lam) * delta
+
+        alpha_bar_t = scheduler.alphas_cumprod[int(timestep.item())].to(
+            device=device, dtype=dtype,
+        )
+        x0 = tweedie_mean(latents, alpha_bar_t, eps_t)
+        tracker.store_step(
+            step_index, latents, eps_t,
+            float(step_index) / float(num_inference_steps),
+            int(timestep.item()),
+        )
+        latents = ddim_prev_from_x0_eps(
+            scheduler=scheduler, timestep=timestep, step_index=step_index,
+            x0=x0, eps=eps_t,
+        )
     tracker.store_final(latents)
     image = decode_latents(models, latents).cpu()
-    extras = {
-        "gamma": float(gamma),
-        "cos_theta_per_step": cos_theta_per_step,
-        "alpha_per_step": alpha_per_step,
-        "mean_cos_theta": float(np.mean(cos_theta_per_step)) if cos_theta_per_step else float("nan"),
-        "mean_alpha": float(np.mean(alpha_per_step)) if alpha_per_step else float("nan"),
-        "frac_steps_in_conflict": float(np.mean([1.0 if c < 0.0 else 0.0 for c in cos_theta_per_step])) if cos_theta_per_step else float("nan"),
-    }
-    return SamplerOutputs(latents=latents, image=image, tracker=tracker, extras=extras)
+    return SamplerOutputs(
+        latents=latents, image=image, tracker=tracker,
+        extras={
+            "lambda_schedule": lambda_schedule,
+            "lambda_max": float(lambda_max),
+            "correction_window": (
+                None if correction_window is None
+                else [int(correction_window[0]), int(correction_window[1])]
+            ),
+            "lambda_per_step": lambda_per_step,
+            "delta_norm_per_step": delta_norm_per_step,
+            "pmi_identity_residual_per_step": pmi_identity_residual_per_step,
+            "saved_residuals_dir": (
+                None if save_residuals_dir is None else str(save_residuals_dir)
+            ),
+            "saved_x0_estimates": bool(save_x0_estimates),
+            "basin_projection_per_step": (
+                basin_projection_per_step
+                if adaptive_schedule is not None else None
+            ),
+            "fired_steps": (
+                list(adaptive_schedule.fired_steps)
+                if adaptive_schedule is not None else None
+            ),
+        },
+    )
 
 
 @torch.no_grad()
@@ -259,42 +791,31 @@ def run_beta_inject_online(
     init_latents: torch.Tensor,
     models: dict,
     scheduler,
-    seq_a: torch.Tensor,
-    pool_a: torch.Tensor,
-    seq_b: torch.Tensor,
-    pool_b: torch.Tensor,
-    seq_j: torch.Tensor,
-    pool_j: torch.Tensor,
-    seq_e: torch.Tensor,
-    pool_e: torch.Tensor,
+    seq_a: torch.Tensor, pool_a: torch.Tensor,
+    seq_b: torch.Tensor, pool_b: torch.Tensor,
+    seq_j: torch.Tensor, pool_j: torch.Tensor,
+    seq_e: torch.Tensor, pool_e: torch.Tensor,
     guidance_scale: float,
     num_inference_steps: int,
-    height: int,
-    width: int,
+    height: int, width: int,
     euler_init_noise_sigma: float,
-    device: torch.device,
-    dtype: torch.dtype,
-    beta: float = 0.0,
+    device: torch.device, dtype: torch.dtype,
+    beta_schedule: torch.Tensor,
 ) -> SamplerOutputs:
-    """β-injected PoE sampler with an online residual.
+    """sched-M2: per-step β-mixed PoE/anchor on a 4-branch UNet forward.
 
-    Per step the UNet is evaluated on four branches (A, B, J, empty) and the
-    composed update is
+        ε_t = (1 − β_t)·ε̃_PoE + β_t·ε̃_J
 
-        ε̃_β = (1-β)·ε̃_PoE + β·ε̃_J = ε̃_PoE + β·r_t,
-
-    with r_t = ε̃_J - ε̃_PoE recomputed at the current x_t^β each step
-    (online). Endpoints by construction:
-
-        β = 0  →  ε̃_β = ε̃_PoE   (reduces to vanilla PoE).
-        β = 1  →  ε̃_β = ε̃_J     (reduces to mono).
-
-    Returns SamplerOutputs with extras:
-        beta:         float
-        eps_poe_traj: Tensor[T, C, H, W]  — composed ε̃_PoE per step.
-        eps_j_traj:   Tensor[T, C, H, W]  — guided ε̃_J at the same x_t.
-        timesteps:    Tensor[T]
+    `seq_j` is either literal e_J or synthesised ê_J. `beta_schedule[t]`
+    is the anchor weight at step t (0 ≤ β ≤ 1; rectangular over the first
+    40% of inference is the Phase-11 default).
     """
+    if int(beta_schedule.shape[0]) != int(num_inference_steps):
+        raise ValueError(
+            f"beta_schedule has {int(beta_schedule.shape[0])} steps, "
+            f"expected {num_inference_steps}"
+        )
+    schedule_list = [float(v) for v in beta_schedule.tolist()]
     scheduler.set_timesteps(num_inference_steps)
     latents = (init_latents / euler_init_noise_sigma).to(device=device, dtype=dtype)
     tracker = LatentTrajectoryCollector(
@@ -304,102 +825,513 @@ def run_beta_inject_online(
     pool = torch.cat([pool_a, pool_b, pool_j, pool_e], dim=0)
     cond = {
         "text_embeds": pool,
-        "time_ids": add_time_ids(height=height, width=width, batch_size=4, device=device, dtype=dtype),
+        "time_ids": add_time_ids(
+            height=height, width=width, batch_size=4, device=device, dtype=dtype,
+        ),
     }
     unet = models["unet"]
-
-    latent_shape = tuple(latents.shape[1:])
-    eps_poe_traj = torch.zeros(num_inference_steps, *latent_shape, dtype=torch.float32)
-    eps_j_traj = torch.zeros(num_inference_steps, *latent_shape, dtype=torch.float32)
-    timesteps_arr = torch.zeros(num_inference_steps)
-
     for step_index, timestep in enumerate(scheduler.timesteps):
+        active_beta = float(schedule_list[step_index])
         latent_input = scheduler.scale_model_input(latents.repeat(4, 1, 1, 1), timestep)
         noise = unet(
-            latent_input,
-            timestep,
-            encoder_hidden_states=pe,
-            added_cond_kwargs=cond,
-            timestep_cond=None,
+            latent_input, timestep, encoder_hidden_states=pe,
+            added_cond_kwargs=cond, timestep_cond=None,
         ).sample
         eps_a_raw, eps_b_raw, eps_j_raw, eps_uncond = noise.chunk(4)
         eps_a = guided_eps(eps_a_raw, eps_uncond, guidance_scale)
         eps_b = guided_eps(eps_b_raw, eps_uncond, guidance_scale)
         eps_j = guided_eps(eps_j_raw, eps_uncond, guidance_scale)
         eps_p = poe_eps(eps_a, eps_b, eps_uncond)
-        eps_beta = (1.0 - beta) * eps_p + beta * eps_j
-
-        eps_poe_traj[step_index] = eps_p.detach().to(torch.float32).cpu().squeeze(0)
-        eps_j_traj[step_index] = eps_j.detach().to(torch.float32).cpu().squeeze(0)
-        timesteps_arr[step_index] = float(timestep.item())
-
+        eps_t = (1.0 - active_beta) * eps_p + active_beta * eps_j
         alpha_bar_t = scheduler.alphas_cumprod[int(timestep.item())].to(device=device, dtype=dtype)
-        x0 = tweedie_mean(latents, alpha_bar_t, eps_beta)
+        x0 = tweedie_mean(latents, alpha_bar_t, eps_t)
         tracker.store_step(
-            step_index, latents, eps_beta,
+            step_index, latents, eps_t,
             float(step_index) / float(num_inference_steps),
             int(timestep.item()),
         )
         latents = ddim_prev_from_x0_eps(
             scheduler=scheduler, timestep=timestep, step_index=step_index,
-            x0=x0, eps=eps_beta,
+            x0=x0, eps=eps_t,
         )
+    tracker.store_final(latents)
+    image = decode_latents(models, latents).cpu()
+    return SamplerOutputs(latents=latents, image=image, tracker=tracker, extras={})
 
+
+@torch.no_grad()
+def run_residual_prompt_inject(
+    *,
+    init_latents: torch.Tensor,
+    models: dict,
+    scheduler,
+    seq_a: torch.Tensor, pool_a: torch.Tensor,
+    seq_b: torch.Tensor, pool_b: torch.Tensor,
+    seq_p: torch.Tensor, pool_p: torch.Tensor,
+    seq_e: torch.Tensor, pool_e: torch.Tensor,
+    guidance_scale: float,
+    num_inference_steps: int,
+    height: int, width: int,
+    euler_init_noise_sigma: float,
+    device: torch.device, dtype: torch.dtype,
+    lambda_schedule: torch.Tensor,
+    correction_max_rel_norm: float | None = None,
+) -> SamplerOutputs:
+    """Method 2 sampler: PoE plus a learned residual-prompt correction.
+
+        ε_t = ε̃_PoE + λ_t · ε(x_t, t, p*)
+
+    The trained ``p*`` is conditioned to make the *raw* UNet output match
+    the guided residual r_t = ε̃_J − ε̃_PoE = w·(ε_J + ε_∅ − ε_A − ε_B).
+    No CFG is applied to the p* branch — its raw output already lives in
+    guided-magnitude space by training.
+
+    ``correction_max_rel_norm`` (optional safety belt): if set, cap the
+    p* correction's norm at ``max_rel_norm × ||ε̃_PoE||`` per step. None
+    or non-positive disables the cap.
+    """
+    if int(lambda_schedule.shape[0]) != int(num_inference_steps):
+        raise ValueError(
+            f"lambda_schedule has {int(lambda_schedule.shape[0])} steps, "
+            f"expected {num_inference_steps}"
+        )
+    schedule_list = [float(v) for v in lambda_schedule.tolist()]
+    scheduler.set_timesteps(num_inference_steps)
+    latents = (init_latents / euler_init_noise_sigma).to(device=device, dtype=dtype)
+    tracker = LatentTrajectoryCollector(
+        num_inference_steps, 1, latents.shape[1], latents.shape[2], latents.shape[3]
+    )
+    pe = torch.cat([seq_a, seq_b, seq_p, seq_e], dim=0)
+    pool = torch.cat([pool_a, pool_b, pool_p, pool_e], dim=0)
+    cond = {
+        "text_embeds": pool,
+        "time_ids": add_time_ids(
+            height=height, width=width, batch_size=4, device=device, dtype=dtype,
+        ),
+    }
+    unet = models["unet"]
+    lambda_per_step: list[float] = []
+    pstar_norm_per_step: list[float] = []
+    cap_scale_per_step: list[float] = []
+    for step_index, timestep in enumerate(scheduler.timesteps):
+        lam = float(schedule_list[step_index])
+        lambda_per_step.append(lam)
+        latent_input = scheduler.scale_model_input(latents.repeat(4, 1, 1, 1), timestep)
+        noise = unet(
+            latent_input, timestep, encoder_hidden_states=pe,
+            added_cond_kwargs=cond, timestep_cond=None,
+        ).sample
+        eps_a_raw, eps_b_raw, eps_pstar, eps_uncond = noise.chunk(4)
+        eps_a = guided_eps(eps_a_raw, eps_uncond, guidance_scale)
+        eps_b = guided_eps(eps_b_raw, eps_uncond, guidance_scale)
+        eps_poe = poe_eps(eps_a, eps_b, eps_uncond)
+        pstar_norm_per_step.append(float(eps_pstar.float().norm().item()))
+        if lam == 0.0:
+            eps_t = eps_poe
+            cap_scale_per_step.append(1.0)
+        else:
+            eps_pstar_capped, applied = _maybe_cap_correction(
+                eps_pstar, eps_poe, correction_max_rel_norm,
+            )
+            cap_scale_per_step.append(float(applied))
+            eps_t = eps_poe + lam * eps_pstar_capped
+        alpha_bar_t = scheduler.alphas_cumprod[int(timestep.item())].to(
+            device=device, dtype=dtype,
+        )
+        x0 = tweedie_mean(latents, alpha_bar_t, eps_t)
+        tracker.store_step(
+            step_index, latents, eps_t,
+            float(step_index) / float(num_inference_steps),
+            int(timestep.item()),
+        )
+        latents = ddim_prev_from_x0_eps(
+            scheduler=scheduler, timestep=timestep, step_index=step_index,
+            x0=x0, eps=eps_t,
+        )
     tracker.store_final(latents)
     image = decode_latents(models, latents).cpu()
     return SamplerOutputs(
-        latents=latents,
-        image=image,
-        tracker=tracker,
+        latents=latents, image=image, tracker=tracker,
         extras={
-            "beta": float(beta),
-            "eps_poe_traj": eps_poe_traj,
-            "eps_j_traj": eps_j_traj,
-            "timesteps": timesteps_arr,
+            "lambda_per_step": lambda_per_step,
+            "pstar_norm_per_step": pstar_norm_per_step,
+            "cap_scale_per_step": cap_scale_per_step,
+            "correction_max_rel_norm": (
+                None if correction_max_rel_norm is None
+                else float(correction_max_rel_norm)
+            ),
         },
     )
 
 
 @torch.no_grad()
-def run_beta_inject_frozen(
+def run_lora_residual_inject(
     *,
     init_latents: torch.Tensor,
     models: dict,
     scheduler,
-    seq_a: torch.Tensor,
-    pool_a: torch.Tensor,
-    seq_b: torch.Tensor,
-    pool_b: torch.Tensor,
-    seq_e: torch.Tensor,
-    pool_e: torch.Tensor,
-    r_traj: torch.Tensor,
+    seq_a: torch.Tensor, pool_a: torch.Tensor,
+    seq_b: torch.Tensor, pool_b: torch.Tensor,
+    seq_j: torch.Tensor, pool_j: torch.Tensor,
+    seq_e: torch.Tensor, pool_e: torch.Tensor,
     guidance_scale: float,
     num_inference_steps: int,
-    height: int,
-    width: int,
+    height: int, width: int,
     euler_init_noise_sigma: float,
-    device: torch.device,
-    dtype: torch.dtype,
-    beta: float = 0.0,
+    device: torch.device, dtype: torch.dtype,
+    lambda_value: float,
+    lora_adapter_name: str = "m5",
+    record_delta_at_steps: list[int] | None = None,
+    correction_max_rel_norm: float | None = None,
 ) -> SamplerOutputs:
-    """β-injected PoE sampler with a *frozen* (precomputed) residual.
+    """M5 (Phase 2) sampler: PoE with a LoRA-corrected per-arm composition.
 
-    Per step:
-        ε̃_β = ε̃_PoE(x_t^β) + β · r_traj[t],
+    Per step, two 3-branch forwards on (A, B, ∅):
+      adapter OFF → ε̃_PoE_frozen   (the failing baseline)
+      adapter ON  → ε̃_PoE_lora     (corrected by the trained LoRA)
+      Δ̂ = ε̃_PoE_lora − ε̃_PoE_frozen      ← the learned residual, explicit
+      ε_final = ε̃_PoE_frozen + lambda_value · Δ̂
 
-    where r_traj is precomputed along a separate clean PoE rollout — it does
-    NOT depend on the current modified latent. Compare with
-    `run_beta_inject_online`, which recomputes r_t at the modified latent.
+    With ``lambda_value = 0`` we use plain frozen PoE (canary).
+    With ``lambda_value = 1`` we use the LoRA-corrected composition.
 
-    Frozen ≈ Online ⇒ residual is approximately a fixed vector field along
-    the trajectory.
-    Frozen ≠ Online ⇒ residual is state-dependent.
+    The joint prompt ``(seq_j, pool_j)`` is no longer consumed at
+    inference — the LoRA is the only thing carrying the correction. It is
+    kept in the signature for backwards-compat with the probe wiring;
+    pass anything (e.g. the unconditional embedding) without effect.
+
+    ``record_delta_at_steps``: cache ``{Δ̂, ε̃_PoE_frozen, x_t,
+    tweedie_x0, timestep}`` for the where-applied overlay.
+
+    Adapter management uses the diffusers PeftAdapterMixin API
+    (``disable_adapters`` / ``enable_adapters`` / ``set_adapter``).
     """
-    if r_traj.shape[0] != num_inference_steps:
-        raise ValueError(
-            f"r_traj has {r_traj.shape[0]} steps, expected {num_inference_steps}"
+    del seq_j, pool_j  # unused — kept for signature parity with prior wiring
+    record_set = (
+        {int(s) for s in record_delta_at_steps}
+        if record_delta_at_steps is not None else set()
+    )
+    scheduler.set_timesteps(num_inference_steps)
+    latents = (init_latents / euler_init_noise_sigma).to(device=device, dtype=dtype)
+    tracker = LatentTrajectoryCollector(
+        num_inference_steps, 1, latents.shape[1], latents.shape[2], latents.shape[3]
+    )
+
+    pe_3 = torch.cat([seq_a, seq_b, seq_e], dim=0)
+    pool_3 = torch.cat([pool_a, pool_b, pool_e], dim=0)
+    cond_3 = {
+        "text_embeds": pool_3,
+        "time_ids": add_time_ids(
+            height=height, width=width, batch_size=3, device=device, dtype=dtype,
+        ),
+    }
+    unet = models["unet"]
+
+    # Adapter management. Use the PEFT-bridge methods that diffusers exposes
+    # on the UNet (PeftAdapterMixin). Falls back to set_adapter / enable.
+    def _adapter_disable():
+        if hasattr(unet, "disable_adapters"):
+            unet.disable_adapters()
+        elif hasattr(unet, "disable_adapter_layers"):
+            unet.disable_adapter_layers()
+
+    def _adapter_enable():
+        if hasattr(unet, "enable_adapters"):
+            unet.enable_adapters()
+        elif hasattr(unet, "enable_adapter_layers"):
+            unet.enable_adapter_layers()
+        if hasattr(unet, "set_adapter"):
+            try:
+                unet.set_adapter(lora_adapter_name)
+            except Exception:
+                pass
+
+    def _three_branch_forward() -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        latent_input_3 = scheduler.scale_model_input(
+            latents.repeat(3, 1, 1, 1), timestep,
+        )
+        noise = unet(
+            latent_input_3, timestep, encoder_hidden_states=pe_3,
+            added_cond_kwargs=cond_3, timestep_cond=None,
+        ).sample
+        return noise.chunk(3)
+
+    delta_norm_per_step: list[float] = []
+    cap_scale_per_step: list[float] = []
+    where_applied: dict[int, dict[str, torch.Tensor]] = {}
+
+    for step_index, timestep in enumerate(scheduler.timesteps):
+        # --- frozen 3-branch (adapter OFF) -------------------------------
+        _adapter_disable()
+        eps_a_raw_f, eps_b_raw_f, eps_uncond_f = _three_branch_forward()
+        eps_a_f = guided_eps(eps_a_raw_f, eps_uncond_f, guidance_scale)
+        eps_b_f = guided_eps(eps_b_raw_f, eps_uncond_f, guidance_scale)
+        eps_poe_frozen = poe_eps(eps_a_f, eps_b_f, eps_uncond_f)
+
+        if float(lambda_value) == 0.0:
+            # λ=0 canary — never invokes the adapter. Byte-identical to plain PoE.
+            delta_hat = torch.zeros_like(eps_poe_frozen)
+            delta_norm_per_step.append(0.0)
+            cap_scale_per_step.append(1.0)
+            eps_t = eps_poe_frozen
+        else:
+            # --- LoRA-corrected 3-branch (adapter ON) ---------------------
+            _adapter_enable()
+            eps_a_raw_l, eps_b_raw_l, eps_uncond_l = _three_branch_forward()
+            eps_a_l = guided_eps(eps_a_raw_l, eps_uncond_l, guidance_scale)
+            eps_b_l = guided_eps(eps_b_raw_l, eps_uncond_l, guidance_scale)
+            eps_poe_lora = poe_eps(eps_a_l, eps_b_l, eps_uncond_l)
+            delta_hat = eps_poe_lora - eps_poe_frozen
+            delta_capped, applied = _maybe_cap_correction(
+                delta_hat, eps_poe_frozen, correction_max_rel_norm,
+            )
+            delta_norm_per_step.append(float(delta_hat.float().norm().item()))
+            cap_scale_per_step.append(float(applied))
+            eps_t = eps_poe_frozen + float(lambda_value) * delta_capped
+        eps_poe = eps_poe_frozen  # alias for the where-applied cache
+
+        # --- where-applied cache --------------------------------------------
+        if step_index in record_set:
+            alpha_bar_cache = scheduler.alphas_cumprod[int(timestep.item())].to(
+                device=device, dtype=dtype,
+            )
+            x0_cache = tweedie_mean(latents, alpha_bar_cache, eps_t)
+            where_applied[int(step_index)] = {
+                "delta_hat": delta_hat.detach().float().cpu(),
+                "eps_poe": eps_poe.detach().float().cpu(),
+                "x_t": latents.detach().float().cpu(),
+                "tweedie_x0": x0_cache.detach().float().cpu(),
+                "timestep": int(timestep.item()),
+            }
+
+        # --- DDIM step ------------------------------------------------------
+        alpha_bar_t = scheduler.alphas_cumprod[int(timestep.item())].to(
+            device=device, dtype=dtype,
+        )
+        x0 = tweedie_mean(latents, alpha_bar_t, eps_t)
+        tracker.store_step(
+            step_index, latents, eps_t,
+            float(step_index) / float(num_inference_steps),
+            int(timestep.item()),
+        )
+        latents = ddim_prev_from_x0_eps(
+            scheduler=scheduler, timestep=timestep, step_index=step_index,
+            x0=x0, eps=eps_t,
         )
 
+    # Restore adapter-enabled state on exit so the caller sees a normal UNet.
+    _adapter_enable()
+
+    tracker.store_final(latents)
+    image = decode_latents(models, latents).cpu()
+    return SamplerOutputs(
+        latents=latents, image=image, tracker=tracker,
+        extras={
+            "lambda_value": float(lambda_value),
+            "lora_adapter_name": str(lora_adapter_name),
+            "delta_norm_per_step": delta_norm_per_step,
+            "cap_scale_per_step": cap_scale_per_step,
+            "correction_max_rel_norm": (
+                None if correction_max_rel_norm is None
+                else float(correction_max_rel_norm)
+            ),
+            "where_applied_cache": where_applied,
+            "record_delta_at_steps": sorted(record_set),
+        },
+    )
+
+
+@torch.no_grad()
+def run_external_corrector_inject(
+    *,
+    init_latents: torch.Tensor,
+    models: dict,
+    scheduler,
+    seq_a: torch.Tensor, pool_a: torch.Tensor,
+    seq_b: torch.Tensor, pool_b: torch.Tensor,
+    seq_j: torch.Tensor, pool_j: torch.Tensor,
+    seq_e: torch.Tensor, pool_e: torch.Tensor,
+    guidance_scale: float,
+    num_inference_steps: int,
+    height: int, width: int,
+    euler_init_noise_sigma: float,
+    device: torch.device, dtype: torch.dtype,
+    lambda_value: float,
+    corrector,
+    record_delta_at_steps: list[int] | None = None,
+    correction_max_rel_norm: float | None = None,
+) -> SamplerOutputs:
+    """Group A sampler: PoE with an external corrector adding an additive ε-residual.
+
+    Per step:
+      1. 3-branch (A, B, ∅) frozen UNet forward → ε̃_PoE.
+      2. corrector(z_t, t, seq_j, pool_j) → r̂_t (the learned guided residual).
+      3. ε_final = ε̃_PoE + λ · r̂_t  (with optional norm cap on r̂_t).
+      4. Standard DDIM update.
+
+    With ``lambda_value = 0`` we never call the corrector — the rollout is
+    byte-identical to ``run_vanilla_poe`` (canary). The joint embedding
+    ``(seq_j, pool_j)`` is consumed only by the corrector.
+
+    The corrector is any ``nn.Module`` whose forward signature is
+    ``corrector(z_t, t, seq_j, pool_j) -> r̂_t`` with shapes:
+        z_t:      (1, 4, H, W)
+        t:        (1,) long
+        seq_j:    (1, 77, 2048)
+        pool_j:   (1, 1280)
+        r̂_t:      (1, 4, H, W)
+    """
+    record_set = (
+        {int(s) for s in record_delta_at_steps}
+        if record_delta_at_steps is not None else set()
+    )
+    scheduler.set_timesteps(num_inference_steps)
+    latents = (init_latents / euler_init_noise_sigma).to(device=device, dtype=dtype)
+    tracker = LatentTrajectoryCollector(
+        num_inference_steps, 1, latents.shape[1], latents.shape[2], latents.shape[3]
+    )
+
+    pe_3 = torch.cat([seq_a, seq_b, seq_e], dim=0)
+    pool_3 = torch.cat([pool_a, pool_b, pool_e], dim=0)
+    cond_3 = {
+        "text_embeds": pool_3,
+        "time_ids": add_time_ids(
+            height=height, width=width, batch_size=3, device=device, dtype=dtype,
+        ),
+    }
+    unet = models["unet"]
+
+    # The corrector lives next to SDXL; keep it on the same device/dtype.
+    if corrector is not None:
+        corrector_was_training = corrector.training
+        corrector.eval()
+
+    delta_norm_per_step: list[float] = []
+    cap_scale_per_step: list[float] = []
+    where_applied: dict[int, dict[str, torch.Tensor]] = {}
+
+    for step_index, timestep in enumerate(scheduler.timesteps):
+        # --- frozen 3-branch PoE forward ----------------------------------
+        latent_input_3 = scheduler.scale_model_input(
+            latents.repeat(3, 1, 1, 1), timestep,
+        )
+        noise = unet(
+            latent_input_3, timestep, encoder_hidden_states=pe_3,
+            added_cond_kwargs=cond_3, timestep_cond=None,
+        ).sample
+        eps_a_raw, eps_b_raw, eps_uncond = noise.chunk(3)
+        eps_a = guided_eps(eps_a_raw, eps_uncond, guidance_scale)
+        eps_b = guided_eps(eps_b_raw, eps_uncond, guidance_scale)
+        eps_poe = poe_eps(eps_a, eps_b, eps_uncond)
+
+        if float(lambda_value) == 0.0 or corrector is None:
+            # λ=0 canary — corrector is never invoked. Vanilla PoE.
+            r_hat = torch.zeros_like(eps_poe)
+            delta_norm_per_step.append(0.0)
+            cap_scale_per_step.append(1.0)
+            eps_t = eps_poe
+        else:
+            # --- external corrector --------------------------------------
+            t_scalar = torch.tensor(
+                [int(timestep.item())], device=device, dtype=torch.long,
+            )
+            r_hat_raw = corrector(latents, t_scalar, seq_j, pool_j)
+            r_hat = r_hat_raw.to(dtype=eps_poe.dtype)
+            r_hat_capped, applied = _maybe_cap_correction(
+                r_hat, eps_poe, correction_max_rel_norm,
+            )
+            delta_norm_per_step.append(float(r_hat.float().norm().item()))
+            cap_scale_per_step.append(float(applied))
+            eps_t = eps_poe + float(lambda_value) * r_hat_capped
+            r_hat = r_hat_capped  # what gets stored for the overlay
+
+        # --- where-applied cache --------------------------------------------
+        if step_index in record_set:
+            alpha_bar_cache = scheduler.alphas_cumprod[int(timestep.item())].to(
+                device=device, dtype=dtype,
+            )
+            x0_cache = tweedie_mean(latents, alpha_bar_cache, eps_t)
+            where_applied[int(step_index)] = {
+                "delta_hat": r_hat.detach().float().cpu(),
+                "eps_poe": eps_poe.detach().float().cpu(),
+                "x_t": latents.detach().float().cpu(),
+                "tweedie_x0": x0_cache.detach().float().cpu(),
+                "timestep": int(timestep.item()),
+            }
+
+        # --- DDIM step ------------------------------------------------------
+        alpha_bar_t = scheduler.alphas_cumprod[int(timestep.item())].to(
+            device=device, dtype=dtype,
+        )
+        x0 = tweedie_mean(latents, alpha_bar_t, eps_t)
+        tracker.store_step(
+            step_index, latents, eps_t,
+            float(step_index) / float(num_inference_steps),
+            int(timestep.item()),
+        )
+        latents = ddim_prev_from_x0_eps(
+            scheduler=scheduler, timestep=timestep, step_index=step_index,
+            x0=x0, eps=eps_t,
+        )
+
+    if corrector is not None and corrector_was_training:
+        corrector.train()
+
+    tracker.store_final(latents)
+    image = decode_latents(models, latents).cpu()
+    return SamplerOutputs(
+        latents=latents, image=image, tracker=tracker,
+        extras={
+            "lambda_value": float(lambda_value),
+            "delta_norm_per_step": delta_norm_per_step,
+            "cap_scale_per_step": cap_scale_per_step,
+            "correction_max_rel_norm": (
+                None if correction_max_rel_norm is None
+                else float(correction_max_rel_norm)
+            ),
+            "where_applied_cache": where_applied,
+            "record_delta_at_steps": sorted(record_set),
+        },
+    )
+
+
+@torch.no_grad()
+def run_direct_eps_inject(
+    *,
+    init_latents: torch.Tensor,
+    models: dict,
+    scheduler,
+    seq_a: torch.Tensor, pool_a: torch.Tensor,
+    seq_b: torch.Tensor, pool_b: torch.Tensor,
+    seq_e: torch.Tensor, pool_e: torch.Tensor,
+    student,
+    guidance_scale: float,
+    num_inference_steps: int,
+    height: int, width: int,
+    euler_init_noise_sigma: float,
+    device: torch.device, dtype: torch.dtype,
+    lambda_schedule: torch.Tensor,
+    correction_max_rel_norm: float | None = None,
+) -> SamplerOutputs:
+    """Method 2b sampler: PoE plus a learned eps-space residual student.
+
+        ε_t = ε̃_PoE + λ_t · δ_θ(x_t, t, pool_a, pool_b, pool_uncond)
+
+    The student is a small CNN trained to match the guided PMI residual
+    r_t = ε̃_J − ε̃_PoE = w·(ε_J + ε_∅ − ε_A − ε_B). It conditions on the
+    pre-scale latent ``x_t`` (matching the cache convention) and the SDXL
+    pooled embeddings of A, B, ∅. No extra UNet branch is needed for the
+    student — only the standard 3-branch (A, B, ∅) PoE forward.
+
+    ``correction_max_rel_norm`` (optional safety belt): if set, cap the
+    student's correction at ``max_rel_norm × ||ε̃_PoE||`` per step.
+    """
+    if int(lambda_schedule.shape[0]) != int(num_inference_steps):
+        raise ValueError(
+            f"lambda_schedule has {int(lambda_schedule.shape[0])} steps, "
+            f"expected {num_inference_steps}"
+        )
+    schedule_list = [float(v) for v in lambda_schedule.tolist()]
     scheduler.set_timesteps(num_inference_steps)
     latents = (init_latents / euler_init_noise_sigma).to(device=device, dtype=dtype)
     tracker = LatentTrajectoryCollector(
@@ -409,119 +1341,628 @@ def run_beta_inject_frozen(
     pool = torch.cat([pool_a, pool_b, pool_e], dim=0)
     cond = {
         "text_embeds": pool,
-        "time_ids": add_time_ids(height=height, width=width, batch_size=3, device=device, dtype=dtype),
+        "time_ids": add_time_ids(
+            height=height, width=width, batch_size=3, device=device, dtype=dtype,
+        ),
     }
     unet = models["unet"]
-    r_traj_dev = r_traj.to(device=device, dtype=dtype)
+    student_param = next(student.parameters())
+    student_dtype = student_param.dtype
+    student_device = student_param.device
+    student.eval()
+    pool_a_s = pool_a.to(device=student_device, dtype=student_dtype)
+    pool_b_s = pool_b.to(device=student_device, dtype=student_dtype)
+    pool_e_s = pool_e.to(device=student_device, dtype=student_dtype)
 
+    lambda_per_step: list[float] = []
+    delta_norm_per_step: list[float] = []
+    cap_scale_per_step: list[float] = []
     for step_index, timestep in enumerate(scheduler.timesteps):
+        lam = float(schedule_list[step_index])
+        lambda_per_step.append(lam)
         latent_input = scheduler.scale_model_input(latents.repeat(3, 1, 1, 1), timestep)
         noise = unet(
-            latent_input,
-            timestep,
-            encoder_hidden_states=pe,
-            added_cond_kwargs=cond,
-            timestep_cond=None,
+            latent_input, timestep, encoder_hidden_states=pe,
+            added_cond_kwargs=cond, timestep_cond=None,
         ).sample
         eps_a_raw, eps_b_raw, eps_uncond = noise.chunk(3)
         eps_a = guided_eps(eps_a_raw, eps_uncond, guidance_scale)
         eps_b = guided_eps(eps_b_raw, eps_uncond, guidance_scale)
-        eps_p = poe_eps(eps_a, eps_b, eps_uncond)
-        eps_beta = eps_p + beta * r_traj_dev[step_index].unsqueeze(0)
+        eps_poe = poe_eps(eps_a, eps_b, eps_uncond)
 
-        alpha_bar_t = scheduler.alphas_cumprod[int(timestep.item())].to(device=device, dtype=dtype)
-        x0 = tweedie_mean(latents, alpha_bar_t, eps_beta)
+        if lam == 0.0:
+            delta_norm_per_step.append(0.0)
+            cap_scale_per_step.append(1.0)
+            eps_t = eps_poe
+        else:
+            t_in = torch.tensor(
+                [int(timestep.item())], device=student_device, dtype=torch.long,
+            )
+            x_t_s = latents.to(device=student_device, dtype=student_dtype)
+            delta = student(
+                x_t=x_t_s, t=t_in,
+                pool_a=pool_a_s, pool_b=pool_b_s, pool_uncond=pool_e_s,
+            )
+            delta = delta.to(device=device, dtype=dtype)
+            delta_norm_per_step.append(float(delta.float().norm().item()))
+            delta_capped, applied = _maybe_cap_correction(
+                delta, eps_poe, correction_max_rel_norm,
+            )
+            cap_scale_per_step.append(float(applied))
+            eps_t = eps_poe + lam * delta_capped
+
+        alpha_bar_t = scheduler.alphas_cumprod[int(timestep.item())].to(
+            device=device, dtype=dtype,
+        )
+        x0 = tweedie_mean(latents, alpha_bar_t, eps_t)
         tracker.store_step(
-            step_index, latents, eps_beta,
+            step_index, latents, eps_t,
             float(step_index) / float(num_inference_steps),
             int(timestep.item()),
         )
         latents = ddim_prev_from_x0_eps(
             scheduler=scheduler, timestep=timestep, step_index=step_index,
-            x0=x0, eps=eps_beta,
+            x0=x0, eps=eps_t,
+        )
+    tracker.store_final(latents)
+    image = decode_latents(models, latents).cpu()
+    return SamplerOutputs(
+        latents=latents, image=image, tracker=tracker,
+        extras={
+            "lambda_per_step": lambda_per_step,
+            "delta_norm_per_step": delta_norm_per_step,
+            "cap_scale_per_step": cap_scale_per_step,
+            "correction_max_rel_norm": (
+                None if correction_max_rel_norm is None
+                else float(correction_max_rel_norm)
+            ),
+        },
+    )
+
+
+@torch.no_grad()
+def run_schedm2_plus_student(
+    *,
+    init_latents: torch.Tensor,
+    models: dict,
+    scheduler,
+    seq_a: torch.Tensor, pool_a: torch.Tensor,
+    seq_b: torch.Tensor, pool_b: torch.Tensor,
+    seq_j: torch.Tensor, pool_j: torch.Tensor,
+    seq_e: torch.Tensor, pool_e: torch.Tensor,
+    student,
+    guidance_scale: float,
+    num_inference_steps: int,
+    height: int, width: int,
+    euler_init_noise_sigma: float,
+    device: torch.device, dtype: torch.dtype,
+    beta_schedule: torch.Tensor,
+    student_lambda_schedule: torch.Tensor,
+    correction_max_rel_norm: float | None = None,
+) -> SamplerOutputs:
+    """Method 2b stacked on Method 1.
+
+        ε_base = (1 − β_t)·ε̃_PoE + β_t·ε̃_J          # sched-M2 base
+        ε_t   = ε_base + λ_t · δ_θ(x_t, t, pools)    # plus student
+
+    The base is the same 4-branch β-mixed prediction as
+    ``run_beta_inject_online`` (sched-M2). The student then adds an
+    additional eps-space correction on top. With ``β=0`` and the student
+    on, this reduces to ``run_direct_eps_inject``; with ``λ=0`` and any
+    β it reduces to sched-M2.
+
+    ``seq_j`` / ``pool_j`` is typically the synthesised ê_J (Method 1's
+    anchor); ``student`` is the trained Method 2b CNN.
+    """
+    if int(beta_schedule.shape[0]) != int(num_inference_steps):
+        raise ValueError(
+            f"beta_schedule has {int(beta_schedule.shape[0])} steps, "
+            f"expected {num_inference_steps}"
+        )
+    if int(student_lambda_schedule.shape[0]) != int(num_inference_steps):
+        raise ValueError(
+            f"student_lambda_schedule has {int(student_lambda_schedule.shape[0])} steps, "
+            f"expected {num_inference_steps}"
+        )
+    beta_list = [float(v) for v in beta_schedule.tolist()]
+    lam_list = [float(v) for v in student_lambda_schedule.tolist()]
+
+    scheduler.set_timesteps(num_inference_steps)
+    latents = (init_latents / euler_init_noise_sigma).to(device=device, dtype=dtype)
+    tracker = LatentTrajectoryCollector(
+        num_inference_steps, 1, latents.shape[1], latents.shape[2], latents.shape[3]
+    )
+    pe = torch.cat([seq_a, seq_b, seq_j, seq_e], dim=0)
+    pool = torch.cat([pool_a, pool_b, pool_j, pool_e], dim=0)
+    cond = {
+        "text_embeds": pool,
+        "time_ids": add_time_ids(
+            height=height, width=width, batch_size=4, device=device, dtype=dtype,
+        ),
+    }
+    unet = models["unet"]
+
+    student_param = next(student.parameters())
+    student_dtype = student_param.dtype
+    student_device = student_param.device
+    student.eval()
+    pool_a_s = pool_a.to(device=student_device, dtype=student_dtype)
+    pool_b_s = pool_b.to(device=student_device, dtype=student_dtype)
+    pool_e_s = pool_e.to(device=student_device, dtype=student_dtype)
+
+    beta_per_step: list[float] = []
+    lambda_per_step: list[float] = []
+    delta_norm_per_step: list[float] = []
+    cap_scale_per_step: list[float] = []
+    for step_index, timestep in enumerate(scheduler.timesteps):
+        beta = float(beta_list[step_index])
+        lam = float(lam_list[step_index])
+        beta_per_step.append(beta)
+        lambda_per_step.append(lam)
+
+        latent_input = scheduler.scale_model_input(latents.repeat(4, 1, 1, 1), timestep)
+        noise = unet(
+            latent_input, timestep, encoder_hidden_states=pe,
+            added_cond_kwargs=cond, timestep_cond=None,
+        ).sample
+        eps_a_raw, eps_b_raw, eps_j_raw, eps_uncond = noise.chunk(4)
+        eps_a = guided_eps(eps_a_raw, eps_uncond, guidance_scale)
+        eps_b = guided_eps(eps_b_raw, eps_uncond, guidance_scale)
+        eps_j = guided_eps(eps_j_raw, eps_uncond, guidance_scale)
+        eps_poe = poe_eps(eps_a, eps_b, eps_uncond)
+        eps_base = (1.0 - beta) * eps_poe + beta * eps_j
+
+        if lam == 0.0:
+            delta_norm_per_step.append(0.0)
+            cap_scale_per_step.append(1.0)
+            eps_t = eps_base
+        else:
+            t_in = torch.tensor(
+                [int(timestep.item())], device=student_device, dtype=torch.long,
+            )
+            x_t_s = latents.to(device=student_device, dtype=student_dtype)
+            delta = student(
+                x_t=x_t_s, t=t_in,
+                pool_a=pool_a_s, pool_b=pool_b_s, pool_uncond=pool_e_s,
+            )
+            delta = delta.to(device=device, dtype=dtype)
+            delta_norm_per_step.append(float(delta.float().norm().item()))
+            delta_capped, applied = _maybe_cap_correction(
+                delta, eps_base, correction_max_rel_norm,
+            )
+            cap_scale_per_step.append(float(applied))
+            eps_t = eps_base + lam * delta_capped
+
+        alpha_bar_t = scheduler.alphas_cumprod[int(timestep.item())].to(
+            device=device, dtype=dtype,
+        )
+        x0 = tweedie_mean(latents, alpha_bar_t, eps_t)
+        tracker.store_step(
+            step_index, latents, eps_t,
+            float(step_index) / float(num_inference_steps),
+            int(timestep.item()),
+        )
+        latents = ddim_prev_from_x0_eps(
+            scheduler=scheduler, timestep=timestep, step_index=step_index,
+            x0=x0, eps=eps_t,
+        )
+    tracker.store_final(latents)
+    image = decode_latents(models, latents).cpu()
+    return SamplerOutputs(
+        latents=latents, image=image, tracker=tracker,
+        extras={
+            "beta_per_step": beta_per_step,
+            "lambda_per_step": lambda_per_step,
+            "delta_norm_per_step": delta_norm_per_step,
+            "cap_scale_per_step": cap_scale_per_step,
+            "correction_max_rel_norm": (
+                None if correction_max_rel_norm is None
+                else float(correction_max_rel_norm)
+            ),
+        },
+    )
+
+
+# ---------------------------------------------------------------------------
+# B. Cross-attention recorder (used by diagnostic experiments)
+# ---------------------------------------------------------------------------
+
+
+class _CrossAttnRecorder:
+    """Forward-hook based cross-attention recorder, AAE-canon faithful.
+
+    Hooks every cross-attention module (those with ``is_cross_attention=True``)
+    and recomputes ``softmax(QK^T/√d)`` from ``to_q(hidden)`` and
+    ``to_k(encoder)``. With ``keep_grad=True`` the stored maps preserve
+    grad through the latent (used by FOCUS's velocity correction). With
+    ``track_self_attn=True`` self-attention modules are also hooked.
+
+    Aggregation matches ``composition/aae/utils/ptp_utils.py:aggregate_attention``:
+    filter to ``query_len ≤ 32**2``, optional AAE softmax-renorm over the
+    real text tokens (``[1:text_token_count]``), bilinear-resize each layer's
+    per-token map to a fixed ``agg_resolution`` (16 for AAE/FOCUS canon),
+    average across layers.
+    """
+
+    def __init__(self, unet, *, keep_grad: bool = False, track_self_attn: bool = False):
+        self.unet = unet
+        self.keep_grad = bool(keep_grad)
+        self.track_self_attn = bool(track_self_attn)
+        self.attn_maps: list[torch.Tensor] = []
+        self.self_attn_maps: list[torch.Tensor] = []
+        self._hook_handles: list = []
+
+    def __enter__(self):
+        self.attn_maps = []
+        self.self_attn_maps = []
+        for name, module in self.unet.named_modules():
+            if module.__class__.__name__ in {"Attention", "CrossAttention"}:
+                is_cross = getattr(module, "is_cross_attention", None)
+                if is_cross is None:
+                    is_cross = getattr(module, "cross_attention_dim", None) is not None
+                if not is_cross and not self.track_self_attn:
+                    continue
+                handle = module.register_forward_hook(
+                    self._make_hook(module, is_cross=bool(is_cross)),
+                    with_kwargs=True,
+                )
+                self._hook_handles.append(handle)
+        return self
+
+    def _make_hook(self, module, *, is_cross: bool):
+        def hook(_mod, args, kwargs, _output):
+            hidden = args[0] if len(args) >= 1 else kwargs.get("hidden_states")
+            encoder = (
+                args[1] if len(args) >= 2 else kwargs.get("encoder_hidden_states")
+            )
+            if hidden is None:
+                return
+            if encoder is None:
+                if is_cross:
+                    return
+                encoder = hidden
+            try:
+                q = module.to_q(hidden)
+                k = module.to_k(encoder)
+                heads = getattr(module, "heads", 1)
+                head_dim = q.shape[-1] // heads
+                q = q.view(q.shape[0], q.shape[1], heads, head_dim).transpose(1, 2)
+                k = k.view(k.shape[0], k.shape[1], heads, head_dim).transpose(1, 2)
+                scale = float(head_dim) ** -0.5
+                attn = torch.softmax((q * scale) @ k.transpose(-1, -2), dim=-1)
+                stored = attn if self.keep_grad else attn.detach()
+                if is_cross:
+                    self.attn_maps.append(stored)
+                else:
+                    self.self_attn_maps.append(stored)
+            except Exception:
+                pass
+        return hook
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        for h in self._hook_handles:
+            try:
+                h.remove()
+            except Exception:
+                pass
+        self._hook_handles = []
+
+    def aggregate_token_map(
+        self,
+        token_index: int,
+        target_hw: tuple[int, int],
+        *,
+        branch_index: int = 0,
+        max_query_len: int = 32 * 32,
+        text_token_count: int | None = None,
+        drop_bos: bool = False,
+        agg_resolution: int | None = None,
+        keep_grad: bool = False,
+    ) -> torch.Tensor | None:
+        """Aggregate cross-attn → per-token spatial map.
+
+        - ``max_query_len``: layers above this query-length (i.e., higher
+          resolution than ``sqrt(max_query_len)``) are dropped. AAE canon = 1024 (32²).
+        - ``drop_bos`` + ``text_token_count``: AAE-style softmax renorm over
+          ``[1:text_token_count]`` with ``token_index`` shifted by -1.
+        - ``agg_resolution``: bilinear-resize each layer's map to
+          ``(agg_resolution, agg_resolution)`` before accumulation. AAE/FOCUS = 16.
+        - ``keep_grad``: when False, returns a detached CPU tensor (legacy
+          diagnostic path); when True, stays on GPU with grad preserved
+          (FOCUS gradient path).
+        """
+        if not self.attn_maps:
+            return None
+        if agg_resolution is None:
+            H, W = target_hw
+        else:
+            H = W = int(agg_resolution)
+        accum = None
+        n = 0
+        for attn in self.attn_maps:
+            if attn.shape[2] > max_query_len:
+                continue
+            if attn.shape[-1] <= token_index:
+                continue
+            head_avg = attn.mean(dim=1)
+            if text_token_count is not None and text_token_count > 0:
+                tcount = min(int(text_token_count), int(head_avg.shape[-1]))
+                if drop_bos:
+                    if tcount <= 1 or token_index < 1:
+                        continue
+                    text_attn = head_avg[..., 1:tcount].float() * 100.0
+                    text_attn = torch.softmax(text_attn, dim=-1)
+                    shifted = token_index - 1
+                    if shifted >= text_attn.shape[-1]:
+                        continue
+                    tok = text_attn[..., shifted]
+                else:
+                    if tcount <= token_index:
+                        continue
+                    text_attn = head_avg[..., :tcount].float() * 100.0
+                    text_attn = torch.softmax(text_attn, dim=-1)
+                    tok = text_attn[..., token_index]
+            else:
+                tok = head_avg[..., token_index]
+            B, ql = tok.shape
+            side = int(round(ql ** 0.5))
+            if side * side != ql:
+                continue
+            if branch_index < 0 or branch_index >= B:
+                continue
+            spatial = tok[branch_index].reshape(side, side)
+            spatial = F.interpolate(
+                spatial.unsqueeze(0).unsqueeze(0).float(),
+                size=(H, W), mode="bilinear", align_corners=False,
+            ).squeeze(0).squeeze(0)
+            accum = spatial if accum is None else accum + spatial
+            n += 1
+        if accum is None or n == 0:
+            return None
+        out = accum / float(n)
+        return out if keep_grad else out.detach().cpu()
+
+    def aggregate_self_attention(
+        self,
+        target_hw: tuple[int, int],
+        *,
+        branch_index: int = 0,
+        max_query_len: int = 32 * 32,
+    ) -> torch.Tensor | None:
+        """Average self-attn matrices across hooked layers at the target resolution.
+
+        Returns ``[HW, HW]`` row-stochastic. Used by Self-Cross-style losses
+        — currently unused in the kept pipeline but preserved as a hook
+        point for future experiments.
+        """
+        if not self.self_attn_maps:
+            return None
+        H, W = target_hw
+        target_qlen = H * W
+        accum = None
+        n = 0
+        for attn in self.self_attn_maps:
+            if attn.shape[2] != attn.shape[3]:
+                continue
+            if attn.shape[2] != target_qlen:
+                continue
+            if branch_index < 0 or branch_index >= attn.shape[0]:
+                continue
+            head_avg = attn[branch_index].mean(dim=0)
+            accum = head_avg if accum is None else accum + head_avg
+            n += 1
+        if accum is None or n == 0:
+            return None
+        return accum / float(n)
+
+
+
+
+# ---------------------------------------------------------------------------
+# C. Diagnostic trajectory sampler (instrumentation only)
+# ---------------------------------------------------------------------------
+
+
+@torch.no_grad()
+def run_diagnostic_trajectory(
+    *,
+    init_latents: torch.Tensor,
+    models: dict,
+    scheduler,
+    seq_j: torch.Tensor, pool_j: torch.Tensor,
+    seq_a: torch.Tensor, pool_a: torch.Tensor,
+    seq_b: torch.Tensor, pool_b: torch.Tensor,
+    seq_e: torch.Tensor, pool_e: torch.Tensor,
+    token_index_a: int, token_index_b: int,
+    guidance_scale: float,
+    num_inference_steps: int,
+    height: int, width: int,
+    euler_init_noise_sigma: float,
+    device: torch.device, dtype: torch.dtype,
+    co3_active: bool = False,
+    co3_lmda: float = 0.8,
+    co3_inner_iters: int = 10,
+    decode_at_steps: list[int] | None = None,
+    attn_resolution: int = 16,
+) -> SamplerOutputs:
+    """Mono CFG trajectory with optional CO3 step-0 correction, fully instrumented.
+
+    Pure instrumentation — no AAE, no FOCUS, no VLM. Records per step:
+      - cat- and dog-token cross-attention map (J branch, ``attn_resolution``²)
+      - ``‖eps_t‖`` and ``‖x̂_0(t) − x̂_0(t−1)‖``
+      - decoded x̂_0 PIL-quality tensor at every step in ``decode_at_steps``
+
+    `co3_active=False` ⇒ pure Mono CFG. `co3_active=True` reproduces
+    composite-no_aae's step-0 latent correction (4-branch, sum-zero) without
+    any subsequent FOCUS/AAE — i.e. "Mono + CO3-step0", a usable proxy for
+    isolating CO3's pre-step contribution in our pipeline.
+    """
+    if decode_at_steps is None:
+        decode_at_steps = list(range(num_inference_steps))
+    decode_set = {int(s) for s in decode_at_steps}
+
+    scheduler.set_timesteps(num_inference_steps)
+    latents = (init_latents / euler_init_noise_sigma).to(device=device, dtype=dtype)
+    tracker = LatentTrajectoryCollector(
+        num_inference_steps, 1, latents.shape[1], latents.shape[2], latents.shape[3]
+    )
+    pe_2 = torch.cat([seq_j, seq_e], dim=0)
+    pool_2 = torch.cat([pool_j, pool_e], dim=0)
+    cond_2 = {
+        "text_embeds": pool_2,
+        "time_ids": add_time_ids(
+            height=height, width=width, batch_size=2, device=device, dtype=dtype,
+        ),
+    }
+    if co3_active:
+        pe_co3 = torch.cat([seq_e, seq_j, seq_a, seq_b], dim=0)
+        pool_co3 = torch.cat([pool_e, pool_j, pool_a, pool_b], dim=0)
+        cond_co3 = {
+            "text_embeds": pool_co3,
+            "time_ids": add_time_ids(
+                height=height, width=width, batch_size=4, device=device, dtype=dtype,
+            ),
+        }
+    unet = models["unet"]
+
+    decoded_by_step: dict[int, torch.Tensor] = {}
+    attn_a_by_step: dict[int, torch.Tensor] = {}
+    attn_b_by_step: dict[int, torch.Tensor] = {}
+    eps_norm_per_step: list[float] = []
+    x0_delta_per_step: list[float] = []
+    co3_active_per_step: list[bool] = []
+    prev_x0: torch.Tensor | None = None
+
+    for step_index, timestep in enumerate(scheduler.timesteps):
+        co3_active_per_step.append(False)
+        # ----- 1. (optional) CO3 step-0 contrastive latent correction -----
+        if co3_active and step_index == 0:
+            alpha_bar_t = scheduler.alphas_cumprod[int(timestep.item())].to(
+                device=device, dtype=dtype,
+            )
+            sqrt_one_minus_at = (1.0 - alpha_bar_t).sqrt()
+            for _it in range(co3_inner_iters):
+                latent_input = scheduler.scale_model_input(
+                    latents.repeat(4, 1, 1, 1), timestep,
+                )
+                noise = unet(
+                    latent_input, timestep,
+                    encoder_hidden_states=pe_co3,
+                    added_cond_kwargs=cond_co3, timestep_cond=None,
+                ).sample
+                eps_uncond_c, eps_multi, eps_a_c, eps_b_c = noise.chunk(4)
+                composed = eps_multi - 0.5 * eps_a_c - 0.5 * eps_b_c
+                composed = float(co3_lmda) * composed
+                composed_noise = (
+                    latents + sqrt_one_minus_at * composed
+                ) / sqrt_one_minus_at
+                denoised_tweedie = latents - sqrt_one_minus_at * composed_noise
+                latents = denoised_tweedie + sqrt_one_minus_at * eps_uncond_c
+            co3_active_per_step[-1] = True
+
+        # ----- 2. Mono CFG forward + record cross-attention -----
+        with _CrossAttnRecorder(unet, keep_grad=False) as rec:
+            latent_input = scheduler.scale_model_input(latents.repeat(2, 1, 1, 1), timestep)
+            noise = unet(
+                latent_input, timestep, encoder_hidden_states=pe_2,
+                added_cond_kwargs=cond_2, timestep_cond=None,
+            ).sample
+            eps_j_raw, eps_uncond = noise.chunk(2)
+            map_a = rec.aggregate_token_map(
+                int(token_index_a),
+                target_hw=(int(attn_resolution), int(attn_resolution)),
+                branch_index=0,
+                agg_resolution=int(attn_resolution),
+            )
+            map_b = rec.aggregate_token_map(
+                int(token_index_b),
+                target_hw=(int(attn_resolution), int(attn_resolution)),
+                branch_index=0,
+                agg_resolution=int(attn_resolution),
+            )
+        if map_a is not None:
+            attn_a_by_step[step_index] = map_a.float().cpu()
+        if map_b is not None:
+            attn_b_by_step[step_index] = map_b.float().cpu()
+
+        eps_t = guided_eps(eps_j_raw, eps_uncond, guidance_scale)
+        eps_norm_per_step.append(float(eps_t.float().norm().item()))
+
+        alpha_bar_t = scheduler.alphas_cumprod[int(timestep.item())].to(
+            device=device, dtype=dtype,
+        )
+        x0 = tweedie_mean(latents, alpha_bar_t, eps_t)
+        if prev_x0 is None:
+            x0_delta_per_step.append(float("nan"))
+        else:
+            x0_delta_per_step.append(
+                float((x0 - prev_x0).float().norm().item())
+            )
+        prev_x0 = x0.detach().clone()
+
+        if step_index in decode_set:
+            img = decode_latents(models, x0).cpu()
+            decoded_by_step[step_index] = img
+
+        tracker.store_step(
+            step_index, latents, eps_t,
+            float(step_index) / float(num_inference_steps),
+            int(timestep.item()),
+        )
+        latents = ddim_prev_from_x0_eps(
+            scheduler=scheduler, timestep=timestep, step_index=step_index,
+            x0=x0, eps=eps_t,
         )
 
     tracker.store_final(latents)
     image = decode_latents(models, latents).cpu()
     return SamplerOutputs(
-        latents=latents,
-        image=image,
-        tracker=tracker,
-        extras={"beta": float(beta), "frozen": True},
+        latents=latents, image=image, tracker=tracker,
+        extras={
+            "decoded_by_step": decoded_by_step,
+            "attn_a_by_step": attn_a_by_step,
+            "attn_b_by_step": attn_b_by_step,
+            "eps_norm_per_step": eps_norm_per_step,
+            "x0_delta_per_step": x0_delta_per_step,
+            "co3_active_per_step": co3_active_per_step,
+            "token_index_a": int(token_index_a),
+            "token_index_b": int(token_index_b),
+            "attn_resolution": int(attn_resolution),
+            "decoded_steps": sorted(decoded_by_step.keys()),
+        },
     )
 
 
-@torch.no_grad()
-def run_m2_c_poe(
-    *,
-    init_latents: torch.Tensor,
-    models: dict,
-    scheduler,
-    seq_a: torch.Tensor,
-    pool_a: torch.Tensor,
-    seq_b: torch.Tensor,
-    pool_b: torch.Tensor,
-    seq_e: torch.Tensor,
-    pool_e: torch.Tensor,
-    seq_j: torch.Tensor,
-    pool_j: torch.Tensor,
-    guidance_scale: float,
-    num_inference_steps: int,
-    height: int,
-    width: int,
-    euler_init_noise_sigma: float,
-    device: torch.device,
-    dtype: torch.dtype,
-    gamma: float = 2.0,
-    lambda_j: float = 1.0,
-) -> SamplerOutputs:
-    """M2 + C-PoE — combined channel-C1 (synthesizer) and channel-C2 (conflict gate).
+# ---------------------------------------------------------------------------
+# D. Residual-decomposition utility (used by e_residual_decomposition)
+# ---------------------------------------------------------------------------
 
-    Per step:
-        u_J     = eps_synth - eps_uncond
-        eps_t   = eps_uncond + alpha*(u_A + u_B) + lambda_j * u_J
+
+def _ls_decompose_uJ(
+    u_a: torch.Tensor, u_b: torch.Tensor, u_j: torch.Tensor,
+) -> tuple[float, float, float]:
+    """Solve ``u_j ≈ c_a u_a + c_b u_b`` via 2×2 Gram inverse on flattened
+    tensors. Returns ``(c_a, c_b, perp_frac)`` where
+    ``perp_frac = ‖u_j − fit‖ / ‖u_j‖``.
     """
-    scheduler.set_timesteps(num_inference_steps)
-    latents = (init_latents / euler_init_noise_sigma).to(device=device, dtype=dtype)
-    tracker = LatentTrajectoryCollector(num_inference_steps, 1, latents.shape[1], latents.shape[2], latents.shape[3])
+    a = u_a.float().flatten()
+    b = u_b.float().flatten()
+    y = u_j.float().flatten()
+    aa = float(torch.dot(a, a).item())
+    bb = float(torch.dot(b, b).item())
+    ab = float(torch.dot(a, b).item())
+    ya = float(torch.dot(y, a).item())
+    yb = float(torch.dot(y, b).item())
+    det = aa * bb - ab * ab
+    if abs(det) < 1e-20:
+        ca = ya / aa if aa > 0 else 0.0
+        cb = 0.0
+        fit = ca * a
+    else:
+        ca = (bb * ya - ab * yb) / det
+        cb = (aa * yb - ab * ya) / det
+        fit = ca * a + cb * b
+    y_norm = float(y.norm().item()) + 1e-20
+    perp = float((y - fit).norm().item())
+    return float(ca), float(cb), float(perp / y_norm)
 
-    pe = torch.cat([seq_a, seq_b, seq_j, seq_e], dim=0)
-    pool = torch.cat([pool_a, pool_b, pool_j, pool_e], dim=0)
-    cond = {"text_embeds": pool, "time_ids": add_time_ids(height=height, width=width, batch_size=4, device=device, dtype=dtype)}
-    unet = models["unet"]
-
-    cos_theta_per_step: list[float] = []
-    alpha_per_step: list[float] = []
-
-    for step_index, timestep in enumerate(scheduler.timesteps):
-        latent_input = scheduler.scale_model_input(latents.repeat(4, 1, 1, 1), timestep)
-        noise = unet(latent_input, timestep, encoder_hidden_states=pe, added_cond_kwargs=cond, timestep_cond=None).sample
-        eps_a_raw, eps_b_raw, eps_synth_raw, eps_uncond = noise.chunk(4)
-        eps_a = guided_eps(eps_a_raw, eps_uncond, guidance_scale)
-        eps_b = guided_eps(eps_b_raw, eps_uncond, guidance_scale)
-        eps_synth = guided_eps(eps_synth_raw, eps_uncond, guidance_scale)
-        u_a = eps_a - eps_uncond
-        u_b = eps_b - eps_uncond
-        u_j = eps_synth - eps_uncond
-        cos_theta, alpha = _conflict_modulation(u_a, u_b, gamma)
-        eps_t = eps_uncond + alpha * (u_a + u_b) + lambda_j * u_j
-        alpha_bar_t = scheduler.alphas_cumprod[int(timestep.item())].to(device=device, dtype=dtype)
-        x0 = tweedie_mean(latents, alpha_bar_t, eps_t)
-        tracker.store_step(step_index, latents, eps_t, float(step_index) / float(num_inference_steps), int(timestep.item()))
-        # Standard DDIM: same eps_t for x0 and noise direction.
-        latents = ddim_prev_from_x0_eps(scheduler=scheduler, timestep=timestep, step_index=step_index, x0=x0, eps=eps_t)
-        cos_theta_per_step.append(float(cos_theta.detach().cpu()))
-        alpha_per_step.append(float(alpha.detach().cpu()))
-
-    tracker.store_final(latents)
-    image = decode_latents(models, latents).cpu()
-    extras = {
-        "gamma": float(gamma),
-        "lambda_j": float(lambda_j),
-        "cos_theta_per_step": cos_theta_per_step,
-        "alpha_per_step": alpha_per_step,
-        "mean_cos_theta": float(np.mean(cos_theta_per_step)) if cos_theta_per_step else float("nan"),
-        "mean_alpha": float(np.mean(alpha_per_step)) if alpha_per_step else float("nan"),
-        "frac_steps_in_conflict": float(np.mean([1.0 if c < 0.0 else 0.0 for c in cos_theta_per_step])) if cos_theta_per_step else float("nan"),
-    }
-    return SamplerOutputs(latents=latents, image=image, tracker=tracker, extras=extras)

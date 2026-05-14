@@ -20,6 +20,19 @@ PAIRS = [
         "prompt_b": "a flower meadow",
         "regime": "cooperative",
     },
+    {
+        "slug": "a_cat__x__a_cat",
+        "prompt_a": "a cat",
+        "prompt_b": "a cat",
+        "regime": "self_pair_control",
+    },
+    {
+        "slug": "a_cat__x__a_car",
+        "prompt_a": "a cat",
+        "prompt_b": "a car",
+        "regime": "disjoint_control",
+    },
 ]
 
 SEEDS = [42]
+CONTROL_SEEDS = [42, 4, 123]

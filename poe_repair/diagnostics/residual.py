@@ -1,12 +1,10 @@
-"""Residual trajectory utilities.
+"""Residual / attention diagnostics (minimal).
 
-The central object is the *guided* mono–PoE residual
-
-    r_t = ε̃_J(x_t^PoE, t, e_J) - ε̃_PoE(x_t^PoE, t, e_A, e_B),
-
-an empirical estimate of the guided interaction correction. Both arms are
-CFG-guided; both are evaluated at the same latent x_t along the PoE
-trajectory. See memory/residual_definition.md for framing.
+This module previously housed ~12 diagnostic functions (residual trajectory
+norms, SVD energy, in-plane fraction, direction stability, low-pass filtering,
+CLIP scoring, etc.) used to characterise the PoE interaction term r_t for
+the diagnostic phases. Those phases are deleted; only `attention_overlap` is
+kept because the live samplers reference it.
 """
 
 from __future__ import annotations
@@ -14,29 +12,21 @@ from __future__ import annotations
 import torch
 
 
-def residual_trajectory(
-    eps_j_traj: torch.Tensor,
-    eps_poe_traj: torch.Tensor,
-) -> torch.Tensor:
-    """r_t per step. Shape: [T, C, H, W]."""
-    if eps_j_traj.shape != eps_poe_traj.shape:
-        raise ValueError(
-            f"shape mismatch: eps_j {tuple(eps_j_traj.shape)} vs "
-            f"eps_poe {tuple(eps_poe_traj.shape)}"
-        )
-    return eps_j_traj - eps_poe_traj
-
-
-def norm_trajectory(traj: torch.Tensor) -> torch.Tensor:
-    """L2 norm of each per-step tensor. Shape: [T]."""
-    return traj.flatten(1).norm(dim=1)
-
-
-def relative_norm_trajectory(
-    r_traj: torch.Tensor,
-    eps_j_traj: torch.Tensor,
+def attention_overlap(
+    map_a: torch.Tensor,
+    map_b: torch.Tensor,
     *,
     eps_denom: float = 1e-12,
-) -> torch.Tensor:
-    """||r_t|| / ||ε̃_J(x_t^PoE)||. Shape: [T]."""
-    return norm_trajectory(r_traj) / (norm_trajectory(eps_j_traj) + eps_denom)
+) -> float:
+    """Cosine similarity between two flattened attention maps. Returns scalar."""
+    if map_a.shape != map_b.shape:
+        raise ValueError(
+            f"shape mismatch: {tuple(map_a.shape)} vs {tuple(map_b.shape)}"
+        )
+    a = map_a.flatten().float()
+    b = map_b.flatten().float()
+    num = float((a * b).sum())
+    den = float(a.norm() * b.norm())
+    if den < eps_denom:
+        return 0.0
+    return num / den

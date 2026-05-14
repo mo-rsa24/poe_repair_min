@@ -1,0 +1,80 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "M5: dry-run (fastest — one probe, no training)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "poe_repair.experiments.m5_lora_sdxl",
+            "args": [
+                "--dry-run",
+                "--skip-scoring",
+                "--num-inference-steps", "4",
+                "--lambda-grid", "0.0,1.0",
+                "--where-applied-steps", "1",
+                "--wandb-mode", "disabled",
+                "--output-root", "/tmp/m5_debug",
+                "--run-id", "vscode_dryrun"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "python": "/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python",
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "1",
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "M5: 1 epoch with probes (see training loop)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "poe_repair.experiments.m5_lora_sdxl",
+            "args": [
+                "--total-epochs", "1",
+                "--epoch-size", "3",
+                "--probe-every-epochs", "1",
+                "--skip-scoring",
+                "--num-inference-steps", "4",
+                "--lambda-grid", "0.0,1.0",
+                "--where-applied-steps", "1",
+                "--wandb-mode", "disabled",
+                "--output-root", "/tmp/m5_debug",
+                "--run-id", "vscode_train"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "python": "/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python",
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "1",
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "M5: resume from checkpoint (see resume path)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "poe_repair.experiments.m5_lora_sdxl",
+            "args": [
+                "--resume-from", "outputs/m5_lora_sdxl/a_cat__x__a_dog/seed_42/m5_perarm_resume300_plus500/checkpoints/lora_step_030000.pt",
+                "--dry-run",
+                "--skip-scoring",
+                "--num-inference-steps", "4",
+                "--lambda-grid", "0.0,1.0",
+                "--where-applied-steps", "1",
+                "--wandb-mode", "disabled",
+                "--output-root", "/tmp/m5_debug",
+                "--run-id", "vscode_resume"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "python": "/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python",
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "1",
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        }
+    ]
+}

@@ -1,0 +1,12 @@
+diffusers==0.29.2
+einops==0.8.2
+numpy==2.4.2
+opencv_python==4.11.0.86
+Pillow==12.1.1
+pyrallis==0.3.1
+sentence_transformers==2.7.0
+stanza==1.10.1
+torch==2.5.1+cu124
+torchvision==0.20.1+cu124
+tqdm==4.67.1
+transformers==4.44.1

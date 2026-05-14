@@ -30,7 +30,17 @@ def load_synthesizer(
         num_layers=cfg.num_layers,
         dropout=cfg.dropout,
     ).to(device=device, dtype=dtype)
-    synth.load_state_dict(state["state_dict"])
+    # Trainers saved the weights under different top-level keys over time:
+    # the original synthesizer trainer used "state_dict"; the residual-prompt
+    # trainer (Method 2a) uses "synth". Accept either; fall back to a bare
+    # state_dict if neither key is present.
+    if isinstance(state, dict) and "state_dict" in state:
+        sd = state["state_dict"]
+    elif isinstance(state, dict) and "synth" in state:
+        sd = state["synth"]
+    else:
+        sd = state
+    synth.load_state_dict(sd)
     synth.eval()
     return synth
 
