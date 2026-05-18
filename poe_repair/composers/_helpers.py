@@ -3,12 +3,10 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Literal
 
 import torch
 
 from poe_repair.config import joint_prompt
-from poe_repair.embeddings.infer import synthesize_joint
 from poe_repair.run import MethodCtx
 from poe_repair.runtime import (
     PairSeedCell,
@@ -16,9 +14,6 @@ from poe_repair.runtime import (
     ensure_dir,
     load_shared_latents,
 )
-
-
-AnchorSource = Literal["literal", "synth"]
 
 
 def encode_pair(cell: PairSeedCell, ctx: MethodCtx) -> dict[str, torch.Tensor]:
@@ -43,33 +38,16 @@ def joint_text_for(cell: PairSeedCell, ctx: MethodCtx) -> str:
 def get_joint_embeds(
     cell: PairSeedCell,
     ctx: MethodCtx,
-    *,
-    anchor_source: AnchorSource,
-) -> tuple[torch.Tensor, torch.Tensor, str]:
-    """Return ``(seq_J, pool_J, label)`` for the chosen anchor source.
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Return ``(seq_J, pool_J)`` for the literal joint embedding.
 
-    - ``"literal"``: encode_prompt_sdxl(joint_prompt(...)) — what SDXL would
-      compute for "a cat and a dog" directly.
-    - ``"synth"``: ResidualMLP synthesizer's ê_J(e_A, e_B, e_∅).
+    encode_prompt_sdxl(joint_prompt(...)) — what SDXL would compute for
+    "a cat and a dog" directly.
     """
-    if anchor_source == "literal":
-        seq_j, pool_j = encode_prompt_sdxl(
-            joint_text_for(cell, ctx),
-            models=ctx.models, device=ctx.device, dtype=ctx.dtype,
-        )
-        return seq_j, pool_j, "literal"
-    if anchor_source == "synth":
-        out = synthesize_joint(
-            ctx.get_synth(),
-            prompt_a=cell.prompt_a, prompt_b=cell.prompt_b,
-            models=ctx.models, device=ctx.device, dtype=ctx.dtype,
-        )
-        return (
-            out.seq.to(ctx.device, ctx.dtype),
-            out.pooled.to(ctx.device, ctx.dtype),
-            "synth",
-        )
-    raise ValueError(f"anchor_source must be 'literal' or 'synth', got {anchor_source!r}")
+    return encode_prompt_sdxl(
+        joint_text_for(cell, ctx),
+        models=ctx.models, device=ctx.device, dtype=ctx.dtype,
+    )
 
 
 def init_latents_for_cell(

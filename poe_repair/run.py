@@ -11,10 +11,6 @@ Recognised methods:
     "poe"      — vanilla PoE: ε̃_A + ε̃_B − ε_∅
     "mono"     — single CFG branch on the literal joint embedding e_J
                  (= encode("a cat and a dog" via the joint_template)).
-
-The ê_J counterpart (synthesised joint) is NOT in the dispatcher because
-it depends on synthesizer state — call it explicitly through
-``poe_repair.composers.mono.run_mono_synth`` instead.
 """
 
 from __future__ import annotations
@@ -48,8 +44,7 @@ from poe_repair.runtime import (
 class MethodCtx:
     """Shared SDXL context across many ``run_method`` calls.
 
-    Loads SDXL models + scheduler once. The synthesiser is loaded lazily
-    on first ``get_synth()`` call.
+    Loads SDXL models + scheduler once.
     """
 
     models: dict
@@ -60,18 +55,6 @@ class MethodCtx:
     guidance_scale: float
     num_inference_steps: int
     joint_template: str = "{a} and {b}"
-    synth: object | None = None
-
-    def get_synth(self):
-        if self.synth is None:
-            from poe_repair.embeddings.infer import load_synthesizer
-            cfg = RunConfig()
-            self.synth = load_synthesizer(
-                cfg.paths.synthesizer_checkpoint,
-                device=self.device,
-                dtype=torch.float32,
-            )
-        return self.synth
 
 
 def make_ctx(
@@ -96,7 +79,7 @@ def make_ctx(
         dtype=dtype,
         guidance_scale=guidance_scale or cfg.guidance,
         num_inference_steps=num_inference_steps or cfg.num_inference_steps,
-        joint_template=joint_template or cfg.synth.joint_template,
+        joint_template=joint_template or cfg.joint_template,
     )
 
 
