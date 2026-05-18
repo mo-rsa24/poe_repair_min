@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 
-from poe_repair.experiments.idea1 import metrics as IM
+from poe_repair.experiments.internal_force_failure import metrics as IM
 from poe_repair.figures._common import image_grid, line_plot, save_fig
 
 

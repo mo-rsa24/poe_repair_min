@@ -158,7 +158,7 @@ def run(
         if basin_templates is None:
             raise RuntimeError(
                 "closed_loop schedule requires veracity λ=0 and λ=1 trajectories "
-                f"under outputs/veracity/pairs/{cell.pair_slug}/seed_{cell.seed}/. "
+                f"under outputs/residual_diagnostics/existence/pairs/{cell.pair_slug}/seed_{cell.seed}/. "
                 "Run veracity first."
             )
 

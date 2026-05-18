@@ -25,7 +25,7 @@ import torch
 
 from poe_repair.experiments.lora.config import RunConfig
 from poe_repair.training_cache import CellPath, load_step_raw
-from poe_repair.experiments.veracity import metrics as v_metrics
+from poe_repair.experiments.residual_diagnostics import metrics as v_metrics
 from poe_repair.methods._sampling import (
     run_lora_residual_inject,
     write_decoded_image,

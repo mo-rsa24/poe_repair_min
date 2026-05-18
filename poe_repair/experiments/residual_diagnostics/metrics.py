@@ -24,7 +24,7 @@ from typing import Sequence
 import torch
 from PIL import Image
 
-from poe_repair.experiments.veracity.sweep import LAMBDA_GRID, lambda_method_name
+from poe_repair.experiments.residual_diagnostics.sweep import LAMBDA_GRID, lambda_method_name
 
 
 # ---------------------------------------------------------------------------
