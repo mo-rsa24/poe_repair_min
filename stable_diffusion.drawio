@@ -1,0 +1,334 @@
+<mxfile host="app.diagrams.net" agent="claude" version="24.0.0">
+  <diagram name="Stable Diffusion" id="sd-arch">
+    <mxGraphModel dx="1500" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1450" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Title -->
+        <mxCell id="title" value="Stable Diffusion" style="text;html=1;align=center;verticalAlign=middle;fontSize=32;fontFamily=Times New Roman;" vertex="1" parent="1">
+          <mxGeometry x="475" y="10" width="500" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Outer purple frame -->
+        <mxCell id="outer" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#8B5CF6;strokeWidth=4;" vertex="1" parent="1">
+          <mxGeometry x="20" y="65" width="1410" height="820" as="geometry"/>
+        </mxCell>
+
+        <!-- ===================== PIXEL SPACE ===================== -->
+        <mxCell id="pixel_bg" value="" style="rounded=10;whiteSpace=wrap;html=1;fillColor=#F8D7DA;strokeColor=#DC3545;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="85" width="210" height="660" as="geometry"/>
+        </mxCell>
+        <mxCell id="pixel_label" value="Pixel Space" style="text;html=1;align=left;verticalAlign=bottom;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="55" y="695" width="180" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="x_box" value="x" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0BBE4;strokeColor=#333333;fontSize=18;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="70" y="310" width="55" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="encoder_E" value="ℰ" style="shape=trapezoid;perimeter=trapezoidPerimeter;whiteSpace=wrap;html=1;fillColor=#B3D9FF;strokeColor=#4A90E2;strokeWidth=2;fontSize=24;fontStyle=2;direction=east;" vertex="1" parent="1">
+          <mxGeometry x="150" y="290" width="80" height="95" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="xt_box" value="x̃" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0BBE4;strokeColor=#333333;fontSize=18;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="70" y="450" width="55" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="decoder_D" value="𝒟" style="shape=trapezoid;perimeter=trapezoidPerimeter;whiteSpace=wrap;html=1;fillColor=#B3D9FF;strokeColor=#4A90E2;strokeWidth=2;fontSize=24;fontStyle=2;direction=west;" vertex="1" parent="1">
+          <mxGeometry x="150" y="430" width="80" height="95" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_x_to_E" style="endArrow=classic;html=1;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="x_box" target="encoder_E" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_D_to_xt" style="endArrow=classic;html=1;strokeWidth=2;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" source="decoder_D" target="xt_box" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ===================== LATENT SPACE ===================== -->
+        <mxCell id="latent_bg" value="" style="rounded=10;whiteSpace=wrap;html=1;fillColor=#D4EFDF;strokeColor=#27AE60;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="270" y="85" width="820" height="660" as="geometry"/>
+        </mxCell>
+        <mxCell id="latent_label" value="Latent Space" style="text;html=1;align=center;verticalAlign=top;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="100" width="200" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- z (top-left, encoded from E) -->
+        <mxCell id="z_top_left" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1E7E34;strokeColor=#1E7E34;" vertex="1" parent="1">
+          <mxGeometry x="295" y="180" width="20" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="z_top_left_lbl" value="z" style="text;html=1;align=center;fontSize=16;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="290" y="265" width="30" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- z_T (top-right, forward diffusion endpoint) -->
+        <mxCell id="z_T_top" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1E7E34;strokeColor=#1E7E34;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="180" width="20" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="z_T_top_lbl" value="z_T" style="text;html=1;align=center;fontSize=16;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="1045" y="265" width="40" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Diffusion Process arrow band (transparent fill — no artifacts) -->
+        <mxCell id="diffusion_box" value="Diffusion Process" style="rounded=10;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#1E7E34;strokeWidth=1.5;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="208" width="220" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="diff_arrow_left" style="endArrow=classic;html=1;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="320" y="223" as="sourcePoint"/>
+            <mxPoint x="540" y="223" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="diff_arrow_right" style="endArrow=classic;html=1;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="760" y="223" as="sourcePoint"/>
+            <mxPoint x="1050" y="223" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ===================== Denoising U-Net subbox ===================== -->
+        <mxCell id="unet_bg" value="" style="rounded=10;whiteSpace=wrap;html=1;fillColor=#A9DFBF;strokeColor=#1E7E34;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="395" y="370" width="680" height="310" as="geometry"/>
+        </mxCell>
+        <mxCell id="unet_label" value="Denoising U-Net  ε_θ" style="text;html=1;align=center;verticalAlign=top;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="580" y="380" width="320" height="25" as="geometry"/>
+        </mxCell>
+
+        <!-- bottom z (left of U-Net) -->
+        <mxCell id="z_bot_left" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1E7E34;strokeColor=#1E7E34;" vertex="1" parent="1">
+          <mxGeometry x="295" y="500" width="20" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="z_bot_left_lbl" value="z" style="text;html=1;align=center;fontSize=16;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="290" y="585" width="30" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- denoising step icon with self-loop above -->
+        <mxCell id="step_icon" value="" style="shape=hexagon;perimeter=hexagonPerimeter;whiteSpace=wrap;html=1;fillColor=#D4EFDF;strokeColor=#27AE60;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="335" y="520" width="50" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="step_loop_label" value="×(T-1)" style="text;html=1;align=center;fontSize=12;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="330" y="480" width="60" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="step_loop_arrow" style="endArrow=classic;html=1;strokeWidth=1.5;curved=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="380" y="520" as="sourcePoint"/>
+            <mxPoint x="345" y="520" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="395" y="500"/>
+              <mxPoint x="328" y="500"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="z_Tm1_lbl" value="z_(T-1)" style="text;html=1;align=center;fontSize=13;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="335" y="590" width="60" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- U-Net encoder trapezoid (wide-left, narrow-right) — touches decoder at bottleneck -->
+        <mxCell id="unet_enc" value="" style="shape=trapezoid;perimeter=trapezoidPerimeter;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#4A90E2;strokeWidth=2;direction=east;" vertex="1" parent="1">
+          <mxGeometry x="440" y="430" width="280" height="220" as="geometry"/>
+        </mxCell>
+        <!-- U-Net decoder trapezoid (narrow-left, wide-right) -->
+        <mxCell id="unet_dec" value="" style="shape=trapezoid;perimeter=trapezoidPerimeter;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#4A90E2;strokeWidth=2;direction=west;" vertex="1" parent="1">
+          <mxGeometry x="730" y="430" width="280" height="220" as="geometry"/>
+        </mxCell>
+
+        <!-- 4 cross-attention Q/KV cells in U-shape: outer cells higher, inner cells lower (matches LDM figure) -->
+        <mxCell id="qkv1" value="Q&#10;KV" style="rounded=5;whiteSpace=wrap;html=1;fillColor=#FFE4B5;strokeColor=#FF8C00;strokeWidth=2;fontSize=14;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="475" y="455" width="60" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="qkv2" value="Q&#10;KV" style="rounded=5;whiteSpace=wrap;html=1;fillColor=#FFE4B5;strokeColor=#FF8C00;strokeWidth=2;fontSize=14;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="625" y="555" width="60" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="qkv3" value="Q&#10;KV" style="rounded=5;whiteSpace=wrap;html=1;fillColor=#FFE4B5;strokeColor=#FF8C00;strokeWidth=2;fontSize=14;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="765" y="555" width="60" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="qkv4" value="Q&#10;KV" style="rounded=5;whiteSpace=wrap;html=1;fillColor=#FFE4B5;strokeColor=#FF8C00;strokeWidth=2;fontSize=14;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="915" y="455" width="60" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Internal U-Net flow: down the encoder, across, up the decoder -->
+        <mxCell id="flow_12" style="endArrow=classic;html=1;strokeWidth=1.5;" edge="1" source="qkv1" target="qkv2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="flow_23" style="endArrow=classic;html=1;strokeWidth=1.5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="qkv2" target="qkv3" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="flow_34" style="endArrow=classic;html=1;strokeWidth=1.5;" edge="1" source="qkv3" target="qkv4" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- z_T bottom-right input to U-Net -->
+        <mxCell id="z_T_bot" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1E7E34;strokeColor=#1E7E34;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="500" width="20" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="z_T_bot_lbl" value="z_T" style="text;html=1;align=center;fontSize=14;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="1045" y="585" width="40" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="zT_into_unet" style="endArrow=classic;html=1;strokeWidth=2;entryX=1;entryY=0.5;" edge="1" target="qkv4" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1050" y="485" as="sourcePoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- qkv1 → step icon -->
+        <mxCell id="qkv1_to_step" style="endArrow=classic;html=1;strokeWidth=2;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" source="qkv1" target="step_icon" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- step icon → z (bottom-left) -->
+        <mxCell id="step_to_z" style="endArrow=classic;html=1;strokeWidth=2;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" source="step_icon" target="z_bot_left" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- z (bottom-left) → decoder 𝒟 -->
+        <mxCell id="z_to_D" style="endArrow=classic;html=1;strokeWidth=2;exitX=0;exitY=0.5;" edge="1" source="z_bot_left" target="decoder_D" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="230" y="477" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ℰ → z (top-left) -->
+        <mxCell id="E_to_z" style="endArrow=classic;html=1;strokeWidth=2;exitX=1;exitY=0.5;entryX=0.5;entryY=1;" edge="1" source="encoder_E" target="z_top_left" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Skip connections — clean curves OVER the top of the U-Net -->
+        <mxCell id="skip_outer" style="endArrow=classic;html=1;strokeWidth=1.5;dashed=1;strokeColor=#808080;curved=1;exitX=0.5;exitY=0;entryX=0.5;entryY=0;" edge="1" source="qkv1" target="qkv4" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="505" y="420"/>
+              <mxPoint x="945" y="420"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="skip_inner" style="endArrow=classic;html=1;strokeWidth=1.5;dashed=1;strokeColor=#808080;curved=1;exitX=0.5;exitY=0;entryX=0.5;entryY=0;" edge="1" source="qkv2" target="qkv3" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="655" y="535"/>
+              <mxPoint x="795" y="535"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ===================== CONDITIONING ===================== -->
+        <mxCell id="cond_bg" value="" style="rounded=10;whiteSpace=wrap;html=1;fillColor=#E5E7E9;strokeColor=#7F8C8D;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="85" width="310" height="660" as="geometry"/>
+        </mxCell>
+        <mxCell id="cond_label" value="Conditioning" style="text;html=1;align=center;verticalAlign=top;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1155" y="100" width="220" height="30" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="semantic_map" value="Semantic&#10;Map" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8D7DA;strokeColor=#DC3545;strokeWidth=2;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="160" width="130" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="text_box" value="Text" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF3CD;strokeColor=#FFC107;strokeWidth=2;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="225" width="110" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="repr_box" value="Repres-&#10;entations" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#D4EFDF;strokeColor=#27AE60;strokeWidth=2;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="280" width="140" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="images_box" value="Images" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#D5C5E0;strokeColor=#7A4F9B;strokeWidth=2;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1230" y="350" width="120" height="65" as="geometry"/>
+        </mxCell>
+
+        <!-- tau_theta encoder trapezoid (narrow-left, wide-right) -->
+        <mxCell id="tau_theta" value="τ_θ" style="shape=trapezoid;perimeter=trapezoidPerimeter;whiteSpace=wrap;html=1;fillColor=#B3D9FF;strokeColor=#4A90E2;strokeWidth=2;fontSize=22;fontStyle=2;direction=west;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="450" width="90" height="110" as="geometry"/>
+        </mxCell>
+
+        <!-- arrow from conditioning sources (Images, the closest one) into tau_theta -->
+        <mxCell id="cond_concat_arrow" style="endArrow=classic;html=1;strokeWidth=2;exitX=0.5;exitY=1;entryX=1;entryY=0;" edge="1" source="images_box" target="tau_theta" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- main horizontal trunk from tau_theta toward U-Net, with vertical branches up into each Q/KV -->
+        <mxCell id="tau_trunk" style="endArrow=none;html=1;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1220" y="505" as="sourcePoint"/>
+            <mxPoint x="505" y="700" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="505" y="505"/>
+              <mxPoint x="505" y="700"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tau_to_qkv1" style="endArrow=classic;html=1;strokeWidth=2;entryX=0.5;entryY=1;" edge="1" target="qkv1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="505" y="700" as="sourcePoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tau_to_qkv2" style="endArrow=classic;html=1;strokeWidth=2;entryX=0.5;entryY=1;" edge="1" target="qkv2" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="655" y="700" as="sourcePoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tau_to_qkv3" style="endArrow=classic;html=1;strokeWidth=2;entryX=0.5;entryY=1;" edge="1" target="qkv3" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="795" y="700" as="sourcePoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tau_to_qkv4" style="endArrow=classic;html=1;strokeWidth=2;entryX=0.5;entryY=1;" edge="1" target="qkv4" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="945" y="700" as="sourcePoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ===================== LEGEND ===================== -->
+        <mxCell id="lg_step_icon" value="" style="shape=hexagon;perimeter=hexagonPerimeter;whiteSpace=wrap;html=1;fillColor=#D4EFDF;strokeColor=#27AE60;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="80" y="790" width="50" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg_step_lbl" value="denoising step" style="text;html=1;align=center;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="55" y="835" width="100" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lg_qkv" value="Q&#10;KV" style="rounded=5;whiteSpace=wrap;html=1;fillColor=#FFE4B5;strokeColor=#FF8C00;strokeWidth=2;fontSize=11;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="320" y="790" width="40" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg_qkv_lbl" value="crossattention" style="text;html=1;align=center;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="290" y="835" width="100" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- switch glyph: open switch (line with two terminals) -->
+        <mxCell id="lg_switch_line" style="endArrow=none;html=1;strokeWidth=2;strokeColor=#000;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="555" y="815" as="sourcePoint"/>
+            <mxPoint x="590" y="800" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lg_switch_dot_l" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#000;strokeColor=#000;" vertex="1" parent="1">
+          <mxGeometry x="549" y="811" width="8" height="8" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg_switch_dot_r" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#000;strokeColor=#000;" vertex="1" parent="1">
+          <mxGeometry x="596" y="811" width="8" height="8" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg_switch_baseline" style="endArrow=none;html=1;strokeWidth=2;strokeColor=#000;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="553" y="815" as="sourcePoint"/>
+            <mxPoint x="600" y="815" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lg_switch_lbl" value="switch" style="text;html=1;align=center;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="525" y="835" width="100" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lg_skip_arrow" style="endArrow=classic;html=1;strokeWidth=1.5;dashed=1;strokeColor=#808080;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="770" y="810" as="sourcePoint"/>
+            <mxPoint x="870" y="810" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lg_skip_lbl" value="skip connection" style="text;html=1;align=center;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="755" y="835" width="130" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lg_concat_arrow" style="endArrow=classic;html=1;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1030" y="810" as="sourcePoint"/>
+            <mxPoint x="1130" y="810" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lg_concat_lbl" value="concat" style="text;html=1;align=center;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="835" width="80" height="20" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

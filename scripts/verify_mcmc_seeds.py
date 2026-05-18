@@ -21,7 +21,7 @@ from poe_repair.experiments._eval_common import cell_for
 from poe_repair.methods._mcmc import MCMCCorrectorConfig
 from poe_repair.methods._sampling import (
     run_poe_mcmc_corrector,
-    run_vanilla_poe,
+    run_cfg_poe,
     write_decoded_image,
 )
 from poe_repair.run import make_ctx
@@ -88,7 +88,7 @@ def main() -> None:
 
             t0 = time.time()
             if variant == "baseline":
-                out = run_vanilla_poe(**common)
+                out = run_cfg_poe(**common)
                 extras = {}
             else:
                 cfg = MCMCCorrectorConfig(

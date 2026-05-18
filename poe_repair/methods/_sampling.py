@@ -3,10 +3,13 @@
 Two roles:
 
 A. **Reference samplers** used by the experiments
-   - ``run_vanilla_poe``: ε = ε̃_A + ε̃_B − ε_∅ (CI baseline; the failure case)
-   - ``run_m2_replace``: single guided CFG branch on a joint embedding (= Mono).
-     Used both with the literal e_J ("a cat and a dog") and with the
-     synthesised ê_J from the residual-MLP synthesiser.
+   - ``run_cfg_poe``: ε = ε̃_A + ε̃_B − ε_∅ (CI baseline; the failure case)
+   - ``run_cfg``: plain single-prompt CFG (1 conditional + 1 unconditional).
+     Used for solo subjects and for the Mono baseline (where the
+     conditional is the joint embedding e_J — literal or synthesised).
+   - ``run_cfg_masked``: ``run_cfg`` with a per-step on/off mask.
+     "Off" steps collapse to ε_uncond; σ-schedule and DDIM noise
+     direction stay identical to the normal CFG step.
    - ``run_beta_inject_online``: 4-branch (A, B, anchor, ∅) sched-M2 sampler.
      ``beta_schedule`` controls how strongly the anchor pulls per step.
 
@@ -143,7 +146,7 @@ def _maybe_cap_correction(
 
 
 @torch.no_grad()
-def run_vanilla_poe(
+def run_cfg_poe(
     *,
     init_latents: torch.Tensor,
     models: dict,
@@ -479,12 +482,12 @@ def run_delta_override(
 
 
 @torch.no_grad()
-def run_m2_replace(
+def run_cfg(
     *,
     init_latents: torch.Tensor,
     models: dict,
     scheduler,
-    seq_j: torch.Tensor, pool_j: torch.Tensor,
+    seq_cond: torch.Tensor, pool_cond: torch.Tensor,
     seq_e: torch.Tensor, pool_e: torch.Tensor,
     guidance_scale: float,
     num_inference_steps: int,
@@ -492,19 +495,18 @@ def run_m2_replace(
     euler_init_noise_sigma: float,
     device: torch.device, dtype: torch.dtype,
 ) -> SamplerOutputs:
-    """Single guided CFG branch on a joint embedding (Mono).
+    """Plain single-prompt CFG: ε̃ = ε_uncond + w·(ε_cond − ε_uncond).
 
-    `seq_j` / `pool_j` is either the literal e_J = encode("a cat and a dog")
-    or the synthesised ê_J from the residual-MLP synthesiser. The sampler
-    is identical; only the embedding source differs.
+    Used for solo subjects and for the Mono baseline (where the
+    conditional is the joint embedding e_J — literal or synthesised).
     """
     scheduler.set_timesteps(num_inference_steps)
     latents = (init_latents / euler_init_noise_sigma).to(device=device, dtype=dtype)
     tracker = LatentTrajectoryCollector(
         num_inference_steps, 1, latents.shape[1], latents.shape[2], latents.shape[3]
     )
-    pe = torch.cat([seq_j, seq_e], dim=0)
-    pool = torch.cat([pool_j, pool_e], dim=0)
+    pe = torch.cat([seq_cond, seq_e], dim=0)
+    pool = torch.cat([pool_cond, pool_e], dim=0)
     cond = {
         "text_embeds": pool,
         "time_ids": add_time_ids(
@@ -518,22 +520,103 @@ def run_m2_replace(
             latent_input, timestep, encoder_hidden_states=pe,
             added_cond_kwargs=cond, timestep_cond=None,
         ).sample
-        eps_j_raw, eps_uncond = noise.chunk(2)
-        eps_j = guided_eps(eps_j_raw, eps_uncond, guidance_scale)
+        eps_cond_raw, eps_uncond = noise.chunk(2)
+        eps_t = guided_eps(eps_cond_raw, eps_uncond, guidance_scale)
         alpha_bar_t = scheduler.alphas_cumprod[int(timestep.item())].to(device=device, dtype=dtype)
-        x0 = tweedie_mean(latents, alpha_bar_t, eps_j)
+        x0 = tweedie_mean(latents, alpha_bar_t, eps_t)
         tracker.store_step(
-            step_index, latents, eps_j,
+            step_index, latents, eps_t,
             float(step_index) / float(num_inference_steps),
             int(timestep.item()),
         )
         latents = ddim_prev_from_x0_eps(
             scheduler=scheduler, timestep=timestep, step_index=step_index,
-            x0=x0, eps=eps_j,
+            x0=x0, eps=eps_t,
         )
     tracker.store_final(latents)
     image = decode_latents(models, latents).cpu()
     return SamplerOutputs(latents=latents, image=image, tracker=tracker, extras={})
+
+
+@torch.no_grad()
+def run_cfg_masked(
+    *,
+    init_latents: torch.Tensor,
+    models: dict,
+    scheduler,
+    seq_cond: torch.Tensor, pool_cond: torch.Tensor,
+    seq_e: torch.Tensor, pool_e: torch.Tensor,
+    guidance_scale: float,
+    num_inference_steps: int,
+    cfg_mask,
+    height: int, width: int,
+    euler_init_noise_sigma: float,
+    device: torch.device, dtype: torch.dtype,
+) -> SamplerOutputs:
+    """Single-prompt CFG with a per-step on/off mask.
+
+    Identical to ``run_cfg`` except that ``cfg_mask[step_index]`` gates
+    the conditional contribution: at "on" steps we apply the standard
+    ``ε_uncond + w·(ε_cond − ε_uncond)``; at "off" steps we collapse to
+    ``ε_uncond`` (zero conditional contribution). The σ schedule and the
+    DDIM noise direction are kept identical to the normal CFG step — the
+    same ``eps_t`` is used both in ``tweedie_mean`` and in
+    ``ddim_prev_from_x0_eps`` (the verified noise-direction fix).
+
+    ``cfg_mask`` may be a list/tuple of bools/ints or a 1-D tensor of
+    length ``num_inference_steps``.
+    """
+    mask_list = [bool(x) for x in (cfg_mask.tolist() if isinstance(cfg_mask, torch.Tensor) else list(cfg_mask))]
+    if len(mask_list) != int(num_inference_steps):
+        raise ValueError(
+            f"cfg_mask has length {len(mask_list)}, expected {num_inference_steps}"
+        )
+    scheduler.set_timesteps(num_inference_steps)
+    latents = (init_latents / euler_init_noise_sigma).to(device=device, dtype=dtype)
+    tracker = LatentTrajectoryCollector(
+        num_inference_steps, 1, latents.shape[1], latents.shape[2], latents.shape[3]
+    )
+    pe = torch.cat([seq_cond, seq_e], dim=0)
+    pool = torch.cat([pool_cond, pool_e], dim=0)
+    cond = {
+        "text_embeds": pool,
+        "time_ids": add_time_ids(
+            height=height, width=width, batch_size=2, device=device, dtype=dtype,
+        ),
+    }
+    unet = models["unet"]
+    for step_index, timestep in enumerate(scheduler.timesteps):
+        latent_input = scheduler.scale_model_input(latents.repeat(2, 1, 1, 1), timestep)
+        noise = unet(
+            latent_input, timestep, encoder_hidden_states=pe,
+            added_cond_kwargs=cond, timestep_cond=None,
+        ).sample
+        eps_cond_raw, eps_uncond = noise.chunk(2)
+        if mask_list[step_index]:
+            eps_t = guided_eps(eps_cond_raw, eps_uncond, guidance_scale)
+        else:
+            eps_t = eps_uncond
+        alpha_bar_t = scheduler.alphas_cumprod[int(timestep.item())].to(device=device, dtype=dtype)
+        x0 = tweedie_mean(latents, alpha_bar_t, eps_t)
+        tracker.store_step(
+            step_index, latents, eps_t,
+            float(step_index) / float(num_inference_steps),
+            int(timestep.item()),
+        )
+        latents = ddim_prev_from_x0_eps(
+            scheduler=scheduler, timestep=timestep, step_index=step_index,
+            x0=x0, eps=eps_t,
+        )
+    tracker.store_final(latents)
+    image = decode_latents(models, latents).cpu()
+    return SamplerOutputs(
+        latents=latents, image=image, tracker=tracker,
+        extras={
+            "cfg_mask": mask_list,
+            "num_on": int(sum(mask_list)),
+            "guidance_scale": float(guidance_scale),
+        },
+    )
 
 
 def _lambda_value(
@@ -1170,7 +1253,7 @@ def run_external_corrector_inject(
       4. Standard DDIM update.
 
     With ``lambda_value = 0`` we never call the corrector — the rollout is
-    byte-identical to ``run_vanilla_poe`` (canary). The joint embedding
+    byte-identical to ``run_cfg_poe`` (canary). The joint embedding
     ``(seq_j, pool_j)`` is consumed only by the corrector.
 
     The corrector is any ``nn.Module`` whose forward signature is

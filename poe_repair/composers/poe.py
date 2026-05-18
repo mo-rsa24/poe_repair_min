@@ -9,7 +9,7 @@ from poe_repair.composers._helpers import (
     encode_pair,
     init_latents_for_cell,
 )
-from poe_repair.methods._sampling import run_vanilla_poe, write_decoded_image
+from poe_repair.methods._sampling import run_cfg_poe, write_decoded_image
 from poe_repair.run import MethodCtx
 from poe_repair.runtime import PairSeedCell
 
@@ -27,7 +27,7 @@ def run(
         return image_path
     init_latents, euler_sigma = init_latents_for_cell(cell, ctx)
     emb = encode_pair(cell, ctx)
-    out = run_vanilla_poe(
+    out = run_cfg_poe(
         init_latents=init_latents, models=ctx.models, scheduler=ctx.scheduler,
         seq_a=emb["seq_a"], pool_a=emb["pool_a"],
         seq_b=emb["seq_b"], pool_b=emb["pool_b"],

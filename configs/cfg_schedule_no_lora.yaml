@@ -1,0 +1,33 @@
+# CFG-schedule ablation: clean SDXL base, no LoRA, no mono.
+# Schedule grammar: mask[i] = True for i in [0, k); False otherwise.
+# step_index runs 0 -> num_inference_steps-1 (noisy -> clean), so "on for
+# [0, k)" means CFG is active for the k earliest/noisiest steps.
+
+prompt: "cat and dog"
+seed: 42
+guidance_scale: 7.5
+num_inference_steps: 50
+height: 1024
+width: 1024
+model_id: "stabilityai/stable-diffusion-xl-base-1.0"
+
+# Re-use the shared x_T from the existing a_cat__x__a_dog pair cell at the
+# same seed (same noise tensor regardless of prompt).
+init_latents_pair:
+  prompt_a: "a cat"
+  prompt_b: "a dog"
+
+# Production sweep.
+schedules:
+  - {id: "k05", k: 5}
+  - {id: "k10", k: 10}
+  - {id: "k15", k: 15}
+  - {id: "k20", k: 20}
+  - {id: "k25", k: 25}
+  - {id: "k30", k: 30}
+  - {id: "k40", k: 40}
+  - {id: "k50", k: 50}   # all-on; also the sanity all-on reference
+
+# Sanity-only schedule (rendered into sanity/ for the equivalence check).
+sanity_schedules:
+  - {id: "k00", k: 0}    # all-off; expected == guidance_scale=0 reference

@@ -15,12 +15,14 @@ from __future__ import annotations
 
 import argparse
 import json
+import os.path
 from pathlib import Path
 
 from flask import Flask, abort, jsonify, render_template_string, send_file
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_MANIFEST = REPO_ROOT / "outputs/m5_lora_sdxl/a_cat__x__a_dog/seed_42/inspector_manifest.json"
+DEFAULT_CFG_SCHEDULE_MANIFEST = REPO_ROOT / "outputs/cfg_schedule_ablation_no_lora/seed_42/inspector_manifest.json"
 DEFAULT_OUTPUTS_ROOT = REPO_ROOT / "outputs"
 
 
@@ -195,9 +197,224 @@ update();
 """
 
 
-def create_app(manifest_path: Path, outputs_root: Path) -> Flask:
+CFG_SCHEDULE_HTML = r"""
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CFG-schedule inspector</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --panel: #161a22;
+    --text: #e6e9ef;
+    --muted: #8b93a7;
+    --accent: #7ab7ff;
+    --on: #7ab7ff;
+    --off: #2a2f3a;
+    --warn: #f0a458;
+    --border: #2a2f3a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 24px;
+    background: var(--bg); color: var(--text);
+    font: 14px/1.4 -apple-system, system-ui, "Segoe UI", sans-serif;
+  }
+  h1 { font-size: 16px; font-weight: 600; margin: 0 0 16px 0; color: var(--muted); }
+  h1 .prompt { color: var(--text); }
+  .controls {
+    display: grid; gap: 14px; margin-bottom: 20px;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px;
+  }
+  .row { display: flex; align-items: center; gap: 16px; }
+  .row label { flex: 0 0 100px; color: var(--muted); }
+  .row input[type=range] { flex: 1; }
+  .row .val {
+    flex: 0 0 80px; text-align: right; font-variant-numeric: tabular-nums;
+    color: var(--accent); font-weight: 600;
+  }
+  .row .meta { color: var(--muted); font-size: 12px; flex: 0 0 auto; }
+  .layout {
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 520px); gap: 20px;
+  }
+  .panel {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px;
+  }
+  .panel h2 {
+    margin: 0 0 8px 0; font-size: 12px; font-weight: 600;
+    color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .panel img {
+    width: 100%; aspect-ratio: 1 / 1; border-radius: 4px;
+    background: #000; display: block;
+  }
+  .panel .caption {
+    margin-top: 8px; color: var(--muted); font-size: 11px;
+    font-variant-numeric: tabular-nums;
+  }
+  .mask-strip {
+    display: grid; grid-template-columns: repeat(50, 1fr);
+    gap: 2px; padding: 8px 0;
+    cursor: help;
+  }
+  .mask-strip .cell {
+    aspect-ratio: 1 / 1;
+    background: var(--off);
+    border-radius: 2px;
+  }
+  .mask-strip .cell.on { background: var(--on); }
+  .mask-strip .cell.boundary { box-shadow: inset 0 -2px 0 0 var(--border); }
+  .mask-legend {
+    display: flex; gap: 12px; font-size: 11px; color: var(--muted);
+    margin-top: 8px; align-items: center;
+  }
+  .mask-legend .sw { display: inline-block; width: 10px; height: 10px;
+    border-radius: 2px; vertical-align: middle; margin-right: 4px; }
+  .mask-legend .sw.on { background: var(--on); }
+  .mask-legend .sw.off { background: var(--off); }
+  .mask-string {
+    font: 11px/1.3 ui-monospace, "SF Mono", Menlo, monospace;
+    color: var(--muted); word-break: break-all;
+    margin-top: 8px; padding: 6px 8px;
+    background: #0b0d12; border: 1px solid var(--border); border-radius: 4px;
+  }
+  #toast {
+    position: fixed; top: 24px; right: 24px;
+    background: var(--warn); color: #1a1207;
+    padding: 10px 14px; border-radius: 6px;
+    font-weight: 600; opacity: 0; pointer-events: none;
+    transition: opacity 0.18s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+  #toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<h1>CFG-schedule inspector · seed {{ seed }} · prompt
+  &ldquo;<span class="prompt">{{ prompt }}</span>&rdquo;</h1>
+
+<div class="controls">
+  <div class="row">
+    <label for="sched">schedule</label>
+    <input id="sched" type="range" min="0" max="{{ num_schedules - 1 }}" step="1" value="{{ num_schedules - 1 }}">
+    <div class="val" id="sched-val"></div>
+    <div class="meta" id="sched-meta"></div>
+  </div>
+</div>
+
+<div class="layout">
+  <div class="panel">
+    <h2>image</h2>
+    <img id="img" alt="cfg-schedule sample">
+    <div class="caption" id="img-caption"></div>
+  </div>
+  <div class="panel">
+    <h2>per-step CFG mask (step 0 = noisy → step 49 = clean)</h2>
+    <div id="mask-strip" class="mask-strip" title=""></div>
+    <div class="mask-legend">
+      <span><span class="sw on"></span>conditional ON (ε_uncond + w·(ε_c − ε_uncond))</span>
+      <span><span class="sw off"></span>conditional OFF (ε = ε_uncond)</span>
+    </div>
+    <div class="mask-string" id="mask-string"></div>
+  </div>
+</div>
+
+<div id="toast">no schedule</div>
+
+<script>
+const MANIFEST = {{ manifest_json|safe }};
+const SCHEDULES = MANIFEST.schedules;     // ordered list
+const NUM_STEPS = MANIFEST.num_inference_steps || 50;
+
+const schedSlider = document.getElementById('sched');
+const schedVal = document.getElementById('sched-val');
+const schedMeta = document.getElementById('sched-meta');
+const img = document.getElementById('img');
+const imgCaption = document.getElementById('img-caption');
+const maskStrip = document.getElementById('mask-strip');
+const maskString = document.getElementById('mask-string');
+const toast = document.getElementById('toast');
+
+let toastTimer = null;
+function flashToast(msg) {
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 1600);
+}
+
+function buildStrip() {
+  // Build NUM_STEPS empty cells once; we'll just toggle .on on update.
+  maskStrip.innerHTML = '';
+  for (let i = 0; i < NUM_STEPS; i++) {
+    const c = document.createElement('div');
+    c.className = 'cell';
+    if ((i + 1) % 10 === 0 && i < NUM_STEPS - 1) c.classList.add('boundary');
+    maskStrip.appendChild(c);
+  }
+}
+
+function update() {
+  const idx = parseInt(schedSlider.value, 10);
+  const entry = SCHEDULES[idx];
+  if (!entry) { flashToast('no schedule at index ' + idx); return; }
+
+  schedVal.textContent = entry.schedule_id;
+  schedMeta.textContent = 'k = ' + entry.k + ' · on for ' + entry.num_on +
+    '/' + NUM_STEPS + ' steps' + (entry.sanity ? ' · sanity' : '');
+
+  img.src = '/img/' + entry.image_path;
+  imgCaption.textContent = entry.image_path;
+
+  // Mask strip
+  const mask = entry.mask || '';
+  const cells = maskStrip.children;
+  for (let i = 0; i < cells.length; i++) {
+    if (mask.charAt(i) === '1') cells[i].classList.add('on');
+    else cells[i].classList.remove('on');
+  }
+  maskStrip.title = mask;
+  maskString.textContent = mask;
+}
+
+buildStrip();
+schedSlider.addEventListener('input', update);
+update();
+</script>
+</body>
+</html>
+"""
+
+
+_CFG_MISSING_HTML = r"""
+<!doctype html>
+<html><head><meta charset="utf-8"><title>cfg-schedule manifest missing</title>
+<style>body{font:14px -apple-system,system-ui,sans-serif;background:#0f1115;color:#e6e9ef;padding:24px;}
+code{background:#161a22;padding:2px 6px;border-radius:4px;color:#7ab7ff;}</style>
+</head><body>
+<h2>CFG-schedule manifest not found</h2>
+<p>Expected at:</p>
+<p><code>{{ path }}</code></p>
+<p>Build it by running:</p>
+<p><code>python scripts/cfg_schedule_no_lora_seed42.py</code></p>
+</body></html>
+"""
+
+
+def create_app(
+    manifest_path: Path,
+    outputs_root: Path,
+    cfg_schedule_manifest_path: Path | None = None,
+) -> Flask:
     manifest = json.loads(manifest_path.read_text())
     outputs_root_abs = outputs_root.resolve()
+
+    cfg_schedule_manifest: dict | None = None
+    if cfg_schedule_manifest_path is not None and cfg_schedule_manifest_path.is_file():
+        cfg_schedule_manifest = json.loads(cfg_schedule_manifest_path.read_text())
 
     app = Flask(__name__)
 
@@ -217,13 +434,41 @@ def create_app(manifest_path: Path, outputs_root: Path) -> Flask:
     def manifest_route():
         return jsonify(manifest)
 
+    @app.route("/cfg_schedule")
+    def cfg_schedule():
+        if cfg_schedule_manifest is None:
+            return render_template_string(
+                _CFG_MISSING_HTML,
+                path=str(cfg_schedule_manifest_path)
+                if cfg_schedule_manifest_path else "(no path configured)",
+            ), 404
+        return render_template_string(
+            CFG_SCHEDULE_HTML,
+            prompt=cfg_schedule_manifest.get("prompt", ""),
+            seed=cfg_schedule_manifest.get("seed", ""),
+            num_schedules=len(cfg_schedule_manifest.get("schedules") or []),
+            manifest_json=json.dumps(cfg_schedule_manifest),
+        )
+
+    @app.route("/cfg_schedule/manifest.json")
+    def cfg_schedule_manifest_route():
+        if cfg_schedule_manifest is None:
+            abort(404)
+        return jsonify(cfg_schedule_manifest)
+
     @app.route("/img/<path:rel>")
     def img(rel: str):
         # rel is relative to REPO_ROOT (manifest stores those paths).
-        # Restrict to anything under outputs/ to prevent path traversal.
-        target = (REPO_ROOT / rel).resolve()
-        if not str(target).startswith(str(outputs_root_abs) + "/"):
+        # Reject traversal / absolute paths via *unresolved* normalization —
+        # following symlinks here would falsely flag the /datasets-backed
+        # symlinked subtrees as escapes.
+        norm = os.path.normpath(rel)
+        if norm.startswith("..") or os.path.isabs(norm):
             abort(403)
+        norm_parts = norm.split(os.sep)
+        if not norm_parts or norm_parts[0] != "outputs":
+            abort(403)
+        target = REPO_ROOT / norm
         if not target.is_file():
             abort(404)
         return send_file(target)
@@ -234,6 +479,11 @@ def create_app(manifest_path: Path, outputs_root: Path) -> Flask:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--manifest", default=str(DEFAULT_MANIFEST))
+    ap.add_argument(
+        "--cfg-schedule-manifest", default=str(DEFAULT_CFG_SCHEDULE_MANIFEST),
+        help="Manifest produced by scripts/cfg_schedule_no_lora_seed42.py. "
+        "If missing, /cfg_schedule renders a friendly hint page.",
+    )
     ap.add_argument("--outputs-root", default=str(DEFAULT_OUTPUTS_ROOT))
     ap.add_argument("--host", default="127.0.0.1")
     ap.add_argument("--port", type=int, default=5050)
@@ -245,7 +495,12 @@ def main() -> int:
         print(f"manifest not found: {manifest_path}")
         print("run scripts/build_m5_manifest.py first")
         return 1
-    app = create_app(manifest_path, Path(args.outputs_root))
+    cfg_sched_path = Path(args.cfg_schedule_manifest) if args.cfg_schedule_manifest else None
+    app = create_app(
+        manifest_path,
+        Path(args.outputs_root),
+        cfg_schedule_manifest_path=cfg_sched_path,
+    )
     app.run(host=args.host, port=args.port, debug=args.debug)
     return 0
 

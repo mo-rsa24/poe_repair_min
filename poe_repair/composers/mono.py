@@ -14,7 +14,7 @@ from poe_repair.composers._helpers import (
     get_joint_embeds,
     init_latents_for_cell,
 )
-from poe_repair.methods._sampling import run_m2_replace, write_decoded_image
+from poe_repair.methods._sampling import run_cfg, write_decoded_image
 from poe_repair.run import MethodCtx
 from poe_repair.runtime import PairSeedCell
 
@@ -46,9 +46,9 @@ def run(
     seq_e, pool_e = encode_prompt_sdxl(
         "", models=ctx.models, device=ctx.device, dtype=ctx.dtype,
     )
-    out = run_m2_replace(
+    out = run_cfg(
         init_latents=init_latents, models=ctx.models, scheduler=ctx.scheduler,
-        seq_j=seq_j, pool_j=pool_j, seq_e=seq_e, pool_e=pool_e,
+        seq_cond=seq_j, pool_cond=pool_j, seq_e=seq_e, pool_e=pool_e,
         guidance_scale=ctx.guidance_scale,
         num_inference_steps=ctx.num_inference_steps,
         height=cell.height, width=cell.width,

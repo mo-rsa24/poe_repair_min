@@ -53,8 +53,8 @@ from poe_repair.composers._helpers import (
 )
 from poe_repair.experiments._eval_common import cell_for
 from poe_repair.methods._sampling import (
-    run_m2_replace,
-    run_vanilla_poe,
+    run_cfg,
+    run_cfg_poe,
     write_decoded_image,
 )
 from poe_repair.run import make_ctx
@@ -85,9 +85,9 @@ def render_one(cell, ctx, out_dir: Path, *, overwrite: bool) -> tuple[Path, Path
     seq_e, pool_e = emb["seq_e"], emb["pool_e"]
 
     # Mono (single guided branch on the joint embedding).
-    mono_out = run_m2_replace(
+    mono_out = run_cfg(
         init_latents=init_latents, models=ctx.models, scheduler=ctx.scheduler,
-        seq_j=seq_j, pool_j=pool_j, seq_e=seq_e, pool_e=pool_e,
+        seq_cond=seq_j, pool_cond=pool_j, seq_e=seq_e, pool_e=pool_e,
         guidance_scale=ctx.guidance_scale,
         num_inference_steps=ctx.num_inference_steps,
         height=cell.height, width=cell.width,
@@ -97,7 +97,7 @@ def render_one(cell, ctx, out_dir: Path, *, overwrite: bool) -> tuple[Path, Path
     write_decoded_image(mono_out.image, mono_path)
 
     # Vanilla PoE.
-    poe_out = run_vanilla_poe(
+    poe_out = run_cfg_poe(
         init_latents=init_latents, models=ctx.models, scheduler=ctx.scheduler,
         seq_a=emb["seq_a"], pool_a=emb["pool_a"],
         seq_b=emb["seq_b"], pool_b=emb["pool_b"],

@@ -29,7 +29,7 @@ from poe_repair.composers._helpers import encode_pair, init_latents_for_cell
 from poe_repair.experiments._eval_common import cell_for
 from poe_repair.methods._sampling import (
     run_poe_tempered,
-    run_vanilla_poe,
+    run_cfg_poe,
     write_decoded_image,
 )
 from poe_repair.run import make_ctx
@@ -126,7 +126,7 @@ def main() -> None:
             summary["runs"]["baseline"] = {"image": str(image_path), "cached": True}
         else:
             t0 = time.time()
-            out = run_vanilla_poe(**common)
+            out = run_cfg_poe(**common)
             write_decoded_image(out.image, image_path)
             summary["runs"]["baseline"] = {
                 "image": str(image_path),

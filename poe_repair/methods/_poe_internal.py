@@ -4,7 +4,7 @@ A Mono-free repair: at every denoising step, construct a corrective force
 from PoE's own UNet outputs (per-concept eps + cross-attention maps),
 scale it to clear the empirically measured basin barrier, and add it to
 ``ε_PoE``. The sampler runs a 3-branch UNet (A, B, ∅) — the same shape as
-``run_vanilla_poe`` — with no 4th branch on the joint embedding ``e_J``.
+``run_cfg_poe`` — with no 4th branch on the joint embedding ``e_J``.
 
 Two force variants:
 

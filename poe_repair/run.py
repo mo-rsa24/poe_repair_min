@@ -28,8 +28,8 @@ import torch
 from poe_repair.config import RunConfig, joint_prompt
 from poe_repair.methods._sampling import (
     initial_latents_for_pair,
-    run_m2_replace,
-    run_vanilla_poe,
+    run_cfg,
+    run_cfg_poe,
     write_decoded_image,
 )
 from poe_repair.runtime import (
@@ -138,20 +138,20 @@ def run_method(
     t0 = time.time()
     if name == "solo_a":
         seq, pool = _encode(cell.prompt_a, ctx)
-        out = run_m2_replace(seq_j=seq, pool_j=pool, **common)
+        out = run_cfg(seq_cond=seq, pool_cond=pool, **common)
     elif name == "solo_b":
         seq, pool = _encode(cell.prompt_b, ctx)
-        out = run_m2_replace(seq_j=seq, pool_j=pool, **common)
+        out = run_cfg(seq_cond=seq, pool_cond=pool, **common)
     elif name == "poe":
         seq_a, pool_a = _encode(cell.prompt_a, ctx)
         seq_b, pool_b = _encode(cell.prompt_b, ctx)
-        out = run_vanilla_poe(
+        out = run_cfg_poe(
             seq_a=seq_a, pool_a=pool_a, seq_b=seq_b, pool_b=pool_b, **common,
         )
     elif name == "mono":
         joint = joint_prompt(cell.prompt_a, cell.prompt_b, template=ctx.joint_template)
         seq_j, pool_j = _encode(joint, ctx)
-        out = run_m2_replace(seq_j=seq_j, pool_j=pool_j, **common)
+        out = run_cfg(seq_cond=seq_j, pool_cond=pool_j, **common)
     else:
         raise ValueError(
             f"unknown method {name!r}; expected one of "
