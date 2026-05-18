@@ -1,6 +1,6 @@
-# M5 LoRA — scaling beyond a single cell
+# LoRA — scaling beyond a single cell
 
-Can the M5 LoRA approach (rank-8 cross-attention adapter that learns the
+Can the LoRA approach (rank-8 cross-attention adapter that learns the
 Mono−PoE residual on cached trajectories) be extended to fix PoE
 reliably across many collision pairs, or is it fundamentally a
 single-cell trick?

@@ -1,8 +1,8 @@
-# Group A — external score-space correctors: design, experiment, code plan
+# Group A — external score-space correctors (failure cases)
 
 ## What this plan is
 
-Stage 3 of [poe-correction-mvp.md](poe-correction-mvp.md) groups remedies by *where* the correction lives. Group A puts the correction outside the UNet — a small standalone network reads `(z_t, t, e_J)` and outputs an additive ε-correction `r̂_t`. SDXL is frozen end-to-end.
+Stage 3 (deprecated link to a deleted plan) grouped remedies by *where* the correction lives. Group A puts the correction outside the UNet — a small standalone network reads `(z_t, t, e_J)` and outputs an additive ε-correction `r̂_t`. SDXL is frozen end-to-end.
 
 This document covers Group A's three techniques:
 
@@ -10,9 +10,9 @@ This document covers Group A's three techniques:
 - **A2. Latent-UNet corrector** — a small UNet with skip connections, t-conditioned.
 - **A3. Frozen-feature MLP head** — a dense head on top of frozen SDXL mid-block features.
 
-The plan mirrors the existing M5 (cross-attention LoRA) experiment in artifact layout, probe cadence, and CLI ergonomics. The user already knows how M5 saves probes at epoch intervals across a λ-grid; Group A reproduces that machinery for a different parameterisation.
+The plan mirrors the existing LoRA (cross-attention LoRA) experiment in artifact layout, probe cadence, and CLI ergonomics. The user already knows how the LoRA experiment saves probes at epoch intervals across a λ-grid; group_a_failure reproduces that machinery for a different parameterisation.
 
-**Scope.** `a_cat__x__a_dog`, seed 42. Mono never invoked at inference. The qualitative success criterion is the *progressive morph* defined in [poe-correction-mvp.md](poe-correction-mvp.md) — at λ=1 the corrected rollout walks the chimera into two distinct animals over the trajectory.
+**Scope.** `a_cat__x__a_dog`, seed 42. Mono never invoked at inference. The qualitative success criterion is the *progressive morph* originally defined in the deleted poe-correction-mvp plan — at λ=1 the corrected rollout walks the chimera into two distinct animals over the trajectory.
 
 **Hardware.** `mscluster106` and `mscluster107`, each with two visible CUDA devices (49 GB VRAM each). Runs go directly in the terminal with logs to stdout; no slurm submission, no batch system. Each technique fits on one device; three techniques can run in parallel across the two nodes' four GPUs.
 
