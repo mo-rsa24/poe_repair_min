@@ -5,7 +5,7 @@ selected cell does not exist (some epochs only probed a coarser lambda grid),
 a toast appears and the panels keep the previous frame.
 
 Run on the cluster (binds 127.0.0.1 by default, intended for SSH tunnelling):
-    python scripts/m5_inspector.py [--port 5050]
+    python scripts/lora_inspector.py [--port 5050]
 
 Then on your laptop:
     ssh -L 5050:localhost:5050 mscluster106
@@ -21,7 +21,7 @@ from pathlib import Path
 from flask import Flask, abort, jsonify, render_template_string, send_file
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_MANIFEST = REPO_ROOT / "outputs/m5_lora_sdxl/a_cat__x__a_dog/seed_42/inspector_manifest.json"
+DEFAULT_MANIFEST = REPO_ROOT / "outputs/lora/a_cat__x__a_dog/seed_42/inspector_manifest.json"
 DEFAULT_CFG_SCHEDULE_MANIFEST = REPO_ROOT / "outputs/cfg_schedule_ablation_no_lora/seed_42/inspector_manifest.json"
 DEFAULT_OUTPUTS_ROOT = REPO_ROOT / "outputs"
 
@@ -493,7 +493,7 @@ def main() -> int:
     manifest_path = Path(args.manifest)
     if not manifest_path.is_file():
         print(f"manifest not found: {manifest_path}")
-        print("run scripts/build_m5_manifest.py first")
+        print("run scripts/build_lora_manifest.py first")
         return 1
     cfg_sched_path = Path(args.cfg_schedule_manifest) if args.cfg_schedule_manifest else None
     app = create_app(

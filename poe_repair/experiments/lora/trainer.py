@@ -1,4 +1,4 @@
-"""M5 trainer: LoRA injection + training loop on the cached (x_t, t, Δ_t) set.
+"""LoRA trainer: LoRA injection + training loop on the cached (x_t, t, Δ_t) set.
 
 Single-cell training. The cache holds (50 steps) raw eps tensors and x_t;
 we compute Δ_t in closed form per step. LoRA is attached to SDXL UNet
@@ -27,7 +27,7 @@ import torch
 import torch.nn.functional as F
 from torch.optim import AdamW
 
-from poe_repair.experiments.m5_lora_sdxl.config import RunConfig
+from poe_repair.experiments.lora.config import RunConfig
 from poe_repair.training_cache import (
     CellPath,
     delta_t_from_raw,

@@ -2,7 +2,7 @@
 
 Active experiments:
 
-  - ``m5_lora_sdxl``      : LoRA per-arm composition on SDXL (success thread).
+  - ``lora``      : LoRA per-arm composition on SDXL (success thread).
   - ``group_a_corrector`` : latent UNet / latent CNN / frozen-feature-MLP
                             students as demonstrable failure cases.
   - ``idea1``             : mono-during-inference residual diagnostic.

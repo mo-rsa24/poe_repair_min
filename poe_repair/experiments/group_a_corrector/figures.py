@@ -1,7 +1,7 @@
 """Group A figures — thumbnail strip, cumulative grid, r̂_t-norm curve,
 where-applied overlay.
 
-Mirrors m5_lora_sdxl.figures with two differences:
+Mirrors lora.figures with two differences:
  - the curve plot is ``‖r̂_t‖_sum vs epoch`` (qualitative MVP — no VQA gate).
  - the cumulative grid frame colour falls back to neutral if scoring was
    skipped (regime == "skipped").

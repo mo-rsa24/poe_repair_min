@@ -501,11 +501,11 @@ def run_lora_residual_inject(
     euler_init_noise_sigma: float,
     device: torch.device, dtype: torch.dtype,
     lambda_value: float,
-    lora_adapter_name: str = "m5",
+    lora_adapter_name: str = "lora",
     record_delta_at_steps: list[int] | None = None,
     correction_max_rel_norm: float | None = None,
 ) -> SamplerOutputs:
-    """M5 (Phase 2) sampler: PoE with a LoRA-corrected per-arm composition.
+    """LoRA per-arm sampler: PoE with a LoRA-corrected per-arm composition.
 
     Per step, two 3-branch forwards on (A, B, ∅):
       adapter OFF → ε̃_PoE_frozen   (the failing baseline)
