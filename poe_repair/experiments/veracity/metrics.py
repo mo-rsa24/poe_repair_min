@@ -409,7 +409,7 @@ def basin_commit_window(
 
 
 # ---------------------------------------------------------------------------
-# Anti-corroboration controls (Fig 2 top overlay)
+# Per-step residual norms recomputed from cached residual .pt files
 # ---------------------------------------------------------------------------
 
 
@@ -488,77 +488,6 @@ def image_space_residual_trajectory(
         "run_dir": str(run_dir),
     }
 
-
-def aggregate_control_norms(
-    *,
-    contested_run_dir: Path,
-    self_pair_run_dirs: list[Path],
-    disjoint_run_dirs: list[Path],
-) -> dict:
-    """Read ``‖Δ_t‖`` per step for the contested pair + each control run.
-
-    Each control list is a list of per-seed run_dirs (e.g., 3 seeds for
-    cat × cat). Aggregation is mean ± std per step.
-    """
-    def _agg(run_dirs: list[Path]) -> dict:
-        if not run_dirs:
-            return {"mean": [], "std": [], "per_seed": [], "n_seeds": 0}
-        per_seed: list[list[float]] = []
-        for d in run_dirs:
-            try:
-                norms = per_step_residual_norms_from_residuals(d)
-            except FileNotFoundError:
-                # Allow a control to be missing; skip silently and let the
-                # caller report n_seeds.
-                continue
-            if norms:
-                per_seed.append(norms)
-        if not per_seed:
-            return {"mean": [], "std": [], "per_seed": [], "n_seeds": 0}
-        n_steps = min(len(s) for s in per_seed)
-        truncated = [s[:n_steps] for s in per_seed]
-        stacked = torch.tensor(truncated, dtype=torch.float64)  # (n_seeds, n_steps)
-        return {
-            "mean": stacked.mean(dim=0).tolist(),
-            "std": stacked.std(dim=0, unbiased=False).tolist(),
-            "per_seed": [list(s) for s in truncated],
-            "n_seeds": len(per_seed),
-        }
-
-    contested = per_step_residual_norms_from_residuals(contested_run_dir)
-    return {
-        "contested": {
-            "mean": contested,
-            "std": [0.0] * len(contested),
-            "per_seed": [contested],
-            "n_seeds": 1,
-            "run_dir": str(contested_run_dir),
-        },
-        "self_pair": _agg(self_pair_run_dirs),
-        "disjoint": _agg(disjoint_run_dirs),
-    }
-
-
-# ---------------------------------------------------------------------------
-# CFG-scale sweep (App-C)
-# ---------------------------------------------------------------------------
-
-
-def aggregate_cfg_sweep_norms(
-    cfg_run_dirs: dict[float, Path],
-) -> dict:
-    """Per-step ``‖Δ_t‖`` for each CFG value. ``cfg_run_dirs`` keys are
-    the guidance scales (e.g., ``{1.0: ..., 3.0: ..., 7.5: ..., 10.0: ...}``)
-    and values are the corresponding λ=0 (PoE-anchor) run dirs.
-    """
-    out: dict[str, list[float]] = {}
-    cfg_values = sorted(cfg_run_dirs.keys())
-    for cfg in cfg_values:
-        out[f"{cfg:.1f}"] = per_step_residual_norms_from_residuals(cfg_run_dirs[cfg])
-    return {
-        "cfg_values": cfg_values,
-        "per_cfg_norm": out,
-    }
 
 
 # ---------------------------------------------------------------------------

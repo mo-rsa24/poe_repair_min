@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "poe_repair"
 version = "0.1.0"
-description = "Minimal proof-of-mechanism: M2 + C-PoE repair of SDXL PoE composition on cat+dog and butterfly+meadow at seed 42."
+description = "Per-arm LoRA repair of SDXL PoE composition on cat × dog, seed 42. Includes mono-residual diagnostic and group-A failure-case baselines."
 requires-python = ">=3.10"
 dependencies = [
     "torch",
