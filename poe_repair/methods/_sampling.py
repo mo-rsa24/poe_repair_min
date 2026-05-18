@@ -263,6 +263,17 @@ def run_cfg_masked(
     same ``eps_t`` is used both in ``tweedie_mean`` and in
     ``ddim_prev_from_x0_eps`` (the verified noise-direction fix).
 
+    On "off" steps we run a single-branch (uncond only) UNet forward
+    instead of the 2-branch (cond, uncond) batched call — saving ~half
+    the per-step UNet FLOPs at off-steps. This makes the per-schedule
+    wall-clock a meaningful compute-budget proxy: a schedule with k of
+    50 steps "on" costs roughly ``k · 2-branch + (50 − k) · 1-branch``
+    per-step. The sanity protocol (``--sanity-only``) verifies that
+    ``run_cfg_masked(all_on) ≡ run_cfg(...)`` and
+    ``run_cfg_masked(all_off) ≡ run_cfg(guidance_scale=0)`` within 1e-5
+    max-abs latent delta; small drift from batch-shape-dependent kernel
+    selection is allowed within tolerance.
+
     ``cfg_mask`` may be a list/tuple of bools/ints or a 1-D tensor of
     length ``num_inference_steps``.
     """
@@ -276,26 +287,39 @@ def run_cfg_masked(
     tracker = LatentTrajectoryCollector(
         num_inference_steps, 1, latents.shape[1], latents.shape[2], latents.shape[3]
     )
-    pe = torch.cat([seq_cond, seq_e], dim=0)
-    pool = torch.cat([pool_cond, pool_e], dim=0)
-    cond = {
-        "text_embeds": pool,
+    # 2-branch (cond, uncond) prompt embeddings for on-steps.
+    pe_2 = torch.cat([seq_cond, seq_e], dim=0)
+    pool_2 = torch.cat([pool_cond, pool_e], dim=0)
+    cond_2 = {
+        "text_embeds": pool_2,
         "time_ids": add_time_ids(
             height=height, width=width, batch_size=2, device=device, dtype=dtype,
         ),
     }
+    # 1-branch (uncond only) prompt embeddings for off-steps.
+    cond_1 = {
+        "text_embeds": pool_e,
+        "time_ids": add_time_ids(
+            height=height, width=width, batch_size=1, device=device, dtype=dtype,
+        ),
+    }
     unet = models["unet"]
     for step_index, timestep in enumerate(scheduler.timesteps):
-        latent_input = scheduler.scale_model_input(latents.repeat(2, 1, 1, 1), timestep)
-        noise = unet(
-            latent_input, timestep, encoder_hidden_states=pe,
-            added_cond_kwargs=cond, timestep_cond=None,
-        ).sample
-        eps_cond_raw, eps_uncond = noise.chunk(2)
         if mask_list[step_index]:
+            latent_input = scheduler.scale_model_input(latents.repeat(2, 1, 1, 1), timestep)
+            noise = unet(
+                latent_input, timestep, encoder_hidden_states=pe_2,
+                added_cond_kwargs=cond_2, timestep_cond=None,
+            ).sample
+            eps_cond_raw, eps_uncond = noise.chunk(2)
             eps_t = guided_eps(eps_cond_raw, eps_uncond, guidance_scale)
         else:
-            eps_t = eps_uncond
+            latent_input = scheduler.scale_model_input(latents, timestep)
+            noise = unet(
+                latent_input, timestep, encoder_hidden_states=seq_e,
+                added_cond_kwargs=cond_1, timestep_cond=None,
+            ).sample
+            eps_t = noise
         alpha_bar_t = scheduler.alphas_cumprod[int(timestep.item())].to(device=device, dtype=dtype)
         x0 = tweedie_mean(latents, alpha_bar_t, eps_t)
         tracker.store_step(
