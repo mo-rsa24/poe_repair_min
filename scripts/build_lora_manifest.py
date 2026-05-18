@@ -1,4 +1,4 @@
-"""Build inspector manifest for the m5 LoRA SDXL training chain.
+"""Build inspector manifest for the LoRA SDXL training chain.
 
 Walks a canonical sequence of resume-linked runs and emits a flat JSON manifest
 mapping (epoch, lambda) -> decoded.png path. Later runs in the chain override
@@ -6,7 +6,7 @@ earlier ones when epochs overlap (resume probes write the same weights at the
 overlap boundary, so either copy is fine — last one wins is simplest).
 
 Usage:
-    python scripts/build_m5_manifest.py
+    python scripts/build_lora_manifest.py
 """
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
-DEFAULT_PAIR_ROOT = REPO_ROOT / "outputs/m5_lora_sdxl/a_cat__x__a_dog/seed_42"
+DEFAULT_PAIR_ROOT = REPO_ROOT / "outputs/lora/a_cat__x__a_dog/seed_42"
 DEFAULT_MONO_PATH = REPO_ROOT / "outputs/training_cache/heldout/a_cat__x__a_dog/seed_42/mono.png"
 
 # Canonical chain — order matters: later runs override earlier ones at overlaps.

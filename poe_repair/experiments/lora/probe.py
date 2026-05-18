@@ -1,4 +1,4 @@
-"""M5 probe: λ-sweep inference + §4 scoring + where-applied artifact dump.
+"""LoRA probe: λ-sweep inference + §4 scoring + where-applied artifact dump.
 
 The probe is the only signal that catches rollout drift; train loss can
 fall to zero while the deployed image stays a chimera. Run at the start
@@ -23,7 +23,7 @@ from typing import Any
 
 import torch
 
-from poe_repair.experiments.m5_lora_sdxl.config import RunConfig
+from poe_repair.experiments.lora.config import RunConfig
 from poe_repair.training_cache import CellPath, load_step_raw
 from poe_repair.experiments.veracity import metrics as v_metrics
 from poe_repair.methods._sampling import (

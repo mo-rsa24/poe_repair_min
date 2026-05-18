@@ -1,8 +1,8 @@
-"""M5 entrypoint: orchestrates LoRA training + periodic inference probes.
+"""LoRA entrypoint: orchestrates LoRA training + periodic inference probes.
 
 Usage::
 
-    python -m poe_repair.experiments.m5_lora_sdxl \
+    python -m poe_repair.experiments.lora \
         --pair a_cat__x__a_dog --seed 42 --split heldout \
         --total-epochs 200 --probe-every-epochs 50 \
         --lr 1e-4 --lora-rank 8
@@ -25,10 +25,10 @@ from typing import Any
 
 import torch
 
-from poe_repair.experiments.m5_lora_sdxl import figures as m5_figures
-from poe_repair.experiments.m5_lora_sdxl import probe as m5_probe
-from poe_repair.experiments.m5_lora_sdxl import trainer as m5_trainer
-from poe_repair.experiments.m5_lora_sdxl.config import (
+from poe_repair.experiments.lora import figures as lora_figures
+from poe_repair.experiments.lora import probe as lora_probe
+from poe_repair.experiments.lora import trainer as lora_trainer
+from poe_repair.experiments.lora.config import (
     RunConfig,
     derive_run_id,
     run_dir_for,
@@ -74,8 +74,8 @@ def _parse_int_pair(s: str) -> tuple[int, int]:
 
 def build_argparser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(
-        prog="m5_lora_sdxl",
-        description="LoRA on SDXL UNet for guided-residual prediction (Phase 2).",
+        prog="lora",
+        description="LoRA on SDXL UNet for guided-residual prediction .",
     )
     ap.add_argument("--pair", default="a_cat__x__a_dog")
     ap.add_argument("--prompt-a", default="a cat")
@@ -115,11 +115,11 @@ def build_argparser() -> argparse.ArgumentParser:
     ap.add_argument("--dtype", default="float16",
                     choices=("float16", "fp16", "float32", "fp32", "bfloat16", "bf16"))
 
-    ap.add_argument("--wandb-project", default="poe-repair-m5-lora")
+    ap.add_argument("--wandb-project", default="poe-repair-lora")
     ap.add_argument("--wandb-entity", default=None)
     ap.add_argument("--wandb-mode", default="online",
                     choices=("online", "offline", "disabled"))
-    ap.add_argument("--wandb-tags", default="m5,phase2")
+    ap.add_argument("--wandb-tags", default="lora")
 
     ap.add_argument("--output-root", default=str(DEFAULT_OUTPUT_ROOT))
     ap.add_argument("--run-id", default="auto",
@@ -337,7 +337,7 @@ def _do_probe(
     dtype,
 ) -> None:
     unet = models["unet"]
-    result = m5_probe.run_probe(
+    result = lora_probe.run_probe(
         models=models, scheduler=scheduler,
         init_latents=init_latents, embeddings=embeddings,
         cfg=cfg, epoch=state.epoch, optimizer_step=state.optimizer_step,
@@ -379,17 +379,17 @@ def _do_probe(
     strip_path = figures_root / f"thumbnails_epoch_{state.epoch:04d}.png"
     grid_path = figures_root / "cumulative_grid.png"
     try:
-        m5_figures.render_curve_vqa_vs_lambda(probes_root, curve_path)
+        lora_figures.render_curve_vqa_vs_lambda(probes_root, curve_path)
         logger.log_image("probe/curve_vqa_vs_lambda", curve_path, step=state.optimizer_step)
     except Exception as exc:
         log.warning("curve render failed: %s", exc)
     try:
-        m5_figures.render_thumbnail_strip(probes_root, state.epoch, strip_path)
+        lora_figures.render_thumbnail_strip(probes_root, state.epoch, strip_path)
         logger.log_image("probe/thumbnails_strip", strip_path, step=state.optimizer_step)
     except Exception as exc:
         log.warning("thumbnail render failed: %s", exc)
     try:
-        m5_figures.render_cumulative_grid(probes_root, grid_path)
+        lora_figures.render_cumulative_grid(probes_root, grid_path)
         logger.log_image("probe/cumulative_grid", grid_path, step=state.optimizer_step)
     except Exception as exc:
         log.warning("cumulative grid render failed: %s", exc)
@@ -399,7 +399,7 @@ def _do_probe(
         top_lam = max((r.lam for r in result.results), default=0.0)
         wa_path = figures_root / f"where_applied_epoch_{state.epoch:04d}.png"
         try:
-            m5_figures.render_where_applied(
+            lora_figures.render_where_applied(
                 cfg=cfg, probes_root=probes_root, epoch=state.epoch,
                 lam=top_lam, output_path=wa_path,
                 image_size=(cfg.sampler.height, cfg.sampler.width),
@@ -413,7 +413,7 @@ def _do_probe(
     ensure_dir(checkpoints_root)
     torch.save(
         {
-            "lora_state": m5_trainer.lora_state_dict(unet),
+            "lora_state": lora_trainer.lora_state_dict(unet),
             "step": int(state.optimizer_step),
             "epoch": int(state.epoch),
             "config": cfg.to_dict(),
@@ -439,7 +439,7 @@ def _do_probe(
 
 def main(argv: list[str] | None = None) -> int:
     logging.basicConfig(
-        level=os.environ.get("M5_LOG_LEVEL", "INFO"),
+        level=os.environ.get("LORA_LOG_LEVEL", "INFO"),
         format="%(asctime)s %(levelname)s %(name)s: %(message)s",
         datefmt="%H:%M:%S",
     )
@@ -465,7 +465,7 @@ def main(argv: list[str] | None = None) -> int:
     scheduler = load_ddim_scheduler(cfg.model_id)
 
     # LoRA attach.
-    attach_info = m5_trainer.attach_lora(models["unet"], cfg)
+    attach_info = lora_trainer.attach_lora(models["unet"], cfg)
     log.info(
         "LoRA attached: n_matched=%d trainable_params=%d total_params=%d",
         attach_info["n_matched"], attach_info["trainable_params"],
@@ -483,14 +483,14 @@ def main(argv: list[str] | None = None) -> int:
     cell = CellPath.from_root(
         cfg.cell.pair_slug, cfg.cell.seed, split=cfg.cell.split,
     )
-    dataset = m5_trainer.load_cached_steps(
+    dataset = lora_trainer.load_cached_steps(
         cell, guidance_scale=cfg.sampler.guidance_scale,
     )
     log.info("dataset: %d cached steps from %s", len(dataset), cell.root)
 
     # Prompts + pinned init latent.
     embeddings = encode_all_prompts(cfg, models, device, dtype)
-    init_latents = m5_probe.load_pinned_init_latents(
+    init_latents = lora_probe.load_pinned_init_latents(
         cell, device=device, dtype=dtype,
         euler_init_noise_sigma=cfg.sampler.euler_init_noise_sigma,
     )
@@ -499,11 +499,11 @@ def main(argv: list[str] | None = None) -> int:
     logger = WandBLogger(cfg, run_dir=run_dir)
 
     # Optimizer + GradScaler (fp16 backward path needs it; see trainer.py).
-    optimizer = m5_trainer.make_optimizer(models["unet"], cfg)
-    grad_scaler = m5_trainer.make_grad_scaler(
+    optimizer = lora_trainer.make_optimizer(models["unet"], cfg)
+    grad_scaler = lora_trainer.make_grad_scaler(
         enabled=(dtype == torch.float16 and torch.cuda.is_available()),
     )
-    state = m5_trainer.TrainerState()
+    state = lora_trainer.TrainerState()
     rng = torch.Generator(device="cpu")
     rng.manual_seed(int(cfg.seed))
 
@@ -516,7 +516,7 @@ def main(argv: list[str] | None = None) -> int:
             raise FileNotFoundError(f"resume checkpoint not found: {ckpt_path}")
         log.info("resuming from %s", ckpt_path)
         ckpt = torch.load(ckpt_path, map_location="cpu", weights_only=False)
-        m5_trainer.load_lora_state(models["unet"], ckpt["lora_state"])
+        lora_trainer.load_lora_state(models["unet"], ckpt["lora_state"])
         state.optimizer_step = int(ckpt.get("step", 0))
         state.epoch = int(ckpt.get("epoch", 0))
         log.info(
@@ -548,7 +548,7 @@ def main(argv: list[str] | None = None) -> int:
     # --- Training loop ------------------------------------------------------
     try:
         for _ in range(int(cfg.schedule.total_epochs)):
-            ok = m5_trainer.train_epoch(
+            ok = lora_trainer.train_epoch(
                 unet=models["unet"], scheduler=scheduler,
                 optimizer=optimizer, dataset=dataset,
                 seq_a=embeddings["seq_a"], pool_a=embeddings["pool_a"],

@@ -1,10 +1,10 @@
-"""M5 figures: curve panel, thumbnail strip, cumulative grid, where-applied overlay.
+"""LoRA figures: curve panel, thumbnail strip, cumulative grid, where-applied overlay.
 
 All four are regenerated each probe; the cumulative grid + curve panel are
 overwritten in place and the headline deliverables for the run.
 
-Style: shares ``apply_veracity_style`` with the Phase-0 Veracity figure set
-so App-B′ / Fig 4 / M5 panels read as one family.
+Style: shares ``apply_veracity_style`` with the Veracity figure set so the
+LoRA panels read as one family with the diagnostic figures.
 """
 
 from __future__ import annotations
@@ -22,7 +22,7 @@ import torch
 import torch.nn.functional as F
 from PIL import Image
 
-from poe_repair.experiments.m5_lora_sdxl.config import RunConfig
+from poe_repair.experiments.lora.config import RunConfig
 from poe_repair.experiments.veracity.metrics import detect_boxes
 from poe_repair.figures._common import overlay_boxes, save_fig
 from poe_repair.figures._veracity_style import (
@@ -158,7 +158,7 @@ def render_thumbnail_strip(
             spine.set_linewidth(2.2)
         ax.set_xticks([])
         ax.set_yticks([])
-    fig.suptitle(f"M5 — epoch {epoch:04d} probe", fontsize=10)
+    fig.suptitle(f"LoRA — epoch {epoch:04d} probe", fontsize=10)
     return save_fig(fig, output_path)
 
 
@@ -233,7 +233,7 @@ def render_cumulative_grid(
                     spine.set_linewidth(2.0)
 
     fig.suptitle(
-        "M5 cumulative grid — rows = probe, cols = λ\n"
+        "LoRA cumulative grid — rows = probe, cols = λ\n"
         "frame colour = §4 detection regime",
         fontsize=10,
     )
@@ -341,7 +341,7 @@ def render_where_applied(
         ax.set_yticks([])
 
     fig.suptitle(
-        f"M5 where-applied — epoch {epoch:04d}, λ={lam:.2f}\n"
+        f"LoRA where-applied — epoch {epoch:04d}, λ={lam:.2f}\n"
         f"basin-commit reference steps: {tuple(refs)}",
         fontsize=10,
     )

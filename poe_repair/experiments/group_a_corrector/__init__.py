@@ -5,7 +5,7 @@ Stage 3, Group A of [poe-correction-mvp.md]. A small standalone network
 plus joint conditioning and outputs an additive ε-correction. SDXL stays
 frozen end-to-end.
 
-The package mirrors [m5_lora_sdxl]'s artifact layout — probes every
+The package mirrors [lora]'s artifact layout — probes every
 ``probe.every_epochs`` epochs across a λ-grid, decoded thumbnails per λ,
 cumulative grid of (epochs × λ), where-applied overlay for the top λ.
 """

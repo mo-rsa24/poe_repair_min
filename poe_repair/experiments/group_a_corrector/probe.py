@@ -1,6 +1,6 @@
 """Group A probe — λ-sweep inference + where-applied artifact dump.
 
-Mirrors m5_lora_sdxl.probe in shape; calls ``run_external_corrector_inject``
+Mirrors lora.probe in shape; calls ``run_external_corrector_inject``
 with the trained corrector instead of toggling a LoRA adapter.
 
 The probe is the only signal that catches rollout drift; training MSE on
@@ -30,7 +30,7 @@ log = logging.getLogger(__name__)
 
 
 # ---------------------------------------------------------------------------
-# Pinned init latent (reuses the M5 trick)
+# Pinned init latent (reuses the LoRA trick)
 # ---------------------------------------------------------------------------
 
 

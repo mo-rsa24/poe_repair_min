@@ -1,4 +1,4 @@
-"""Run configuration for M5 (LoRA on SDXL).
+"""Run configuration for LoRA on SDXL.
 
 A single ``RunConfig`` dataclass capturing everything that goes into the
 W&B ``config`` block. Constructed from CLI flags in ``main.py``.
@@ -36,7 +36,7 @@ class LoRAConfig:
         "attn2.to_v",
     )
     init: str = "gaussian"
-    adapter_name: str = "m5"
+    adapter_name: str = "lora"
 
 
 @dataclass
@@ -83,9 +83,9 @@ class SamplerConfig:
 
 @dataclass
 class WandBConfig:
-    project: str = "poe-repair-m5-lora"
+    project: str = "poe-repair-lora"
     entity: str | None = None
-    tags: tuple[str, ...] = ("m5", "phase2")
+    tags: tuple[str, ...] = ("lora",)
     mode: str = "online"               # "online" | "offline" | "disabled"
 
 
@@ -125,7 +125,7 @@ def derive_run_id(cfg: RunConfig, *, timestamp: str) -> str:
 
 def run_dir_for(cfg: RunConfig, *, output_root: Path) -> Path:
     return (
-        output_root / "m5_lora_sdxl"
+        output_root / "lora"
         / cfg.cell.pair_slug / f"seed_{cfg.cell.seed}"
         / cfg.run_id
     )
