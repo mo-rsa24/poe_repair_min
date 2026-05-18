@@ -23,7 +23,7 @@ import torch.nn.functional as F
 from PIL import Image
 
 from poe_repair.experiments.lora.config import RunConfig
-from poe_repair.experiments.veracity.metrics import detect_boxes
+from poe_repair.experiments.residual_diagnostics.metrics import detect_boxes
 from poe_repair.figures._common import overlay_boxes, save_fig
 from poe_repair.figures._veracity_style import (
     apply_veracity_style,

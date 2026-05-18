@@ -1,6 +1,6 @@
 """Stage 2 — distance tables, force stats, method comparison.
 
-Reuses ``poe_repair.experiments.veracity.metrics`` for image / latent
+Reuses ``poe_repair.experiments.residual_diagnostics.metrics`` for image / latent
 distances; adds idea1-specific helpers for force capacity, force-norm
 stats, and a cross-method comparison table that overlays this
 experiment's ``d_Mono`` curves with veracity's residual-Δ curves.
@@ -15,8 +15,8 @@ from pathlib import Path
 import torch
 
 from poe_repair.composers.poe_internal import method_name_for
-from poe_repair.experiments.idea1.sweep import ALPHA_GRID, BARRIER_TARGET
-from poe_repair.experiments.veracity import metrics as VM
+from poe_repair.experiments.internal_force_failure.sweep import ALPHA_GRID, BARRIER_TARGET
+from poe_repair.experiments.residual_diagnostics import metrics as VM
 
 
 # ---------------------------------------------------------------------------
@@ -42,7 +42,7 @@ def run_dir_calibrated(seed_dir: Path, force_kind: str, schedule: str = "constan
 
 
 def baseline_run_dir(idea1_root: Path, kind: str, pair_slug: str, seed: int) -> Path:
-    """Layout: outputs/idea1/<kind>/pairs/<slug>/seed_<n>/<kind>.png."""
+    """Layout: outputs/internal_force_failure/<kind>/pairs/<slug>/seed_<n>/<kind>.png."""
     return idea1_root / kind / "pairs" / pair_slug / f"seed_{seed}"
 
 

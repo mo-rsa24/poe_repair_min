@@ -23,6 +23,7 @@ also exposed::
 from __future__ import annotations
 
 import json
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterator
@@ -31,7 +32,15 @@ import torch
 
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
-DEFAULT_CACHE_ROOT = REPO_ROOT / "outputs" / "training_cache"
+# Resolution order: --cache-root CLI flag > POE_REPAIR_TRAINING_CACHE env > default.
+# The default points at the canonical /datasets/ store on the cluster so the
+# trainers work out of the box without needing a symlink into the repo.
+DEFAULT_CACHE_ROOT = Path(
+    os.environ.get(
+        "POE_REPAIR_TRAINING_CACHE",
+        "/datasets/mmolefe/poe_repair_min/outputs/training_cache",
+    )
+)
 
 
 @dataclass(frozen=True)

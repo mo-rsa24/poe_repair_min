@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 
-from poe_repair.experiments.veracity import metrics as M
+from poe_repair.experiments.residual_diagnostics import metrics as M
 from poe_repair.figures._common import overlay_boxes, save_fig
 from poe_repair.figures._veracity_style import (
     ACCENT,

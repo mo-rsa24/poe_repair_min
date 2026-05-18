@@ -21,7 +21,7 @@ from typing import Sequence
 import torch
 from PIL import Image
 
-from poe_repair.experiments.veracity.metrics import _get_clip
+from poe_repair.experiments.residual_diagnostics.metrics import _get_clip
 from poe_repair.runtime import decode_latents, tweedie_mean
 
 

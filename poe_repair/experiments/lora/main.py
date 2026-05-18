@@ -132,6 +132,10 @@ def build_argparser() -> argparse.ArgumentParser:
                     help="path to a lora_step_NNNNNN.pt checkpoint to resume "
                          "from. Restores LoRA weights + epoch/step counters; "
                          "optimizer moments restart fresh.")
+    ap.add_argument("--cache-root", default=None,
+                    help="override the training-cache root (default reads "
+                         "POE_REPAIR_TRAINING_CACHE env, then "
+                         "/datasets/mmolefe/poe_repair_min/outputs/training_cache).")
 
     return ap
 
@@ -480,8 +484,11 @@ def main(argv: list[str] | None = None) -> int:
     })
 
     # Dataset.
+    from poe_repair.training_cache import DEFAULT_CACHE_ROOT
+    cache_root = Path(args.cache_root) if args.cache_root else DEFAULT_CACHE_ROOT
     cell = CellPath.from_root(
         cfg.cell.pair_slug, cfg.cell.seed, split=cfg.cell.split,
+        cache_root=cache_root,
     )
     dataset = lora_trainer.load_cached_steps(
         cell, guidance_scale=cfg.sampler.guidance_scale,

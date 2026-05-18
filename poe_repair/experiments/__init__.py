@@ -2,12 +2,15 @@
 
 Active experiments:
 
-  - ``lora``      : LoRA per-arm composition on SDXL (success thread).
-  - ``group_a_failure`` : latent UNet / latent CNN / frozen-feature-MLP
-                            students as demonstrable failure cases.
-  - ``idea1``             : mono-during-inference residual diagnostic.
-  - ``idea5a``            : mono-during-inference residual diagnostic.
-  - ``veracity``          : mono-during-inference residual diagnostic.
+  - ``lora``                       : per-arm LoRA on SDXL (success thread).
+  - ``residual_diagnostics``       : Mono–PoE residual ceiling; two sub-packages:
+      - ``residual_diagnostics.existence``     : residual exists + PMI identity.
+      - ``residual_diagnostics.clip_window``   : CLIP commitment-window probe.
+  - ``group_a_failure``            : latent UNet / latent CNN / frozen-feature-MLP
+                                     external correctors (failure cases).
+  - ``internal_force_failure``     : Mono-free PoE-internal corrective forces
+                                     (overlap repulsion, score-alignment) —
+                                     reported as a failure case.
 
 ENVIRONMENT
 -----------

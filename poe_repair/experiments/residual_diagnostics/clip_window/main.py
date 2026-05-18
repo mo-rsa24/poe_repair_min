@@ -2,13 +2,13 @@
 
 Pure post-hoc analysis on existing veracity artefacts. Reads the saved
 ``x_t``, ``eps_poe``, ``eps_j`` from
-``outputs/veracity/pairs/<slug>/seed_<n>/teacher_residual_const_lam<NNN>``,
+``outputs/residual_diagnostics/existence/pairs/<slug>/seed_<n>/teacher_residual_const_lam<NNN>``,
 reconstructs Tweedie x̂_0 at chosen step indices for chosen λ values,
 decodes through SDXL's VAE, and scores against CLIP text targets.
 
 Run:
 
-    python -m poe_repair.experiments.idea5a
+    python -m poe_repair.experiments.residual_diagnostics.clip_window
         [--pair "a cat|a dog"]
         [--seed 42]
         [--lambdas 0.0,0.6,1.0]
@@ -28,13 +28,13 @@ import torch
 
 from poe_repair.config import RunConfig
 from poe_repair.experiments._eval_common import HEADLINE_PAIR, slugify
-from poe_repair.experiments.idea5a import analyse as A
-from poe_repair.experiments.idea5a import figures as F
+from poe_repair.experiments.residual_diagnostics.clip_window import analyse as A
+from poe_repair.experiments.residual_diagnostics.clip_window import figures as F
 from poe_repair.run import MethodCtx, make_ctx
 from poe_repair.runtime import ensure_dir, write_json
 
 
-EXP_NAME = "idea5a"
+EXP_NAME = "residual_diagnostics/clip_window"
 DEFAULT_SEED = 42
 
 
@@ -70,7 +70,7 @@ def _veracity_run_dir(
     """Veracity uses the teacher-residual sweep at constant schedule."""
     name = f"teacher_residual_const_lam{int(round(lam * 100)):03d}"
     return (
-        output_root / "veracity" / "pairs" / pair_slug
+        output_root / "residual_diagnostics" / "existence" / "pairs" / pair_slug
         / f"seed_{seed}" / name
     )
 

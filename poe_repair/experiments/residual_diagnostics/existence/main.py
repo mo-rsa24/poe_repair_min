@@ -1,12 +1,12 @@
-"""Veracity — CLI orchestrator.
+"""Residual-existence diagnostic — CLI orchestrator.
 
 Three stages, each independently re-runnable:
 
-    python -m poe_repair.experiments.veracity                  # all stages
-    python -m poe_repair.experiments.veracity --skip-sweep      # metrics + figures
-    python -m poe_repair.experiments.veracity --skip-sweep --skip-metrics
+    python -m poe_repair.experiments.residual_diagnostics.existence                  # all stages
+    python -m poe_repair.experiments.residual_diagnostics.existence --skip-sweep    # metrics + figures
+    python -m poe_repair.experiments.residual_diagnostics.existence --skip-sweep --skip-metrics
                                                                 # figures only
-    python -m poe_repair.experiments.veracity --only-lambdas 0.0,0.5,1.0
+    python -m poe_repair.experiments.residual_diagnostics.existence --only-lambdas 0.0,0.5,1.0
                                                                 # smoke run
 """
 
@@ -20,14 +20,14 @@ import torch
 
 from poe_repair.config import RunConfig
 from poe_repair.experiments._eval_common import HEADLINE_PAIR, slugify
-from poe_repair.experiments.veracity import figures as F
-from poe_repair.experiments.veracity import metrics as M
-from poe_repair.experiments.veracity import sweep as S
+from poe_repair.experiments.residual_diagnostics import metrics as M
+from poe_repair.experiments.residual_diagnostics import sweep as S
+from poe_repair.experiments.residual_diagnostics.existence import figures as F
 from poe_repair.run import MethodCtx, make_ctx
 from poe_repair.runtime import ensure_dir, write_json
 
 
-DEFAULT_EXP_NAME = "veracity"
+DEFAULT_EXP_NAME = "residual_diagnostics/existence"
 DEFAULT_SEED = 42
 
 
@@ -256,9 +256,8 @@ def main() -> None:
     )
     ap.add_argument(
         "--exp-name", type=str, default=DEFAULT_EXP_NAME,
-        help='Experiment name (output subdir under output_root). Default = "veracity". '
-             'Used to route control runs to "veracity_self_pair", "veracity_disjoint", '
-             '"veracity_cfg_5p0", etc., without colliding with the main veracity outputs.',
+        help='Experiment name (output subdir under output_root). '
+             f'Default = "{DEFAULT_EXP_NAME}".',
     )
     ap.add_argument("--skip-sweep", action="store_true")
     ap.add_argument("--skip-metrics", action="store_true")

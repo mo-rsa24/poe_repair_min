@@ -21,7 +21,7 @@ from typing import Sequence
 import matplotlib.pyplot as plt
 import numpy as np
 
-from poe_repair.experiments.idea5a.analyse import TrajectorySnapshots
+from poe_repair.experiments.residual_diagnostics.clip_window.analyse import TrajectorySnapshots
 from poe_repair.figures._common import image_grid, save_fig
 
 

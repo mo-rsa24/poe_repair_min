@@ -1,4 +1,4 @@
-"""Idea 1 — CLI orchestrator.
+"""Internal-force failure case — CLI orchestrator.
 
 Stages:
   1. Capacity check at α=1.0 per force variant → measure K_force, set α₀.
@@ -7,7 +7,9 @@ Stages:
   4. Held-out: same calibrated runs on additional seeds.
 
 Each stage is independently re-runnable via --skip-* flags. All stages
-read / write under outputs/idea1/.
+read / write under outputs/internal_force_failure/. Calibration reads
+``outputs/residual_diagnostics/existence/`` for the basin-barrier
+target.
 """
 
 from __future__ import annotations
@@ -20,14 +22,14 @@ import torch
 
 from poe_repair.config import RunConfig
 from poe_repair.experiments._eval_common import HEADLINE_PAIR
-from poe_repair.experiments.idea1 import figures as F
-from poe_repair.experiments.idea1 import metrics as IM
-from poe_repair.experiments.idea1 import sweep as S
+from poe_repair.experiments.internal_force_failure import figures as F
+from poe_repair.experiments.internal_force_failure import metrics as IM
+from poe_repair.experiments.internal_force_failure import sweep as S
 from poe_repair.run import MethodCtx, make_ctx
 from poe_repair.runtime import ensure_dir, write_json
 
 
-EXP_NAME = "idea1"
+EXP_NAME = "internal_force_failure"
 DEFAULT_SEED = 42
 
 
@@ -111,7 +113,7 @@ def _stage_metrics(
     trajectory_by_force: dict[str, dict] = {}
 
     veracity_seed_dir = (
-        cfg.paths.output_root / "veracity" / "pairs"
+        cfg.paths.output_root / "residual_diagnostics" / "existence" / "pairs"
         / cell.pair_slug / f"seed_{cell.seed}"
     )
     poe_run = veracity_seed_dir / "teacher_residual_const_lam000"
@@ -144,8 +146,8 @@ def _stage_metrics(
 
     method_comparison = IM.compute_method_comparison(
         distances_by_force=distances_by_force,
-        veracity_distances_path=cfg.paths.output_root / "veracity" / "metrics" / "distances.json",
-        veracity_residual_stats_path=cfg.paths.output_root / "veracity" / "metrics" / "residual_stats.json",
+        veracity_distances_path=cfg.paths.output_root / "residual_diagnostics" / "existence" / "metrics" / "distances.json",
+        veracity_residual_stats_path=cfg.paths.output_root / "residual_diagnostics" / "existence" / "metrics" / "residual_stats.json",
         force_stats_by_force=force_stats_by_force,
     )
 
