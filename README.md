@@ -1,13 +1,23 @@
 # poe_repair_min
 
-PoE composition repair on SDXL via a learned interaction-residual synthesiser.
+PoE composition repair on SDXL. The repo is organized around three coherent
+threads of code, outputs, and checkpoints:
 
-> **Deployed method: sched-M2 + ê_J.** Compose two concepts without a literal
-> joint prompt by synthesising ê_J(e_A, e_B) and mixing it with PoE under a
-> Phase-11 β-schedule.
+1. **LoRA (success).** Per-arm rank-8 LoRA on SDXL UNet cross-attention.
+   Training timeline and inference probes for cat × dog, seed 42 are
+   preserved at `outputs/lora/cat_dog/seed_42/results/`. See
+   [`lora-success.md`](lora-success.md).
+2. **Mono-during-inference residual (diagnostic ceiling).** The
+   λ-interpolated PoE↔Mono sampler and the three downstream diagnostic
+   experiments (idea1, idea5a, veracity). Code-only — outputs are
+   regenerable. See [`mono-residual-diagnostic.md`](mono-residual-diagnostic.md).
+3. **Group A (failure cases).** Latent-CNN, latent-UNet, frozen-feature-MLP
+   external correctors that demonstrably *don't* fix PoE. Outputs and
+   checkpoints kept under `outputs/group_a_failure/`. See
+   [`group-a-failure.md`](group-a-failure.md).
 
-See `OBJECTIVE.md` for the science. See `.claude/plans/serialized-seeking-pebble.md`
-for the current work plan.
+Published-paper reference codebases (AAE, CO3, FOCUS, P2P,
+reduce-reuse-recycle) live untouched in `composition/`.
 
 ## Setup
 
@@ -22,72 +32,90 @@ exits with code 2.
 
 All commands assume `CUDA_VISIBLE_DEVICES=1` (override as needed).
 
+## Repo layout
+
+```
+poe_repair/
+  config.py runtime.py run.py training_cache.py
+  _sdxl/                       SDXL model loading
+  embeddings/cache_dataset.py  Training-cache dataset for students
+  diagnostics/residual.py      attention_overlap (one function)
+  methods/
+    _sampling.py               run_cfg, run_cfg_poe, run_teacher_residual,
+                               run_lora_residual_inject,
+                               run_external_corrector_inject,
+                               run_direct_eps_inject, _CrossAttnRecorder
+    _poe_internal.py           Basin-template corrector (used by idea1)
+  composers/
+    mono.py poe.py             literal Mono / vanilla PoE
+    teacher_residual.py        λ-interpolated PoE↔Mono (diagnostic)
+    poe_internal.py            basin-template corrector wrapper
+    direct_eps.py              direct-ε student wrapper (group_a_failure)
+  experiments/
+    lora/                      Thread 1: LoRA success
+    group_a_failure/           Thread 3: failure cases (corrector ablation)
+    idea1/ idea5a/ veracity/   Thread 2: mono-residual diagnostic
+  students/                    latent_cnn, latent_unet, frozen_feature_mlp,
+                               direct_eps (group-A architectures)
+  figures/                     plotting helpers
+outputs/
+  lora/cat_dog/seed_42/results/   consolidated LoRA training artifact
+  group_a_failure/                failure-mode outputs + checkpoints
+composition/                   vendored published-paper reference repos
+scripts/
+  build_lora_manifest.py       scan results/ -> JSON manifest for inspector
+  lora_inspector.py            Flask app for the LoRA training timeline
+  run_lora_inspector.sh        launcher with SSH-tunnel-friendly defaults
+  lora_resume*.sh              (none; one-off resume scripts were dropped)
+  watch_and_visualize.py       live student-checkpoint visualizer
+```
+
 ## Run order
 
-### Run 1 — synthesiser audit (cheap; precondition for everything else)
+### Thread 1 — LoRA inference / inspection
 
-Quantifies how well ê_J approximates e_J on held-out pairs.
-
-```bash
-CUDA_VISIBLE_DEVICES=1 $PY -m poe_repair.experiments.e2_synth_audit
-```
-
-Outputs:
-- `outputs/e2_synth_audit/summary.json` — per-pair `seq_cosine`, `pool_cosine`,
-  `seq_mse`, `pool_mse`, `unet_rmse`.
-- `outputs/e2_synth_audit/figures/embed_cosine_by_pair.png` — bar chart.
-
-Cost: ~10–15 min. If `seq_cosine` < 0.95 or `unet_rmse` is large on most pairs,
-the synthesiser is the bottleneck — iterate on training before running E1.
-
-### Run 2 — diagnostic context (cheap; supports the story)
-
-Generates the residual-decomposition figures showing r_t is structured and
-concentrated in the early window.
+The consolidated training run is at `outputs/lora/cat_dog/seed_42/results/`.
+Rebuild the inspector manifest and serve it locally:
 
 ```bash
-CUDA_VISIBLE_DEVICES=1 $PY -m poe_repair.experiments.e_residual_decomposition \
-    --seeds 42 4 --steps 0 3 5 10
+$PY scripts/build_lora_manifest.py
+$PY scripts/lora_inspector.py --port 5050
+# from your laptop: ssh -L 5050:localhost:5050 mscluster106
+#                   open http://localhost:5050
 ```
 
-Outputs in `outputs/e_residual_decomposition/`.
-
-### Run 3 — E1 pilot (verify the refactor before the full run)
+To retrain from scratch (requires the training cache, which is not part of
+this checkpoint):
 
 ```bash
-CUDA_VISIBLE_DEVICES=1 $PY -m poe_repair.experiments.e1_held_out \
-    --seeds 42 4 --pairs "a cat|a dog"
+$PY -m poe_repair.experiments.lora \
+    --pair a_cat__x__a_dog --seed 42 --split heldout \
+    --total-epochs 200 --probe-every-epochs 50 \
+    --lr 1e-4 --lora-rank 8
 ```
 
-2 seeds × 1 pair × 5 columns. ~10 min on GPU. Confirms the 5-column layout
-(PoE / Mono(e_J) / sched-M2(e_J) / sched-M2(ê_J) / CO3) and JSON schema before
-committing to the full headline run.
+### Thread 2 — Mono-residual diagnostic
 
-### Run 4 — E1 headline (the load-bearing result)
+See [`mono-residual-diagnostic.md`](mono-residual-diagnostic.md) for the
+step-by-step reproduction. Summary:
 
 ```bash
-CUDA_VISIBLE_DEVICES=1 $PY -m poe_repair.experiments.e1_held_out \
-    --seeds 42 1 2 3 4 5 6 7
+$PY -m poe_repair.experiments.veracity --pair "a cat|a dog" --seed 42
+$PY -m poe_repair.experiments.idea1    --pair "a cat|a dog" --seed 42
+$PY -m poe_repair.experiments.idea5a   --pair "a cat|a dog" --seed 42
 ```
 
-8 seeds × 19 held-out pairs × 5 columns ≈ 760 generations. ~5–6 GPU-hours.
+### Thread 3 — Group A failure cases
 
-Outputs:
-- `outputs/e1_held_out/pairs/<slug>/seed_<n>/<method>/<method>.png`
-- `outputs/e1_held_out/figures/aggregate__<slug>.png`
-- `outputs/e1_held_out/summary.json`
-
-### Optional — diagnostic appendix experiments
+See [`group-a-failure.md`](group-a-failure.md) for design and protocol.
+Training (per architecture):
 
 ```bash
-# Per-step decoded x̂_0 + token attention maps (Mono / Mono+CO3-step0).
-CUDA_VISIBLE_DEVICES=1 $PY -m poe_repair.experiments.e_diag_trajectory \
-    --seeds 4 42 --include-co3
-
-# CO3 confound control: real CO3 across CFG regimes.
-CUDA_VISIBLE_DEVICES=1 $PY -m poe_repair.experiments.e_cfg_isolation \
-    --seeds 42 4 --include-mono
+$PY -m poe_repair.experiments.group_a_failure \
+    --technique latent_unet --pair a_cat__x__a_dog --seed 42
 ```
+
+(``latent_unet`` ↔ ``latent_cnn`` ↔ ``frozen_feature_mlp``.)
 
 ## Cached baselines (PoE / Mono / solo_a / solo_b)
 
@@ -105,54 +133,19 @@ for m in ['solo_a', 'solo_b', 'poe', 'mono']:
 "
 ```
 
-## Synthesiser
+## What's not in this codebase
 
-Training pool / held-out lists / config:
+This is a checkpoint of the LoRA-working state; the surrounding exploratory
+threads have been pruned. If you need to recover any of:
 
-- `poe_repair/embeddings/dataset.py` — pair pool
-- `poe_repair/embeddings/holdout_pairs.py` — `COLLISION_PAIRS` (10) +
-  `COOPERATIVE_PAIRS` (9) = `ALL_HOLDOUT_PAIRS` (19, the headline set).
-- `poe_repair/embeddings/synthesizer.py` — three architectures
-  (linear / residual_mlp / gated_attn). Default is `residual_mlp`.
-- `poe_repair/embeddings/train.py` — embedding-MSE + cosine loss training.
-- `poe_repair/embeddings/train_distill_unet.py` — UNet-level distillation:
-  `‖ε(x_t, t, ê_J) − ε(x_t, t, e_J)‖²` sampled over training trajectories.
+- sched-M2 + ê_J synthesiser pipeline
+- ULA / MCMC correctors (Du et al. AnnealedULA port)
+- residual-prompt / teacher-residual stand-alone trainers
+- CLIP-guided / adaptive-schedule / PoE-internal-repair compositions
+- the e_* held-out / cfg-isolation / residual-decomposition / synth-audit
+  experiments
+- thread_c_structure (D4A, VLM-grid)
+- idea2 / idea5b experiments
 
-Trained checkpoints:
-- `checkpoints/synthesizer/residual_mlp/best.pt`
-- `checkpoints/synthesizer_distilled/residual_mlp_distilled/best.pt`
-
-## What's NOT in this codebase
-
-This repo has been pruned to the surviving scope. Removed exploratory branches
-(FOCUS / AAE / P2P composers, the composite stack, VLM rewards, the perp-gated
-dispatcher, λ-sweeps, scoring routers) are gone. Their outputs live under
-`outputs/_archive/` if you need to inspect them.
-
-## Repo layout
-
-```
-poe_repair/
-  config.py runtime.py run.py
-  _sdxl/                       SDXL model loading
-  embeddings/                  Synthesiser training + inference
-  diagnostics/residual.py      attention_overlap (one function)
-  methods/_sampling.py         Reference samplers (PoE / Mono / sched-M2)
-                               + diagnostic trajectory + LS decomposition
-  composers/                   PoE / Mono / sched-M2 / CO3 (5 files)
-  experiments/                 e1_held_out + e2_synth_audit + 3 diagnostics
-  figures/_common.py           plotting helpers
-checkpoints/                   synthesiser + distilled-synthesiser
-composition/                   Vendored reference (CO3 source still imported)
-outputs/                       Generated artifacts (+ _archive/ for legacy)
-```
-
-## Honest limitations (declared up front)
-
-- `sched-M2 + ê_J` approaches Mono's behaviour as λ_t → 1. It inherits Mono's
-  failure modes: subject duplication, neglect, and same-class hybridisation.
-- Synthesiser generalisation is bounded by training distribution; far-OOD
-  pairs may have low cosine to the literal e_J.
-- Seed variance is real. We report per-seed outcomes transparently.
-- We do not propose a new sampler. sched-M2 is from Phase 11; CO3 is from
-  Dutta et al. The contribution is the synthesiser plus the deployment story.
+… check out the `v0.1-pre-cleanup` tag or the `archive/pre-cleanup-2026-05-18`
+branch — those preserve the full pre-cleanup state of `main`.
