@@ -208,6 +208,7 @@ CW_INDEX_HTML = r"""
     --text: #e6e9ef;
     --muted: #8b93a7;
     --accent: #7ab7ff;
+    --accent-hot: #f0a458;
     --on:    #2C8F4A;
     --off:   #2a2f3a;
     --border: #2a2f3a;
@@ -220,31 +221,90 @@ CW_INDEX_HTML = r"""
   }
   h1 { font-size: 16px; font-weight: 600; margin: 0 0 4px 0; color: var(--muted); }
   .meta { color: var(--muted); font-size: 12px; margin-bottom: 18px; }
+
   .controls {
-    display: grid; gap: 14px; margin-bottom: 20px;
     background: var(--panel); border: 1px solid var(--border);
-    border-radius: 8px; padding: 16px;
+    border-radius: 8px; padding: 20px 16px 16px 16px; margin-bottom: 20px;
   }
-  .row { display: flex; align-items: center; gap: 16px; }
-  .row label { flex: 0 0 100px; color: var(--muted); }
-  .row input[type=range] { flex: 1; }
-  .row .val {
-    flex: 0 0 220px; text-align: left;
-    font-variant-numeric: tabular-nums;
-    color: var(--accent); font-weight: 600; font-family: ui-monospace, monospace;
+
+  /* ---- Dual-handle range slider ---- */
+  .dual {
+    position: relative; height: 38px; margin: 0 8px;
   }
+  .dual .track {
+    position: absolute; left: 0; right: 0; top: 50%;
+    transform: translateY(-50%); height: 4px;
+    background: var(--off); border-radius: 2px;
+  }
+  .dual .highlight {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    height: 4px; background: var(--on); border-radius: 2px;
+    pointer-events: none;
+  }
+  .dual input[type=range] {
+    position: absolute; left: 0; right: 0; top: 0;
+    width: 100%; height: 38px;
+    background: none; -webkit-appearance: none; appearance: none;
+    pointer-events: none;   /* let only the thumb catch events */
+    margin: 0;
+  }
+  .dual input[type=range]::-webkit-slider-runnable-track {
+    height: 4px; background: transparent;
+  }
+  .dual input[type=range]::-moz-range-track {
+    height: 4px; background: transparent;
+  }
+  .dual input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--accent); border: 2px solid #0f1115;
+    cursor: ew-resize; pointer-events: auto;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    margin-top: -7px;
+  }
+  .dual input[type=range]::-moz-range-thumb {
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--accent); border: 2px solid #0f1115;
+    cursor: ew-resize; pointer-events: auto;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+  }
+  .dual .endpoints {
+    position: absolute; left: 0; right: 0; top: 100%;
+    display: flex; justify-content: space-between;
+    color: var(--muted); font-size: 10px; font-family: ui-monospace, monospace;
+    margin-top: 4px;
+  }
+  .dual .endpoints span { opacity: 0.5; }
+
+  .meta-row {
+    display: flex; gap: 18px; margin-top: 14px;
+    font-family: ui-monospace, monospace; font-size: 12px;
+    color: var(--muted); flex-wrap: wrap;
+  }
+  .meta-row b { color: var(--accent); font-weight: 600; }
+  .meta-row .mode {
+    padding: 1px 8px; border-radius: 8px;
+    background: var(--off); color: var(--accent-hot);
+    font-weight: 700; letter-spacing: 0.04em;
+  }
+  .meta-row .schedule-id {
+    color: var(--text); font-weight: 600;
+  }
+
   .strip {
     display: grid; grid-template-columns: repeat(50, 1fr);
-    gap: 1px; margin-top: 6px; height: 26px;
+    gap: 1px; margin-top: 12px; height: 26px;
     border: 1px solid var(--border); border-radius: 4px;
     overflow: hidden;
   }
   .cell { background: var(--off); }
   .cell.on { background: var(--on); }
   .cell.tick { box-shadow: inset 0 -3px 0 0 #555; }
+
   .legend { color: var(--muted); font-size: 11px; margin-top: 6px; }
   .legend .sw { display: inline-block; width: 10px; height: 10px;
                 margin-right: 4px; vertical-align: middle; border-radius: 2px; }
+
   .panels { display: grid; grid-template-columns: 1fr; gap: 16px; max-width: 720px; }
   .panel {
     background: var(--panel); border: 1px solid var(--border);
@@ -262,37 +322,44 @@ CW_INDEX_HTML = r"""
     margin-top: 8px; color: var(--muted); font-size: 12px;
     font-family: ui-monospace, monospace; word-break: break-all;
   }
-  .sanity-pill {
-    display: inline-block; padding: 1px 6px; border-radius: 8px;
-    font-size: 10px; font-weight: 700; letter-spacing: 0.04em;
-    background: var(--off); color: var(--accent); margin-left: 6px;
-  }
 </style>
 </head>
 <body>
 <h1>conditioning_window — {{ prompt }} · seed {{ seed }}</h1>
 <div class="meta">
   num_inference_steps = {{ num_steps }} · guidance_scale = {{ guidance }} ·
-  {{ schedules|length }} schedule(s)
+  {{ schedules|length }} rendered schedule(s)
   · sanity: all_on Δ={{ sanity_on }} ({{ sanity_on_pass }}),
               all_off Δ={{ sanity_off }} ({{ sanity_off_pass }})
 </div>
 
 <div class="controls">
-  <div class="row">
-    <label for="sched">schedule</label>
-    <input id="sched" type="range" min="0" max="{{ schedules|length - 1 }}" step="1" value="0">
-    <div class="val" id="sched-val">—</div>
+  <div class="dual">
+    <div class="track"></div>
+    <div id="hl" class="highlight"></div>
+    <input id="start" type="range" min="0" max="{{ num_steps }}" step="1" value="0">
+    <input id="end"   type="range" min="0" max="{{ num_steps }}" step="1" value="{{ num_steps }}">
+    <div class="endpoints"><span>0</span><span>{{ num_steps }}</span></div>
   </div>
-  <div>
-    <div id="strip" class="strip" title=""></div>
-    <div class="legend">
-      <span class="sw" style="background: var(--on);"></span> conditional ON
-      &nbsp;&nbsp;
-      <span class="sw" style="background: var(--off);"></span> conditional OFF
-      &nbsp;&nbsp;
-      <span style="color: var(--muted);">(50-cell mask; hover = full binary string)</span>
-    </div>
+
+  <div class="meta-row">
+    <span><span class="mode" id="mode">all-on</span></span>
+    <span>start: <b id="start-val">0</b></span>
+    <span>end: <b id="end-val">{{ num_steps }}</b></span>
+    <span>num_on: <b id="num-on">{{ num_steps }}</b>/{{ num_steps }}</span>
+    <span>schedule: <span class="schedule-id" id="sched-id">—</span></span>
+  </div>
+
+  <div id="strip" class="strip" title=""></div>
+  <div class="legend">
+    <span class="sw" style="background: var(--on);"></span> conditional ON
+    &nbsp;&nbsp;
+    <span class="sw" style="background: var(--off);"></span> conditional OFF
+    &nbsp;&nbsp;
+    <span style="color: var(--muted);">
+      (drag the two thumbs independently — left handle = window start, right handle = window end.
+       Slider snaps to the nearest rendered schedule.)
+    </span>
   </div>
 </div>
 
@@ -307,14 +374,57 @@ CW_INDEX_HTML = r"""
 <script>
 const MANIFEST  = {{ manifest_json|safe }};
 const SCHEDULES = MANIFEST.schedules;
+const N         = parseInt("{{ num_steps }}", 10);
 
-const slider  = document.getElementById('sched');
-const valEl   = document.getElementById('sched-val');
-const stripEl = document.getElementById('strip');
-const imgEl   = document.getElementById('img');
-const capEl   = document.getElementById('caption');
+// Derive (start, end) for each rendered schedule from its mask string.
+// start = index of first '1'; end = index after last '1'. All-off => (0, 0).
+function maskBounds(maskStr) {
+  const first = maskStr.indexOf('1');
+  if (first === -1) return {start: 0, end: 0, num_on: 0};
+  let last = maskStr.length - 1;
+  while (last >= 0 && maskStr[last] !== '1') last--;
+  // num_on may be < (last - first + 1) for punctate masks (sparse '1's),
+  // but the snap is by (start, end) endpoints; the rendered mask is the
+  // source of truth once snapped.
+  let num_on = 0;
+  for (const c of maskStr) if (c === '1') num_on++;
+  return {start: first, end: last + 1, num_on};
+}
+
+const ENTRIES = SCHEDULES.map(s => {
+  const b = maskBounds(s.mask);
+  return Object.assign({}, s, b);
+});
+
+// Pre-bucket sanity_all_off as the only entry with (0, 0) bounds.
+function nearestSchedule(s, e) {
+  let best = null, bestD = Infinity;
+  // Special-case the empty window: snap to all-off if it exists.
+  if (s === e) {
+    for (const ent of ENTRIES) {
+      if (ent.start === 0 && ent.end === 0) return ent;   // sanity_all_off
+    }
+  }
+  for (const ent of ENTRIES) {
+    // Skip all-off for non-empty windows; otherwise it always wins on suffix-y queries.
+    if (ent.end === 0 && s !== e) continue;
+    const d = (ent.start - s) * (ent.start - s) + (ent.end - e) * (ent.end - e);
+    if (d < bestD) { bestD = d; best = ent; }
+  }
+  return best;
+}
+
+function inferMode(s, e) {
+  if (s === 0 && e === N) return 'all-on (full CFG)';
+  if (s === e)             return 'all-off (no CFG)';
+  if (s === 0)             return 'prefix (early-only)';
+  if (e === N)             return 'suffix (late-only)';
+  if (e - s <= 3)          return 'pulse (punctate dose)';
+  return 'window (mid-trajectory)';
+}
 
 function renderStrip(maskStr) {
+  const stripEl = document.getElementById('strip');
   stripEl.innerHTML = '';
   for (let i = 0; i < maskStr.length; i++) {
     const c = document.createElement('div');
@@ -325,19 +435,52 @@ function renderStrip(maskStr) {
   stripEl.title = maskStr;
 }
 
-function update() {
-  const i = parseInt(slider.value, 10);
-  const s = SCHEDULES[i];
-  valEl.textContent = s.id + '  (' + s.num_on + '/' + s.mask.length + ' on)';
-  renderStrip(s.mask);
-  imgEl.src = '/img/' + s.image_path;
-  let cap = `${s.id} · family=${s.family} · num_on=${s.num_on}`;
-  if (s.sanity) cap += '  <SANITY>';
+const startEl  = document.getElementById('start');
+const endEl    = document.getElementById('end');
+const hlEl     = document.getElementById('hl');
+const startVal = document.getElementById('start-val');
+const endVal   = document.getElementById('end-val');
+const numOnEl  = document.getElementById('num-on');
+const modeEl   = document.getElementById('mode');
+const schedIdEl= document.getElementById('sched-id');
+const imgEl    = document.getElementById('img');
+const capEl    = document.getElementById('caption');
+
+function update(changed) {
+  let s = parseInt(startEl.value, 10);
+  let e = parseInt(endEl.value, 10);
+  // Enforce s <= e — push the other handle if dragged past.
+  if (s > e) {
+    if (changed === 'start') { e = s; endEl.value = e; }
+    else                     { s = e; startEl.value = s; }
+  }
+
+  // Highlight bar between thumbs.
+  hlEl.style.left  = (100 * s / N) + '%';
+  hlEl.style.width = (100 * (e - s) / N) + '%';
+
+  // Snap to nearest rendered schedule by (start, end) endpoints.
+  const ent = nearestSchedule(s, e);
+  renderStrip(ent.mask);
+  imgEl.src = '/img/' + ent.image_path;
+
+  startVal.textContent = s;
+  endVal.textContent   = e;
+  numOnEl.textContent  = ent.num_on;
+  modeEl.textContent   = inferMode(s, e);
+  schedIdEl.textContent = ent.id +
+      ' (snapped from start=' + s + ', end=' + e + ')';
+  let cap = ent.id + '  family=' + ent.family +
+            '  num_on=' + ent.num_on + '/' + ent.mask.length;
+  if (ent.sanity) cap += '  <SANITY>';
   capEl.textContent = cap;
 }
 
-slider.addEventListener('input', update);
-update();
+startEl.addEventListener('input', () => update('start'));
+endEl.addEventListener('input',   () => update('end'));
+
+// Initial render: all-on.
+update('init');
 </script>
 </body>
 </html>
