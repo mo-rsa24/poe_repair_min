@@ -140,7 +140,7 @@ def _make_sanity_suite(n: int = N_DEFAULT) -> list[Schedule]:
 STANDARD_SUITE: list[Schedule] = _make_standard_suite()
 SANITY_SUITE: list[Schedule] = _make_sanity_suite()
 
-SMOKE_IDS = ["prefix_k10", "window_10_20"]
+SMOKE_IDS = ["prefix_k10", "window_10_30"]
 
 
 def select(names: Sequence[str], suite: Sequence[Schedule] | None = None) -> list[Schedule]:
