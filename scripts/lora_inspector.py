@@ -22,6 +22,7 @@ from flask import Flask, abort, jsonify, render_template_string, send_file
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_MANIFEST = REPO_ROOT / "outputs/lora/cat_dog/seed_42/results/inspector_manifest.json"
+DEFAULT_CW_MANIFEST = REPO_ROOT / "outputs/conditioning_window/cat_dog/seed_42/results/inspector_manifest.json"
 DEFAULT_OUTPUTS_ROOT = REPO_ROOT / "outputs"
 
 
@@ -118,6 +119,11 @@ INDEX_HTML = r"""
   </div>
 </div>
 
+<p style="margin-top:18px;color:var(--muted);font-size:12px;">
+  → <a href="/conditioning_window" style="color:var(--accent);">conditioning_window</a>
+  (no-LoRA CFG-mask ablation; same seed, same x_T)
+</p>
+
 <div id="toast">cell not available</div>
 
 <script>
@@ -189,12 +195,180 @@ update();
 
 
 
+CW_INDEX_HTML = r"""
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>conditioning_window inspector</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --panel: #161a22;
+    --text: #e6e9ef;
+    --muted: #8b93a7;
+    --accent: #7ab7ff;
+    --on:    #2C8F4A;
+    --off:   #2a2f3a;
+    --border: #2a2f3a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 24px;
+    background: var(--bg); color: var(--text);
+    font: 14px/1.4 -apple-system, system-ui, "Segoe UI", sans-serif;
+  }
+  h1 { font-size: 16px; font-weight: 600; margin: 0 0 4px 0; color: var(--muted); }
+  .meta { color: var(--muted); font-size: 12px; margin-bottom: 18px; }
+  .controls {
+    display: grid; gap: 14px; margin-bottom: 20px;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px;
+  }
+  .row { display: flex; align-items: center; gap: 16px; }
+  .row label { flex: 0 0 100px; color: var(--muted); }
+  .row input[type=range] { flex: 1; }
+  .row .val {
+    flex: 0 0 220px; text-align: left;
+    font-variant-numeric: tabular-nums;
+    color: var(--accent); font-weight: 600; font-family: ui-monospace, monospace;
+  }
+  .strip {
+    display: grid; grid-template-columns: repeat(50, 1fr);
+    gap: 1px; margin-top: 6px; height: 26px;
+    border: 1px solid var(--border); border-radius: 4px;
+    overflow: hidden;
+  }
+  .cell { background: var(--off); }
+  .cell.on { background: var(--on); }
+  .cell.tick { box-shadow: inset 0 -3px 0 0 #555; }
+  .legend { color: var(--muted); font-size: 11px; margin-top: 6px; }
+  .legend .sw { display: inline-block; width: 10px; height: 10px;
+                margin-right: 4px; vertical-align: middle; border-radius: 2px; }
+  .panels { display: grid; grid-template-columns: 1fr; gap: 16px; max-width: 720px; }
+  .panel {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px;
+  }
+  .panel h2 {
+    margin: 0 0 8px 0; font-size: 12px; font-weight: 600;
+    color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .panel img {
+    width: 100%; aspect-ratio: 1 / 1; border-radius: 4px;
+    background: #000; display: block;
+  }
+  .panel .caption {
+    margin-top: 8px; color: var(--muted); font-size: 12px;
+    font-family: ui-monospace, monospace; word-break: break-all;
+  }
+  .sanity-pill {
+    display: inline-block; padding: 1px 6px; border-radius: 8px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.04em;
+    background: var(--off); color: var(--accent); margin-left: 6px;
+  }
+</style>
+</head>
+<body>
+<h1>conditioning_window — {{ prompt }} · seed {{ seed }}</h1>
+<div class="meta">
+  num_inference_steps = {{ num_steps }} · guidance_scale = {{ guidance }} ·
+  {{ schedules|length }} schedule(s)
+  · sanity: all_on Δ={{ sanity_on }} ({{ sanity_on_pass }}),
+              all_off Δ={{ sanity_off }} ({{ sanity_off_pass }})
+</div>
+
+<div class="controls">
+  <div class="row">
+    <label for="sched">schedule</label>
+    <input id="sched" type="range" min="0" max="{{ schedules|length - 1 }}" step="1" value="0">
+    <div class="val" id="sched-val">—</div>
+  </div>
+  <div>
+    <div id="strip" class="strip" title=""></div>
+    <div class="legend">
+      <span class="sw" style="background: var(--on);"></span> conditional ON
+      &nbsp;&nbsp;
+      <span class="sw" style="background: var(--off);"></span> conditional OFF
+      &nbsp;&nbsp;
+      <span style="color: var(--muted);">(50-cell mask; hover = full binary string)</span>
+    </div>
+  </div>
+</div>
+
+<div class="panels">
+  <div class="panel">
+    <h2>decoded image</h2>
+    <img id="img" alt="decoded">
+    <div class="caption" id="caption"></div>
+  </div>
+</div>
+
+<script>
+const MANIFEST  = {{ manifest_json|safe }};
+const SCHEDULES = MANIFEST.schedules;
+
+const slider  = document.getElementById('sched');
+const valEl   = document.getElementById('sched-val');
+const stripEl = document.getElementById('strip');
+const imgEl   = document.getElementById('img');
+const capEl   = document.getElementById('caption');
+
+function renderStrip(maskStr) {
+  stripEl.innerHTML = '';
+  for (let i = 0; i < maskStr.length; i++) {
+    const c = document.createElement('div');
+    c.className = 'cell' + (maskStr[i] === '1' ? ' on' : '')
+                         + ((i + 1) % 10 === 0 ? ' tick' : '');
+    stripEl.appendChild(c);
+  }
+  stripEl.title = maskStr;
+}
+
+function update() {
+  const i = parseInt(slider.value, 10);
+  const s = SCHEDULES[i];
+  valEl.textContent = s.id + '  (' + s.num_on + '/' + s.mask.length + ' on)';
+  renderStrip(s.mask);
+  imgEl.src = '/img/' + s.image_path;
+  let cap = `${s.id} · family=${s.family} · num_on=${s.num_on}`;
+  if (s.sanity) cap += '  <SANITY>';
+  capEl.textContent = cap;
+}
+
+slider.addEventListener('input', update);
+update();
+</script>
+</body>
+</html>
+"""
+
+
+_CW_MISSING_HTML = r"""
+<!doctype html><html><head><meta charset="utf-8"><title>conditioning_window manifest missing</title>
+<style>body{font:14px -apple-system,system-ui,sans-serif;background:#0f1115;color:#e6e9ef;padding:24px;}
+code{background:#161a22;padding:2px 6px;border-radius:4px;color:#7ab7ff;}</style>
+</head><body>
+<h2>conditioning_window manifest not found</h2>
+<p>Expected at:</p>
+<p><code>{{ path }}</code></p>
+<p>Build it by running:</p>
+<p><code>python -m poe_repair.experiments.conditioning_window</code></p>
+</body></html>
+"""
+
+
 def create_app(
     manifest_path: Path,
     outputs_root: Path,
+    cw_manifest_path: Path | None = None,
 ) -> Flask:
     manifest = json.loads(manifest_path.read_text())
     outputs_root_abs = outputs_root.resolve()
+
+    cw_manifest: dict | None = None
+    if cw_manifest_path is not None and Path(cw_manifest_path).is_file():
+        cw_manifest = json.loads(Path(cw_manifest_path).read_text())
 
     app = Flask(__name__)
 
@@ -211,6 +385,40 @@ def create_app(
     @app.route("/manifest.json")
     def manifest_route():
         return jsonify(manifest)
+
+    @app.route("/conditioning_window")
+    def conditioning_window():
+        if cw_manifest is None:
+            return render_template_string(
+                _CW_MISSING_HTML,
+                path=str(cw_manifest_path) if cw_manifest_path else "(no path)",
+            ), 404
+        sanity = cw_manifest.get("sanity") or {}
+        on_rec = sanity.get("all_on_vs_run_cfg") or {}
+        off_rec = sanity.get("all_off_vs_uncond") or {}
+        return render_template_string(
+            CW_INDEX_HTML,
+            prompt=cw_manifest.get("prompt", ""),
+            seed=cw_manifest.get("seed", ""),
+            num_steps=cw_manifest.get("num_inference_steps", 50),
+            guidance=cw_manifest.get("guidance_scale", ""),
+            schedules=cw_manifest["schedules"],
+            sanity_on=f"{on_rec.get('max_abs_delta', float('nan')):.2e}"
+                      if on_rec else "—",
+            sanity_off=f"{off_rec.get('max_abs_delta', float('nan')):.2e}"
+                       if off_rec else "—",
+            sanity_on_pass="PASS" if on_rec.get("pass") else "FAIL"
+                           if on_rec else "—",
+            sanity_off_pass="PASS" if off_rec.get("pass") else "FAIL"
+                            if off_rec else "—",
+            manifest_json=json.dumps(cw_manifest),
+        )
+
+    @app.route("/conditioning_window/manifest.json")
+    def conditioning_window_manifest():
+        if cw_manifest is None:
+            abort(404)
+        return jsonify(cw_manifest)
 
     @app.route("/img/<path:rel>")
     def img(rel: str):
@@ -235,6 +443,12 @@ def create_app(
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--manifest", default=str(DEFAULT_MANIFEST))
+    ap.add_argument(
+        "--cw-manifest", default=str(DEFAULT_CW_MANIFEST),
+        help="conditioning_window manifest (produced by "
+             "`python -m poe_repair.experiments.conditioning_window`). "
+             "If missing, the /conditioning_window route renders a hint page.",
+    )
     ap.add_argument("--outputs-root", default=str(DEFAULT_OUTPUTS_ROOT))
     ap.add_argument("--host", default="127.0.0.1")
     ap.add_argument("--port", type=int, default=5050)
@@ -246,7 +460,13 @@ def main() -> int:
         print(f"manifest not found: {manifest_path}")
         print("run scripts/build_lora_manifest.py first")
         return 1
-    app = create_app(manifest_path, Path(args.outputs_root))
+    cw_path = Path(args.cw_manifest) if args.cw_manifest else None
+    if cw_path is not None and not cw_path.is_file():
+        print(
+            f"[warn] conditioning_window manifest not found: {cw_path}; "
+            f"/conditioning_window will render a hint page."
+        )
+    app = create_app(manifest_path, Path(args.outputs_root), cw_manifest_path=cw_path)
     app.run(host=args.host, port=args.port, debug=args.debug)
     return 0
 
