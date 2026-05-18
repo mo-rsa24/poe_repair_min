@@ -5,7 +5,8 @@ Reference samplers used by the experiments:
 - ``run_cfg_poe``: ε = ε̃_A + ε̃_B − ε_∅ (CI baseline; the failure case).
 - ``run_cfg``: plain single-prompt CFG (1 conditional + 1 unconditional);
   used for solo subjects and the Mono diagnostic ceiling.
-- ``run_cfg_masked``: ``run_cfg`` with a per-step on/off mask.
+- ``run_teacher_residual``: λ-interpolated PoE↔Mono sampler for the
+  mono-residual diagnostic (idea1, idea5a, veracity).
 - ``run_lora_residual_inject``: per-arm LoRA composition (success thread).
 - ``run_external_corrector_inject``: group-A external residual corrector
   (failure thread).
@@ -233,86 +234,6 @@ def run_cfg(
     image = decode_latents(models, latents).cpu()
     return SamplerOutputs(latents=latents, image=image, tracker=tracker, extras={})
 
-
-@torch.no_grad()
-def run_cfg_masked(
-    *,
-    init_latents: torch.Tensor,
-    models: dict,
-    scheduler,
-    seq_cond: torch.Tensor, pool_cond: torch.Tensor,
-    seq_e: torch.Tensor, pool_e: torch.Tensor,
-    guidance_scale: float,
-    num_inference_steps: int,
-    cfg_mask,
-    height: int, width: int,
-    euler_init_noise_sigma: float,
-    device: torch.device, dtype: torch.dtype,
-) -> SamplerOutputs:
-    """Single-prompt CFG with a per-step on/off mask.
-
-    Identical to ``run_cfg`` except that ``cfg_mask[step_index]`` gates
-    the conditional contribution: at "on" steps we apply the standard
-    ``ε_uncond + w·(ε_cond − ε_uncond)``; at "off" steps we collapse to
-    ``ε_uncond`` (zero conditional contribution). The σ schedule and the
-    DDIM noise direction are kept identical to the normal CFG step — the
-    same ``eps_t`` is used both in ``tweedie_mean`` and in
-    ``ddim_prev_from_x0_eps`` (the verified noise-direction fix).
-
-    ``cfg_mask`` may be a list/tuple of bools/ints or a 1-D tensor of
-    length ``num_inference_steps``.
-    """
-    mask_list = [bool(x) for x in (cfg_mask.tolist() if isinstance(cfg_mask, torch.Tensor) else list(cfg_mask))]
-    if len(mask_list) != int(num_inference_steps):
-        raise ValueError(
-            f"cfg_mask has length {len(mask_list)}, expected {num_inference_steps}"
-        )
-    scheduler.set_timesteps(num_inference_steps)
-    latents = (init_latents / euler_init_noise_sigma).to(device=device, dtype=dtype)
-    tracker = LatentTrajectoryCollector(
-        num_inference_steps, 1, latents.shape[1], latents.shape[2], latents.shape[3]
-    )
-    pe = torch.cat([seq_cond, seq_e], dim=0)
-    pool = torch.cat([pool_cond, pool_e], dim=0)
-    cond = {
-        "text_embeds": pool,
-        "time_ids": add_time_ids(
-            height=height, width=width, batch_size=2, device=device, dtype=dtype,
-        ),
-    }
-    unet = models["unet"]
-    for step_index, timestep in enumerate(scheduler.timesteps):
-        latent_input = scheduler.scale_model_input(latents.repeat(2, 1, 1, 1), timestep)
-        noise = unet(
-            latent_input, timestep, encoder_hidden_states=pe,
-            added_cond_kwargs=cond, timestep_cond=None,
-        ).sample
-        eps_cond_raw, eps_uncond = noise.chunk(2)
-        if mask_list[step_index]:
-            eps_t = guided_eps(eps_cond_raw, eps_uncond, guidance_scale)
-        else:
-            eps_t = eps_uncond
-        alpha_bar_t = scheduler.alphas_cumprod[int(timestep.item())].to(device=device, dtype=dtype)
-        x0 = tweedie_mean(latents, alpha_bar_t, eps_t)
-        tracker.store_step(
-            step_index, latents, eps_t,
-            float(step_index) / float(num_inference_steps),
-            int(timestep.item()),
-        )
-        latents = ddim_prev_from_x0_eps(
-            scheduler=scheduler, timestep=timestep, step_index=step_index,
-            x0=x0, eps=eps_t,
-        )
-    tracker.store_final(latents)
-    image = decode_latents(models, latents).cpu()
-    return SamplerOutputs(
-        latents=latents, image=image, tracker=tracker,
-        extras={
-            "cfg_mask": mask_list,
-            "num_on": int(sum(mask_list)),
-            "guidance_scale": float(guidance_scale),
-        },
-    )
 
 
 def _lambda_value(
