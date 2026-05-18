@@ -227,9 +227,40 @@ CW_INDEX_HTML = r"""
     border-radius: 8px; padding: 20px 16px 16px 16px; margin-bottom: 20px;
   }
 
-  /* ---- Dual-handle range slider ---- */
+  /* ---- Dual-handle range slider with side arrows ---- */
+  .slider-row {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .arrows {
+    display: flex; flex-direction: row; gap: 4px;
+    flex: 0 0 auto;
+  }
+  .arrows.left  { margin-right: 6px; }
+  .arrows.right { margin-left: 6px; }
+  .arrow-btn {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    background: var(--off); color: var(--accent);
+    border: 1px solid var(--border);
+    font-family: ui-monospace, monospace; font-size: 14px; font-weight: 600;
+    cursor: pointer; user-select: none;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .arrow-btn:hover:not(:disabled) { background: #232a36; }
+  .arrow-btn:disabled {
+    opacity: 0.25; cursor: not-allowed;
+  }
+  .arrow-label {
+    font-size: 10px; color: var(--muted);
+    margin-bottom: 2px; text-align: center;
+    font-family: ui-monospace, monospace; letter-spacing: 0.04em;
+  }
+  .arrows-stack {
+    display: flex; flex-direction: column; align-items: center;
+  }
+
   .dual {
-    position: relative; height: 38px; margin: 0 8px;
+    position: relative; height: 38px; flex: 1 1 auto;
   }
   .dual .track {
     position: absolute; left: 0; right: 0; top: 50%;
@@ -275,6 +306,39 @@ CW_INDEX_HTML = r"""
     margin-top: 4px;
   }
   .dual .endpoints span { opacity: 0.5; }
+
+  /* ---- Hover tooltip over the slider track ---- */
+  .dual .tooltip {
+    position: absolute; bottom: calc(100% + 8px);
+    transform: translateX(-50%);
+    background: #1f2632; color: var(--text);
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 6px 10px; font-size: 11px;
+    font-family: ui-monospace, monospace;
+    white-space: nowrap; pointer-events: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.55);
+    opacity: 0; transition: opacity 0.10s ease;
+    z-index: 10;
+  }
+  .dual .tooltip.show { opacity: 1; }
+  .dual .tooltip .tt-id { color: var(--accent); font-weight: 600; }
+  .dual .tooltip .tt-delta-faster { color: var(--on); }
+  .dual .tooltip .tt-delta-slower { color: var(--accent-hot); }
+  .dual .tooltip .tt-delta-zero   { color: var(--muted); }
+  .dual .tooltip-arrow {
+    position: absolute; left: 50%; bottom: -4px;
+    transform: translateX(-50%) rotate(45deg);
+    width: 8px; height: 8px; background: #1f2632;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* The time-pill in meta-row */
+  .time-pill {
+    padding: 1px 8px; border-radius: 8px;
+    background: var(--off); color: var(--on);
+    font-weight: 700; letter-spacing: 0.02em;
+  }
 
   .meta-row {
     display: flex; gap: 18px; margin-top: 14px;
@@ -334,12 +398,38 @@ CW_INDEX_HTML = r"""
 </div>
 
 <div class="controls">
-  <div class="dual">
-    <div class="track"></div>
-    <div id="hl" class="highlight"></div>
-    <input id="start" type="range" min="0" max="{{ num_steps }}" step="1" value="0">
-    <input id="end"   type="range" min="0" max="{{ num_steps }}" step="1" value="{{ num_steps }}">
-    <div class="endpoints"><span>0</span><span>{{ num_steps }}</span></div>
+  <div class="slider-row">
+    <div class="arrows-stack">
+      <div class="arrow-label">start</div>
+      <div class="arrows left">
+        <button class="arrow-btn" id="start-prev" title="previous start endpoint">◀</button>
+        <button class="arrow-btn" id="start-next" title="next start endpoint">▶</button>
+      </div>
+    </div>
+
+    <div class="dual">
+      <div class="track"></div>
+      <div id="hl" class="highlight"></div>
+      <input id="start" type="range" min="0" max="{{ num_steps }}" step="1" value="0">
+      <input id="end"   type="range" min="0" max="{{ num_steps }}" step="1" value="{{ num_steps }}">
+      <div class="endpoints"><span>0</span><span>{{ num_steps }}</span></div>
+      <div id="tt" class="tooltip">
+        <span class="tt-id" id="tt-id">—</span>
+        &nbsp;·&nbsp;
+        <span id="tt-time">—</span>
+        &nbsp;·&nbsp;
+        <span id="tt-delta">—</span>
+        <div class="tooltip-arrow"></div>
+      </div>
+    </div>
+
+    <div class="arrows-stack">
+      <div class="arrow-label">end</div>
+      <div class="arrows right">
+        <button class="arrow-btn" id="end-prev" title="previous end endpoint">◀</button>
+        <button class="arrow-btn" id="end-next" title="next end endpoint">▶</button>
+      </div>
+    </div>
   </div>
 
   <div class="meta-row">
@@ -347,6 +437,7 @@ CW_INDEX_HTML = r"""
     <span>start: <b id="start-val">0</b></span>
     <span>end: <b id="end-val">{{ num_steps }}</b></span>
     <span>num_on: <b id="num-on">{{ num_steps }}</b>/{{ num_steps }}</span>
+    <span>render time: <span class="time-pill" id="time-pill">—</span></span>
     <span>schedule: <span class="schedule-id" id="sched-id">—</span></span>
   </div>
 
@@ -396,6 +487,10 @@ const ENTRIES = SCHEDULES.map(s => {
   return Object.assign({}, s, b);
 });
 
+// Sorted unique start / end values across rendered schedules — drives the arrow buttons.
+const START_VALUES = Array.from(new Set(ENTRIES.map(e => e.start))).sort((a, b) => a - b);
+const END_VALUES   = Array.from(new Set(ENTRIES.map(e => e.end  ))).sort((a, b) => a - b);
+
 // Pre-bucket sanity_all_off as the only entry with (0, 0) bounds.
 function nearestSchedule(s, e) {
   let best = null, bestD = Infinity;
@@ -423,6 +518,26 @@ function inferMode(s, e) {
   return 'window (mid-trajectory)';
 }
 
+function fmtSeconds(elapsed) {
+  if (elapsed === null || elapsed === undefined) return '—';
+  const t = Number(elapsed);
+  if (!isFinite(t) || t < 0) return '—';
+  if (t < 60) return t.toFixed(1) + 's';
+  const m = Math.floor(t / 60);
+  const s = Math.round(t - m * 60);
+  return m + 'm ' + String(s).padStart(2, '0') + 's';
+}
+
+function fmtDelta(otherT, currentT) {
+  if (otherT == null || currentT == null) return {text: '—', cls: 'tt-delta-zero'};
+  const d = Number(otherT) - Number(currentT);
+  if (Math.abs(d) < 0.05) return {text: '~equal', cls: 'tt-delta-zero'};
+  const mag = Math.abs(d).toFixed(1) + 's';
+  return d < 0
+    ? {text: mag + ' faster', cls: 'tt-delta-faster'}
+    : {text: mag + ' slower', cls: 'tt-delta-slower'};
+}
+
 function renderStrip(maskStr) {
   const stripEl = document.getElementById('strip');
   stripEl.innerHTML = '';
@@ -443,8 +558,22 @@ const endVal   = document.getElementById('end-val');
 const numOnEl  = document.getElementById('num-on');
 const modeEl   = document.getElementById('mode');
 const schedIdEl= document.getElementById('sched-id');
+const timePillEl = document.getElementById('time-pill');
 const imgEl    = document.getElementById('img');
 const capEl    = document.getElementById('caption');
+
+const startPrevBtn = document.getElementById('start-prev');
+const startNextBtn = document.getElementById('start-next');
+const endPrevBtn   = document.getElementById('end-prev');
+const endNextBtn   = document.getElementById('end-next');
+
+const dualEl      = document.querySelector('.dual');
+const ttEl        = document.getElementById('tt');
+const ttIdEl      = document.getElementById('tt-id');
+const ttTimeEl    = document.getElementById('tt-time');
+const ttDeltaEl   = document.getElementById('tt-delta');
+
+let currentEntry = null;   // the rendered schedule we're currently snapped to
 
 function update(changed) {
   let s = parseInt(startEl.value, 10);
@@ -461,6 +590,7 @@ function update(changed) {
 
   // Snap to nearest rendered schedule by (start, end) endpoints.
   const ent = nearestSchedule(s, e);
+  currentEntry = ent;
   renderStrip(ent.mask);
   imgEl.src = '/img/' + ent.image_path;
 
@@ -468,16 +598,108 @@ function update(changed) {
   endVal.textContent   = e;
   numOnEl.textContent  = ent.num_on;
   modeEl.textContent   = inferMode(s, e);
+  timePillEl.textContent = fmtSeconds(ent.elapsed_s);
   schedIdEl.textContent = ent.id +
       ' (snapped from start=' + s + ', end=' + e + ')';
   let cap = ent.id + '  family=' + ent.family +
             '  num_on=' + ent.num_on + '/' + ent.mask.length;
+  if (ent.elapsed_s != null) cap += '  · render=' + fmtSeconds(ent.elapsed_s);
   if (ent.sanity) cap += '  <SANITY>';
   capEl.textContent = cap;
+
+  updateArrowsEnabled();
 }
 
 startEl.addEventListener('input', () => update('start'));
 endEl.addEventListener('input',   () => update('end'));
+
+// ---- Arrow buttons: jump to next/prev rendered endpoint ----
+
+function nextValueAbove(arr, v) {
+  // smallest value in arr strictly greater than v; null if none
+  for (const x of arr) if (x > v) return x;
+  return null;
+}
+function nextValueBelow(arr, v) {
+  // largest value in arr strictly less than v; null if none
+  let r = null;
+  for (const x of arr) {
+    if (x < v) r = x;
+    else break;
+  }
+  return r;
+}
+
+function bumpStart(dir) {
+  const cur = parseInt(startEl.value, 10);
+  const endV = parseInt(endEl.value, 10);
+  let target = dir > 0 ? nextValueAbove(START_VALUES, cur)
+                       : nextValueBelow(START_VALUES, cur);
+  if (target === null) return;
+  // Don't allow start to cross end.
+  if (target > endV) target = endV;
+  startEl.value = target;
+  update('start');
+}
+
+function bumpEnd(dir) {
+  const cur = parseInt(endEl.value, 10);
+  const startV = parseInt(startEl.value, 10);
+  let target = dir > 0 ? nextValueAbove(END_VALUES, cur)
+                       : nextValueBelow(END_VALUES, cur);
+  if (target === null) return;
+  if (target < startV) target = startV;
+  endEl.value = target;
+  update('end');
+}
+
+function updateArrowsEnabled() {
+  const s = parseInt(startEl.value, 10);
+  const e = parseInt(endEl.value, 10);
+  startPrevBtn.disabled = (nextValueBelow(START_VALUES, s) === null);
+  startNextBtn.disabled = (nextValueAbove(START_VALUES, s) === null) ||
+                          (nextValueAbove(START_VALUES, s) > e);
+  endPrevBtn.disabled   = (nextValueBelow(END_VALUES,   e) === null) ||
+                          (nextValueBelow(END_VALUES,   e) < s);
+  endNextBtn.disabled   = (nextValueAbove(END_VALUES,   e) === null);
+}
+
+startPrevBtn.addEventListener('click', () => bumpStart(-1));
+startNextBtn.addEventListener('click', () => bumpStart(+1));
+endPrevBtn  .addEventListener('click', () => bumpEnd  (-1));
+endNextBtn  .addEventListener('click', () => bumpEnd  (+1));
+
+// ---- Hover tooltip on slider track ----
+
+dualEl.addEventListener('mousemove', (ev) => {
+  const rect = dualEl.getBoundingClientRect();
+  const x = ev.clientX - rect.left;
+  const frac = Math.max(0, Math.min(1, x / rect.width));
+  const stepPos = Math.round(frac * N);
+
+  // Hypothetical (start, end): move the closer of the two current thumbs to this position.
+  const s = parseInt(startEl.value, 10);
+  const e = parseInt(endEl.value, 10);
+  let hypS = s, hypE = e;
+  if (Math.abs(stepPos - s) <= Math.abs(stepPos - e)) {
+    hypS = stepPos;
+    if (hypS > hypE) hypE = hypS;
+  } else {
+    hypE = stepPos;
+    if (hypE < hypS) hypS = hypE;
+  }
+
+  const ent = nearestSchedule(hypS, hypE);
+  ttIdEl.textContent   = ent.id;
+  ttTimeEl.textContent = fmtSeconds(ent.elapsed_s);
+  const delta = fmtDelta(ent.elapsed_s, currentEntry ? currentEntry.elapsed_s : null);
+  ttDeltaEl.textContent = delta.text;
+  ttDeltaEl.className = delta.cls;
+
+  ttEl.style.left = (100 * frac) + '%';
+  ttEl.classList.add('show');
+});
+dualEl.addEventListener('mouseleave', () => ttEl.classList.remove('show'));
 
 // Initial render: all-on.
 update('init');
