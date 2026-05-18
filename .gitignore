@@ -1,12 +1,28 @@
+# Python bytecode and virtualenvs
 *pycache*/
+*.pyc
+.venv/
+venv/
+
+# Training artifacts
 *.npy
 *.pt
-checkpoints/
+*.safetensors
+wandb/
+
+# Pilot data (lives under /datasets/...)
 dataset/
+
+# Editor / IDE local state
 claude/
 .claude/
+.idea/
+.vscode/local/
 
-# Local results — actual data lives under /datasets/mmolefe/poe_repair_min/outputs/
-# Top-level entries here are symlinks. See docs/STORAGE.md.
+# Local results — symlinks point at /datasets/mmolefe/poe_repair_min/outputs/
 outputs/
 logs/
+
+# Misc transient
+.DS_Store
+*.tmp

@@ -39,7 +39,7 @@ METHOD_NAME = "direct_eps"
 def build_rect_schedule(
     num_steps: int, window_frac: float = 0.4, lambda_max: float = 1.0,
 ) -> torch.Tensor:
-    """Phase-11 rectangular schedule, mirroring sched-M2 / residual_prompt."""
+    """Rectangular λ schedule: λ_max for the first ``window_frac`` of steps, 0 after."""
     sched = torch.zeros(num_steps)
     sched[: int(round(window_frac * num_steps))] = float(lambda_max)
     return sched
