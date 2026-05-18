@@ -98,7 +98,7 @@ def run(
 
     init_latents, euler_sigma = init_latents_for_cell(cell, ctx)
     emb = encode_pair(cell, ctx)
-    seq_j, pool_j, _ = get_joint_embeds(cell, ctx, anchor_source="literal")
+    seq_j, pool_j = get_joint_embeds(cell, ctx)
 
     residuals_dir = (out_dir / "residuals") if save_residuals else None
     attn_dir = (out_dir / "attn_maps") if record_cross_attention else None

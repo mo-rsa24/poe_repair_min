@@ -33,7 +33,7 @@ from poe_repair.experiments.group_a_corrector.config import (
     derive_run_id,
     run_dir_for,
 )
-from poe_repair.experiments.thread_c_structure.loader import CellPath
+from poe_repair.training_cache import CellPath
 from poe_repair.runtime import (
     encode_prompt_sdxl,
     ensure_dir,

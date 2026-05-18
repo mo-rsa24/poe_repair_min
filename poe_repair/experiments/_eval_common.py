@@ -2,7 +2,7 @@
 
 - ``cell_for``: minimal PairSeedCell factory using fallback init latents.
 - ``slugify``: filesystem-friendly pair slug.
-- ``HEADLINE_PAIR``, ``HELD_OUT_PAIRS``: the pair lists each experiment uses.
+- ``HEADLINE_PAIR``: the pair the active experiments target.
 """
 
 from __future__ import annotations
@@ -10,16 +10,10 @@ from __future__ import annotations
 import re
 
 from poe_repair.config import RunConfig
-from poe_repair.embeddings.holdout_pairs import (
-    ALL_HOLDOUT_PAIRS,
-    COLLISION_PAIRS,
-    COOPERATIVE_PAIRS,
-)
 from poe_repair.runtime import PairSeedCell
 
 
 HEADLINE_PAIR = ("a cat", "a dog")
-HELD_OUT_PAIRS = list(ALL_HOLDOUT_PAIRS)
 
 
 def slugify(prompt_a: str, prompt_b: str) -> str:
