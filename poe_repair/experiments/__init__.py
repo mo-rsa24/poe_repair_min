@@ -11,6 +11,9 @@ Active experiments:
   - ``internal_force_failure``     : Mono-free PoE-internal corrective forces
                                      (overlap repulsion, score-alignment) —
                                      reported as a failure case.
+  - ``conditioning_window``        : per-step CFG-mask sweep on clean SDXL;
+                                     no-LoRA baseline against which LoRA's
+                                     marginal effect is measured.
 
 ENVIRONMENT
 -----------

@@ -1,6 +1,6 @@
 # poe_repair_min
 
-PoE composition repair on SDXL. The repo is organised around four threads
+PoE composition repair on SDXL. The repo is organised around five threads
 of code, outputs, and checkpoints:
 
 1. **LoRA (success).** Per-arm rank-8 LoRA on SDXL UNet cross-attention.
@@ -19,6 +19,11 @@ of code, outputs, and checkpoints:
 4. **Internal-force failure case.** Mono-free PoE-internal corrective
    forces (attention-overlap + score-alignment). Another repair attempt
    that fails alongside group-A. See [`internal-force-failure.md`](internal-force-failure.md).
+5. **CFG conditioning-window ablation (no-LoRA baseline).** Per-step CFG
+   on/off mask sweep on a clean SDXL base. Identifies the minimum
+   conditioning window that still produces a recognisable cat+dog;
+   serves as the no-residual baseline against which thread 1 measures
+   LoRA's marginal effect. See [`conditioning-window.md`](conditioning-window.md).
 
 Published-paper reference codebases (AAE, CO3, FOCUS, P2P,
 reduce-reuse-recycle) live untouched in `composition/`.
@@ -68,6 +73,7 @@ poe_repair/
       clip_window/                         Thread 2b
     group_a_failure/                       Thread 3
     internal_force_failure/                Thread 4
+    conditioning_window/                   Thread 5
   students/                    latent_cnn, latent_unet, frozen_feature_mlp,
                                direct_eps (group-A architectures)
   figures/                     plotting helpers
@@ -77,6 +83,7 @@ outputs/
   residual_diagnostics/existence/                (regenerable; not in git)
   residual_diagnostics/clip_window/              (regenerable; not in git)
   internal_force_failure/                        (regenerable; not in git)
+  conditioning_window/cat_dog/seed_42/           (regenerable; not in git)
 composition/                   vendored published-paper reference repos
 scripts/
   build_lora_manifest.py       scan results/ -> JSON manifest for inspector
@@ -152,6 +159,21 @@ the residual-existence diagnostic for basin-barrier calibration:
 $PY -m poe_repair.experiments.residual_diagnostics.existence --pair "a cat|a dog" --seed 42
 $PY -m poe_repair.experiments.internal_force_failure         --pair "a cat|a dog" --seed 42
 ```
+
+### Thread 5 — CFG conditioning-window ablation (no-LoRA baseline)
+
+See [`conditioning-window.md`](conditioning-window.md). Per-step CFG mask
+sweep on clean SDXL; no LoRA, no Mono. Reuses the same x_T as the LoRA
+experiment so the marginal-effect comparison is valid.
+
+```bash
+$PY -m poe_repair.experiments.conditioning_window --sanity-only   # equivalence checks
+$PY -m poe_repair.experiments.conditioning_window --smoke         # 2-schedule wiring test
+$PY -m poe_repair.experiments.conditioning_window                  # full STANDARD_SUITE (~10–15 min)
+```
+
+The interactive readout is the inspector at
+`http://127.0.0.1:5050/conditioning_window` (link is on the main LoRA page).
 
 ## Cached baselines (PoE / Mono / solo_a / solo_b)
 
