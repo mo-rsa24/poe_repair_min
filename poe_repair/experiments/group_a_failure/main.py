@@ -3,7 +3,7 @@ inference probes.
 
 Usage::
 
-    python -m poe_repair.experiments.group_a_corrector \\
+    python -m poe_repair.experiments.group_a_failure \\
         --technique latent_cnn \\
         --pair a_cat__x__a_dog --seed 42 --split heldout \\
         --total-epochs 600 --probe-every-epochs 50 --lr 1e-4
@@ -25,10 +25,10 @@ from typing import Any
 
 import torch
 
-from poe_repair.experiments.group_a_corrector import figures as ga_figures
-from poe_repair.experiments.group_a_corrector import probe as ga_probe
-from poe_repair.experiments.group_a_corrector import trainer as ga_trainer
-from poe_repair.experiments.group_a_corrector.config import (
+from poe_repair.experiments.group_a_failure import figures as ga_figures
+from poe_repair.experiments.group_a_failure import probe as ga_probe
+from poe_repair.experiments.group_a_failure import trainer as ga_trainer
+from poe_repair.experiments.group_a_failure.config import (
     RunConfig,
     derive_run_id,
     run_dir_for,
@@ -74,7 +74,7 @@ def _parse_int_pair(s: str) -> tuple[int, int]:
 
 def build_argparser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(
-        prog="group_a_corrector",
+        prog="group_a_failure",
         description="External score-space corrector training (Stage 3, Group A).",
     )
     ap.add_argument("--technique",
@@ -138,7 +138,7 @@ def build_argparser() -> argparse.ArgumentParser:
     ap.add_argument("--wandb-entity", default=None)
     ap.add_argument("--wandb-mode", default="online",
                     choices=("online", "offline", "disabled"))
-    ap.add_argument("--wandb-tags", default="group_a,stage_3")
+    ap.add_argument("--wandb-tags", default="group_a_failure")
 
     ap.add_argument("--output-root", default=str(DEFAULT_OUTPUT_ROOT))
     ap.add_argument("--run-id", default="auto",
@@ -166,11 +166,11 @@ def _discover_latest_checkpoint(
     pair_slug: str,
     seed: int,
 ) -> tuple[Path, Path] | None:
-    """Scan ``output_root/group_a/<technique>/<pair>/seed_<N>/*/`` for runs
+    """Scan ``output_root/group_a_failure/<technique>/<pair>/seed_<N>/*/`` for runs
     that contain a checkpoint. Returns ``(run_dir, ckpt_path)`` for the
     most recent run, or None if nothing found.
     """
-    base = output_root / "group_a" / technique / pair_slug / f"seed_{seed}"
+    base = output_root / "group_a_failure" / technique / pair_slug / f"seed_{seed}"
     if not base.exists():
         return None
     candidates: list[tuple[float, Path, Path]] = []

@@ -14,7 +14,7 @@ basin-selection window (steps 0–24 by default), discounted weight after.
 Validation runs against the held-out cache split (cohort H —
 cat × dog). Saves ``best.pt`` on best held-out RMSE and ``last.pt`` every
 step. Checkpoints live under
-``checkpoints/students/direct_eps/<output_name>/``.
+``outputs/group_a_failure/checkpoints/direct_eps/<output_name>/``.
 
 Usage::
 
@@ -269,8 +269,13 @@ def main() -> None:
         )
         train_dtype = torch.float32
 
-    out_dir = ensure_dir(REPO_ROOT / "outputs" / "students" / args.output_name)
-    ckpt_dir = ensure_dir(REPO_ROOT / "checkpoints" / "students" / args.output_name)
+    out_dir = ensure_dir(
+        REPO_ROOT / "outputs" / "group_a_failure" / "students" / args.output_name
+    )
+    ckpt_dir = ensure_dir(
+        REPO_ROOT / "outputs" / "group_a_failure" / "checkpoints"
+        / "direct_eps" / args.output_name
+    )
 
     # ---- Datasets ----
     print(f"[2b] cache_root = {args.cache_root}")
