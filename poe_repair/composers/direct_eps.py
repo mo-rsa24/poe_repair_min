@@ -7,8 +7,8 @@ guided PoE score under a λ_t schedule:
     ε_t = ε̃_PoE + λ_t · δ_θ(x_t, t, c_a, c_b, c_∅)
 
 The trained student lives at
-``checkpoints/students/<output_name>/best.pt``. Pass the path via
-``student_ckpt`` or set ``POE_REPAIR_DIRECT_EPS_CKPT``.
+``outputs/group_a_failure/checkpoints/direct_eps/<output_name>/best.pt``.
+Pass the path via ``student_ckpt`` or set ``POE_REPAIR_DIRECT_EPS_CKPT``.
 """
 
 from __future__ import annotations
@@ -61,7 +61,10 @@ def _resolve_student_ckpt(student_ckpt: str | Path | None) -> Path:
     if env:
         return Path(env)
     repo_root = Path(__file__).resolve().parent.parent.parent
-    return repo_root / "checkpoints" / "students" / "direct_eps_v1" / "best.pt"
+    return (
+        repo_root / "outputs" / "group_a_failure" / "checkpoints"
+        / "direct_eps" / "direct_eps_v1" / "best.pt"
+    )
 
 
 def run(

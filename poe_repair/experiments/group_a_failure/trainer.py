@@ -19,7 +19,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.optim import AdamW
 
-from poe_repair.experiments.group_a_corrector.config import RunConfig
+from poe_repair.experiments.group_a_failure.config import RunConfig
 from poe_repair.training_cache import (
     CellPath,
     delta_t_from_raw,

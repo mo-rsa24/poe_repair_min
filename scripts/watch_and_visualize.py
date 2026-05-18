@@ -11,7 +11,7 @@ Pure PoE + learned residual at inference (no sched-M2, no ê_J anywhere).
 Usage::
 
     CUDA_VISIBLE_DEVICES=0 python -m scripts.watch_and_visualize \\
-        --ckpt-dir /abs/path/checkpoints/students/direct_eps_overfit_catdog_hg \\
+        --ckpt-dir /abs/path/outputs/group_a_failure/checkpoints/direct_eps/direct_eps_overfit_catdog_hg \\
         --pair "a cat|a dog" --seed 42 \\
         --lambda-max 1.0 --window-frac 0.4 --poll-seconds 30
 
@@ -102,7 +102,7 @@ def _render_one(
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--ckpt-dir", type=Path, required=True,
-                    help="checkpoints/students/<output_name>/ directory.")
+                    help="outputs/group_a_failure/checkpoints/direct_eps/<output_name>/ directory.")
     ap.add_argument("--pair", default="a cat|a dog",
                     help='"prompt_a|prompt_b"')
     ap.add_argument("--seed", type=int, default=42)

@@ -92,7 +92,7 @@ class SamplerConfig:
 class WandBConfig:
     project: str = "poe-repair-group-a"
     entity: str | None = None
-    tags: tuple[str, ...] = ("group_a", "stage_3")
+    tags: tuple[str, ...] = ("group_a_failure",)
     mode: str = "online"               # "online" | "offline" | "disabled"
 
 
@@ -139,7 +139,7 @@ def derive_run_id(cfg: RunConfig, *, timestamp: str) -> str:
 
 def run_dir_for(cfg: RunConfig, *, output_root: Path) -> Path:
     return (
-        output_root / "group_a" / cfg.technique.name
+        output_root / "group_a_failure" / cfg.technique.name
         / cfg.cell.pair_slug / f"seed_{cfg.cell.seed}"
         / cfg.run_id
     )

@@ -23,7 +23,7 @@ import torch
 import torch.nn.functional as F
 from PIL import Image
 
-from poe_repair.experiments.group_a_corrector.config import RunConfig
+from poe_repair.experiments.group_a_failure.config import RunConfig
 from poe_repair.figures._common import save_fig
 
 
