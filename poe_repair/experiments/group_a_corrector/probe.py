@@ -17,7 +17,7 @@ from typing import Any
 import torch
 
 from poe_repair.experiments.group_a_corrector.config import RunConfig
-from poe_repair.experiments.thread_c_structure.loader import CellPath, load_step_raw
+from poe_repair.training_cache import CellPath, load_step_raw
 from poe_repair.experiments.veracity import metrics as v_metrics
 from poe_repair.methods._sampling import (
     run_external_corrector_inject,

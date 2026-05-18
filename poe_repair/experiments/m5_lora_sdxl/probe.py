@@ -24,7 +24,7 @@ from typing import Any
 import torch
 
 from poe_repair.experiments.m5_lora_sdxl.config import RunConfig
-from poe_repair.experiments.thread_c_structure.loader import CellPath, load_step_raw
+from poe_repair.training_cache import CellPath, load_step_raw
 from poe_repair.experiments.veracity import metrics as v_metrics
 from poe_repair.methods._sampling import (
     run_lora_residual_inject,

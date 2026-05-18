@@ -20,7 +20,7 @@ import torch.nn.functional as F
 from torch.optim import AdamW
 
 from poe_repair.experiments.group_a_corrector.config import RunConfig
-from poe_repair.experiments.thread_c_structure.loader import (
+from poe_repair.training_cache import (
     CellPath,
     delta_t_from_raw,
     load_step_raw,
