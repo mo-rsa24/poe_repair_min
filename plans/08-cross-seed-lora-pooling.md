@@ -29,127 +29,190 @@ seed axis with no architectural changes (the cheapest possible
 extension), or whether cross-seed generalisation needs new machinery
 (hypernet, outcome supervision, per-cell library — out of scope here).
 
-## Code (what exists vs. what needs to be built)
+## Code
 
-Existing.
+All cross-seed pooling code lives under
+`poe_repair/experiments/cross_seed_lora_pooling/` with thin shell
+runners under `scripts/cross_seed_lora_pooling/`. The trainer never
+touches the single-seed Phase-4 reference artefact under
+`outputs/lora/cat_dog/seed_42/results/`.
 
-- Single-seed trainer: `poe_repair/experiments/lora/` — copy as
-  scaffold for pooled trainer.
-- Cache loader: `poe_repair/training_cache.py::CellPath`,
-  `load_cached_steps`, `delta_t_from_raw`.
-- Sampler: `run_lora_residual_inject` (Phase 4) — accepts pinned init
-  latents per seed.
-- Inspector + manifest builders for the single-seed run.
+| Module | What it does |
+|---|---|
+| `seed_pool.py` | Loads `seed_pool.yaml`; enforces `train_pool ∩ held_out = ∅` at startup. |
+| `train_pooled.py` | Pooled trainer. `--k <int>` picks the first *k* seeds from `train_pool`. `--single-seed-pick <s>` overrides for the k=1 picks. |
+| `sample_heldout.py` | Loads a checkpoint, attaches LoRA, samples held-out seeds via `run_lora_residual_inject`. `--record-eps` dumps per-step `ε_PoE_lora,t` for Task D. |
+| `step0_prescreen.py` | Inference-time mono-average pre-screen. Per held-out seed samples four conditions: PoE / r̄_t-inject / oracle r_t^(s*)-inject / mono. No training. |
+| `task_d_bridge.py` | Reads dumped ε records + cached Δ_t; emits cos / norm-ratio / residual-of-residual curves vs t and a spatial residual-of-residual heatmap. |
+| `contact_sheet.py` | Renders Task B / Task C grids from finished runs. |
+| `trajectory_diagram.py` | Decodes per-step Tweedie x̂_0 for a chosen run to visualise the pooled-LoRA trajectory. |
 
-To build.
+Shared dependencies:
 
-| Component | Where it lives | Why |
-|---|---|---|
-| `load_cached_steps_pooled(cells, ...)` | `training_cache.py` | Concatenate cached steps across multiple cells; tag each entry with `source_seed`. |
-| Pooled trainer entrypoint | `poe_repair/experiments/lora_pooled/` (sibling of `lora/`) | Don't touch the reference single-seed run dir; pooled trainer takes `--seed-pool` and `--held-out-seeds`. |
-| Held-out evaluator | `lora_pooled/probe.py` | Loop the existing probe across held-out seeds with per-seed pinned init latents. |
-| `record_eps_path` kwarg on `run_lora_residual_inject` | `_sampling.py` | Pickle per-step `ε_PoE_lora,t` and matching `x_t` — used for Task D's cosine analysis. |
-| Inference-time mono-average sampler | `_sampling.py::run_constant_residual_inject` (new, ~50 lines) | Inject a `{step_index: r̄_t}` dict at every step. Used by the free Step-0 pre-screen. |
-| `seed_pool.yaml` + load-time leak assertion | `outputs/cross_seed_lora_pooling/` | One file, fail-fast: any overlap between train pool and held-out aborts the run. |
+- Loader / leak guard: `poe_repair/training_cache.py::CellPath`,
+  `load_cached_steps`, `delta_t_from_raw`. `DEFAULT_CACHE_ROOT` reads
+  `POE_REPAIR_TRAINING_CACHE` env var (defaults to
+  `/datasets/mmolefe/poe_repair_min/outputs/training_cache`).
+- Sampler: `poe_repair/methods/_sampling.py::run_lora_residual_inject`.
+  Already supports a `record_eps_path` style hook via
+  `sample_heldout --record-eps`.
+
+Shell runners (one per task — read them before running, they show the
+canonical flag combinations and parametrise through env vars):
+
+- `scripts/cross_seed_lora_pooling/task_b_learning_curve.sh`
+- `scripts/cross_seed_lora_pooling/task_c_per_seed_ceiling.sh`
+- `scripts/cross_seed_lora_pooling/sweep_s1_rank.sh`
 
 ## Cache prerequisites
 
-Inventory:
-`/datasets/.../training_cache/heldout/a_cat__x__a_dog/seed_{1..12,42}`
-— 13 cells exist.
+Inventory on the cluster:
+`/datasets/mmolefe/poe_repair_min/outputs/training_cache/heldout/a_cat__x__a_dog/seed_{1..12,42}/`
+— 13 cells, ~461 MB total. **The cache directory `outputs/` is
+git-ignored** (including `seed_pool.yaml`); a fresh clone has *no*
+cache cells and no seed pool YAML.
 
-For k=16 we'd need 16 train + 4 held-out = 20. Either generate seeds
-13–19 in parallel, or drop k=16 from the curve and run k ∈ {1, 4, 8}
-with the cells already in hand. **Default: start with k ∈ {1, 4, 8}.**
+For k=16 we'd need 16 train + 4 held-out = 20 cells. Either generate
+seeds 13–19 or stay at k ∈ {1, 4, 8} with the cells already in hand.
+**Default: k ∈ {1, 4, 8}.** No cache-generation script ships in this
+repo — the cells were produced on the cluster and should be rsync'd
+to any new machine, not regenerated.
+
+### Bootstrapping a fresh checkout (e.g. `hippo`)
+
+```bash
+# From a machine that has the cache (e.g. mscluster106), push to the new host:
+ssh <host> 'mkdir -p <repo>/outputs/training_cache/heldout/a_cat__x__a_dog \
+                     <repo>/outputs/cross_seed_lora_pooling'
+
+rsync -avzP \
+  /datasets/mmolefe/poe_repair_min/outputs/training_cache/heldout/a_cat__x__a_dog/ \
+  <host>:<repo>/outputs/training_cache/heldout/a_cat__x__a_dog/
+
+rsync -avzP \
+  outputs/cross_seed_lora_pooling/seed_pool.yaml \
+  <host>:<repo>/outputs/cross_seed_lora_pooling/seed_pool.yaml
+```
+
+Then on the new host, before any cross-seed run:
+
+```bash
+export POE_REPAIR_TRAINING_CACHE=<repo>/outputs/training_cache
+```
+
+(Or pass `--cache-root <repo>/outputs/training_cache` to each module
+— the shell runners don't forward it, so the env var is simpler.)
 
 ## Commands
 
 ```bash
 PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
 export CUDA_VISIBLE_DEVICES=1
+export POE_REPAIR_TRAINING_CACHE=$PWD/outputs/training_cache    # if not the cluster default
 ```
 
 ### Step 0 — inference-time mono-average pre-screen (no training)
 
 ```bash
-$PY -m poe_repair.experiments.lora_pooled.prescreen \
-    --train-pool 1,2,3,4,5,6,7,8 \
-    --held-out 9,10,11,12
+$PY -m poe_repair.experiments.cross_seed_lora_pooling.step0_prescreen
 ```
 
-Builds `r̄_t = (1/K) Σ_s r_t^(s)` from cached Δ_t, injects it at every
-step on each held-out seed's PoE trajectory, decodes. Outputs two
-grids: `[PoE | r̄_t-injected | r_t^(s*)-injected | mono]` per held-out
-seed; per-step `‖r̄_t‖` vs `‖r_t^(s*)‖`.
+Per held-out seed reads the cached Δ_t for the train pool, builds
+`r̄_t = (1/K) Σ_s r_t^(s)`, then samples four conditions (PoE /
+r̄_t-inject / oracle r_t^(s*)-inject / mono) and writes a contact-sheet
+PNG plus metadata under
+`outputs/cross_seed_lora_pooling/step0_prescreen/`. The pool is read
+from the YAML — no `--train-pool` flag.
 
-### Task A — write seed-pool config + assert
+### Task A — seed pool config
+
+The pool lives at `outputs/cross_seed_lora_pooling/seed_pool.yaml`
+(committed already in the cluster checkout but git-ignored, so it must
+be present on every host before any pooled run). Verify the leak guard:
 
 ```bash
-$PY -m poe_repair.experiments.lora_pooled.write_seed_pool \
-    --train-pool 1,2,3,4,5,6,7,8 --held-out 9,10,11,12 \
-    --out outputs/cross_seed_lora_pooling/seed_pool.yaml
+# Make a deliberately-broken pool YAML, point the trainer at it, expect abort.
+$PY -m poe_repair.experiments.cross_seed_lora_pooling.train_pooled \
+    --k 1 --total-epochs 1 \
+    --seed-pool-path /tmp/leak.yaml --dry-run
 ```
+
+Where `/tmp/leak.yaml` puts seed 9 in both `train_pool` and `held_out`.
+The run aborts at `seed_pool.load_seed_pool(...)` with a leak error.
 
 ### Task B — pooled learning curve in k
 
-```bash
-# k=1 picks (two single-seed runs, just so the curve has a left edge)
-$PY -m poe_repair.experiments.lora_pooled --seed-pool 1   --held-out 9,10,11,12 --total-epochs 200
-$PY -m poe_repair.experiments.lora_pooled --seed-pool 5   --held-out 9,10,11,12 --total-epochs 200
-
-# k=4
-$PY -m poe_repair.experiments.lora_pooled --seed-pool 1,2,3,4         --held-out 9,10,11,12 --total-epochs 200
-
-# k=8
-$PY -m poe_repair.experiments.lora_pooled --seed-pool 1,2,3,4,5,6,7,8 --held-out 9,10,11,12 --total-epochs 200
-```
-
-Each run evaluates the trained LoRA on all four held-out seeds at the
-final epoch and writes the decoded PNGs. The contact sheet is the
-read.
-
-### Task C — per-seed ceiling (with epoch parity)
-
-For each held-out seed `s ∈ {9, 10, 11, 12}`, train one per-seed LoRA
-using the existing single-seed CLI. To match the pooled-k8 gradient
-budget, run for 1600 effective epochs:
+Use the shell runner (handles run IDs, sampling, and W&B wiring):
 
 ```bash
-for S in 9 10 11 12; do
-  $PY -m poe_repair.experiments.lora \
-      --pair a_cat__x__a_dog --seed $S --split heldout \
-      --total-epochs 1600 --probe-every-epochs 200 \
-      --lr 1e-4 --lora-rank 8
-done
+bash scripts/cross_seed_lora_pooling/task_b_learning_curve.sh
 ```
 
-Comparison sheet: 4 × 4 grid, rows = held-out seeds, cols = [PoE |
-pooled-k8 | per-seed | mono].
+Default `KSET="1a 1b 4 8"` (k=1 with `--single-seed-pick 1`, k=1 with
+`--single-seed-pick 5`, k=4, k=8). Override via env vars:
+
+```bash
+EPOCHS=1600 KSET="4 8" CUDA_VISIBLE_DEVICES=1 \
+    bash scripts/cross_seed_lora_pooling/task_b_learning_curve.sh
+```
+
+Each run writes a checkpoint under
+`outputs/cross_seed_lora_pooling/task_b_learning_curve/k<label>__ep<EPOCHS>/`
+and immediately calls `sample_heldout --record-eps` on the four
+held-outs (records ε_PoE_lora,t for Task D).
+
+Direct invocation if you don't want the runner:
+
+```bash
+$PY -m poe_repair.experiments.cross_seed_lora_pooling.train_pooled \
+    --k 4 --total-epochs 1600 \
+    --output-root outputs/cross_seed_lora_pooling/task_b_learning_curve \
+    --run-id k04__ep1600
+
+$PY -m poe_repair.experiments.cross_seed_lora_pooling.sample_heldout \
+    --checkpoint outputs/cross_seed_lora_pooling/task_b_learning_curve/k04__ep1600/checkpoints/lora_step_<...>.pt \
+    --out-dir   outputs/cross_seed_lora_pooling/task_b_learning_curve/k04__ep1600/samples/heldout \
+    --record-eps
+```
+
+### Task C — per-seed ceiling (epoch parity)
+
+The runner generates a temporary one-seed pool YAML per held-out seed
+(since the standing `seed_pool.yaml` only has seeds 1–8 in
+`train_pool`):
+
+```bash
+bash scripts/cross_seed_lora_pooling/task_c_per_seed_ceiling.sh
+```
+
+Defaults: `CEILING_SEEDS="9 10 11 12"`, `EPOCHS=1600` (8 × 200 = epoch
+parity for the k=8 pooled run). Each per-seed LoRA samples only on its
+own seed — that's what "ceiling" means.
 
 ### Task D — Δ̄_t bridge
 
-Re-run the held-out evaluator with `--record-eps-path` enabled to
-dump per-step `ε_PoE_lora,t` for each held-out seed. Then:
+Requires Task B's sample step to have been run with `--record-eps`
+(the shell runner does this by default).
 
 ```bash
-$PY -m poe_repair.experiments.lora_pooled.bridge \
-    --pooled-run outputs/cross_seed_lora_pooling/k_08/<run_id> \
-    --held-out 9,10,11,12
+$PY -m poe_repair.experiments.cross_seed_lora_pooling.task_d_bridge \
+    --pooled-run outputs/cross_seed_lora_pooling/task_b_learning_curve/k08__ep1600
 ```
 
-Computes per-step cosine to Δ̄_t and to each Δ_t^(s), the
-norm-ratio, and the residual-of-residual. Writes 3-panel curves per
-held-out seed plus the cross-seed-pair baseline cosines.
+Writes cosine / norm-ratio / residual-of-residual curves per held-out
+seed and a spatial heatmap for one seed in the commit window.
+
+### Contact sheets (final read)
+
+```bash
+$PY -m poe_repair.experiments.cross_seed_lora_pooling.contact_sheet --task B
+$PY -m poe_repair.experiments.cross_seed_lora_pooling.contact_sheet --task C
+```
 
 ### Optional sweep S1 — rank at k=8
 
-Only if Task C reads "pooled < per-seed" and you suspect capacity:
-
 ```bash
-for R in 16 32; do
-  $PY -m poe_repair.experiments.lora_pooled --seed-pool 1,2,3,4,5,6,7,8 \
-      --held-out 9,10,11,12 --total-epochs 200 --lora-rank $R
-done
+bash scripts/cross_seed_lora_pooling/sweep_s1_rank.sh    # ranks 16, 32 by default
 ```
 
 ## How to read the result
@@ -193,19 +256,24 @@ before training any pooled LoRA.
 | Item | Done | To do |
 |---|:---:|:---:|
 | Plan written and harmonised with Phase 7's `landing_6` result | ✅ | |
-| Cache cells `seed_{1..12,42}` on disk under `/datasets/.../training_cache/` | ✅ | |
-| **Infra I1** — `load_cached_steps_pooled(cells, ...)` multi-seed loader | | ⬜ |
-| **Infra I2** — `poe_repair/experiments/lora_pooled/` trainer entrypoint | | ⬜ |
-| **Infra I3** — held-out evaluator across a list of seeds | | ⬜ |
-| **Infra I4** — `record_eps_path` kwarg on `run_lora_residual_inject` | | ⬜ |
-| **Infra I5** — `seed_pool.yaml` + load-time leak assertion | | ⬜ |
-| **Infra I6** — generate seeds 13–19 cache cells (only for k=16 curve point) | | ⬜ (optional) |
-| New sampler `run_constant_residual_inject` for Step 0 pre-screen | | ⬜ |
-| **Step 0** — inference-time mono-average pre-screen on held-outs | | ⬜ |
-| **Task A** — write `seed_pool.yaml`, verify leak abort | | ⬜ |
-| **Task B** — pooled learning curve at k ∈ {1, 4, 8} | | ⬜ |
-| **Task B** — k=16 extension (only if I6 cells land in time) | | ⬜ (optional) |
-| **Task C** — per-seed ceiling at epoch parity (4 held-outs × 1600 epochs) | | ⬜ |
-| **Task D** — Δ̄_t bridge: cosine, norm-ratio, residual-of-residual curves | | ⬜ |
-| **Sweep S1** — rank ∈ {16, 32} at k=8 (only if Task C reads "pooled < per-seed") | | ⬜ (conditional) |
+| Cache cells `seed_{1..12,42}` produced under `/datasets/.../training_cache/` (cluster) | ✅ | |
+| `outputs/cross_seed_lora_pooling/seed_pool.yaml` written (cluster) | ✅ | |
+| Pooled multi-seed loader (`training_cache.load_cached_steps` + seed-pool slicing) | ✅ | |
+| Trainer entrypoint `cross_seed_lora_pooling.train_pooled` (`--k`, `--single-seed-pick`) | ✅ | |
+| Held-out evaluator `cross_seed_lora_pooling.sample_heldout` (`--record-eps` for Task D) | ✅ | |
+| Step-0 pre-screen module `cross_seed_lora_pooling.step0_prescreen` | ✅ | |
+| `seed_pool.py` leak guard (`train_pool ∩ held_out = ∅`) | ✅ | |
+| Task-D bridge module `cross_seed_lora_pooling.task_d_bridge` | ✅ | |
+| Contact-sheet builder `cross_seed_lora_pooling.contact_sheet` | ✅ | |
+| Shell runners `scripts/cross_seed_lora_pooling/{task_b,task_c,sweep_s1}*.sh` | ✅ | |
+| Seeds 13–19 cache cells (only for k=16 curve point) | | ⬜ (optional) |
+| Bootstrap fresh host: rsync cache + `seed_pool.yaml`, set `POE_REPAIR_TRAINING_CACHE` | | ⬜ (per new machine) |
+| **Step 0** — actually run the pre-screen and inspect the contact sheet | | ⬜ |
+| **Task A** — verify the leak guard aborts on a deliberately-broken pool | | ⬜ |
+| **Task B** — pooled learning curve at k ∈ {1a, 1b, 4, 8} (`task_b_learning_curve.sh`) | | ⬜ (running on hippo as of 2026-05-19) |
+| **Task B** — k=16 extension (only if cache cells 13–19 land) | | ⬜ (optional) |
+| **Task C** — per-seed ceiling × 4 held-outs at epoch parity (`task_c_per_seed_ceiling.sh`) | | ⬜ |
+| **Task D** — Δ̄_t bridge against Task B's recorded ε | | ⬜ |
+| **Contact sheets** — Task B & Task C grids | | ⬜ |
+| **Sweep S1** — rank ∈ {16, 32} at k=8 (`sweep_s1_rank.sh`) | | ⬜ (conditional on Task C verdict) |
 | Final writeup answering the four "done criteria" questions | | ⬜ |
