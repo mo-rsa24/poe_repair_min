@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+# Task C — Per-seed ceiling LoRAs (the "what could possibly work for
+# this seed" reference).
+#
+# For each held-out seed s, trains a LoRA on s alone using k=1 with the
+# pooled trainer (so the cache/training path is identical to Task B).
+# Epoch parity: by default we train 8× the standard epoch count so
+# per-seed sees the same # of gradient steps as the k=8 pooled run did
+# *per seed* — this is the fair-ceiling control from the plan.
+#
+# Override CEILING_SEEDS or EPOCHS via env vars.
+set -euo pipefail
+
+REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+PY=${PY:-/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python}
+CUDA=${CUDA_VISIBLE_DEVICES:-1}
+EPOCHS=${EPOCHS:-1600}                    # 8 × 200; epoch parity for k=8 pooled
+CEILING_SEEDS=${CEILING_SEEDS:-"9 10 11 12"}
+WANDB_MODE_=${WANDB_MODE_:-online}
+WANDB_PROJECT_=${WANDB_PROJECT_:-poe-repair-cross-seed}
+BATCH=${BATCH:-4}
+XFORMERS=${XFORMERS:-1}
+OUT_ROOT="$REPO_ROOT/outputs/cross_seed_lora_pooling/task_c_per_seed_ceiling"
+mkdir -p "$OUT_ROOT"
+
+cd "$REPO_ROOT"
+
+# The pooled trainer requires the requested seed to be in seed_pool.yaml's
+# train_pool. The held-out seeds are not — by design. To train a per-seed
+# LoRA on a held-out seed we use a dedicated YAML where the held-out seed
+# is the train pool. We auto-generate one per ceiling seed below.
+TMP_POOL_DIR=$(mktemp -d -t cross_seed_pool_XXXXXX)
+trap "rm -rf $TMP_POOL_DIR" EXIT
+
+for s in $CEILING_SEEDS; do
+    pool_path="$TMP_POOL_DIR/seed_pool_ceiling_seed_${s}.yaml"
+    cat > "$pool_path" <<EOF
+pair_slug: a_cat__x__a_dog
+train_pool:  [${s}]
+held_out:    []
+generated_at: ceiling-run-on-the-fly
+generated_by: task_c_per_seed_ceiling.sh
+EOF
+
+    run_id="per_seed_s${s}__ep${EPOCHS}"
+    xflag=""
+    [ "$XFORMERS" = "1" ] && xflag="--xformers"
+    CUDA_VISIBLE_DEVICES=$CUDA "$PY" -m \
+        poe_repair.experiments.cross_seed_lora_pooling.train_pooled \
+        --k 1 --single-seed-pick "$s" \
+        --total-epochs "$EPOCHS" \
+        --output-root "$OUT_ROOT" \
+        --run-id "$run_id" \
+        --seed-pool-path "$pool_path" \
+        --wandb-mode "$WANDB_MODE_" \
+        --wandb-project "$WANDB_PROJECT_" \
+        --train-batch-size "$BATCH" \
+        $xflag
+
+    run_dir="$OUT_ROOT/$run_id"
+    ckpt=$(jq -r .path "$run_dir/checkpoints/latest.json")
+
+    # Sample only on the seed we trained on — that's what "ceiling" means.
+    echo "==> sampling per-seed ceiling on its own seed $s"
+    CUDA_VISIBLE_DEVICES=$CUDA "$PY" -m \
+        poe_repair.experiments.cross_seed_lora_pooling.sample_heldout \
+        --checkpoint "$ckpt" \
+        --out-dir "$run_dir/samples/ceiling" \
+        --seeds "$s"
+done
+
+echo "==> Task C complete."
