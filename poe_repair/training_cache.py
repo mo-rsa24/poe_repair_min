@@ -183,3 +183,58 @@ def delta_shape(cell: CellPath) -> tuple[int, int, int, int]:
     """Return (B, C, H, W) of Δ_t for spatial-heatmap rendering."""
     first = next(iter_cell_deltas(cell))
     return tuple(first["delta"].shape)  # type: ignore[return-value]
+
+
+def resolve_cells(
+    pair_slug: str,
+    seeds: list[int],
+    *,
+    split: str | None = None,
+    cache_root: Path = DEFAULT_CACHE_ROOT,
+) -> list[CellPath]:
+    """Resolve a list of seeds to CellPaths under one pair. Order preserved."""
+    return [
+        CellPath.from_root(pair_slug, int(s), split=split, cache_root=cache_root)
+        for s in seeds
+    ]
+
+
+def mean_delta_per_step(
+    cells: list[CellPath],
+) -> tuple[list[torch.Tensor], list[int], list[int]]:
+    """Return (mean_deltas, step_indices, timesteps) where mean_deltas[i] is
+    the per-seed mean of Δ_t at step i across the given cells. All cells
+    must share step grid and guidance scale.
+
+    Used by Step 0 (r̄_t injection) and Task D (Δ̄_t bridge target).
+    """
+    if not cells:
+        raise ValueError("mean_delta_per_step: empty cells list")
+    per_seed_iters = [iter_cell_deltas(c) for c in cells]
+    accum: list[torch.Tensor] = []
+    step_indices: list[int] = []
+    timesteps: list[int] = []
+    gs_ref = float(cells[0].meta["guidance_scale"])
+    for c in cells[1:]:
+        if float(c.meta["guidance_scale"]) != gs_ref:
+            raise RuntimeError(
+                f"guidance_scale mismatch: {c.root} has "
+                f"{c.meta['guidance_scale']}, expected {gs_ref}"
+            )
+    while True:
+        try:
+            entries = [next(it) for it in per_seed_iters]
+        except StopIteration:
+            break
+        ts = {e["timestep"] for e in entries}
+        si = {e["step_index"] for e in entries}
+        if len(ts) != 1 or len(si) != 1:
+            raise RuntimeError(
+                f"step-grid mismatch across seeds: "
+                f"step_indices={si} timesteps={ts}"
+            )
+        stacked = torch.stack([e["delta"] for e in entries], dim=0)  # (S,1,C,H,W)
+        accum.append(stacked.mean(dim=0))                            # (1,C,H,W)
+        step_indices.append(int(entries[0]["step_index"]))
+        timesteps.append(int(entries[0]["timestep"]))
+    return accum, step_indices, timesteps

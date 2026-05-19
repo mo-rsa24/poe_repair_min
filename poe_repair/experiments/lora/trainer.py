@@ -54,6 +54,7 @@ class CachedStep:
     eps_j_raw: torch.Tensor
     eps_uncond: torch.Tensor
     delta_t: torch.Tensor      # guided Δ_t target
+    source_seed: int = -1      # -1 = legacy single-seed (unset)
 
 
 def load_cached_steps(
@@ -80,6 +81,7 @@ def load_cached_steps(
                 eps_j_raw=raw["eps_j_raw"],
                 eps_uncond=raw["eps_uncond"],
                 delta_t=delta,
+                source_seed=int(cell.seed),
             )
         )
     if not entries:
@@ -87,6 +89,25 @@ def load_cached_steps(
             f"no cached steps under {cell.residuals_dir}"
         )
     return entries
+
+
+def load_cached_steps_pooled(
+    cells: list[CellPath],
+    *,
+    guidance_scale: float,
+) -> list[CachedStep]:
+    """Concatenate cached steps across multiple cells. Order: cells[0]'s
+    steps first, then cells[1], etc. Each entry tagged with ``source_seed``.
+    Uniform random sampling over the returned list gives per-seed mixing
+    for free (no special scheduler needed)."""
+    out: list[CachedStep] = []
+    for c in cells:
+        out.extend(load_cached_steps(c, guidance_scale=guidance_scale))
+    if not out:
+        raise FileNotFoundError(
+            f"no cached steps across {len(cells)} cells"
+        )
+    return out
 
 
 # ---------------------------------------------------------------------------
