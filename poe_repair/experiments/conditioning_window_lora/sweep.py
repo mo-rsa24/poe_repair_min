@@ -92,7 +92,13 @@ def render_schedule(
     summary_path = out_dir / "summary.json"
 
     if image_path.exists() and not overwrite:
-        return json.loads(summary_path.read_text())
+        cached = json.loads(summary_path.read_text())
+        if cached.get("image_path") != image_path.name:
+            cached["image_path"] = image_path.name
+            write_json(summary_path, cached)
+        record = dict(cached)
+        record["image_path"] = str(image_path)
+        return record
 
     t0 = time.time()
     out = run_lora_residual_inject_masked(
@@ -104,19 +110,21 @@ def render_schedule(
     write_decoded_image(out.image, image_path)
     elapsed = time.time() - t0
 
-    record = {
+    on_disk_record = {
         "id": schedule.id,
         "family": schedule.family,
         "mask": mask_to_str(schedule.mask),
         "num_on": num_on(schedule.mask),
         "composition_mode": mode,
         "lambda_value": float(lambda_value),
-        "image_path": str(image_path),
+        "image_path": image_path.name,
         "delta_norm_per_step": list(out.extras["delta_norm_per_step"]),
         "elapsed_s": float(elapsed),
         "sanity": schedule.family == "sanity",
     }
-    write_json(summary_path, record)
+    write_json(summary_path, on_disk_record)
+    record = dict(on_disk_record)
+    record["image_path"] = str(image_path)
     print(
         f"[conditioning_window_lora/{mode}] {schedule.id:<22} "
         f"num_on={record['num_on']:>2}/{len(schedule.mask)}  "

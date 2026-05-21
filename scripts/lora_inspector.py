@@ -28,6 +28,48 @@ DEFAULT_CWL_ALWAYS_MANIFEST = REPO_ROOT / "outputs/conditioning_window_lora/cat_
 DEFAULT_OUTPUTS_ROOT = REPO_ROOT / "outputs"
 
 
+_TAB_HEADER = r"""
+<style>
+  .tabs {
+    display: flex; gap: 0; margin: -24px -24px 20px -24px;
+    padding: 0 24px; border-bottom: 1px solid var(--border);
+    background: var(--panel);
+  }
+  .tabs a {
+    display: flex; flex-direction: column; gap: 2px;
+    padding: 10px 18px; color: var(--muted); text-decoration: none;
+    border-bottom: 2px solid transparent; margin-bottom: -1px;
+    transition: color 0.12s ease, border-color 0.12s ease;
+  }
+  .tabs a:hover { color: var(--text); }
+  .tabs a.active {
+    color: var(--accent); border-bottom-color: var(--accent);
+  }
+  .tab-title {
+    font-size: 13px; font-weight: 600; letter-spacing: 0.02em;
+  }
+  .tab-role {
+    font-size: 10px; font-weight: 500; opacity: 0.7;
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+</style>
+<nav class="tabs">
+  <a href="/conditioning_window" class="{{ 'active' if active == 'cw' else '' }}">
+    <span class="tab-title">CFG-mask ablation</span>
+    <span class="tab-role">floor &middot; no LoRA</span>
+  </a>
+  <a href="/" class="{{ 'active' if active == 'residual' else '' }}">
+    <span class="tab-title">LoRA residual</span>
+    <span class="tab-role">mechanism &middot; training trajectory</span>
+  </a>
+  <a href="/conditioning_window_lora" class="{{ 'active' if active == 'cwl' else '' }}">
+    <span class="tab-title">LoRA + CFG-mask</span>
+    <span class="tab-role">payoff &middot; rescue test</span>
+  </a>
+</nav>
+"""
+
+
 INDEX_HTML = r"""
 <!doctype html>
 <html lang="en">
@@ -50,7 +92,18 @@ INDEX_HTML = r"""
     background: var(--bg); color: var(--text);
     font: 14px/1.4 -apple-system, system-ui, "Segoe UI", sans-serif;
   }
-  h1 { font-size: 16px; font-weight: 600; margin: 0 0 16px 0; color: var(--muted); }
+  h1 { font-size: 18px; font-weight: 600; margin: 0 0 6px 0; color: var(--text); }
+  .subtitle { color: var(--muted); font-size: 12px; margin: 0 0 18px 0; }
+  details.diagnostics {
+    margin-top: 28px; padding: 12px 14px;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--muted); font-size: 12px;
+  }
+  details.diagnostics summary {
+    cursor: pointer; user-select: none; font-weight: 600;
+    letter-spacing: 0.04em; text-transform: uppercase; font-size: 11px;
+  }
+  details.diagnostics .body { margin-top: 8px; line-height: 1.6; word-break: break-all; }
   .controls {
     display: grid; gap: 14px; margin-bottom: 20px;
     background: var(--panel); border: 1px solid var(--border);
@@ -94,7 +147,8 @@ INDEX_HTML = r"""
 </style>
 </head>
 <body>
-<h1>LoRA residual inspector — {{ results_root }}</h1>
+<h1>How the LoRA residual fits over training &mdash; &lsquo;a cat and a dog&rsquo;, seed 42</h1>
+<p class="subtitle">left: per-arm PoE with no LoRA &nbsp;&middot;&nbsp; middle: PoE + &lambda;&middot;r at the current epoch &nbsp;&middot;&nbsp; right: mono (joint CFG, the diagnostic ceiling)</p>
 
 <div class="controls">
   <div class="row">
@@ -119,24 +173,34 @@ INDEX_HTML = r"""
     <h2>PoE + λ · r (current)</h2>
     <img id="img-current" alt="current">
   </div>
+  <div class="panel">
+    <h2>Mono (joint CFG, ceiling)</h2>
+    {% if mono_path %}
+    <img id="img-mono" src="/img/{{ mono_path }}" alt="mono">
+    {% else %}
+    <img id="img-mono" alt="mono not rendered">
+    <p class="caption">no mono.png on disk; render one to populate this pane</p>
+    {% endif %}
+  </div>
 </div>
 
-<p style="margin-top:18px;color:var(--muted);font-size:12px;">
-  → <a href="/conditioning_window" style="color:var(--accent);">conditioning_window</a>
-  (no-LoRA CFG-mask ablation; same seed, same x_T)
-  &nbsp;·&nbsp;
-  → <a href="/conditioning_window_lora" style="color:var(--accent);">conditioning_window_lora</a>
-  (with-LoRA CFG-mask ablation; 3-pane on/off/diff, mode toggle)
-</p>
-
 <div id="toast">cell not available</div>
+
+<details class="diagnostics">
+  <summary>diagnostics</summary>
+  <div class="body">
+    Source: <code>{{ results_root }}</code><br>
+    Manifest: <code>outputs/lora/cat_dog/seed_42/results/inspector_manifest.json</code> &middot;
+    {{ epochs|length }} epochs &times; {{ lambdas|length }} &lambda; values rendered.
+  </div>
+</details>
 
 <script>
 const MANIFEST = {{ manifest_json|safe }};
 const EPOCHS = MANIFEST.epochs;
 const LAMBDAS = MANIFEST.lambdas;     // strings like "0.00", "0.50", "1.00"
 const CELLS = MANIFEST.cells;          // {"100": {"0.00": "outputs/.../decoded.png", ...}}
-const SOURCE = MANIFEST.cell_source_run;
+const SOURCE = MANIFEST.cell_source_run || {};
 
 const epochSlider = document.getElementById('epoch');
 const epochVal = document.getElementById('epoch-val');
@@ -198,6 +262,23 @@ update();
 """
 
 
+def _with_tabs(template: str) -> str:
+    """Inject the shared tab nav immediately after <body>."""
+    return template.replace("<body>", "<body>\n" + _TAB_HEADER, 1)
+
+
+_MONO_FALLBACK = "outputs/cross_seed_lora_pooling/trajectory_diagram/seed_42/mono.png"
+
+
+def _resolve_mono_path(manifest: dict) -> str | None:
+    """Mono is invariant in (epoch, lambda) — return one repo-relative path
+    if the file exists, else None. Prefer the manifest's ``mono_path`` field;
+    fall back to the trajectory_diagram render that uses the same sampler
+    config (seed 42, "a cat and a dog", 50 steps, guidance 7.5)."""
+    candidate = manifest.get("mono_path") or _MONO_FALLBACK
+    if (REPO_ROOT / candidate).is_file():
+        return candidate
+    return None
 
 
 CW_INDEX_HTML = r"""
@@ -224,8 +305,20 @@ CW_INDEX_HTML = r"""
     background: var(--bg); color: var(--text);
     font: 14px/1.4 -apple-system, system-ui, "Segoe UI", sans-serif;
   }
-  h1 { font-size: 16px; font-weight: 600; margin: 0 0 4px 0; color: var(--muted); }
+  h1 { font-size: 18px; font-weight: 600; margin: 0 0 6px 0; color: var(--text); }
+  .subtitle { color: var(--muted); font-size: 12px; margin: 0 0 4px 0; }
   .meta { color: var(--muted); font-size: 12px; margin-bottom: 18px; }
+  details.diagnostics {
+    margin-top: 28px; padding: 12px 14px;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--muted); font-size: 12px;
+  }
+  details.diagnostics summary {
+    cursor: pointer; user-select: none; font-weight: 600;
+    letter-spacing: 0.04em; text-transform: uppercase; font-size: 11px;
+  }
+  details.diagnostics .body { margin-top: 8px; line-height: 1.7; }
+  details.diagnostics code { color: var(--text); }
 
   .controls {
     background: var(--panel); border: 1px solid var(--border);
@@ -394,13 +487,14 @@ CW_INDEX_HTML = r"""
 </style>
 </head>
 <body>
-<h1>conditioning_window — {{ prompt }} · seed {{ seed }}</h1>
+<h1>When does conditioning matter? &mdash; CFG-mask ablation on &lsquo;{{ prompt }}&rsquo;, seed {{ seed }}</h1>
+<p class="subtitle">
+  Each rendered image is a full denoise. The mask below picks which timesteps used the prompt
+  (conditional branch) and which ran with the unconditional branch only.
+</p>
 <div class="meta">
-  num_inference_steps = {{ num_steps }} · guidance_scale = {{ guidance }} ·
-  {{ schedules|length }} rendered schedule(s)
-  · sanity: all_on Δ={{ sanity_on }} ({{ sanity_on_pass }}),
-              all_off Δ={{ sanity_off }} ({{ sanity_off_pass }})
-  · → <a href="/conditioning_window_lora" style="color:var(--accent);">conditioning_window_lora</a>
+  {{ num_steps }} inference steps &nbsp;&middot;&nbsp; CFG = {{ guidance }} &nbsp;&middot;&nbsp;
+  <span title="A schedule is a specific on/off pattern over the {{ num_steps }} steps. Families: prefix_k (ON for the first k), suffix_k (ON for the last k), window_a_b, pulse_t_w, plus all_on/all_off as boundaries.">{{ schedules|length }} mask patterns rendered</span>
 </div>
 
 <div class="controls">
@@ -440,11 +534,9 @@ CW_INDEX_HTML = r"""
 
   <div class="meta-row">
     <span><span class="mode" id="mode">all-on</span></span>
-    <span>start: <b id="start-val">0</b></span>
-    <span>end: <b id="end-val">{{ num_steps }}</b></span>
-    <span>num_on: <b id="num-on">{{ num_steps }}</b>/{{ num_steps }}</span>
-    <span>render time: <span class="time-pill" id="time-pill">—</span></span>
-    <span>schedule: <span class="schedule-id" id="sched-id">—</span></span>
+    <span>conditioned on steps <b id="start-val">0</b>&hairsp;&ndash;&hairsp;<b id="end-val">{{ num_steps }}</b></span>
+    <span><b id="num-on">{{ num_steps }}</b>/{{ num_steps }} steps conditioned</span>
+    <span>render <span class="time-pill" id="time-pill">&mdash;</span></span>
   </div>
 
   <div id="strip" class="strip" title=""></div>
@@ -452,11 +544,6 @@ CW_INDEX_HTML = r"""
     <span class="sw" style="background: var(--on);"></span> conditional ON
     &nbsp;&nbsp;
     <span class="sw" style="background: var(--off);"></span> conditional OFF
-    &nbsp;&nbsp;
-    <span style="color: var(--muted);">
-      (drag the two thumbs independently — left handle = window start, right handle = window end.
-       Slider snaps to the nearest rendered schedule.)
-    </span>
   </div>
 </div>
 
@@ -467,6 +554,19 @@ CW_INDEX_HTML = r"""
     <div class="caption" id="caption"></div>
   </div>
 </div>
+
+<details class="diagnostics">
+  <summary>diagnostics</summary>
+  <div class="body">
+    <b>Schedule families:</b> <code>prefix_k</code> (conditioned for the first k steps),
+    <code>suffix_k</code> (conditioned for the last k), <code>window_a_b</code>,
+    <code>pulse_t_w</code>, plus <code>all_on</code> / <code>all_off</code> as boundaries.<br>
+    <b>Sanity:</b> <code>all_on</code> &Delta; = {{ sanity_on }} ({{ sanity_on_pass }})
+    &middot; <code>all_off</code> &Delta; = {{ sanity_off }} ({{ sanity_off_pass }}).
+    These verify the masked sampler is bit-identical to <code>run_cfg</code> at all-on
+    and to the unconditional sampler at all-off (max-abs latent &Delta;).
+  </div>
+</details>
 
 <script>
 const MANIFEST  = {{ manifest_json|safe }};
@@ -516,12 +616,12 @@ function nearestSchedule(s, e) {
 }
 
 function inferMode(s, e) {
-  if (s === 0 && e === N) return 'all-on (full CFG)';
-  if (s === e)             return 'all-off (no CFG)';
-  if (s === 0)             return 'prefix (early-only)';
-  if (e === N)             return 'suffix (late-only)';
-  if (e - s <= 3)          return 'pulse (punctate dose)';
-  return 'window (mid-trajectory)';
+  if (s === 0 && e === N) return 'full CFG (every step conditioned)';
+  if (s === e)             return 'no CFG (never conditioned)';
+  if (s === 0)             return 'early-only';
+  if (e === N)             return 'late-only';
+  if (e - s <= 3)          return 'brief pulse';
+  return 'mid-trajectory';
 }
 
 function fmtSeconds(elapsed) {
@@ -563,7 +663,6 @@ const startVal = document.getElementById('start-val');
 const endVal   = document.getElementById('end-val');
 const numOnEl  = document.getElementById('num-on');
 const modeEl   = document.getElementById('mode');
-const schedIdEl= document.getElementById('sched-id');
 const timePillEl = document.getElementById('time-pill');
 const imgEl    = document.getElementById('img');
 const capEl    = document.getElementById('caption');
@@ -600,13 +699,21 @@ function update(changed) {
   renderStrip(ent.mask);
   imgEl.src = '/img/' + ent.image_path;
 
-  startVal.textContent = s;
-  endVal.textContent   = e;
+  // All displayed numbers reflect the *snapped* schedule. Ranges are
+  // inclusive in the UI so the count and the endpoints agree
+  // (e.g. 0–9 = 10 steps).
+  const snapStart = ent.mask.indexOf('1');
+  const snapEndExcl = ent.mask.lastIndexOf('1') + 1;
+  if (ent.num_on === 0) {
+    startVal.textContent = '—';
+    endVal.textContent   = '—';
+  } else {
+    startVal.textContent = snapStart;
+    endVal.textContent   = snapEndExcl - 1;
+  }
   numOnEl.textContent  = ent.num_on;
-  modeEl.textContent   = inferMode(s, e);
+  modeEl.textContent   = inferMode(snapStart < 0 ? 0 : snapStart, snapEndExcl);
   timePillEl.textContent = fmtSeconds(ent.elapsed_s);
-  schedIdEl.textContent = ent.id +
-      ' (snapped from start=' + s + ', end=' + e + ')';
   let cap = ent.id + '  family=' + ent.family +
             '  num_on=' + ent.num_on + '/' + ent.mask.length;
   if (ent.elapsed_s != null) cap += '  · render=' + fmtSeconds(ent.elapsed_s);
@@ -740,8 +847,20 @@ CWL_INDEX_HTML = r"""
     background: var(--bg); color: var(--text);
     font: 14px/1.4 -apple-system, system-ui, "Segoe UI", sans-serif;
   }
-  h1 { font-size: 16px; font-weight: 600; margin: 0 0 4px 0; color: var(--muted); }
+  h1 { font-size: 18px; font-weight: 600; margin: 0 0 6px 0; color: var(--text); }
+  .subtitle { color: var(--muted); font-size: 12px; margin: 0 0 4px 0; }
   .meta { color: var(--muted); font-size: 12px; margin-bottom: 18px; }
+  details.diagnostics {
+    margin-top: 28px; padding: 12px 14px;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--muted); font-size: 12px;
+  }
+  details.diagnostics summary {
+    cursor: pointer; user-select: none; font-weight: 600;
+    letter-spacing: 0.04em; text-transform: uppercase; font-size: 11px;
+  }
+  details.diagnostics .body { margin-top: 8px; line-height: 1.7; }
+  details.diagnostics code { color: var(--text); }
 
   .controls {
     background: var(--panel); border: 1px solid var(--border);
@@ -832,14 +951,6 @@ CWL_INDEX_HTML = r"""
     font-weight: 700; letter-spacing: 0.02em;
   }
 
-  .toggle-group { display: inline-flex; gap: 0; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
-  .toggle-btn {
-    padding: 6px 12px; background: var(--off); color: var(--muted);
-    border: none; cursor: pointer; font-family: ui-monospace, monospace;
-    font-size: 12px; font-weight: 600;
-  }
-  .toggle-btn.active { background: var(--accent); color: #0f1115; }
-  .toggle-btn:not(.active):hover { background: #232a36; color: var(--text); }
   .toggle-label { color: var(--muted); margin-right: 8px; font-size: 12px; }
 
   .strip-label { color: var(--muted); font-size: 11px; margin-top: 12px; margin-bottom: 2px;
@@ -859,7 +970,7 @@ CWL_INDEX_HTML = r"""
   .legend .sw { display: inline-block; width: 10px; height: 10px;
                 margin-right: 4px; vertical-align: middle; border-radius: 2px; }
 
-  .panels { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .panels { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
   .panel {
     background: var(--panel); border: 1px solid var(--border);
     border-radius: 8px; padding: 12px;
@@ -867,6 +978,7 @@ CWL_INDEX_HTML = r"""
   .panel h2 {
     margin: 0 0 8px 0; font-size: 12px; font-weight: 600;
     color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em;
+    display: flex; align-items: center; gap: 8px;
   }
   .panel img, .panel canvas {
     width: 100%; aspect-ratio: 1 / 1; border-radius: 4px;
@@ -876,14 +988,43 @@ CWL_INDEX_HTML = r"""
     margin-top: 8px; color: var(--muted); font-size: 11px;
     font-family: ui-monospace, monospace; word-break: break-all;
   }
+
+  /* ---- Info card UX (ⓘ toggles a card; one card open at a time) ---- */
+  .info-btn {
+    width: 18px; height: 18px; border-radius: 50%;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--muted); cursor: pointer; font-size: 11px;
+    line-height: 16px; padding: 0; font-weight: 700;
+    font-family: ui-monospace, monospace;
+    transition: color 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+  }
+  .info-btn:hover { color: var(--text); border-color: var(--text); }
+  .info-btn.open  { color: #0f1115; background: var(--accent); border-color: var(--accent); }
+  .info-card {
+    margin: 0 0 10px 0; padding: 10px 12px;
+    background: #0f1115; border: 1px solid var(--border); border-left: 3px solid var(--accent);
+    border-radius: 4px; color: var(--text); font-size: 12px; line-height: 1.55;
+    text-transform: none; letter-spacing: 0; font-weight: 400;
+    display: none;
+  }
+  .info-card.open { display: block; }
+  .info-card p { margin: 0 0 6px 0; }
+  .info-card p:last-child { margin-bottom: 0; }
+  .info-card .ask { color: var(--accent-hot); font-style: italic; }
+
+  .strip-header {
+    display: flex; align-items: center; gap: 8px;
+    color: var(--muted); font-size: 11px; margin-top: 12px; margin-bottom: 2px;
+    font-family: ui-monospace, monospace;
+  }
+  .strip-info-wrap { margin-bottom: 6px; }
 </style>
 </head>
 <body>
-<h1>conditioning_window_lora — {{ prompt }} · seed {{ seed }}</h1>
+<h1>How the LoRA behaves when conditioning is dropped &mdash; &lsquo;{{ prompt }}&rsquo;, seed {{ seed }}</h1>
 <div class="meta">
-  num_inference_steps = {{ num_steps }} · guidance_scale = {{ guidance }} ·
-  with_prompt cells = {{ n_wp }}, always cells = {{ n_al }}, no_lora schedules = {{ n_off }}
-  · sanity (with_prompt, all_on vs run_lora_residual_inject): Δ={{ sanity_delta }} ({{ sanity_pass }})
+  {{ num_steps }} inference steps &nbsp;&middot;&nbsp; CFG = {{ guidance }} &nbsp;&middot;&nbsp;
+  {{ n_off }} prompt schedules rendered
 </div>
 
 <div class="controls">
@@ -912,58 +1053,106 @@ CWL_INDEX_HTML = r"""
   </div>
 
   <div class="meta-row">
-    <span class="toggle-label">LoRA mode:</span>
-    <div class="toggle-group">
-      <button class="toggle-btn active" data-mode="with_prompt">with_prompt</button>
-      <button class="toggle-btn" data-mode="always">always</button>
-    </div>
     <span><span class="mode" id="mode-disp">window</span></span>
-    <span>start: <b id="start-val">0</b></span>
-    <span>end: <b id="end-val">{{ num_steps }}</b></span>
-    <span>num_on: <b id="num-on">{{ num_steps }}</b>/{{ num_steps }}</span>
-    <span>schedule: <span class="schedule-id" id="sched-id">—</span></span>
-    <span>render time: <span class="time-pill" id="time-pill">—</span></span>
+    <span>prompt fires on steps <b id="start-val">0</b>&hairsp;&ndash;&hairsp;<b id="end-val">{{ num_steps }}</b></span>
+    <span><b id="num-on">{{ num_steps }}</b>/{{ num_steps }} steps with prompt</span>
+    <span>render <span class="time-pill" id="time-pill">&mdash;</span></span>
   </div>
 
   <div class="meta-row" style="margin-top:10px;">
-    <span class="toggle-label">LoRA epoch (step):</span>
+    <span class="toggle-label">LoRA epoch (training step):</span>
     <input id="epoch-slider" type="range" min="0" max="0" step="1" value="0" style="flex:1;max-width:480px;">
     <span><b id="epoch-val">—</b></span>
-    <span class="toggle-label" style="margin-left:18px;">λ:</span>
+    <span class="toggle-label" style="margin-left:18px;">LoRA strength λ:</span>
     <input id="lambda-slider" type="range" min="0" max="0" step="1" value="0" style="flex:1;max-width:240px;">
     <span><b id="lambda-val">—</b></span>
   </div>
 
-  <div class="strip-label">CFG mask (green = prompt-on, grey = off)</div>
-  <div id="mask-strip" class="strip"></div>
-  <div class="strip-label">LoRA per-step δ-eps norm (heat intensity ∝ ‖Δ̂_t‖, scaled within this schedule)</div>
-  <div id="delta-strip" class="strip"></div>
+  <div class="strip-info-wrap">
+    <div class="strip-header">
+      <span>Prompt schedule &mdash; green: prompt fires &middot; grey: prompt is off</span>
+      <button class="info-btn" data-info="strip" title="What does this strip mean?">i</button>
+    </div>
+    <div id="info-strip" class="info-card">
+      <p>The strip below has one cell per sampling step ({{ num_steps }} total).</p>
+      <p><b>Green</b>: the prompt <i>&lsquo;{{ prompt }}&rsquo;</i> fires.<br>
+         <b>Grey</b>: no prompt &mdash; unconditional only.</p>
+      <p>Drag the slider above to change the pattern. Every image on this page is sampled with this schedule.</p>
+    </div>
+    <div id="mask-strip" class="strip"></div>
+  </div>
 
   <div class="legend">
-    <span class="sw" style="background: var(--on);"></span> CFG on
+    <span class="sw" style="background: var(--on);"></span> prompt fires
     &nbsp;&nbsp;
-    <span class="sw" style="background: var(--off);"></span> CFG off
-    &nbsp;&nbsp;
-    <span class="sw" style="background: var(--heat);"></span> LoRA pushing
-    &nbsp;&nbsp;
-    <span style="color: var(--muted);">
-      Drag the two thumbs to pick a schedule; toggle changes which LoRA mode populates the right pane.
-    </span>
+    <span class="sw" style="background: var(--off);"></span> prompt off
   </div>
 </div>
 
 <div class="panels">
   <div class="panel">
-    <h2>LoRA off (baseline)</h2>
-    <img id="img-off" alt="lora off">
-    <div class="caption" id="cap-off">—</div>
+    <h2>
+      <span>Baseline (no LoRA)</span>
+      <button class="info-btn" data-info="off" title="What is this pane?">i</button>
+    </h2>
+    <div id="info-off" class="info-card">
+      <p>No LoRA anywhere.</p>
+      <p><b>Green steps</b>: per-arm PoE with the prompt (raw CFG).<br>
+         <b>Grey steps</b>: unconditional only.</p>
+      <p>This is the floor &mdash; same image as the CFG-mask ablation tab.</p>
+    </div>
+    <img id="img-off" alt="baseline">
+    <div class="caption" id="cap-off">&mdash;</div>
   </div>
   <div class="panel">
-    <h2>LoRA on (<span id="cap-mode">with_prompt</span>)</h2>
-    <img id="img-on" alt="lora on">
-    <div class="caption" id="cap-on">—</div>
+    <h2>
+      <span>LoRA fires with the prompt</span>
+      <button class="info-btn" data-info="wp" title="What is this pane?">i</button>
+    </h2>
+    <div id="info-wp" class="info-card">
+      <p>LoRA fires only on green steps. When the prompt drops, the LoRA drops with it.</p>
+      <p><b>Green steps</b>: PoE + LoRA correction.<br>
+         <b>Grey steps</b>: unconditional, no LoRA.</p>
+      <p class="ask">Can a short LoRA-pushed green window carry the sample, or does the prior take over once the prompt drops?</p>
+    </div>
+    <img id="img-wp" alt="LoRA with prompt">
+    <div class="caption" id="cap-wp">&mdash;</div>
+  </div>
+  <div class="panel">
+    <h2>
+      <span>LoRA fires every step</span>
+      <button class="info-btn" data-info="al" title="What is this pane?">i</button>
+    </h2>
+    <div id="info-al" class="info-card">
+      <p>LoRA fires on every step &mdash; green AND grey.</p>
+      <p><b>Green steps</b>: PoE + LoRA correction (same as the middle pane).<br>
+         <b>Grey steps</b>: unconditional + LoRA correction.</p>
+      <p>The LoRA was trained on PoE outputs; on grey steps it is applied to a plain unconditional forward &mdash; off-distribution use.</p>
+      <p class="ask">Can the LoRA carry the sample on grey steps, where there is no prompt to lean on?</p>
+    </div>
+    <img id="img-al" alt="LoRA every step">
+    <div class="caption" id="cap-al">&mdash;</div>
   </div>
 </div>
+
+<details class="diagnostics">
+  <summary>diagnostics</summary>
+  <div class="body">
+    <b>Sampling grammar.</b> The middle pane corresponds to composition mode <code>with_prompt</code>
+    (LoRA gated by the conditioning mask). The right pane corresponds to <code>always</code>
+    (LoRA fires on every step, including the prompt-off ones).<br>
+    <b>Per-step LoRA push.</b> Each rendered cell records
+    <code>delta_norm_per_step</code> = &Vert;&Delta;&#x0302;<sub>t</sub>&Vert; for every step,
+    where &Delta;&#x0302;<sub>t</sub> = &epsilon;<sup>PoE</sup><sub>LoRA</sub> &minus; &epsilon;<sup>PoE</sup><sub>frozen</sub>
+    is the LoRA&apos;s correction in &epsilon;-space at that timestep. Used to debug whether the
+    LoRA is &ldquo;kicking&rdquo; early or driving continuously; not shown by default.<br>
+    <b>Sanity.</b> <code>masked(all_on, with_prompt, &lambda;=1)</code> vs
+    <code>run_lora_residual_inject(&lambda;=1)</code>: &Delta; = {{ sanity_delta }} ({{ sanity_pass }}).
+    Verifies the per-arm-PoE-with-LoRA grammar is bit-identical to the reference sampler at all-on.<br>
+    <b>Counts.</b> {{ n_wp }} <code>with_prompt</code> cells, {{ n_al }} <code>always</code> cells
+    (each cell = one epoch &times; &lambda; pair).
+  </div>
+</details>
 
 <script>
 const MANIFEST_OFF = {{ manifest_off_json|safe }};
@@ -1066,12 +1255,12 @@ function nearestSchedule(s, e) {
 }
 
 function inferMode(s, e) {
-  if (s === 0 && e === N) return 'all-on (full CFG)';
-  if (s === e)             return 'all-off (no CFG)';
-  if (s === 0)             return 'prefix (early-only)';
-  if (e === N)             return 'suffix (late-only)';
-  if (e - s <= 3)          return 'pulse (punctate dose)';
-  return 'window (mid-trajectory)';
+  if (s === 0 && e === N) return 'full CFG (every step conditioned)';
+  if (s === e)             return 'no CFG (never conditioned)';
+  if (s === 0)             return 'early-only';
+  if (e === N)             return 'late-only';
+  if (e - s <= 3)          return 'brief pulse';
+  return 'mid-trajectory';
 }
 
 function fmtSeconds(t) {
@@ -1094,33 +1283,13 @@ function renderMaskStrip(maskStr) {
   el.title = maskStr;
 }
 
-function renderDeltaStrip(deltas) {
-  const el = document.getElementById('delta-strip');
-  el.innerHTML = '';
-  const maxD = deltas.reduce((m, v) => v > m ? v : m, 0) || 1.0;
-  for (let i = 0; i < deltas.length; i++) {
-    const c = document.createElement('div');
-    const frac = Math.max(0, Math.min(1, deltas[i] / maxD));
-    c.className = 'cell' + ((i + 1) % 10 === 0 ? ' tick' : '');
-    // Heat-map: blend off→heat by frac. Render as background-color directly.
-    if (frac > 0.0) {
-      const r = Math.round(0x2a + (0xd8 - 0x2a) * frac);
-      const g = Math.round(0x2f + (0x58 - 0x2f) * frac);
-      const b = Math.round(0x3a + (0x4f - 0x3a) * frac);
-      c.style.background = `rgb(${r},${g},${b})`;
-    }
-    el.appendChild(c);
-  }
-  el.title = 'δ-norms (max in this schedule = ' + maxD.toFixed(3) + ')';
-}
-
 let currentEntry = null;
-let currentMode = 'with_prompt';
 let currentEpoch = null;       // numeric, e.g. 62500
 let currentLambdaTag = null;   // string, e.g. "1.00"
 
 const imgOff = document.getElementById('img-off');
-const imgOn  = document.getElementById('img-on');
+const imgWp  = document.getElementById('img-wp');
+const imgAl  = document.getElementById('img-al');
 
 const startEl  = document.getElementById('start');
 const endEl    = document.getElementById('end');
@@ -1129,14 +1298,13 @@ const startVal = document.getElementById('start-val');
 const endVal   = document.getElementById('end-val');
 const numOnEl  = document.getElementById('num-on');
 const modeDispEl = document.getElementById('mode-disp');
-const schedIdEl  = document.getElementById('sched-id');
 const timePillEl = document.getElementById('time-pill');
 const capOffEl   = document.getElementById('cap-off');
-const capOnEl    = document.getElementById('cap-on');
-const capModeEl  = document.getElementById('cap-mode');
+const capWpEl    = document.getElementById('cap-wp');
+const capAlEl    = document.getElementById('cap-al');
 
-function pickOnEntry(id) {
-  return indexByIdCell(currentMode, currentEpoch, currentLambdaTag)[id] || null;
+function pickEntry(mode, id) {
+  return indexByIdCell(mode, currentEpoch, currentLambdaTag)[id] || null;
 }
 function pickOffEntry(id) { return BY_ID_OFF[id] || null; }
 
@@ -1155,25 +1323,33 @@ function update(changed) {
   renderMaskStrip(ent.mask);
 
   const offEnt = pickOffEntry(ent.id);
-  const onEnt  = pickOnEntry(ent.id);
-  if (onEnt && onEnt.delta_norm_per_step) {
-    renderDeltaStrip(onEnt.delta_norm_per_step);
-  } else {
-    renderDeltaStrip(new Array(N).fill(0));
-  }
+  const wpEnt  = pickEntry('with_prompt', ent.id);
+  const alEnt  = pickEntry('always',      ent.id);
 
   imgOff.src = offEnt ? ('/img/' + offEnt.image_path) : '';
-  imgOn .src = onEnt  ? ('/img/' + onEnt.image_path)  : '';
+  imgWp .src = wpEnt  ? ('/img/' + wpEnt.image_path)  : '';
+  imgAl .src = alEnt  ? ('/img/' + alEnt.image_path)  : '';
 
-  startVal.textContent = s;
-  endVal.textContent   = e;
+  // Display numbers reflect the *snapped* schedule. Inclusive ranges so
+  // count and endpoints agree (e.g. 0–9 = 10 steps).
+  const snapStart = ent.mask.indexOf('1');
+  const snapEndExcl = ent.mask.lastIndexOf('1') + 1;
+  if (ent.num_on === 0) {
+    startVal.textContent = '—';
+    endVal.textContent   = '—';
+  } else {
+    startVal.textContent = snapStart;
+    endVal.textContent   = snapEndExcl - 1;
+  }
   numOnEl.textContent  = ent.num_on;
-  modeDispEl.textContent = inferMode(s, e);
-  schedIdEl.textContent  = ent.id;
-  timePillEl.textContent = onEnt ? fmtSeconds(onEnt.elapsed_s) : '—';
-  capOffEl.textContent = offEnt ? offEnt.image_path : '(no LoRA-off image for ' + ent.id + ')';
-  capOnEl .textContent = onEnt  ? onEnt.image_path  : '(no LoRA-on image for '  + ent.id + ' in ' + currentMode + ')';
-  capModeEl.textContent = currentMode;
+  modeDispEl.textContent = inferMode(snapStart < 0 ? 0 : snapStart, snapEndExcl);
+  // Use the with_prompt render time as the headline; both modes render at
+  // similar wall-clocks per cell, and reporting one number keeps the UI tidy.
+  timePillEl.textContent = wpEnt ? fmtSeconds(wpEnt.elapsed_s)
+                                 : (alEnt ? fmtSeconds(alEnt.elapsed_s) : '—');
+  capOffEl.textContent = offEnt ? offEnt.image_path : '(no baseline image for ' + ent.id + ')';
+  capWpEl .textContent = wpEnt  ? wpEnt.image_path  : '(not rendered for ' + ent.id + ')';
+  capAlEl .textContent = alEnt  ? alEnt.image_path  : '(not rendered for ' + ent.id + ')';
   updateArrowsEnabled();
 }
 
@@ -1222,13 +1398,18 @@ const lambdaSlider = document.getElementById('lambda-slider');
 const epochValEl   = document.getElementById('epoch-val');
 const lambdaValEl  = document.getElementById('lambda-val');
 
+// Slider grids are driven from the with_prompt manifest. Both manifests
+// (with_prompt, always) cover the same (epoch, λ) cells in the sweep, so
+// one is canonical for navigation.
+const NAV_MODE = 'with_prompt';
+
 function refreshEpochSlider() {
-  const epochs = availableEpochs(currentMode);
+  const epochs = availableEpochs(NAV_MODE);
   epochSlider.min = 0;
   epochSlider.max = Math.max(0, epochs.length - 1);
   let idx = epochs.indexOf(currentEpoch);
   if (idx < 0) {
-    const near = nearestEpoch(currentMode, currentEpoch ?? 0);
+    const near = nearestEpoch(NAV_MODE, currentEpoch ?? 0);
     idx = (near != null) ? epochs.indexOf(near) : 0;
     currentEpoch = epochs[idx] ?? null;
   }
@@ -1238,12 +1419,12 @@ function refreshEpochSlider() {
 }
 
 function refreshLambdaSlider() {
-  const lams = availableLambdas(currentMode, currentEpoch);
+  const lams = availableLambdas(NAV_MODE, currentEpoch);
   lambdaSlider.min = 0;
   lambdaSlider.max = Math.max(0, lams.length - 1);
   let idx = lams.indexOf(currentLambdaTag);
   if (idx < 0) {
-    const near = nearestLambda(currentMode, currentEpoch, currentLambdaTag ?? '1.00');
+    const near = nearestLambda(NAV_MODE, currentEpoch, currentLambdaTag ?? '1.00');
     idx = (near != null) ? lams.indexOf(near) : 0;
     currentLambdaTag = lams[idx] ?? null;
   }
@@ -1253,22 +1434,20 @@ function refreshLambdaSlider() {
 }
 
 function onCellChanged() {
-  rebuildEntries(currentMode, currentEpoch, currentLambdaTag);
-  // Re-clamp the dual-handle slider against the new schedule set.
+  rebuildEntries(NAV_MODE, currentEpoch, currentLambdaTag);
   if (ENTRIES.length === 0) {
-    // No data — clear images, keep UI sane.
-    document.getElementById('img-off').removeAttribute('src');
-    document.getElementById('img-on') .removeAttribute('src');
+    imgOff.removeAttribute('src');
+    imgWp .removeAttribute('src');
+    imgAl .removeAttribute('src');
     document.getElementById('mask-strip').innerHTML = '';
-    document.getElementById('delta-strip').innerHTML = '';
-    document.getElementById('sched-id').textContent = '(no data at this cell)';
+    document.getElementById('mode-disp').textContent = '(no data at this cell)';
     return;
   }
   update('cell');
 }
 
 epochSlider.addEventListener('input', () => {
-  const epochs = availableEpochs(currentMode);
+  const epochs = availableEpochs(NAV_MODE);
   const idx = Math.min(epochs.length - 1, Math.max(0, parseInt(epochSlider.value, 10)));
   currentEpoch = epochs[idx];
   epochValEl.textContent = currentEpoch;
@@ -1276,33 +1455,38 @@ epochSlider.addEventListener('input', () => {
   onCellChanged();
 });
 lambdaSlider.addEventListener('input', () => {
-  const lams = availableLambdas(currentMode, currentEpoch);
+  const lams = availableLambdas(NAV_MODE, currentEpoch);
   const idx = Math.min(lams.length - 1, Math.max(0, parseInt(lambdaSlider.value, 10)));
   currentLambdaTag = lams[idx];
   lambdaValEl.textContent = `λ=${currentLambdaTag}`;
   onCellChanged();
 });
 
-document.querySelectorAll('.toggle-btn').forEach(btn => {
+// ---- Info cards: ⓘ buttons toggle inline cards; one open at a time ----
+document.querySelectorAll('.info-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentMode = btn.dataset.mode;
-    refreshEpochSlider();
-    refreshLambdaSlider();
-    onCellChanged();
+    const target = 'info-' + btn.dataset.info;
+    const card = document.getElementById(target);
+    const opening = !card.classList.contains('open');
+    // Close all cards and deactivate all buttons.
+    document.querySelectorAll('.info-card').forEach(c => c.classList.remove('open'));
+    document.querySelectorAll('.info-btn').forEach(b => b.classList.remove('open'));
+    if (opening) {
+      card.classList.add('open');
+      btn.classList.add('open');
+    }
   });
 });
 
-// Initial state: first available (epoch, λ) in with_prompt.
+// Initial state: latest available (epoch, λ).
 (function initCell() {
-  const epochs = availableEpochs('with_prompt');
-  currentEpoch = epochs[epochs.length - 1] ?? null;   // default to last epoch
-  const lams = (currentEpoch != null) ? availableLambdas('with_prompt', currentEpoch) : [];
-  currentLambdaTag = lams[lams.length - 1] ?? null;   // default to highest λ
+  const epochs = availableEpochs(NAV_MODE);
+  currentEpoch = epochs[epochs.length - 1] ?? null;
+  const lams = (currentEpoch != null) ? availableLambdas(NAV_MODE, currentEpoch) : [];
+  currentLambdaTag = lams[lams.length - 1] ?? null;
   refreshEpochSlider();
   refreshLambdaSlider();
-  rebuildEntries(currentMode, currentEpoch, currentLambdaTag);
+  rebuildEntries(NAV_MODE, currentEpoch, currentLambdaTag);
 })();
 
 update('init');
@@ -1366,11 +1550,13 @@ def create_app(
     @app.route("/")
     def index():
         return render_template_string(
-            INDEX_HTML,
+            _with_tabs(INDEX_HTML),
+            active="residual",
             results_root=manifest.get("results_root", ""),
             epochs=manifest["epochs"],
             lambdas=manifest["lambdas"],
             manifest_json=json.dumps(manifest),
+            mono_path=_resolve_mono_path(manifest),
         )
 
     @app.route("/manifest.json")
@@ -1388,7 +1574,8 @@ def create_app(
         on_rec = sanity.get("all_on_vs_run_cfg") or {}
         off_rec = sanity.get("all_off_vs_uncond") or {}
         return render_template_string(
-            CW_INDEX_HTML,
+            _with_tabs(CW_INDEX_HTML),
+            active="cw",
             prompt=cw_manifest.get("prompt", ""),
             seed=cw_manifest.get("seed", ""),
             num_steps=cw_manifest.get("num_inference_steps", 50),
@@ -1435,7 +1622,8 @@ def create_app(
         def _count_cells(m: dict) -> int:
             return sum(len(row) for row in (m.get("cells") or {}).values())
         return render_template_string(
-            CWL_INDEX_HTML,
+            _with_tabs(CWL_INDEX_HTML),
+            active="cwl",
             prompt=cwl_wp.get("prompt", ""),
             seed=cwl_wp.get("seed", ""),
             num_steps=cwl_wp.get("num_inference_steps", 50),
