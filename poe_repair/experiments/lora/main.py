@@ -217,7 +217,14 @@ class WandBLogger:
     is unavailable.
     """
 
-    def __init__(self, cfg: RunConfig, run_dir: Path):
+    def __init__(
+        self,
+        cfg: RunConfig,
+        run_dir: Path,
+        *,
+        resume_id: str | None = None,
+        resume_mode: str = "must",
+    ):
         self.run = None
         self.cfg = cfg
         self.run_dir = run_dir
@@ -233,7 +240,7 @@ class WandBLogger:
             return
         if cfg.wandb.mode == "offline":
             os.environ.setdefault("WANDB_MODE", "offline")
-        self.run = wandb.init(
+        init_kwargs: dict[str, Any] = dict(
             project=cfg.wandb.project,
             entity=cfg.wandb.entity,
             name=cfg.run_id,
@@ -244,6 +251,10 @@ class WandBLogger:
             config=cfg.to_dict(),
             reinit=True,
         )
+        if resume_id:
+            init_kwargs["id"] = resume_id
+            init_kwargs["resume"] = resume_mode
+        self.run = wandb.init(**init_kwargs)
 
     def log(self, payload: dict[str, Any], *, step: int | None = None) -> None:
         if self.run is not None:

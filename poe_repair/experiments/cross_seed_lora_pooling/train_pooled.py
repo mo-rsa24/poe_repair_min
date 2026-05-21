@@ -29,6 +29,7 @@ from pathlib import Path
 
 import torch
 
+from poe_repair.experiments.cross_seed_lora_pooling import _inline_sampling
 from poe_repair.experiments.cross_seed_lora_pooling.seed_pool import load_seed_pool
 from poe_repair.experiments.lora import trainer as lora_trainer
 from poe_repair.experiments.lora.config import RunConfig
@@ -108,6 +109,25 @@ def build_argparser() -> argparse.ArgumentParser:
                     help="dump intermediate checkpoint every N epochs (default 200)")
     ap.add_argument("--xformers", action="store_true",
                     help="enable xformers memory-efficient attention on the UNet")
+    ap.add_argument("--resume-from", default=None,
+                    help="path to a previous lora_step_*.pt checkpoint. The "
+                         "trainer continues from its (epoch, step) until "
+                         "--total-epochs is reached.")
+    ap.add_argument("--resume-wandb-id", default=None,
+                    help="wandb run id to resume (e.g. 'pueuo7bl'). When set, "
+                         "wandb.init uses resume='must' to extend the same run.")
+    ap.add_argument("--sample-every-epochs", type=int, default=0,
+                    help="render one PNG per seed every N epochs and log to "
+                         "wandb. 0 disables inline sampling.")
+    ap.add_argument("--sample-seeds", default="all",
+                    help="comma-separated seeds; 'all' = train_pool ∪ held_out.")
+    ap.add_argument("--sample-num-inference-steps", type=int, default=20,
+                    help="DDIM steps for inline samples (final HQ pass is "
+                         "rendered post-hoc by render_per_epoch.py).")
+    ap.add_argument("--sample-height", type=int, default=1024)
+    ap.add_argument("--sample-width", type=int, default=1024)
+    ap.add_argument("--sample-thumb", type=int, default=320,
+                    help="contact-sheet thumbnail edge in pixels.")
     return ap
 
 
@@ -234,7 +254,11 @@ def main(argv: list[str] | None = None) -> int:
 
     embeddings = encode_all_prompts(cfg, models, device, dtype)
 
-    logger = WandBLogger(cfg, run_dir=run_dir)
+    logger = WandBLogger(
+        cfg, run_dir=run_dir,
+        resume_id=args.resume_wandb_id,
+        resume_mode="must",
+    )
     optimizer = lora_trainer.make_optimizer(models["unet"], cfg)
     grad_scaler = lora_trainer.make_grad_scaler(
         enabled=(dtype == torch.float16 and torch.cuda.is_available()),
@@ -243,6 +267,95 @@ def main(argv: list[str] | None = None) -> int:
     rng = torch.Generator(device="cpu")
     rng.manual_seed(int(cfg.seed))
     train_dtype = dtype if dtype != torch.float16 else torch.float16
+
+    # ---- resume from a previous checkpoint ------------------------------
+    if args.resume_from is not None:
+        resume_path = Path(args.resume_from)
+        log.info("resuming from %s", resume_path)
+        ckpt = torch.load(resume_path, map_location="cpu", weights_only=False)
+        lora_trainer.load_lora_state(models["unet"], ckpt["lora_state"])
+        state.epoch = int(ckpt.get("epoch", 0))
+        state.optimizer_step = int(ckpt.get("step", 0))
+        if "optimizer_state" in ckpt:
+            try:
+                optimizer.load_state_dict(ckpt["optimizer_state"])
+                log.info("loaded optimizer state from checkpoint")
+            except Exception as exc:
+                log.warning(
+                    "could not load optimizer state (%s) — restarting Adam "
+                    "moments cold.", exc,
+                )
+        else:
+            log.warning(
+                "checkpoint has no optimizer_state — Adam moments restart "
+                "cold (one-shot artifact of the v0 checkpoint format).",
+            )
+        if "scaler_state" in ckpt and grad_scaler is not None:
+            try:
+                grad_scaler.load_state_dict(ckpt["scaler_state"])
+            except Exception as exc:
+                log.warning("could not load grad scaler state: %s", exc)
+        log.info("resumed at epoch=%d optimizer_step=%d",
+                 state.epoch, state.optimizer_step)
+
+    # ---- inline sampling setup ------------------------------------------
+    sampler_ctx = None
+    if int(args.sample_every_epochs) > 0:
+        if args.sample_seeds == "all":
+            sample_seeds_list = list(
+                dict.fromkeys(list(pool.train_pool) + list(pool.held_out))
+            )
+        else:
+            sample_seeds_list = [
+                int(x) for x in args.sample_seeds.split(",") if x.strip()
+            ]
+        log.info("inline sampling: every %d epochs, seeds=%s, %d DDIM steps",
+                 int(args.sample_every_epochs), sample_seeds_list,
+                 int(args.sample_num_inference_steps))
+        sampler_ctx = _inline_sampling.build_context(
+            seeds=sample_seeds_list,
+            pair_slug=pool.pair_slug,
+            cache_root=cache_root,
+            embeddings=embeddings,
+            device=device,
+            dtype=dtype,
+            height=int(args.sample_height),
+            width=int(args.sample_width),
+            num_inference_steps=int(args.sample_num_inference_steps),
+            guidance_scale=float(cfg.sampler.guidance_scale),
+            euler_init_noise_sigma=float(cfg.sampler.euler_init_noise_sigma),
+            train_pool=set(int(s) for s in pool.train_pool),
+            held_out=set(int(s) for s in pool.held_out),
+        )
+
+    samples_root = ensure_dir(run_dir / "samples" / "per_epoch")
+    lora_adapter_name = str(attach_info.get("adapter_name", "lora"))
+
+    def _run_inline_sample(tag: str) -> None:
+        """Sample all seeds at the current LoRA state, save to disk, log to wandb."""
+        if sampler_ctx is None:
+            return
+        sub = samples_root / f"epoch_{state.epoch:04d}_step_{state.optimizer_step:06d}"
+        pngs = _inline_sampling.sample_all_seeds(
+            unet=models["unet"], models=models, scheduler=scheduler,
+            ctx=sampler_ctx, out_dir=sub,
+            lambda_value=1.0, lora_adapter_name=lora_adapter_name,
+        )
+        for s, png in pngs.items():
+            logger.log_image(f"samples/seed_{int(s):02d}", png,
+                             step=state.optimizer_step)
+        sheet = _inline_sampling.compose_contact_sheet(
+            pngs_by_seed=pngs,
+            seeds=sampler_ctx.seeds,
+            train_pool=sampler_ctx.train_pool,
+            held_out=sampler_ctx.held_out,
+            title=f"{tag} — epoch {state.epoch} / step {state.optimizer_step}",
+            thumb=int(args.sample_thumb),
+        )
+        sheet_path = sub / "contact_sheet.png"
+        sheet.save(sheet_path)
+        logger.log_image("samples/contact_sheet", sheet_path,
+                         step=state.optimizer_step)
 
     if args.dry_run:
         log.info("--dry-run: running 1 epoch then exiting.")
@@ -258,16 +371,25 @@ def main(argv: list[str] | None = None) -> int:
                 payload, step=state.optimizer_step,
             ),
         )
-        _dump_checkpoint(models["unet"], cfg, state, checkpoints_root)
+        _dump_checkpoint(models["unet"], cfg, state, checkpoints_root,
+                         optimizer=optimizer, grad_scaler=grad_scaler)
         logger.finish()
         return 0
 
     import time as _time
     log_every = max(1, int(args.log_every_epochs))
     ckpt_every = max(1, int(args.ckpt_every_epochs))
+    sample_every = max(0, int(args.sample_every_epochs))
+    total_epochs = int(cfg.schedule.total_epochs)
+    remaining_epochs = max(0, total_epochs - state.epoch)
+    log.info("training plan: target=%d epochs, starting at epoch=%d "
+             "(remaining=%d)", total_epochs, state.epoch, remaining_epochs)
+    if sampler_ctx is not None and args.resume_from is not None:
+        log.info("anchor sample at resume (epoch=%d)", state.epoch)
+        _run_inline_sample("anchor")
     t_start = _time.time()
     try:
-        for _ in range(int(cfg.schedule.total_epochs)):
+        for _ in range(remaining_epochs):
             t_epoch = _time.time()
             ok = lora_trainer.train_epoch(
                 unet=models["unet"], scheduler=scheduler,
@@ -299,7 +421,10 @@ def main(argv: list[str] | None = None) -> int:
                     _time.time() - t_epoch, elapsed, remaining,
                 )
             if state.epoch % ckpt_every == 0:
-                _dump_checkpoint(models["unet"], cfg, state, checkpoints_root)
+                _dump_checkpoint(models["unet"], cfg, state, checkpoints_root,
+                                 optimizer=optimizer, grad_scaler=grad_scaler)
+            if sample_every > 0 and state.epoch % sample_every == 0:
+                _run_inline_sample("inline")
             if not ok:
                 log.warning("kill criterion: %s", state.aborted_reason)
                 write_json(run_dir / "verdict.json", {
@@ -310,7 +435,8 @@ def main(argv: list[str] | None = None) -> int:
                 })
                 break
     finally:
-        _dump_checkpoint(models["unet"], cfg, state, checkpoints_root)
+        _dump_checkpoint(models["unet"], cfg, state, checkpoints_root,
+                         optimizer=optimizer, grad_scaler=grad_scaler)
         logger.finish()
 
     write_json(run_dir / "verdict.json", {
@@ -322,14 +448,25 @@ def main(argv: list[str] | None = None) -> int:
     return 0
 
 
-def _dump_checkpoint(unet, cfg, state, checkpoints_root: Path) -> Path:
+def _dump_checkpoint(
+    unet, cfg, state, checkpoints_root: Path,
+    *, optimizer=None, grad_scaler=None,
+) -> Path:
     p = checkpoints_root / f"lora_step_{state.optimizer_step:06d}.pt"
-    torch.save({
+    payload: dict = {
         "lora_state": lora_trainer.lora_state_dict(unet),
         "step": int(state.optimizer_step),
         "epoch": int(state.epoch),
         "config": cfg.to_dict(),
-    }, p)
+    }
+    if optimizer is not None:
+        payload["optimizer_state"] = optimizer.state_dict()
+    if grad_scaler is not None:
+        try:
+            payload["scaler_state"] = grad_scaler.state_dict()
+        except Exception:
+            pass
+    torch.save(payload, p)
     (checkpoints_root / "latest.json").write_text(json.dumps({
         "path": str(p),
         "step": int(state.optimizer_step),
