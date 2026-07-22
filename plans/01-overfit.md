@@ -20,6 +20,22 @@ eye, and each bending the corrected path (PoE+λ·R) toward the joint target in 
 written-up failure of the external and internal correctors, which is what makes the LoRA result
 mean something.
 
+## Latest status + how to see it
+**As of 2026-07-22.** Beachhead landed on cat×dog seed 42; G4 (typewriter×cactus) trained, MDS panels owed; G1–G3 single-seed LoRAs owed (0-byte stubs); negative controls done. The trained cell plateaus at ~40% of the PoE→Mono distance (delivery is the first-order limiter).
+
+Owning artifacts (repo root):
+- `artifacts/rung1-overfit/lora/a_cat__x__a_dog/seed_42/run__local/checkpoints/lora_step_062500.pt` — 420 LoRA keys. W&B: local run (no id).
+- `artifacts/rung1-overfit/lora/a_typewriter__x__a_cactus/seed_42/run__wandb-wag4z592/` — step 80000. W&B `wag4z592`. Do NOT confuse with `xcp40234` (typewriter *cross-seed* pool, rung 2).
+- Unlisted, needs classifying: `outputs/lora/a_camel__x__a_desert_landscape` (945M, trained).
+- Negative controls: `outputs/group_a_failure/{latent_cnn,latent_unet,frozen_feature_mlp}`.
+
+See it:
+```bash
+PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
+CUDA_VISIBLE_DEVICES="" $PY -c "import torch; sd=torch.load('artifacts/rung1-overfit/lora/a_cat__x__a_dog/seed_42/run__local/checkpoints/lora_step_062500.pt',map_location='cpu',weights_only=True); print(len([k for k in sd.get('lora_state',sd) if 'lora' in k.lower()]),'lora keys')"   # 420
+$PY scripts/build_lora_manifest.py && bash scripts/run_lora_inspector.sh          # → http://localhost:5050
+```
+
 ## Tasks
 - [x] ✅ Groundwork: veracity (gap reachable), residual diagnostics (target structured), CFG-mask floor. → G01/G02/G03 landed (`plans/phases/01-03`).
 - [x] ✅ Train single-seed LoRA on cat×dog seed 42. → G04 headline: λ=0 byte-identical to PoE, λ=1 two distinct animals by ~ep600. Artifact `artifacts/rung1-overfit/lora/a_cat__x__a_dog/seed_42/run__local/checkpoints/lora_step_062500.pt`.  ✓ verified (loads, 420 lora keys)
