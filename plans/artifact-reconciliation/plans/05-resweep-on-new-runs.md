@@ -26,6 +26,15 @@ After each re-sweep: the `01`/`02` inventories match disk + W&B, every new check
 - [ ] ⚠️ If new pairs appear, canonicalise their slug (retire any short form) the same way `cat_dog` → `a_cat__x__a_dog` was done.
 - [ ] ⚠️ Append a decision-timeline gate for each new landing to `docs/DECISION_TIMELINE.md` (append-only; supersede with a banner, never rewrite) so the spine stays current.
 
+## Pending backlog (surfaced by sync 2026-07-22)
+
+Concrete unfiled items owed to the next sweep. These are why the scope's DoD-4 is ⚠️:
+
+- [ ] ⚠️ Classify `a_camel__x__a_desert_landscape` LoRA (945M, trained, under `outputs/lora/`): keep / re-run / discard, add its disposition row and name its rung-1 owner.
+- [ ] ⚠️ File the four G1–G4 cross-seed pool runs (W&B `aoj3oz7s` G1, `yrfw5dio` G2, `ig20iqul` G3, `xcp40234` G4): load-test, disposition, confirm canonical path.
+- [ ] ⚠️ Record the `koy9gjis` cat×dog failure run as a `discard`/`reference` row (the negative example for Survive-Noise).
+- [ ] ⚠️ Close the cross-root navigability gap: leave a repo-side symlink into `/datasets/.../artifacts/` for every datasets-only run (e.g. the `pueuo7bl` pool) so bare `artifacts/...` paths resolve from the repo. Alternative already partly applied: plans use absolute `/datasets` paths (02/03). Pick one convention and make it uniform.
+
 Standing prompt (run each sweep):
 
 ```
