@@ -33,3 +33,6 @@ results/
 # Misc transient
 .DS_Store
 *.tmp
+
+# Todoist bridge staging (transient input for todoist-publish)
+todoist-staging/
