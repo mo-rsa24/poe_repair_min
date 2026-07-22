@@ -65,15 +65,15 @@ recorded in the decision timeline.
 - ⚠️ plans/artifact-reconciliation/ — "keep run artifacts catalogued, integrity-checked, canonically organised" (standing: carries a recurring re-sweep node)
 
 ## Plans
-(One plan file per pyramid rung. Detailed phase files are archived under
-`plans/phases/` and referenced from each rung plan; `plans/phases/PHASE_MAP.md`
-is the retired 8-phase orchestrator.)
-- ⚠️ 01-overfit.md — beachhead + taxonomy breadth + negative controls (DoD 1, 6)
-- ⚠️ 02-survive-noise.md — seed-pooled LoRA, held-out seeds, per group (DoD 2)
-- ⚠️ 03-cross-pair.md — held-out-pair transfer probe (DoD 3)
-- ⚠️ 04-group-wise.md — within-group pooling, is "group" a unit (DoD 4)
-- ⚠️ 05-scale.md — one LoRA, four-quadrant crossbar, or catalogue fallback (DoD 5)
-- ⚠️ 06-supervisor-briefing.md — communicate current state + name next moves, plain-speak'd (delivery, not a rung)
+(One plan file per pyramid rung, grouped under `plans/rungs/`. Detailed phase
+files are archived under `plans/phases/` and referenced from each rung plan;
+`plans/phases/PHASE_MAP.md` is the retired 8-phase orchestrator.)
+- ⚠️ rungs/01-overfit.md — beachhead + taxonomy breadth + negative controls (DoD 1, 6)
+- ⚠️ rungs/02-survive-noise.md — seed-pooled LoRA, held-out seeds, per group (DoD 2)
+- ⚠️ rungs/03-cross-pair.md — held-out-pair transfer probe (DoD 3)
+- ⚠️ rungs/04-group-wise.md — within-group pooling, is "group" a unit (DoD 4)
+- ⚠️ rungs/05-scale.md — one LoRA, four-quadrant crossbar, or catalogue fallback (DoD 5)
+- ⚠️ rungs/06-supervisor-briefing.md — communicate current state + name next moves, plain-speak'd (delivery, not a rung)
 
 ## 🖥️ Viewing results (web apps)
 
