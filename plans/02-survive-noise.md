@@ -16,9 +16,24 @@ a lucky-seed accident, or does it hold across seeds without changing the model.
 For each group, a pooled LoRA with a clear pass/fail on unseen seeds: both concepts show up on at
 least 3 of the 4 held-out seeds.
 
+## Latest status + how to see it
+**As of 2026-07-22.** G6 (cat×dog) pool trained to convergence (ep2000 / step 100000), `verdict.json="ok"`. The held-out-seed proof (composes on seeds 9–12) is still pending (enactment generating). G1–G4 pools part-trained (~ep1000–1200 of 2000), no verdicts.
+
+Owning artifacts:
+- G6 pool (lives ONLY under /datasets): `/datasets/mmolefe/poe_repair_min/artifacts/rung2-survive-noise/cross_seed/a_cat__x__a_dog/taskB__k04_ep2000_resumed__wandb-pueuo7bl/` — verdict ok, ep2000, step 100000.
+- Repo also has (a different earlier sweep): `taskB__k01_pick1_ep1600__wandb-hbpotmnk`, `taskC__s9_ep1600__wandb-d5b2706v`.
+
+W&B (project `poe-repair-cross-seed`): `pueuo7bl` cat×dog **worked** (verdict ok); `koy9gjis` cat×dog **failed** (failure example); G1 `aoj3oz7s` (dolphin×wave), G2 `yrfw5dio` (dog×oil), G3 `ig20iqul` (mailbox×snowfield), G4 `xcp40234` (typewriter×cactus) — in progress, no verdict.
+
+See it:
+```bash
+DATA=/datasets/mmolefe/poe_repair_min/artifacts
+cat "$DATA/rung2-survive-noise/cross_seed/a_cat__x__a_dog/taskB__k04_ep2000_resumed__wandb-pueuo7bl/verdict.json"   # {"verdict":"ok","epoch":2000,"optimizer_step":100000}
+```
+
 ## Tasks
 - [x] ✅ Cross-seed Δ_t structure diagnostic (N=8). → G06: ~seed noise at the cross-seed mean (`landing_6`); honest prior is a weak seed-mean.  ✓ stated (regenerable, no on-disk artifact)
-- [x] ✅ Pooled LoRA on cat×dog (G6), seeds {1–4}. → G07: reached ep 2000, `verdict.json="ok"`. Artifact `artifacts/rung2-survive-noise/cross_seed/a_cat__x__a_dog/taskB__k04_ep2000_resumed__wandb-pueuo7bl/`.  ✓ verified (verdict.json="ok", ckpt loads)
+- [x] ✅ Pooled LoRA on cat×dog (G6), seeds {1–4}. → G07: reached ep 2000, `verdict.json="ok"`. Artifact `/datasets/mmolefe/poe_repair_min/artifacts/rung2-survive-noise/cross_seed/a_cat__x__a_dog/taskB__k04_ep2000_resumed__wandb-pueuo7bl/`.  ✓ verified (verdict.json="ok", ckpt loads)
 - [ ] ⚠️ Finish the G1–G4 per-pair pooled runs (currently part-trained ≈ ep1000–1200 of 2000, no verdicts).
   Prompt (`/run-experiment`): `for G in g1 g2 g3 g4; do $PY -m scripts.cross_seed_lora_pooling.run_group --group $G --total-epochs 2000; done` (resolves each group→representative pair; resume via `checkpoints/latest.json` under `artifacts/rung2-survive-noise/cross_seed/<pair>/taskB__k04_ep2000/`).
 - [ ] ⚠️ Task C (per-seed ceiling) + Task D (Δ̄_t bridge) + contact sheets, per group.
@@ -32,7 +47,7 @@ least 3 of the 4 held-out seeds.
 
 ## Engagement Instructions
 ```
-$ cat artifacts/rung2-survive-noise/cross_seed/a_cat__x__a_dog/taskB__k04_ep2000_resumed__wandb-pueuo7bl/verdict.json   # {"verdict":"ok",...}
+$ cat /datasets/mmolefe/poe_repair_min/artifacts/rung2-survive-noise/cross_seed/a_cat__x__a_dog/taskB__k04_ep2000_resumed__wandb-pueuo7bl/verdict.json   # {"verdict":"ok",...}
 # Per group: samples/heldout/sample_seed_{9,10,11,12}.png show composition (not the PoE chimera); contact_sheet_B.png rendered.
 ```
 
