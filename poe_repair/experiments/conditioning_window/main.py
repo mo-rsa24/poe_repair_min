@@ -40,7 +40,7 @@ def _build_argparser() -> argparse.ArgumentParser:
                     help='Subject A; only used to locate the shared x_T cell.')
     ap.add_argument("--prompt-b", default="a dog",
                     help='Subject B; only used to locate the shared x_T cell.')
-    ap.add_argument("--pair-slug", default="cat_dog",
+    ap.add_argument("--pair-slug", default="a_cat__x__a_dog",
                     help='Output directory slug under outputs/conditioning_window/.')
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--num-inference-steps", type=int, default=50)

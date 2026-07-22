@@ -1,5 +1,17 @@
 # Master Plan — Fixing PoE
 
+> ⚠️ SUPERSEDED by [`/MASTER_PLAN.md`](../../MASTER_PLAN.md) (2026-07-21) — the
+> canonical program master now lives at the repo root, framed around the five
+> pyramid rungs (Overfit → Survive-Noise → Cross-Pair → Group-Wise → Scale)
+> with status backed by [`docs/DECISION_TIMELINE.md`](../../docs/DECISION_TIMELINE.md).
+> (This file and its sibling phase plans were archived into `plans/phases/` on
+> 2026-07-21 when the rung-based plan files `plans/01-05` became canonical.)
+> This file is retained as the historical **phase map**: the original eight-phase
+> ordering and per-phase reasoning. It is no longer the source of truth for
+> objectives, goals, or sub-scope links (the `artifact-reconciliation` sub-scope
+> is now listed on the root master). Do not add new objectives here; edit the
+> root master instead.
+
 This folder is the canonical orchestrator for the PoE-repair project.
 Every research thread lives as a numbered sub-plan; the numbering is the
 order of operations. Each sub-plan stands on its own and follows the
@@ -9,7 +21,7 @@ and a taxonomy (poor / bad / unknown / good) for reading the result.
 ## The goal in one sentence
 
 When SDXL is asked to compose two trained concepts ("a cat", "a dog")
-via Product-of-Experts, it usually fails — the result is a chimera, a
+via Product-of-Experts, it usually fails: the result is a chimera, a
 single concept, or noise. We want to fix it.
 
 ## The line of reasoning
@@ -96,15 +108,23 @@ Phase 8 (cross-seed LoRA)
 | 1 Veracity | Cached on disk + figures rendered. |
 | 2 Residual diagnostics | Existence + CLIP-window subexperiments executed. |
 | 3 Conditioning-window | Schedule sweep + inspector route landed. |
-| 4 LoRA single seed | Trained, probes saved, inspector route landed (`outputs/lora/cat_dog/seed_42/`). |
+| 4 LoRA single seed | Trained, probes saved, inspector route landed (`outputs/lora/a_cat__x__a_dog/seed_42/`). |
 | 5 Group-A failures | Three architectures run; reported negatively. |
 | 6 Internal-force failures | Two forces run; reported negatively. |
 | 7 Cross-seed Δ_t structure | Executed at N=8; `landing_6` (Δ_t consistent with seed noise at cross-seed mean). |
 | 8 Cross-seed LoRA pooling | Plan written; not yet executed. |
 
+## Operations
+
+- [ ] ⚠️ Reconcile, integrity-check, and canonically organise all run artifacts  → decomposed: see `plans/artifact-reconciliation/MASTER_PLAN.md`
+
+## Sub-Scopes
+
+- ⚠️ plans/artifact-reconciliation/ — "keep run artifacts catalogued, integrity-checked, canonically organised"
+
 ## How to read this folder
 
-- [MASTER_PLAN.md](MASTER_PLAN.md) — this file.
+- [PHASE_MAP.md](PHASE_MAP.md) — this file (historical phase map; superseded by `/MASTER_PLAN.md`).
 - [01-veracity.md](01-veracity.md) — oracle correction sanity check.
 - [02-residual-diagnostics.md](02-residual-diagnostics.md) — existence + CLIP-window characterisation.
 - [03-conditioning-window-baseline.md](03-conditioning-window-baseline.md) — no-LoRA CFG-mask sweep.

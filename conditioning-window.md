@@ -44,7 +44,7 @@ Two equivalence checks (`--sanity-only`):
    the unconditional sampler.
 
 Results land at
-`outputs/conditioning_window/cat_dog/seed_42/results/sanity/sanity.json`
+`outputs/conditioning_window/a_cat__x__a_dog/seed_42/results/sanity/sanity.json`
 plus four reference PNGs for visual spot-checks.
 
 ## Readout
@@ -103,7 +103,7 @@ with tick-marks every 10 steps. Hover the strip to see the full
 ## Output layout
 
 ```
-outputs/conditioning_window/cat_dog/seed_42/
+outputs/conditioning_window/a_cat__x__a_dog/seed_42/
   schedules/
     prefix_k05/image.png
     prefix_k05/summary.json

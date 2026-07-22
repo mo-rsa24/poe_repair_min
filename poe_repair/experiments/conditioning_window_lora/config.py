@@ -34,13 +34,13 @@ def _default_output_root() -> Path:
 
 def _default_lora_ckpt() -> Path:
     return (
-        _repo_root() / "outputs/lora/cat_dog/seed_42/results/"
+        _repo_root() / "outputs/lora/a_cat__x__a_dog/seed_42/results/"
         "checkpoints/lora_step_062500.pt"
     )
 
 
 def _default_lora_run_dir() -> Path:
-    return _repo_root() / "outputs/lora/cat_dog/seed_42/results"
+    return _repo_root() / "outputs/lora/a_cat__x__a_dog/seed_42/results"
 
 
 COMPOSITION_MODES = ("with_prompt", "always")
@@ -74,7 +74,7 @@ class RunConfig:
     prompt: str = "a cat and a dog"
     prompt_a: str = "a cat"
     prompt_b: str = "a dog"
-    pair_slug: str = "cat_dog"
+    pair_slug: str = "a_cat__x__a_dog"
     seed: int = 42
     num_inference_steps: int = 50
     guidance_scale: float = 7.5

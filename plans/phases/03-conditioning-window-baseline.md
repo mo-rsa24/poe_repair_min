@@ -58,7 +58,7 @@ Two checks at `≤ 1e-5` max-abs latent delta:
 - `run_cfg_masked(mask=all_off) ≡ run_cfg(..., guidance_scale=0)`.
 
 Non-zero exit if either fails. Writes
-`outputs/conditioning_window/cat_dog/seed_42/results/sanity/sanity.json`.
+`outputs/conditioning_window/a_cat__x__a_dog/seed_42/results/sanity/sanity.json`.
 
 ### 2. Smoke (~90 s, two schedules)
 

@@ -55,6 +55,7 @@ class CachedStep:
     eps_uncond: torch.Tensor
     delta_t: torch.Tensor      # guided Δ_t target
     source_seed: int = -1      # -1 = legacy single-seed (unset)
+    source_pair: str = ""      # empty = legacy single-pair (unset)
 
 
 def load_cached_steps(

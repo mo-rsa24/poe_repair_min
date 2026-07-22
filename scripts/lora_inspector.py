@@ -18,20 +18,21 @@ import json
 import os.path
 from pathlib import Path
 
-from flask import Flask, abort, jsonify, render_template_string, send_file
+from flask import Flask, abort, jsonify, render_template_string, request, send_file
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_MANIFEST = REPO_ROOT / "outputs/lora/cat_dog/seed_42/results/inspector_manifest.json"
-DEFAULT_CW_MANIFEST = REPO_ROOT / "outputs/conditioning_window/cat_dog/seed_42/results/inspector_manifest.json"
-DEFAULT_CWL_WP_MANIFEST = REPO_ROOT / "outputs/conditioning_window_lora/cat_dog/seed_42/with_prompt/results/inspector_manifest.json"
-DEFAULT_CWL_ALWAYS_MANIFEST = REPO_ROOT / "outputs/conditioning_window_lora/cat_dog/seed_42/always/results/inspector_manifest.json"
+DEFAULT_MANIFEST = REPO_ROOT / "outputs/lora/a_cat__x__a_dog/seed_42/results/inspector_manifest.json"
+DEFAULT_CW_MANIFEST = REPO_ROOT / "outputs/conditioning_window/a_cat__x__a_dog/seed_42/results/inspector_manifest.json"
+DEFAULT_CWL_WP_MANIFEST = REPO_ROOT / "outputs/conditioning_window_lora/a_cat__x__a_dog/seed_42/with_prompt/results/inspector_manifest.json"
+DEFAULT_CWL_ALWAYS_MANIFEST = REPO_ROOT / "outputs/conditioning_window_lora/a_cat__x__a_dog/seed_42/always/results/inspector_manifest.json"
 DEFAULT_OUTPUTS_ROOT = REPO_ROOT / "outputs"
 
 
 _TAB_HEADER = r"""
 <style>
   .tabs {
-    display: flex; gap: 0; margin: -24px -24px 20px -24px;
+    display: flex; align-items: stretch; gap: 0;
+    margin: -24px -24px 20px -24px;
     padding: 0 24px; border-bottom: 1px solid var(--border);
     background: var(--panel);
   }
@@ -52,20 +53,64 @@ _TAB_HEADER = r"""
     font-size: 10px; font-weight: 500; opacity: 0.7;
     text-transform: uppercase; letter-spacing: 0.08em;
   }
+  .tabs .spacer { flex: 1; }
+  .pair-picker {
+    display: flex; align-items: center; gap: 8px;
+    padding: 0 18px; color: var(--muted); font-size: 11px;
+    letter-spacing: 0.04em;
+  }
+  .pair-picker label {
+    text-transform: uppercase; font-weight: 600; opacity: 0.7;
+  }
+  .pair-picker select {
+    background: #0f1115; color: var(--text);
+    border: 1px solid var(--border); border-radius: 4px;
+    padding: 4px 8px; font-size: 12px; font-weight: 600;
+    font-family: ui-monospace, monospace; cursor: pointer;
+  }
+  .pair-picker select:disabled { opacity: 0.4; cursor: not-allowed; }
+  .pair-picker .hint { color: var(--muted); opacity: 0.6; font-size: 10px; }
 </style>
 <nav class="tabs">
-  <a href="/conditioning_window" class="{{ 'active' if active == 'cw' else '' }}">
+  <a href="/conditioning_window{{ query_pair }}" class="{{ 'active' if active == 'cw' else '' }}">
     <span class="tab-title">CFG-mask ablation</span>
     <span class="tab-role">floor &middot; no LoRA</span>
   </a>
-  <a href="/" class="{{ 'active' if active == 'residual' else '' }}">
+  <a href="/{{ query_pair }}" class="{{ 'active' if active == 'residual' else '' }}">
     <span class="tab-title">LoRA residual</span>
     <span class="tab-role">mechanism &middot; training trajectory</span>
+  </a>
+  <a href="/mds_large{{ query_pair }}" class="{{ 'active' if active == 'mds_large' else '' }}">
+    <span class="tab-title">MDS large</span>
+    <span class="tab-role">single plot &middot; decoded thumbnails</span>
   </a>
   <a href="/conditioning_window_lora" class="{{ 'active' if active == 'cwl' else '' }}">
     <span class="tab-title">LoRA + CFG-mask</span>
     <span class="tab-role">payoff &middot; rescue test</span>
   </a>
+  <span class="spacer"></span>
+  {% if pair_options and pair_options|length > 1 %}
+  <div class="pair-picker">
+    <label for="pair-select">pair</label>
+    <select id="pair-select" {% if active == 'cwl' %}disabled title="LoRA + CFG-mask is only rendered for cat × dog right now."{% endif %}>
+      {% for slug, name in pair_options %}
+      <option value="{{ slug }}" {% if slug == current_pair %}selected{% endif %}>{{ name }}</option>
+      {% endfor %}
+    </select>
+    {% if active == 'cwl' %}<span class="hint">cat × dog only</span>{% endif %}
+  </div>
+  <script>
+    (function() {
+      const sel = document.getElementById('pair-select');
+      if (!sel || sel.disabled) return;
+      sel.addEventListener('change', () => {
+        const u = new URL(window.location);
+        u.searchParams.set('pair', sel.value);
+        window.location = u.toString();
+      });
+    })();
+  </script>
+  {% endif %}
 </nav>
 """
 
@@ -135,6 +180,28 @@ INDEX_HTML = r"""
   .panel .caption {
     margin-top: 8px; color: var(--muted); font-size: 11px;
   }
+  .mds-row {
+    margin-top: 16px;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px;
+  }
+  .mds-row h2 {
+    margin: 0 0 8px 0; font-size: 12px; font-weight: 600;
+    color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .mds-row .mds-img-wrap {
+    display: flex; justify-content: center; align-items: center;
+    background: #FBFCFD; border-radius: 4px; min-height: 320px;
+    padding: 6px;
+  }
+  .mds-row img {
+    max-width: 100%; max-height: 540px; height: auto; display: block;
+    border-radius: 4px;
+  }
+  .mds-row .caption {
+    margin-top: 8px; color: var(--muted); font-size: 11px; text-align: center;
+  }
+  .mds-row .caption.missing { color: var(--warn); }
   #toast {
     position: fixed; top: 24px; right: 24px;
     background: var(--warn); color: #1a1207;
@@ -147,7 +214,7 @@ INDEX_HTML = r"""
 </style>
 </head>
 <body>
-<h1>How the LoRA residual fits over training &mdash; &lsquo;a cat and a dog&rsquo;, seed 42</h1>
+<h1>How the LoRA residual fits over training &mdash; &lsquo;{{ joint_prompt }}&rsquo;, seed 42</h1>
 <p class="subtitle">left: per-arm PoE with no LoRA &nbsp;&middot;&nbsp; middle: PoE + &lambda;&middot;r at the current epoch &nbsp;&middot;&nbsp; right: mono (joint CFG, the diagnostic ceiling)</p>
 
 <div class="controls">
@@ -190,7 +257,7 @@ INDEX_HTML = r"""
   <summary>diagnostics</summary>
   <div class="body">
     Source: <code>{{ results_root }}</code><br>
-    Manifest: <code>outputs/lora/cat_dog/seed_42/results/inspector_manifest.json</code> &middot;
+    Manifest: <code>outputs/lora/a_cat__x__a_dog/seed_42/results/inspector_manifest.json</code> &middot;
     {{ epochs|length }} epochs &times; {{ lambdas|length }} &lambda; values rendered.
   </div>
 </details>
@@ -262,23 +329,427 @@ update();
 """
 
 
+MDS_LARGE_HTML = r"""
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MDS — single large plot (LoRA inspector)</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --panel: #161a22;
+    --text: #e6e9ef;
+    --muted: #8b93a7;
+    --accent: #7ab7ff;
+    --warn: #f0a458;
+    --border: #2a2f3a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 24px;
+    background: var(--bg); color: var(--text);
+    font: 14px/1.4 -apple-system, system-ui, "Segoe UI", sans-serif;
+  }
+  h1 { font-size: 18px; font-weight: 600; margin: 0 0 6px 0; color: var(--text); }
+  .subtitle { color: var(--muted); font-size: 12px; margin: 0 0 18px 0; }
+  details.diagnostics {
+    margin-top: 28px; padding: 12px 14px;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--muted); font-size: 12px;
+  }
+  details.diagnostics summary {
+    cursor: pointer; user-select: none; font-weight: 600;
+    letter-spacing: 0.04em; text-transform: uppercase; font-size: 11px;
+  }
+  details.diagnostics .body { margin-top: 8px; line-height: 1.6; word-break: break-all; }
+  .controls {
+    display: grid; gap: 14px; margin-bottom: 20px;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px;
+  }
+  .row { display: flex; align-items: center; gap: 16px; }
+  .row label { flex: 0 0 80px; color: var(--muted); }
+  .row input[type=range] { flex: 1; }
+  .row .val {
+    flex: 0 0 64px; text-align: right; font-variant-numeric: tabular-nums;
+    color: var(--accent); font-weight: 600;
+  }
+  .row .source { color: var(--muted); font-size: 12px; flex: 0 0 auto; }
+  .mds-large-wrap {
+    background: #FBFCFD; border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px;
+    display: flex; justify-content: center; align-items: center;
+    min-height: 540px;
+  }
+  .mds-large-wrap img {
+    max-width: 100%; height: auto; display: block; border-radius: 4px;
+  }
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 18px;
+    margin: 12px 0 0 0; padding: 10px 14px;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--muted); font-size: 12px;
+  }
+  .legend .item {
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .legend .swatch {
+    width: 12px; height: 12px; border-radius: 2px; display: inline-block;
+  }
+  .legend .swatch.A { background: #C84C5B; }
+  .legend .swatch.B { background: #2B6F97; }
+  .legend .swatch.AB { background: #3B8D5B; }
+  .legend .swatch.LoRA { background: #D9872B; }
+  .caption.missing { color: var(--warn); }
+  .mode-toggle {
+    flex: 1; display: inline-flex; gap: 0;
+    background: #0f1115; border: 1px solid var(--border);
+    border-radius: 6px; padding: 3px; max-width: 420px;
+  }
+  .mode-btn {
+    flex: 1; padding: 6px 10px; cursor: pointer;
+    background: transparent; color: var(--muted);
+    border: 0; border-radius: 4px;
+    font: inherit; font-size: 12px; font-weight: 600;
+    letter-spacing: 0.02em;
+    transition: background 0.12s ease, color 0.12s ease;
+  }
+  .mode-btn:hover { color: var(--text); }
+  .mode-btn.active {
+    background: var(--accent); color: #0a1320;
+  }
+  .mode-btn.disabled {
+    opacity: 0.45; cursor: not-allowed;
+  }
+  .mode-hint {
+    color: var(--muted); font-size: 11px; flex: 0 0 auto;
+    max-width: 240px; line-height: 1.3;
+  }
+  #toast {
+    position: fixed; top: 24px; right: 24px;
+    background: var(--warn); color: #1a1207;
+    padding: 10px 14px; border-radius: 6px;
+    font-weight: 600; opacity: 0; pointer-events: none;
+    transition: opacity 0.18s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+  #toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<h1>Latent trajectories &mdash; single large MDS plot ({{ pair_display }})</h1>
+<p class="subtitle">
+  A, B, A&and;B are static; PoE + &lambda;&middot;r (LoRA) moves with the sliders.
+  Decoded-image thumbnails sit at each path&rsquo;s terminal point, bordered in the path colour.
+  Toggle the embedding to compare raw-latent MDS (pixel appearance) vs semantic MDS
+  (DINOv2 over predicted-x&#770;<sub>0</sub>, encodes spatial co-occurrence).
+</p>
+
+<div class="controls">
+  <div class="row">
+    <label for="epoch">epoch</label>
+    <input id="epoch" type="range" min="0" max="{{ epochs|length - 1 }}" step="1" value="0">
+    <div class="val" id="epoch-val">0</div>
+    <div class="source" id="epoch-src"></div>
+  </div>
+  <div class="row">
+    <label for="lambda">λ</label>
+    <input id="lambda" type="range" min="0" max="{{ lambdas|length - 1 }}" step="1" value="{{ lambdas|length - 1 }}">
+    <div class="val" id="lambda-val">{{ lambdas[-1] }}</div>
+  </div>
+  <div class="row">
+    <label for="mode">embedding</label>
+    <div class="mode-toggle" id="mode-toggle" role="tablist" aria-label="MDS embedding mode">
+      <button id="mode-latent"   class="mode-btn active" data-mode="latent"   role="tab" aria-selected="true">raw latent z<sub>t</sub></button>
+      <button id="mode-semantic" class="mode-btn disabled" data-mode="semantic" role="tab" aria-selected="false" disabled title="DINOv2 / semantic mode is disabled">semantic (DINOv2 · x̂<sub>0</sub>)</button>
+    </div>
+    <div class="mode-hint" id="mode-hint"></div>
+  </div>
+</div>
+
+<div class="mds-large-wrap">
+  <img id="img-mds-large" alt="MDS large panel">
+</div>
+<div class="legend">
+  <div class="item"><span class="swatch A"></span> A &mdash; solo prompt-A CFG (static)</div>
+  <div class="item"><span class="swatch B"></span> B &mdash; solo prompt-B CFG (static)</div>
+  <div class="item"><span class="swatch AB"></span> A&and;B &mdash; joint-prompt CFG / mono (static)</div>
+  <div class="item"><span class="swatch LoRA"></span> LoRA &mdash; PoE + &lambda;&middot;r (moves with sliders)</div>
+</div>
+<p class="caption" id="mds-large-caption" style="margin-top:8px; color: var(--muted); font-size: 11px;">
+  pre-rendered per (epoch, &lambda;). Static endpoints share a global projection so they don&rsquo;t shift as you scrub.
+</p>
+
+<div id="toast">cell not available</div>
+
+<details class="diagnostics">
+  <summary>diagnostics</summary>
+  <div class="body">
+    Source: <code>{{ results_root }}</code><br>
+    Latent panels: {{ n_large_cells }} / {{ epochs|length * lambdas|length }}
+    grid positions ({{ epochs|length }} epochs &times; {{ lambdas|length }} &lambda;).
+    Semantic panels: {{ n_large_cells_semantic }} / {{ epochs|length * lambdas|length }}.<br>
+    Populate latent cells with <code>scripts/build_lora_inspector_mds.py</code>
+    (<code>--stages collect-static,collect-cells,project,render-large,update-manifest</code>).<br>
+    Populate semantic cells with <code>scripts/build_lora_inspector_mds_semantic.py</code>
+    after the latent build (<code>--stages collect-static,collect-cells,project,align,render-large,update-manifest</code>).
+  </div>
+</details>
+
+<script>
+const MANIFEST = {{ manifest_json|safe }};
+const EPOCHS = MANIFEST.epochs;
+const LAMBDAS = MANIFEST.lambdas;
+const MDS_LARGE = {
+  latent:   MANIFEST.mds_cells_large || {},
+  semantic: MANIFEST.mds_cells_large_semantic || {},
+};
+const SOURCE = MANIFEST.cell_source_run || {};
+
+const MODE_INFO = {
+  latent: {
+    caption: 'MDS over flattened z_t. Distances track pixel-level latent ' +
+             'appearance — useful as a path-shape view, but does NOT encode ' +
+             'spatial co-occurrence. Don\'t read "closer to mono" semantically here.',
+    hint: 'z_t · pixel appearance',
+  },
+  semantic: {
+    caption: 'MDS over DINOv2 features of decoded predicted-x̂₀(t). ' +
+             'Distances track semantic content (co-occurrence). Watch the ' +
+             'PoE+λ·r path bend toward mono as training progresses.',
+    hint: 'DINOv2 · semantic',
+  },
+};
+
+const epochSlider = document.getElementById('epoch');
+const epochVal = document.getElementById('epoch-val');
+const epochSrc = document.getElementById('epoch-src');
+const lambdaSlider = document.getElementById('lambda');
+const lambdaVal = document.getElementById('lambda-val');
+const imgMdsLarge = document.getElementById('img-mds-large');
+const mdsCaption = document.getElementById('mds-large-caption');
+const toast = document.getElementById('toast');
+const modeBtnLatent = document.getElementById('mode-latent');
+const modeBtnSemantic = document.getElementById('mode-semantic');
+const modeHint = document.getElementById('mode-hint');
+
+let currentMode = 'latent';
+let toastTimer = null;
+
+function flashToast(msg) {
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 1600);
+}
+
+function lambdaForIdx(idx) { return LAMBDAS[idx]; }
+function epochForIdx(idx) { return EPOCHS[idx]; }
+
+function mdsLargePath(epoch, lam, mode) {
+  const map = MDS_LARGE[mode] || {};
+  const e = String(epoch);
+  if (!map[e]) return null;
+  return map[e][lam] || null;
+}
+
+function semanticAvailable() {
+  const m = MDS_LARGE.semantic || {};
+  for (const k in m) if (Object.keys(m[k] || {}).length > 0) return true;
+  return false;
+}
+
+function setMode(mode) {
+  if (mode === 'semantic') {
+    flashToast('semantic (DINOv2) mode is disabled');
+    return;
+  }
+  currentMode = mode;
+  modeBtnLatent.classList.toggle('active', mode === 'latent');
+  modeBtnLatent.setAttribute('aria-selected', mode === 'latent');
+  modeBtnSemantic.classList.toggle('active', mode === 'semantic');
+  modeBtnSemantic.setAttribute('aria-selected', mode === 'semantic');
+  modeHint.textContent = MODE_INFO[mode].hint;
+  update();
+}
+
+function update() {
+  const eIdx = parseInt(epochSlider.value, 10);
+  const lIdx = parseInt(lambdaSlider.value, 10);
+  const epoch = epochForIdx(eIdx);
+  const lam = lambdaForIdx(lIdx);
+  epochVal.textContent = epoch;
+  lambdaVal.textContent = lam;
+  epochSrc.textContent = SOURCE[String(epoch)] || '';
+
+  const p = mdsLargePath(epoch, lam, currentMode);
+  if (p) {
+    imgMdsLarge.src = '/img/' + p;
+    imgMdsLarge.style.display = 'block';
+    mdsCaption.classList.remove('missing');
+    mdsCaption.textContent = MODE_INFO[currentMode].caption;
+  } else {
+    imgMdsLarge.removeAttribute('src');
+    imgMdsLarge.style.display = 'none';
+    mdsCaption.classList.add('missing');
+    const script = currentMode === 'semantic'
+      ? 'scripts/build_lora_inspector_mds_semantic.py'
+      : 'scripts/build_lora_inspector_mds.py';
+    mdsCaption.textContent =
+      `no ${currentMode} panel for epoch=${epoch}, λ=${lam} — re-run ` +
+      `${script} with --stages render-large.`;
+    flashToast(`no ${currentMode} panel at epoch=${epoch}, λ=${lam}`);
+  }
+}
+
+epochSlider.addEventListener('input', update);
+lambdaSlider.addEventListener('input', update);
+modeBtnLatent.addEventListener('click', () => setMode('latent'));
+modeBtnSemantic.addEventListener('click', () => setMode('semantic'));
+
+modeBtnSemantic.classList.add('disabled');
+modeBtnSemantic.disabled = true;
+modeBtnSemantic.title = 'DINOv2 / semantic mode is disabled';
+setMode('latent');
+</script>
+</body>
+</html>
+"""
+
+
 def _with_tabs(template: str) -> str:
     """Inject the shared tab nav immediately after <body>."""
     return template.replace("<body>", "<body>\n" + _TAB_HEADER, 1)
 
 
-_MONO_FALLBACK = "outputs/cross_seed_lora_pooling/trajectory_diagram/seed_42/mono.png"
+_MONO_FALLBACK_CAT_DOG = "outputs/cross_seed_lora_pooling/trajectory_diagram/seed_42/mono.png"
+
+# Default pair slug — preserves current behaviour for users who don't pass ?pair=.
+DEFAULT_PAIR = "a_cat__x__a_dog"
 
 
-def _resolve_mono_path(manifest: dict) -> str | None:
-    """Mono is invariant in (epoch, lambda) — return one repo-relative path
-    if the file exists, else None. Prefer the manifest's ``mono_path`` field;
-    fall back to the trajectory_diagram render that uses the same sampler
-    config (seed 42, "a cat and a dog", 50 steps, guidance 7.5)."""
-    candidate = manifest.get("mono_path") or _MONO_FALLBACK
-    if (REPO_ROOT / candidate).is_file():
-        return candidate
+def _pair_has_residual_cells(entry: dict) -> bool:
+    """A pair belongs in the LoRA-residual dropdown iff its manifest carries
+    a non-empty per-epoch decoded-probe map."""
+    m = entry.get("residual") or {}
+    cells = m.get("cells") or {}
+    return any((v or {}) for v in cells.values()) if isinstance(cells, dict) else False
+
+
+def _pair_has_mds_large(entry: dict) -> bool:
+    """A pair belongs in the MDS-large dropdown iff its manifest carries a
+    non-empty mds_cells_large map."""
+    m = entry.get("residual") or {}
+    cells = m.get("mds_cells_large") or {}
+    return any((v or {}) for v in cells.values()) if isinstance(cells, dict) else False
+
+
+def _pair_options_for(active: str, pairs: dict[str, dict]) -> list[tuple[str, str]]:
+    """Per-tab pair dropdown. Each tab filters by what its UI actually needs:
+    residual tab → has decoded probes; mds_large → has mds_cells_large;
+    cw → has a cw manifest. Default sort: DEFAULT_PAIR first, then alphabetical."""
+    if active == "residual":
+        ok = _pair_has_residual_cells
+    elif active == "mds_large":
+        ok = _pair_has_mds_large
+    elif active in {"cw", "cwl"}:
+        ok = lambda e: bool(e.get("cw"))
+    else:
+        ok = lambda e: True
+    visible = [s for s, e in pairs.items() if ok(e)]
+    ordered = [DEFAULT_PAIR] + sorted(s for s in visible if s != DEFAULT_PAIR)
+    seen: set[str] = set()
+    out: list[tuple[str, str]] = []
+    for s in ordered:
+        if s in seen or s not in pairs or not ok(pairs[s]):
+            continue
+        seen.add(s)
+        out.append((s, _display_name(s)))
+    return out
+
+
+def _joint_prompt_for(pair_slug: str, outputs_root: Path) -> str:
+    """Read joint_prompt from the pair's results config; fall back to the
+    display name."""
+    cfg_path = outputs_root / "lora" / pair_slug / "seed_42" / "results" / "config.json"
+    if cfg_path.is_file():
+        try:
+            cfg = json.loads(cfg_path.read_text())
+            jp = (cfg.get("cell") or {}).get("joint_prompt")
+            if jp:
+                return jp
+        except Exception:
+            pass
+    return _display_name(pair_slug)
+
+
+def _resolve_mono_path(manifest: dict, pair_slug: str) -> str | None:
+    """Per-pair mono lookup. Mono = joint-CFG sample with no LoRA at the same
+    seed and sampler config as the residual probes.
+
+    For ``a_cat__x__a_dog``, the existing cross_seed_lora_pooling render is the
+    canonical source (preserves pre-existing behaviour). For other pairs,
+    the conditioning_window ``prefix_k50`` schedule image is used: it is
+    full-prefix (every step conditioned) = mono.
+    """
+    candidates: list[str] = []
+    field = manifest.get("mono_path")
+    if field:
+        candidates.append(field)
+    if pair_slug == "a_cat__x__a_dog":
+        candidates.append(_MONO_FALLBACK_CAT_DOG)
+    candidates.append(
+        f"outputs/conditioning_window/{pair_slug}/seed_42/schedules/prefix_k50/image.png"
+    )
+    for c in candidates:
+        if (REPO_ROOT / c).is_file():
+            return c
     return None
+
+
+def _display_name(slug: str) -> str:
+    """Human-readable label for a pair slug.
+
+    ``a_camel__x__a_desert_landscape`` → ``camel × desert landscape``.
+    ``a_cat__x__a_dog`` → ``cat × dog``.
+    """
+    if "__x__" in slug:
+        parts = slug.split("__x__")
+        cleaned = [p[2:] if p.startswith("a_") else p for p in parts]
+        return " × ".join(c.replace("_", " ") for c in cleaned)
+    if "_" in slug:
+        return slug.replace("_", " × ")
+    return slug
+
+
+def _discover_pairs(outputs_root: Path) -> dict[str, dict]:
+    """Scan ``outputs/lora/*/seed_42/results/inspector_manifest.json`` and
+    ``outputs/conditioning_window/*/seed_42/results/inspector_manifest.json``,
+    returning ``{pair_slug: {"residual": manifest|None, "cw": manifest|None}}``.
+    A pair is included iff it has at least one manifest."""
+    pairs: dict[str, dict] = {}
+    residual_root = outputs_root / "lora"
+    if residual_root.is_dir():
+        for pair_dir in sorted(residual_root.iterdir()):
+            if pair_dir.is_symlink() or not pair_dir.is_dir():
+                continue  # skip compat symlinks (e.g. cat_dog -> a_cat__x__a_dog)
+            mpath = pair_dir / "seed_42" / "results" / "inspector_manifest.json"
+            if mpath.is_file():
+                pairs.setdefault(pair_dir.name, {})["residual"] = json.loads(mpath.read_text())
+    cw_root = outputs_root / "conditioning_window"
+    if cw_root.is_dir():
+        for pair_dir in sorted(cw_root.iterdir()):
+            if pair_dir.is_symlink() or not pair_dir.is_dir():
+                continue  # skip compat symlinks (e.g. cat_dog -> a_cat__x__a_dog)
+            mpath = pair_dir / "seed_42" / "results" / "inspector_manifest.json"
+            if mpath.is_file():
+                pairs.setdefault(pair_dir.name, {})["cw"] = json.loads(mpath.read_text())
+    # Ensure every entry has both keys (None when absent).
+    for slug, entry in pairs.items():
+        entry.setdefault("residual", None)
+        entry.setdefault("cw", None)
+    return pairs
 
 
 CW_INDEX_HTML = r"""
@@ -1545,42 +2016,106 @@ def create_app(
     if cwl_always_manifest_path is not None and Path(cwl_always_manifest_path).is_file():
         cwl_al = json.loads(Path(cwl_always_manifest_path).read_text())
 
+    # Discover all pairs with at least one manifest on disk. Cat_dog is
+    # always seeded from the CLI-supplied manifests above so the default
+    # behaviour for users who never pass --manifest is identical to before.
+    pairs = _discover_pairs(outputs_root_abs)
+    pairs.setdefault(DEFAULT_PAIR, {})
+    pairs[DEFAULT_PAIR]["residual"] = manifest
+    pairs[DEFAULT_PAIR]["cw"] = cw_manifest if cw_manifest is not None \
+        else pairs[DEFAULT_PAIR].get("cw")
+    def _selected_pair() -> str:
+        slug = request.args.get("pair", DEFAULT_PAIR)
+        return slug if slug in pairs else DEFAULT_PAIR
+
+    def _query_pair(slug: str) -> str:
+        return f"?pair={slug}" if slug != DEFAULT_PAIR else ""
+
+    def _tab_ctx(active: str, current_pair: str) -> dict:
+        return {
+            "active": active,
+            "pair_options": _pair_options_for(active, pairs),
+            "current_pair": current_pair,
+            "query_pair": _query_pair(current_pair),
+        }
+
     app = Flask(__name__)
 
     @app.route("/")
     def index():
+        pair = _selected_pair()
+        entry = pairs[pair]
+        m = entry.get("residual")
+        if m is None:
+            return render_template_string(
+                _CW_MISSING_HTML,
+                path=f"outputs/lora/{pair}/seed_42/results/inspector_manifest.json",
+            ), 404
         return render_template_string(
             _with_tabs(INDEX_HTML),
-            active="residual",
-            results_root=manifest.get("results_root", ""),
-            epochs=manifest["epochs"],
-            lambdas=manifest["lambdas"],
-            manifest_json=json.dumps(manifest),
-            mono_path=_resolve_mono_path(manifest),
+            **_tab_ctx("residual", pair),
+            results_root=m.get("results_root", ""),
+            epochs=m["epochs"],
+            lambdas=m["lambdas"],
+            manifest_json=json.dumps(m),
+            mono_path=_resolve_mono_path(m, pair),
+            joint_prompt=_joint_prompt_for(pair, outputs_root_abs),
         )
 
     @app.route("/manifest.json")
     def manifest_route():
-        return jsonify(manifest)
+        pair = _selected_pair()
+        m = pairs.get(pair, {}).get("residual")
+        if m is None:
+            abort(404)
+        return jsonify(m)
+
+    @app.route("/mds_large")
+    def mds_large():
+        pair = _selected_pair()
+        entry = pairs[pair]
+        m = entry.get("residual")
+        if m is None:
+            return render_template_string(
+                _CW_MISSING_HTML,
+                path=f"outputs/lora/{pair}/seed_42/results/inspector_manifest.json",
+            ), 404
+        mds_large_cells = m.get("mds_cells_large") or {}
+        mds_large_cells_sem = m.get("mds_cells_large_semantic") or {}
+        n_large = sum(len(v) for v in mds_large_cells.values())
+        n_large_sem = sum(len(v) for v in mds_large_cells_sem.values())
+        return render_template_string(
+            _with_tabs(MDS_LARGE_HTML),
+            **_tab_ctx("mds_large", pair),
+            results_root=m.get("results_root", ""),
+            epochs=m["epochs"],
+            lambdas=m["lambdas"],
+            n_large_cells=n_large,
+            n_large_cells_semantic=n_large_sem,
+            pair_display=_display_name(pair),
+            manifest_json=json.dumps(m),
+        )
 
     @app.route("/conditioning_window")
     def conditioning_window():
-        if cw_manifest is None:
+        pair = _selected_pair()
+        cwm = pairs[pair].get("cw")
+        if cwm is None:
             return render_template_string(
                 _CW_MISSING_HTML,
-                path=str(cw_manifest_path) if cw_manifest_path else "(no path)",
+                path=f"outputs/conditioning_window/{pair}/seed_42/results/inspector_manifest.json",
             ), 404
-        sanity = cw_manifest.get("sanity") or {}
+        sanity = cwm.get("sanity") or {}
         on_rec = sanity.get("all_on_vs_run_cfg") or {}
         off_rec = sanity.get("all_off_vs_uncond") or {}
         return render_template_string(
             _with_tabs(CW_INDEX_HTML),
-            active="cw",
-            prompt=cw_manifest.get("prompt", ""),
-            seed=cw_manifest.get("seed", ""),
-            num_steps=cw_manifest.get("num_inference_steps", 50),
-            guidance=cw_manifest.get("guidance_scale", ""),
-            schedules=cw_manifest["schedules"],
+            **_tab_ctx("cw", pair),
+            prompt=cwm.get("prompt", ""),
+            seed=cwm.get("seed", ""),
+            num_steps=cwm.get("num_inference_steps", 50),
+            guidance=cwm.get("guidance_scale", ""),
+            schedules=cwm["schedules"],
             sanity_on=f"{on_rec.get('max_abs_delta', float('nan')):.2e}"
                       if on_rec else "—",
             sanity_off=f"{off_rec.get('max_abs_delta', float('nan')):.2e}"
@@ -1589,14 +2124,16 @@ def create_app(
                            if on_rec else "—",
             sanity_off_pass="PASS" if off_rec.get("pass") else "FAIL"
                             if off_rec else "—",
-            manifest_json=json.dumps(cw_manifest),
+            manifest_json=json.dumps(cwm),
         )
 
     @app.route("/conditioning_window/manifest.json")
     def conditioning_window_manifest():
-        if cw_manifest is None:
+        pair = _selected_pair()
+        cwm = pairs.get(pair, {}).get("cw")
+        if cwm is None:
             abort(404)
-        return jsonify(cw_manifest)
+        return jsonify(cwm)
 
     @app.route("/conditioning_window_lora")
     def conditioning_window_lora():
@@ -1623,7 +2160,7 @@ def create_app(
             return sum(len(row) for row in (m.get("cells") or {}).values())
         return render_template_string(
             _with_tabs(CWL_INDEX_HTML),
-            active="cwl",
+            **_tab_ctx("cwl", DEFAULT_PAIR),
             prompt=cwl_wp.get("prompt", ""),
             seed=cwl_wp.get("seed", ""),
             num_steps=cwl_wp.get("num_inference_steps", 50),

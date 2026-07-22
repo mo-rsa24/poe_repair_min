@@ -44,17 +44,35 @@ What "works" means here is specific:
 - Probe + figures: `poe_repair/experiments/lora/probe.py`,
   `poe_repair/experiments/lora/figures.py`.
 - Inspector: `scripts/lora_inspector.py` (routes `/`,
-  `/conditioning_window`, `/conditioning_window_lora`).
+  `/conditioning_window`, `/conditioning_window_lora`). The residual
+  tab `/` carries the image row (PoE / PoE+λ·r / Mono) and, directly
+  below it, a per-cell **MDS / PCA trajectory panel** swapped by the
+  same `(epoch, λ)` sliders. Static endpoints A, B, A∧B are at fixed
+  coordinates across panels; only the PoE+λ·R path moves.
 - Manifest builders: `scripts/build_lora_manifest.py`,
   `scripts/build_cwl_manifest.py`.
+- MDS panel pre-renderer: `scripts/build_lora_inspector_mds.py`.
+  Five stages — `collect-static` (solo A, solo B, mono trajectories
+  via `run_cfg`), `collect-cells` (per `(epoch, λ)`, load checkpoint
+  with `lora_trainer.load_lora_state`, run
+  `run_lora_residual_inject(lambda_value=λ)`, cache the 51-step flat
+  latent trajectory), `project` (fit one global PCA — or MDS via
+  `--projection mds` — on the union so static endpoints really are
+  static), `render` (one PNG per cell at
+  `mds_probes/<epoch>/<λ>/mds.png`, style copied from
+  `neurips2026/scripts/render_taxonomy_paper_figure.py`),
+  `update-manifest` (writes the `mds_cells` map into
+  `inspector_manifest.json`). Cache lives at
+  `outputs/lora/<pair>/seed_42/results/mds_cache/` (~7 MB per
+  trajectory; ~1.6 GB at full 48 × 5 sweep).
 
 Consolidated artefact on disk:
-`outputs/lora/cat_dog/seed_42/results/`. Headline checkpoint is
+`outputs/lora/a_cat__x__a_dog/seed_42/results/`. Headline checkpoint is
 `checkpoints/lora_step_062500.pt`.
 
 The companion CFG-window-with-LoRA experiment lives at
 `poe_repair/experiments/conditioning_window_lora/` and writes to
-`outputs/conditioning_window_lora/cat_dog/seed_42/`. See
+`outputs/conditioning_window_lora/a_cat__x__a_dog/seed_42/`. See
 [conditioning-window-lora.md](../../../.claude/plans/conditioning-window-lora.md) for the
 detailed sampler grammar and inspector wiring — this plan only enumerates
 the run commands.
@@ -75,11 +93,37 @@ $PY scripts/lora_inspector.py --port 5050
 # from laptop: ssh -L 5050:localhost:5050 mscluster106 && open http://127.0.0.1:5050
 ```
 
+### Pre-render the MDS trajectory panels (residual tab, below image row)
+
+```bash
+# Smoke set on cat × dog (4 cells, ~3 min on one RTX 8000):
+$PY scripts/build_lora_inspector_mds.py \
+    --epochs 0,800 --lambdas 0.00,1.00 \
+    --stages collect-static,collect-cells,project,render,update-manifest
+
+# Full sweep on cat × dog (48 epochs × 5 λ, ~3 h):
+$PY scripts/build_lora_inspector_mds.py --epochs all --lambdas all \
+    --stages collect-static,collect-cells,project,render,update-manifest
+
+# Another pair (each pair has its own results-root, slug, cache, PNGs,
+# and mds_cells block in inspector_manifest.json):
+$PY scripts/build_lora_inspector_mds.py \
+    --results-root outputs/lora/a_camel__x__a_desert_landscape/seed_42/results \
+    --pair-slug a_camel__x__a_desert_landscape \
+    --epochs all --lambdas all \
+    --stages collect-static,collect-cells,project,render,update-manifest
+```
+
+`--projection pca` (default) is cleaner on diffusion latents than the
+metric MDS the paper figure uses; pass `--projection mds` for parity
+with `trajectory_g1g4.png`. Re-running stages skips already-cached
+trajectories and panels unless `--overwrite` is passed.
+
 Or a programmatic startup probe with no training:
 
 ```bash
 $PY -m poe_repair.experiments.lora \
-    --resume-from outputs/lora/cat_dog/seed_42/results/checkpoints/lora_step_062500.pt \
+    --resume-from outputs/lora/a_cat__x__a_dog/seed_42/results/checkpoints/lora_step_062500.pt \
     --total-epochs 0
 ```
 
@@ -99,7 +143,7 @@ with decoded PNGs and `delta_overlays/step_NN.pt` for the inspector.
 
 ```bash
 $PY -m poe_repair.experiments.conditioning_window_lora \
-    --lora-ckpts outputs/lora/cat_dog/seed_42/results/checkpoints/lora_step_062500.pt \
+    --lora-ckpts outputs/lora/a_cat__x__a_dog/seed_42/results/checkpoints/lora_step_062500.pt \
     --lambda-values 0.0,0.5,1.0 \
     --modes with_prompt,always
 ```
@@ -125,7 +169,7 @@ $PY -m poe_repair.experiments.conditioning_window_lora \
   with non-zero λ the trajectory leaves the training distribution; the
   ~40% plateau is plausibly explained by this drift.
 
-## Status — 2026-05-19
+## Status — 2026-05-22
 
 | Item | Done | To do |
 |---|:---:|:---:|
@@ -133,11 +177,17 @@ $PY -m poe_repair.experiments.conditioning_window_lora \
 | `run_lora_residual_inject_masked` (CFG-window companion) landed | ✅ | |
 | Bit-exact sanity (`masked(all_on) ≡ run_lora_residual_inject` at λ=1, Δ = 0.0) | ✅ | |
 | LoRA training on cat × dog seed 42, rank 8, ~600 epochs | ✅ | |
-| Consolidated artefact at `outputs/lora/cat_dog/seed_42/results/` | ✅ | |
+| Consolidated artefact at `outputs/lora/a_cat__x__a_dog/seed_42/results/` | ✅ | |
 | Per-epoch probes across λ-grid with `where_applied` overlays | ✅ | |
 | Inspector route `/` with epoch × λ sliders | ✅ | |
 | `conditioning_window_lora` companion at one cell (epoch 062500, λ=1.0, both modes) | ✅ | |
 | Inspector route `/conditioning_window_lora` with epoch + λ sliders | ✅ | |
+| MDS / PCA trajectory pre-renderer `scripts/build_lora_inspector_mds.py` (5 stages, per-pair) | ✅ | |
+| Residual tab wired with MDS panel below image row (same `(epoch, λ)` sliders) | ✅ | |
+| MDS smoke set on cat × dog seed 42 (epochs {0, 800} × λ ∈ {0, 1}) rendered | ✅ | |
+| Full MDS sweep on cat × dog seed 42 (48 epochs × 5 λ) | | ⬜ (~3 h wall-clock) |
+| MDS sweep on other pairs under `outputs/lora/*/seed_42/results/` | | ⬜ |
+| One-shot wrapper that loops every pair under `outputs/lora/*/seed_42/` | | ⬜ |
 | Multi-λ companion sweep at the final checkpoint (`--lambda-values 0.0,0.5,1.0`) | | ⬜ (~2.5 h wall-clock) |
 | Multi-epoch companion sweep (5 sampled epochs × 5 λ) | | ⬜ (~21 h; only if λ sweep is informative) |
 | Longer training run past 600 epochs to test the plateau | | ⬜ (the trajectory was still moving) |

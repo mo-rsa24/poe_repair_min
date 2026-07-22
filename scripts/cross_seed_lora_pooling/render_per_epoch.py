@@ -93,6 +93,12 @@ def build_argparser() -> argparse.ArgumentParser:
                              "bfloat16", "bf16"))
     ap.add_argument("--cache-root", default=None)
     ap.add_argument("--seed-pool-path", default=None)
+    ap.add_argument("--pair-slug-override", default=None,
+                    help="when set, pull init latents and PoE/Mono ref "
+                         "PNGs from the override pair's cache rather "
+                         "than the checkpoint's training pair. Use "
+                         "alongside --prompt-a/-b/--joint-prompt to "
+                         "match the eval pair's prompts.")
     ap.add_argument("--thumb-size", type=int, default=256,
                     help="contact-sheet thumbnail edge in pixels")
     return ap
@@ -218,7 +224,11 @@ def main(argv: list[str] | None = None) -> int:
     embeddings = encode_all_prompts(_CfgShim(), models, device, dtype)
 
     cache_root = Path(p.cache_root) if p.cache_root else DEFAULT_CACHE_ROOT
-    pair_slug = str(cfg_dict.get("cell", {}).get("pair_slug", pool.pair_slug))
+    train_pair_slug = str(cfg_dict.get("cell", {}).get("pair_slug", pool.pair_slug))
+    pair_slug = str(p.pair_slug_override) if p.pair_slug_override else train_pair_slug
+    if pair_slug != train_pair_slug:
+        log.info("held-out-pair render: train_pair=%s eval_pair=%s",
+                 train_pair_slug, pair_slug)
 
     init_by_seed: dict[int, torch.Tensor] = {}
     for s in seeds:
@@ -265,6 +275,11 @@ def main(argv: list[str] | None = None) -> int:
 
     manifest: dict = {
         "run_dir": str(run_dir),
+        "pair_slug": pair_slug,
+        "train_pair_slug": train_pair_slug,
+        "prompt_a": p.prompt_a,
+        "prompt_b": p.prompt_b,
+        "joint_prompt": p.joint_prompt,
         "seeds": seeds,
         "train_pool": sorted(train_pool_set),
         "held_out": sorted(held_out_set),

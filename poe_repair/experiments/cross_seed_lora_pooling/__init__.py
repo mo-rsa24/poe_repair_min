@@ -7,5 +7,5 @@ corrections that pooled training merely averages. Plan:
 
 This package is a *sibling* of ``poe_repair.experiments.lora``. The
 existing single-seed LoRA training path (and its reference artifact at
-``outputs/lora/cat_dog/seed_42/results/``) is untouched.
+``outputs/lora/a_cat__x__a_dog/seed_42/results/``) is untouched.
 """

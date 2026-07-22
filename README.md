@@ -5,7 +5,7 @@ of code, outputs, and checkpoints:
 
 1. **LoRA (success).** Per-arm rank-8 LoRA on SDXL UNet cross-attention.
    Training timeline and inference probes for cat × dog, seed 42 are
-   preserved at `outputs/lora/cat_dog/seed_42/results/`. See
+   preserved at `outputs/lora/a_cat__x__a_dog/seed_42/results/`. See
    [`lora-success.md`](lora-success.md).
 2. **Residual diagnostics (Mono ceiling).** Two sub-experiments characterising
    the guided PoE→Mono residual r_t:
@@ -78,12 +78,12 @@ poe_repair/
                                direct_eps (group-A architectures)
   figures/                     plotting helpers
 outputs/
-  lora/cat_dog/seed_42/results/                  consolidated LoRA artifact
+  lora/a_cat__x__a_dog/seed_42/results/                  consolidated LoRA artifact
   group_a_failure/                               failure-mode outputs + ckpts
   residual_diagnostics/existence/                (regenerable; not in git)
   residual_diagnostics/clip_window/              (regenerable; not in git)
   internal_force_failure/                        (regenerable; not in git)
-  conditioning_window/cat_dog/seed_42/           (regenerable; not in git)
+  conditioning_window/a_cat__x__a_dog/seed_42/           (regenerable; not in git)
 composition/                   vendored published-paper reference repos
 scripts/
   build_lora_manifest.py       scan results/ -> JSON manifest for inspector
@@ -96,7 +96,7 @@ scripts/
 
 ### Thread 1 — LoRA inference / inspection
 
-Consolidated run at `outputs/lora/cat_dog/seed_42/results/`. Rebuild the
+Consolidated run at `outputs/lora/a_cat__x__a_dog/seed_42/results/`. Rebuild the
 inspector manifest and serve locally:
 
 ```bash
@@ -111,7 +111,7 @@ exit — no training):
 
 ```bash
 $PY -m poe_repair.experiments.lora \
-    --resume-from outputs/lora/cat_dog/seed_42/results/checkpoints/lora_step_062500.pt \
+    --resume-from outputs/lora/a_cat__x__a_dog/seed_42/results/checkpoints/lora_step_062500.pt \
     --total-epochs 0
 ```
 

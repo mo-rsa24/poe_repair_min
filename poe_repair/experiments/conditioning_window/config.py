@@ -23,7 +23,7 @@ class RunConfig:
     prompt: str = "a cat and a dog"
     prompt_a: str = "a cat"
     prompt_b: str = "a dog"
-    pair_slug: str = "cat_dog"
+    pair_slug: str = "a_cat__x__a_dog"
     seed: int = 42
     num_inference_steps: int = 50
     guidance_scale: float = 7.5
