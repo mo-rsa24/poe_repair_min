@@ -12,7 +12,7 @@ the canonical relative path from the file's own location on disk.
 Usage::
 
     python scripts/build_cwl_manifest.py
-    python scripts/build_cwl_manifest.py --run-dir outputs/conditioning_window_lora/cat_dog/seed_42
+    python scripts/build_cwl_manifest.py --run-dir outputs/conditioning_window_lora/a_cat__x__a_dog/seed_42
 """
 
 from __future__ import annotations
@@ -23,7 +23,7 @@ import re
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_RUN_DIR = REPO_ROOT / "outputs/conditioning_window_lora/cat_dog/seed_42"
+DEFAULT_RUN_DIR = REPO_ROOT / "outputs/conditioning_window_lora/a_cat__x__a_dog/seed_42"
 
 EPOCH_RE = re.compile(r"^epoch_(\d+)$")
 LAMBDA_RE = re.compile(r"^lambda_(\d+\.\d+)$")
@@ -82,7 +82,7 @@ def scan_mode(mode_dir: Path) -> tuple[dict[int, dict[str, dict]], set[int], set
                 continue
             ckpt_guess = (
                 REPO_ROOT
-                / f"outputs/lora/cat_dog/seed_42/results/checkpoints/lora_step_{epoch:06d}.pt"
+                / f"outputs/lora/a_cat__x__a_dog/seed_42/results/checkpoints/lora_step_{epoch:06d}.pt"
             )
             cells.setdefault(epoch, {})[lam_tag] = {
                 "ckpt_path": (
@@ -120,7 +120,7 @@ def write_manifest(mode_dir: Path, mode_name: str) -> Path | None:
         "prompt": "a cat and a dog",
         "prompt_a": "a cat",
         "prompt_b": "a dog",
-        "pair_slug": "cat_dog",
+        "pair_slug": "a_cat__x__a_dog",
         "seed": 42,
         "model_id": "stabilityai/stable-diffusion-xl-base-1.0",
     }

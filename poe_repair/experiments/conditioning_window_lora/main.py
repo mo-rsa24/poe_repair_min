@@ -59,7 +59,7 @@ def _build_argparser() -> argparse.ArgumentParser:
     ap.add_argument("--prompt", default="a cat and a dog")
     ap.add_argument("--prompt-a", default="a cat")
     ap.add_argument("--prompt-b", default="a dog")
-    ap.add_argument("--pair-slug", default="cat_dog")
+    ap.add_argument("--pair-slug", default="a_cat__x__a_dog")
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--num-inference-steps", type=int, default=50)
     ap.add_argument("--guidance-scale", type=float, default=7.5)
@@ -80,7 +80,7 @@ def _build_argparser() -> argparse.ArgumentParser:
     ap.add_argument(
         "--lora-run-dir", default=None,
         help='LoRA run dir containing config.json. Default = '
-             'outputs/lora/cat_dog/seed_42/results.',
+             'outputs/lora/a_cat__x__a_dog/seed_42/results.',
     )
     ap.add_argument("--modes", default=",".join(COMPOSITION_MODES),
                     help=f'Comma-separated subset of {COMPOSITION_MODES}.')

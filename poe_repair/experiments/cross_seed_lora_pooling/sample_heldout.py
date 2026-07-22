@@ -68,6 +68,11 @@ def build_argparser() -> argparse.ArgumentParser:
     ap.add_argument("--prompt-a", default="a cat")
     ap.add_argument("--prompt-b", default="a dog")
     ap.add_argument("--joint-prompt", default="a cat and a dog")
+    ap.add_argument("--heldout-pair", default=None,
+                    help="evaluate the trained LoRA on a different pair "
+                         "slug (e.g. a_wolf__x__a_husky). Init latents and "
+                         "embeddings are read from that pair's cache. When "
+                         "set, --prompt-a/-b/--joint-prompt should match.")
     ap.add_argument("--model-id", default="stabilityai/stable-diffusion-xl-base-1.0")
     ap.add_argument("--device", default=None)
     ap.add_argument("--dtype", default="float16",
@@ -137,7 +142,11 @@ def main(argv: list[str] | None = None) -> int:
     embeddings = encode_all_prompts(_CfgShim(), models, device, dtype)
 
     cache_root = Path(p.cache_root) if p.cache_root else DEFAULT_CACHE_ROOT
-    pair_slug = str(cfg_dict.get("cell", {}).get("pair_slug", pool.pair_slug))
+    train_pair_slug = str(cfg_dict.get("cell", {}).get("pair_slug", pool.pair_slug))
+    pair_slug = str(p.heldout_pair) if p.heldout_pair else train_pair_slug
+    if pair_slug != train_pair_slug:
+        log.info("held-out-pair eval: train_pair=%s eval_pair=%s",
+                 train_pair_slug, pair_slug)
 
     manifest: list[dict] = []
     for s in seeds:
@@ -179,6 +188,10 @@ def main(argv: list[str] | None = None) -> int:
         "checkpoint": str(p.checkpoint),
         "lambda_value": float(p.lambda_value),
         "pair_slug": pair_slug,
+        "train_pair_slug": train_pair_slug,
+        "prompt_a": p.prompt_a,
+        "prompt_b": p.prompt_b,
+        "joint_prompt": p.joint_prompt,
         "seeds": seeds,
         "samples": manifest,
     })

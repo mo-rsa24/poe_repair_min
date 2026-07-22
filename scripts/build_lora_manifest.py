@@ -28,7 +28,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
-DEFAULT_RESULTS = REPO_ROOT / "outputs/lora/cat_dog/seed_42/results"
+DEFAULT_RESULTS = REPO_ROOT / "artifacts/rung1-overfit/lora/a_cat__x__a_dog/seed_42/run__local"
 
 EPOCH_RE = re.compile(r"^epoch_(\d+)$")
 LAMBDA_RE = re.compile(r"^lambda_(\d+\.\d+)$")
@@ -80,6 +80,11 @@ def main() -> int:
     args = ap.parse_args()
 
     results_root = Path(args.results_root)
+    if not results_root.is_absolute():
+        # Prepend the repo root without resolve(), so that any `results`
+        # symlink stays as `.../results/...` in the recorded paths instead
+        # of being rewritten to the underlying run-dir name.
+        results_root = REPO_ROOT / results_root
     manifest = build_manifest(results_root)
 
     out_path = (

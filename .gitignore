@@ -23,6 +23,13 @@ claude/
 outputs/
 logs/
 
+# Generated run artifacts (regenerable; large; canonical copies live under /datasets/mmolefe)
+artifacts/
+results/
+
+# Papers / reference PDFs (not source)
+*.pdf
+
 # Misc transient
 .DS_Store
 *.tmp

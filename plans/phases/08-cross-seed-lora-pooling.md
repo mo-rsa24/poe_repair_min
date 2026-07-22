@@ -35,7 +35,7 @@ All cross-seed pooling code lives under
 `poe_repair/experiments/cross_seed_lora_pooling/` with thin shell
 runners under `scripts/cross_seed_lora_pooling/`. The trainer never
 touches the single-seed Phase-4 reference artefact under
-`outputs/lora/cat_dog/seed_42/results/`.
+`outputs/lora/a_cat__x__a_dog/seed_42/results/`.
 
 | Module | What it does |
 |---|---|
@@ -247,7 +247,7 @@ before training any pooled LoRA.
   scope discussion; not in this plan.
 - Bootstrap CIs or preregistered thresholds. Eyeball-first; expand to
   larger N held-outs only if any of the four reads is ambiguous.
-- Touching `outputs/lora/cat_dog/seed_42/results/` — that is the
+- Touching `outputs/lora/a_cat__x__a_dog/seed_42/results/` — that is the
   reference single-seed artefact consumed by the inspector and must
   not be overwritten by pooled training.
 

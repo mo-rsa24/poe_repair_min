@@ -36,7 +36,7 @@ from poe_repair.composers._helpers import (
 )
 from poe_repair.experiments._eval_common import cell_for, slugify
 from poe_repair.methods._sampling import add_time_ids, write_decoded_image
-from poe_repair.run import make_ctx
+from poe_repair.run import MethodCtx, make_ctx
 from poe_repair.runtime import (
     decode_latents,
     ddim_prev_from_x0_eps,
@@ -62,15 +62,17 @@ def build_cell(
     overwrite: bool,
     num_inference_steps: int | None = None,
     guidance_scale: float | None = None,
+    ctx: MethodCtx | None = None,
 ) -> Path:
     slug = slugify(prompt_a, prompt_b)
     cell_dir = out_root / split / slug / f"seed_{seed}"
     residuals_dir = cell_dir / "residuals"
 
-    ctx = make_ctx(
-        num_inference_steps=num_inference_steps,
-        guidance_scale=guidance_scale,
-    )
+    if ctx is None:
+        ctx = make_ctx(
+            num_inference_steps=num_inference_steps,
+            guidance_scale=guidance_scale,
+        )
 
     final_step = ctx.num_inference_steps - 1
     sentinel = residuals_dir / f"step_{final_step:03d}.pt"

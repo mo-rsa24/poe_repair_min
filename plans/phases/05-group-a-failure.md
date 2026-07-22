@@ -49,7 +49,7 @@ documents that result and explains why we ran each one.
   learner" sanity check that has to pass before training.
 
 Run-directory layout:
-`outputs/group_a_failure/<technique>/cat_dog/seed_42/<run_id>/` with
+`outputs/group_a_failure/<technique>/a_cat__x__a_dog/seed_42/<run_id>/` with
 the same probe / figure / checkpoint conventions as the LoRA experiment.
 
 ## Commands

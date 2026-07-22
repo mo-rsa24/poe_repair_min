@@ -14,7 +14,7 @@ the LoRA experiment measures its marginal effect.
 
 Schedule grammar lives in ``schedules.py`` (prefix, suffix, single-window,
 punctate). The standard suite renders ~50 schedules at seed 42 and writes
-PNGs + an inspector manifest under ``outputs/conditioning_window/cat_dog/
+PNGs + an inspector manifest under ``outputs/conditioning_window/a_cat__x__a_dog/
 seed_42/``.
 """
 
