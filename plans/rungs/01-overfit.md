@@ -1,13 +1,13 @@
 # 🎯 Overfit — the LoRA closes the PoE gap Mono-free, and the mechanism is pair-generic
 
 ## Description
-Prove the fix works on the first cell, then that it is not a fluke of one concept pair. Train a
-small add-on (a rank-8 LoRA on cross-attention) on the cached correction so the failing
-add-the-two-prompts method (PoE) instead shows both concepts, and does so without ever feeding it
-the joined prompt at test time (Mono-free). Do it first on cat×dog seed 42, then on one
-representative pair from each difficulty group (G1–G4, G6). Folds the old phase files 01–04 and 09
-(groundwork, headline, breadth) and the two failed-corrector controls 05–06, now archived under
-`plans/phases/`.
+Show the fix works on one case, then that it is not luck from a single concept pair. We train a
+small add-on (a rank-8 LoRA on the cross-attention layers) on the saved correction. After training,
+the broken method that just adds two prompts together (PoE) shows both concepts instead of one
+blur, and it does so without ever seeing the two prompts joined into one at test time (Mono-free).
+Do cat×dog at seed 42 first, then one representative pair from each difficulty group (G1–G4, G6).
+This plan absorbs the old phase files 01–04 and 09 (setup, first success, breadth) and the two
+failed-corrector controls 05–06, now archived under `plans/phases/`.
 
 ## Purpose
 Serves Objective 1 (Overfit) and Definition-of-Done items 1 and 6. This is the foundation. If the
@@ -15,9 +15,9 @@ fix only works because cat and dog collide in a special way, or if a simpler met
 every rung above collapses. So we check both.
 
 ## Goal
-Five single-pair LoRAs (G1–G4, G6), each turning the fused chimera into two separate concepts by
-eye, and each bending the corrected path (PoE+λ·R) toward the joint target in the MDS plot. Plus the
-written-up failure of the external and internal correctors, which is what makes the LoRA result
+Five single-pair LoRAs (G1–G4, G6). Each one turns the merged single blob into two separate concepts
+you can see by eye, and bends the corrected path (PoE+λ·R) toward the target in the MDS plot. Plus
+the written-up failure of the external and internal correctors, which is what makes the LoRA result
 mean something.
 
 ## Latest status + how to see it
