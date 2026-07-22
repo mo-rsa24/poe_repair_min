@@ -40,12 +40,12 @@ $PY scripts/build_lora_manifest.py && bash scripts/run_lora_inspector.sh        
 - [x] ✅ Groundwork: veracity (gap reachable), residual diagnostics (target structured), CFG-mask floor. → G01/G02/G03 landed (`plans/phases/01-03`).
 - [x] ✅ Train single-seed LoRA on cat×dog seed 42. → G04 headline: λ=0 byte-identical to PoE, λ=1 two distinct animals by ~ep600. Artifact `artifacts/rung1-overfit/lora/a_cat__x__a_dog/seed_42/run__local/checkpoints/lora_step_062500.pt`.  ✓ verified (loads, 420 lora keys)
 - [x] ✅ Train G4 `a_typewriter__x__a_cactus` single-seed. → trained to step 80000 (`artifacts/rung1-overfit/lora/a_typewriter__x__a_cactus/seed_42/run__wandb-wag4z592/`); MDS panels NOT run.
-- [ ] ⚠️ Train G1/G2/G3 single-seed LoRAs, then build their inspector manifests.
+- [ ] ⚠️ **[publishable-bar]** Train G1/G2/G3 single-seed LoRAs, then build their inspector manifests.
   Prompt (`/run-experiment`): `for PAIR in a_dolphin__x__an_ocean_wave a_dog__x__oil_painting_style a_mailbox__x__a_snowfield; do $PY -m poe_repair.experiments.lora --pair $PAIR --seed 42 --split heldout --total-epochs 600 --probe-every-epochs 50 --lr 1e-4 --lora-rank 8; $PY scripts/build_lora_manifest.py --results-root artifacts/rung1-overfit/lora/$PAIR/seed_42/run__local; done` (needs `training_cache/heldout/$PAIR/seed_42/` — build first if absent).
-- [ ] ⚠️ Run the MDS pre-render on G4 (owed from G08): `$PY scripts/build_lora_inspector_mds.py --results-root artifacts/rung1-overfit/lora/a_typewriter__x__a_cactus/seed_42/run__wandb-wag4z592 --pair-slug a_typewriter__x__a_cactus --epochs all --lambdas all --stages collect-static,collect-cells,project,render,update-manifest`
+- [ ] ⚠️ **[publishable-bar]** Run the MDS pre-render on G4 (owed from G08): `$PY scripts/build_lora_inspector_mds.py --results-root artifacts/rung1-overfit/lora/a_typewriter__x__a_cactus/seed_42/run__wandb-wag4z592 --pair-slug a_typewriter__x__a_cactus --epochs all --lambdas all --stages collect-static,collect-cells,project,render,update-manifest`
 - [x] ✅ Negative controls: group-A external correctors (latent CNN/UNet/frozen-MLP) + internal-force (attention-overlap, score-alignment). → G05, all fail; the LoRA result is meaningful (`plans/phases/05-06`, `outputs/group_a_failure/`).  ✓ verified (outputs/group_a_failure/{latent_cnn,latent_unet,frozen_feature_mlp})
-- [ ] ⚠️ Read the five-pair contact sheet; classify each poor/bad/unknown/good; retire or confirm the "Group-6-specific" worry.
-- [ ] ⚠️ Mono-free canary (closes Definition-of-Done item 6): confirm the deploy sampler never uses the joined prompt — at λ=0 the output is byte-identical to plain PoE, on every rung's sampler.
+- [ ] ⚠️ **[publishable-bar]** Read the five-pair contact sheet; classify each poor/bad/unknown/good; retire or confirm the "Group-6-specific" worry.
+- [ ] ⚠️ **[publishable-bar]** Mono-free canary (closes Definition-of-Done item 6): confirm the deploy sampler never uses the joined prompt — at λ=0 the output is byte-identical to plain PoE, on every rung's sampler.
 
 ## Recommended skill
 ▶ `/run-experiment` ✅ — drives the LoRA trainer per pair and captures the probe.

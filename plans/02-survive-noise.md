@@ -34,12 +34,14 @@ cat "$DATA/rung2-survive-noise/cross_seed/a_cat__x__a_dog/taskB__k04_ep2000_resu
 ## Tasks
 - [x] ✅ Cross-seed Δ_t structure diagnostic (N=8). → G06: ~seed noise at the cross-seed mean (`landing_6`); honest prior is a weak seed-mean.  ✓ stated (regenerable, no on-disk artifact)
 - [x] ✅ Pooled LoRA on cat×dog (G6), seeds {1–4}. → G07: reached ep 2000, `verdict.json="ok"`. Artifact `/datasets/mmolefe/poe_repair_min/artifacts/rung2-survive-noise/cross_seed/a_cat__x__a_dog/taskB__k04_ep2000_resumed__wandb-pueuo7bl/`.  ✓ verified (verdict.json="ok", ckpt loads)
-- [ ] ⚠️ Finish the G1–G4 per-pair pooled runs (currently part-trained ≈ ep1000–1200 of 2000, no verdicts).
+- [ ] ⚠️ **[publishable-bar]** Render G6 held-out-seed samples (seeds 9–12) from the pueuo7bl pool + write the held-out verdict — the pending DoD-2 enactment (`pueuo7bl` is trained/verdict-ok but the held-out-seed proof was never rendered).
+  Prompt: `$PY scripts/cross_seed_lora_pooling/render_seed_summary.py --pooled-run /datasets/mmolefe/poe_repair_min/artifacts/rung2-survive-noise/cross_seed/a_cat__x__a_dog/taskB__k04_ep2000_resumed__wandb-pueuo7bl`
+- [ ] ⚠️ **[publishable-bar]** Finish the G1–G4 per-pair pooled runs (currently part-trained ≈ ep1000–1200 of 2000, no verdicts).
   Prompt (`/run-experiment`): `for G in g1 g2 g3 g4; do $PY -m scripts.cross_seed_lora_pooling.run_group --group $G --total-epochs 2000; done` (resolves each group→representative pair; resume via `checkpoints/latest.json` under `artifacts/rung2-survive-noise/cross_seed/<pair>/taskB__k04_ep2000/`).
-- [ ] ⚠️ Task C (per-seed ceiling) + Task D (Δ̄_t bridge) + contact sheets, per group.
+- [ ] ⚠️ **[publishable-bar]** Task C (per-seed ceiling) + Task D (Δ̄_t bridge) + contact sheets, per group.
   Prompt: `$PY -m poe_repair.experiments.cross_seed_lora_pooling.contact_sheet --pair $PAIR --task B` (and `--task C`); `$PY -m poe_repair.experiments.cross_seed_lora_pooling.task_d_bridge --pooled-run <run-dir>`
-- [ ] ⚠️ Classify each group poor/bad/unknown/good on held-out seeds; write the per-group table.
-- [ ] ⚠️ (Side-thread, optional) Latent-manifold / semantic-MDS convergence read for cat×dog: backfill `manifold_cache` (currently 0/7) via `scripts/manifold/sample_with_trajectory.py`, then `scripts/manifold/seed42_phase1.py`. → parks G12 (raw-latent MDS orders by appearance, not co-occurrence).
+- [ ] ⚠️ **[publishable-bar]** Classify each group poor/bad/unknown/good on held-out seeds; write the per-group table.
+- [ ] ⚠️ **[optional]** (Side-thread) Latent-manifold / semantic-MDS convergence read for cat×dog: backfill `manifold_cache` (currently 0/7) via `scripts/manifold/sample_with_trajectory.py`, then `scripts/manifold/seed42_phase1.py`. → parks G12 (raw-latent MDS orders by appearance, not co-occurrence).
 
 ## Recommended skill
 ▶ `/run-experiment` ✅ — drives `run_group.py` (Task A / Step 0 / Task B / Task D) per group.
