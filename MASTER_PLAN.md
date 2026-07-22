@@ -62,7 +62,7 @@ recorded in the decision timeline.
 7. ✅ G5 (entanglement) explicitly deferred with rationale.
 
 ## Sub-Scopes
-- ✅ plans/artifact-reconciliation/ — "keep run artifacts catalogued, integrity-checked, canonically organised" (standing: carries a recurring re-sweep node)
+- ⚠️ plans/artifact-reconciliation/ — "keep run artifacts catalogued, integrity-checked, canonically organised" (standing: carries a recurring re-sweep node)
 
 ## Plans
 (One plan file per pyramid rung. Detailed phase files are archived under

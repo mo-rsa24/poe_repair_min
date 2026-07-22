@@ -27,7 +27,7 @@ The artifact tree is navigable by rung/experiment/pair/seed regardless of which 
 1. ✅ `python inventory/scripts/01_inventory.py` regenerates the inventory, and `01`/`02` tables match current disk + the four W&B projects (`poe-repair-lora`, `poe-repair-cross-seed`, `poe-repair-cross-pair`, `poe-repair-group-a`).
 2. ✅ `python inventory/scripts/03_integrity.py` reports every tested checkpoint loading (LoRA keys present, non-empty shapes) and `03b_cache_check.py` reports cache completeness; `inventory/03-integrity-and-disposition.md` carries a per-artifact keep / re-run / discard row.
 3. ✅ `bash inventory/scripts/04_apply_layout.sh` (dry-run) reports 0 residual actions on the applied tree; the `artifacts/` scheme exists on both roots with compat symlinks resolving.
-4. ✅ The standing re-sweep plan (`plans/05-resweep-on-new-runs.md`) is in place and has been run at least once against the current run set with no unfiled artifact.
+4. ⚠️ The standing re-sweep plan (`plans/05-resweep-on-new-runs.md`) is in place and has been run at least once against the current run set with no unfiled artifact.
 
 ## Sub-Scopes
 
