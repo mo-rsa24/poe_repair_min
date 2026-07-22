@@ -53,7 +53,7 @@ recorded in the decision timeline.
 ## Definition of Done
 1. ⚠️ Overfit read across G1–G4+G6 single-seed (gap closed by eyeball + MDS bend).
 2. ⚠️ Survive-Noise: per-group pooled LoRAs have held-out-seed verdicts.
-3. ⚠️ Cross-Pair: held-out-pair transfer read for each studied group.
+3. ➖ Cross-Pair (OPTIONAL smoke — downgraded 2026-07-22, not a publication gate): single-pair→sibling transfer is confounded; the reviewer-credible transfer test is DoD-4 (Group-Wise) with concept-disjoint pairs. See EXPERIMENTS.md EXP-03.
 4. ⚠️ Group-Wise: within-group pooled LoRAs read for G1–G4+G6 (or the honest subset).
 5. ⚠️ Scale: four-quadrant crossbar evaluated; held-pair×held-seed classified;
    deployment unit chosen (single LoRA vs per-group catalogue).
