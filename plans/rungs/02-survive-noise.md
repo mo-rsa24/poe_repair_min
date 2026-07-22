@@ -2,9 +2,9 @@
 
 ## Description
 Train one LoRA on several starting seeds of the same pair, then test it on four seeds it never
-trained on ({9–12}). Start with cat×dog (G6), then do the same per group (G1–G4). A seed only
-re-rolls the starting noise, so this asks one thing: does the fix survive different noise, holding
-the two concepts fixed? Folds phase files 07 (the "is the correction the same across seeds?" check,
+trained on ({9–12}). Start with cat×dog (G6), then do the same for one pair per group (G1–G4). A
+seed only re-rolls the starting noise, so this asks one thing: does the fix survive different noise
+while the two concepts stay fixed? Folds phase files 07 (the "is the correction the same across seeds?" check,
 which landed near "no"), 08 (the cat×dog pool), 10 (per-group), and the image-geometry side-thread
 (13, 15-latent) as one optional task.
 
@@ -13,7 +13,7 @@ Serves Objective 2 (Survive-Noise) and Definition-of-Done item 2. It decides one
 a lucky-seed accident, or does it hold across seeds without changing the model.
 
 ## Goal
-For each group, a pooled LoRA with a clear pass/fail on unseen seeds: both concepts show up on at
+For each group, a pooled LoRA with a clear pass or fail on unseen seeds: both concepts show up on at
 least 3 of the 4 held-out seeds.
 
 ## Latest status + how to see it

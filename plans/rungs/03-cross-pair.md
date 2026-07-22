@@ -11,7 +11,7 @@ the difficulty grouping actually predicts transfer. It also feeds the Group-Wise
 cousin pair that fails here is a candidate to add to the Scale training pool.
 
 ## Goal
-For each group, a pass/fail on transfer to a cousin pair: does the group's LoRA show both concepts
+For each group, a pass or fail on transfer to a cousin pair: does the group's LoRA show both concepts
 on at least 2 of 4 unseen seeds?
 
 ## Latest status + how to see it

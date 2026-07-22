@@ -2,9 +2,10 @@
 
 ## Description
 For each group: train one LoRA on 7 pairs from that group across all 12 seeds, then test it on 3
-pairs from the same group it never trained on (only the pair is held out, not the seed). Does it show
-both concepts on the unseen pairs, and beat the weaker single-pair test from rung 3? Folds phase file
-16. So far only G6 has run, and only as a smoke test.
+pairs from the same group it never trained on (only the pair is new, the seed is not). Two questions:
+does it show both concepts on the unseen pairs, and does it do better than the weaker single-pair
+test from rung 3? Folds phase file 16. So far only G6 has run, and only as a rough first pass (a
+smoke test), not a real verdict.
 
 ## Purpose
 Serves Objective 4 (Group-Wise) and Definition-of-Done item 4. It answers the question the Scale rung
@@ -12,9 +13,9 @@ cannot on its own: is a whole difficulty group the right unit to ship one LoRA f
 per-pair, or one LoRA for everything?
 
 ## Goal
-For each group (or the honest subset), a pass/fail on transfer to held-out pairs: the held-pair
-result (`out_in`) shows both concepts on at least 2 of 3 pairs (≥50%), and beats the single-pair test
-from rung 3.
+For each group (or the honest subset), a pass or fail on whether the fix carries to held-out pairs.
+Pass means the held-out-pair result (`out_in`) shows both concepts on at least 2 of 3 pairs (≥50%)
+and beats the single-pair test from rung 3.
 
 ## Tasks
 - [x] ✅ G6 within-group smoke: train ~30k steps + mid-training crossbar eval. → G10: `in_in`+`out_in` sampled, 43/43 cells (`artifacts/rung3-group-wise/cross_pair/within_group/g6/main__wandb-ow1jo0xq/`, `eval_crossbar/step_020000/`). Smoke only, not a verdict.  ✓ verified (manifest n_cells_sampled=43, ckpt loads)

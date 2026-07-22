@@ -1,8 +1,8 @@
 # 🏔️ Scale — one LoRA spans the taxonomy, held out on both axes (or the catalogue fallback)
 
 ## Description
-Train a single rank-8 LoRA on 5 representative pairs across 8 seeds (40 training cells), then test it
-on a 2×2 grid: pair seen/unseen crossed with seed seen/unseen. The headline cell is the hardest one,
+Train a single rank-8 LoRA on 5 representative pairs across 8 seeds (40 training cells). Then test it
+on a 2×2 grid: pair seen or unseen, crossed with seed seen or unseen. The hardest cell is the one
 where both the pair and the seed are new (`out_out`). Folds phase files 11 / 14 / 15. The LoRA is
 trained, but the grid test was never run.
 
@@ -12,8 +12,8 @@ shippable claim (one LoRA for the whole taxonomy), or the evidence that says shi
 instead.
 
 ## Goal
-The 2×2 grid test run and read; the both-unseen (`out_out`) cell classified per group; and a decision
-made on what to ship: one LoRA, or a per-group set.
+Run and read the 2×2 grid test; classify the both-unseen (`out_out`) cell per group; and decide what
+to ship: one LoRA, or a per-group set.
 
 ## Tasks
 - [x] ✅ Write the cross-pair package (per-step `multi_pair_trainer`, `sample_crossbar`, `task_d_bridge`). → Plan 15 caught that the "thin wrapper" assumption was false (the base trainer binds one pair's embeddings per epoch).  ✓ verified (3 modules present)
