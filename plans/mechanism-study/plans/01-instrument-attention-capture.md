@@ -73,6 +73,57 @@ on the dropped concept's token confirming the capture pipeline behaves.
   Δ_attn in plan 03. Interactive inspector (both regimes, honest metrics, decoded λ0/λ1 samples):
   claude.ai artifact 0ca0dc95-424d-485f-bb89-1c3f98c3536d.
 
+## What is actually happening here (plain read, 2026-07-27)
+
+The plan asked one question: when the LoRA fixes a cat×dog picture, does it fix it by moving
+where the words "cat" and "dog" look on the canvas? We now have the data to answer, and the
+answer is not the clean one we hoped for.
+
+Three plain facts, each with the number that backs it:
+
+1. The LoRA is doing real work. With the LoRA off, the correction it adds is exactly zero
+   (Δ_sum = 0, by construction). With it on, the correction is large (Δ_sum ≈ 900–1730 per
+   seed). So the adapter is active, not a no-op.
+
+2. The LoRA does change where attention goes. The attention maps move by about 13% between
+   off and on, and their brightest spot shifts 6–13 pixels. So it is not the case that
+   attention is untouched.
+
+3. But it does not split the two words apart. The brightest spot for "cat" and the brightest
+   spot for "dog" sit almost on top of each other (2–4 pixels apart) whether the LoRA is on or
+   off. Both words keep looking at the same one animal. On this measure, the two concepts never
+   separate.
+
+Now the tension. The picture clearly does change (the pixels differ by 37/255 between off and
+on), and in the training sweep on seed 9 the picture goes from a single chimera to two clean
+animals somewhere around checkpoint step 20000. So the fix is real in the output. It just does
+not show up as "cat attention here, dog attention there."
+
+My best guess at what this means: the LoRA is not repairing composition by re-aiming attention
+at two separate places. It is doing something else — most likely changing what each pixel's
+attention *carries* (the content the model writes at a location) rather than *where* the words
+point. The attention peak can stay in one place while the thing being painted there splits into
+two objects. If that guess holds, the "does the LoRA reinvent test-time attention steering"
+question (the whole scope's headline) is leaning toward NO: it fixes the same failure by a
+different route than Attend-and-Excite, which is itself a finding worth having.
+
+Two honest caveats before anyone leans on this:
+- The peak-location and whole-map-cosine measures are crude. Cosine is saturated (~1.000 in
+  both regimes) and cannot tell the two apart; peak-distance is noisy once two animals exist
+  because the single brightest pixel hops between them. The real measure is the
+  commitment-window Δ_attn in plan 03; treat this as the prerequisite check, not the verdict.
+- This is one pair (cat×dog) and, for the training sweep, one seed (9). It shows the shape of
+  the answer, not its generality.
+
+What this unblocks: DoD-3's gating question ("does Δ_attn(LoRA) track the visual label at all")
+now has a first answer — weakly, on this crude measure. That is enough to justify building the
+proper Δ_attn metric (plan 03) and only then running the Attend-and-Excite comparison, rather
+than the other way round.
+
+Interactive views: plain-vs-LoRA inspector — claude.ai artifact
+0ca0dc95-424d-485f-bb89-1c3f98c3536d; training sweep (seed 9, collapsed→separated) — claude.ai
+artifact f2f2938e-99d6-4407-a7dc-ef6641545dbe.
+
 ## Recommended skill
 ▶ `/run-experiment` ✅ — GPU preflight + smoke test, then the capture runs across 12 seeds
    (inference-only, no training loop, but still a cluster job worth the mandatory smoke test
