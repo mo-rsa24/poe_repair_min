@@ -616,6 +616,10 @@ def run_lora_residual_inject(
     record_delta_at_steps: list[int] | None = None,
     correction_max_rel_norm: float | None = None,
     record_eps_path: "Path | None" = None,
+    attn_capture_dir: "Path | None" = None,
+    attn_token_indices: dict | None = None,
+    attn_resolution: int = 32,
+    attn_capture_lora: bool = False,
 ) -> SamplerOutputs:
     """LoRA per-arm sampler: PoE with a LoRA-corrected per-arm composition.
 
@@ -638,8 +642,29 @@ def run_lora_residual_inject(
 
     Adapter management uses the diffusers PeftAdapterMixin API
     (``disable_adapters`` / ``enable_adapters`` / ``set_adapter``).
+
+    Cross-attention capture (mechanism study, plan 01). When
+    ``attn_capture_dir`` and ``attn_token_indices`` are both set, each step's
+    3-branch forward is wrapped in ``_CrossAttnRecorder`` and per-token
+    spatial attention maps are written to disk, in the same schema as the
+    ``veracity_attn`` cache produced by ``run_teacher_residual``.
+
+      attn_token_indices: ``{"<save_key>": {"branch_index": int,
+        "token_index": int}}``. Branch indices here index the 3-branch
+        ``(A, B, ∅)`` cat order: ``0=A, 1=B, 2=∅`` — there is no J branch on
+        the LoRA path. File names: ``step_XXX_token_<save_key>.pt``.
+      attn_capture_lora: which forward to capture. Default False captures the
+        frozen (adapter-OFF) forward — this is plain PoE, exact at λ=0. Set
+        True to capture the LoRA-corrected (adapter-ON) forward instead;
+        requires ``lambda_value != 0`` (else the ON forward never runs).
     """
     del seq_j, pool_j  # unused — kept for signature parity with prior wiring
+    capture_attn = (
+        attn_capture_dir is not None and attn_token_indices is not None
+    )
+    if capture_attn:
+        attn_capture_dir = Path(attn_capture_dir)
+        attn_capture_dir.mkdir(parents=True, exist_ok=True)
     record_set = (
         {int(s) for s in record_delta_at_steps}
         if record_delta_at_steps is not None else set()
@@ -662,17 +687,27 @@ def run_lora_residual_inject(
 
     # Adapter management. Use the PEFT-bridge methods that diffusers exposes
     # on the UNet (PeftAdapterMixin). Falls back to set_adapter / enable.
+    # Toggles are wrapped so the λ=0 plain-PoE path works with no adapter
+    # attached at all: diffusers raises "No adapter loaded" from
+    # (dis|en)able_adapters, which is a harmless no-op here since the frozen
+    # forward is plain PoE regardless of adapter state.
     def _adapter_disable():
-        if hasattr(unet, "disable_adapters"):
-            unet.disable_adapters()
-        elif hasattr(unet, "disable_adapter_layers"):
-            unet.disable_adapter_layers()
+        try:
+            if hasattr(unet, "disable_adapters"):
+                unet.disable_adapters()
+            elif hasattr(unet, "disable_adapter_layers"):
+                unet.disable_adapter_layers()
+        except ValueError:
+            pass
 
     def _adapter_enable():
-        if hasattr(unet, "enable_adapters"):
-            unet.enable_adapters()
-        elif hasattr(unet, "enable_adapter_layers"):
-            unet.enable_adapter_layers()
+        try:
+            if hasattr(unet, "enable_adapters"):
+                unet.enable_adapters()
+            elif hasattr(unet, "enable_adapter_layers"):
+                unet.enable_adapter_layers()
+        except ValueError:
+            pass
         if hasattr(unet, "set_adapter"):
             try:
                 unet.set_adapter(lora_adapter_name)
@@ -689,6 +724,42 @@ def run_lora_residual_inject(
         ).sample
         return noise.chunk(3)
 
+    def _three_branch_forward_capture(
+        step_index: int,
+    ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        """Same forward, wrapped in the cross-attention recorder, dumping one
+        ``.pt`` per (save_key) to ``attn_capture_dir``. Mirrors the capture
+        block in ``run_teacher_residual`` — branch_index here indexes the
+        3-branch ``(A, B, ∅)`` order, so 0=A, 1=B, 2=∅."""
+        latent_input_3 = scheduler.scale_model_input(
+            latents.repeat(3, 1, 1, 1), timestep,
+        )
+        with _CrossAttnRecorder(unet, keep_grad=False) as _attn_rec:
+            noise = unet(
+                latent_input_3, timestep, encoder_hidden_states=pe_3,
+                added_cond_kwargs=cond_3, timestep_cond=None,
+            ).sample
+            for save_key, spec in attn_token_indices.items():
+                amap = _attn_rec.aggregate_token_map(
+                    int(spec["token_index"]),
+                    target_hw=(int(attn_resolution), int(attn_resolution)),
+                    branch_index=int(spec["branch_index"]),
+                    agg_resolution=int(attn_resolution),
+                )
+                if amap is None:
+                    continue
+                fname = f"step_{step_index:03d}_token_{save_key}.pt"
+                torch.save(
+                    {
+                        "map": amap.float().cpu(),
+                        "spec": dict(spec),
+                        "step_index": int(step_index),
+                        "timestep": int(timestep.item()),
+                    },
+                    attn_capture_dir / fname,
+                )
+        return noise.chunk(3)
+
     delta_norm_per_step: list[float] = []
     cap_scale_per_step: list[float] = []
     where_applied: dict[int, dict[str, torch.Tensor]] = {}
@@ -697,7 +768,12 @@ def run_lora_residual_inject(
     for step_index, timestep in enumerate(scheduler.timesteps):
         # --- frozen 3-branch (adapter OFF) -------------------------------
         _adapter_disable()
-        eps_a_raw_f, eps_b_raw_f, eps_uncond_f = _three_branch_forward()
+        if capture_attn and not attn_capture_lora:
+            eps_a_raw_f, eps_b_raw_f, eps_uncond_f = (
+                _three_branch_forward_capture(step_index)
+            )
+        else:
+            eps_a_raw_f, eps_b_raw_f, eps_uncond_f = _three_branch_forward()
         eps_a_f = guided_eps(eps_a_raw_f, eps_uncond_f, guidance_scale)
         eps_b_f = guided_eps(eps_b_raw_f, eps_uncond_f, guidance_scale)
         eps_poe_frozen = poe_eps(eps_a_f, eps_b_f, eps_uncond_f)
@@ -712,7 +788,12 @@ def run_lora_residual_inject(
         else:
             # --- LoRA-corrected 3-branch (adapter ON) ---------------------
             _adapter_enable()
-            eps_a_raw_l, eps_b_raw_l, eps_uncond_l = _three_branch_forward()
+            if capture_attn and attn_capture_lora:
+                eps_a_raw_l, eps_b_raw_l, eps_uncond_l = (
+                    _three_branch_forward_capture(step_index)
+                )
+            else:
+                eps_a_raw_l, eps_b_raw_l, eps_uncond_l = _three_branch_forward()
             eps_a_l = guided_eps(eps_a_raw_l, eps_uncond_l, guidance_scale)
             eps_b_l = guided_eps(eps_b_raw_l, eps_uncond_l, guidance_scale)
             eps_poe_lora = poe_eps(eps_a_l, eps_b_l, eps_uncond_l)
@@ -794,6 +875,10 @@ def run_lora_residual_inject(
             "eps_record_path": (
                 None if record_eps_path is None else str(record_eps_path)
             ),
+            "attn_capture_dir": (
+                None if not capture_attn else str(attn_capture_dir)
+            ),
+            "attn_capture_lora": bool(attn_capture_lora),
         },
     )
 
