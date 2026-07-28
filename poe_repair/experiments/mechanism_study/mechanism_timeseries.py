@@ -29,7 +29,7 @@ from poe_repair.experiments.lora.probe import load_pinned_init_latents
 from poe_repair.experiments.mechanism_study.capture_attention import _maybe_attach_lora
 from poe_repair.methods._sampling import (
     _CrossAttnRecorder, add_time_ids, guided_eps, poe_eps,
-    tweedie_mean, ddim_prev_from_x0_eps,
+    tweedie_mean, ddim_prev_from_x0_eps, decode_latents,
 )
 from poe_repair.runtime import (
     infer_device, infer_dtype, load_ddim_scheduler, load_sdxl_models,
@@ -43,6 +43,19 @@ def _q(arr, vmax):
     """uint8-quantize a [R,R] map to [0,vmax] → base64."""
     q = np.clip(arr / (vmax + 1e-9) * 255.0, 0, 255).astype(np.uint8)
     return base64.b64encode(q.tobytes()).decode()
+
+
+def _thumb_uri(models, latents, side=192):
+    """Decode a latent to a small JPEG data-URI ('image so far')."""
+    import io
+    from PIL import Image
+    img = decode_latents(models, latents).squeeze(0)   # [3,H,W] in [0,1]-ish
+    arr = img.permute(1, 2, 0).float().clamp(0, 1).cpu().numpy()
+    im = Image.fromarray((arr * 255).astype(np.uint8))
+    if im.width > side:
+        im = im.resize((side, side), Image.LANCZOS)
+    b = io.BytesIO(); im.save(b, format="JPEG", quality=78)
+    return "data:image/jpeg;base64," + base64.b64encode(b.getvalue()).decode()
 
 
 def _capture(unet, pe_3, cond_3, latent_input_3, timestep, res):
@@ -168,12 +181,17 @@ def main(argv=None):
         rec["delta"] = dmag
         rec["delta_left"] = float(dmag[:, :R // 2].sum())
         rec["delta_right"] = float(dmag[:, R // 2:].sum())
+        # "image so far" = Tweedie x̂0 decoded, for PoE (off) and LoRA (on)
+        ab = scheduler.alphas_cumprod[int(timestep.item())].to(device=device, dtype=dtype)
+        x0_poe = tweedie_mean(latents, ab, eps_poe)
+        x0_lora = tweedie_mean(latents, ab, eps_lora)
+        rec["img_poe"] = _thumb_uri(models, x0_poe)
+        rec["img_lora"] = _thumb_uri(models, x0_lora)
         steps.append(rec)
-        del noise, noise_l, eps_lora, delta
+        del noise, noise_l, eps_lora, delta, x0_lora
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
-        ab = scheduler.alphas_cumprod[int(timestep.item())].to(device=device, dtype=dtype)
-        x0 = tweedie_mean(latents, ab, eps_poe)
+        x0 = x0_poe
         latents = ddim_prev_from_x0_eps(
             scheduler=scheduler, timestep=timestep, step_index=si, x0=x0, eps=eps_poe)
         print(f"[timeseries] step {si} done", flush=True)
@@ -198,6 +216,8 @@ def main(argv=None):
             e[k] = "" if s[k] is None else _q(s[k], vmax[k])
         for t in TOKENS:
             e[f"{t}_value_cos"] = round(s[f"{t}_value_cos"], 4)
+        e["img_poe"] = s["img_poe"]
+        e["img_lora"] = s["img_lora"]
         data["steps"].append(e)
 
     out = Path(args.out)
