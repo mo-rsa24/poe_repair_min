@@ -52,9 +52,23 @@ def _parse_ints(a):
     return out
 
 
-def _capture(unet, pe_3, cond_3, latent_input_3, timestep, res):
-    """Return {tok: {'weight':[R,R], 'content':[R,R]}} for this forward."""
-    with torch.no_grad(), _CrossAttnRecorder(unet, keep_grad=False, track_values=True) as rec:
+def _self_entropy(rec, res, branch):
+    """Per-pixel self-attention entropy at res×res: how spread each pixel's
+    attention to other pixels is. Low = tight grouping (this pixel binds to a
+    small region → object-like); high = diffuse. Returns [res,res] or None."""
+    sa = rec.aggregate_self_attention(target_hw=(res, res), branch_index=branch)
+    if sa is None:
+        return None
+    p = sa.float().clamp_min(1e-12)          # [HW, HW] row-stochastic
+    ent = -(p * p.log()).sum(dim=-1)         # [HW]
+    return ent.reshape(res, res).detach().cpu()
+
+
+def _capture(unet, pe_3, cond_3, latent_input_3, timestep, res, self_attn=False):
+    """Return {tok:{'weight','content'}, '_self_ent':[R,R]|None} for this forward."""
+    with torch.no_grad(), _CrossAttnRecorder(
+        unet, keep_grad=False, track_values=True, track_self_attn=self_attn
+    ) as rec:
         unet(latent_input_3, timestep, encoder_hidden_states=pe_3,
              added_cond_kwargs=cond_3, timestep_cond=None)
         out = {}
@@ -69,6 +83,9 @@ def _capture(unet, pe_3, cond_3, latent_input_3, timestep, res):
                 "weight": None if w is None else w.float().cpu(),
                 "content": None if c is None else c.float().cpu(),
             }
+        out["_self_ent"] = _self_entropy(rec, res, 0) if self_attn else None
+        # free the big GPU-side lists before the next forward
+        rec.attn_maps = []; rec.value_maps = []; rec.self_attn_maps = []
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
     return out
@@ -88,6 +105,8 @@ def main(argv=None):
     ap.add_argument("--euler-sigma", type=float, default=1.0)
     ap.add_argument("--guidance-scale", type=float, default=7.5)
     ap.add_argument("--num-inference-steps", type=int, default=50)
+    ap.add_argument("--self-attn", action="store_true",
+                    help="also capture self-attention entropy (heavier; off by default)")
     args = ap.parse_args(argv)
 
     want = set(_parse_ints(args.steps))
@@ -141,13 +160,14 @@ def main(argv=None):
 
     records = []
     unet.eval()
+    torch.set_grad_enabled(False)   # whole trajectory is inference-only
     for step_index, timestep in enumerate(scheduler.timesteps):
         latent_input_3 = scheduler.scale_model_input(
             latents.repeat(3, 1, 1, 1), timestep)
         # frozen forward (adapter OFF) — drives the trajectory (plain PoE)
         off()
         if step_index in want:
-            maps_off = _capture(unet, pe_3, cond_3, latent_input_3, timestep, args.res)
+            maps_off = _capture(unet, pe_3, cond_3, latent_input_3, timestep, args.res, args.self_attn)
         noise = unet(latent_input_3, timestep, encoder_hidden_states=pe_3,
                      added_cond_kwargs=cond_3, timestep_cond=None).sample
         ea, eb, eu = noise.chunk(3)
@@ -156,15 +176,29 @@ def main(argv=None):
         # LoRA forward (adapter ON) at the SAME x_t — for the comparison only
         if step_index in want:
             on()
-            maps_on = _capture(unet, pe_3, cond_3, latent_input_3, timestep, args.res)
+            maps_on = _capture(unet, pe_3, cond_3, latent_input_3, timestep, args.res, args.self_attn)
+            # LoRA-on guided PoE eps at the same x_t → Δ-field = eps_lora - eps_poe
+            noise_l = unet(latent_input_3, timestep, encoder_hidden_states=pe_3,
+                           added_cond_kwargs=cond_3, timestep_cond=None).sample
+            la, lb, lu = noise_l.chunk(3)
+            eps_lora = poe_eps(guided_eps(la, lu, args.guidance_scale),
+                               guided_eps(lb, lu, args.guidance_scale), lu)
+            delta = (eps_lora - eps_poe)                 # [1,4,H,W] the correction
             rec = {"step_index": step_index, "timestep": int(timestep.item())}
             for name in TOKENS:
                 for reg, mm in [("off", maps_off), ("on", maps_on)]:
                     rec[f"{name}_{reg}_weight"] = mm[name]["weight"]
                     rec[f"{name}_{reg}_content"] = mm[name]["content"]
+            rec["self_ent_off"] = maps_off["_self_ent"]
+            rec["self_ent_on"] = maps_on["_self_ent"]
+            rec["delta"] = delta.float().cpu()           # for the Δ vector field
+            rec["x_t"] = latents.float().cpu()
             torch.save(rec, out_root / f"step_{step_index:03d}_valuemaps.pt")
             records.append({"step": step_index, "timestep": int(timestep.item())})
             print(f"[value_probe] step={step_index} captured off+on", flush=True)
+            del noise_l, la, lb, lu, eps_lora, delta, maps_off, maps_on
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
         # advance trajectory with the frozen (plain-PoE) eps
         off()
         ab = scheduler.alphas_cumprod[int(timestep.item())].to(device=device, dtype=dtype)
