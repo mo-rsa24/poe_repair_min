@@ -83,6 +83,9 @@ def _capture(unet, pe_3, cond_3, latent_input_3, timestep, res, self_attn=False)
                 "weight": None if w is None else w.float().cpu(),
                 "content": None if c is None else c.float().cpu(),
             }
+        for name, spec in TOKENS.items():
+            vv = rec.token_value_vector(spec["tok"], branch_index=spec["branch"])
+            out[name]["value_vec"] = None if vv is None else vv.float().cpu()
         out["_self_ent"] = _self_entropy(rec, res, 0) if self_attn else None
         # free the big GPU-side lists before the next forward
         rec.attn_maps = []; rec.value_maps = []; rec.self_attn_maps = []
