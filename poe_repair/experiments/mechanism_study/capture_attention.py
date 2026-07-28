@@ -106,6 +106,10 @@ def build_argparser() -> argparse.ArgumentParser:
                     help="subdir under attn_mechanism/; defaults to "
                          "plain_poe (frozen) or lora_lambda1 (lora)")
     ap.add_argument("--attn-resolution", type=int, default=32)
+    ap.add_argument("--renorm-tokens", type=int, default=None,
+                    help="if set, softmax-renormalize each token map over the "
+                         "first N real words (AAE-style share, not raw prob). "
+                         "For solo 'a cat'/'a dog' prompts use 4.")
     ap.add_argument("--guidance-scale", type=float, default=7.5)
     ap.add_argument("--num-inference-steps", type=int, default=50)
     ap.add_argument("--height", type=int, default=1024)
@@ -231,6 +235,7 @@ def main(argv: list[str] | None = None) -> int:
             attn_token_indices=CAT_DOG_TOKEN_INDICES,
             attn_resolution=int(p.attn_resolution),
             attn_capture_lora=capture_lora,
+            attn_renorm_tokens=p.renorm_tokens,
         )
         n_files = len(list(attn_dir.glob("step_*_token_*.pt")))
         if p.write_image:
