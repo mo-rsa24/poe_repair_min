@@ -620,6 +620,7 @@ def run_lora_residual_inject(
     attn_token_indices: dict | None = None,
     attn_resolution: int = 32,
     attn_capture_lora: bool = False,
+    attn_renorm_tokens: int | None = None,
 ) -> SamplerOutputs:
     """LoRA per-arm sampler: PoE with a LoRA-corrected per-arm composition.
 
@@ -745,6 +746,10 @@ def run_lora_residual_inject(
                     target_hw=(int(attn_resolution), int(attn_resolution)),
                     branch_index=int(spec["branch_index"]),
                     agg_resolution=int(attn_resolution),
+                    # AAE-style: softmax-renormalize over the real words so the
+                    # map shows this token's SHARE of attention, not raw prob.
+                    text_token_count=attn_renorm_tokens,
+                    drop_bos=(attn_renorm_tokens is not None),
                 )
                 if amap is None:
                     continue
