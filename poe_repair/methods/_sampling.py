@@ -1454,17 +1454,23 @@ class _CrossAttnRecorder:
     average across layers.
     """
 
-    def __init__(self, unet, *, keep_grad: bool = False, track_self_attn: bool = False):
+    def __init__(self, unet, *, keep_grad: bool = False, track_self_attn: bool = False,
+                 track_values: bool = False):
         self.unet = unet
         self.keep_grad = bool(keep_grad)
         self.track_self_attn = bool(track_self_attn)
+        self.track_values = bool(track_values)
         self.attn_maps: list[torch.Tensor] = []
         self.self_attn_maps: list[torch.Tensor] = []
+        # value_maps[i] pairs with attn_maps[i]: the per-token value vectors
+        # (what each text token WRITES), shape [B, heads, tokens, head_dim].
+        self.value_maps: list[torch.Tensor] = []
         self._hook_handles: list = []
 
     def __enter__(self):
         self.attn_maps = []
         self.self_attn_maps = []
+        self.value_maps = []
         for name, module in self.unet.named_modules():
             if module.__class__.__name__ in {"Attention", "CrossAttention"}:
                 is_cross = getattr(module, "is_cross_attention", None)
@@ -1503,6 +1509,16 @@ class _CrossAttnRecorder:
                 stored = attn if self.keep_grad else attn.detach()
                 if is_cross:
                     self.attn_maps.append(stored)
+                    if self.track_values:
+                        # Only keep values for layers we will actually aggregate
+                        # (query_len ≤ 32²); the 64² layers blow up memory and
+                        # are dropped by aggregate_painted_content anyway.
+                        if attn.shape[2] <= 32 * 32:
+                            v = module.to_v(encoder)
+                            v = v.view(v.shape[0], v.shape[1], heads, head_dim).transpose(1, 2)
+                            self.value_maps.append(v if self.keep_grad else v.detach())
+                        else:
+                            self.value_maps.append(None)
                 else:
                     self.self_attn_maps.append(stored)
             except Exception:
@@ -1591,6 +1607,59 @@ class _CrossAttnRecorder:
             return None
         out = accum / float(n)
         return out if keep_grad else out.detach().cpu()
+
+    def aggregate_painted_content(
+        self,
+        *,
+        branch_index: int = 0,
+        token_index: int | None = None,
+        max_query_len: int = 32 * 32,
+        agg_resolution: int = 32,
+    ) -> torch.Tensor | None:
+        """Per-location "what gets painted" map, aggregated across cross-attn layers.
+
+        The attention output at a location is ``Σ_token attn[loc,token]·value[token]``
+        — the content actually written there. This returns the L2 norm of that
+        content per location (a spatial map), so λ=0 vs λ=1 can be compared:
+        if the fix lives in the values, this map differs between regimes even
+        when the raw attention weights barely move.
+
+        With ``token_index`` set, restrict to that single token's contribution
+        (``attn[loc,token]·value[token]``) — the content that one word writes.
+        Requires ``track_values=True``. Returns a detached CPU ``[R, R]`` map.
+        """
+        if not self.attn_maps or not self.value_maps:
+            return None
+        R = int(agg_resolution)
+        accum = None
+        n = 0
+        for attn, val in zip(self.attn_maps, self.value_maps):
+            if val is None or attn.shape[2] > max_query_len:
+                continue
+            B, H, ql, T = attn.shape
+            side = int(round(ql ** 0.5))
+            if side * side != ql or branch_index >= B:
+                continue
+            a = attn[branch_index]          # [H, ql, T]
+            v = val[branch_index]           # [H, T, d]
+            if token_index is not None:
+                if token_index >= T:
+                    continue
+                a = a[:, :, token_index:token_index + 1]   # [H, ql, 1]
+                v = v[:, token_index:token_index + 1, :]   # [H, 1, d]
+            out = a @ v                     # [H, ql, d]
+            out = out.mean(dim=0)           # avg heads → [ql, d]
+            norm = out.float().norm(dim=-1) # per-location content norm → [ql]
+            spatial = norm.reshape(side, side)
+            spatial = F.interpolate(
+                spatial.unsqueeze(0).unsqueeze(0), size=(R, R),
+                mode="bilinear", align_corners=False,
+            ).squeeze(0).squeeze(0)
+            accum = spatial if accum is None else accum + spatial
+            n += 1
+        if accum is None or n == 0:
+            return None
+        return (accum / float(n)).detach().cpu()
 
     def aggregate_self_attention(
         self,
