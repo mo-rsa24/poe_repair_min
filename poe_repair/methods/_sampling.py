@@ -1498,6 +1498,11 @@ class _CrossAttnRecorder:
                     return
                 encoder = hidden
             try:
+                # For self-attention, the score matrix is [heads, ql, ql]; at
+                # ql=64² (4096) that is huge and OOMs. Skip building it for
+                # layers above the 32² cap — we only aggregate ≤32² anyway.
+                if not is_cross and hidden.shape[1] > 32 * 32:
+                    return
                 q = module.to_q(hidden)
                 k = module.to_k(encoder)
                 heads = getattr(module, "heads", 1)
