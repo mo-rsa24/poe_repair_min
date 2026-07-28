@@ -1666,6 +1666,38 @@ class _CrossAttnRecorder:
             return None
         return (accum / float(n)).detach().cpu()
 
+    def token_value_vector(
+        self, token_index: int, *, branch_index: int = 0,
+        max_query_len: int = 32 * 32,
+    ) -> torch.Tensor | None:
+        """The raw value vector a single token writes, averaged over heads and
+        the ≤32² cross-attn layers. This is "what content the word carries",
+        independent of where attention applies it. Comparing this vector between
+        adapter OFF and ON by cosine tells whether the LoRA ROTATES the token's
+        content (points it at a new thing) vs merely rescales it. Requires
+        ``track_values=True``. Returns a detached CPU 1-D tensor [d_total] (the
+        per-layer mean value vectors concatenated is avoided; we mean across a
+        common head_dim by stacking layers of equal width)."""
+        if not self.value_maps:
+            return None
+        vecs = []
+        for attn, val in zip(self.attn_maps, self.value_maps):
+            if val is None or attn.shape[2] > max_query_len:
+                continue
+            B, H, T, d = val.shape
+            if branch_index >= B or token_index >= T:
+                continue
+            vecs.append(val[branch_index, :, token_index, :].float().mean(0))  # [d]
+        if not vecs:
+            return None
+        # layers can have different d; group by width and mean within each,
+        # then concatenate the per-width means for a stable descriptor.
+        by_d: dict[int, list] = {}
+        for v in vecs:
+            by_d.setdefault(int(v.shape[0]), []).append(v)
+        parts = [torch.stack(vs).mean(0) for _, vs in sorted(by_d.items())]
+        return torch.cat(parts).detach().cpu()
+
     def aggregate_self_attention(
         self,
         target_hw: tuple[int, int],
