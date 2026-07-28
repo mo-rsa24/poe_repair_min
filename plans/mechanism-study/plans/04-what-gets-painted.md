@@ -48,16 +48,19 @@ fix lives if not in cross-attention weights.
   one" separation lives more on the orthogonal PCA axis than the cat↔dog axis; the cat↔dog axis
   mostly reads balance. Figure: scratchpad/manifold.png.
 
-## Summary of the mechanism (all four views agree)
-The LoRA fixes seed 9's cat×dog composition by rewriting what the DOG token writes, not by
-re-aiming attention: (1) cross-attention weights barely move and stay 96.5% cat-dog correlated;
+## Summary of the mechanism (all views agree)
+The LoRA fixes seed 9's cat×dog composition by rewriting what the DOG token means and writes, not
+by re-aiming attention: (1) cross-attention weights barely move and stay 96.5% cat-dog correlated;
 (2) painted content changes 2.9× more than weights, almost all on the dog (53-61% vs cat <7%);
-(3) the Δ-correction is ~95% on the dog half of the latent; (4) on the CLIP manifold the fixed
-image lands in a distinct two-animal region seed 9 moves into over training. This is a DIFFERENT
-mechanism from Attend-and-Excite weight-steering — evidence toward the scope's "different channel"
-outcome. All four folded into the seed-9 sweep artifact
-(claude.ai f2f2938e-99d6-4407-a7dc-ef6641545dbe). Remaining: value-DIRECTION (not just norm), and
-generality beyond seed 9 / cat×dog. The self-attention grouping view (task 1) is still unbuilt.
+(3) value DIRECTION — the refinement — rotates 39.2% for the dog vs 9.9% for the cat (4×), so the
+LoRA points "dog" at genuinely different content, not just louder; (4) the Δ-correction leans dog
+~55% per step (honest figure; an earlier ~95% came from a different slicing and is retracted);
+(5) on the CLIP manifold the fixed image lands in a distinct two-animal region seed 9 moves into
+over training. DIFFERENT mechanism from Attend-and-Excite weight-steering — evidence toward the
+scope's "different channel" outcome. Per-step data (weight/content/value-cos/delta at all 50 steps)
+drives the interactive mechanism tabs in the seed-9 sweep artifact
+(claude.ai f2f2938e-99d6-4407-a7dc-ef6641545dbe). Remaining: generality beyond seed 9 / cat×dog;
+the self-attention grouping view (task 1) is still unbuilt (OOM-prone, deferred).
 
 ## Engagement Instructions
 ```bash
