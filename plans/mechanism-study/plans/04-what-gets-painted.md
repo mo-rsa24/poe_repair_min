@@ -34,17 +34,30 @@ fix lives if not in cross-attention weights.
   aim unchanged. This is a different mechanism from Attend-and-Excite weight-steering, and is the
   direct positive evidence for the "changes what gets painted" hypothesis. Caveat: content-NORM is
   a coarse proxy; value-DIRECTION would be the fuller story. Figure: scratchpad/value_compare.png.
-- [ ] **Δ-correction vector field.** The sampler already computes `delta_hat = ε_LoRA − ε_frozen`
-  per denoising step. Capture it for seed 9 and plot it as a 2D arrow field over the latent (a
-  slice, or PCA-projected), at the denoising steps around the composition-commit window. Checkpoint:
-  an arrow field, like the Langevin/score pictures, showing the push that splits the chimera; pair
-  with its norm-per-step curve. The diffusion-dynamics view of the fix.
-- [ ] **Manifold density plot.** Generate sample sets: pure "a cat", pure "a dog", and the cat×dog
-  composition across the training sweep. Embed (CLIP or latent), project to 2D, and draw each as a
-  density. A good composition covers both clouds; a chimera sits in the collapsed valley between
-  them. Checkpoint: seed 9's composition point plotted across checkpoints 12500→100000, showing it
-  move from the collapsed valley toward the two-mode region as training proceeds. Reuses the
-  `veracity`/basin-projection idea and the repo's `manifold/` scaffolding. Biggest payoff.
+- [x] **Δ-correction vector field.** `value_probe.py` now stores `delta = ε_LoRA − ε_PoE` per
+  captured step; `scratchpad/plot_delta_field.py` renders it as a magnitude heatmap + arrow field.
+  FINDING (seed 9): the correction is ~95% concentrated on the DOG (right) half at every step
+  (step 40: 4807 right vs 117 left) and sharpens from the central chimera onto the dog region as
+  denoising proceeds. Third independent confirmation. Figure: scratchpad/delta_field.png.
+- [x] **Manifold density plot.** `gen_reference_sets.py` makes pure-cat/pure-dog (A=B same prompt,
+  12 seeds each); `manifold_plot.py` CLIP-embeds pure-cat, pure-dog, cat×dog λ=0/λ=1, and the
+  seed-9 sweep, laying them on a cat↔dog axis (reference centroids) + orthogonal PCA.
+  FINDING: pure cats cluster left, pure dogs right; fixed two-animal images occupy a distinct
+  upper-middle region the singles and broken images don't; seed 9 detours to the 17.5k chimera
+  (pulled toward the dog cloud) then settles into the fixed cluster. Caveat: the "two animals vs
+  one" separation lives more on the orthogonal PCA axis than the cat↔dog axis; the cat↔dog axis
+  mostly reads balance. Figure: scratchpad/manifold.png.
+
+## Summary of the mechanism (all four views agree)
+The LoRA fixes seed 9's cat×dog composition by rewriting what the DOG token writes, not by
+re-aiming attention: (1) cross-attention weights barely move and stay 96.5% cat-dog correlated;
+(2) painted content changes 2.9× more than weights, almost all on the dog (53-61% vs cat <7%);
+(3) the Δ-correction is ~95% on the dog half of the latent; (4) on the CLIP manifold the fixed
+image lands in a distinct two-animal region seed 9 moves into over training. This is a DIFFERENT
+mechanism from Attend-and-Excite weight-steering — evidence toward the scope's "different channel"
+outcome. All four folded into the seed-9 sweep artifact
+(claude.ai f2f2938e-99d6-4407-a7dc-ef6641545dbe). Remaining: value-DIRECTION (not just norm), and
+generality beyond seed 9 / cat×dog. The self-attention grouping view (task 1) is still unbuilt.
 
 ## Engagement Instructions
 ```bash
