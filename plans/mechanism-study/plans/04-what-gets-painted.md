@@ -19,18 +19,21 @@ Four figures on seed 9, each pairing a picture with a number, that together say 
 fix lives if not in cross-attention weights.
 
 ## Tasks
-- [ ] **Self-attention + reweighted cross-attention.** Re-capture seed 9 with
-  `track_self_attn=True` and render (a) pixel-to-pixel self-attention grouping (does the model
-  treat the scene as one object or two?), and (b) cross-attention softmax-renormalized over the
-  real words only (`drop_bos`/`text_token_count`, already in `aggregate_token_map`) so the maps
-  show each word's SHARE, not raw prob. Checkpoint: the renormalized cat/dog maps are punchier
-  (peak/mean up) and the self-attn grouping is shown λ=0 vs λ=1. Answers "why weak" + "other
-  attention forms". Cheap: recorder flags already exist.
-- [ ] **Value / content maps.** Extend `_CrossAttnRecorder` to also store `to_v(encoder)` so we
-  can map what the cat/dog tokens WRITE at each location, not just the weight. Compare λ=0 vs λ=1
-  value-norm and value-direction maps on seed 9. Checkpoint: if the fix lives in the values, the
-  value maps differ between regimes more than the weight maps do (they were only ~6-8% apart).
-  This is the direct test of "changing what gets painted".
+- [x] **Reweighted cross-attention (renorm half done; self-attn still TODO).** Added
+  `--renorm-tokens` (AAE softmax renorm over the real words). Finding: renorm makes the cat/dog
+  maps punchier (cat max/mean 1.39→2.29) but they stay 96.5% correlated — both word tokens attend
+  to BOTH animals. The tokens are non-selective, not weak: cat gets ~11× the uniform share. So
+  the "weak" look was diffuse raw probability. STILL TODO: the `track_self_attn=True` pixel-to-pixel
+  grouping view (does the model treat the scene as one object or two, λ=0 vs λ=1).
+- [x] **Value / content maps.** Added `track_values` to `_CrossAttnRecorder` (stores `to_v`) and
+  `aggregate_painted_content` (per-location |Σ attn·value|). `value_probe.py` captures cat/dog
+  weight + content maps for the same x_t, adapter OFF vs ON.
+  FINDING (seed 9): the LoRA changes CONTENT ~2.9× more than WEIGHTS (30.6% vs 10.6%), and it is
+  almost entirely the DOG token (dog content 53-61%, ratio 3.7-5.4×; cat content <7%, ratio <1).
+  The fix rewrites what the dog token writes, leaving the cat mostly intact and both tokens'
+  aim unchanged. This is a different mechanism from Attend-and-Excite weight-steering, and is the
+  direct positive evidence for the "changes what gets painted" hypothesis. Caveat: content-NORM is
+  a coarse proxy; value-DIRECTION would be the fuller story. Figure: scratchpad/value_compare.png.
 - [ ] **Δ-correction vector field.** The sampler already computes `delta_hat = ε_LoRA − ε_frozen`
   per denoising step. Capture it for seed 9 and plot it as a 2D arrow field over the latent (a
   slice, or PCA-projected), at the denoising steps around the composition-commit window. Checkpoint:
