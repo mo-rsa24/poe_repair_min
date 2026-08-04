@@ -79,3 +79,32 @@ symlinks. Two decisions changed:
 - Byte-level cross-root duplication (checksums). `02-two-root-classified.md` already showed the repo vs datasets `cross_seed` pair dirs are different-stage artifacts (eval samples vs seed banks), not copies.
 - Live W&B server state. All run statuses are inherited from segment 1's **local** run-dir reconciliation.
 - Semantic correctness of the weights (whether each LoRA actually composes). This check verifies the artifacts load and are structurally complete, not that they produce good samples.
+
+---
+
+## Re-sweep 2026-08-04: the eight previously-unfiled top-dirs
+
+Method as above: read-only, `torch.load(weights_only=True)` on CPU. Destinations
+come from the scope call in `inventory/sweeps/2026-08-04-scope-call.md`.
+
+| Artifact | Load | Structure | Decision | Destination | Reason |
+|---|---|---|---|---|---|
+| R: `animals_compose_transfer/pooled_lora/phase1_r8_100k/checkpoints/lora_step_100000.pt` | ✓ PASS | `lora_state` 420 keys, rank-8; `step=100000`, `epoch=2000` | **keep** | `artifacts/scopes/animals-compose-transfer/` | The transfer headline. Run `1d3qy31e` finished 2026-07-30. Cite always with its checkpoint. |
+| R: same dir, `lora_step_005000.pt`, `lora_step_055000.pt` | ✓ PASS | identical envelope | **keep** | (same) | 20 checkpoints on disk; three load-tested across the range. |
+| R: `compose_scorer/` | n/a (no `.pt`) | `scorer_validated.json` records `pass: true`, method `instance_count` | **keep** | `artifacts/scopes/compose-scorer/` | The validated scorer contract the animals scope depends on. |
+| R: `poe/pairs/` | n/a (no `.pt`) | per-pair baseline sample grids | **keep** | `artifacts/scopes/poe-baselines/` | Baseline reference grids. |
+| R: `residual_diagnostics/delta_structure_unguided/tensors.pt` | ✓ PASS | `delta`, `eps_poe`, `eps_mono`, `timesteps`, `seeds` | **keep** | `artifacts/diagnostics/residual_diagnostics/` | The cached correction term itself. Interaction-term scope reads this. |
+| R: `residual_diagnostics/delta_structure/.../teacher_residual_*.pt` | ✓ PASS | 13 keys incl. `x_t`, `timestep`, `seq_a`, `pool_a` | **keep** | (same) | 402 `.pt` files; first and last opened. |
+| R: `group_a_failure/.../direct_eps_overfit_catdog/best.pt` | ✓ PASS | `student`, `step`, `val_metrics`, `guidance_scale`, `target_kind` | **keep (reference)** | `artifacts/diagnostics/group_a_failure/` | Recorded architecture failure. The paper's negative claims lean on it. |
+| R: `group_a_failure/latent_unet/a_cat__x__a_dog/seed_42/...` | ✓ PASS | `delta_hat`, `eps_poe`, `x_t`, `tweedie_x0`, `timestep` | **keep (reference)** | (same) | 1031 `.pt` files, 7G. Revisit the 7G once the negative claims are written and cited. |
+| R: `conditioning_window/` | n/a (no `.pt`) | 6 pair dirs, figures and grids | **keep** | `artifacts/diagnostics/conditioning_window/` | Nothing to load-test. |
+| R: `conditioning_window_lora/` | n/a (no `.pt`) | 2 pair dirs, figures and grids | **keep** | `artifacts/diagnostics/conditioning_window_lora/` | Nothing to load-test. |
+| R: `presentation/heldout_summary/` | n/a | 5 cross-pair held-out summary PNGs | **keep** | `artifacts/_shared/presentation/` | Reads from several rungs, owned by none. |
+
+**Envelope mismatch worth flagging.** `lora_step_100000.pt` does not match the flat
+420-key layout every earlier row in this file records. Its tensors live under
+`sd["lora_state"]`. Loaders written against the old contract will fail on it.
+
+Sampling note: first and last `.pt` per directory group plus three points across
+the headline run. The 1031 files in `group_a_failure` and 402 in
+`residual_diagnostics` were not each opened.

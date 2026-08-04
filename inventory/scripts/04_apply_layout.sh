@@ -117,6 +117,25 @@ for y in pair_pool.yaml seed_pool.yaml pair_prompts.yaml; do
       "$REPO/artifacts/_shared/cross_pair_pool_configs/$y"
 done
 
+say ""; say "--- Diagnostics and study output (scope call 2026-08-04) ---"
+# Not rung experiments: measurement and study output that no rung produced.
+# See inventory/sweeps/2026-08-04-scope-call.md for the decision and load tests.
+for d in group_a_failure residual_diagnostics conditioning_window conditioning_window_lora; do
+  sym "$REPO/outputs/$d" "$REPO/artifacts/diagnostics/$d"
+done
+
+say ""; say "--- Scope-owned output (scope call 2026-08-04) ---"
+sym  "$REPO/outputs/animals_compose_transfer" \
+     "$REPO/artifacts/scopes/animals-compose-transfer"
+sym  "$REPO/outputs/compose_scorer" \
+     "$REPO/artifacts/scopes/compose-scorer"
+sym  "$REPO/outputs/poe" \
+     "$REPO/artifacts/scopes/poe-baselines"
+
+say ""; say "--- Cross-experiment presentation figures ---"
+sym  "$REPO/outputs/presentation" \
+     "$REPO/artifacts/_shared/presentation"
+
 say ""; say "--- Caches ---"
 sym  "$DAT/outputs/training_cache" \
      "$DAT/artifacts/caches/training_cache"

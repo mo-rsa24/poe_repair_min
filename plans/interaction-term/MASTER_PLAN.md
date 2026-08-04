@@ -71,6 +71,8 @@ broke. No landing is narrated without its instrument.
 - ⚠️ plans/inspector-interaction-term/ — "every headline figure explorable by hand, zero new generation"
 
 ## Plans
+- ⚠️ 00-build-the-instruments.md — gates every plan below; 01-11 verify against
+  code this plan writes
 - ⚠️ 01-preregister-normalization.md
 - ⚠️ 02-mechanism-reprobe.md
 - ⚠️ 03-dose-response.md
