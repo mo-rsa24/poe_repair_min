@@ -15,13 +15,17 @@ from pathlib import Path
 import torch
 from PIL import Image, ImageDraw, ImageFont
 
+from poe_repair.experiments.cross_seed_lora_pooling.task_d_bridge import (
+    _alpha_fit,
+    _cos,
+)
 from poe_repair.experiments.lora.probe import load_pinned_init_latents
 from poe_repair.methods._sampling import (
     run_lora_residual_inject,
     write_decoded_image,
 )
 from poe_repair.runtime import ensure_dir
-from poe_repair.training_cache import CellPath
+from poe_repair.training_cache import CellPath, mean_delta_per_step, resolve_cells
 
 
 @dataclass
@@ -81,6 +85,55 @@ def build_context(
     )
 
 
+def build_pool_mean_cache(
+    *,
+    train_pairs: list[str],
+    train_seeds: list[int],
+    cache_root: Path,
+) -> dict[int, torch.Tensor]:
+    """Δ̄_t: mean Δ_t across the whole training pool (all train pairs × train
+    seeds), keyed by step_index. This is the fixed reference direction for
+    direction-cosine / fraction-of-distance-reached — static w.r.t. LoRA
+    weights, so it is built once at startup, not per eval step.
+    """
+    cells: list[CellPath] = []
+    for pair in train_pairs:
+        cells.extend(resolve_cells(pair, train_seeds, cache_root=cache_root))
+    deltas, step_indices, _ = mean_delta_per_step(cells)
+    return {int(si): t for si, t in zip(step_indices, deltas)}
+
+
+def direction_metrics(
+    where_applied: dict[int, dict[str, torch.Tensor]],
+    pool_mean: dict[int, torch.Tensor],
+) -> dict[str, float]:
+    """Per-cell direction-cosine and fraction-of-distance-reached, averaged
+    over whatever steps were recorded in ``where_applied`` (see
+    ``record_delta_at_steps``). Reuses ``_cos``/``_alpha_fit`` from
+    ``task_d_bridge`` rather than redefining them.
+
+    direction-cosine: cos(Δ̂_t, Δ̄_t) — does this cell's correction point the
+    same way as the pool-mean correction?
+    fraction-of-distance-reached: alpha_fit(Δ̂_t, Δ̄_t) — the best-fit scalar
+    projecting Δ̂_t onto Δ̄_t's direction; ~1.0 means the correction travelled
+    the full pool-mean distance, ~0.4 is the observed plateau.
+    """
+    cosines, alphas = [], []
+    for si, rec in where_applied.items():
+        v_bar = pool_mean.get(int(si))
+        if v_bar is None:
+            continue
+        delta_hat = rec["delta_hat"]
+        cosines.append(_cos(delta_hat, v_bar))
+        alphas.append(_alpha_fit(delta_hat, v_bar))
+    if not cosines:
+        return {"direction_cosine": float("nan"), "frac_distance_reached": float("nan")}
+    return {
+        "direction_cosine": float(sum(cosines) / len(cosines)),
+        "frac_distance_reached": float(sum(alphas) / len(alphas)),
+    }
+
+
 def sample_all_cells(
     *,
     unet,
@@ -90,12 +143,21 @@ def sample_all_cells(
     out_dir: Path,
     lambda_value: float = 1.0,
     lora_adapter_name: str = "lora",
-) -> list[tuple[InlineCell, Path]]:
-    """Render one PNG per cell under ``out_dir``. Returns [(cell, png_path)]."""
+    record_delta_at_steps: list[int] | None = None,
+) -> list[tuple[InlineCell, Path, dict[int, dict[str, torch.Tensor]]]]:
+    """Render one PNG per cell under ``out_dir``.
+
+    Returns ``[(cell, png_path, where_applied_cache)]``. ``where_applied_cache``
+    is ``{}`` unless ``record_delta_at_steps`` is given, in which case it maps
+    ``step_index -> {"delta_hat": Tensor, ...}`` (see
+    ``run_lora_residual_inject``'s ``where_applied_cache`` extra) — the
+    in-memory per-step ``Δ̂`` the direction-cosine / distance-reached metrics
+    are computed from, with no disk round-trip.
+    """
     ensure_dir(out_dir)
     was_training = unet.training
     unet.eval()
-    out_pairs: list[tuple[InlineCell, Path]] = []
+    out_pairs: list[tuple[InlineCell, Path, dict[int, dict[str, torch.Tensor]]]] = []
     try:
         with torch.inference_mode():
             for cell in ctx.cells:
@@ -117,13 +179,53 @@ def sample_all_cells(
                     lambda_value=float(lambda_value),
                     lora_adapter_name=lora_adapter_name,
                     record_eps_path=None,
+                    record_delta_at_steps=record_delta_at_steps,
                 )
                 write_decoded_image(out.image, png)
-                out_pairs.append((cell, png))
+                where_applied = out.extras.get("where_applied_cache", {}) or {}
+                out_pairs.append((cell, png, where_applied))
     finally:
         if was_training:
             unet.train()
     return out_pairs
+
+
+def compose_triptych(
+    *,
+    mono_path: Path,
+    poe_path: Path,
+    lora_path: Path,
+    title: str,
+    lora_label: str = "LoRA",
+    thumb: int = 320,
+) -> Image.Image:
+    """Three panels side by side: Mono (target) | PoE (default) | LoRA (corrected).
+
+    Mono and PoE are the fixed cache references (they do not change over training);
+    only the LoRA panel evolves. Lets you read compose-vs-blend against both the
+    good-composer target and the broken PoE baseline, over training steps.
+    """
+    panels = [("Mono (target)", mono_path), ("PoE (default)", poe_path),
+              (lora_label, lora_path)]
+    pad, label_h, title_h = 8, 22, 26
+    W = len(panels) * thumb + (len(panels) + 1) * pad
+    H = title_h + label_h + thumb + 2 * pad
+    canvas = Image.new("RGB", (W, H), (18, 18, 18))
+    draw = ImageDraw.Draw(canvas)
+    draw.text((pad, 6), title, fill=(255, 255, 255))
+    for i, (label, p) in enumerate(panels):
+        x = pad + i * (thumb + pad)
+        draw.text((x, title_h), label, fill=(200, 200, 200))
+        try:
+            im = Image.open(p).convert("RGB")
+            im.thumbnail((thumb, thumb))
+            off = (x + (thumb - im.width) // 2, title_h + label_h + (thumb - im.height) // 2)
+            canvas.paste(im, off)
+        except Exception:
+            draw.rectangle([x, title_h + label_h, x + thumb, title_h + label_h + thumb],
+                           outline=(90, 90, 90))
+            draw.text((x + 8, title_h + label_h + 8), "(missing)", fill=(150, 90, 90))
+    return canvas
 
 
 def compose_contact_sheet(
