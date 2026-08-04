@@ -158,3 +158,15 @@ Honest gaps — do not read the log as "everything landed":
 - **Not tiered here:** G5 (entanglement) deferred throughout; conditioning_window_lora "rescue" companion; the inspector web app (evidence surface, not a decision).
 
 _Generated 2026-07-21. Append-only; supersede with a banner, never rewrite._
+
+---
+
+## OPS-04 — Where does non-rung output go? [✅ decided, ⚠️ move pending]
+
+- **Question.** Eight experiment top-dirs sit outside the canonical `artifacts/` scheme. Do the diagnostics and mechanism-study dirs belong in rung1-4, or somewhere else?
+- **Ran.** Re-sweep detection (`inventory/sweeps/2026-08-04-resweep-detection.md`, read-only) → scope call + load tests (`inventory/sweeps/2026-08-04-scope-call.md`) → `04_apply_layout.sh` extended, dry-run only.
+- **Result.** Load tests all PASS. `animals_compose_transfer` headline `lora_step_100000.pt` is intact: 420 LoRA keys, rank-8, `step=100000`, `epoch=2000`. **Structural note that supersedes OPS-02's flat-420-key contract for this run:** the tensors sit under a `lora_state` sub-dict alongside optimizer and scaler state, so a loader written against the flat layout fails on it. `conditioning_window{,_lora}` hold no `.pt` files (figures only). `residual_diagnostics/delta_structure_unguided/tensors.pt` holds `delta` / `eps_poe` / `eps_mono` — the same quantity the interaction-term scope calls r_t.
+- **Decision.** **Rung1-4 stays for ladder experiments only.** Three buckets added: `artifacts/diagnostics/` (`residual_diagnostics`, `conditioning_window{,_lora}`, `group_a_failure`), `artifacts/scopes/<scope>/` (`animals_compose_transfer`, `compose_scorer`, `poe`), and `artifacts/_shared/presentation/`. All eight **keep**; `group_a_failure` keeps as a reference negative (7G, revisit once the negative claims are written). Dry-run: 8 MOVE+LINK, 32 REFUSE (already filed), 3 SKIP (quarantined). The move itself is not yet applied.
+- **Fired next.** `APPLY=1` on the layout script, then DoD-4 closes.
+
+_Appended 2026-08-04._

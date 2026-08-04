@@ -20,7 +20,10 @@ The program spine: what order, and which plans gate which.
 
 ```mermaid
 flowchart LR
-    A[01 pre-register] --> C[03 dose test]
+    Z[00 build instruments] --> A[01 pre-register]
+    Z --> B
+    Z --> C
+    A --> C[03 dose test]
     B[02 re-probe gate] --> I[09 print gates]
     C --> D[04 window pair]
     C --> F[06 corroborations]

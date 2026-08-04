@@ -39,8 +39,10 @@ paragraph only).
   full sweep goes to biggpu first, else bigbatch.
 - Attention/value .pt files accumulate: write to /datasets (disk guard), never
   /home-mscluster.
-- Checkpoint: outputs/animals_compose_transfer/pooled_lora/phase1_r8_100k/
-  checkpoints/lora_step_100000.pt.
+- Checkpoint: artifacts/scopes/animals-compose-transfer/pooled_lora/
+  phase1_r8_100k/checkpoints/lora_step_100000.pt (filed 2026-08-04; the old
+  outputs/animals_compose_transfer/... path still resolves via compat symlink).
+  Its 420 LoRA tensors are under sd["lora_state"], not at the top level.
 
 ## Tasks
 - [ ] ⚠️ generalize value_probe.py beyond the hardcoded cat/dog token indices:
