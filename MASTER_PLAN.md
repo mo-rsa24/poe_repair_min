@@ -63,6 +63,8 @@ recorded in the decision timeline.
 
 ## Sub-Scopes
 - ⚠️ plans/artifact-reconciliation/ — "keep run artifacts catalogued, integrity-checked, canonically organised" (standing: carries a recurring re-sweep node)
+- ⚠️ plans/compose-scorer/ — reusable instrument: a 3-anchor scorer that tells a two-animal composition from a chimera blend; emits scorer_validated.json (the cross-scope contract)
+- ⚠️ plans/animals-compose-transfer/ — animals-only hard-pair LoRA transfer (leave-one-pair-out + size-matched-mixed contrast); DEPENDS ON compose-scorer's scorer_validated.json
 
 ## Plans
 (One plan file per pyramid rung, grouped under `plans/rungs/`. Detailed phase
