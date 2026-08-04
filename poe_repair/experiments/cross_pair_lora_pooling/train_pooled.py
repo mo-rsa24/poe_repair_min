@@ -345,6 +345,15 @@ def main(argv: list[str] | None = None) -> int:
             guidance_scale=float(cfg.sampler.guidance_scale),
             euler_init_noise_sigma=float(cfg.sampler.euler_init_noise_sigma),
         )
+        # Δ̄_t across the whole training pool: the fixed reference direction
+        # for direction-cosine / fraction-of-distance-reached (plan 02).
+        # Static w.r.t. LoRA weights, so built once here, not per eval step.
+        pool_mean_delta = _inline_sampling.build_pool_mean_cache(
+            train_pairs=list(pair_pool.train),
+            train_seeds=list(seed_pool.train_pool),
+            cache_root=cache_root,
+        )
+        record_delta_at_steps = list(range(int(args.sample_num_inference_steps)))
 
     def _run_inline_sample(tag: str) -> None:
         if sampler_ctx is None:
@@ -354,12 +363,51 @@ def main(argv: list[str] | None = None) -> int:
             unet=models["unet"], models=models, scheduler=scheduler,
             ctx=sampler_ctx, out_dir=sub,
             lambda_value=1.0, lora_adapter_name=lora_adapter_name,
+            record_delta_at_steps=record_delta_at_steps,
         )
-        for cell, png in rendered:
+        direction_payload: dict[str, float] = {}
+        all_cosines, all_alphas = [], []
+        for cell, png, where_applied in rendered:
             key = f"samples/{cell.quadrant}/{cell.pair_slug}/seed_{cell.seed:02d}"
-            logger.log_image(key, png, step=state.optimizer_step)
+            # 3-column comparison: Mono (target) | PoE (default) | LoRA (this step).
+            # Mono/PoE are the fixed cache references; only LoRA evolves over training.
+            split = "train" if cell.quadrant == "in_in" else "heldout"
+            cache_cell = cache_root / split / cell.pair_slug / f"seed_{cell.seed}"
+            mono_p, poe_p = cache_cell / "mono.png", cache_cell / "poe.png"
+            if mono_p.exists() and poe_p.exists():
+                trip = _inline_sampling.compose_triptych(
+                    mono_path=mono_p, poe_path=poe_p, lora_path=png,
+                    title=f"{cell.pair_slug}  seed {cell.seed:02d}",
+                    lora_label=f"LoRA @ step {state.optimizer_step}",
+                    thumb=int(args.sample_thumb),
+                )
+                trip_path = sub / f"{cell.quadrant}__{cell.pair_slug}__seed{cell.seed:02d}__cmp.png"
+                trip.save(trip_path)
+                logger.log_image(key, trip_path, step=state.optimizer_step)
+            else:
+                logger.log_image(key, png, step=state.optimizer_step)
+            # Direction axis (plan 02): per-cell cosine to the pool-mean Δ̄_t
+            # and the fraction-of-distance-reached, logged as separate curves
+            # so a floor compose-rate can be split delivery-null vs no-transfer.
+            metrics = _inline_sampling.direction_metrics(where_applied, pool_mean_delta)
+            cos_key = f"eval/direction_cosine/{cell.quadrant}/{cell.pair_slug}/seed_{cell.seed:02d}"
+            frac_key = f"eval/frac_distance_reached/{cell.quadrant}/{cell.pair_slug}/seed_{cell.seed:02d}"
+            direction_payload[cos_key] = metrics["direction_cosine"]
+            direction_payload[frac_key] = metrics["frac_distance_reached"]
+            if metrics["direction_cosine"] == metrics["direction_cosine"]:  # not nan
+                all_cosines.append(metrics["direction_cosine"])
+                all_alphas.append(metrics["frac_distance_reached"])
+        if all_cosines:
+            direction_payload["eval/direction_cosine/mean"] = (
+                sum(all_cosines) / len(all_cosines)
+            )
+            direction_payload["eval/frac_distance_reached/mean"] = (
+                sum(all_alphas) / len(all_alphas)
+            )
+        if direction_payload:
+            logger.log(direction_payload, step=state.optimizer_step)
         sheet = _inline_sampling.compose_contact_sheet(
-            rendered=rendered,
+            rendered=[(cell, png) for cell, png, _ in rendered],
             title=f"{tag} — epoch {state.epoch} / step {state.optimizer_step}",
             thumb=int(args.sample_thumb),
         )

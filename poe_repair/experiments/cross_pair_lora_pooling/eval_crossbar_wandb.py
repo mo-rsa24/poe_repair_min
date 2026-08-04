@@ -247,7 +247,7 @@ def main(argv: list[str] | None = None) -> int:
         cells_path.unlink()
     manifest: list[dict] = []
     with cells_path.open("a") as f:
-        for cell, png in rendered:
+        for cell, png, _where_applied in rendered:
             row = {
                 "quadrant": cell.quadrant,
                 "pair_slug": cell.pair_slug,
@@ -261,7 +261,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if wb_run is not None:
         import wandb
-        for cell, png in rendered:
+        for cell, png, _where_applied in rendered:
             key = (f"{ns}/{cell.quadrant}/{cell.pair_slug}"
                    f"/seed_{cell.seed:02d}")
             wb_run.log({
@@ -271,7 +271,7 @@ def main(argv: list[str] | None = None) -> int:
 
     # Per-quadrant contact sheets.
     rendered_by_q: dict[str, list] = {}
-    for cell, png in rendered:
+    for cell, png, _where_applied in rendered:
         rendered_by_q.setdefault(cell.quadrant, []).append((cell, png))
     for q, cells in rendered_by_q.items():
         sheet = _inline_sampling.compose_contact_sheet(
