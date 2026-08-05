@@ -113,6 +113,13 @@ def main() -> int:
                     help="assert lambda=0 reproduces plain PoE, then exit")
     ap.add_argument("--steps", type=int, help="override inference steps (smoke runs)")
     ap.add_argument("--exp-name", default="interaction_term/dose")
+    ap.add_argument("--row", default="oracle",
+                    choices=("oracle", "random", "wrong_pair"),
+                    help="oracle = the pair's own r_t; the other two are the "
+                         "norm-matched controls (see plan 03)")
+    ap.add_argument("--wrong-pair-source",
+                    help="pair slug whose r_t to inject for --row wrong_pair; "
+                         "defaults to a fixed, non-adjacent partner")
     ap.add_argument("--save-residuals", action="store_true")
     ap.add_argument("--overwrite", action="store_true")
     args = ap.parse_args()
@@ -122,6 +129,24 @@ def main() -> int:
 
     cell = cell_from_slug(args.pair, args.seed)
     ctx = make_ctx(num_inference_steps=args.steps) if args.steps else make_ctx()
+
+    sub = None if args.row == "oracle" else args.row
+    sub_source = None
+    if args.row == "wrong_pair":
+        from poe_repair.experiments.interaction_term.cache import load_cell
+        from poe_repair.experiments.interaction_term.wrong_pair import (
+            partner_for, first_cached_seed,
+        )
+        donor = args.wrong_pair_source or partner_for(args.pair)
+        sub_source = load_cell(donor, first_cached_seed(donor)).r_t()
+        print(f"[wrong_pair] injecting r_t from {donor}")
+    # The method name must encode the row, or the three rows overwrite each
+    # other on disk and the "control" silently becomes the oracle's file.
+    name = cmp_tr.method_name_for(
+        lambda_schedule=args.schedule, lambda_max=args.lam)
+    if sub is not None:
+        name += f"_{sub}"
+
     path = cmp_tr.run(
         cell, ctx,
         lambda_schedule=args.schedule,
@@ -130,6 +155,9 @@ def main() -> int:
         save_trajectory=True,
         exp_name=args.exp_name,
         overwrite=args.overwrite,
+        method_name_override=name,
+        delta_substitute=sub,
+        delta_substitute_source=sub_source,
     )
     print(path)
     return 0
