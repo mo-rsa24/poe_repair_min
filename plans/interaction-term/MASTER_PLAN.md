@@ -71,9 +71,9 @@ broke. No landing is narrated without its instrument.
 - ⚠️ plans/inspector-interaction-term/ — "every headline figure explorable by hand, zero new generation"
 
 ## Plans
-- ⚠️ 00-build-the-instruments.md — gates every plan below; 01-11 verify against
-  code this plan writes
-- ⚠️ 01-preregister-normalization.md
+- ✅ 00-build-the-instruments.md — 13 instruments built and smoked 2026-08-05;
+  scripts take --pool (the cache dir mixes experiments, see instrument_smoke.md)
+- ✅ 01-preregister-normalization.md — relative_norm committed 2026-08-05
 - ⚠️ 02-mechanism-reprobe.md
 - ⚠️ 03-dose-response.md
 - ⚠️ 04-window-pair.md
