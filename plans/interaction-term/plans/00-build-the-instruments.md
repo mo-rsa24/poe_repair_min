@@ -1,133 +1,168 @@
-# 🔧 Build the instruments the rest of this scope measures with
+# 🔧 Wrap and verify the instruments the rest of this scope measures with
 
 ## Description
-Write and smoke-test the code that plans 01-11 assume already exists: the
-`interaction_term` package (`inject`, `window`) and the analysis scripts each
-later plan verifies itself against. Nothing here produces a result for the
-paper. It produces the tools that produce the results.
+Give plans 01-11 the commands they verify themselves against. The sampler that
+injects r_t at a dose and inside a window **already exists** and is already used
+by the residual_diagnostics experiments. What is missing is a per-pair command
+line over it, real tests for its two canaries, and the analysis scripts. This
+plan adds those. It does not write a second sampler.
 
 ## Purpose
-Plans 01-11 were authored with concrete Engagement Instructions that run real
-commands. Eleven of the twelve commands they check refer to files that do not
-exist, so every one of those plans currently fails at its first step. This plan
-closes that gap once, in one place, in the order the later plans need them.
+Plans 01-11 were authored assuming a `poe_repair.experiments.interaction_term`
+package and eleven analysis scripts. Neither exists, so every one of those plans
+fails at its first command. But the capability those plans need is not missing:
+it lives under the name `teacher_residual`. Building a parallel implementation
+would put a second, subtly different definition of r_t next to the one the
+existing cached diagnostics were generated from, and the two would drift.
 
-Written 2026-08-04 after a check found the gap. Serves every DoD item indirectly
-by making the checks in 01-11 executable.
+Rewritten 2026-08-05 after reading the code. The first draft of this plan
+assumed the sampler had to be built; it does not.
+
+## What already exists (read this before writing anything)
+`run_teacher_residual` in `poe_repair/methods/_sampling.py:367` steps with
+
+    ε_final = ε̃_PoE + λ_t · (ε̃_Mono − ε̃_PoE)
+
+which is r_t injection at dose λ. Specifically, already present:
+
+| Needed for | Already there |
+|---|---|
+| the dose knob (plan 03) | `lambda_max`, plus `lambda_schedule` constant / linear_decay / early_only |
+| the window knob (plan 04) | `correction_window=(start, end)`, λ forced to 0 outside it (`_sampling.py:461`) |
+| the definition of r_t | `delta = eps_j - eps_poe` (`_sampling.py:507`), one place |
+| the ‖r_t‖ curve (plan 05) | `extras["delta_norm_per_step"]`, recorded every run |
+| r_t is the interaction term | `extras["pmi_identity_residual_per_step"]`: per-step relative error of `Δ_t == w·(ε_J + ε_∅ − ε_A − ε_B)`, already computed |
+| a λ grid | `experiments/residual_diagnostics/sweep.py`, eleven points 0.0 … 1.0 |
+| cached r_t on disk | `artifacts/diagnostics/residual_diagnostics/delta_structure_unguided/tensors.pt` |
+
+Two facts that decide how the canaries must be written:
+
+- At `lam == 0.0` the loop takes the `eps_t = eps_poe` branch directly
+  (`_sampling.py:549`), not `eps_poe + 0.0 * delta`. So λ=0 is bit-exact
+  against PoE, not merely close. The canary asserts equality, not a tolerance.
+- `correction_window=None` means "λ applies at every step", which is the
+  opposite of off. **Window off is `lambda_max=0`.** Plan 04's
+  `--window off --check-identity` must mean that, or it tests nothing.
 
 ## Goal
 Every command in the Engagement Instructions of plans 01-11 runs and either
-succeeds or fails for a real reason (missing data, a genuine result), never
-`No such file or directory`. Each instrument is smoke-tested on one cached pair
-before the plan that depends on it starts.
+succeeds or fails for a real reason, never `No such file or directory`. The two
+canaries are tests that can fail, not assertions in a docstring.
 
 ## Illustrations
-What exists today versus what these plans read.
+Thin wrappers over an existing sampler, not a new one.
 
 ```mermaid
 flowchart TD
-    subgraph have["on disk today"]
-        C[training_cache: 76 pairs] --> V[value_probe.py]
-        K[lora_step_100000.pt]
-    end
-    subgraph build["this plan builds"]
-        P[interaction_term package: inject, window]
-        S[analysis scripts x 11]
-    end
-    C --> P --> S
-    S --> R[plans 01-11 verify against these]
+    S["run_teacher_residual (exists)"] --> W["inject.py / window.py CLI (thin)"]
+    S --> E["extras: delta_norm, pmi_identity (exists)"]
+    W --> T["canary tests: lambda=0, window off"]
+    E --> A["analysis scripts (new)"]
+    C["training_cache: 76 pairs"] --> A
+    T --> P["plans 01-11 verify against these"]
+    A --> P
 ```
 
 ## Environment Facts This Plan Depends On
-- Cache lives at `/datasets/mmolefe/poe_repair_min/outputs/training_cache/`,
-  18 train pairs + 58 held-out = 76. Each cell is
-  `<split>/<pair_slug>/seed_<n>/` holding `embeddings.pt`, `meta.json`,
-  `mono.png`, `poe.png`, and `residuals/step_000.pt` … `step_049.pt`.
-- Each residual file holds `x_t`, `eps_a_raw`, `eps_b_raw`, `eps_j_raw`,
-  `eps_uncond`, all `[1,4,128,128]` **fp16**, plus int `timestep` and
-  `step_index`. Upcast to fp32 before computing any norm.
-- `meta.json` carries `branch_order = [a, b, j, uncond]`, `guidance_scale 7.5`,
-  50 inference steps, 1024x1024, and the full `timesteps` list.
+- Cache at `/datasets/mmolefe/poe_repair_min/outputs/training_cache/`,
+  18 train + 58 held-out = 76 pairs. Cell:
+  `<split>/<pair_slug>/seed_<n>/` with `embeddings.pt`, `meta.json`,
+  `mono.png`, `poe.png`, `residuals/step_000.pt` … `step_049.pt`.
+- Residual file keys: `x_t`, `eps_a_raw`, `eps_b_raw`, `eps_j_raw`,
+  `eps_uncond`, all `[1,4,128,128]` **fp16**, plus int `timestep`,
+  `step_index`. Upcast to fp32 before any norm.
+- The sampler's own `save_residuals_dir` payload is a **superset** of these
+  (adds `seq_a`, `pool_a`, `seq_b`, `pool_b`, `delta`, `guidance_scale`, and
+  with `save_x0_estimates` also `eps_poe`, `eps_j`). Read the cache for
+  cache-derived analyses; do not regenerate what is already cached.
+- `meta.json`: `branch_order = [a, b, j, uncond]`, `guidance_scale 7.5`,
+  50 steps, 1024x1024, full `timesteps` list.
 - co3 python: `/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python`.
-- Writes go to `/datasets`, never `/home-mscluster` (disk guard).
-- Instrument smoke tests run in-session on the current node. No job needed.
-  Only the sweeps in later plans need biggpu or bigbatch.
-- The checkpoint used downstream is
-  `artifacts/scopes/animals-compose-transfer/pooled_lora/phase1_r8_100k/checkpoints/lora_step_100000.pt`
-  (via compat symlink at the old `outputs/animals_compose_transfer/...` path).
-  Its 420 LoRA tensors sit under `sd["lora_state"]`, **not** at the top level.
+- Writes to `/datasets`, never `/home-mscluster` (disk guard).
+- Cache-only analyses and the canaries run in-session on the current node.
+  Anything invoking the UNet needs a GPU: biggpu, else bigbatch.
+- Downstream checkpoint:
+  `artifacts/scopes/animals-compose-transfer/pooled_lora/phase1_r8_100k/checkpoints/lora_step_100000.pt`.
+  Its 420 LoRA tensors are under `sd["lora_state"]`, not at the top level.
 
 ## Tasks
-- [ ] ⚠️ `scripts/cache_smoke.py`: scan all 76 pairs, check per-file keys,
-      shapes `[1,4,128,128]`, dtype fp16, and NaN. Print `76/76 ok` or name
-      every bad file. Needed by plan 01.
-- [ ] ⚠️ `poe_repair/experiments/interaction_term/__init__.py` + a shared
-      `cache.py` loader: given pair slug and seed, return the residual stack
-      upcast to fp32, with `r_t = eps_j_raw - eps_poe` computed one way, in one
-      place, so every downstream script agrees on what r_t means.
-- [ ] ⚠️ `interaction_term/inject.py`: re-run sampling with `r_t` added back at
-      dose λ. Must support `--lambda 0 --check-canary` and print
-      `canary ok, delta < 1e-5`, meaning λ=0 reproduces plain PoE. Needed by 03.
-- [ ] ⚠️ `interaction_term/window.py`: inject only inside a step window. Must
-      support `--window off --check-identity` and be byte-identical to PoE.
-      Needed by 04.
-- [ ] ⚠️ Analysis scripts for plan 05, each printing its headline number:
-      `snr_collapse.py` (collapse spread %), `fork_curve.py` (elbow step),
-      `climb.py` (PoE vs Mono distributions), `spectrum.py` (energy-at-k plus
-      held-out projection).
-- [ ] ⚠️ Analysis scripts for plans 03/04/06/07: `plot_dose_curves.py`,
+- [ ] ⚠️ `scripts/cache_smoke.py`: scan all 76 pairs; per-file keys, shapes
+      `[1,4,128,128]`, dtype fp16, NaN check. Print `76/76 ok` or name every
+      bad file. Cache-only, no GPU. Needed by plan 01.
+- [ ] ⚠️ `poe_repair/experiments/interaction_term/cache.py`: one loader that,
+      given pair slug and seed, returns the residual stack upcast to fp32 and
+      computes `r_t` **the same way the sampler does**: guided
+      `eps_a/eps_b/eps_j` via `guided_eps`, `eps_poe` via `poe_eps`,
+      `r_t = eps_j - eps_poe`. Import those two helpers from
+      `poe_repair.methods._sampling`; do not re-derive them.
+- [ ] ⚠️ `scripts/interaction_term_inject.py`: thin CLI over
+      `composers.teacher_residual.run` exposing `--pair`, `--seed`, `--lambda`,
+      `--check-canary`. No new sampling logic.
+- [ ] ⚠️ `scripts/interaction_term_window.py`: same, exposing `--window
+      start,end` and `--window off` (meaning `lambda_max=0`), plus
+      `--check-identity`.
+- [ ] ⚠️ Canary tests in `tests/test_interaction_term_canaries.py`: λ=0 is
+      **bit-exact** against `run_cfg_poe`, and window-off is bit-exact. Each
+      test must be shown to fail when deliberately broken.
+- [ ] ⚠️ Cache-only analysis scripts (no GPU): `snr_collapse.py` (collapse
+      spread %), `spectrum.py` (energy-at-k + held-out projection),
+      `climb.py` (PoE vs Mono climb distributions).
+- [ ] ⚠️ Trajectory-reading scripts: `fork_curve.py` (elbow step). Reads the
+      existing `latent_trajectory.pt` files; does not re-sample.
+- [ ] ⚠️ Remaining scripts for plans 03/04/06/07: `plot_dose_curves.py`,
       `plot_window_curves.py`, `language_probes.py`, `quality_control.py`,
       `manifold_slide.py`, `composition_scatter.py`.
-- [ ] ⚠️ Smoke each instrument on one cached pair (`a_cat__x__a_dog`, seed 9)
-      and record the output in `docs/instrument_smoke.md`.
+- [ ] ⚠️ Smoke each instrument on one cached pair and record the actual output
+      in `docs/instrument_smoke.md`.
 
 ## Success/Failure Outcomes
 - **cache smoke**
-  - Success: `76/76 ok`, zero unreadable files, all four eps keys present at
-    `[1,4,128,128]` fp16 in every step file.
-  - Failure: a named file with missing keys or NaNs. List it and quarantine it.
-    Never silently skip: a quietly dropped cell biases every later average.
-- **inject canary (λ=0)**
-  - Success: `delta < 1e-5` against plain PoE. This is the test that the
-    injection path is wired correctly, and it must pass before any dose sweep.
-  - Failure: non-zero delta at λ=0 means the injection changes the sampler even
-    when it should do nothing. Every dose number after that is meaningless. Fix
-    before proceeding.
-- **window identity (window off)**
-  - Success: byte-identical to PoE.
-  - Failure: same reasoning as the canary. Stop.
-- **the analysis scripts**
+  - Success: `76/76 ok`, all four eps keys at `[1,4,128,128]` fp16 everywhere.
+  - Failure: name the file, quarantine it. Never silently skip: a dropped cell
+    biases every later average.
+- **the loader agrees with the sampler**
+  - Success: `r_t` from `cache.py` on a cached cell matches the sampler's
+    `delta` for the same cell to fp16 round-trip precision.
+  - Failure: the two definitions have drifted. Fix the loader, not the sampler.
+    The sampler's definition is the one all existing diagnostics used.
+- **λ=0 canary**
+  - Success: bit-exact against `run_cfg_poe`.
+  - Failure: the injection path changes the sampler when it should do nothing,
+    so every dose number afterwards is meaningless. Stop.
+- **window-off canary**
+  - Success: bit-exact against PoE.
+  - Failure: same reasoning. Stop.
+- **canary tests can fail**
+  - Success: breaking the code on purpose turns each test red.
+  - Failure: a test that passes against broken code is not a check. Rewrite it.
+- **analysis scripts**
   - Success: each runs on one pair and prints its headline number.
-  - Failure: a script that only runs on the full grid is not smoke-tested. Give
-    every script a single-pair path.
+  - Failure: a script with no single-pair path cannot be smoke-tested. Add one.
 
 ## Recommended skill
-▶ `/write-tests` ⚠️ for the two canaries (λ=0 and window-off): they are the
-   checks the causal claim rests on, so they earn real tests, not a one-off run.
-▶ `/demonstrate` ⚠️ after the smoke pass: show one cached pair's r_t alongside
-   its norm, so the quantity is visible before anything is built on it.
+▶ `/write-tests` ⚠️ for the two canaries: the causal claim rests on them.
+▶ `/demonstrate` ⚠️ after the smoke pass: one pair's r_t beside its norm, so the
+   quantity is visible before anything is built on it.
 
 ## Engagement Instructions
 ```bash
 PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
 
 # every instrument exists
-for f in cache_smoke plot_dose_curves plot_window_curves snr_collapse \
-         fork_curve climb spectrum language_probes quality_control \
-         manifold_slide composition_scatter; do
+for f in cache_smoke snr_collapse spectrum climb fork_curve plot_dose_curves \
+         plot_window_curves language_probes quality_control manifold_slide \
+         composition_scatter interaction_term_inject interaction_term_window; do
   test -f "scripts/$f.py" || echo "MISSING scripts/$f.py"
-done                                    # expect: no output
-$PY -c "import poe_repair.experiments.interaction_term.inject, \
-                poe_repair.experiments.interaction_term.window"  # expect: silent
+done                                     # expect: no output
 
-# the two canaries: the checks the causal claim rests on
-$PY -m poe_repair.experiments.interaction_term.inject \
-  --pair a_cat__x__a_dog --seed 9 --lambda 0 --check-canary
-# expect: "canary ok, delta < 1e-5"
-$PY -m poe_repair.experiments.interaction_term.window \
-  --pair a_cat__x__a_dog --seed 9 --window off --check-identity
-# expect: byte-identical to PoE
-
+# cache-only, no GPU
 $PY scripts/cache_smoke.py --all         # expect: "76/76 ok"
+
+# the loader agrees with the sampler's definition of r_t
+$PY -c "from poe_repair.experiments.interaction_term import cache; \
+        print(cache.r_t('a_cat__x__a_dog', 9).shape)"   # expect: [50,1,4,128,128]
+
+# the canaries, and proof they can fail
+$PY -m pytest tests/test_interaction_term_canaries.py -v   # expect: all pass
 cat docs/instrument_smoke.md             # one recorded output per instrument
 ```
