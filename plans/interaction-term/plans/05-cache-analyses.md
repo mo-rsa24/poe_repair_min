@@ -43,12 +43,23 @@ held-out projection.
       not the accumulated distance d(t) = ||x_t_PoE - x_t_Mono||, because after
       step 1 the two paths visit different states and only one was walked.
       Generation task added below.
-- [ ] ⚠️ GENERATE the missing Mono paths for the fork curve: 19 pairs x 1 seed
-      x 2 doses (lambda 0 and 1) with --save-trajectory. ~38 runs at ~40s on a
-      free A6000, about 25 min. Needs the GPU, so it queues behind the plan-02
-      sweep. scripts/interaction_term_inject.py already does this per cell.
-- [ ] ⚠️ fork curve d(t) = ‖x_t_PoE − x_t_Mono‖ from shared inits; report the
-      elbow step and compare against plan 04's peak band
+- [x] ✅ GENERATE the missing Mono paths: 38/38 runs, 0 failed, on
+      mscluster109 GPU 1 while the plan-02 sweep held GPU 0.
+      scripts/mechanism_study/generate_fork_paths.sh (resumable).
+- [x] ✅ fork curve d(t) = ‖x_t_PoE − x_t_Mono‖ from shared inits
+      ✓ verified 2026-08-05: **elbow at step 16** (median over 19 cells, 50-step
+      schedule). d(0) = 0.00 on every cell, which is the check that both paths
+      really start from the same pinned init.
+      Tight: 15 of 19 cells land between steps 13 and 20. Outliers are
+      a_gorilla__x__a_chimpanzee (8) and a_cheetah__x__a_cougar (11), both
+      early.
+      Guard added while reading it: fork_curve.py now skips trajectories under
+      --min-steps (default 40). A 20-step smoke run from plan 00 had been
+      pooled with the 50-step runs and pulled the median to 15.
+      COMPARISON AGAINST PLAN 04 IS STILL OPEN: plan 04's window sweep has not
+      run, so there is no peak band to compare against yet. The only window
+      data so far is one cell at 20 steps (peak at window centre 2.5), which is
+      not comparable to a 50-step elbow.
 - [x] ✅ plausibility climb: sum of r_t · Δx_t, on the cached path
       ✓ verified 2026-08-05, scripts/plausibility_climb.py: 38 cells, 19 pairs,
       normalised climb median +0.397 (IQR +0.359 to +0.452), 0/38 negative.
