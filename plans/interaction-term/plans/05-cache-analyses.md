@@ -59,9 +59,36 @@ held-out projection.
       from 0.92 at step 0 to 0.21 at the end, staying positive throughout.
       PARTIAL: "PoE vs Mono distributions" needs both paths, and only the PoE
       path is cached (see the task above). The Mono half waits on generation.
-- [ ] ⚠️ factorization: stack windowed target residuals in fp32, SVD, curves
-      for pooled vs same-shape Gaussian floor vs per-pair blocks
-- [ ] ⚠️ held-out projection: fit top-k on train pairs, report energy explained
+- [x] ✅ factorization: stack windowed target residuals in fp32, SVD, curves
+      for pooled vs same-shape Gaussian floor
+      ✓ verified 2026-08-05, scripts/spectrum.py on the 11 training pairs
+      (561 vectors, 65536 dims, stride 3):
+        k=1   5.4% vs 0.2% floor  (25.3x)
+        k=8  24.7% vs 1.7% floor  (14.6x)
+        k=64 62.6% vs 13.2% floor  (4.8x)
+      Read the RATIO, never the raw percentage: with N vectors in D dims and
+      N << D the centred stack has rank N-1, so energy-at-k is partly forced by
+      N alone (random vectors give 56% at k=16 when N=30, 6% when N=300). The
+      script prints the matched floor beside every number and warns when N is
+      small relative to k.
+- [x] ✅ held-out projection: fit top-k on train pairs, report energy explained
+      ✓ verified 2026-08-05: 6.0% at k=64 (vs 62.6% on the training pairs),
+      fitted on the 11 training pairs and measured on the 6 unseen transfer
+      pairs, the same split as run 1d3qy31e.
+      ⚠️ DO NOT read this as evidence against sharedness, which is what Goal 3
+      as currently worded would have it mean. The same adapter, on the same 6
+      pairs, composes 96.9% where vanilla PoE composes 0%. The test cannot
+      distinguish: r_t vectors are mutually near-orthogonal (cosine ~0.00, even
+      train-to-train, and ~0.004 for one pair against itself 35 steps later),
+      so no fitted subspace can contain unseen pairs and the number reads low
+      whether or not the correction transfers. Rank correlation between
+      subspace overlap and compose rate across the 6 pairs is -0.43.
+      What this number DOES license: r_t is not a shared low-dimensional
+      subspace at the vector level. What it does NOT license: any claim that
+      the correction fails to transfer.
+      Evidence: docs/evidence/subspace-vs-transfer/QUERY.md
+      Goal 3's wording is a separate decision (see the master plan comment);
+      rewording direction text belongs to /integrate-plans or /refine-plan.
       on held-out pairs vs k
 - [ ] ⚠️ /pair-figure decision: per-timestep rows vs time-averaged rows as the
       spectrum's statistical entity
