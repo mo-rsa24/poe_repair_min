@@ -26,8 +26,13 @@ held-out projection.
   analysis needs BOTH the PoE and Mono paths.
 
 ## Tasks
-- [ ] ⚠️ ‖r_t‖ against log-SNR, every pair overlaid, normalized per plan 01;
+- [x] ✅ ‖r_t‖ against log-SNR, every pair overlaid, normalized per plan 01;
       report the collapse spread
+      ✓ verified: spread 19.7% ("loose") over 17 pairs / 34 curves, using the
+      plan-01 committed relative_norm. Under that measure the median curve has
+      NO interior peak: it is still rising at the right edge. The raw-‖r_t‖
+      measure peaks at log-SNR -0.90 instead, because ‖ε_PoE‖ falls ~15% along
+      the trajectory. Do not read either as plan 04's timing answer.
 - [ ] ⚠️ check both trajectories exist per cell for the fork analysis; if only
       one path was recorded, add a cheap regeneration task for the other
       [inferred]
