@@ -262,3 +262,42 @@ strongly structured over time, not noise.
 
 The figure shows correction size climbing from ~5% early to a ~13% plateau, and
 direction agreement high throughout and rising near the end.
+
+## plot_dose_curves.py: RUNS (1 cell, 2 doses)
+
+```
+$ python scripts/plot_dose_curves.py --root outputs/interaction_term/dose/pairs
+scorer: instance_count via IDEA-Research/grounding-dino-tiny
+  rule: COMPOSE iff distinct-instance-count('animal', NMS iou<0.5, conf>=0.30) >= 2
+
+  a_cat__x__a_dog seed 9 lam 0.00: 1 instances -> blend
+  a_cat__x__a_dog seed 9 lam 1.00: 2 instances -> COMPOSE
+```
+
+The scorer agrees with the eye on both images: 1 instance for the chimera, 2
+for the side-by-side pair. That is the qualitative and quantitative sides
+landing on the same cell.
+
+The script refuses to run unless `scorer_validated.json` says `pass: true`, so
+no dose curve can be produced with an unvetted instrument.
+
+## plot_window_curves.py: RUNS (1 cell, 4 windows, 20 steps)
+
+```
+$ python scripts/plot_window_curves.py --root outputs/interaction_term/window/pairs
+  window   0-5   (centre   2.5): 100%  (n=1)
+  window   5-10  (centre   7.5):   0%  (n=1)
+  window  10-15  (centre  12.5):   0%  (n=1)
+  window  15-20  (centre  17.5):   0%  (n=1)
+
+peak at window centre 2.5, band 2.5 to 2.5 (within one standard error)
+```
+
+Two independent instruments agree on the early band: the peak here sits at
+window 0-5, and `fork_curve` put the path-split elbow at step 4 of 20. One cell
+at 20 steps, so not a result, but the machinery is coherent.
+
+The images show why. Correcting in the first 5 steps produces two separate
+animals. Correcting only in the last 5 leaves the chimera essentially
+untouched, still one animal with fused cat and dog features. Once the layout is
+settled early, a late correction cannot undo it.
