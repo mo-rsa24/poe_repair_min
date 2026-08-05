@@ -143,13 +143,8 @@ cancellation signature again, not a broken identity. The test asserts the
 median stays under 8%. Plan 05 is where this curve gets read as a result rather
 than a guard.
 
-## Still to do in this plan
-
-The analysis scripts (`snr_collapse`, `spectrum`, `climb`, `fork_curve`,
-`plot_dose_curves`, `plot_window_curves`, `language_probes`, `quality_control`,
-`manifold_slide`, `composition_scatter`) are not yet written. The two CLI
-wrappers exist but their non-canary paths (actually sampling at a dose or a
-window) have not been run end to end.
+_(Superseded: every script listed here as "still to do" was subsequently
+written and smoked. See the sections below.)_
 
 ---
 
@@ -301,3 +296,90 @@ The images show why. Correcting in the first 5 steps produces two separate
 animals. Correcting only in the last 5 leaves the chimera essentially
 untouched, still one animal with fused cat and dog features. Once the layout is
 settled early, a late correction cannot undo it.
+
+## quality_control.py: RUNS (1 cell)
+
+```
+$ python scripts/quality_control.py --root outputs/interaction_term/dose/pairs
+  a_cat__x__a_dog seed 9: instances 1->2   confidence 0.915->0.769 (-0.146)
+  reading: quality cost
+```
+
+Do not read the -0.146 as a finding. At n=1 it is one image, and the
+comparison is also slightly unfair: the baseline averages one box, the
+corrected averages two, and a second animal is usually detected less
+confidently than a single dominant one. Plan 06 should compare like with like
+(for instance, the best box on each side) before quoting a quality cost.
+
+## language_probes.py: RUNS (20 pairs, L1 and L3)
+
+```
+$ python scripts/language_probes.py --probe l1 --probe l3 --max-pairs 20
+L1 additivity gap over 20 pairs: median 1.3197, range 0.9406 to 1.5056
+L3 shared binding direction over 20 pairs:
+  first direction holds 27.1% of residual energy (random floor 6.5%, ratio 4.2x)
+```
+
+Both read from `embeddings.pt`, which the cache already stores, so neither
+needs the UNet. The L3 number is reported against its own random floor for the
+same reason the spectrum is: a small sample concentrates by chance.
+
+## manifold_slide.py: RUNS (1 cell, 5 doses)
+
+```
+$ python scripts/manifold_slide.py --root outputs/interaction_term/dose/pairs
+  lam 0.00: projection +0.000   off-axis  0.0%
+  lam 0.25: projection +0.220   off-axis 86.8%
+  lam 0.50: projection +0.333   off-axis 78.9%
+  lam 0.75: projection +0.889   off-axis 44.3%
+  lam 1.00: projection +1.000   off-axis  0.0%
+  monotone in lambda: yes
+```
+
+The projection rises monotonically from 0 to 1, so the dose does move the
+sample along the PoE-to-Mono axis. The endpoints are 0 and 1 by construction,
+which is the check that the axis is built correctly, not a result.
+
+The off-axis fraction is the interesting column: 79-87% in the middle of the
+range. The correction moves the sample toward Mono along a curved route, not a
+straight line. Worth knowing before anyone describes the dose as a simple
+interpolation.
+
+## composition_scatter.py: BLOCKED, by design
+
+Exits with an explanation rather than a plot:
+
+```
+no normalization memo at docs/normalization_preregistration.md.
+Correction size is not comparable across prompt types without a committed
+measure, and choosing one after seeing the plot is how the 95% delta-field
+number had to be retracted. Write the memo first: plan 01.
+```
+
+It also requires `--groups` (a pair-to-type mapping) rather than inferring
+types from slugs, since a wrong grouping would be invisible in the finished
+scatter.
+
+## Final check: the plan's own Engagement Instructions
+
+```
+$ for f in cache_smoke plot_dose_curves plot_window_curves snr_collapse \
+           fork_curve climb spectrum language_probes quality_control \
+           manifold_slide composition_scatter interaction_term_inject \
+           interaction_term_window; do
+    test -f "scripts/$f.py" || echo "MISSING scripts/$f.py"; done
+(no output: all 13 present)
+
+$ python -c "...; print(cache.r_t('a_cat__x__a_dog', 9).shape)"
+(50, 1, 4, 128, 128)
+
+$ python -m pytest tests/test_interaction_term_canaries.py -q
+........                                          [100%]
+8 passed in 65.02s
+
+$ python scripts/cache_smoke.py --all
+70/70 ok   (790 cells, 38324 step files)
+```
+
+Plan 00 is done. Every instrument runs on real data and every headline number
+above was produced by the command shown.
