@@ -62,7 +62,8 @@ broke. No landing is narrated without its instrument.
 ## Definition of Done
 1. ✅ Normalization pre-registered in writing before any cross-type plot exists.
    (relative_norm, docs/normalization_preregistration.md, 2026-08-05)
-2. Mechanism re-probe verdict recorded (pass or negative paragraph).
+2. ✅ Mechanism re-probe verdict recorded: REPLICATES (median 1.52x over
+   64 cells, 2026-08-05). Caveat: the control pair shows the effect too.
 3. Dose-response figure with all three control rows.
 4. W2 timing curve, enhanced W1 companion, joint window figure.
 5. Cache analyses delivered: SNR collapse, d(t), density climb, spectrum with
@@ -90,7 +91,7 @@ broke. No landing is narrated without its instrument.
 - ✅ 00-build-the-instruments.md — 13 instruments built and smoked 2026-08-05;
   scripts take --pool (the cache dir mixes experiments, see instrument_smoke.md)
 - ✅ 01-preregister-normalization.md — relative_norm committed 2026-08-05
-- ⚠️ 02-mechanism-reprobe.md
+- ✅ 02-mechanism-reprobe.md — replicates, median 1.52x over 64 cells
 - ⚠️ 03-dose-response.md
 - ⚠️ 04-window-pair.md
 - ⚠️ 05-cache-analyses.md

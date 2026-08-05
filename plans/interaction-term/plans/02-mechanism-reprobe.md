@@ -61,11 +61,12 @@ task below.)
       ✓ verified: an_eagle__x__a_hawk seed 9 (+ frog/toad, seal/walrus,
       cat/dog). Maps render as a bird/frog head in profile, not garbage.
       Figure: docs/evidence/mechanism-reprobe/smoke_eagle_hawk.png
-- [ ] ⚠️ full sweep: 8 held-out pairs × seeds 9-16, adapter OFF vs ON at
-      matched steps. RUNNING on mscluster109 (not a Slurm job: biggpu allows
-      one job per user and an interactive session holds the slot).
-      run_sweep_on_this_node.sh, ~4 min/cell, resumable.
-- [ ] ⚠️ compute the table, per cell. NOTE the measure changed: this said
+- [x] ✅ full sweep: 8 held-out pairs × seeds 9-16, adapter OFF vs ON at
+      matched steps. 64/64 cells captured 2026-08-05 on mscluster109, 0 failed.
+      Run directly on the node, not as a Slurm job: biggpu allows one job per
+      user and an interactive session held the slot.
+- [x] ✅ compute the table, per cell. 384 token-step rows.
+      NOTE the measure changed: this said
       "value-direction rotation vs attention-map correlation", but the obvious
       version of that comparison gives the WRONG answer. Weight maps are
       row-stochastic and content maps are not, and the adapter dims the weights
@@ -75,7 +76,23 @@ task below.)
       the PATTERN term. See docs/evidence/mechanism-reprobe/measure-fairness.md
 - [ ] ⚠️ /pair-figure decision: per-seed points vs pair-level means as the
       figure's statistical entity
-- [ ] ⚠️ record the verdict against Goal 6 (replicates or negative paragraph).
+- [x] ✅ record the verdict against Goal 6: **REPLICATES**.
+      64 cells, 8 pairs, 384 rows. Median content/weight pattern ratio 1.52x,
+      97% of rows above 1 (373/384), 6.4x headroom over the shuffled-map noise
+      floor. All 8 pairs individually clear the pre-registered bar.
+        a_frog__x__a_toad          2.15      an_eagle__x__a_hawk   1.78
+        a_cat__x__a_dog            1.73      a_cow__x__a_buffalo   1.50
+        an_elephant__x__a_penguin  1.45      a_goose__x__a_swan    1.41
+        a_seal__x__a_walrus        1.37      a_leopard__x__a_jaguar 1.16
+      The mechanism section proceeds.
+      ⚠️ CAVEAT for the write-up, not a refutation. Split by role: the 6 unseen
+      transfer pairs median 1.45, the reference pair 1.73, and the CONTROL pair
+      (an_elephant__x__a_penguin, which composes fine with no adapter) reads
+      1.45, mid-range. So the effect is present on a pair that needs no fixing.
+      That weakens "this is how the fix works" toward "this is what the adapter
+      does to any pair it touches". State it rather than hide it; distinguishing
+      the two would need a pair the adapter demonstrably does not help.
+      Raw: /datasets/.../interaction_term/reprobe/verdict.json
       The bar is PRE-REGISTERED in reprobe_table.py, written before the sweep
       ran: median ratio >= 1.2x AND >= 75% of rows above 1. Do not loosen it to
       rescue a negative; the negative paragraph is a result the plan provides
@@ -93,10 +110,10 @@ task below.)
     (rerun those cells only; the runner skips finished ones).
 - **the verdict**
   - Replicates: median pattern ratio >= 1.2x AND >= 75% of rows above 1.
-  - Does not: the mechanism section shrinks to the negative paragraph. Early
-    signal is mixed. The four smoke cells ran 1.27-2.03, but the first real
-    sweep cell (a_leopard__x__a_jaguar seed 9) reads 1.15, below the bar. This
-    may land close either way.
+  - Does not: the mechanism section shrinks to the negative paragraph.
+  - ✅ MET 2026-08-05: median 1.52x, 97% of rows above 1. The early worry was
+    a_leopard__x__a_jaguar seed 9 reading 1.15; across all 8 of its seeds that
+    pair medians 1.16, the weakest in the pool but still above 1.
 
 ## Recommended skill
 ▶ `/run-experiment` ✅ for the sweep; `/pair-figure` ✅ before plotting.
