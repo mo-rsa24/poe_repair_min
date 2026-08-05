@@ -81,7 +81,8 @@ broke. No landing is narrated without its instrument.
 - ⚠️ 06-corroborations.md
 - ⚠️ 07-composition-type.md
 - ⚠️ 08-replication.md
-- ⚠️ 09-print-gates.md
+- ⚠️ 09-print-gates.md — the two /pressure-test gates; the writing it used to
+  own moved to `plans/paper-iclr/plans/06-mechanism-and-caveats.md` 2026-08-05
 - ⚠️ 10-figures.md
 - ⚠️ 11-inspector.md
 
