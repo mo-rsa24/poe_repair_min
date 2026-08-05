@@ -388,6 +388,9 @@ def run_teacher_residual(
     attn_capture_dir: Path | None = None,
     attn_token_indices: dict | None = None,
     attn_resolution: int = 32,
+    delta_substitute: str | None = None,
+    delta_substitute_source: torch.Tensor | None = None,
+    delta_substitute_generator: torch.Generator | None = None,
 ) -> SamplerOutputs:
     """Teacher-residual sampler.
 
@@ -508,6 +511,33 @@ def run_teacher_residual(
         delta = eps_j - eps_poe
         delta_norm_per_step.append(float(delta.float().norm().item()))
 
+        # Control rows for the dose experiment. The true delta stays intact for
+        # the diagnostics below (its norm and the PMI identity are properties of
+        # the pair, not of what we choose to inject); only the vector actually
+        # added to eps_PoE is swapped.
+        #
+        # Both controls are NORM-MATCHED to the real delta, so a difference in
+        # compose rate cannot be explained by injecting more or less magnitude.
+        # Without that matching the control is not a control.
+        delta_used = delta
+        if delta_substitute == "random":
+            g = delta_substitute_generator
+            noise = torch.randn(delta.shape, generator=g, dtype=torch.float32,
+                                device="cpu" if g is not None else delta.device)
+            noise = noise.to(device=delta.device, dtype=delta.dtype)
+            delta_used = noise * (delta.float().norm() / noise.float().norm().clamp_min(1e-12))
+        elif delta_substitute == "wrong_pair":
+            if delta_substitute_source is None:
+                raise ValueError(
+                    "delta_substitute='wrong_pair' needs delta_substitute_source: "
+                    "a [T,...] stack of another pair's r_t")
+            src = delta_substitute_source[
+                min(step_index, delta_substitute_source.shape[0] - 1)
+            ].to(device=delta.device, dtype=delta.dtype)
+            delta_used = src * (delta.float().norm() / src.float().norm().clamp_min(1e-12))
+        elif delta_substitute is not None:
+            raise ValueError(f"unknown delta_substitute {delta_substitute!r}")
+
         # PMI identity check: Δ should equal w·(ε_J + ε_∅ − ε_A − ε_B) using
         # the raw four UNet outputs. Algebraic derivation:
         #   ε̃ = (1−w)ε_∅ + w·ε  ⇒  ε̃_J − (ε̃_A + ε̃_B − ε_∅)
@@ -548,10 +578,13 @@ def run_teacher_residual(
 
         if lam == 0.0:
             eps_t = eps_poe
-        elif lam == 1.0:
+        elif lam == 1.0 and delta_substitute is None:
+            # Shortcut: with the true delta, eps_poe + 1.0*delta IS eps_j.
+            # It is NOT with a substitute, so the shortcut must not fire then
+            # or the control row would silently reproduce the oracle row.
             eps_t = eps_j
         else:
-            eps_t = eps_poe + float(lam) * delta
+            eps_t = eps_poe + float(lam) * delta_used
 
         alpha_bar_t = scheduler.alphas_cumprod[int(timestep.item())].to(
             device=device, dtype=dtype,
