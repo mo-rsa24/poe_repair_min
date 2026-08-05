@@ -14,6 +14,13 @@ of the paper's non-results prose. Serves DoD 6.
 Both sections present in the `.tex` as real prose, building to a PDF.
 
 ## Environment Facts This Plan Depends On
+- All prose goes in `paper/iclr/iclr2027_conference.tex`. The `.sty`, `.bst`,
+  and `natbib`/`fancyhdr` files are the ICLR distribution and are not edited.
+  Check `math_commands.tex` before defining a macro; it likely exists already.
+  See `docs/ENVIRONMENT.md`, "Paper: where the LaTeX lives and how it is built".
+- Build to check the prose renders: Ctrl+Shift+P → Build with recipe →
+  `tectonic` (the default recipe fails, no `latexmk` here), or run tectonic in
+  the terminal.
 - Prose is written by hand. `/restyle` is the only skill pass, and it runs after
   a section exists, never as a drafter.
 - The glossary at the bottom of the root `MASTER_PLAN.md` holds the project's
