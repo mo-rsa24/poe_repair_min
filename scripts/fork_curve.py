@@ -80,6 +80,9 @@ def main() -> int:
     ap.add_argument("--pair")
     ap.add_argument("--seed", type=int)
     ap.add_argument("--root", type=Path, action="append", dest="roots")
+    ap.add_argument("--min-steps", type=int, default=40,
+                    help="skip trajectories shorter than this: a 20-step smoke "
+                         "run pooled with 50-step runs distorts the elbow")
     ap.add_argument("--out-dir", type=Path, default=OUT_DIR)
     ap.add_argument("--no-figure", action="store_true")
     args = ap.parse_args()
@@ -111,6 +114,11 @@ def main() -> int:
         poe = torch.load(poe_p, map_location="cpu", weights_only=True)["trajectories"].float()
         mono = torch.load(mono_p, map_location="cpu", weights_only=True)["trajectories"].float()
         n = min(poe.shape[0], mono.shape[0])
+        if n < args.min_steps:
+            print(f"  skipping {pair} seed {seed}: only {n} steps "
+                  f"(< --min-steps {args.min_steps}); a short smoke run pooled "
+                  f"with full ones distorts the elbow")
+            continue
         d = (poe[:n] - mono[:n]).flatten(1).norm(dim=1).numpy()
         k = elbow_index(d)
         rows.append({"pair": pair, "seed": seed, "elbow_step": k,
