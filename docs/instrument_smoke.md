@@ -470,3 +470,33 @@ the real test. Plan 05 owns that.
 Only the corrected column, and only with its pair counts attached. The wrong
 column is kept here deliberately so the mistake is visible rather than
 overwritten.
+
+---
+
+# The subspace test does not predict transfer (2026-08-05)
+
+Full write-up: `docs/evidence/subspace-vs-transfer/QUERY.md`.
+
+The corrected 6.0% held-out projection above was about to be read as evidence
+against the shared-correction claim. It is not, and the check that shows why is
+cheap: compare it against what the trained adapter actually did on the same 6
+pairs.
+
+| | |
+|---|---|
+| unseen pairs, adapter compose rate | **96.9%** |
+| unseen pairs, r_t inside the training subspace (k=64) | **6.0%** |
+| vanilla PoE on the same pairs | **0%** (fail_rate.md, 8 seeds) |
+| rank correlation between the two columns | **-0.43** |
+
+The reason: r_t vectors are mutually near-orthogonal. Seed-matched cosine
+between different pairs is ~0.00 at every step, and the *same pair* at step 5
+versus step 40 is +0.004. No subspace fitted on some of them can contain the
+others, so the test returns a low number regardless of whether the method
+transfers. It would have said 6% even if transfer were perfect, which it
+nearly is.
+
+**Consequence for the write-up.** Do not report a low held-out projection as
+evidence against sharedness. The behavioural evidence for sharedness is strong;
+what is false is the vector-level reading that all pairs' corrections occupy
+one low-dimensional subspace.

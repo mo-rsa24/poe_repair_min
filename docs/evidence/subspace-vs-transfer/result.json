@@ -1,0 +1,102 @@
+{
+  "train_pairs": [
+    "a_wolf__x__a_husky",
+    "a_lion__x__a_tiger",
+    "a_cheetah__x__a_cougar",
+    "a_horse__x__a_zebra",
+    "a_donkey__x__a_pony",
+    "a_crocodile__x__an_alligator",
+    "a_rabbit__x__a_hare",
+    "a_dolphin__x__a_porpoise",
+    "a_crow__x__a_raven",
+    "a_gorilla__x__a_chimpanzee",
+    "a_turtle__x__a_tortoise"
+  ],
+  "heldout_pairs": [
+    "a_leopard__x__a_jaguar",
+    "a_frog__x__a_toad",
+    "an_eagle__x__a_hawk",
+    "a_seal__x__a_walrus",
+    "a_goose__x__a_swan",
+    "a_cow__x__a_buffalo",
+    "a_cat__x__a_dog",
+    "an_elephant__x__a_penguin"
+  ],
+  "train_vectors": 561,
+  "heldout_vectors": 408,
+  "geometry_at_k": {
+    "1": {
+      "train": 0.053709092759011076,
+      "heldout": 0.0007851134577230638
+    },
+    "2": {
+      "train": 0.09826079633103678,
+      "heldout": 0.0014192296182575352
+    },
+    "4": {
+      "train": 0.16541468211890195,
+      "heldout": 0.002253550794982585
+    },
+    "8": {
+      "train": 0.2474133195135774,
+      "heldout": 0.003877633403182895
+    },
+    "16": {
+      "train": 0.34112601472891774,
+      "heldout": 0.0070936582022921935
+    },
+    "32": {
+      "train": 0.46669408145583907,
+      "heldout": 0.022079773599929742
+    },
+    "64": {
+      "train": 0.6264374281563809,
+      "heldout": 0.03330697016167283
+    }
+  },
+  "per_pair": [
+    {
+      "pair": "a_leopard__x__a_jaguar",
+      "compose_rate": 1.0,
+      "geometry_k64": 0.0902743043069749
+    },
+    {
+      "pair": "a_frog__x__a_toad",
+      "compose_rate": 0.9375,
+      "geometry_k64": 0.05214479667903516
+    },
+    {
+      "pair": "an_eagle__x__a_hawk",
+      "compose_rate": 0.9375,
+      "geometry_k64": 0.07540807579529875
+    },
+    {
+      "pair": "a_seal__x__a_walrus",
+      "compose_rate": 0.9375,
+      "geometry_k64": 0.05932177709146502
+    },
+    {
+      "pair": "a_goose__x__a_swan",
+      "compose_rate": 1.0,
+      "geometry_k64": 0.03666408071326351
+    },
+    {
+      "pair": "a_cow__x__a_buffalo",
+      "compose_rate": 1.0,
+      "geometry_k64": 0.049009768390711424
+    },
+    {
+      "pair": "a_cat__x__a_dog",
+      "compose_rate": 0.875,
+      "geometry_k64": 0.017213327847376534
+    },
+    {
+      "pair": "an_elephant__x__a_penguin",
+      "compose_rate": 1.0,
+      "geometry_k64": 0.016036594353964553
+    }
+  ],
+  "mean_compose_rate_transfer": 0.96875,
+  "mean_geometry_transfer": 0.060470467162791454,
+  "eval_step": "60000"
+}
