@@ -45,3 +45,15 @@ Original entry had two halves. (a) Cross-seed direction-consistency: now covered
 From: language-probes discussion, 2026-08-03
 The passive probes L1–L3 measure the binding vector b = e_J − normalized(e_A+e_B). The intervention (adding b to a compose-by-default pair's conditioning, or subtracting it) is a new experimental surface with its own failure modes. Parked until the passive probes land.
 ▶ `/frame-hypothesis "does adding the measured text-space binding direction b to a regime-1 pair's conditioning shift its λ=0 composition behavior, given L1–L3 results"`
+
+### Results and experiments prose (blocked on the numbers)
+From: triage-plan (paper-iclr routing), 2026-08-05
+The results section cannot be written in phase 1 because most numbers do not exist. `interaction-term` plans 01–11 are unrun (only plan 00, the instruments, is complete); `animals-compose-transfer` has the pooled 03a read (out_out 0.96 at step 60k) but owes the leave-one-pair-out run, the mixed-pool contrast, and the 70k–100k scoring. Phase 1 writes section skeletons with named placeholders instead. Trigger: promote per figure as each run lands, not as one block. The figure layout from `plans/paper-iclr/plans/02-figure-layout.md` sets which numbers are needed first.
+
+### Figure production stays in the result scopes
+From: triage-plan (paper-iclr routing), 2026-08-05
+The new `paper-iclr` scope owns figure *layout* (which figure goes in which section, in what order) but not figure *production*. F2–F5 stay with `animals-compose-transfer/plans/05-figures.md`; the seven-figure cascade stays with `interaction-term/plans/10-figures.md`. Revisit only if the split makes "where are my figures" genuinely hard to answer in practice, which is the one cost of this decision.
+
+### Finishing either result scope before drafting
+From: triage-plan (paper-iclr routing), 2026-08-05
+Dropped, recorded so it is not re-litigated. `interaction-term`'s Definition of Done has 11 items including SD 1.5 / SD 2.1 replication, a sampler sweep, two /pressure-test passes and the Inspector tabs; that is a paper's worth of work on its own. The two scopes are also mutually dependent (interaction-term DoD item 7 says the 100k transfer number is owned by animals plan 03a), so "finish one then the other" was never available. The draft proceeds against placeholders, and the ranked figure set decides the run order.
