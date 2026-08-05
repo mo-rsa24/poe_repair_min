@@ -16,18 +16,16 @@ and the Cranberry-Lemon authors are gone; the figure-path rule is written into
 `paper/iclr/README.md`.
 
 ## Environment Facts This Plan Depends On
-- No system LaTeX on the cluster nodes: `pdflatex`, `xelatex`, `latexmk`, and
-  `bibtex` are all absent from PATH.
-- The build path is `tectonic` at `/home-mscluster/mmolefe/.local/bin/tectonic`.
-  It fetches packages and fonts on demand, so the FIRST build on a given node
-  needs network access. Later builds use its cache.
+See `docs/ENVIRONMENT.md`, "Paper: where the LaTeX lives and how it is built",
+for the full picture. What this plan depends on specifically:
+- No system LaTeX: every recipe except `tectonic` fails, including LaTeX
+  Workshop's default (`latexmk`). This plan's tasks assume the tectonic path.
+- The FIRST build on a node needs network access, since tectonic downloads
+  packages. On a walled-off node, the build task moves to a node with network.
+- `*.pdf` is gitignored, so the de-stubbing tasks are checked by grepping the
+  `.tex` and by looking at a locally built PDF, never by a committed artifact.
 - Verified working 2026-08-05: a clean build of the stock template produced a
-  73 KB PDF.
-- `*.pdf` is gitignored (`.gitignore:31`). The built PDF is local-only, never
-  committed. Look at it by building it.
-- Known harmless noise: the build reports "TeX rerun seems needed, but stopping
-  at 6 passes" and underfull-vbox warnings on the stock template. Neither is a
-  failure. Judge the build by whether the PDF is written.
+  73 KB PDF, so the toolchain question is settled before this plan starts.
 
 ## Tasks
 - [x] ✅ confirm the stock template builds with tectonic (done 2026-08-05, 73 KB
@@ -42,6 +40,10 @@ and the Cranberry-Lemon authors are gone; the figure-path rule is written into
       exist yet can be referenced without breaking the build  [inferred]
 - [ ] ⚠️ add a placeholder-figure macro so an owed figure renders as a visible
       grey box with its slot name, instead of failing the build  [inferred]
+- [ ] ⚠️ set `latex-workshop.latex.recipe.default` to `tectonic` in
+      `.vscode/settings.json`, so plain Build works instead of failing on the
+      missing `latexmk`, and the recipe stops needing to be picked by hand
+      [inferred]
 
 ## Success/Failure Outcomes
 - **the build**

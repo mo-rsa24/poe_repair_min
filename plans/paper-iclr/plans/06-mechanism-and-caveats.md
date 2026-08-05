@@ -14,6 +14,9 @@ The mechanism section (or its negative paragraph) and the three caveats present
 in the `.tex`, with both pressure-test verdicts reflected in the wording.
 
 ## Environment Facts This Plan Depends On
+- The section and caveats go in `paper/iclr/iclr2027_conference.tex`; build with
+  Ctrl+Shift+P → Build with recipe → `tectonic`. See `docs/ENVIRONMENT.md`,
+  "Paper: where the LaTeX lives and how it is built".
 - Blocked on `interaction-term/plans/02-mechanism-reprobe.md`. Its verdict
   decides which version gets written: a full section if the value-channel
   finding replicates across held-out pairs and seeds on `lora_step_100000.pt`,

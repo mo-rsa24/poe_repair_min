@@ -14,6 +14,10 @@ An abstract in the `.tex` that states the claim, the evidence, and the honest
 limit, inside the ICLR word budget.
 
 ## Environment Facts This Plan Depends On
+- The abstract goes in `paper/iclr/iclr2027_conference.tex`, in the existing
+  `\begin{abstract}` block (currently stock ICLR filler text). Build with
+  Ctrl+Shift+P → Build with recipe → `tectonic`. See `docs/ENVIRONMENT.md`,
+  "Paper: where the LaTeX lives and how it is built".
 - Depends on plan 01 (the spine) and plan 03 (method and intro) landing first.
 - Numbers quoted here must be ones that exist. Today that is the pooled held-out
   read (out_out 0.96 at step 60k, from `animals-compose-transfer` plan 03a), and
