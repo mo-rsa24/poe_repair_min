@@ -52,9 +52,15 @@ held-out projection.
 - [x] ✅ plausibility climb: sum of r_t · Δx_t, on the cached path
       ✓ verified 2026-08-05, scripts/plausibility_climb.py: 38 cells, 19 pairs,
       normalised climb median +0.397 (IQR +0.359 to +0.452), 0/38 negative.
-      The correction points WITH the motion everywhere, not against it. It
-      accelerates the trajectory rather than redirecting it, which is not what
-      "prying the chimera apart" would look like.
+      CORRECTED READING (controls added 2026-08-05): the positive sign does
+      NOT mean the correction agrees with the motion. A DDIM step moves along
+      MINUS eps, so the prediction driving the step sits at -0.60 against dx.
+      r_t at +0.40 is on the OPPOSITE side of zero from it, meaning r_t opposes
+      eps_PoE. Confirmed directly: cos(r_t, eps_PoE) is negative in 38/38
+      cells (median -0.14). The correction subtracts from what PoE asks for.
+      That is what "PoE overshoots into a blend" predicts, so this SUPPORTS the
+      scope's framing rather than contradicting it.
+      Controls: random vs dx +0.000 (floor), r_t at the wrong step +0.11.
       The figure shows what the median hides: alignment decays monotonically
       from 0.92 at step 0 to 0.21 at the end, staying positive throughout.
       PARTIAL: "PoE vs Mono distributions" needs both paths, and only the PoE

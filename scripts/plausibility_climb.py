@@ -6,13 +6,19 @@ latent actually takes, along the cached path.
 
     climb = sum_t  r_t . (x_{t+1} - x_t)
 
-The sign is the whole point, and it is not obvious which way it should go.
+The sign is the whole point, and reading it without controls gets it BACKWARDS.
 
-  positive  the correction agrees with where the trajectory is already headed:
-            it accelerates the motion rather than redirecting it.
-  negative  the correction opposes the motion: it is pulling the sample off the
-            path PoE would have taken, which is what "prying the chimera apart"
-            would look like.
+A DDIM step moves along MINUS eps, so the prediction that drives the step sits
+near -0.60 against dx, not +1. Measured here, r_t sits at +0.40: the opposite
+side of zero from the thing steering the trajectory.
+
+So a positive climb does NOT mean "the correction agrees with the motion". It
+means r_t opposes eps_PoE, subtracting from what PoE is asking for. Confirmed
+directly: cos(r_t, eps_PoE) is negative in 38/38 cells. That is what "PoE
+overshoots into a blend, and the correction pulls it back" predicts.
+
+The controls are computed per cell and printed with the result, so this cannot
+be misread again.
 
 Reported normalised by sum ||r_t|| ||dx_t||, so it reads as an average cosine
 in [-1, 1] and is comparable across pairs. The raw sum is printed too, since
@@ -37,6 +43,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
+import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -50,19 +57,46 @@ from scripts.snr_collapse import iter_cells  # noqa: E402
 OUT_DIR = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cache_analyses")
 
 
-def climb_for_cell(cell) -> dict:
-    """Accumulated r_t . dx_t for one cell, raw and normalised."""
+def _cos(a, b):
+    return (a * b).sum(1) / (a.norm(dim=1) * b.norm(dim=1)).clamp_min(1e-12)
+
+
+def climb_for_cell(cell, *, seed: int = 0) -> dict:
+    """Accumulated r_t . dx_t for one cell, with the controls that read it.
+
+    The bare number is not interpretable on its own, and reading it without
+    these controls gets the sign backwards. Three references:
+
+      eps_PoE vs dx   the prediction that DRIVES the step. Strongly negative
+                      (~-0.71) because a DDIM step moves along MINUS eps. This
+                      is the scale: "aligned with the motion" means near -0.71,
+                      not near +1.
+      random vs dx    the floor, ~0.000.
+      shuffled vs dx  r_t taken at the wrong step, ~0.05. Separates "r_t is
+                      timed to this state" from "r_t always looks like this".
+      r_t vs eps_PoE  the same fact stated without the step: does the
+                      correction subtract from what PoE asks for?
+    """
     r = cell.r_t().flatten(1)[:-1]                      # drop the last: no dx
     dx = (cell.x_t[1:] - cell.x_t[:-1]).flatten(1)
+    eps = cell.eps_poe().flatten(1)[:-1]
     dots = (r * dx).sum(1)
     raw = float(dots.sum())
     denom = float((r.norm(dim=1) * dx.norm(dim=1)).sum())
-    per_step = (dots / (r.norm(dim=1) * dx.norm(dim=1)).clamp_min(1e-12)).numpy()
+    per_step = _cos(r, dx).numpy()
+
+    g = torch.Generator().manual_seed(seed)
+    rnd = torch.randn(r.shape, generator=g)
+    perm = torch.randperm(r.shape[0], generator=g)
     return {
         "raw": raw,
         "normalised": raw / max(denom, 1e-12),
         "per_step_cosine": per_step.tolist(),
         "fraction_of_steps_negative": float((per_step < 0).mean()),
+        "control_eps_vs_dx": float(_cos(eps, dx).median()),
+        "control_random_vs_dx": float(_cos(rnd, dx).median()),
+        "control_shuffled_vs_dx": float(_cos(r[perm], dx).median()),
+        "r_vs_eps_poe": float(_cos(r, eps).median()),
     }
 
 
@@ -106,12 +140,27 @@ def main() -> int:
           f"IQR {np.percentile(norm, 25):+.4f} to {np.percentile(norm, 75):+.4f}")
     print(f"  cells with a NEGATIVE climb: {n_neg}/{len(rows)}")
 
+    ctl_eps = np.median([r["control_eps_vs_dx"] for r in rows])
+    ctl_rnd = np.median([r["control_random_vs_dx"] for r in rows])
+    ctl_shuf = np.median([r["control_shuffled_vs_dx"] for r in rows])
+    r_vs_eps = np.array([r["r_vs_eps_poe"] for r in rows])
+    print("\n  controls (medians):")
+    print(f"    eps_PoE vs dx    {ctl_eps:+.4f}   the prediction driving the step")
+    print(f"    random  vs dx    {ctl_rnd:+.4f}   floor")
+    print(f"    r_t shuffled     {ctl_shuf:+.4f}   r_t at the wrong step")
+    print(f"    r_t vs eps_PoE   {np.median(r_vs_eps):+.4f}   "
+          f"({int((r_vs_eps < 0).sum())}/{len(r_vs_eps)} negative)")
+
     if n_neg == 0:
-        reading = "positive"
-        print("\n  Reading: the correction points WITH the motion, everywhere.")
-        print("  It accelerates the trajectory rather than redirecting it. That")
-        print("  is not what 'prying the chimera apart' would look like, and it")
-        print("  is worth taking seriously rather than filing as expected.")
+        reading = "opposes eps_PoE"
+        print("\n  Reading: DO NOT read the positive climb as 'the correction")
+        print("  agrees with the motion'. A DDIM step moves along MINUS eps, so")
+        print("  the prediction driving the step sits at "
+              f"{ctl_eps:+.2f}, not +1.")
+        print("  r_t having the OPPOSITE sign to that means it opposes eps_PoE:")
+        print("  it subtracts from what PoE is asking for, partially undoing it.")
+        print("  Confirmed directly: r_t vs eps_PoE is negative in every cell.")
+        print("  That is what 'PoE overshoots into a blend' predicts.")
     elif n_neg == len(rows):
         reading = "negative"
         print("\n  Reading: the correction OPPOSES the motion everywhere: it is")
