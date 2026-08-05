@@ -1,0 +1,169 @@
+#!/usr/bin/env python
+"""Do the ‖r_t‖ curves collapse onto one shape in log-SNR?
+
+The scope's universality claim is that the interaction term is not a per-pair
+quirk: rescale each pair's correction-size curve and plot it against log-SNR
+rather than step index, and the curves should lie on top of each other. This
+script measures how tightly they do.
+
+Headline number is the collapse spread: the median across log-SNR bins of the
+interquartile range of the normalised curves, as a percentage. Small means the
+curves agree in shape; large means each pair does its own thing.
+
+Cache-only, no GPU.
+
+Usage:
+    python scripts/snr_collapse.py --pair a_cat__x__a_dog          # one pair, all seeds
+    python scripts/snr_collapse.py --all --max-pairs 20
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from pathlib import Path
+
+import numpy as np
+
+# Running as `python scripts/foo.py` puts scripts/ on sys.path, not the repo
+# root, so the package would not import. The plan's engagement instructions use
+# that form, so make it work rather than requiring `-m` or PYTHONPATH.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from poe_repair.experiments.interaction_term.cache import CACHE_ROOT, load_cell  # noqa: E402
+
+OUT_DIR = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cache_analyses")
+
+
+def iter_cells(root: Path, pairs: list[str] | None, max_seeds: int | None):
+    """Yield (pair_slug, seed) for cached cells, de-duplicated across splits."""
+    seen: set[tuple[str, int]] = set()
+    for split in ("train", "heldout"):
+        split_dir = root / split
+        if not split_dir.is_dir():
+            continue
+        for pair_dir in sorted(split_dir.iterdir()):
+            if not pair_dir.is_dir():
+                continue
+            if pairs and pair_dir.name not in pairs:
+                continue
+            seeds = sorted(
+                int(d.name.split("_")[1]) for d in pair_dir.iterdir()
+                if d.is_dir() and d.name.startswith("seed_")
+            )
+            if max_seeds:
+                seeds = seeds[:max_seeds]
+            for s in seeds:
+                # A slug cached under both splits is one pair, not two.
+                if (pair_dir.name, s) in seen:
+                    continue
+                seen.add((pair_dir.name, s))
+                yield pair_dir.name, s
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--pair", action="append", dest="pairs")
+    ap.add_argument("--all", action="store_true")
+    ap.add_argument("--max-pairs", type=int, help="cap distinct pairs (smoke runs)")
+    ap.add_argument("--max-seeds", type=int, default=2, help="seeds per pair")
+    ap.add_argument("--bins", type=int, default=20, help="log-SNR bins")
+    ap.add_argument("--cache-root", type=Path, default=CACHE_ROOT)
+    ap.add_argument("--out-dir", type=Path, default=OUT_DIR)
+    ap.add_argument("--no-figure", action="store_true")
+    args = ap.parse_args()
+
+    if not args.all and not args.pairs:
+        ap.error("give --all or --pair")
+
+    cells = list(iter_cells(args.cache_root, args.pairs, args.max_seeds))
+    if args.max_pairs:
+        keep, out = set(), []
+        for slug, seed in cells:
+            if slug not in keep and len(keep) >= args.max_pairs:
+                continue
+            keep.add(slug)
+            out.append((slug, seed))
+        cells = out
+    if not cells:
+        print("no cached cells matched")
+        return 2
+
+    curves: list[tuple[str, int, np.ndarray, np.ndarray]] = []
+    for slug, seed in cells:
+        c = load_cell(slug, seed, root=args.cache_root)
+        n = c.r_t_norm().numpy()
+        # Normalise by the curve's own median, not its peak. The claim is about
+        # shape in log-SNR, not about every pair needing the same correction
+        # size, so some per-curve scale has to be divided out. Dividing by the
+        # max makes every curve hostage to one noisy point and visibly
+        # amplifies step-to-step jitter; the median is robust to it.
+        curves.append((slug, seed, c.log_snr().numpy(), n / max(np.median(n), 1e-12)))
+
+    lo = max(x.min() for _, _, x, _ in curves)
+    hi = min(x.max() for _, _, x, _ in curves)
+    grid = np.linspace(lo, hi, args.bins)
+    stack = np.stack([
+        np.interp(grid, x, y) for _, _, x, y in curves   # log-SNR ascends with step
+    ])
+
+    q75, q25 = np.percentile(stack, [75, 25], axis=0)
+    med_curve = np.median(stack, axis=0)
+    iqr = q75 - q25
+    # Spread as a fraction of the median curve's own height at each bin, so the
+    # number does not depend on the normalisation choice above. Tight curves
+    # give a small percentage; per-pair curves that go their own way give a
+    # large one.
+    spread = float(np.median(iqr / np.maximum(med_curve, 1e-12))) * 100.0
+
+    n_pairs = len({s for s, _, _, _ in curves})
+    print(f"collapse spread: {spread:.1f}%   ({n_pairs} pairs, {len(curves)} curves)")
+    print(f"  log-SNR range {lo:.2f} to {hi:.2f} in {args.bins} bins")
+    print(f"  peak of the median curve at log-SNR "
+          f"{grid[int(np.argmax(med_curve))]:.2f}")
+    # State the reading rather than leaving the number to speak for itself.
+    verdict = ("tight" if spread < 15 else
+               "loose" if spread < 40 else "no collapse")
+    print(f"  reading: {verdict}")
+
+    args.out_dir.mkdir(parents=True, exist_ok=True)
+    (args.out_dir / "snr_collapse.json").write_text(json.dumps({
+        "collapse_spread_pct": spread,
+        "n_pairs": n_pairs, "n_curves": len(curves),
+        "log_snr_grid": grid.tolist(),
+        "median_curve": med_curve.tolist(),
+        "verdict": verdict,
+        "iqr": iqr.tolist(),
+        "cells": [[s, int(sd)] for s, sd, _, _ in curves],
+    }, indent=2))
+
+    if not args.no_figure:
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+
+        fig, ax = plt.subplots(figsize=(6, 4))
+        for _, _, x, y in curves:
+            ax.plot(x, y, color="0.75", lw=0.7, zorder=1)
+        ax.fill_between(grid, q25, q75, color="tab:blue", alpha=0.25, zorder=2,
+                        label="interquartile range")
+        ax.plot(grid, med_curve, color="tab:blue", lw=2.2, zorder=3,
+                label="median")
+        ax.set_xlabel("log-SNR")
+        ax.set_ylabel("correction size, scaled to own median")
+        # Report the number; do not assert the conclusion in the title.
+        ax.set_title(
+            f"Correction size vs log-SNR: spread {spread:.0f}% "
+            f"({n_pairs} pairs, {verdict})"
+        )
+        ax.legend(frameon=False, fontsize=8)
+        fig.tight_layout()
+        fig.savefig(args.out_dir / "snr_collapse.png", dpi=150)
+        print(f"  figure: {args.out_dir / 'snr_collapse.png'}")
+
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
