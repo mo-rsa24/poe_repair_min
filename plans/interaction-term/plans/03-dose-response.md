@@ -22,9 +22,33 @@ the five-image strip, plus the scored outputs on disk for plans 05 and 06.
 - W&B: log the Mono vs PoE vs corrected triptych per cell.
 
 ## Tasks
-- [ ] ⚠️ injection script: read residuals/step_*.pt, apply ε_PoE + λ·r_t per
-      step, decode, save; rows for norm-matched random and wrong-pair r_t
-- [ ] ⚠️ λ=0 canary: output byte-identical to plain PoE regeneration  [inferred]
+- [x] ✅ injection script + the two control rows
+      The injection half was already done by plan 00
+      (scripts/interaction_term_inject.py over run_teacher_residual).
+      The CONTROLS were not possible: the sampler always computed its own
+      delta, with no way to inject a different vector. Added
+      delta_substitute={"random","wrong_pair"} to run_teacher_residual
+      2026-08-05.
+      Three things the hook gets right, each of which would have voided the
+      control if missed:
+        - both substitutes are NORM-MATCHED to the true delta per step, so a
+          difference in compose rate cannot be explained by injecting more or
+          less magnitude
+        - the recorded delta_norm and the PMI identity keep using the TRUE
+          delta: those are properties of the pair, not of what we inject
+        - the lam==1.0 shortcut (eps_t = eps_j) is disabled when a substitute
+          is active. That identity only holds for the real delta; leaving it
+          would have made the control row silently reproduce the oracle row.
+      Verified: oracle / random / wrong-pair all reach different final latents
+      (max |diff| 2.33, 2.21, and 2.67 between the two controls), while
+      delta_norm_per_step reads 9.53 in all three.
+      The 8 canaries still pass after the sampler edit.
+- [x] ✅ λ=0 canary: done by plan 00. Not "byte-identical to plain PoE
+      regeneration" as worded: run_cfg_poe batches 3 UNet branches where this
+      sampler batches 4, and the same UNet returns different numbers per batch
+      shape (~2e-3/step, compounding to 0.6 over 50 steps). The canary compares
+      against the sampler's own saved eps_poe instead. 8 tests, each shown to
+      fail against a mutated sampler.
 - [ ] ⚠️ one-seed smoke in-session: the 5-image strip for a_cat__x__a_dog seed 9
 - [ ] ⚠️ full sweep as a job: 8 held-out pairs × 4 seeds × 5 λ × 3 rows
 - [ ] ⚠️ score everything with the validated compose-scorer
