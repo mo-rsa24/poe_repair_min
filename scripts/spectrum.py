@@ -38,34 +38,44 @@ from poe_repair.experiments.interaction_term.cache import (  # noqa: E402
     CACHE_ROOT,
     load_cell,
 )
+from poe_repair.experiments.interaction_term.pool import load_pool  # noqa: E402
 
 OUT_DIR = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cache_analyses")
 KS = (1, 2, 4, 8, 16, 32, 64)
 
 
-def collect(root: Path, split: str, pairs: list[str] | None, max_pairs: int | None,
-            max_seeds: int, stride: int) -> tuple[torch.Tensor, list[str]]:
-    """Stack r_t vectors from one split. Returns [N, D] fp32 and the pair list."""
-    split_dir = root / split
-    slugs = sorted(p.name for p in split_dir.iterdir() if p.is_dir())
-    if pairs:
-        slugs = [s for s in slugs if s in pairs]
-    if max_pairs:
-        slugs = slugs[:max_pairs]
+def collect(root: Path, wanted: list[str], max_pairs: int | None,
+            max_seeds: int, stride: int, *, min_steps: int = 2
+            ) -> tuple[torch.Tensor, list[str]]:
+    """Stack r_t vectors for named pairs. Returns [N, D] fp32 and the pairs used.
 
+    Searches both splits for each named pair, because a pair's full cells and
+    its eval stubs can live in different splits (a_wolf__x__a_husky has 50-step
+    cells under train and 1-step stubs under heldout). Cells with fewer than
+    ``min_steps`` files are eval stubs with zeroed eps and are skipped.
+    """
     rows: list[torch.Tensor] = []
     used: list[str] = []
-    for slug in slugs:
-        seeds = sorted(
-            int(d.name.split("_")[1]) for d in (split_dir / slug).iterdir()
-            if d.is_dir() and d.name.startswith("seed_")
-        )[:max_seeds]
-        for seed in seeds:
-            c = load_cell(slug, seed, root=root)
-            # Subsample steps: adjacent steps are highly correlated, so taking
-            # every one inflates the row count without adding rank.
-            rows.append(c.r_t()[::stride].flatten(1))
-        if seeds:
+    for slug in wanted:
+        if max_pairs and len(used) >= max_pairs:
+            break
+        got = 0
+        for split in ("train", "heldout"):
+            d = root / split / slug
+            if not d.is_dir():
+                continue
+            for sd in sorted(d.glob("seed_*"), key=lambda p: int(p.name.split("_")[1])):
+                if got >= max_seeds:
+                    break
+                if len(list((sd / "residuals").glob("step_*.pt"))) < min_steps:
+                    continue
+                seed = int(sd.name.split("_")[1])
+                c = load_cell(slug, seed, root=root)
+                # Subsample steps: adjacent steps are highly correlated, so
+                # taking every one inflates the row count without adding rank.
+                rows.append(c.r_t()[::stride].flatten(1))
+                got += 1
+        if got:
             used.append(slug)
     if not rows:
         return torch.empty(0), []
@@ -82,7 +92,12 @@ def energy_at_k(s: np.ndarray) -> dict[int, float]:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--pair", action="append", dest="pairs")
-    ap.add_argument("--all", action="store_true")
+    ap.add_argument("--all", action="store_true",
+                    help="scan the cache dir; mixes experiments, prefer --pool")
+    ap.add_argument("--pool", nargs="?", const="outputs/animals_compose_transfer/pair_pool.yaml",
+                    help="use one experiment's declared train/heldout split")
+    ap.add_argument("--roles", default="transfer",
+                    help="comma-separated heldout roles: transfer,reference,control")
     ap.add_argument("--max-pairs", type=int, default=12)
     ap.add_argument("--max-seeds", type=int, default=1)
     ap.add_argument("--stride", type=int, default=5, help="step subsampling")
@@ -91,11 +106,27 @@ def main() -> int:
     ap.add_argument("--no-figure", action="store_true")
     args = ap.parse_args()
 
-    if not args.all and not args.pairs:
-        ap.error("give --all or --pair")
+    if not args.all and not args.pairs and not args.pool:
+        ap.error("give --pool, --all, or --pair")
+
+    if args.pool:
+        pool = load_pool(args.pool)
+        print(pool.summary())
+        roles = tuple(r.strip() for r in args.roles.split(",") if r.strip())
+        train_wanted = pool.train
+        held_wanted = pool.heldout(roles=roles)
+        print(f"held-out roles used: {', '.join(roles)}")
+    else:
+        # Directory scan. Kept for one-off exploration; it cannot separate
+        # experiments, so the split it produces is not a transfer test.
+        def _slugs(split):
+            d = args.cache_root / split
+            out = sorted(p.name for p in d.iterdir() if p.is_dir())
+            return [x for x in out if not args.pairs or x in args.pairs]
+        train_wanted, held_wanted = _slugs("train"), _slugs("heldout")
 
     train, train_pairs = collect(
-        args.cache_root, "train", args.pairs, args.max_pairs,
+        args.cache_root, train_wanted, args.max_pairs,
         args.max_seeds, args.stride,
     )
     if train.numel() == 0:
@@ -138,20 +169,16 @@ def main() -> int:
     }
 
     # Held-out projection: does the TRAIN subspace explain unseen pairs?
+    # A pair in both lists is not held out; excluding it keeps the test honest.
+    overlap = sorted(set(held_wanted) & set(train_pairs))
+    if overlap:
+        print(f"\nexcluding {len(overlap)} pair(s) also in train: "
+              f"{', '.join(overlap)}")
+        held_wanted = [p for p in held_wanted if p not in train_pairs]
     held, held_pairs = collect(
-        args.cache_root, "heldout", args.pairs, args.max_pairs,
+        args.cache_root, held_wanted, args.max_pairs,
         args.max_seeds, args.stride,
     )
-    # A slug in both splits is not held out; excluding it keeps the test honest.
-    overlap = sorted(set(held_pairs) & set(train_pairs))
-    if overlap:
-        print(f"\nexcluding {len(overlap)} pair(s) cached in both splits: "
-              f"{', '.join(overlap)}")
-        held, held_pairs = collect(
-            args.cache_root, "heldout",
-            [p for p in held_pairs if p not in train_pairs],
-            args.max_pairs, args.max_seeds, args.stride,
-        )
 
     if held.numel() > 0:
         hc = held - mean                       # the train mean, not its own

@@ -32,12 +32,27 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from poe_repair.experiments.interaction_term.cache import CACHE_ROOT, load_cell  # noqa: E402
+from poe_repair.experiments.interaction_term.pool import load_pool  # noqa: E402
 
 OUT_DIR = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cache_analyses")
 
 
-def iter_cells(root: Path, pairs: list[str] | None, max_seeds: int | None):
-    """Yield (pair_slug, seed) for cached cells, de-duplicated across splits."""
+def iter_cells(root: Path, pairs: list[str] | None, max_seeds: int | None,
+               *, min_steps: int = 2):
+    """Yield (pair_slug, seed) for cached cells with a real trajectory.
+
+    Two traps this guards against, both of which silently produced wrong
+    numbers before they were caught:
+
+    - **Eval stubs.** ``build_eval_cache.py`` writes cells holding a single
+      ``step_000.pt`` with the eps tensors zeroed, because only ``x_t`` is read
+      from them. They are correct for their purpose and useless for any curve.
+      ``min_steps`` drops them. A one-step "trajectory" averaged into a
+      log-SNR curve collapses the shared range to a point.
+    - **The same pair under both splits.** A slug can appear in ``train`` with
+      full cells and in ``heldout`` as stubs (a_wolf__x__a_husky does). Walking
+      train first and de-duplicating means the full cells win.
+    """
     seen: set[tuple[str, int]] = set()
     for split in ("train", "heldout"):
         split_dir = root / split
@@ -52,20 +67,28 @@ def iter_cells(root: Path, pairs: list[str] | None, max_seeds: int | None):
                 int(d.name.split("_")[1]) for d in pair_dir.iterdir()
                 if d.is_dir() and d.name.startswith("seed_")
             )
-            if max_seeds:
-                seeds = seeds[:max_seeds]
+            kept = 0
             for s in seeds:
-                # A slug cached under both splits is one pair, not two.
+                if max_seeds and kept >= max_seeds:
+                    break
                 if (pair_dir.name, s) in seen:
                     continue
+                n = len(list((pair_dir / f"seed_{s}" / "residuals").glob("step_*.pt")))
+                if n < min_steps:
+                    continue          # eval stub, not a trajectory
                 seen.add((pair_dir.name, s))
+                kept += 1
                 yield pair_dir.name, s
 
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--pair", action="append", dest="pairs")
-    ap.add_argument("--all", action="store_true")
+    ap.add_argument("--all", action="store_true",
+                    help="every pair in the cache dir; mixes experiments, "
+                         "prefer --pool")
+    ap.add_argument("--pool", nargs="?", const="outputs/animals_compose_transfer/pair_pool.yaml",
+                    help="restrict to one experiment's declared pairs")
     ap.add_argument("--max-pairs", type=int, help="cap distinct pairs (smoke runs)")
     ap.add_argument("--max-seeds", type=int, default=2, help="seeds per pair")
     ap.add_argument("--bins", type=int, default=20, help="log-SNR bins")
@@ -74,10 +97,16 @@ def main() -> int:
     ap.add_argument("--no-figure", action="store_true")
     args = ap.parse_args()
 
-    if not args.all and not args.pairs:
-        ap.error("give --all or --pair")
+    if not args.all and not args.pairs and not args.pool:
+        ap.error("give --pool, --all, or --pair")
 
-    cells = list(iter_cells(args.cache_root, args.pairs, args.max_seeds))
+    pairs = args.pairs
+    if args.pool:
+        pool = load_pool(args.pool)
+        print(pool.summary())
+        pairs = pool.train + pool.heldout()
+
+    cells = list(iter_cells(args.cache_root, pairs, args.max_seeds))
     if args.max_pairs:
         keep, out = set(), []
         for slug, seed in cells:
