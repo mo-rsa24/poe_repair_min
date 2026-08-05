@@ -383,3 +383,90 @@ $ python scripts/cache_smoke.py --all
 
 Plan 00 is done. Every instrument runs on real data and every headline number
 above was produced by the command shown.
+
+---
+
+# CORRECTION, 2026-08-05: every number above measured the wrong pairs
+
+Everything in the sections above ran with `--all`, which scans the cache
+directory. **That directory holds more than one experiment.** Of the 18 pair
+folders under `train/`, 11 belong to animals-compose-transfer; of the 58 under
+`heldout/`, 8 do. The rest are leftovers from earlier work. Nothing on disk
+marks which is which, so `--all` silently blended them.
+
+Two consequences, both bad:
+
+- The "held-out" set in the spectrum test was mostly objects and styles
+  (`a_barn__x__pencil_drawing_style`, `a_bathtub__x__a_streetlamp`) that are not
+  in the experiment at all.
+- I described this as an animals-vs-objects confound in the data. It was not.
+  The experiment's own split is 11 animal pairs against 8 animal pairs,
+  token-disjoint by design. The confound was mine, introduced by `--all`.
+
+A second contamination surfaced during the fix. `a_wolf__x__a_husky` is a
+*training* pair with 9 full 50-step cells under `train/`, but it also has 4
+single-step eval stubs under `heldout/` (zeroed eps, only `x_t` ever read).
+Taking the first two seeds picked the stubs, so one "trajectory" had one point
+and collapsed the shared log-SNR range to nothing.
+
+## The fix
+
+`poe_repair/experiments/interaction_term/pool.py` reads the experiment's own
+`pair_pool.yaml`. Every affected script now takes `--pool`. Cells with fewer
+than 2 step files are skipped as eval stubs, and a pair's full cells win over
+its stubs.
+
+The held-out list is not uniform, so the pool keeps the roles apart:
+6 transfer pairs (the actual test), 1 known-failure reference
+(`a_cat__x__a_dog`), 1 dissimilar control (`an_elephant__x__a_penguin`).
+Averaging those three together answers no question cleanly. `--roles` selects;
+transfer only is the default.
+
+## Corrected numbers
+
+Commands: `python scripts/<name>.py --pool` (spectrum with
+`--max-pairs 11 --max-seeds 3 --stride 3`).
+
+| measurement | wrong pairs | correct pairs (11 train, 6 transfer) |
+|---|---|---|
+| collapse spread | 45% ("no collapse") | **21.3% ("loose")** |
+| correction size, median | 11.5% of ‖eps_PoE‖ | **10.1%**, IQR 8.1% to 12.4% |
+| direction agreement, median | 0.799 | **0.926**, IQR 0.768 to 0.965 |
+| L1 additivity gap, median | 1.3197 | **1.3467** |
+| L3 first direction | 27.1% (floor 6.5%, 4.2x) | **16.1%** (floor 7.5%, **2.1x**) |
+| energy at k=64, train | 51.9% | **62.6%** (floor 13.2%, 4.8x) |
+| **energy at k=64, held-out** | **2.7%** | **6.0%** |
+
+Three of these move enough to change how they read. The collapse goes from "no
+collapse" to "loose". Direction agreement rises to 0.926, which is a stronger
+result: the leftover pairs had been dragging it down. L3's advantage over
+random halves, from 4.2x to 2.1x, which is a weaker result.
+
+## What the corrected spectrum says
+
+The subspace is built from the 11 pairs the LoRA trained on and measured on the
+6 unseen transfer pairs, so it is the same split as run `1d3qy31e`
+(`lora_step_100000.pt`).
+
+| directions | training pairs | transfer pairs |
+|---|---|---|
+| 8 | 24.7% | 0.6% |
+| 32 | 46.7% | 4.1% |
+| 64 | 62.6% | 6.0% |
+
+The gap survives the correction. A subspace fitted on the training pairs
+captures very little of the unseen pairs' correction. Read at face value that
+is a negative for the shared-correction story, which is what a rank-8 adapter
+would need to transfer.
+
+Two reasons not to call it yet. It is 11 training pairs, which is thin. And
+this is one geometric measure, while the 100k run is an independent behavioural
+read on the identical split: whether the trained LoRA actually raises the
+compose rate on those 6 pairs. Those two should agree, and comparing them is
+the real test. Plan 05 owns that.
+
+## Which numbers are now safe to quote
+
+Only the corrected column, and only with its pair counts attached. The wrong
+column is kept here deliberately so the mistake is visible rather than
+overwritten.

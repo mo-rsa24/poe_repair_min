@@ -38,6 +38,7 @@ from poe_repair.experiments.interaction_term.cache import (  # noqa: E402
     CACHE_ROOT,
     load_cell,
 )
+from poe_repair.experiments.interaction_term.pool import load_pool  # noqa: E402
 from scripts.snr_collapse import iter_cells  # noqa: E402
 
 OUT_DIR = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cache_analyses")
@@ -46,7 +47,10 @@ OUT_DIR = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cache_
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--pair", action="append", dest="pairs")
-    ap.add_argument("--all", action="store_true")
+    ap.add_argument("--all", action="store_true",
+                    help="scan the cache dir; mixes experiments, prefer --pool")
+    ap.add_argument("--pool", nargs="?", const="outputs/animals_compose_transfer/pair_pool.yaml",
+                    help="restrict to one experiment's declared pairs")
     ap.add_argument("--max-pairs", type=int)
     ap.add_argument("--max-seeds", type=int, default=2)
     ap.add_argument("--cache-root", type=Path, default=CACHE_ROOT)
@@ -54,10 +58,16 @@ def main() -> int:
     ap.add_argument("--no-figure", action="store_true")
     args = ap.parse_args()
 
-    if not args.all and not args.pairs:
-        ap.error("give --all or --pair")
+    if not args.all and not args.pairs and not args.pool:
+        ap.error("give --pool, --all, or --pair")
 
-    cells = list(iter_cells(args.cache_root, args.pairs, args.max_seeds))
+    pairs = args.pairs
+    if args.pool:
+        pool = load_pool(args.pool)
+        print(pool.summary())
+        pairs = pool.train + pool.heldout()
+
+    cells = list(iter_cells(args.cache_root, pairs, args.max_seeds))
     if args.max_pairs:
         keep, out = set(), []
         for slug, seed in cells:

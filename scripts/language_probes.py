@@ -38,6 +38,7 @@ from poe_repair.experiments.interaction_term.cache import (  # noqa: E402
     CACHE_ROOT,
     cell_dir,
 )
+from poe_repair.experiments.interaction_term.pool import load_pool  # noqa: E402
 from scripts.snr_collapse import iter_cells  # noqa: E402
 
 OUT_DIR = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cache_analyses")
@@ -56,6 +57,8 @@ def main() -> int:
     ap.add_argument("--probe", action="append", dest="probes",
                     choices=("l1", "l3"), help="repeatable; default both")
     ap.add_argument("--pair", action="append", dest="pairs")
+    ap.add_argument("--pool", nargs="?", const="outputs/animals_compose_transfer/pair_pool.yaml",
+                    help="restrict to one experiment's declared pairs")
     ap.add_argument("--max-pairs", type=int, default=30)
     ap.add_argument("--cache-root", type=Path, default=CACHE_ROOT)
     ap.add_argument("--out-dir", type=Path, default=OUT_DIR)
@@ -63,7 +66,12 @@ def main() -> int:
     probes = args.probes or ["l1", "l3"]
 
     # One seed per pair: the embeddings depend on the prompt, not the seed.
-    cells = list(iter_cells(args.cache_root, args.pairs, 1))[: args.max_pairs]
+    pairs = args.pairs
+    if args.pool:
+        pool = load_pool(args.pool)
+        print(pool.summary())
+        pairs = pool.train + pool.heldout()
+    cells = list(iter_cells(args.cache_root, pairs, 1))[: args.max_pairs]
     if not cells:
         print("no cached cells matched")
         return 2
