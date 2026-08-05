@@ -49,8 +49,16 @@ the five-image strip, plus the scored outputs on disk for plans 05 and 06.
       shape (~2e-3/step, compounding to 0.6 over 50 steps). The canary compares
       against the sampler's own saved eps_poe instead. 8 tests, each shown to
       fail against a mutated sampler.
-- [ ] ⚠️ one-seed smoke in-session: the 5-image strip for a_cat__x__a_dog seed 9
-- [ ] ⚠️ full sweep as a job: 8 held-out pairs × 4 seeds × 5 λ × 3 rows
+- [x] ✅ one-seed smoke in-session, all three rows at lambda=1 on
+      a_cat__x__a_dog seed 9 (20 steps). Scored: oracle 100%, random 0%,
+      wrong_pair 0%. Eyeball agrees with the scorer: both controls still show
+      ONE blended animal (cat ears and whiskers on a dog muzzle) where the
+      oracle gives two separate animals. The controls are real, not cosmetic.
+- [ ] ⚠️ full sweep: 8 held-out pairs × 4 seeds × 5 λ × 3 rows = 480 cells.
+      RUNNING on mscluster109 GPU 0 (not a Slurm job: biggpu allows one job per
+      user). scripts/mechanism_study/run_dose_sweep.sh, ~50s/cell, ~5.5h,
+      resumable. lambda=0 is sampled once and shared across rows (nothing is
+      injected, so the three rows are the same image there).
 - [ ] ⚠️ score everything with the validated compose-scorer
 - [ ] ⚠️ three-curve figure plus strip (candidates come from plan 10's
       /design-figure pass)

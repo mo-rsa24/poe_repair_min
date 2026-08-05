@@ -68,6 +68,8 @@ def run(
     record_cross_attention: bool = False,
     attn_token_indices: dict | None = None,
     attn_resolution: int = 32,
+    delta_substitute: str | None = None,
+    delta_substitute_source=None,
 ) -> Path:
     """Run teacher-residual on (cell, knobs) and return the image path.
 
@@ -123,6 +125,8 @@ def run(
         attn_capture_dir=attn_dir,
         attn_token_indices=attn_token_indices,
         attn_resolution=attn_resolution,
+        delta_substitute=delta_substitute,
+        delta_substitute_source=delta_substitute_source,
     )
     write_decoded_image(out.image, image_path)
     if save_trajectory:
