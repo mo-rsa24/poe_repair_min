@@ -92,6 +92,11 @@ def main() -> int:
     ap.add_argument("--max-pairs", type=int, help="cap distinct pairs (smoke runs)")
     ap.add_argument("--max-seeds", type=int, default=2, help="seeds per pair")
     ap.add_argument("--bins", type=int, default=20, help="log-SNR bins")
+    ap.add_argument("--normalize", default="prereg",
+                    choices=("prereg", "own-median"),
+                    help="prereg = ||r_t||/||eps_PoE|| then scaled to its own "
+                         "median (the plan-01 committed measure); own-median = "
+                         "||r_t|| scaled to its own median only")
     ap.add_argument("--cache-root", type=Path, default=CACHE_ROOT)
     ap.add_argument("--out-dir", type=Path, default=OUT_DIR)
     ap.add_argument("--no-figure", action="store_true")
@@ -123,11 +128,15 @@ def main() -> int:
     for slug, seed in cells:
         c = load_cell(slug, seed, root=args.cache_root)
         n = c.r_t_norm().numpy()
-        # Normalise by the curve's own median, not its peak. The claim is about
-        # shape in log-SNR, not about every pair needing the same correction
-        # size, so some per-curve scale has to be divided out. Dividing by the
-        # max makes every curve hostage to one noisy point and visibly
-        # amplifies step-to-step jitter; the median is robust to it.
+        if args.normalize == "prereg":
+            # The plan-01 committed measure: correction size relative to the
+            # prediction being corrected. docs/normalization_preregistration.md
+            n = n / c.eps_poe().flatten(1).norm(dim=1).numpy()
+        # Then scale each curve to its own median. The claim is about SHAPE in
+        # log-SNR, not about every pair needing the same correction size, so a
+        # per-curve scale still has to come out. Median, not peak: dividing by
+        # the max makes every curve hostage to one noisy point and visibly
+        # amplifies step-to-step jitter.
         curves.append((slug, seed, c.log_snr().numpy(), n / max(np.median(n), 1e-12)))
 
     lo = max(x.min() for _, _, x, _ in curves)
@@ -149,8 +158,15 @@ def main() -> int:
     n_pairs = len({s for s, _, _, _ in curves})
     print(f"collapse spread: {spread:.1f}%   ({n_pairs} pairs, {len(curves)} curves)")
     print(f"  log-SNR range {lo:.2f} to {hi:.2f} in {args.bins} bins")
-    print(f"  peak of the median curve at log-SNR "
-          f"{grid[int(np.argmax(med_curve))]:.2f}")
+    # A maximum at the first or last bin is a truncation, not a peak: the grid
+    # stops where the shortest cell stops, so the curve is still moving there.
+    imax = int(np.argmax(med_curve))
+    at_edge = imax in (0, len(med_curve) - 1)
+    if at_edge:
+        print(f"  median curve still rising at the {'left' if imax == 0 else 'right'} "
+              f"edge (log-SNR {grid[imax]:.2f}); no interior peak in this range")
+    else:
+        print(f"  peak of the median curve at log-SNR {grid[imax]:.2f}")
     # State the reading rather than leaving the number to speak for itself.
     verdict = ("tight" if spread < 15 else
                "loose" if spread < 40 else "no collapse")
@@ -159,10 +175,13 @@ def main() -> int:
     args.out_dir.mkdir(parents=True, exist_ok=True)
     (args.out_dir / "snr_collapse.json").write_text(json.dumps({
         "collapse_spread_pct": spread,
+        "normalize": args.normalize,
         "n_pairs": n_pairs, "n_curves": len(curves),
         "log_snr_grid": grid.tolist(),
         "median_curve": med_curve.tolist(),
         "verdict": verdict,
+        "peak_log_snr": float(grid[imax]),
+        "peak_at_edge": bool(at_edge),
         "iqr": iqr.tolist(),
         "cells": [[s, int(sd)] for s, sd, _, _ in curves],
     }, indent=2))
