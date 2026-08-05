@@ -38,16 +38,22 @@ flowchart LR
 - Runs in-session on the current node (mscluster85); no job needed.
 
 ## Tasks
-- [ ] ⚠️ compute both candidates on 3 cached pairs (‖r_t‖/‖ε_PoE‖ and
-      fraction of PoE→Mono distance), commit-window-averaged
-- [ ] ⚠️ write the memo with the committed choice and date
-- [ ] ⚠️ bulk-load smoke over the full cache: manifest scan, per-file keys,
-      shapes, dtype, NaN check across all 76 pairs  [inferred]
+- [x] ✅ compute both candidates on 3 cached pairs (‖r_t‖/‖ε_PoE‖ and
+      fraction of PoE→Mono distance). The second is VOID: identically 1.000000
+      because r_t IS ε_Mono − ε_PoE, so it divides a quantity by itself. A
+      third candidate (vs latent step size) was measured and rejected: its
+      denominator moves with the sampler schedule, which plan 08 varies.
+- [x] ✅ write the memo with the committed choice and date
+      (docs/normalization_preregistration.md, relative_norm, 2026-08-05)
+- [x] ✅ bulk-load smoke over the full cache: 70/70 ok, 790 cells, 38324 step
+      files, zero NaN. Note 70 distinct pairs, not 76: six slugs are cached
+      under both splits (see docs/instrument_smoke.md).
 
 ## Success/Failure Outcomes
 - **bulk-load smoke**
-  - Success: 76 pairs scanned, zero unreadable files, all step files carry the
-    four eps keys at [1,4,128,128] fp16.
+  - Success: every distinct pair scanned (70, not the 76 directory count),
+    zero unreadable files, all step files carry the four eps keys at
+    [1,4,128,128] fp16.  ✅ met 2026-08-05.
   - Failure: a named file with missing keys or NaNs. List it and quarantine it;
     never silently skip.
 
@@ -59,5 +65,6 @@ flowchart LR
 ```bash
 cat docs/normalization_preregistration.md    # expect a dated committed choice
 PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
-$PY scripts/cache_smoke.py --all             # expect "76/76 ok"
+$PY scripts/cache_smoke.py --all             # expect "70/70 ok"
+$PY scripts/normalization_candidates.py      # reproduces the memo's numbers
 ```
