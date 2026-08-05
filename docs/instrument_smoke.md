@@ -242,3 +242,23 @@ Same pair, same seed, same noise. Only the dose differs.
 This is the chimera the scope exists to explain, and the correction closing it,
 on one cell at 20 steps. Not a result (one cell, no scorer, short schedule),
 but it confirms the instruments are wired to the real phenomenon.
+
+## climb.py: RUNS (10 pairs, 23 cells)
+
+```
+$ python scripts/climb.py --all --max-pairs 10 --max-seeds 2
+correction size as a fraction of ||eps_PoE||:
+  median 11.5%   IQR 7.2% to 19.9%
+
+step-to-step direction agreement (cosine, consecutive r_t):
+  median 0.799   IQR 0.294 to 0.937
+  random-direction floor for 65536 dims: ~0.0039
+```
+
+Two distributions, and the second is the informative one. A correction with a
+stable direction is something a low-rank adapter could learn; a thrashing one
+is not. At 0.799 median against a random floor of 0.0039, the direction is
+strongly structured over time, not noise.
+
+The figure shows correction size climbing from ~5% early to a ~13% plateau, and
+direction agreement high throughout and rising near the end.
