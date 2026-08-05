@@ -29,6 +29,18 @@ scope proves that account and produces the paper's figures.
 3. Smallness: top-k energy of stacked cached targets beats the same-shape
    Gaussian floor; a train-fitted subspace explains most held-out energy at
    small k; slow decay narrows the claim, does not kill the paper.
+   <!-- ⚠ CONFLICT surfaced by sync 2026-08-05, wording NOT changed here.
+        The second clause cannot pass, and not because the method fails.
+        Measured on the 11-train / 6-transfer split: the train-fitted subspace
+        captures 6.0% of held-out energy at k=64, while the adapter trained on
+        the same split composes 96.9% on those pairs (0% without it). r_t
+        vectors are mutually near-orthogonal (cosine ~0.00, even train-to-
+        train), so no fitted subspace can contain unseen pairs and the test
+        reads low regardless of transfer.
+        First clause HOLDS: 62.6% vs a 13.2% Gaussian floor, 4.8x.
+        Evidence: docs/evidence/subspace-vs-transfer/QUERY.md
+        Rewording direction text is /integrate-plans or /refine-plan, not
+        sync-plan-tree. -->
 4. Universality: ‖r_t‖ curves collapse in log-SNR across pairs; the window
    sits at the same noise levels across samplers; the dose result replicates
    on SD 1.5 and SD 2.1.
@@ -48,7 +60,8 @@ a diagnosed failure at a named goal with the evidence showing which link
 broke. No landing is narrated without its instrument.
 
 ## Definition of Done
-1. Normalization pre-registered in writing before any cross-type plot exists.
+1. ✅ Normalization pre-registered in writing before any cross-type plot exists.
+   (relative_norm, docs/normalization_preregistration.md, 2026-08-05)
 2. Mechanism re-probe verdict recorded (pass or negative paragraph).
 3. Dose-response figure with all three control rows.
 4. W2 timing curve, enhanced W1 companion, joint window figure.
@@ -66,9 +79,12 @@ broke. No landing is narrated without its instrument.
 11. Inspector tabs consuming only this scope's grids.
 
 ## Sub-Scopes
-- ⚠️ plans/composition-type-cells/ — "the missing regime's cells + the validated instrument that can read them"
-- ⚠️ plans/cross-model-replication/ — "the same story on three models and three samplers, or where it breaks"
-- ⚠️ plans/inspector-interaction-term/ — "every headline figure explorable by hand, zero new generation"
+<!-- All three are scaffolded (MASTER_PLAN.md + Definition of Done) but hold
+     ZERO plan files. 11 DoD items with no tasks behind them. Run
+     /populate-plans on each before its parent plan needs it. -->
+- ⚠️ plans/interaction-term/plans/composition-type-cells/ — "the missing regime's cells + the validated instrument that can read them"
+- ⚠️ plans/interaction-term/plans/cross-model-replication/ — "the same story on three models and three samplers, or where it breaks"
+- ⚠️ plans/interaction-term/plans/inspector-interaction-term/ — "every headline figure explorable by hand, zero new generation"
 
 ## Plans
 - ✅ 00-build-the-instruments.md — 13 instruments built and smoked 2026-08-05;
