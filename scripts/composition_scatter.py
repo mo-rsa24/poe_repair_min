@@ -54,7 +54,7 @@ def read_prereg(path: Path) -> str:
             "Correction size is not comparable across prompt types without a "
             "committed measure, and choosing one after seeing the plot is how "
             "the 95% delta-field number had to be retracted. Write the memo "
-            "first: plan 01 (plans/interaction-term/plans/01-preregister-"
+            "first: plan 01 (plans/does-the-correction-cause-composition/plans/01-preregister-"
             "normalization.md).\n"
             f"Recognised measures: {', '.join(MEASURES)}"
         )

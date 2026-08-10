@@ -1,5 +1,5 @@
 #!/bin/bash
-# Run the Phase-1 animals-compose-transfer prerequisites on whatever node you are on.
+# Run the Phase-1 does-the-fix-reach-unseen-pairs prerequisites on whatever node you are on.
 # Run this from an interactive shell ON the compute node (e.g. mscluster110), NOT the
 # login node. It first proves the GPU actually runs, then does the work.
 #

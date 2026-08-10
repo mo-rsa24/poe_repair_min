@@ -42,7 +42,7 @@ existing `sym()` compat-symlink policy in `04_apply_layout.sh` applies unchanged
 | `residual_diagnostics` | 855M | `artifacts/diagnostics/residual_diagnostics/` | **keep** |
 | `conditioning_window` | 697M | `artifacts/diagnostics/conditioning_window/` | **keep** |
 | `conditioning_window_lora` | 5G | `artifacts/diagnostics/conditioning_window_lora/` | **keep** |
-| `animals_compose_transfer` | 6G | `artifacts/scopes/animals-compose-transfer/` | **keep** |
+| `animals_compose_transfer` | 6G | `artifacts/scopes/does-the-fix-reach-unseen-pairs/` | **keep** |
 | `compose_scorer` | 15M | `artifacts/scopes/compose-scorer/` | **keep** |
 | `poe` | 184M | `artifacts/scopes/poe-baselines/` | **keep** |
 | `presentation` | 6M | `artifacts/_shared/presentation/` | **keep** |
@@ -80,9 +80,9 @@ needs `sd["lora_state"]`, not `sd`.
 `conditioning_window` and `conditioning_window_lora` hold no `.pt` files at all
 (figures and sample grids only), so there is nothing to load-test there.
 
-## Note for the interaction-term scope
+## Note for the does-the-correction-cause-composition scope
 
 `residual_diagnostics/delta_structure_unguided/tensors.pt` holds `delta`,
 `eps_poe`, and `eps_mono` keyed by timestep and seed. That is the same quantity
-the interaction-term scope calls r_t. Filing it under `artifacts/diagnostics/`
+the does-the-correction-cause-composition scope calls r_t. Filing it under `artifacts/diagnostics/`
 puts it on a stable path before that scope starts writing its own caches.

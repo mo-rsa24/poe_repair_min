@@ -10,7 +10,7 @@ possible or not helpful?"
 
 ## The big picture
 
-The interaction-term scope claims r_t is "small, shared across pairs, and
+The does-the-correction-cause-composition scope claims r_t is "small, shared across pairs, and
 concentrated in a narrow noise band, which is why a rank-8 LoRA can learn it
 once and fix pairs it never saw." The word doing the work is **shared**: if
 every pair needs its own correction there is nothing to learn once.

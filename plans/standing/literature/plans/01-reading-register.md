@@ -22,7 +22,7 @@ related-work section without further work.
 - [ ] ⚠️ Create `docs/reading-register.md` with the columns: paper (arXiv id),
       claim, what it proves, what we borrow, plans it touches, date read.
 - [ ] ⚠️ Back-fill it from the seven papers already reconciled on the
-      interaction-term question, so the register starts current rather than empty.
+      does-the-correction-cause-composition question, so the register starts current rather than empty.
 - [ ] ⚠️ Standing: whenever a run in `PARKING_LOT.md` tries an idea, add or cite
       the register row it came from. A tried idea with no row is the thing this
       plan exists to catch.

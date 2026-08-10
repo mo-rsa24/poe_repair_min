@@ -24,7 +24,7 @@ The enhanced Inspector serving the new tabs off the finished result grids.
 
 ## Tasks
 - [ ] build the tabs  → decomposed: see
-      `inspector-interaction-term/MASTER_PLAN.md`
+      `inspector-does-the-correction-cause-composition/MASTER_PLAN.md`
 
 ## Recommended skill
 ▶ custom build inside the sub-scope; `/demonstrate` ✅ as a screen recording of

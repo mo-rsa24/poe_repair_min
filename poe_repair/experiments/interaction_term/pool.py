@@ -2,7 +2,7 @@
 
 The training cache directory holds more than one experiment's pairs. As of
 2026-08-05 `training_cache/train/` has 18 pair folders of which 11 belong to
-animals-compose-transfer, and `heldout/` has 58 of which 8 do. Nothing on disk
+does-the-fix-reach-unseen-pairs, and `heldout/` has 58 of which 8 do. Nothing on disk
 marks which is which, so any script that scans the directory silently mixes
 experiments together and reports a number about neither.
 

@@ -9,9 +9,9 @@ This block is a snapshot; the live version prints at session start, or on demand
 - **The last thing we did:** one parent scope for the paper, its cadence stated: figures first,
   write at 5 to 10 resolved register slots.
 - **Do this next:** the dose re-score. Read
-  [the procedure](plans/closing-the-compositional-gap/plans/interaction-term/procedures/03-rescore-the-dose-sweep.md)
+  [the procedure](plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/procedures/hypothesis-02-recheck-the-headline-numbers.md)
   to completion and answer the two open questions in
-  [the review file](plans/closing-the-compositional-gap/plans/interaction-term/review/03-dose-response.md).
+  [the review file](plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md).
   It resolves F2, the paper's headline slot.
 
 ## The paper: what has to land
@@ -23,25 +23,25 @@ with that.
 
 | Step | Plan | What it does | Status | Waits on |
 |---|---|---|---|---|
-| 1 | interaction-term/03-dose-response | the headline causal result: more correction, more composition, with two flat controls | ◑ re-score owed | |
-| 2 | interaction-term/05-cache-analyses | the analyses needing no GPU and no queue, five of six tasks left | ⚠️ | |
-| 3 | interaction-term/04-window-pair | when in the denoising process the correction matters | ⚠️ | 1 |
-| 4 | animals-compose-transfer/02-wire-scorer-eval-hook | the one-epoch GPU smoke confirming three live curves | ⚠️ | |
-| 5 | animals-compose-transfer/03a-phase1-pooled | finish the read: steps 70k to 100k unscored, go/no-go note owed | ⚠️ | 4 |
-| 6 | animals-compose-transfer/03-run-A-leave-one-pair-out | 15 LoRAs, leaderboard, degradation curve | ⚠️ | 5 |
-| 7 | animals-compose-transfer/04-run-B-contrast | size-matched mixed pool against animals-only | ⚠️ | 6 |
-| 8 | interaction-term/06-corroborations | the independent checks on the causal claim | ⚠️ | 1, 3 |
-| 9 | interaction-term/09-print-gates | the two /pressure-test passes before anything is written | ⚠️ | 8 |
-| 10 | interaction-term/10-figures | the figures this scope owes the paper | ⚠️ | 9 |
-| 11 | animals-compose-transfer/05-figures | the transfer evidence figures | ⚠️ | 7 |
-| 12 | paper-iclr/00-compile-the-template | tectonic build, de-stub, the figure-path rule | ◑ | |
-| 13 | paper-iclr/01-title-and-spine | the claim in one line, section order | ⚠️ | 12 |
-| 14 | paper-iclr/02-figure-layout | which figure goes where, and the run order that implies | ⚠️ | 10, 11 |
-| 15 | paper-iclr/03-draft-method-and-intro | method and intro prose | ⚠️ | 13 |
-| 16 | paper-iclr/05-results-skeleton | placeholders, not prose: empty tables and XX numbers, one per figure-register slot | ⚠️ | |
-| 17 | paper-iclr/06-mechanism-and-caveats | the mechanism section, honest about what did not replicate | ⚠️ | 9 |
-| 18 | paper-iclr/04-abstract | written last, from the spine and the method | ⚠️ | 15, 16 |
-| 19 | interaction-term/02-mechanism-reprobe | one task left: the /pair-figure decision, per-seed points against pair-level means | ⚠️ | |
+| 1 | does-the-correction-cause-composition/hypothesis-02-more-correction-more-composition | the headline causal result: more correction, more composition, with two flat controls | ◑ re-score owed | |
+| 2 | does-the-correction-cause-composition/hypothesis-04-what-the-cached-runs-already-show | the analyses needing no GPU and no queue, five of six tasks left | ⚠️ | |
+| 3 | does-the-correction-cause-composition/hypothesis-03-when-in-the-run-it-matters | when in the denoising process the correction matters | ⚠️ | 1 |
+| 4 | does-the-fix-reach-unseen-pairs/instrument-02-three-live-curves-while-training | the one-epoch GPU smoke confirming three live curves | ⚠️ | |
+| 5 | does-the-fix-reach-unseen-pairs/hypothesis-01-does-one-pooled-fix-transfer-at-all | finish the read: steps 70k to 100k unscored, go/no-go note owed | ⚠️ | 4 |
+| 6 | does-the-fix-reach-unseen-pairs/hypothesis-02-transfer-as-a-rate-over-fifteen-pairs | 15 LoRAs, leaderboard, degradation curve | ⚠️ | 5 |
+| 7 | does-the-fix-reach-unseen-pairs/baseline-01-the-size-matched-control-pool | size-matched mixed pool against animals-only | ⚠️ | 6 |
+| 8 | does-the-correction-cause-composition/hypothesis-05-the-same-story-from-three-sides | the independent checks on the causal claim | ⚠️ | 1, 3 |
+| 9 | does-the-correction-cause-composition/gate-01-two-literature-checks-before-print | the two /pressure-test passes before anything is written | ⚠️ | 8 |
+| 10 | does-the-correction-cause-composition/figure-01-the-seven-paper-figures | the figures this scope owes the paper | ⚠️ | 9 |
+| 11 | does-the-fix-reach-unseen-pairs/figure-01-the-transfer-figures | the transfer evidence figures | ⚠️ | 7 |
+| 12 | writing-the-paper/writing-01-make-the-template-build | tectonic build, de-stub, the figure-path rule | ◑ | |
+| 13 | writing-the-paper/writing-02-the-title-and-the-section-spine | the claim in one line, section order | ⚠️ | 12 |
+| 14 | writing-the-paper/writing-03-where-each-figure-goes | which figure goes where, and the run order that implies | ⚠️ | 10, 11 |
+| 15 | writing-the-paper/writing-04-method-and-introduction | method and intro prose | ⚠️ | 13 |
+| 16 | writing-the-paper/writing-05-the-results-skeleton | placeholders, not prose: empty tables and XX numbers, one per figure-register slot | ⚠️ | |
+| 17 | writing-the-paper/writing-06-mechanism-and-limitations | the mechanism section, honest about what did not replicate | ⚠️ | 9 |
+| 18 | writing-the-paper/writing-07-the-abstract-written-last | written last, from the spine and the method | ⚠️ | 15, 16 |
+| 19 | does-the-correction-cause-composition/hypothesis-01-what-the-fix-changes-inside-the-model | one task left: the /pair-figure decision, per-seed points against pair-level means | ⚠️ | |
 
 Step 19 is unblocked and cheap despite its number. Step numbers are positions in the
 order, and `sync-plan-tree` renumbers on its next pass.
@@ -59,7 +59,7 @@ Found with `/paper-scout`, read with `/unpack-paper` or `/drip --paper`, registe
 
 | Paper | Why it matters to us | Which claim it touches | Read |
 |---|---|---|---|
-| (the 7 already reconciled on the interaction-term question) | establishes that the residual IS the term PoE drops | interaction-term, the causal claim | ✅ back-fill owed into the register |
+| (the 7 already reconciled on the does-the-correction-cause-composition question) | establishes that the residual IS the term PoE drops | does-the-correction-cause-composition, the causal claim | ✅ back-fill owed into the register |
 
 ## Experiments running in the background
 
@@ -69,8 +69,8 @@ number earns the right to propose an experiment and nothing more. Results land i
 
 | Run | What it would earn | State |
 |---|---|---|
-| interaction-term/07-composition-type | whether the correction behaves the same for attribute pairs as for object pairs, which would widen the claim's reach | ⚠️ not started |
-| interaction-term/08-replication | the same result on a second model and sampler, which is a likely reviewer ask but not a claim we make | ⚠️ not started |
+| does-the-correction-cause-composition/idea-01-does-it-hold-for-attribute-pairs | whether the correction behaves the same for attribute pairs as for object pairs, which would widen the claim's reach | ⚠️ not started |
+| does-the-correction-cause-composition/generalization-01-other-models-and-samplers | the same result on a second model and sampler, which is a likely reviewer ask but not a claim we make | ⚠️ not started |
 
 ## Standing jobs
 
@@ -91,7 +91,7 @@ container named for its state.
 
 | Folder | State | One line |
 |---|---|---|
-| `closing-the-compositional-gap/` | live, the paper | one parent scope for the manuscript and its two result claims: `interaction-term` (causal), `animals-compose-transfer` (transfer), `paper-iclr` (the draft) |
+| `closing-the-compositional-gap/` | live, the paper | one parent scope for the manuscript and its two result claims: `does-the-correction-cause-composition` (causal), `does-the-fix-reach-unseen-pairs` (transfer), `writing-the-paper` (the draft) |
 | `standing/literature/` | standing | the reading register |
 | `standing/artifact-reconciliation/` | standing | artifacts catalogued and integrity-checked |
 | `completed/compose-scorer/` | done | delivered `scorer_validated.json`, in use by both result scopes |
@@ -169,9 +169,9 @@ recorded in the decision timeline.
 ## Sub-Scopes
 - ⚠️ plans/standing/artifact-reconciliation/ — "keep run artifacts catalogued, integrity-checked, canonically organised" (standing: carries a recurring re-sweep node)
 - ⚠️ plans/completed/compose-scorer/ — reusable instrument: a 3-anchor scorer that tells a two-animal composition from a chimera blend; emits scorer_validated.json (the cross-scope contract)
-- ⚠️ plans/closing-the-compositional-gap/plans/animals-compose-transfer/ — animals-only hard-pair LoRA transfer (leave-one-pair-out + size-matched-mixed contrast); DEPENDS ON compose-scorer's scorer_validated.json
+- ⚠️ plans/closing-the-compositional-gap/plans/does-the-fix-reach-unseen-pairs/ — animals-only hard-pair LoRA transfer (leave-one-pair-out + size-matched-mixed contrast); DEPENDS ON compose-scorer's scorer_validated.json
 - ⚠️ plans/standing/literature/ — standing: what the field already knows, and the source behind every idea-trying run
-- ⚠️ plans/closing-the-compositional-gap/plans/paper-iclr/ — the ICLR manuscript in `paper/iclr/`; no GPU, no queue
+- ⚠️ plans/closing-the-compositional-gap/plans/writing-the-paper/ — the ICLR manuscript in `paper/iclr/`; no GPU, no queue
 
 ## Plans
 (One plan file per pyramid rung, grouped under `plans/rungs/`. Detailed phase

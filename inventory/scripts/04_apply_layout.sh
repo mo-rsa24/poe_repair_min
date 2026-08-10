@@ -126,7 +126,7 @@ done
 
 say ""; say "--- Scope-owned output (scope call 2026-08-04) ---"
 sym  "$REPO/outputs/animals_compose_transfer" \
-     "$REPO/artifacts/scopes/animals-compose-transfer"
+     "$REPO/artifacts/scopes/does-the-fix-reach-unseen-pairs"
 sym  "$REPO/outputs/compose_scorer" \
      "$REPO/artifacts/scopes/compose-scorer"
 sym  "$REPO/outputs/poe" \

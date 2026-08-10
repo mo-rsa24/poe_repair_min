@@ -46,7 +46,7 @@ them better. Concretely: a scorer module, a saved evidence set, and
 2. ⚠️ Validated on cat×dog + wolf×husky, both spaces, evidence saved.
 3. ⚠️ `scorer_validated.json` emitted, written ONLY when the gate passes
    (cat×dog → compose AND wolf×husky → blend). This file is the cross-scope
-   contract the sibling `animals-compose-transfer` scope reads as its
+   contract the sibling `does-the-fix-reach-unseen-pairs` scope reads as its
    precondition. If the gate fails, the file is NOT written and the scope halts.
 4. ⚠️ F1 "scorer-works" figure produced (outputs pinned beside their three
    anchors as thumbnails, compose/blend as the point colour), via /design-figure.
@@ -56,7 +56,7 @@ them better. Concretely: a scorer module, a saved evidence set, and
 
 ## Status (2026-07-29): VALIDATED via instance-count, contract written
 The scorer passes validation 10/10 and `scorer_validated.json` is written, so the
-sibling `animals-compose-transfer` precondition is now met.
+sibling `does-the-fix-reach-unseen-pairs` precondition is now met.
 
 The validated read is an INSTANCE COUNT, reached after two rejected reads:
 1. Whole-image embedding (DINOv2/CLIP): NULLED. For two similar animals, "one chimera"

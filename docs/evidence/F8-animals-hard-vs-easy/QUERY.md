@@ -5,9 +5,9 @@
 
 ## Big picture
 
-This sits inside the `animals-compose-transfer` scope: fixing PoE (Product of Experts) diffusion composition, where asking for "a frog and a toad" produces one blended creature instead of two distinct animals. A rank-8 LoRA is trained on 11 animal pairs (Phase 1, `plans/closing-the-compositional-gap/plans/animals-compose-transfer/plans/03a-phase1-pooled.md`) and tested on pairs it never saw, to check whether the fix generalizes rather than memorizing specific pairs.
+This sits inside the `does-the-fix-reach-unseen-pairs` scope: fixing PoE (Product of Experts) diffusion composition, where asking for "a frog and a toad" produces one blended creature instead of two distinct animals. A rank-8 LoRA is trained on 11 animal pairs (Phase 1, `plans/closing-the-compositional-gap/plans/does-the-fix-reach-unseen-pairs/plans/hypothesis-01-does-one-pooled-fix-transfer-at-all.md`) and tested on pairs it never saw, to check whether the fix generalizes rather than memorizing specific pairs.
 
-The scope was deciding how big the next experiment (`plans/03-run-A-leave-one-pair-out.md`, the 15-pair leave-one-pair-out sweep) needs to be: all 11 training pairs, a small 2-4 pair sample, or a "middle path" of 4-6 pairs chosen to span easy and hard cases. This demonstration is the qualitative evidence for that middle path: does the model actually look different on hard vs easy pairs, or does the compose-rate number hide an image that looks the same either way?
+The scope was deciding how big the next experiment (`plans/hypothesis-02-transfer-as-a-rate-over-fifteen-pairs.md`, the 15-pair leave-one-pair-out sweep) needs to be: all 11 training pairs, a small 2-4 pair sample, or a "middle path" of 4-6 pairs chosen to span easy and hard cases. This demonstration is the qualitative evidence for that middle path: does the model actually look different on hard vs easy pairs, or does the compose-rate number hide an image that looks the same either way?
 
 ## What was asked, and what exists
 

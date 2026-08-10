@@ -9,15 +9,15 @@ From: socratic compile (transfer-vs-overfit argument), 2026-07-21
 ~~The trained cell only reaches ~40% of the PoE→Mono distance and plateaus, before any transfer is asked.~~ **Resolved by evidence:** the pooled animals run `phase1_r8_100k` reaches full correction magnitude (delta_hat_norm 27.66 vs delta_target_norm 27.32) and 0.96 held-out compose-rate at step 60k. The 40% plateau was a property of the old taxonomy cells, not of the method. No candidate fix needed.
 
 ### Old taxonomy training work (shelved 2026-08-04)
-From: triage-plan (interaction-term routing), 2026-08-04
-G1–G3 single-seed trainings, G1–G4 pooled runs, and the all-groups crossbar resume (`2em6frqv`) are shelved under the ICLR interaction-term anchor. Plan files moved to `plans/shelved/rungs/`. The old taxonomy's pairs still serve the program as cached cells for the composition-type scatter (no training). Revive only if a reviewer-facing gap demands taxonomy-wide training evidence.
+From: triage-plan (does-the-correction-cause-composition routing), 2026-08-04
+G1–G3 single-seed trainings, G1–G4 pooled runs, and the all-groups crossbar resume (`2em6frqv`) are shelved under the ICLR does-the-correction-cause-composition anchor. Plan files moved to `plans/shelved/rungs/`. The old taxonomy's pairs still serve the program as cached cells for the composition-type scatter (no training). Revive only if a reviewer-facing gap demands taxonomy-wide training evidence.
 
 ### Attend-and-Excite baseline (left behind from mechanism-study)
 From: mechanism-study plan 02 (never run), shelved 2026-08-04
 Test-time attention-steering baseline for the "why not just re-aim attention" question. The mechanism section answers it descriptively (attention barely moves); running AAE is held in reserve. Trigger: a reviewer asks for the direct comparison. Plan content preserved in `plans/shelved/mechanism-study/plans/02-attend-and-excite-baseline.md`.
 
 ### SuperDiff AND as a full baseline
-From: triage-plan (interaction-term routing), 2026-08-04
+From: triage-plan (does-the-correction-cause-composition routing), 2026-08-04
 The paper carries one defended sentence (rebalancing cannot manufacture a correction outside the span of the two predictions; gets a /pressure-test pass before print). Running SuperDiff AND as an actual baseline is held in reserve with the AAE item above, same trigger: a reviewer asks "why not just rebalance".
 
 ### SLERP-merge the Plan-09 per-pair LoRAs as a second transfer route
@@ -26,20 +26,20 @@ Instead of only training a group-pool LoRA, spherically interpolate (SLERP) the 
 
 ### ~~Degradation-curve evidence shape (rate vs fraction held out)~~ PROMOTED 2026-07-28
 From: augment compile (strengthened transfer case), 2026-07-21
-~~Report transfer as a curve, recognisable-composition rate vs the fraction of pairs held out, instead of a per-group pass/fail.~~ **Promoted:** subsumed by the `animals-compose-transfer` scope's leave-one-pair-out design. Ref arxiv 2508.20783 still applies.
+~~Report transfer as a curve, recognisable-composition rate vs the fraction of pairs held out, instead of a per-group pass/fail.~~ **Promoted:** subsumed by the `does-the-fix-reach-unseen-pairs` scope's leave-one-pair-out design. Ref arxiv 2508.20783 still applies.
 
 ### Widen the mechanism study to a second pair (updated 2026-08-04)
 From: hypothesis-to-scope → triage-plan (mechanism-study scope), 2026-07-26
-Extend the mechanism read to a second pair from the compose-by-default bucket. Trigger updated: fires if the `interaction-term` scope's mechanism re-probe (the cross-seed, cross-pair re-run of the value-channel finding on `lora_step_100000.pt`) reads inconclusive. The re-probe's held-out pairs already span multiple pairs, so this may self-resolve; check before promoting. Bundled with the taxonomy-relabel item below.
+Extend the mechanism read to a second pair from the compose-by-default bucket. Trigger updated: fires if the `does-the-correction-cause-composition` scope's mechanism re-probe (the cross-seed, cross-pair re-run of the value-channel finding on `lora_step_100000.pt`) reads inconclusive. The re-probe's held-out pairs already span multiple pairs, so this may self-resolve; check before promoting. Bundled with the taxonomy-relabel item below.
 
 ### Two-bucket taxonomy relabel (compose-by-default vs fails-by-default)
 From: hypothesis-to-scope → triage-plan (mechanism-study scope), 2026-07-26
-Re-sort the existing taxonomy (G1–G6) into two buckets using the visual reads from the old rung 1. Infrastructure for the "Widen" item above; only needed if its trigger fires. Note: the `interaction-term` composition-type scatter assigns regime labels to the same cached pairs by measured ‖r_t‖, which may supersede this eyeball relabel entirely.
+Re-sort the existing taxonomy (G1–G6) into two buckets using the visual reads from the old rung 1. Infrastructure for the "Widen" item above; only needed if its trigger fires. Note: the `does-the-correction-cause-composition` composition-type scatter assigns regime labels to the same cached pairs by measured ‖r_t‖, which may supersede this eyeball relabel entirely.
 
 ### LoRA-vs-Mono attention comparison (trimmed 2026-08-04)
 From: hypothesis-to-scope → triage-plan (mechanism-study scope), 2026-07-26
-Original entry had two halves. (a) Cross-seed direction-consistency: now covered by the `interaction-term` spectrum analysis (stacked cached targets, per-pair blocks). (b) Does LoRA-corrected attention resemble Mono's actual attention: still parked, still no three-way falsification rule, needs Mono-side attention capture confirmed.
-▶ `/frame-hypothesis "does LoRA-corrected cross-attention resemble Mono's actual attention on the same held-out cells, once the interaction-term mechanism re-probe has landed"`
+Original entry had two halves. (a) Cross-seed direction-consistency: now covered by the `does-the-correction-cause-composition` spectrum analysis (stacked cached targets, per-pair blocks). (b) Does LoRA-corrected attention resemble Mono's actual attention: still parked, still no three-way falsification rule, needs Mono-side attention capture confirmed.
+▶ `/frame-hypothesis "does LoRA-corrected cross-attention resemble Mono's actual attention on the same held-out cells, once the does-the-correction-cause-composition mechanism re-probe has landed"`
 
 ### Text-space intervention (add/subtract the binding vector)
 From: language-probes discussion, 2026-08-03
@@ -47,16 +47,16 @@ The passive probes L1–L3 measure the binding vector b = e_J − normalized(e_A
 ▶ `/frame-hypothesis "does adding the measured text-space binding direction b to a regime-1 pair's conditioning shift its λ=0 composition behavior, given L1–L3 results"`
 
 ### Results and experiments prose (blocked on the numbers)
-From: triage-plan (paper-iclr routing), 2026-08-05
-The results section cannot be written in phase 1 because most numbers do not exist. `interaction-term` plans 01–11 are unrun (only plan 00, the instruments, is complete); `animals-compose-transfer` has the pooled 03a read (out_out 0.96 at step 60k) but owes the leave-one-pair-out run, the mixed-pool contrast, and the 70k–100k scoring. Phase 1 writes section skeletons with named placeholders instead. Trigger: promote per figure as each run lands, not as one block. The figure layout from `plans/closing-the-compositional-gap/plans/paper-iclr/plans/02-figure-layout.md` sets which numbers are needed first.
+From: triage-plan (writing-the-paper routing), 2026-08-05
+The results section cannot be written in phase 1 because most numbers do not exist. `does-the-correction-cause-composition` plans 01–11 are unrun (only plan 00, the instruments, is complete); `does-the-fix-reach-unseen-pairs` has the pooled 03a read (out_out 0.96 at step 60k) but owes the leave-one-pair-out run, the mixed-pool contrast, and the 70k–100k scoring. Phase 1 writes section skeletons with named placeholders instead. Trigger: promote per figure as each run lands, not as one block. The figure layout from `plans/closing-the-compositional-gap/plans/writing-the-paper/plans/writing-03-where-each-figure-goes.md` sets which numbers are needed first.
 
 ### Figure production stays in the result scopes
-From: triage-plan (paper-iclr routing), 2026-08-05
-The new `paper-iclr` scope owns figure *layout* (which figure goes in which section, in what order) but not figure *production*. F2–F5 stay with `animals-compose-transfer/plans/05-figures.md`; the seven-figure cascade stays with `interaction-term/plans/10-figures.md`. Revisit only if the split makes "where are my figures" genuinely hard to answer in practice, which is the one cost of this decision.
+From: triage-plan (writing-the-paper routing), 2026-08-05
+The new `writing-the-paper` scope owns figure *layout* (which figure goes in which section, in what order) but not figure *production*. F2–F5 stay with `does-the-fix-reach-unseen-pairs/plans/figure-01-the-transfer-figures.md`; the seven-figure cascade stays with `does-the-correction-cause-composition/plans/figure-01-the-seven-paper-figures.md`. Revisit only if the split makes "where are my figures" genuinely hard to answer in practice, which is the one cost of this decision.
 
 ### Finishing either result scope before drafting
-From: triage-plan (paper-iclr routing), 2026-08-05
-Dropped, recorded so it is not re-litigated. `interaction-term`'s Definition of Done has 11 items including SD 1.5 / SD 2.1 replication, a sampler sweep, two /pressure-test passes and the Inspector tabs; that is a paper's worth of work on its own. The two scopes are also mutually dependent (interaction-term DoD item 7 says the 100k transfer number is owned by animals plan 03a), so "finish one then the other" was never available. The draft proceeds against placeholders, and the ranked figure set decides the run order.
+From: triage-plan (writing-the-paper routing), 2026-08-05
+Dropped, recorded so it is not re-litigated. `does-the-correction-cause-composition`'s Definition of Done has 11 items including SD 1.5 / SD 2.1 replication, a sampler sweep, two /pressure-test passes and the Inspector tabs; that is a paper's worth of work on its own. The two scopes are also mutually dependent (does-the-correction-cause-composition DoD item 7 says the 100k transfer number is owned by animals plan 03a), so "finish one then the other" was never available. The draft proceeds against placeholders, and the ranked figure set decides the run order.
 
 ### Seven more skills the design/review split would eventually touch
 From: the plan-tree conventions session, 2026-08-10
@@ -76,5 +76,5 @@ deliberately deferred until a second scope has been converted by hand and proved
 
 The reason for waiting: six files describe this convention and one plan uses it. Spreading
 instructions that have never been executed to seven more skills makes seven more places for it
-to drift. Convert `animals-compose-transfer` by hand first and see whether `populate-plans`
+to drift. Convert `does-the-fix-reach-unseen-pairs` by hand first and see whether `populate-plans`
 produces what plan 03 has.
