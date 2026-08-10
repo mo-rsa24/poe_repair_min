@@ -16,9 +16,13 @@ from __future__ import annotations
 import argparse
 import json
 import os.path
+import sys
 from pathlib import Path
 
 from flask import Flask, abort, jsonify, render_template_string, request, send_file
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from window_tab import WINDOW_INDEX_HTML  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_MANIFEST = REPO_ROOT / "outputs/lora/a_cat__x__a_dog/seed_42/results/inspector_manifest.json"
@@ -26,6 +30,9 @@ DEFAULT_CW_MANIFEST = REPO_ROOT / "outputs/conditioning_window/a_cat__x__a_dog/s
 DEFAULT_CWL_WP_MANIFEST = REPO_ROOT / "outputs/conditioning_window_lora/a_cat__x__a_dog/seed_42/with_prompt/results/inspector_manifest.json"
 DEFAULT_CWL_ALWAYS_MANIFEST = REPO_ROOT / "outputs/conditioning_window_lora/a_cat__x__a_dog/seed_42/always/results/inspector_manifest.json"
 DEFAULT_OUTPUTS_ROOT = REPO_ROOT / "outputs"
+# The correction-timing sweep writes to /datasets, not into the repo.
+DEFAULT_IW_ROOT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/window")
+DEFAULT_IW_MANIFEST = DEFAULT_IW_ROOT / "window_inspector_manifest.json"
 
 
 _TAB_HEADER = r"""
@@ -87,6 +94,10 @@ _TAB_HEADER = r"""
   <a href="/conditioning_window_lora" class="{{ 'active' if active == 'cwl' else '' }}">
     <span class="tab-title">LoRA + CFG-mask</span>
     <span class="tab-role">payoff &middot; rescue test</span>
+  </a>
+  <a href="/interaction_window" class="{{ 'active' if active == 'iw' else '' }}">
+    <span class="tab-title">Correction timing</span>
+    <span class="tab-role">when &middot; sliding window</span>
   </a>
   <span class="spacer"></span>
   {% if pair_options and pair_options|length > 1 %}
@@ -2001,9 +2012,16 @@ def create_app(
     cw_manifest_path: Path | None = None,
     cwl_wp_manifest_path: Path | None = None,
     cwl_always_manifest_path: Path | None = None,
+    iw_manifest_path: Path | None = None,
+    iw_root: Path = DEFAULT_IW_ROOT,
 ) -> Flask:
     manifest = json.loads(manifest_path.read_text())
     outputs_root_abs = outputs_root.resolve()
+
+    # The timing tab renders with an empty manifest too, saying what to run.
+    iw_manifest: dict = {}
+    if iw_manifest_path is not None and Path(iw_manifest_path).is_file():
+        iw_manifest = json.loads(Path(iw_manifest_path).read_text())
 
     cw_manifest: dict | None = None
     if cw_manifest_path is not None and Path(cw_manifest_path).is_file():
@@ -2185,6 +2203,47 @@ def create_app(
             "always": cwl_al,
         })
 
+    @app.route("/interaction_window")
+    def interaction_window():
+        m = iw_manifest or {}
+        curve = m.get("curve") or {}
+        return render_template_string(
+            _with_tabs(WINDOW_INDEX_HTML),
+            **_tab_ctx("iw", _selected_pair()),
+            width=m.get("width", "—"),
+            stride=m.get("stride", "—"),
+            num_steps=m.get("num_steps", 50),
+            fork_step=m.get("fork_step", "—"),
+            n_windows=len(m.get("windows") or []),
+            n_on_disk=m.get("n_cells_on_disk", 0),
+            n_planned=m.get("n_cells_planned", 0),
+            n_scored=m.get("n_cells_scored", 0),
+            scorer=curve.get("scorer"),
+            manifest_json=json.dumps(m),
+        )
+
+    @app.route("/interaction_window/manifest.json")
+    def interaction_window_manifest():
+        if not iw_manifest:
+            abort(404)
+        return jsonify(iw_manifest)
+
+    @app.route("/interaction_window/img")
+    def interaction_window_img():
+        # The sweep writes to /datasets, which is outside the repo, so the
+        # repo-relative /img route cannot reach it. Serve by absolute path
+        # instead, and only from inside the sweep's own output root: anything
+        # that resolves elsewhere is refused rather than clamped.
+        raw = request.args.get("path", "")
+        if not raw:
+            abort(400)
+        target = Path(raw).resolve()
+        if not target.is_relative_to(iw_root.resolve()):
+            abort(403)
+        if not target.is_file():
+            abort(404)
+        return send_file(target)
+
     @app.route("/img/<path:rel>")
     def img(rel: str):
         # rel is relative to REPO_ROOT (manifest stores those paths).
@@ -2224,6 +2283,15 @@ def main() -> int:
         help="conditioning_window_lora 'always' manifest. If missing, "
              "the /conditioning_window_lora route renders a hint page.",
     )
+    ap.add_argument(
+        "--window-manifest", default=str(DEFAULT_IW_MANIFEST),
+        help="correction-timing manifest (produced by "
+             "scripts/build_window_manifest.py). If missing, "
+             "/interaction_window renders the commands that make it.",
+    )
+    ap.add_argument("--window-root", default=str(DEFAULT_IW_ROOT),
+                    help="only images under this directory are served to the "
+                         "timing tab")
     ap.add_argument("--outputs-root", default=str(DEFAULT_OUTPUTS_ROOT))
     ap.add_argument("--host", default="127.0.0.1")
     ap.add_argument("--port", type=int, default=5050)
@@ -2249,11 +2317,19 @@ def main() -> int:
                 f"[warn] conditioning_window_lora ({label}) manifest not found: {p}; "
                 f"/conditioning_window_lora will render a hint page."
             )
+    iw_path = Path(args.window_manifest) if args.window_manifest else None
+    if iw_path is not None and not iw_path.is_file():
+        print(
+            f"[warn] correction-timing manifest not found: {iw_path}; "
+            f"/interaction_window will render a hint page."
+        )
     app = create_app(
         manifest_path, Path(args.outputs_root),
         cw_manifest_path=cw_path,
         cwl_wp_manifest_path=cwl_wp_path,
         cwl_always_manifest_path=cwl_al_path,
+        iw_manifest_path=iw_path,
+        iw_root=Path(args.window_root),
     )
     app.run(host=args.host, port=args.port, debug=args.debug)
     return 0
