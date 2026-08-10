@@ -6,34 +6,34 @@ of code, outputs, and checkpoints:
 1. **LoRA (success).** Per-arm rank-8 LoRA on SDXL UNet cross-attention.
    Training timeline and inference probes for cat × dog, seed 42 are
    preserved at `outputs/lora/a_cat__x__a_dog/seed_42/results/`. See
-   [`lora-success.md`](lora-success.md).
+   [`docs/results-archive/lora-success.md`](docs/results-archive/lora-success.md).
 2. **Residual diagnostics (Mono ceiling).** Two sub-experiments characterising
    the guided PoE→Mono residual r_t:
    `residual_diagnostics/existence/` (residual is well-defined + structured)
    and `residual_diagnostics/clip_window/` (commitment window). Code-only —
-   outputs are regenerable. See [`residual-diagnostics.md`](residual-diagnostics.md).
+   outputs are regenerable. See [`docs/results-archive/residual-diagnostics.md`](docs/results-archive/residual-diagnostics.md).
 3. **Group-A (failure cases).** Latent-CNN, latent-UNet, frozen-feature-MLP
    external correctors that demonstrably *don't* fix PoE. Outputs and
    checkpoints kept under `outputs/group_a_failure/`. See
-   [`group-a-failure.md`](group-a-failure.md).
+   [`docs/results-archive/group-a-failure.md`](`docs/results-archive/group-a-failure.md).
 4. **Internal-force failure case.** Mono-free PoE-internal corrective
    forces (attention-overlap + score-alignment). Another repair attempt
-   that fails alongside group-A. See [`internal-force-failure.md`](internal-force-failure.md).
+   that fails alongside group-A. See [`docs/results-archive/internal-force-failure.md`](docs/results-archive/internal-force-failure.md).
 5. **CFG conditioning-window ablation (no-LoRA baseline).** Per-step CFG
    on/off mask sweep on a clean SDXL base. Identifies the minimum
    conditioning window that still produces a recognisable cat+dog;
    serves as the no-residual baseline against which thread 1 measures
-   LoRA's marginal effect. See [`conditioning-window.md`](conditioning-window.md).
+   LoRA's marginal effect. See [`docs/results-archive/conditioning-window.md`](docs/results-archive/conditioning-window.md).
 
 Published-paper reference codebases (AAE, CO3, FOCUS, P2P,
 reduce-reuse-recycle) live untouched in `composition/`.
 
 ## Setup
 
-```bash
+``bash
 cd /home-mscluster/mmolefe/Playground/PhD/poe_repair_min
 PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
-```
+``
 
 **Always use the `co3` conda env's python.** Each experiment runs an
 import-sanity check at startup; if your interpreter is missing a dep it
@@ -48,7 +48,7 @@ or per-run `--cache-root <path>` on the LoRA and group-A trainers.
 
 ## Repo layout
 
-```
+``
 poe_repair/
   config.py runtime.py run.py training_cache.py
   _sdxl/                       SDXL model loading
@@ -90,7 +90,7 @@ scripts/
   lora_inspector.py            Flask app for the LoRA training timeline
   run_lora_inspector.sh        launcher with SSH-tunnel-friendly defaults
   watch_and_visualize.py       live student-checkpoint visualiser
-```
+``
 
 ## Run order
 
@@ -99,78 +99,78 @@ scripts/
 Consolidated run at `outputs/lora/a_cat__x__a_dog/seed_42/results/`. Rebuild the
 inspector manifest and serve locally:
 
-```bash
+``bash
 $PY scripts/build_lora_manifest.py
 $PY scripts/lora_inspector.py --port 5050
 # from your laptop: ssh -L 5050:localhost:5050 mscluster106
 #                   open http://localhost:5050
-```
+``
 
 LoRA inference-only (load an existing checkpoint, run the startup probe,
 exit — no training):
 
-```bash
+``bash
 $PY -m poe_repair.experiments.lora \
     --resume-from outputs/lora/a_cat__x__a_dog/seed_42/results/checkpoints/lora_step_062500.pt \
     --total-epochs 0
-```
+``
 
 LoRA re-training from scratch:
 
-```bash
+``bash
 $PY -m poe_repair.experiments.lora \
     --pair a_cat__x__a_dog --seed 42 --split heldout \
     --total-epochs 200 --probe-every-epochs 50 \
     --lr 1e-4 --lora-rank 8
-```
+``
 
 ### Thread 2 — Residual diagnostics
 
-See [`residual-diagnostics.md`](residual-diagnostics.md). Summary:
+See [`docs/results-archive/residual-diagnostics.md`](docs/results-archive/residual-diagnostics.md). Summary:
 
-```bash
+``bash
 $PY -m poe_repair.experiments.residual_diagnostics \
     --pair "a cat|a dog" --seed 42        # runs both existence + clip_window
-```
+``
 
 Or run them individually:
 
-```bash
+``bash
 $PY -m poe_repair.experiments.residual_diagnostics.existence    --pair "a cat|a dog" --seed 42
 $PY -m poe_repair.experiments.residual_diagnostics.clip_window  --pair "a cat|a dog" --seed 42
-```
+``
 
 ### Thread 3 — Group-A failure cases
 
-See [`group-a-failure.md`](group-a-failure.md):
+See [`docs/results-archive/group-a-failure.md`](`docs/results-archive/group-a-failure.md):
 
-```bash
+``bash
 $PY -m poe_repair.experiments.group_a_failure --technique latent_unet
 $PY -m poe_repair.experiments.group_a_failure --technique latent_cnn
 $PY -m poe_repair.experiments.group_a_failure --technique frozen_feature_mlp
-```
+``
 
 ### Thread 4 — Internal-force failure case
 
-See [`internal-force-failure.md`](internal-force-failure.md). Depends on
+See [`docs/results-archive/internal-force-failure.md`](docs/results-archive/internal-force-failure.md). Depends on
 the residual-existence diagnostic for basin-barrier calibration:
 
-```bash
+``bash
 $PY -m poe_repair.experiments.residual_diagnostics.existence --pair "a cat|a dog" --seed 42
 $PY -m poe_repair.experiments.internal_force_failure         --pair "a cat|a dog" --seed 42
-```
+``
 
 ### Thread 5 — CFG conditioning-window ablation (no-LoRA baseline)
 
-See [`conditioning-window.md`](conditioning-window.md). Per-step CFG mask
+See [`docs/results-archive/conditioning-window.md`](docs/results-archive/conditioning-window.md). Per-step CFG mask
 sweep on clean SDXL; no LoRA, no Mono. Reuses the same x_T as the LoRA
 experiment so the marginal-effect comparison is valid.
 
-```bash
+``bash
 $PY -m poe_repair.experiments.conditioning_window --sanity-only   # equivalence checks
 $PY -m poe_repair.experiments.conditioning_window --smoke         # 2-schedule wiring test
 $PY -m poe_repair.experiments.conditioning_window                  # full STANDARD_SUITE (~10–15 min)
-```
+``
 
 The interactive readout is the inspector at
 `http://127.0.0.1:5050/conditioning_window` (link is on the main LoRA page).
@@ -180,7 +180,7 @@ The interactive readout is the inspector at
 `run.py` provides a cached dispatcher; first call inferences, later calls
 reuse the PNG.
 
-```bash
+``bash
 $PY -c "
 from poe_repair.run import make_ctx, run_method
 from poe_repair.experiments._eval_common import cell_for
@@ -189,7 +189,7 @@ cell = cell_for('a cat', 'a dog', 42)
 for m in ['solo_a', 'solo_b', 'poe', 'mono']:
     run_method(m, cell, ctx)
 "
-```
+``
 
 ## What's not in this codebase
 

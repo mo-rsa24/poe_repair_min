@@ -52,7 +52,7 @@ The linear account of what the objective was, what ran, what it said, and the de
 ## G05 — Do external / internal alternatives reach the LoRA? [Overfit · ~2026-05-17 · ❎ negative]
 
 - **Question.** Can the residual be predicted *outside* the UNet (external correctors) or via Mono-free PoE-internal forces, instead of a LoRA?
-- **Ran.** Group-A: latent-CNN, latent-UNet, frozen-feature-MLP external correctors (`plans/05-group-a-failure.md`, W&B `poe-repair-group-a`, three runs finished). Internal-force: attention-overlap repulsion + score-alignment damping (`plans/06-internal-force-failure.md`).
+- **Ran.** Group-A: latent-CNN, latent-UNet, frozen-feature-MLP external correctors (`plans/05-`docs/results-archive/group-a-failure.md`, W&B `poe-repair-group-a`, three runs finished). Internal-force: attention-overlap repulsion + score-alignment damping (`plans/06-internal-force-failure.md`).
 - **Result.** All five fail to close the gap. The training runs completed; the *finding* is failure.
 - **Decision.** The LoRA result is meaningful — not something any corrector achieves. Report the failures negatively as the contrast set; scale the LoRA, not the alternatives.
 - **Fired next.** Justifies G07+ scaling of the LoRA specifically.

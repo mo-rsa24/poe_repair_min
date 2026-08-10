@@ -54,14 +54,14 @@ the same probe / figure / checkpoint conventions as the LoRA experiment.
 
 ## Commands
 
-```bash
+``bash
 PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
 export CUDA_VISIBLE_DEVICES=0   # one technique per GPU
-```
+``
 
 ### Run all three (parallel on a 2-node × 2-GPU layout)
 
-```bash
+``bash
 # A1 — latent CNN
 CUDA_VISIBLE_DEVICES=0 $PY -m poe_repair.experiments.group_a_failure \
     --technique latent_cnn \
@@ -79,14 +79,14 @@ CUDA_VISIBLE_DEVICES=0 $PY -m poe_repair.experiments.group_a_failure \
     --technique frozen_feature_mlp \
     --pair a_cat__x__a_dog --seed 42 --split heldout \
     --total-epochs 600 --probe-every-epochs 50 --lr 1e-4 --train-batch-size 2
-```
+``
 
 ### Dry-run wiring check (any technique, no training)
 
-```bash
+``bash
 $PY -m poe_repair.experiments.group_a_failure \
     --technique latent_cnn --dry-run
-```
+``
 
 Runs one probe at epoch 0 against an untrained corrector, writes the
 λ=0 / λ=1 strip. λ=0 must be byte-identical to vanilla PoE.
@@ -132,5 +132,5 @@ Runs one probe at epoch 0 against an untrained corrector, writes the
 | A3 frozen-feature MLP — 600-epoch training run + probes | ✅ | |
 | Cumulative grids (epoch × λ) per technique | ✅ | |
 | Combined 3-row comparison figure (A1 / A2 / A3 × λ at final epoch) | ✅ | |
-| Negative-result writeup in `group-a-failure.md` (root) | ✅ | |
+| Negative-result writeup in `docs/results-archive/group-a-failure.md` (root) | ✅ | |
 | Final verdict notes per technique in master writeup | | ⬜ (one paragraph each) |
