@@ -1,17 +1,30 @@
-# 💉 The dose experiment: inject the cached correction
+# 💉 Does more correction give more composition?
 
 Design only. Verdicts and run state live in
 [../review/03-dose-response.md](../review/03-dose-response.md).
 
+## What this asks, in one line
+Add the correction in increasing amounts and count how often the picture contains
+two separate animals instead of one blended one. If the correction is the reason
+composition works, more of it should give more of it.
+
 ## Description
-Inject the cached true correction into plain PoE sampling at rising strength,
-λ in {0, 0.25, 0.5, 0.75, 1}, same seed, and score each output. Three rows:
-the true correction, a size-matched random vector, another pair's correction.
+Take the correction we already have cached, add a fraction of it to plain PoE
+sampling, and score the picture that comes out. The fraction is λ, and it steps
+through 0, 0.25, 0.5, 0.75, 1 with the starting noise held fixed so the only thing
+changing is how much correction goes in.
+
+Three rows run at every fraction. The real correction for this pair, a random
+vector of the same size, and the correction belonging to a different pair. The two
+fakes are the controls: they are what tells us the real one is working because of
+where it points and not because something was added.
 
 ## Purpose
-The paper's headline causal claim (Goal 1): composition failure is the absence
-of this term. Dose response with a flat random control proves the fix is the
-term's direction, not perturbation energy. Serves DoD 3.
+This is the paper's central causal claim (Goal 1): composition fails because this
+correction is missing. A rising curve for the real correction beside two flat
+curves for the fakes is what turns "the fix helps" into "the fix is the cause".
+Without the flat controls, adding anything at all might have helped, and the claim
+would not survive a reviewer. Serves DoD 3.
 
 ## Goal
 The three-curve figure (compose-rate vs λ) over the held-out animal pairs with
@@ -25,56 +38,76 @@ the five-image strip, plus the scored outputs on disk for plans 05 and 06.
   filesystem being written to, not a different one.
 - W&B: log the Mono vs PoE vs corrected triptych per cell.
 
-## What makes the controls valid
-Design decisions, each of which would have voided the control if missed. They are
-here rather than in the review file because they are properties of the experiment,
-not findings from it.
+## Why the two fake rows are a fair comparison
+A control only works if it differs from the real thing in exactly one way. If a
+fake differs in two ways, and the real correction works while the fake does not,
+you cannot say which difference caused it, and the comparison stops being evidence.
+So four things are deliberately held equal. These are decisions about the
+experiment, not findings from it, which is why they live here and not in the review
+file.
 
-- Both substitutes are norm-matched to the true delta per step, so a difference in
-  compose rate cannot be explained by injecting more or less magnitude.
-- The recorded `delta_norm` and the PMI identity keep using the TRUE delta. Those
-  are properties of the pair, not of what is injected.
-- The `lam==1.0` shortcut (`eps_t = eps_j`) is disabled when a substitute is
-  active. That identity holds only for the real delta, so leaving it in would make
-  the control row silently reproduce the oracle row.
-- λ=0 is sampled once and shared across rows. Nothing is injected there, so the
-  three rows are the same image by construction.
+- **The fakes are the same size as the real correction, at every step.** Scaled to
+  match its length. Otherwise a fake that failed could have failed for being too
+  weak rather than for pointing the wrong way, and only direction is supposed to
+  differ.
+- **The measurements keep describing the real correction, even when a fake is
+  injected.** Two numbers are recorded per step: `delta_norm`, how big the real
+  correction is, and the PMI identity, a relationship it satisfies. Both describe
+  the pair of concepts, not whatever we chose to inject, so both keep reading the
+  real correction throughout.
+- **The full-strength shortcut is switched off during a fake run.** At λ=1 the
+  code could skip the arithmetic and use the joined-prompt prediction directly,
+  which gives the same answer when the correction is real. During a fake run that
+  shortcut would ignore the fake and return the real answer, so every control row
+  would have quietly reproduced the real one and all three curves would have
+  looked equally good. This is the failure that would have been hardest to notice.
+- **The zero-strength row is generated once and shared.** At λ=0 nothing is
+  injected, so all three rows are the same picture by construction. Generating it
+  three times would only add noise to the one point where the rows must agree.
 
 ## Tasks
-- [x] ✅ Injection script plus the two control rows.
-      `scripts/interaction_term_inject.py` over `run_teacher_residual`, with
-      `delta_substitute={"random","wrong_pair"}` added to the sampler. The
-      injection half came from plan 00; the substitution hook did not exist,
-      because the sampler always computed its own delta.
-- [x] ✅ The λ=0 contamination canary, comparing against the sampler's own saved
-      `eps_poe`. 8 tests, each shown to fail against a mutated sampler.
-- [x] ✅ One-seed smoke in-session: all three rows at λ=1 on a_cat__x__a_dog
-      seed 9, 20 steps, scored and eyeballed before any full submission.
-- [x] ✅ Full sweep: 8 held-out pairs × 4 seeds × 5 λ × 3 rows = 480 cells,
-      `scripts/mechanism_study/run_dose_sweep.sh`, resumable, about 50s per cell.
-- [x] ✅ Score every cell with the validated compose-scorer.
-- [ ] ⚠️ Read [../procedures/03-rescore-the-dose-sweep.md](../procedures/03-rescore-the-dose-sweep.md)
+A plain checkbox here, because a design task either happened or it did not. Whether
+the experiment worked is a separate question and it is answered in the review file.
+
+- [x] Write the code that injects a chosen vector, and the two fake rows.
+      `scripts/interaction_term_inject.py` over `run_teacher_residual`. Injecting
+      the real correction already existed from plan 00; choosing a different vector
+      did not, because the sampler always computed its own.
+- [x] Prove the harness does not disturb plain PoE when nothing is injected.
+      At λ=0 the output must match what the sampler itself saved for plain PoE.
+      8 tests, each one shown to fail against a deliberately broken sampler, so
+      they are checks and not decoration.
+- [x] Run one cell by hand before spending hours: all three rows at full strength
+      on a_cat__x__a_dog, seed 9, 20 steps, scored and looked at.
+- [x] Run the full set: 8 unseen pairs × 4 seeds × 5 strengths × 3 rows = 480
+      pictures, `scripts/mechanism_study/run_dose_sweep.sh`, resumable, about 50
+      seconds each.
+- [x] Score every picture with the validated composition scorer.
+- [ ] Read [../procedures/03-rescore-the-dose-sweep.md](../procedures/03-rescore-the-dose-sweep.md)
       to completion, do what it says, and answer the two open questions in the
-      review file. It pins the scorer's root to this sweep's seeds and chooses the
-      confidence and box-area floors against a picture rather than a number.
-- [ ] ⚠️ The three-curve figure plus the five-image strip. Candidates come from
-      plan 10's /design-figure pass; the strip is regenerated by step 6 of the
-      procedure above.
-- [ ] ⚠️ Move the sweep outputs off /home-mscluster and repoint
-      `run_dose_sweep.sh`, whose `OUT=$REPO/outputs/...` put 3.4GB in the home
-      repo. Make its disk guard check the filesystem it actually writes to.
+      review file. It stops the scorer picking up pictures from older runs, and it
+      sets its cutoffs by looking at a picture rather than by choosing a number.
+- [ ] Build the three-curve figure and the five-picture strip. Figure candidates
+      come from plan 10; the strip is rebuilt by step 6 of the procedure above.
+- [ ] Move the output off /home-mscluster and repoint `run_dose_sweep.sh`. Its
+      `OUT=$REPO/outputs/...` put 3.4GB in the home repo, and its disk check looked
+      at /datasets, a filesystem it was not writing to. Make the check follow the
+      output.
 
 ## Success/Failure Outcomes
-- **λ=0 canary**
-  - Success: max abs latent delta vs the sampler's saved `eps_poe` below 1e-5.
-  - Failure: nonzero delta means the harness contaminates the base path. Stop
-    and fix before any sweep. This is the contamination check, not a formality.
-- **full sweep**
-  - Success: 480 scored images; the oracle curve rises with λ; both control rows
-    stay near the floor at every dose.
-  - Failure: OOM on the 3090 (move to biggpu), or scorer and eyeball disagree.
-    The second is the inconclusive arm: fix the instrument, re-score, and never
-    loosen the threshold to rescue the curve.
+- **Does the harness leave plain PoE alone when nothing is injected?**
+  - Success: at λ=0, the largest difference against what the sampler saved for
+    plain PoE is below 1e-5.
+  - Failure: any real difference means our own code is changing the baseline we
+    are comparing against, so every later number would be measured from the wrong
+    starting point. Stop and fix it before running anything large.
+- **Does more correction give more composition, while the fakes stay flat?**
+  - Success: 480 scored pictures. The real correction's curve rises as λ rises,
+    and both fake rows stay near the bottom at every strength.
+  - Failure: either the GPU runs out of memory (move to a bigger node), or the
+    scorer and your own eyes disagree about the same picture. The second is the
+    unclear case, not a negative one: fix the scorer, score again, and never move
+    the threshold to rescue the curve.
 
 ## Illustrations
 *(image not yet generated)*
