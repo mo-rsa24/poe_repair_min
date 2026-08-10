@@ -103,6 +103,11 @@ broke. No landing is narrated without its instrument.
 - ⚠️ 10-figures.md
 - ⚠️ 11-inspector.md
 
+## Running order
+
+This scope keeps no order of its own. The single flat order across every scope
+and level is the `## Running order` table in the repo root `MASTER_PLAN.md`.
+
 ## Environment Context
 See `docs/ENVIRONMENT.md` for this project's environment/architecture facts.
 Read before drafting or checking any plan in this scope.

@@ -82,3 +82,12 @@ F1_scorer_null.png, scorer_validation_FAILED.embedding_attempt.json}.
 - ✅ plans/01-anchors.md: three reference anchors per validation pair generated (DONE)
 - ✅ plans/02-build-scorer.md: scorer built. Embedding reads (DINOv2/CLIP) nulled; instance-count read is the validated one (DONE)
 - ✅ plans/03-validate-emit-contract.md: VALIDATED 10/10, scorer_validated.json emitted, F1_scorer_works.png produced (DONE)
+
+## Running order
+
+This scope keeps no order of its own. The single flat order across every scope
+and level is the `## Running order` table in the repo root `MASTER_PLAN.md`.
+
+## Environment Context
+See `docs/ENVIRONMENT.md` for this project's environment/architecture facts.
+Read before drafting or checking any plan in this scope.

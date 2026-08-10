@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && timeout 90 python3 scripts/plan_pulse.py --checks=1,2 2>/dev/null || true",
+            "timeout": 120
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && timeout 60 python3 scripts/plan_pulse.py --checks=3,4 2>/dev/null || true",
+            "timeout": 90
+          }
+        ]
+      }
+    ]
+  }
+}

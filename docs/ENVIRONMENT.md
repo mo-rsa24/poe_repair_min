@@ -112,6 +112,28 @@ from a laptop over the SSH tunnel the same way the LoRA Inspector is reached.
 normal here. Judge a build by whether the PDF was written, not by whether the
 output was silent.
 
+## Storage: size, retention, and what a `✓ verified` tag depends on
+Both filesystems are NFS mounts, sized and used as follows (`df -h`, 2026-08-09):
+
+| Mount | Size | Used | Free | What belongs there |
+|---|---|---|---|---|
+| `/datasets` | 201T | 24T (12%) | 178T | every checkpoint, cache, and sweep output |
+| `/home-mscluster` | 73T | 26T (35%) | 48T | the repo, the conda envs, small results and logs |
+
+There is no per-user `quota` command on these nodes, so a user's share is not
+queryable: the only guard is the df check every job script runs before writing.
+
+Neither filesystem is under version control and neither is snapshotted. Every
+`✓ verified (...)` evidence tag in the plan tree points at a path on one of
+them, so an artifact deleted or moved silently breaks the claim it backs. That is
+what `plans/artifact-reconciliation/plans/05-resweep-on-new-runs.md` exists to
+catch, and why it is a standing recurring plan rather than a finished one.
+
+A script writing large output must check the filesystem it actually writes to.
+`scripts/mechanism_study/run_dose_sweep.sh` sets its output root under the repo
+on `/home-mscluster` while its disk guard reads `df /datasets/mmolefe`, so 3.4GB
+of sweep cells landed on the wrong mount with the guard reporting healthy.
+
 ## Known gaps / non-obvious constraints
 - `/home-mscluster` hit 100% once and silently killed checkpointing mid-run.
   Checkpoints go to `/datasets/...` only, and every job keeps the df guard.

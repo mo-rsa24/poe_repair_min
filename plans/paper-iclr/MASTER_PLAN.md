@@ -93,6 +93,11 @@ a narrower claim, decided at the phase-3 boundary rather than at the deadline.
 - ⚠️ 06-mechanism-and-caveats.md — moved here from `interaction-term` plan 09 on
   2026-08-05; blocked on that scope's plans 02 and 09 (DoD 9)
 
+## Running order
+
+This scope keeps no order of its own. The single flat order across every scope
+and level is the `## Running order` table in the repo root `MASTER_PLAN.md`.
+
 ## Environment Context
 See `docs/ENVIRONMENT.md` for this project's environment/architecture facts.
 Read before drafting or checking any plan in this scope.
