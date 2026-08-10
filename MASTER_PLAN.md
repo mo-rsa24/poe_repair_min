@@ -8,11 +8,11 @@ This block is a snapshot; the live version prints at session start, or on demand
 - **What is going on:** nothing is running; the GPU is free.
 - **The last thing we did:** one parent scope for the paper, its cadence stated: figures first,
   write at 5 to 10 resolved register slots.
-- **Do this next:** the dose re-score. Read
-  [the procedure](plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/procedures/hypothesis-02-recheck-the-headline-numbers.md)
-  to completion and answer the two open questions in
-  [the review file](plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md).
-  It resolves F2, the paper's headline slot.
+- **Do this next:** step 2,
+  [hypothesis-04-what-the-cached-runs-already-show](plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/plans/hypothesis-04-what-the-cached-runs-already-show.md).
+  No GPU and no queue. Two finished runs in this scope are waiting on a judgement rather than on
+  compute: hypothesis-01 and hypothesis-04 each carry one unanswered design question about which
+  points a figure plots, and `python3 scripts/plan_pulse.py` lists both.
 
 ## The paper: what has to land
 
@@ -23,7 +23,7 @@ with that.
 
 | Step | Plan | What it does | Status | Waits on |
 |---|---|---|---|---|
-| 1 | does-the-correction-cause-composition/hypothesis-02-more-correction-more-composition | the headline causal result: more correction, more composition, with two flat controls | ◑ re-score owed | |
+| 1 | does-the-correction-cause-composition/hypothesis-02-more-correction-more-composition | the headline causal result: more correction, more composition, with two flat controls | ◑ result done, 3.4GB owed off /home-mscluster | |
 | 2 | does-the-correction-cause-composition/hypothesis-04-what-the-cached-runs-already-show | the analyses needing no GPU and no queue, five of six tasks left | ⚠️ | |
 | 3 | does-the-correction-cause-composition/hypothesis-03-when-in-the-run-it-matters | when in the denoising process the correction matters | ⚠️ | 1 |
 | 4 | does-the-fix-reach-unseen-pairs/instrument-02-three-live-curves-while-training | the one-epoch GPU smoke confirming three live curves | ⚠️ | |
@@ -45,11 +45,6 @@ with that.
 
 Step 19 is unblocked and cheap despite its number. Step numbers are positions in the
 order, and `sync-plan-tree` renumbers on its next pass.
-
-**Owed, and not a table row.** Three `compose-scorer` plans have every task unticked while
-that scope's summary says all three are finished and `scorer_validated.json` was emitted. The
-work happened and the ticking did not. That is a harvest job for `/sync-plan-tree`, which ticks
-from the output rather than from the scope's own claim.
 
 ## Reading, in the background
 
