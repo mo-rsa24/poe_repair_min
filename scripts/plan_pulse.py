@@ -7,6 +7,11 @@ Reads. Never writes. Four checks, in the order they cost you time:
 2. UNHARVESTED  a run's output is newer than the plan file that owns it.
 3. ORPHAN     a markdown file in a scope that no task names.
 4. DEBRIS     narration a plan file is not supposed to carry.
+5. RUNSTATE   a design plan carrying run state that belongs in its review file.
+6. UNJUDGED   a review file whose run finished with questions still unanswered.
+
+Checks 5 and 6 apply only to a scope that has a review/ folder, so they switch
+themselves on as scopes are converted and stay quiet on the ones that are not.
 
 Usage:
     python3 scripts/plan_pulse.py                 # whole tree
@@ -195,13 +200,70 @@ def check_debris(files):
     return hits
 
 
+# Run state: belongs in a review file, never in a design plan.
+RUN_STATE = re.compile(
+    r"✓ verified \(|^## Runs\b|\bwandb-[a-z0-9]{6,}\b|\bRUNNING\b|\bjob \d{4,}\b",
+    re.M,
+)
+
+
+def scope_of(path):
+    """The scope directory for a design plan, or None if this is not one.
+
+    A design plan lives at <scope>/plans/NN-name.md. Files under review/ and
+    procedures/ are allowed to carry run state and are not design plans.
+    """
+    parent = os.path.dirname(path)
+    if os.path.basename(parent) != "plans":
+        return None
+    return os.path.dirname(parent)
+
+
+def opted_in(scope):
+    """A scope has opted into the design/review split once review/ exists."""
+    return bool(scope) and os.path.isdir(os.path.join(scope, "review"))
+
+
+def check_runstate(files):
+    hits = []
+    for path in files:
+        scope = scope_of(path)
+        if not opted_in(scope):
+            continue
+        text = open(path, errors="replace").read()
+        for n, line in enumerate(text.splitlines(), 1):
+            if RUN_STATE.search(line):
+                hits.append((path, n, line.strip()[:100]))
+    return hits
+
+
+def check_unjudged(files):
+    """A review file recording a finished run while questions stay unanswered."""
+    hits = []
+    for path in files:
+        if os.path.basename(os.path.dirname(path)) != "review":
+            continue
+        text = open(path, errors="replace").read()
+        rows_done = [
+            l for l in text.splitlines()
+            if l.lstrip().startswith("|") and re.search(r"\bdone\b", l)
+        ]
+        unanswered = [
+            (n, l.strip()[:100]) for n, l in enumerate(text.splitlines(), 1)
+            if re.match(r"\s*- \[ \]", l)
+        ]
+        if rows_done and unanswered:
+            hits.append((path, len(rows_done), unanswered))
+    return hits
+
+
 def rel(p):
     return os.path.relpath(p, REPO)
 
 
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
-    checks = {1, 2, 3, 4}
+    checks = {1, 2, 3, 4, 5, 6}
     for a in sys.argv[1:]:
         if a.startswith("--checks"):
             checks = {int(x) for x in a.split("=")[-1].replace(",", " ").split()}
@@ -244,6 +306,24 @@ def main():
         print(f"DEBRIS: narration a plan should not carry ({len(hits)})")
         for path, n, line in hits:
             print(f"  {rel(path)}:{n}  {line}")
+        print()
+
+    if 5 in checks:
+        hits = check_runstate(files)
+        found += len(hits)
+        print(f"RUNSTATE: run state in a design plan, belongs in its review file ({len(hits)})")
+        for path, n, line in hits:
+            print(f"  {rel(path)}:{n}  {line}")
+        print()
+
+    if 6 in checks:
+        hits = check_unjudged(files)
+        found += len(hits)
+        print(f"UNJUDGED: a finished run with review questions still unanswered ({len(hits)})")
+        for path, n_done, unanswered in hits:
+            print(f"  {rel(path)}  {n_done} run(s) done, {len(unanswered)} question(s) open")
+            for n, line in unanswered:
+                print(f"      :{n}  {line}")
         print()
 
     if found == 0:
