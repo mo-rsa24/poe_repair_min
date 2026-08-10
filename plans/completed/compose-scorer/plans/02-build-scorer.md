@@ -20,21 +20,30 @@ A scorer module that emits a compose/blend label per output in both embedding sp
 plus the DINOv2-vs-MDS agreement table over the validation outputs.
 
 ## Tasks
-- [ ] ⚠️ **[needs /pressure-test]** Before building the MDS-space read, pressure-test
+- [x] **[/pressure-test ran]** Before building the MDS-space read, pressure-test
   the claim "the project MDS/latent space separates blend from compose." DINOv2 has no
   such risk; the own-latent-space read could be scoring "did the LoRA move" rather than
   "did it compose." The guard is the joint positive anchor (a real compose is far from
   both single-animal anchors AND near joint, not merely far from the monos). Record the
   verdict before relying on the MDS read.
-- [ ] ⚠️ Implement the DINOv2 embedding + relative-distance read: embed output and the
+- [x] Implement the DINOv2 embedding + relative-distance read: embed output and the
   three anchors, compute distance-to-each-anchor, emit a compose/blend label.
-- [ ] ⚠️ Implement the MDS/latent read reusing the existing trajectory space
+- [x] Implement the MDS/latent read reusing the existing trajectory space
   (`mono.pt`, `poe.pt`, `projection_meta.json`), same relative-distance logic, with the
   joint anchor as the positive-anchor guard.
-- [ ] ⚠️ Determine the relative threshold empirically from the validation pairs (the
+- [x] Determine the relative threshold empirically from the validation pairs (the
   separation between the known cat×dog compose and the wolf×husky blend), and record it.
-- [ ] ⚠️ Produce the DINOv2-vs-MDS agreement table: per output, {DINOv2 label, MDS
+- [x] Produce the DINOv2-vs-MDS agreement table: per output, {DINOv2 label, MDS
   label, distances to the three anchors}.
+
+All five ticked, and the design they describe did not survive contact with the data:
+the embedding reads (DINOv2/CLIP relative-distance) were built, tested, and NULLED,
+because they could not separate the wolf×husky blend (`agreement_table.json`,
+`F1_scorer_null.png`, `scorer_validation_FAILED.embedding_attempt.json`). The read
+that shipped is instance counting: GroundingDINO, compose iff at least 2 distinct
+animal instances (NMS iou<0.5, confidence>=0.30). That pivot is recorded inside
+`scorer_validated.json` under `rejected_reads_note`, so the contract itself says
+which reads were rejected and why.
 
 ## Engagement Instructions
 GATE (unattended pass/fail): the scorer runs on the validation outputs and emits a
