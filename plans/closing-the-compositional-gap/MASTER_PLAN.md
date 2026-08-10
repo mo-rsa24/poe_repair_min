@@ -23,26 +23,62 @@ below.
 | `plans/animals-compose-transfer/` | the transfer claim: one LoRA composes pairs it never saw | group 1 hypothesis runs (the pooled read, the 15-run leave-one-pair-out), group 5 the size-matched baseline pool, group 3 figure runs (slot F8) |
 | `plans/paper-iclr/` | the writing: spine, sections via `/draft-section`, layout, the build | no runs; it consumes the register and the review files |
 
-## Where every run group lives in this tree
+## The work, by group
 
-The six-plus-three groups (`~/.claude/EXPERIMENT_CONVENTIONS.md`), located, so "which group am
-I working in right now" always has an answer:
+Every plan in this scope, filed under the group whose rules it answers to. The files live with
+their claim (that is what keeps a design beside its verdict); this listing is how you navigate
+by group. Statuses roll up from the review files on every `/sync-plan-tree` pass.
 
-- **1, hypothesis:** the two result sub-scopes' `plans/`, judged in their `review/` files.
-- **2, new ideas:** the background pool in the root master plan; results to `PARKING_LOT.md`;
-  each names its source paper in the reading register.
-- **3, figures:** the register, plus `interaction-term/plans/10-figures.md` and
-  `animals-compose-transfer/plans/05-figures.md`. The foreground group, per the cadence below.
-- **4, reproduction:** no standing plans; a rerun lands on the existing claim's evidence tag.
-- **5, baselines:** `animals-compose-transfer/plans/04-run-B-contrast.md` (the size-matched
-  pool), plus Attend-and-Excite and SuperDiff held in reserve in `PARKING_LOT.md` with their
-  trigger written down.
-- **7, ablations of our method:** not yet planned; they enter as review questions when
-  `/experiment-planner` next runs on a result scope.
-- **8, robustness:** the seed axes inside the existing sweeps; the spread is reported in each
-  review answer rather than as separate plans.
-- **9, generalization:** `interaction-term/plans/08-replication.md` (other models and
-  samplers), background, its scaffold shelved at `plans/shelved/cross-model-replication`.
+**Hypothesis runs: test the core claim.** Seen to the end unless the foundation or the science
+is wrong. Careful design is critical; they answer to benchmarks and faithfulness.
+
+| Plan | Tests | Status |
+|---|---|---|
+| `interaction-term/plans/03-dose-response.md` | more correction, more composition, two flat controls | ◑ re-score owed |
+| `interaction-term/plans/04-window-pair.md` | when in the denoising run the correction matters | ⚠️ |
+| `interaction-term/plans/05-cache-analyses.md` | size follows noise; the paths fork; low-rank enough to learn | ◑ one decision left |
+| `interaction-term/plans/06-corroborations.md` | the same story from three independent sides | ⚠️ |
+| `interaction-term/plans/02-mechanism-reprobe.md` | the fix changes what a word paints, not where it looks | ◑ one decision left |
+| `animals-compose-transfer/plans/02-wire-scorer-eval-hook.md` | the three live curves (the sweep's safety gate) | ⚠️ smoke owed |
+| `animals-compose-transfer/plans/03a-phase1-pooled.md` | does the fix transfer at all | ◑ read incomplete |
+| `animals-compose-transfer/plans/03-run-A-leave-one-pair-out.md` | transfer as a rate: 15 held-out points | ⚠️ |
+
+**Idea runs: try new techniques to improve results.** Each one names the paper it came from.
+Results to `PARKING_LOT.md`; a striking number proposes a hypothesis run, never rewrites one.
+
+| Plan | Would earn | Status |
+|---|---|---|
+| `interaction-term/plans/07-composition-type.md` | the claim widened to attribute pairs | background, not started |
+| (candidates parked with their sources) | see `PARKING_LOT.md` | |
+
+**Figure runs: generate paper figures from settled results only.** The caption can claim no
+more than the figure slot's sentence. The register (`paper/iclr/figures.md`) is the scoreboard.
+
+| Plan | Slots | Status |
+|---|---|---|
+| `interaction-term/plans/10-figures.md` | F1 to F7 | ⚠️ F2 fillable after the re-score |
+| `animals-compose-transfer/plans/05-figures.md` | F8, via its A2 to A5 internals | ⚠️ waits on the sweep |
+
+**Reproduction runs: confirm or break an existing number against the original config and
+seed.** No standing plans; a rerun lands on the existing claim's evidence tag.
+
+**Baseline runs: competitors to beat.** Frozen the moment they land.
+
+| Plan | Competitor | Status |
+|---|---|---|
+| `animals-compose-transfer/plans/04-run-B-contrast.md` | the size-matched mixed pool | ⚠️ |
+| (held in reserve, trigger written down) | Attend-and-Excite; SuperDiff AND | `PARKING_LOT.md` |
+
+**Robustness and generalization** (groups 8 and 9): the seed spread lives inside each sweep and
+is reported in its review answers; other models and samplers are
+`interaction-term/plans/08-replication.md`, background, scaffold shelved. **Ablations of our
+method** (group 7): not yet planned; they enter as review questions when `/experiment-planner`
+next runs on a result scope.
+
+**The structural separation** rides underneath all of it: reading lives in
+`standing/literature/`, designs in each scope's `plans/`, verdicts in each scope's `review/`,
+and the two print gates in `interaction-term/plans/09-print-gates.md` guard the wording.
+The writing itself is `paper-iclr/`, which runs nothing and consumes everything.
 
 ## How this scope works: figures first, then the writing
 
