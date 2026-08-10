@@ -321,6 +321,9 @@ def check_jargon(files):
         prose = "\n".join(
             l for l in prose.splitlines()
             if not l.lstrip().startswith((">", "#", "|", "*("))
+            # A bullet whose length is a pasteable command chain is not an
+            # unreadable sentence: the command is an anchor that must survive.
+            and not re.search(r"`/[a-z-]+", l)
         )
         long_ones = [
             s.strip()[:60] for s in re.split(r"(?<=[.!?])\s", prose)
