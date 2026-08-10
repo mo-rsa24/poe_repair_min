@@ -37,6 +37,15 @@ OUT_ROOT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term")
 FRAME_PX = 512
 
 
+def to_uint8(img):
+    """decode_latents returns [0,1]; treating it as [-1,1] washes out contrast."""
+    import torch as _t
+    arr = img.detach().float().clamp(0.0, 1.0).mul(255.0).round().to(_t.uint8)
+    if arr.ndim == 4:
+        arr = arr[0]
+    return arr.permute(1, 2, 0).cpu().numpy()
+
+
 def steps_to_decode(n_frames: int, stride: int, all_steps: bool) -> list[int]:
     """Which points along the run to decode.
 
@@ -121,9 +130,8 @@ def main() -> int:
                 continue
             lat = traj[s].to(ctx.device, ctx.dtype)
             img = decode_latents(ctx.models, lat).cpu()
-            arr = (img.clamp(-1, 1) + 1).mul(127.5).round().to(torch.uint8)
-            arr = arr[0].permute(1, 2, 0).numpy()
-            Image.fromarray(arr).resize((args.px, args.px), Image.LANCZOS).save(path)
+            Image.fromarray(to_uint8(img)).resize(
+                (args.px, args.px), Image.LANCZOS).save(path)
             written.append({"step": s, "path": str(path)})
             n_frames_written += 1
 
