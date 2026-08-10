@@ -34,6 +34,11 @@ limit, inside the ICLR word budget.
 - [ ] /restyle pass against a named ICLR exemplar
 - [ ] check it against the ICLR word or line budget
 
+## Next
+
+1. `/draft-section abstract`. It refuses to run before SPINE.md exists, and its numbers piece
+   stays blocked while any cited slot is unfilled, which is the enforcement of "write it last".
+
 ## Success/Failure Outcomes
 - **the abstract**
   - Success: a reader knows what was claimed, what was shown, and what was not,

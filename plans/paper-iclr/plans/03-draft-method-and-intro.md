@@ -38,6 +38,15 @@ Both sections present in the `.tex` as real prose, building to a PDF.
       into the intro; the spine decides)
 - [ ] /restyle pass over both, against a named ICLR exemplar
 
+## Next
+
+1. `/draft-section method`: drafted from the design plans piece by piece, compiled into the tex
+   with the diff shown each time. The map lives in `paper/iclr/DRAFT_MAP.md` and survives
+   session breaks.
+2. `/draft-section intro`, claim by claim against SPINE.md; its `cite` control pulls from the
+   reading register and cues /paper-scout where the register is empty.
+3. `/restyle` against a named ICLR exemplar, after both sections exist.
+
 ## Success/Failure Outcomes
 - **the method section**
   - Success: a reader outside this project could reimplement the correction from

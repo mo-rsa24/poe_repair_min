@@ -39,6 +39,12 @@ in the `.tex`, with both pressure-test verdicts reflected in the wording.
       "already measured" on the window claim downgrades the novelty wording,
       not the experiment
 
+## Next
+
+1. `/draft-section limitations`: drafted from the ❌-bounded and 🟡 review answers, a bounded
+   miss written as its boundary in one sentence. The two /pressure-test verdicts from
+   interaction-term plan 09 are its inputs; it does not run before they exist.
+
 ## Success/Failure Outcomes
 - **the mechanism section**
   - Success: what it claims matches what plan 02 actually found, at the size

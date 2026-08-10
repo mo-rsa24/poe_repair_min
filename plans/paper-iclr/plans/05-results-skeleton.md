@@ -56,7 +56,9 @@ a named placeholder that says which run closes it.
 
 ## Next
 
-1. One subsection stub per register slot (F1 to F8 in `paper/iclr/figures.md`): the slot's claim
+1. `/draft-section results`: one piece per register slot, in register order; its `numbers`
+   control re-derives every figure from its review file before any compile. Or by hand:
+   one subsection stub per register slot (F1 to F8 in `paper/iclr/figures.md`): the slot's claim
    as the topic sentence, the placeholder-figure macro from plan 00, every number as XX.
 2. Build the PDF and read it: the blank spots ARE the remaining run order.
 3. When a slot turns fillable (plan_pulse reports it at session start), replace its XX numbers
