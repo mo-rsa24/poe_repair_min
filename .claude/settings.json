@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd \"$CLAUDE_PROJECT_DIR\" && timeout 90 python3 scripts/plan_pulse.py --checks=1,2,6 2>/dev/null || true",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && timeout 90 python3 scripts/plan_pulse.py --brief && cd \"$CLAUDE_PROJECT_DIR\" && timeout 90 python3 scripts/plan_pulse.py --checks=1,2,6 2>/dev/null || true",
             "timeout": 120
           }
         ]
@@ -16,7 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd \"$CLAUDE_PROJECT_DIR\" && timeout 60 python3 scripts/plan_pulse.py --checks=3,4,5,7 2>/dev/null || true",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && timeout 60 python3 scripts/plan_pulse.py --checks=3,4,5,7,8 2>/dev/null || true",
             "timeout": 90
           }
         ]
