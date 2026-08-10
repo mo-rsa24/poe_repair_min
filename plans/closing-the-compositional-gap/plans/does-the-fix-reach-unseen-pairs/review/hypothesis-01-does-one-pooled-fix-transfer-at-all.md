@@ -1,6 +1,23 @@
-# 🔬 Review: one pooled LoRA, the cheap transfer read
+# Review: does one pooled adapter transfer at all?
 
-Verdicts for [../plans/hypothesis-01-does-one-pooled-fix-transfer-at-all.md](../plans/hypothesis-01-does-one-pooled-fix-transfer-at-all.md).
+**Answered yes, strongly, and the read is not finished.** This file judges
+[../plans/hypothesis-01-does-one-pooled-fix-transfer-at-all.md](../plans/hypothesis-01-does-one-pooled-fix-transfer-at-all.md).
+It exists to answer one cheap question before fifteen expensive runs are paid for: does the fix
+reach unseen pairs at all? It does, so the fifteen-run sweep is warranted.
+
+Three things are still owed, and until they are done the number cannot be quoted in the paper: the
+later checkpoints are unscored, the direction measures were wired after this run finished, and the
+go-ahead note itself is unwritten.
+
+## Words this file uses
+- **Pooled**: one adapter trained on all eleven training pairs at once, rather than one adapter
+  per pair.
+- **Held-out**: a pair the adapter never trained on. The only kind that tests transfer. Its
+  opposite is a pair it did train on.
+- **The split it was tested on**: the unseen blend pairs, the known-failure reference pair, and
+  the control pair that composes fine with no adapter at all.
+- **With its step**: a transfer number is only meaningful beside the checkpoint it came from,
+  because the run kept training after it was measured.
 
 ## Run kind
 **Tests the claim** (does the fix transfer at all; gates the 15-run sweep).

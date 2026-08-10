@@ -39,6 +39,12 @@ in the `.tex`, with both pressure-test verdicts reflected in the wording.
       "already measured" on the window claim downgrades the novelty wording,
       not the experiment
 
+- [ ] Write the do-no-harm limitation. The pool lists `an_elephant__x__a_penguin` as a pair that
+      composes fine without any correction, and the strength sweep scored it 0 of 4 at strength 0
+      with four single fused creatures. So the claim currently has no demonstrated do-no-harm
+      control. State that as the boundary it is, and say what would settle it: a pair the plain
+      method composes reliably, verified over seeds before being called a control.
+
 ## Next
 
 1. `/draft-section limitations`: drafted from the ❌-bounded and 🟡 review answers, a bounded

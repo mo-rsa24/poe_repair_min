@@ -1,7 +1,25 @@
-# 🔬 Review: the dose experiment
+# Review: does more correction give more composition?
 
-Verdicts for [../plans/hypothesis-02-more-correction-more-composition.md](../plans/hypothesis-02-more-correction-more-composition.md). The design lives there
-and does not change because a number arrived here.
+**Answered, and these are the paper's numbers.** This file judges
+[../plans/hypothesis-02-more-correction-more-composition.md](../plans/hypothesis-02-more-correction-more-composition.md)
+and fills register slot **F2**, the paper's headline figure.
+
+Where it stands in one line: the correction takes the compose rate from 3% to 94% while both
+controls stay at or below 6%, measured on an equal number of cells per strength and with a size
+floor in the scorer that was chosen by looking at real detections. F2's caption may quote these
+figures.
+
+## Words this file uses
+- **A cell**: one picture, for one animal pair, at one strength, from one starting seed.
+- **The three rows**: the real correction, a random vector of the same size, and a different
+  pair's correction. The last two are the controls, and they are what makes the first one evidence.
+- **Compose rate**: the fraction of cells showing two separate animals rather than one blended
+  one, decided by the scorer and never by eye.
+- **AUC**: the area under a whole curve, one number per row, so three rows compare at a glance.
+- **The size floor**: `MIN_BOX_FRACTION = 0.25` in `detection_scorer.py`. A detection must span at
+  least a quarter of the image's longer side to count as an animal. This replaced the idea of
+  tightening the confidence cutoff, for the reason recorded below: confidence could not separate
+  a shadow from a penguin, and size could.
 
 Every question below was written at design time, from that plan's Success/Failure Outcomes, before
 the sweep ran. Answers are `✅` good, `❌` bad, `🟡` unknown, `⚠️` not yet answered.
@@ -16,7 +34,9 @@ follow-on. It has not failed.
 |---|---|---|---|---|
 | dose sweep on mscluster109, log `results/mechanism_study/dose_sweep.log` | Tests the claim | commit a21ac8b | `outputs/interaction_term/dose/pairs`, 440 images, 3.4GB | done |
 | one-seed smoke, a_cat__x__a_dog seed 9, 20 steps | Tests the claim | before a21ac8b | folded into the sweep tree | done |
-| scoring pass, grounding-dino-tiny instance_count | Tests the claim | commit a21ac8b | `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/dose_curves.json` | done, re-score owed |
+| first scoring pass, grounding-dino-tiny instance_count | Tests the claim | commit a21ac8b | `dose_curves.json` | superseded twice: by the seed pinning, then by the size floor |
+| re-score on the pinned seeds, CPU | Tests the claim | commit dcca290 | `dose_curves.json`, rewritten | done; showed the stray cells were not inflating anything |
+| re-score with the size floor in the scorer | Tests the claim | size floor in `detection_scorer.py` | `dose_curves.json`, and `dose_strip_an_elephant__x__a_penguin_seed10.png` | done; these are the paper's numbers |
 
 The sweep ran outside Slurm, on the session node, because biggpu allows one job per user. There is
 no job id, so the log path is its identity.
@@ -96,14 +116,52 @@ The original question asked about two things at once, so it splits.
       would if the curve had moved a lot.
       ✓ verified (32 cells per row-and-strength, seeds 9 to 12, commit dcca290)
 
-- [ ] ⚠️ Do they hold under a confidence cutoff chosen against the sliver picture?
-      Not yet, so **the numbers above are not the paper's numbers.** This re-score still used
-      the untouched defaults `conf=0.30`, `nms_iou=0.5`, and no box-size floor at all, which is
-      exactly what let a 162-pixel limb count as an animal. Choosing the cutoff is step 2 of
-      [the procedure](../procedures/hypothesis-02-recheck-the-headline-numbers.md), and it is a
-      look at a picture rather than a choice of number.
+- [x] ✅ Do they hold under a bar chosen against the picture of the boxes?
+      **Yes, and the claim is stronger under the bar than without it.** The bar is a size floor,
+      not a confidence floor: `MIN_BOX_FRACTION = 0.25` in `detection_scorer.py`, meaning a
+      detection must span at least a quarter of the image's longer side to count as an animal.
+      `conf` stays at 0.30.
+
+      Confidence was the wrong lever. On the `an_elephant__x__a_penguin` seed 10 strip the
+      `random` control at λ=1 shows one fused creature and scored two boxes: the animal at 888px,
+      and a 220px box on a shadow at **confidence 0.60**, above the real penguin's 0.54 on the
+      same strip. No confidence cutoff separates those. Size does: every genuine animal there
+      spans 458px or more, every spurious box 220px or less, on a 1024px image.
+
+      | | λ=0 | λ=0.25 | λ=0.5 | λ=0.75 | λ=1 | AUC |
+      |---|---|---|---|---|---|---|
+      | real correction | 3% | 9% | 25% | 72% | **94%** | 0.387 |
+      | random vector | 3% | 3% | 3% | 0% | 3% | 0.023 |
+      | other pair's correction | 3% | 3% | 3% | 6% | 3% | 0.039 |
+
+      The floor pulled the controls down far more than the oracle, which is what it should do if
+      the controls' non-zero readings were instrument error. The oracle-to-control AUC ratio goes
+      from 6.0x to 9.9x, and the endpoint is unchanged at 94%. The oracle rises 91 points from
+      λ=0 to λ=1; the better control rises 0.
+      ✓ verified (32 cells per row-and-strength, seeds 9 to 12, size floor in source)
+
+      **These are the paper's numbers.** F2's caption may now quote them.
 
 ## What is still open
-- [ ] ⚠️ Does the five-image strip read the same on complete cells?
-      The existing strip is one pair and seed (a_leopard__x__a_jaguar seed 9) and was generated
-      while the sweep was still partial.
+- [x] ✅ Does the five-image strip read the same on complete cells?
+      **Yes.** The strip is `an_elephant__x__a_penguin` seed 10, all three rows across all five
+      strengths, at
+      `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/dose_strip_an_elephant__x__a_penguin_seed10.png`.
+      The oracle row goes fused creature, fused creature, elephant alone, penguin beside elephant,
+      penguin beside elephant. Both control rows stay fused at every strength, so reading down a
+      column shows it is which vector was injected that matters, not how large the nudge was.
+
+      That pair carries the strip because a reviewer cannot dismiss it. An elephant and a penguin
+      share nothing, and PoE still fuses them at λ=0, so the failure is not "the two animals look
+      alike". `a_leopard__x__a_jaguar` seed 9 is the supplementary strip.
+
+      Two things in it belong in the text rather than smoothed over. At λ=0.5 the failure changes
+      character: it stops fusing and drops the penguin entirely. At λ=1 the panel holds three
+      animals, not two. Seed 10 is also the seed whose oracle row rises monotonically; seeds 9 and
+      11 do not.
+
+      **A control the pool does not actually have.** `pair_pool.yaml` lists
+      `an_elephant__x__a_penguin` as the compose-by-default control, the do-no-harm check. It
+      scores 0 of 4 at λ=0 and the four images are single fused creatures, so the scorer is right
+      and the pool's assumption is wrong. There is no working do-no-harm control in the pool. That
+      is a limitations sentence, owed by writing-06.
