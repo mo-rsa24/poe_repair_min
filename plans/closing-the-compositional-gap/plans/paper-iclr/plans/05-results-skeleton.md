@@ -33,14 +33,16 @@ a named placeholder that says which run closes it.
   an owed figure breaks the build.
 
 ## Tasks
-- [ ] write the experiments section structure: one subsection per experiment
-      the spine names, each stating the question and the setup
-- [ ] write the results structure: one subsection per claim, each holding a
-      named placeholder rather than prose
-- [ ] label each placeholder with the run that closes it, matching the owed
-      rows in FIGURES.md
-- [ ] write the one results paragraph that CAN be written today: the pooled
-      held-out transfer read, cited with its checkpoint
+- [ ] Run `/draft-section results` (the map is `paper/iclr/DRAFT_MAP.md`, created round 1 from
+      the register if missing): one piece per register slot F1 to F8, the slot's claim sentence
+      as the topic sentence, the placeholder macro from plan 00, every number XX unless its
+      review question is answered. This task IS the section structure; compile lands it.
+- [ ] Check every placeholder names the run that closes it, matching the register's
+      Answered-by column. A placeholder with no named run is an unowned gap: name the run or
+      cut the subsection.
+- [ ] Write the one results paragraph that CAN be written today: the pooled held-out transfer
+      read (held-out 0.96 at step 60000, from the animals 03a review), cited WITH its
+      checkpoint and its later-steps-unscored caveat.
 
 ## Success/Failure Outcomes
 - **the skeleton**
