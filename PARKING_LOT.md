@@ -57,3 +57,24 @@ The new `paper-iclr` scope owns figure *layout* (which figure goes in which sect
 ### Finishing either result scope before drafting
 From: triage-plan (paper-iclr routing), 2026-08-05
 Dropped, recorded so it is not re-litigated. `interaction-term`'s Definition of Done has 11 items including SD 1.5 / SD 2.1 replication, a sampler sweep, two /pressure-test passes and the Inspector tabs; that is a paper's worth of work on its own. The two scopes are also mutually dependent (interaction-term DoD item 7 says the 100k transfer number is owned by animals plan 03a), so "finish one then the other" was never available. The draft proceeds against placeholders, and the ranked figure set decides the run order.
+
+### Seven more skills the design/review split would eventually touch
+From: the plan-tree conventions session, 2026-08-10
+Four skills already know about the split: `PLAN_TREE_FORMAT.md`, `populate-plans`,
+`verify-plan`, `sync-plan-tree`. Seven more would need it eventually, and all seven are
+deliberately deferred until a second scope has been converted by hand and proved the format:
+
+- `init-master-plan`, `decompose-plan`: a new or child scientific scope inherits the
+  conventions pointer and the two folders.
+- `integrate-plans`: a task added to a scientific scope may owe a review question.
+- `frame-hypothesis`: it runs inside the follow-on plan, never in the plan that just failed.
+- `experiment-planner`, `hypothesis-to-scope`: emit the run kind and the review questions at
+  design time, which is the only time they can honestly be written.
+- `analyze-run`, `training-analyst`: their output lands as answered review questions, not prose.
+- `task-graph`: a plan blocked on an unanswered review question is blocked.
+- `execute-plan-tree`: it must not tick a plan whose pre-registered question is unanswered.
+
+The reason for waiting: six files describe this convention and one plan uses it. Spreading
+instructions that have never been executed to seven more skills makes seven more places for it
+to drift. Convert `animals-compose-transfer` by hand first and see whether `populate-plans`
+produces what plan 03 has.
