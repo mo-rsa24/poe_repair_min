@@ -74,11 +74,36 @@ the plan.**
       reported healthy about a filesystem nothing was being written to.
       Owned by the last task in the design plan.
 
-## What is still open
+## The re-score, in two halves
 
-- [ ] ⚠️ Do the curves hold after re-scoring on a pinned root and a chosen confidence floor?
-      Answer this by running
-      [../procedures/hypothesis-02-recheck-the-headline-numbers.md](../procedures/hypothesis-02-recheck-the-headline-numbers.md).
+The original question asked about two things at once, so it splits.
+
+- [x] ✅ Do the curves hold when only this sweep's own cells are scored?
+      **Yes, and they barely moved.** With the seeds pinned to 9 to 12 in
+      `plot_dose_curves.py`'s source, every (row, strength) pair now holds exactly 32 cells,
+      where the two end strengths previously held 44 against the middle three's 32. The unfair
+      comparison is gone.
+
+      | | λ=0 | λ=0.25 | λ=0.5 | λ=0.75 | λ=1 | AUC |
+      |---|---|---|---|---|---|---|
+      | real correction | 6% | 16% | 28% | 75% | **94%** | 0.422 |
+      | random vector | 6% | 6% | 6% | 3% | 9% | 0.059 |
+      | other pair's correction | 6% | 9% | 3% | 9% | 6% | 0.070 |
+
+      Against the earlier contaminated read (7% to 93%, AUC 0.422 / 0.059 / 0.071) these are
+      essentially unchanged. **That is the useful part:** the stray cells were not inflating
+      anything, so the paper owes no methods sentence about them, which the procedure said it
+      would if the curve had moved a lot.
+      ✓ verified (32 cells per row-and-strength, seeds 9 to 12, commit dcca290)
+
+- [ ] ⚠️ Do they hold under a confidence cutoff chosen against the sliver picture?
+      Not yet, so **the numbers above are not the paper's numbers.** This re-score still used
+      the untouched defaults `conf=0.30`, `nms_iou=0.5`, and no box-size floor at all, which is
+      exactly what let a 162-pixel limb count as an animal. Choosing the cutoff is step 2 of
+      [the procedure](../procedures/hypothesis-02-recheck-the-headline-numbers.md), and it is a
+      look at a picture rather than a choice of number.
+
+## What is still open
 - [ ] ⚠️ Does the five-image strip read the same on complete cells?
       The existing strip is one pair and seed (a_leopard__x__a_jaguar seed 9) and was generated
       while the sweep was still partial.
