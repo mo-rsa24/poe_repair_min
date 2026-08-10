@@ -2,7 +2,7 @@
 
 **Committed 2026-08-05, before any cross-type plot exists.**
 
-Plan `plans/interaction-term/plans/01-preregister-normalization.md`.
+Plan `plans/closing-the-compositional-gap/plans/interaction-term/plans/01-preregister-normalization.md`.
 
 ## The committed choice
 

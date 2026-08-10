@@ -71,10 +71,10 @@ a narrower claim, decided at the phase-3 boundary rather than at the deadline.
 12. ⚠️ Anonymous build compiles, page limit met, submitted.
 
 ## Reads From (produces no figures of its own)
-- `plans/interaction-term/` — the causal figure cascade (plan 10) and the
+- `plans/closing-the-compositional-gap/plans/interaction-term/` — the causal figure cascade (plan 10) and the
   mechanism verdict (plan 02). Its DoD item 7 also owns the 100k transfer number
   this paper cites.
-- `plans/animals-compose-transfer/` — the transfer figures F2–F5 (plan 05) and the
+- `plans/closing-the-compositional-gap/plans/animals-compose-transfer/` — the transfer figures F2–F5 (plan 05) and the
   pooled held-out read (plan 03a).
 
 ## Sub-Scopes

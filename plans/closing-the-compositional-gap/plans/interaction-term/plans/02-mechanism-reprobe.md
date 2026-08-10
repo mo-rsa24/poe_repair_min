@@ -29,7 +29,7 @@ and comparing them directly reverses the answer. See the note on the table
 task below.)
 
 ## Illustrations
-*(image not yet generated; save under plans/interaction-term/assets/ and replace this placeholder)*
+*(image not yet generated; save under plans/closing-the-compositional-gap/plans/interaction-term/assets/ and replace this placeholder)*
 
 **Prompt for image generation:**
 > Generate an image of a flowchart showing this experiment: generalize the

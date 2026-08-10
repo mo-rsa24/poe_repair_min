@@ -66,7 +66,7 @@ plan's pre-registered falsification rules and /demonstrate checkpoints as its
 stop conditions.
 
 ## Paper: where the LaTeX lives and how it is built
-The manuscript is `paper/iclr/`, owned by the `plans/paper-iclr/` scope. Editing
+The manuscript is `paper/iclr/`, owned by the `plans/closing-the-compositional-gap/plans/paper-iclr/` scope. Editing
 and building it is a different loop from running experiments: no GPU, no queue,
 no job.
 
@@ -77,7 +77,7 @@ files in that folder are the ICLR distribution and are not edited:
 `fancyhdr.sty`, and `math_commands.tex` (macro definitions, worth reading before
 defining a new macro since it likely already exists). References go in
 `iclr2027_conference.bib`. Figures are referenced, never copied in: they are
-produced by `plans/interaction-term/` and `plans/animals-compose-transfer/`, and
+produced by `plans/closing-the-compositional-gap/plans/interaction-term/` and `plans/closing-the-compositional-gap/plans/animals-compose-transfer/`, and
 `paper/iclr/README.md` holds the path rule.
 
 **Building it, the VS Code route (the normal one).** LaTeX Workshop

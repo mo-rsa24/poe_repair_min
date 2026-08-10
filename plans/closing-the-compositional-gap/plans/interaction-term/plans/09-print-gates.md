@@ -23,7 +23,7 @@ into the wording.
 ## Environment Facts This Plan Depends On
 - None apply (literature checks, in-session).
 - The writing this plan used to own moved to
-  `plans/paper-iclr/plans/06-mechanism-and-caveats.md` on 2026-08-05, so all
+  `plans/closing-the-compositional-gap/plans/paper-iclr/plans/06-mechanism-and-caveats.md` on 2026-08-05, so all
   paper prose has one owner. The verdicts produced here are its input.
 
 ## Tasks
@@ -53,4 +53,4 @@ into the wording.
 ls docs/pressure_tests/          # expect two dated verdict notes
 ```
 The draft-text check moved with the writing, to
-`plans/paper-iclr/plans/06-mechanism-and-caveats.md`.
+`plans/closing-the-compositional-gap/plans/paper-iclr/plans/06-mechanism-and-caveats.md`.

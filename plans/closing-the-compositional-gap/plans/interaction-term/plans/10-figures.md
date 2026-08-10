@@ -44,7 +44,7 @@ qualitative view with its number.
 - [ ] /evidence-ladder build of the approved specs
 - [ ] run the two paper-illustration prompts (three-regime diagram, method
       schematic) through ChatGPT and drop the images in
-      plans/interaction-term/assets/  [owner: human]
+      plans/closing-the-compositional-gap/plans/interaction-term/assets/  [owner: human]
 
 ## Next
 

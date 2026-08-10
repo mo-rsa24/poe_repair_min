@@ -180,9 +180,9 @@ scancel 26881              # only if this node's run has finished the cells
 
 ## After the verdict
 
-Mark plan 02 in `plans/interaction-term/plans/02-mechanism-reprobe.md`, record
+Mark plan 02 in `plans/closing-the-compositional-gap/plans/interaction-term/plans/02-mechanism-reprobe.md`, record
 the verdict either way, and update the Plans list in
-`plans/interaction-term/MASTER_PLAN.md`.
+`plans/closing-the-compositional-gap/plans/interaction-term/MASTER_PLAN.md`.
 
 Plans still open in that scope: 03 (dose-response, the causal headline), 04
 (window timing), 05 (cache analyses, task 1 done, five tasks left and all

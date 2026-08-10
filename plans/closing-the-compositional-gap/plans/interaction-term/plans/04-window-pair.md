@@ -27,7 +27,7 @@ The joint window figure: compose-rate vs window center, both curves, equal
 width everywhere, plus peak-window vs tail-window image strips.
 
 ## Illustrations
-*(image not yet generated; save under plans/interaction-term/assets/ and replace this placeholder)*
+*(image not yet generated; save under plans/closing-the-compositional-gap/plans/interaction-term/assets/ and replace this placeholder)*
 
 **Prompt for image generation:**
 > Generate an image of a flowchart with two parallel horizontal lanes labeled

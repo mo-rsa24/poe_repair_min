@@ -406,7 +406,7 @@ def check_one_table(files):
 
 
 FIGURES_MD = os.path.join(REPO, "paper", "iclr", "figures.md")
-REVIEW_PATH_IN_CELL = re.compile(r"plans/[\w-]+/review/[\w-]+\.md")
+REVIEW_PATH_IN_CELL = re.compile(r"plans/[\w/-]+/review/[\w-]+\.md")
 
 
 def figure_slots():

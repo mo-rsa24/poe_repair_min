@@ -7,9 +7,9 @@
 - **The last thing we did:** commit `84a4c4f`, a glossary per scope and a check for plan prose
   that will not read cold.
 - **Do this next:** re-score the dose sweep. Read
-  [plans/interaction-term/procedures/03-rescore-the-dose-sweep.md](plans/interaction-term/procedures/03-rescore-the-dose-sweep.md)
+  [plans/closing-the-compositional-gap/plans/interaction-term/procedures/03-rescore-the-dose-sweep.md](plans/closing-the-compositional-gap/plans/interaction-term/procedures/03-rescore-the-dose-sweep.md)
   to completion and answer the two open questions in
-  [plans/interaction-term/review/03-dose-response.md](plans/interaction-term/review/03-dose-response.md).
+  [plans/closing-the-compositional-gap/plans/interaction-term/review/03-dose-response.md](plans/closing-the-compositional-gap/plans/interaction-term/review/03-dose-response.md).
   The paper's headline figure waits on it.
 
 Regenerate these three lines with `python3 scripts/plan_pulse.py --brief`.
@@ -92,9 +92,7 @@ container named for its state.
 
 | Folder | State | One line |
 |---|---|---|
-| `interaction-term/` | live | the paper's causal claim; steps 1, 2, 3, 8, 9, 10, 19 |
-| `animals-compose-transfer/` | live | the transfer claim; steps 4 to 7 and 11 |
-| `paper-iclr/` | live | the manuscript; steps 12 to 18 |
+| `closing-the-compositional-gap/` | live, the paper | one parent scope for the manuscript and its two result claims: `interaction-term` (causal), `animals-compose-transfer` (transfer), `paper-iclr` (the draft) |
 | `standing/literature/` | standing | the reading register |
 | `standing/artifact-reconciliation/` | standing | artifacts catalogued and integrity-checked |
 | `completed/compose-scorer/` | done | delivered `scorer_validated.json`, in use by both result scopes |
@@ -172,9 +170,9 @@ recorded in the decision timeline.
 ## Sub-Scopes
 - ⚠️ plans/standing/artifact-reconciliation/ — "keep run artifacts catalogued, integrity-checked, canonically organised" (standing: carries a recurring re-sweep node)
 - ⚠️ plans/completed/compose-scorer/ — reusable instrument: a 3-anchor scorer that tells a two-animal composition from a chimera blend; emits scorer_validated.json (the cross-scope contract)
-- ⚠️ plans/animals-compose-transfer/ — animals-only hard-pair LoRA transfer (leave-one-pair-out + size-matched-mixed contrast); DEPENDS ON compose-scorer's scorer_validated.json
+- ⚠️ plans/closing-the-compositional-gap/plans/animals-compose-transfer/ — animals-only hard-pair LoRA transfer (leave-one-pair-out + size-matched-mixed contrast); DEPENDS ON compose-scorer's scorer_validated.json
 - ⚠️ plans/standing/literature/ — standing: what the field already knows, and the source behind every idea-trying run
-- ⚠️ plans/paper-iclr/ — the ICLR manuscript in `paper/iclr/`; no GPU, no queue
+- ⚠️ plans/closing-the-compositional-gap/plans/paper-iclr/ — the ICLR manuscript in `paper/iclr/`; no GPU, no queue
 
 ## Plans
 (One plan file per pyramid rung, grouped under `plans/rungs/`. Detailed phase
