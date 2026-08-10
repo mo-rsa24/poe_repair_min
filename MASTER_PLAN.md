@@ -38,7 +38,7 @@ with that.
 | 13 | paper-iclr/01-title-and-spine | the claim in one line, section order | ⚠️ | 12 |
 | 14 | paper-iclr/02-figure-layout | which figure goes where, and the run order that implies | ⚠️ | 10, 11 |
 | 15 | paper-iclr/03-draft-method-and-intro | method and intro prose | ⚠️ | 13 |
-| 16 | paper-iclr/05-results-skeleton | placeholders, not prose | ⚠️ | 14 |
+| 16 | paper-iclr/05-results-skeleton | placeholders, not prose: empty tables and XX numbers, one per figure-register slot | ⚠️ | |
 | 17 | paper-iclr/06-mechanism-and-caveats | the mechanism section, honest about what did not replicate | ⚠️ | 9 |
 | 18 | paper-iclr/04-abstract | written last, from the spine and the method | ⚠️ | 15, 16 |
 | 19 | interaction-term/02-mechanism-reprobe | one task left: the /pair-figure decision, per-seed points against pair-level means | ⚠️ | |
@@ -79,6 +79,23 @@ No order and no end. Re-entered rather than closed.
 
 - [plans/artifact-reconciliation/plans/05-resweep-on-new-runs.md](plans/artifact-reconciliation/plans/05-resweep-on-new-runs.md): re-catalogue and integrity-check whenever new runs land. Every `✓ verified` tag points at a path on a filesystem that is not under version control.
 - [plans/literature/plans/01-reading-register.md](plans/literature/plans/01-reading-register.md): keep the reading table above current, and make sure every idea-trying run names the paper it came from.
+
+## The scopes, and the state of each
+
+What each folder under `plans/` is and whether to open it. Live means it has rows in the lists
+above. Standing means it is re-entered, never finished. Done means its output exists and is in
+use. Nothing here is ambiguous on purpose: a scope that cannot say its state in one line gets
+shelved until it can.
+
+| Scope | State | One line |
+|---|---|---|
+| `interaction-term` | live | the paper's causal claim; steps 1, 2, 3, 8, 9, 10, 19 |
+| `animals-compose-transfer` | live | the transfer claim; steps 4 to 7 and 11 |
+| `paper-iclr` | live | the manuscript; steps 12 to 18 |
+| `literature` | standing | the reading register |
+| `artifact-reconciliation` | standing | artifacts catalogued and integrity-checked |
+| `compose-scorer` | done, harvest owed | delivered `scorer_validated.json`, in use by both result scopes; its task lines were never ticked, which `/sync-plan-tree` settles from the output |
+| `shelved/` | the shelf | `rungs`, `mechanism-study`, and `phases`, each moved whole; one line at the top of each says what would bring it back |
 
 ## One plan, one table
 
@@ -158,8 +175,8 @@ recorded in the decision timeline.
 
 ## Plans
 (One plan file per pyramid rung, grouped under `plans/rungs/`. Detailed phase
-files are archived under `plans/phases/` and referenced from each rung plan;
-`plans/phases/PHASE_MAP.md` is the retired 8-phase orchestrator.)
+files are archived under `plans/shelved/phases/` and referenced from each rung plan;
+`plans/shelved/phases/PHASE_MAP.md` is the retired 8-phase orchestrator.)
 - ⚠️ rungs/01-overfit.md — beachhead + taxonomy breadth + negative controls (DoD 1, 6)
 - ⚠️ rungs/02-survive-noise.md — seed-pooled LoRA, held-out seeds, per group (DoD 2)
 - ⚠️ rungs/03-cross-pair.md — held-out-pair transfer probe (DoD 3)
