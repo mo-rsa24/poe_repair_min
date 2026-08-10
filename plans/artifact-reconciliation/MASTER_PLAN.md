@@ -40,3 +40,12 @@ The artifact tree is navigable by rung/experiment/pair/seed regardless of which 
 - ✅ 03-data-integrity-check.md
 - ✅ 04-canonical-layout-reorg.md
 - ⚠️ 05-resweep-on-new-runs.md (standing / recurring)
+
+## Running order
+
+This scope keeps no order of its own. The single flat order across every scope
+and level is the `## Running order` table in the repo root `MASTER_PLAN.md`.
+
+## Environment Context
+See `docs/ENVIRONMENT.md` for this project's environment/architecture facts.
+Read before drafting or checking any plan in this scope.

@@ -94,3 +94,12 @@ two-tier read, so a null is diagnosed, not narrated.
 - ⚠️ plans/03-run-A-leave-one-pair-out.md: 15 LoRAs, leaderboard, degradation curve (DoD 3)
 - ⚠️ plans/04-run-B-contrast.md: size-matched mixed pool, animals-vs-mixed on same held-out set (DoD 4)
 - ⚠️ plans/05-figures.md: F2–F5 evidence cascade via /design-figure (DoD 5)
+
+## Running order
+
+This scope keeps no order of its own. The single flat order across every scope
+and level is the `## Running order` table in the repo root `MASTER_PLAN.md`.
+
+## Environment Context
+See `docs/ENVIRONMENT.md` for this project's environment/architecture facts.
+Read before drafting or checking any plan in this scope.

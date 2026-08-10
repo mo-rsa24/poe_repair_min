@@ -15,7 +15,11 @@ dataset/
 
 # Editor / IDE local state
 claude/
-.claude/
+.claude/*
+# Shared project config is tracked: the hooks and the project skills are part of
+# how this repo is worked, not personal editor state.
+!.claude/settings.json
+!.claude/skills/
 .idea/
 .vscode/local/
 

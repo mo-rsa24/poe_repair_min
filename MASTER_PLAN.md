@@ -1,5 +1,58 @@
 # LoRA-Fixes-PoE
 
+## Do this next
+
+Open [plans/interaction-term/plans/03-dose-response.md](plans/interaction-term/plans/03-dose-response.md)
+and re-score the dose sweep. The 480 cells are generated and the result holds
+(oracle 7% to 93% across λ, both controls flat near 6%), but the scorer globbed
+the whole tree, so λ=0 and λ=1 are scored over 44 cells while the middle doses
+use 32. Pin the root to this sweep's seeds, choose a confidence floor that
+rejects the 162px sliver, re-read the curves. The paper's headline figure waits
+on this.
+
+## Running order
+
+One row per plan across every scope and level. Plan numbering is per folder and
+is not the order. Sub-scopes under `interaction-term` have no plan files yet, so
+they carry no rows.
+
+| Step | Plan | What it does | Status | Waits on |
+|---|---|---|---|---|
+| 1 | compose-scorer/01-anchors | three reference anchors per validation pair | ✅ | |
+| 2 | compose-scorer/02-build-scorer | instance-count scorer; embedding reads nulled | ✅ | 1 |
+| 3 | compose-scorer/03-validate-emit-contract | 10/10 validated, emits scorer_validated.json | ✅ | 2 |
+| 4 | artifact-reconciliation/01-data-inventory | catalogue every run artifact | ✅ | |
+| 5 | artifact-reconciliation/02-two-root-classified-sweep | classify across both filesystems | ✅ | 4 |
+| 6 | artifact-reconciliation/03-data-integrity-check | checkpoints load, manifests agree | ✅ | 5 |
+| 7 | artifact-reconciliation/04-canonical-layout-reorg | move artifacts to the canonical layout | ✅ | 6 |
+| 8 | animals-compose-transfer/01-pool-and-precondition | curate pair_pool.yaml by fail-rate | ✅ | 3 |
+| 9 | interaction-term/00-build-the-instruments | 13 instruments built and smoked | ✅ | |
+| 10 | interaction-term/01-preregister-normalization | relative_norm fixed before any read | ✅ | 9 |
+| 11 | interaction-term/02-mechanism-reprobe | value channel not attention, 64 cells, median 1.52x | ✅ | 10 |
+| 12 | interaction-term/03-dose-response | the causal headline: λ sweep with two controls | ◑ | 11 |
+| 13 | interaction-term/05-cache-analyses | SVD, SNR, fork curve. No GPU, no queue | ⚠️ | 10 |
+| 14 | interaction-term/04-window-pair | when in the trajectory the term matters | ⚠️ | 12 |
+| 15 | animals-compose-transfer/02-wire-scorer-eval-hook | scorer into the eval hook, three live W&B curves | ⚠️ | 8 |
+| 16 | animals-compose-transfer/03a-phase1-pooled | one pooled LoRA, held-out transfer read | ⚠️ | 15 |
+| 17 | animals-compose-transfer/03-run-A-leave-one-pair-out | 15 LoRAs, leaderboard, degradation curve | ⚠️ | 16 |
+| 18 | animals-compose-transfer/04-run-B-contrast | size-matched mixed pool against animals | ⚠️ | 17 |
+| 19 | interaction-term/06-corroborations | the independent checks on the causal claim | ⚠️ | 12, 14 |
+| 20 | interaction-term/07-composition-type | does the term behave the same across composition types | ⚠️ | 19 |
+| 21 | interaction-term/08-replication | second model, second sampler | ⚠️ | 19 |
+| 22 | interaction-term/09-print-gates | the two /pressure-test gates before anything is written | ⚠️ | 20, 21 |
+| 23 | interaction-term/10-figures | the paper figures from this scope, via /design-figure | ⚠️ | 22 |
+| 24 | animals-compose-transfer/05-figures | the transfer evidence cascade, F2 to F5 | ⚠️ | 18 |
+| 25 | interaction-term/11-inspector | the interactive read of the interaction term | ⚠️ | 23 |
+| 26 | paper-iclr/00-compile-the-template | tectonic build works, de-stub, figure-path rule | ◑ | |
+| 27 | paper-iclr/01-title-and-spine | the claim in one line, section order | ⚠️ | 26 |
+| 28 | paper-iclr/02-figure-layout | which figure goes where, and the run order it implies | ⚠️ | 23, 24 |
+| 29 | paper-iclr/03-draft-method-and-intro | method and intro prose | ⚠️ | 27 |
+| 30 | paper-iclr/05-results-skeleton | placeholders, not prose | ⚠️ | 28 |
+| 31 | paper-iclr/06-mechanism-and-caveats | the mechanism section, honest about what did not replicate | ⚠️ | 11, 22 |
+| 32 | paper-iclr/04-abstract | written last, from the spine and the method | ⚠️ | 29, 30 |
+| 33 | artifact-reconciliation/05-resweep-on-new-runs | standing: re-catalogue whenever new runs land | ⚠️ recurring | |
+| 34 | literature/01-reading-register | standing: what the field knows, and the source behind every tried idea | ⚠️ recurring | |
+
 ## Mission
 Does a LoRA make PoE co-occur like Mono, and does that fix carry to unseen pairs?
 When SDXL composes two concepts by Product-of-Experts it usually fails (chimera /
@@ -65,6 +118,8 @@ recorded in the decision timeline.
 - ⚠️ plans/artifact-reconciliation/ — "keep run artifacts catalogued, integrity-checked, canonically organised" (standing: carries a recurring re-sweep node)
 - ⚠️ plans/compose-scorer/ — reusable instrument: a 3-anchor scorer that tells a two-animal composition from a chimera blend; emits scorer_validated.json (the cross-scope contract)
 - ⚠️ plans/animals-compose-transfer/ — animals-only hard-pair LoRA transfer (leave-one-pair-out + size-matched-mixed contrast); DEPENDS ON compose-scorer's scorer_validated.json
+- ⚠️ plans/literature/ — standing: what the field already knows, and the source behind every idea-trying run
+- ⚠️ plans/paper-iclr/ — the ICLR manuscript in `paper/iclr/`; no GPU, no queue
 
 ## Plans
 (One plan file per pyramid rung, grouped under `plans/rungs/`. Detailed phase
@@ -76,6 +131,12 @@ files are archived under `plans/phases/` and referenced from each rung plan;
 - ⚠️ rungs/04-group-wise.md — within-group pooling, is "group" a unit (DoD 4)
 - ⚠️ rungs/05-scale.md — one LoRA, four-quadrant crossbar, or catalogue fallback (DoD 5)
 - ⚠️ rungs/06-supervisor-briefing.md — communicate current state + name next moves, plain-speak'd (delivery, not a rung)
+
+## Environment Context
+See `docs/ENVIRONMENT.md` for this project's environment/architecture facts.
+Read before drafting or checking any plan in any scope. `CLAUDE.md` at the repo
+root holds the rules for how runs are classified, recorded, and allowed to move
+a plan.
 
 ## 🖥️ Viewing results (web apps)
 
