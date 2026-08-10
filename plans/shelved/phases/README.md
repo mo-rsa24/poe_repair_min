@@ -1,4 +1,4 @@
-# plans/phases/ — archived phase files
+# plans/shelved/phases/ — archived phase files
 
 These are the original phase-numbered plan files (01–16), the `LORA_TAXONOMY_PLAN.md`
 orchestrator, the retired `PHASE_MAP.md` master, and the Plan-12 runbook. They were
