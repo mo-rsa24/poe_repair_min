@@ -82,6 +82,12 @@ def main() -> int:
     ap.add_argument("--root", type=Path, action="append", dest="roots")
     ap.add_argument("--rows", default=",".join(ROWS),
                     help="comma-separated subset of oracle,random,wrong_pair")
+    ap.add_argument("--annotate-boxes", action="store_true",
+                    help="draw the kept detector boxes with their confidences, so a "
+                         "suspect sliver can be judged by eye before a floor is chosen")
+    ap.add_argument("--device", default=None,
+                    help="torch device for the detector; use cpu when the GPU is held "
+                         "by someone else (slower, same boxes)")
     ap.add_argument("--no-score", action="store_true",
                     help="skip the scorer annotation (no GPU needed)")
     ap.add_argument("--out-dir", type=Path, default=OUT_DIR)
@@ -114,10 +120,14 @@ def main() -> int:
         from poe_repair.experiments.compose_scorer.detection_scorer import (
             count_instances,
         )
+        import torch
+        dev = torch.device(args.device) if args.device else None
+        boxes: dict[tuple[str, float], list[dict]] = {}
         for r in have:
             for lam, png in sorted(have[r].items()):
-                n, _ = count_instances(png)
+                n, kept = count_instances(png, device=dev)
                 scores[(r, lam)] = (int(n), n >= 2)
+                boxes[(r, lam)] = kept
 
     import matplotlib
     matplotlib.use("Agg")
@@ -138,13 +148,27 @@ def main() -> int:
                 ax.set_facecolor("0.95")
                 continue
             ax.imshow(Image.open(png))
+            if args.annotate_boxes and (r, lam) in boxes:
+                # Every box the scorer KEPT, with its confidence and pixel size, so
+                # a limb counted as an animal is visible rather than inferred.
+                w, h = Image.open(png).size
+                for b in boxes[(r, lam)]:
+                    x0, y0, x1, y1 = b["box"]
+                    side = max(x1 - x0, y1 - y0)
+                    ax.add_patch(plt.Rectangle(
+                        (x0, y0), x1 - x0, y1 - y0, fill=False, lw=1.2,
+                        edgecolor="yellow" if side >= 0.25 * max(w, h) else "magenta"))
+                    ax.text(x0, max(y0 - 4, 6),
+                            f"{b['confidence']:.2f} {int(side)}px",
+                            fontsize=5, color="yellow" if side >= 0.25 * max(w, h) else "magenta")
             if (r, lam) in scores:
                 n, composed = scores[(r, lam)]
                 # Label by the validated RULE (>=2), not by the raw count.
                 # The count over-reports: a limb can clear the 0.30 confidence
                 # floor as its own instance. See
                 # docs/evidence/dose-response/scorer-count-caveat.md
-                ax.set_xlabel("compose" if composed else "blend",
+                ax.set_xlabel(("compose" if composed else "blend")
+                              + (f"  (n={n})" if args.annotate_boxes else ""),
                               fontsize=8,
                               color="tab:green" if composed else "tab:red")
             if ri == 0:
@@ -156,7 +180,8 @@ def main() -> int:
                  f"seed {args.seed}", fontsize=11)
     fig.tight_layout()
     args.out_dir.mkdir(parents=True, exist_ok=True)
-    out = args.out_dir / f"dose_strip_{args.pair}_seed{args.seed}.png"
+    suffix = "_boxes" if args.annotate_boxes else ""
+    out = args.out_dir / f"dose_strip_{args.pair}_seed{args.seed}{suffix}.png"
     fig.savefig(out, dpi=140)
     print(f"\nfigure: {out}")
     return 0
