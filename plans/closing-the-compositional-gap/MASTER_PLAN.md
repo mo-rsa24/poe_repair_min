@@ -3,6 +3,13 @@
 The paper. One parent scope holding everything the manuscript needs, so the folder listing
 under `plans/` says what this project is currently for.
 
+## Do this next
+
+This scope keeps no order and no next-action of its own; both live in the repo root
+`MASTER_PLAN.md` and regenerate with `python3 scripts/plan_pulse.py --brief`. Opening this
+folder cold: read `paper/iclr/figures.md` (what the paper still cannot show), then the root's
+paper table (what to do about it today).
+
 ## Mission
 Publish the claim: Product-of-Experts composition fails because a specific correction term is
 missing; injecting that term causally restores composition (dose response with flat controls);
