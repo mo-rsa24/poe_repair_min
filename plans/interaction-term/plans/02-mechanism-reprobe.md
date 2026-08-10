@@ -63,7 +63,7 @@ task below.)
       sane, token map verified against the tokenizer
       ✓ verified: an_eagle__x__a_hawk seed 9 (+ frog/toad, seal/walrus,
       cat/dog). Maps render as a bird/frog head in profile, not garbage.
-      Figure: docs/evidence/mechanism-reprobe/smoke_eagle_hawk.png
+      Figure: docs/evidence/F7-mechanism-reprobe/smoke_eagle_hawk.png
 - [x] full sweep: 8 held-out pairs × seeds 9-16, adapter OFF vs ON at
       matched steps. 64/64 cells captured 2026-08-05 on mscluster109, 0 failed.
       Run directly on the node, not as a Slurm job: biggpu allows one job per
@@ -76,7 +76,7 @@ task below.)
       ~25% overall, so ||on-off||/||off|| says weight moves 1.70x more (against
       the hypothesis) while the scale-free pattern change says content moves
       1.5-2x more (for it). scripts/mechanism_study/reprobe_table.py compares
-      the PATTERN term. See docs/evidence/mechanism-reprobe/measure-fairness.md
+      the PATTERN term. See docs/evidence/F7-mechanism-reprobe/measure-fairness.md
 - [ ] /pair-figure decision: per-seed points vs pair-level means as the
       figure's statistical entity
 - [x] record the verdict against Goal 6: **REPLICATES**.

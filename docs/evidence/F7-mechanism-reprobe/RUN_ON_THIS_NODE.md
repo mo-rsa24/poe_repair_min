@@ -98,7 +98,7 @@ more than weight, supporting the hypothesis.
 `gain_and_pattern()` in `value_probe.py` computes this per cell during capture,
 so the scorer reads it rather than re-deriving it. Full argument with the
 guards (shuffled-map control, denominator check, raw sums) is in
-`docs/evidence/mechanism-reprobe/measure-fairness.md`.
+`docs/evidence/F7-mechanism-reprobe/measure-fairness.md`.
 
 ## What is already known
 

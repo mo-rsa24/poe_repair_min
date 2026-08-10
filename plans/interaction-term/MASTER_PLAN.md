@@ -38,7 +38,7 @@ scope proves that account and produces the paper's figures.
         train), so no fitted subspace can contain unseen pairs and the test
         reads low regardless of transfer.
         First clause HOLDS: 62.6% vs a 13.2% Gaussian floor, 4.8x.
-        Evidence: docs/evidence/subspace-vs-transfer/QUERY.md
+        Evidence: docs/evidence/F6-subspace-vs-transfer/QUERY.md
         Rewording direction text is /integrate-plans or /refine-plan, not
         sync-plan-tree. -->
 4. Universality: ‖r_t‖ curves collapse in log-SNR across pairs; the window
