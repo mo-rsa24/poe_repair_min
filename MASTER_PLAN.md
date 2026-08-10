@@ -1,57 +1,92 @@
 # LoRA-Fixes-PoE
 
-## Do this next
+## Where things stand
 
-Open [plans/interaction-term/plans/03-dose-response.md](plans/interaction-term/plans/03-dose-response.md)
-and re-score the dose sweep. The 480 cells are generated and the result holds
-(oracle 7% to 93% across λ, both controls flat near 6%), but the scorer globbed
-the whole tree, so λ=0 and λ=1 are scored over 44 cells while the middle doses
-use 32. Pin the root to this sweep's seeds, choose a confidence floor that
-rejects the 162px sliver, re-read the curves. The paper's headline figure waits
-on this.
+- **What is going on:** nothing is running. No Slurm jobs, no sweep processes on this node.
+  The GPU is free.
+- **The last thing we did:** commit `84a4c4f`, a glossary per scope and a check for plan prose
+  that will not read cold.
+- **Do this next:** re-score the dose sweep. Read
+  [plans/interaction-term/procedures/03-rescore-the-dose-sweep.md](plans/interaction-term/procedures/03-rescore-the-dose-sweep.md)
+  to completion and answer the two open questions in
+  [plans/interaction-term/review/03-dose-response.md](plans/interaction-term/review/03-dose-response.md).
+  The paper's headline figure waits on it.
 
-## Running order
+Regenerate these three lines with `python3 scripts/plan_pulse.py --brief`.
 
-One row per plan across every scope and level. Plan numbering is per folder and
-is not the order. Sub-scopes under `interaction-term` have no plan files yet, so
-they carry no rows.
+## The paper: what has to land
+
+An order, so every row has a step number and says what it waits on. Only unfinished rows
+appear: 11 earlier steps are done and their evidence lives in the `review/` files and in git,
+not here. This table is meant to be readable in under a minute, and finished rows do not help
+with that.
 
 | Step | Plan | What it does | Status | Waits on |
 |---|---|---|---|---|
-| 1 | compose-scorer/01-anchors | three reference anchors per validation pair | ✅ | |
-| 2 | compose-scorer/02-build-scorer | instance-count scorer; embedding reads nulled | ✅ | 1 |
-| 3 | compose-scorer/03-validate-emit-contract | 10/10 validated, emits scorer_validated.json | ✅ | 2 |
-| 4 | artifact-reconciliation/01-data-inventory | catalogue every run artifact | ✅ | |
-| 5 | artifact-reconciliation/02-two-root-classified-sweep | classify across both filesystems | ✅ | 4 |
-| 6 | artifact-reconciliation/03-data-integrity-check | checkpoints load, manifests agree | ✅ | 5 |
-| 7 | artifact-reconciliation/04-canonical-layout-reorg | move artifacts to the canonical layout | ✅ | 6 |
-| 8 | animals-compose-transfer/01-pool-and-precondition | curate pair_pool.yaml by fail-rate | ✅ | 3 |
-| 9 | interaction-term/00-build-the-instruments | 13 instruments built and smoked | ✅ | |
-| 10 | interaction-term/01-preregister-normalization | relative_norm fixed before any read | ✅ | 9 |
-| 11 | interaction-term/02-mechanism-reprobe | value channel not attention, 64 cells, median 1.52x | ✅ | 10 |
-| 12 | interaction-term/03-dose-response | the causal headline: λ sweep with two controls | ◑ | 11 |
-| 13 | interaction-term/05-cache-analyses | SVD, SNR, fork curve. No GPU, no queue | ⚠️ | 10 |
-| 14 | interaction-term/04-window-pair | when in the trajectory the term matters | ⚠️ | 12 |
-| 15 | animals-compose-transfer/02-wire-scorer-eval-hook | scorer into the eval hook, three live W&B curves | ⚠️ | 8 |
-| 16 | animals-compose-transfer/03a-phase1-pooled | one pooled LoRA, held-out transfer read | ⚠️ | 15 |
-| 17 | animals-compose-transfer/03-run-A-leave-one-pair-out | 15 LoRAs, leaderboard, degradation curve | ⚠️ | 16 |
-| 18 | animals-compose-transfer/04-run-B-contrast | size-matched mixed pool against animals | ⚠️ | 17 |
-| 19 | interaction-term/06-corroborations | the independent checks on the causal claim | ⚠️ | 12, 14 |
-| 20 | interaction-term/07-composition-type | does the term behave the same across composition types | ⚠️ | 19 |
-| 21 | interaction-term/08-replication | second model, second sampler | ⚠️ | 19 |
-| 22 | interaction-term/09-print-gates | the two /pressure-test gates before anything is written | ⚠️ | 20, 21 |
-| 23 | interaction-term/10-figures | the paper figures from this scope, via /design-figure | ⚠️ | 22 |
-| 24 | animals-compose-transfer/05-figures | the transfer evidence cascade, F2 to F5 | ⚠️ | 18 |
-| 25 | interaction-term/11-inspector | the interactive read of the interaction term | ⚠️ | 23 |
-| 26 | paper-iclr/00-compile-the-template | tectonic build works, de-stub, figure-path rule | ◑ | |
-| 27 | paper-iclr/01-title-and-spine | the claim in one line, section order | ⚠️ | 26 |
-| 28 | paper-iclr/02-figure-layout | which figure goes where, and the run order it implies | ⚠️ | 23, 24 |
-| 29 | paper-iclr/03-draft-method-and-intro | method and intro prose | ⚠️ | 27 |
-| 30 | paper-iclr/05-results-skeleton | placeholders, not prose | ⚠️ | 28 |
-| 31 | paper-iclr/06-mechanism-and-caveats | the mechanism section, honest about what did not replicate | ⚠️ | 11, 22 |
-| 32 | paper-iclr/04-abstract | written last, from the spine and the method | ⚠️ | 29, 30 |
-| 33 | artifact-reconciliation/05-resweep-on-new-runs | standing: re-catalogue whenever new runs land | ⚠️ recurring | |
-| 34 | literature/01-reading-register | standing: what the field knows, and the source behind every tried idea | ⚠️ recurring | |
+| 1 | interaction-term/03-dose-response | the headline causal result: more correction, more composition, with two flat controls | ◑ re-score owed | |
+| 2 | interaction-term/05-cache-analyses | the analyses needing no GPU and no queue, five of six tasks left | ⚠️ | |
+| 3 | interaction-term/04-window-pair | when in the denoising process the correction matters | ⚠️ | 1 |
+| 4 | animals-compose-transfer/02-wire-scorer-eval-hook | the one-epoch GPU smoke confirming three live curves | ⚠️ | |
+| 5 | animals-compose-transfer/03a-phase1-pooled | finish the read: steps 70k to 100k unscored, go/no-go note owed | ⚠️ | 4 |
+| 6 | animals-compose-transfer/03-run-A-leave-one-pair-out | 15 LoRAs, leaderboard, degradation curve | ⚠️ | 5 |
+| 7 | animals-compose-transfer/04-run-B-contrast | size-matched mixed pool against animals-only | ⚠️ | 6 |
+| 8 | interaction-term/06-corroborations | the independent checks on the causal claim | ⚠️ | 1, 3 |
+| 9 | interaction-term/09-print-gates | the two /pressure-test passes before anything is written | ⚠️ | 8 |
+| 10 | interaction-term/10-figures | the figures this scope owes the paper | ⚠️ | 9 |
+| 11 | animals-compose-transfer/05-figures | the transfer evidence figures | ⚠️ | 7 |
+| 12 | paper-iclr/00-compile-the-template | tectonic build, de-stub, the figure-path rule | ◑ | |
+| 13 | paper-iclr/01-title-and-spine | the claim in one line, section order | ⚠️ | 12 |
+| 14 | paper-iclr/02-figure-layout | which figure goes where, and the run order that implies | ⚠️ | 10, 11 |
+| 15 | paper-iclr/03-draft-method-and-intro | method and intro prose | ⚠️ | 13 |
+| 16 | paper-iclr/05-results-skeleton | placeholders, not prose | ⚠️ | 14 |
+| 17 | paper-iclr/06-mechanism-and-caveats | the mechanism section, honest about what did not replicate | ⚠️ | 9 |
+| 18 | paper-iclr/04-abstract | written last, from the spine and the method | ⚠️ | 15, 16 |
+| 19 | interaction-term/02-mechanism-reprobe | one task left: the /pair-figure decision, per-seed points against pair-level means | ⚠️ | |
+
+Step 19 is unblocked and cheap despite its number. Step numbers are positions in the
+order, and `sync-plan-tree` renumbers on its next pass.
+
+**Owed, and not a table row.** Three `compose-scorer` plans have every task unticked while
+that scope's summary says all three are finished and `scorer_validated.json` was emitted. The
+work happened and the ticking did not. That is a harvest job for `/sync-plan-tree`, which ticks
+from the output rather than from the scope's own claim.
+
+## Reading, in the background
+
+A pool, not an order. Pull from it when a claim needs backing or a method needs a source.
+Found with `/paper-scout`, read with `/unpack-paper` or `/drip --paper`, registered in
+[plans/literature/](plans/literature/). No row here blocks a row above.
+
+| Paper | Why it matters to us | Which claim it touches | Read |
+|---|---|---|---|
+| (the 7 already reconciled on the interaction-term question) | establishes that the residual IS the term PoE drops | interaction-term, the causal claim | ✅ back-fill owed into the register |
+
+## Experiments running in the background
+
+A pool. Every row is a run that tries an idea, so no row here may change a claim: a striking
+number earns the right to propose an experiment and nothing more. Results land in
+`PARKING_LOT.md`.
+
+| Run | What it would earn | State |
+|---|---|---|
+| interaction-term/07-composition-type | whether the correction behaves the same for attribute pairs as for object pairs, which would widen the claim's reach | ⚠️ not started |
+| interaction-term/08-replication | the same result on a second model and sampler, which is a likely reviewer ask but not a claim we make | ⚠️ not started |
+| interaction-term/11-inspector | an interactive read of the correction, useful for understanding and not for the manuscript | ⚠️ not started |
+
+## Standing jobs
+
+No order and no end. Re-entered rather than closed.
+
+- [plans/artifact-reconciliation/plans/05-resweep-on-new-runs.md](plans/artifact-reconciliation/plans/05-resweep-on-new-runs.md): re-catalogue and integrity-check whenever new runs land. Every `✓ verified` tag points at a path on a filesystem that is not under version control.
+- [plans/literature/plans/01-reading-register.md](plans/literature/plans/01-reading-register.md): keep the reading table above current, and make sure every idea-trying run names the paper it came from.
+
+## One plan, one table
+
+Every live plan appears in exactly one of the four lists above, and all four live in this file.
+No scope keeps a list of its own. When a background experiment starts feeding the paper it
+**moves** into the paper table and gets a step number, which is how a promotion becomes visible
+instead of being a quiet field change. `plan_pulse --checks=8` fails if a live plan is in none
+of them or in more than one.
 
 ## Mission
 Does a LoRA make PoE co-occur like Mono, and does that fix carry to unseen pairs?

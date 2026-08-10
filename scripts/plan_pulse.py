@@ -10,6 +10,9 @@ Reads. Never writes. Four checks, in the order they cost you time:
 5. RUNSTATE   a design plan carrying run state that belongs in its review file.
 6. UNJUDGED   a review file whose run finished with questions still unanswered.
 7. JARGON     a design plan with the mechanical tells of prose that will not read cold.
+8. UNLISTED   a live plan in none of the root master plan's four lists, or in two.
+
+    python3 scripts/plan_pulse.py --brief   the three orientation lines, derived
 
 Checks 5, 6 and 7 apply only to a scope that has a review/ folder, so they switch
 themselves on as scopes are converted and stay quiet on the ones that are not.
@@ -329,13 +332,123 @@ def check_jargon(files):
     return hits
 
 
+ROOT_PLAN = os.path.join(REPO, "MASTER_PLAN.md")
+# The four lists in the root master plan. Every live design plan belongs to
+# exactly one. The first is an order; the rest are pools with no order.
+LISTS = [
+    "## The paper: what has to land",
+    "## Reading, in the background",
+    "## Experiments running in the background",
+    "## Standing jobs",
+]
+
+
+def root_sections():
+    """The root master plan split into its four lists."""
+    if not os.path.isfile(ROOT_PLAN):
+        return {}
+    text = open(ROOT_PLAN, errors="replace").read()
+    out, current = {}, None
+    for line in text.splitlines():
+        if line.strip() in LISTS:
+            current = line.strip()
+            out[current] = []
+        elif current and line.startswith("## "):
+            current = None
+        elif current:
+            out[current].append(line)
+    return {k: "\n".join(v) for k, v in out.items()}
+
+
+def paper_rows():
+    """The paper table as (step, plan, status, waits_on) tuples, in order."""
+    section = root_sections().get(LISTS[0], "")
+    rows = []
+    for line in section.splitlines():
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if len(cells) == 5 and cells[0].isdigit():
+            rows.append((int(cells[0]), cells[1], cells[3], cells[4]))
+    return rows
+
+
+def check_one_table(files):
+    """A live design plan must appear in exactly one of the four lists.
+
+    Live means it still has an open task. A plan with every task ticked is
+    finished, and the paper table deliberately drops finished rows so it stays
+    readable; flagging those would punish that choice.
+
+    Two spellings count as a mention, because the tables and the standing list
+    write a plan differently: `scope/NN-name` in a table cell, and the full
+    link path `plans/scope/plans/NN-name.md` in the standing list.
+    """
+    sections = root_sections()
+    if not sections:
+        return []
+    hits = []
+    for path in files:
+        scope = scope_of(path)
+        if not scope:
+            continue
+        if "- [ ]" not in open(path, errors="replace").read():
+            continue  # finished, not live
+        name, stem = os.path.basename(scope), os.path.basename(path)[:-3]
+        spellings = (f"{name}/{stem}", f"{name}/plans/{stem}")
+        where = [
+            title for title, body in sections.items()
+            if any(s in body for s in spellings)
+        ]
+        if len(where) != 1:
+            hits.append((f"{name}/{stem}", where))
+    return hits
+
+
+def brief():
+    """The three orientation lines, derived rather than remembered."""
+    live = [l for l in live_jobs() if l.strip()]
+    if live:
+        going_on = f"{len(live)} thing(s) in flight:\n" + "\n".join(
+            f"      {l[:110]}" for l in live[:6]
+        )
+    else:
+        going_on = "nothing is running. No queued jobs, no sweep processes on this node."
+
+    try:
+        last = subprocess.run(
+            ["git", "-C", REPO, "log", "-1", "--format=%h %s"],
+            capture_output=True, text=True, timeout=20,
+        ).stdout.strip()
+    except Exception:
+        last = "(git unavailable)"
+
+    rows = paper_rows()
+    ready = [r for r in rows if r[2] != "✅" and not r[3]]
+    if ready:
+        step, plan, status, _ = sorted(ready)[0]
+        nxt = f"step {step}, {plan} (status {status})"
+        blocked = len(rows) - len(ready)
+        nxt += f". {len(ready)} row(s) unblocked, {blocked} waiting on something."
+    elif rows:
+        nxt = "every paper row is blocked. Read the Waits on column and find what died."
+    else:
+        nxt = "no paper table found in MASTER_PLAN.md."
+
+    print("Where things stand\n")
+    print(f"  What is going on:      {going_on}")
+    print(f"  The last thing we did: {last}")
+    print(f"  Do this next:          {nxt}")
+
+
 def rel(p):
     return os.path.relpath(p, REPO)
 
 
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
-    checks = {1, 2, 3, 4, 5, 6, 7}
+    if "--brief" in sys.argv:
+        brief()
+        return
+    checks = {1, 2, 3, 4, 5, 6, 7, 8}
     for a in sys.argv[1:]:
         if a.startswith("--checks"):
             checks = {int(x) for x in a.split("=")[-1].replace(",", " ").split()}
@@ -406,6 +519,15 @@ def main():
             print(f"  {rel(path)}")
             for p in problems:
                 print(f"      {p}")
+        print()
+
+    if 8 in checks:
+        hits = check_one_table(files)
+        found += len(hits)
+        print(f"UNLISTED: a live plan in none of the four root lists, or in more than one ({len(hits)})")
+        for key, where in hits:
+            place = "no list" if not where else f"{len(where)} lists"
+            print(f"  {key}  ({place})")
         print()
 
     if found == 0:
