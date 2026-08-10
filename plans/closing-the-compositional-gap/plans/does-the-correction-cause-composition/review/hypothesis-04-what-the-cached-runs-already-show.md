@@ -1,8 +1,22 @@
-# 🔬 Review: the disk-only analyses
+# Review: what do the already-cached runs tell us?
 
-Verdicts for [../plans/hypothesis-04-what-the-cached-runs-already-show.md](../plans/hypothesis-04-what-the-cached-runs-already-show.md). The design lives
-there; the findings live here. Questions written before each analysis ran; answers carry the
-numbers that decided them.
+**Five of six answered, from cached data with no GPU and no queue.** This file judges
+[../plans/hypothesis-04-what-the-cached-runs-already-show.md](../plans/hypothesis-04-what-the-cached-runs-already-show.md)
+and feeds three register slots: **F3** (does the correction's size track the noise level), **F4**'s
+timing band, and **F6** (is it low-rank enough to learn).
+
+Two answers changed what the paper may claim, so read them before writing anything that leans on
+them. The size-follows-noise result is looser than hoped. The low-rank result licenses much less
+than its name suggests.
+
+## Words this file uses
+- **Noise level**: how far through the denoising run a step is, expressed so that different pairs
+  can be compared on one axis.
+- **The two paths**: the broken one and the working one, walked from the same starting noise. The
+  step where they pull apart is the step where the outcome gets decided.
+- **Low-rank**: how few directions carry most of the corrections' energy. Fewer means a small
+  adapter can learn it. Always read against a same-shape random floor, because the raw percentage
+  is partly forced by how many vectors were stacked.
 
 ## Run kind
 **Tests the claim** (Goals 2, 3, 4 of this scope). No pre-registered single bar: each analysis

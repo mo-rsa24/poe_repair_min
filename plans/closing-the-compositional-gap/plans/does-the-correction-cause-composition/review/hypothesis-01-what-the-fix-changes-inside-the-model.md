@@ -1,8 +1,25 @@
-# 🔬 Review: what the fix changes inside the model
+# Review: what does the fix change inside the model?
 
-Verdicts for
+**Answered, and it replicated, with one caveat the paper owes.** This file judges
 [../plans/hypothesis-01-what-the-fix-changes-inside-the-model.md](../plans/hypothesis-01-what-the-fix-changes-inside-the-model.md).
-The design lives there; the findings live here. Feeds register slot **F7**.
+Its answers fill register slot **F7**, and the caveat below is what caps that figure's caption.
+
+The question in plain terms: every word in the prompt decides both *where* in the image to look
+and *what* to write there. Our account of why the fix works says it changes the second, not the
+first. This is whether that survives 64 cells the fix never trained on.
+
+## Words this file uses
+- **A cell**: one animal pair at one starting seed. 8 pairs by 8 seeds gives the 64.
+- **Where it looks / what it paints**: the two maps captured per word, with the adapter off and
+  again on, from the identical starting state.
+- **Pattern, not brightness**: the two maps are not on a common scale, and the adapter dims one of
+  them by about 25% overall. So the comparison strips out uniform brightness and compares only
+  the change a rescaling cannot explain. The design plan explains why the obvious comparison
+  gives the opposite answer.
+- **The ratio**: how much more the painted content's pattern moved than the attention's. Above 1
+  supports the account; below 1 contradicts it.
+- **The shuffled-map floor**: the same measurement on deliberately scrambled maps, which is what
+  "no real effect" looks like.
 
 ## Run kind
 **Tests the claim.** So a failure of the pre-registered bar closes the plan and opens one

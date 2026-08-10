@@ -31,6 +31,20 @@ from poe_repair.experiments.residual_diagnostics import metrics as vmetrics
 COMPOSE_REGIME = "both_distinct"
 INSTANCE_QUERY = "animal"
 
+# A detection must span at least this fraction of the image's longer side to count
+# as an animal. Chosen by looking at the boxes, not at the resulting rate: on the
+# an_elephant__x__a_penguin seed 10 strip the detector put a 220px box at confidence
+# 0.60 on a shadow beside a single fused creature, turning a control-row blend into
+# a "compose". Confidence cannot separate that case (0.60 sits above every real
+# animal's floor at 0.54), and size can: every genuine animal in that strip spans
+# 458px or more, every spurious box 220px or less, on a 1024px image.
+#
+# 0.25 is the same line scripts/dose_strip.py already draws when it colours boxes
+# yellow or magenta, so the diagnostic picture and the scorer agree by construction.
+# The filter can only remove detections, so it can only lower compose rates: it
+# cannot manufacture the result the paper claims.
+MIN_BOX_FRACTION = 0.25
+
 
 def count_instances(
     image_path: Path,
@@ -41,22 +55,36 @@ def count_instances(
     text_threshold: float = 0.20,
     conf: float = 0.30,
     nms_iou: float = 0.5,
+    min_box_fraction: float = MIN_BOX_FRACTION,
 ) -> tuple[int, list[dict]]:
     """Count distinct animal instances via a generic detector query + greedy NMS.
 
     Returns (count, kept_boxes). count >= 2 ⇒ a real multi-animal composition;
     count <= 1 ⇒ a single-animal blend.
     """
+    from PIL import Image
+
+    with Image.open(image_path) as im:
+        min_side = min_box_fraction * max(im.size)
+
     dets = vmetrics.detect_boxes(
         image_path, [query],
         box_threshold=box_threshold, text_threshold=text_threshold, device=device,
     )
-    ds = sorted([d for d in dets if d["confidence"] >= conf], key=lambda d: -d["confidence"])
+    ds = [d for d in dets if d["confidence"] >= conf]
+    ds = [d for d in ds if _box_side(d["box"]) >= min_side]
+    ds.sort(key=lambda d: -d["confidence"])
     keep: list[dict] = []
     for d in ds:
         if all(vmetrics.box_iou(d["box"], k["box"]) < nms_iou for k in keep):
             keep.append(d)
     return len(keep), keep
+
+
+def _box_side(box) -> float:
+    """The box's longer side in pixels, matching dose_strip.py's yellow/magenta rule."""
+    x0, y0, x1, y1 = box
+    return max(x1 - x0, y1 - y0)
 
 
 @dataclass
