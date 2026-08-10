@@ -4,10 +4,10 @@ Design only. Verdicts and run state live in
 [../review/hypothesis-03-when-in-the-run-it-matters.md](../review/hypothesis-03-when-in-the-run-it-matters.md).
 
 ## What this asks, in one line
-Let the correction act only inside a sliding window of the 50 denoising steps and measure the
-compose rate per window position: a peak says when the correction is needed, and a second
-experiment gating the conditioning itself says whether that is the same time conditioning is
-needed at all.
+Let the correction act only inside a narrow window of the 50 denoising steps, slide that
+window from start to finish, and measure the compose rate at each position. A peak says
+when the correction is needed. A second experiment does the same to the prompt itself,
+which answers a different question: is that the same moment the prompt is needed at all?
 
 ## Description
 Two matched window experiments on the same pairs, seeds, widths, and scorer.

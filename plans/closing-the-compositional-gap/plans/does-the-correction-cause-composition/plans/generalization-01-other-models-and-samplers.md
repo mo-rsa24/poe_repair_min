@@ -4,10 +4,14 @@
 Does the dose result survive a different model and a different sampler? Background: a likely reviewer ask, not a claim the paper makes.
 
 ## Description
-Repeat the causal core cheaply beyond SDXL and DDIM: residual caches and dose
-tests on SD 1.5 and SD 2.1, a sampler sweep (DDIM, DDPM, Euler) testing that
-the window sits at fixed noise levels, and the full per-concept density traces
-on the stochastic-sampler runs.
+Repeat the causal core cheaply, beyond the one model and one sampler it was found on.
+Three pieces:
+
+- **Other models.** Cache the corrections and run the strength sweep on SD 1.5 and SD 2.1,
+  not only SDXL.
+- **Other samplers.** DDIM, DDPM and Euler, testing one specific thing: that the window
+  sits at fixed noise levels rather than at fixed step numbers.
+- **The density traces** per concept, on the runs that use a random sampler.
 
 ## Purpose
 The universality claim (Goal 4): if the same story holds on three models and

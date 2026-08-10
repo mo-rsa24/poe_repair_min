@@ -3,9 +3,15 @@
 Design only. Verdicts live in [../review/instrument-01-the-clean-pair-pool.md](../review/instrument-01-the-clean-pair-pool.md).
 
 ## What this asks, in one line
-Build the set of animal pairs the whole scope runs on: no animal word repeated anywhere (so a
-transfer win cannot be memorisation), every training pair proven to fail by default (so there is
-something to fix), and none of it starts unless the validated scorer exists.
+Build the set of animal pairs this whole claim runs on. Three conditions, each closing a
+specific hole:
+
+- **No animal word repeats anywhere in the pool.** Otherwise a transfer win could just be
+  the model having seen that animal already.
+- **Every training pair is proven to fail by default**, measured over eight seeds rather
+  than judged by eye, so there is something for the fix to fix.
+- **Nothing starts until the validated scorer exists.** Without a trusted scorer every
+  number this claim produces is unreadable.
 
 ## Why this plan exists
 Leave-one-pair-out is only a fair transfer test if no animal word repeats across

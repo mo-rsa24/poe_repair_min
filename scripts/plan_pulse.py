@@ -318,17 +318,30 @@ def check_jargon(files):
         # image-generation prompt is a long instruction to an image model on
         # purpose, and counting it as an unreadable sentence is noise.
         prose = re.sub(r"```.*?```", "", text, flags=re.S)
-        prose = "\n".join(
-            l for l in prose.splitlines()
-            if not l.lstrip().startswith((">", "#", "|", "*("))
-            # A bullet whose length is a pasteable command chain is not an
-            # unreadable sentence: the command is an anchor that must survive.
-            and not re.search(r"`/[a-z-]+", l)
-        )
-        long_ones = [
-            s.strip()[:60] for s in re.split(r"(?<=[.!?])\s", prose)
-            if len(s.split()) > LONG_SENTENCE_WORDS
-        ]
+        # Group into blocks first. A bullet does not end in a period, so
+        # sentence-splitting raw text welds consecutive bullets into one
+        # enormous pseudo-sentence: that was a checker bug, not bad prose.
+        blocks, cur = [], []
+        for l in prose.splitlines():
+            s = l.strip()
+            starts_item = bool(re.match(r"[-*+]\s|\d+\.\s", s))
+            if not s or starts_item or s.startswith((">", "#", "|", "*(", "---")):
+                if cur:
+                    blocks.append(" ".join(cur)); cur = []
+                if starts_item:
+                    cur = [s]
+                continue
+            cur.append(s)
+        if cur:
+            blocks.append(" ".join(cur))
+        long_ones = []
+        for b in blocks:
+            # A block whose length is a pasteable command chain is an anchor.
+            if re.search(r"`/[a-z-]+", b):
+                continue
+            for s in re.split(r"(?<=[.!?])\s", b):
+                if len(s.split()) > LONG_SENTENCE_WORDS:
+                    long_ones.append(s.strip()[:60])
         if long_ones:
             problems.append(f"{len(long_ones)} sentence(s) over {LONG_SENTENCE_WORDS} words")
 
