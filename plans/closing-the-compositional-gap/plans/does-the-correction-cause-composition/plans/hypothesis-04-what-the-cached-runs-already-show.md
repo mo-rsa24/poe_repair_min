@@ -38,7 +38,7 @@ Plain checkboxes: each analysis either ran or it did not. What each one FOUND is
 file, question by question.
 
 - [x] The correction's size against noise level, every pair overlaid, using the normalization
-      committed in plan 01. Feeds slot F3.
+      committed in `instrument-02-fix-the-size-measure-before-any-result`. Feeds slot F3.
 - [x] Confirm both trajectories exist per cell for the fork read. They did not: the cache walks
       only the PoE path, so the Mono paths had to be generated (next task).
 - [x] Generate the missing Mono paths from the same pinned inits.

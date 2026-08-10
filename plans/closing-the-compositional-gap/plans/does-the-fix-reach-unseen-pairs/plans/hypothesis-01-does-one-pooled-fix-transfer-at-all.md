@@ -29,22 +29,34 @@ LOPO is worth running.
 One pooled LoRA trained, held-out compose-rate read on the best checkpoint, and a
 go/no-go call for Phase-2 (the LOPO in plan 03).
 
+## Words this plan uses
+- **The adapter**: a small set of extra weights (rank-8, on the layer where the prompt
+  enters) trained to add the correction back. One adapter here, trained on all eleven
+  training pairs at once, which is what "pooled" means.
+- **Compose rate**: the fraction of pictures showing two separate animals rather than
+  one blended one, decided by the validated scorer, never by eye.
+- **Held-out**: a pair the adapter never trained on. The only kind that tests transfer.
+  Its opposite, a pair it did train on, is **in-distribution**.
+- **At the floor**: a held-out pair whose compose rate is no better than plain PoE's.
+  Two very different things cause it, and telling them apart is why the two extra
+  measures exist: either the fix never arrived (it was not delivered), or it arrived
+  pointing the wrong way (it did not transfer).
+
 ## Tasks
-- [x] Train one pooled rank-8 cross-attention LoRA on the 11 training pairs.
- 
-- [x] Eval the held-out split (unseen blends + cat×dog + control) for compose-rate,
-  in-distribution vs held-out.
-- [ ] Score compose-rate for steps 70000–100000 (60000 is read and strong: out_out
-  0.96; the run continued 40k further steps that are still unscored — narrow remaining
-  slice, not from scratch).
-      - [ ] record the citable transfer number with its checkpoint in the Status
-        block (consumed by plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition Goal 7: the paper never cites
-        the number without its step)
-- [ ] Read Phase-1 on both axes (add direction-cosine + distance-reached, dep: plan 02
-  direction metrics) so a floor pair is split delivery-null vs no-transfer.
-- [ ] Record the Phase-2 go/no-go call (LOPO warranted or not) with the held-out
-  number backing it — verdict.json is a run-health marker, not this call; the numbers
-  (out_out 0.96 @ step 60000) support a go but the note itself is unwritten.
+- [x] Train one pooled adapter on the eleven training pairs.
+- [x] Score the held-out split for compose rate, in-distribution against held-out.
+      The split is the unseen blend pairs, the known-failure reference pair, and the
+      control pair that composes fine without any adapter.
+- [ ] Score the checkpoints from step 70000 to 100000. Training ran that far; scoring
+      stopped at 60000. This is a scoring pass over existing checkpoints, not a rerun.
+- [ ] Write the citable transfer number into the review file WITH its checkpoint step.
+      The paper never quotes this number without the step it came from.
+- [ ] Re-read the floor pairs on the two direction measures, once
+      `instrument-02-three-live-curves-while-training`'s smoke run is green, so a floor
+      pair can be told apart by which of the two causes above it is.
+- [ ] Write the go/no-go note for the fifteen-run sweep into the review file, with the
+      number and step backing it. `verdict.json` says only that training finished
+      without error; it is not this call.
 
 ## Next
 
