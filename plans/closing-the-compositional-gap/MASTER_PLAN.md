@@ -24,6 +24,32 @@ to a register slot, and every citation to the reading register.
 The eight register slots resolved (built, or honestly downgraded with the boundary stated), the
 sections compiled through /draft-section, and the two /pressure-test print gates passed.
 
+## How this scope works: figures first, then the writing
+
+The cadence, in the six groups' terms:
+
+**The foreground is group 3: runs that generate figures towards the paper.** The figure
+register (`paper/iclr/figures.md`) is the scoreboard: eight slots, each either built, fillable,
+or reserved. A reserved slot is not idle, it is a placeholder carrying the claim its caption
+will make, written before the experiment runs, which is the expectation on record. Work in this
+scope means resolving slots.
+
+**The trigger to start writing: 5 to 10 slots resolved**, where resolved means built, fillable,
+or honestly downgraded with its boundary stated. At that point the writing plans start in
+earnest (`/draft-section` on method and results against the register); the results skeleton
+(step 16) can start today because it writes XX against every slot by design. Do not wait for
+all eight: the skeleton plus five real figures is a draft, eight perfect figures with no prose
+is not.
+
+**The background, in parallel and blocking nothing: groups 1, 2, and 5.** Hypothesis runs
+beyond the register's needs, new-idea runs and ablations (each naming the paper it came from,
+results to `PARKING_LOT.md`), and the baselines held in reserve with their trigger written
+down. The root master plan's background pool is their home; a background result that earns a
+slot MOVES into the paper table, visibly.
+
+Opening this folder cold: read the register first, then the root's paper table. The register
+says what the paper still cannot show; the table says what to do about it today.
+
 ## Running order
 
 This scope keeps no order of its own. The single order is the paper table in the repo root
