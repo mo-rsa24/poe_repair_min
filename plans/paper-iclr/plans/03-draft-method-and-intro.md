@@ -1,5 +1,8 @@
 # ✍️ Method and introduction, written by hand
 
+## What this asks, in one line
+Write the two sections that depend on no unfinished run: the method (settled) and the introduction (follows from the spine).
+
 ## Description
 Write the two sections that do not depend on unfinished runs: the method, and
 the introduction.
@@ -28,12 +31,12 @@ Both sections present in the `.tex` as real prose, building to a PDF.
   Reuse that wording so the paper and the plan tree do not drift apart.
 
 ## Tasks
-- [ ] ⚠️ write the method: the cached residual, the rank-8 cross-attention LoRA,
+- [ ] write the method: the cached residual, the rank-8 cross-attention LoRA,
       the injection at inference, and why it is Mono-free
-- [ ] ⚠️ write the introduction against SPINE.md, ending on the contributions
-- [ ] ⚠️ write the related-work paragraph placement (it may be a section or fold
+- [ ] write the introduction against SPINE.md, ending on the contributions
+- [ ] write the related-work paragraph placement (it may be a section or fold
       into the intro; the spine decides)
-- [ ] ⚠️ /restyle pass over both, against a named ICLR exemplar
+- [ ] /restyle pass over both, against a named ICLR exemplar
 
 ## Success/Failure Outcomes
 - **the method section**

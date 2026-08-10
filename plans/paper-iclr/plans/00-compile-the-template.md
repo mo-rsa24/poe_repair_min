@@ -1,5 +1,8 @@
 # 🔨 Make the template build, and keep it building
 
+## What this asks, in one line
+Prove the paper builds to a PDF on this cluster, remove the template's stock content, and fix the two conventions that get expensive to change later: how figures are pathed and what the bibliography is called.
+
 ## Description
 Confirm the ICLR template compiles to a PDF from this repo, replace the stock
 placeholders with real content, and write down the one figure-path rule that
@@ -28,19 +31,19 @@ for the full picture. What this plan depends on specifically:
   73 KB PDF, so the toolchain question is settled before this plan starts.
 
 ## Tasks
-- [x] ✅ confirm the stock template builds with tectonic (done 2026-08-05, 73 KB
+- [x] confirm the stock template builds with tectonic (done 2026-08-05, 73 KB
       PDF written)
-- [ ] ⚠️ replace the stock title and the Cranberry-Lemon author block with the
+- [ ] replace the stock title and the Cranberry-Lemon author block with the
       real author block; keep `\iclrfinalcopy` commented out so the submission
       stays anonymous  [inferred]
-- [ ] ⚠️ decide the bib: keep the 23-line stub filename or rename, and add the
+- [ ] decide the bib: keep the 23-line stub filename or rename, and add the
       references this paper actually cites  [inferred]
-- [ ] ⚠️ write the figure-path rule into `paper/iclr/README.md`: one
+- [ ] write the figure-path rule into `paper/iclr/README.md`: one
       `\graphicspath` root plus a naming rule, chosen so a figure that does not
       exist yet can be referenced without breaking the build  [inferred]
-- [ ] ⚠️ add a placeholder-figure macro so an owed figure renders as a visible
+- [ ] add a placeholder-figure macro so an owed figure renders as a visible
       grey box with its slot name, instead of failing the build  [inferred]
-- [ ] ⚠️ set `latex-workshop.latex.recipe.default` to `tectonic` in
+- [ ] set `latex-workshop.latex.recipe.default` to `tectonic` in
       `.vscode/settings.json`, so plain Build works instead of failing on the
       missing `latexmk`, and the recipe stops needing to be picked by hand
       [inferred]
