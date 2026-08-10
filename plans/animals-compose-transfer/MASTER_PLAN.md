@@ -82,7 +82,7 @@ two-tier read, so a null is diagnosed, not narrated.
    cross-run leaderboard table + degradation curve produced.
 4. ⚠️ (B) size-matched mixed baseline built and run on the same animal held-out
    pairs; contrast reported.
-5. ⚠️ Figure cascade F2–F5 produced (F1 belongs to compose-scorer).
+5. ⚠️ Figure cascade A2–A5 produced (F1 belongs to compose-scorer).
 
 ## Sub-Scopes
 (none)
@@ -93,7 +93,7 @@ two-tier read, so a null is diagnosed, not narrated.
 - ⚠️ plans/03a-phase1-pooled.md: one pooled LoRA, held-out transfer read (cheap first pass ahead of the LOPO) — RUN DONE, read near-complete (out_out 0.96 @ 60k, all held-out pairs above floor; steps 70k-100k unscored, go/no-go note + direction axis remain)
 - ⚠️ plans/03-run-A-leave-one-pair-out.md: 15 LoRAs, leaderboard, degradation curve (DoD 3)
 - ⚠️ plans/04-run-B-contrast.md: size-matched mixed pool, animals-vs-mixed on same held-out set (DoD 4)
-- ⚠️ plans/05-figures.md: F2–F5 evidence cascade via /design-figure (DoD 5)
+- ⚠️ plans/05-figures.md: A2–A5 evidence cascade via /design-figure (DoD 5)
 
 ## Running order
 
@@ -103,3 +103,19 @@ and level is the `## Running order` table in the repo root `MASTER_PLAN.md`.
 ## Environment Context
 See `docs/ENVIRONMENT.md` for this project's environment/architecture facts.
 Read before drafting or checking any plan in this scope.
+
+## Glossary
+
+Terms only this scope uses. Shared vocabulary is in the root `MASTER_PLAN.md`.
+
+- **Compose-rate:** the fraction of outputs showing two separate animals, decided by the
+  validated scorer, never by eye.
+- **Held-out:** a pair the LoRA never trained on. The only kind that tests transfer.
+- **LOPO (leave-one-pair-out):** train fifteen LoRAs, each missing one pair, test each on its
+  missing pair. Transfer as a rate instead of an anecdote.
+- **Delivery-null vs no-transfer:** the two ways a held-out pair can sit at floor. The fix never
+  arrived (distance-reached at floor), or it arrived pointing wrong (direction-cosine low). The
+  two-tier read exists to tell them apart.
+- **Direction-cosine:** how aligned the run's correction is with the pool-mean correction.
+- **Distance-reached:** how far toward the Mono target the fix actually moved the prediction.
+- **Do-no-harm control:** pairs that compose fine without any fix; the LoRA must not break them.

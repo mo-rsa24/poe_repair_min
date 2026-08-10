@@ -1,4 +1,11 @@
-# 🔌 Wire: the compose-scorer into the eval hook, three live curves
+# 🔌 Three live curves, so a sweep can be read while it runs
+
+Design only. Verdicts live in [../review/02-wire-scorer-eval-hook.md](../review/02-wire-scorer-eval-hook.md).
+
+## What this asks, in one line
+Put the scorer and the two direction measures inside the training loop, so every run reports
+compose-rate, direction-cosine, and fraction-of-distance-reached live, and a floor result can be
+split into 'the fix never arrived' versus 'it arrived and did not transfer'.
 
 ## Why this plan exists
 The two axes that diagnose a null (see "Reading a result" in the master plan) have to
@@ -28,34 +35,21 @@ unattended sweep (plans 03, 04).
 A green 1-epoch smoke run showing compose-rate, direction-cosine, and
 fraction-of-distance-reached logging as three separate live W&B curves without error.
 
-## Status (2026-08-03)
-Compose-rate half is wired and running: the Phase-1 pooled run (plans/03a) logged a
-per-held-out-pair compose-rate via the eval hook (compose_rate.json). The direction axis
-is now wired in code (`_inline_sampling.py::build_pool_mean_cache` +
-`direction_metrics`, called from `train_pooled.py::_run_inline_sample`), reusing
-`_cos`/`_alpha_fit` from `cross_seed_lora_pooling/task_d_bridge.py` and
-`mean_delta_per_step`/`resolve_cells` from `training_cache.py` rather than redefining
-anything. `sample_all_cells` now takes `record_delta_at_steps` and returns each cell's
-`where_applied_cache` (in-memory, no disk round-trip) alongside the rendered PNG;
-`eval_crossbar_wandb.py`'s callers were updated for the new 3-tuple return. All edited
-modules import cleanly. Remaining: the actual 1-epoch smoke run (needs a GPU node) to
-confirm the three curves land as separate live W&B series.
-
 ## Tasks
-- [x] ✅ Wire the compose-scorer module into the eval hook (reuse the eval-crossbar /
+- [x] Wire the compose-scorer module into the eval hook (reuse the eval-crossbar /
   inline-sampling path in `cross_pair_lora_pooling`), computing a compose/blend label
   per held-out eval output. ✓ verified (compose_rate.json: per-held-out-pair compose-rate
   from the eval hook).
-- [x] ✅ Add the direction-cosine (Task D) computation: cosine of the current
+- [x] Add the direction-cosine (Task D) computation: cosine of the current
   correction to the pool-mean correction, logged per eval. ✓ verified
   (`_inline_sampling.py::direction_metrics`, `build_pool_mean_cache`; logged per-cell as
   `eval/direction_cosine/{quadrant}/{pair}/seed_{NN}` + an `eval/direction_cosine/mean`
   aggregate from `train_pooled.py::_run_inline_sample`).
-- [x] ✅ Add the fraction-of-distance-reached metric (toward the PoE→Mono target),
+- [x] Add the fraction-of-distance-reached metric (toward the PoE→Mono target),
   logged per eval, so the ~40% plateau is visible live. ✓ verified (same function,
   `frac_distance_reached` = `_alpha_fit(delta_hat, pool_mean)`, logged as
   `eval/frac_distance_reached/{quadrant}/{pair}/seed_{NN}` + mean).
-- [ ] ⚠️ Run a 1-epoch smoke and confirm all three metrics appear as separate W&B
+- [ ] Run a 1-epoch smoke and confirm all three metrics appear as separate W&B
   curves (wandb.log/Table hooks in `experiments/lora/main.py` +
   `cross_pair_lora_pooling/train_pooled.py`). Code is wired and import-clean; the smoke
   itself needs a GPU node, not run in this session.
@@ -68,6 +62,12 @@ metric keys are present and non-empty.
 STOP: if the eval hook errors or stalls on the smoke (import failure, scorer crash,
 metric not logging) → HALT before the 15-run sweep. Do NOT start the fan-out until
 this smoke is green. This is the single unattended-safety gate for the whole scope.
+
+## Next
+
+1. `/run-experiment` the 1-epoch smoke. Cost: one epoch on a GPU node. Buys: the review file's
+   open question, and the green light without which the 15-run sweep may not start.
+2. Answer the review question with the three W&B series named.
 
 ## Recommended skill
 ▶ `/run-experiment` ✅: drives the 1-epoch smoke and confirms the three curves. The

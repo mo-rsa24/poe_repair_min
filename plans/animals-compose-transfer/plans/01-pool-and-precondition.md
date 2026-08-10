@@ -1,4 +1,11 @@
-# 🧬 Pool: precondition check, curate the animal pairs, finalise by fail-rate
+# 🧬 A clean pool, behind the scorer gate
+
+Design only. Verdicts live in [../review/01-pool-and-precondition.md](../review/01-pool-and-precondition.md).
+
+## What this asks, in one line
+Build the set of animal pairs the whole scope runs on: no animal word repeated anywhere (so a
+transfer win cannot be memorisation), every training pair proven to fail by default (so there is
+something to fix), and none of it starts unless the validated scorer exists.
 
 ## Why this plan exists
 Leave-one-pair-out is only a fair transfer test if no animal word repeats across
@@ -26,29 +33,20 @@ entry-gate: this is where the dependency on compose-scorer is enforced.
 pairs + a few controls, each training pair's fails-by-default rate over 8 seeds
 recorded, gated behind a passing `scorer_validated.json`.
 
-## Status (2026-07-30)
-PLAN COMPLETE. Precondition met (compose-scorer validated, instance-count read,
-outputs/compose_scorer/scorer_validated.json pass=true). Fail-rate over 8 seeds now
-DONE: outputs/animals_compose_transfer/fail_rate.{json,md}, instance-count scorer,
-all 11 training pairs fail by default (9 at 1.00, donkey×pony 0.75, croc×alligator
-0.62). Held-out blend pairs added later (goose×swan, cow×buffalo) are transfer-test
-pairs, not training pairs, so they are unscored by design.
-
-Pool: outputs/animals_compose_transfer/{pair_pool.yaml, pair_prompts.yaml}.
-15 blend-prone rotation pairs + a_cat__x__a_dog (known-failure reference) + 3
-compose-by-default controls (elephant×penguin, giraffe×crab, octopus×sparrow).
-19 pairs, 38 distinct animals, no animal-word repeat.
+The pool on disk: `outputs/animals_compose_transfer/{pair_pool.yaml, pair_prompts.yaml}`,
+19 pairs (15 blend-prone, cat×dog as the known-failure reference, 3 compose-by-default
+controls), 38 distinct animals, no word repeated.
 
 ## Tasks
-- [x] ✅ Precondition check: assert `scorer_validated.json` (from plans/completed/compose-scorer)
+- [x] Precondition check: assert `scorer_validated.json` (from plans/completed/compose-scorer)
   exists and its pass flag is true. ✓ verified (outputs/compose_scorer/scorer_validated.json,
   pass=true, instance-count read).
-- [x] ✅ Curate the first-draft pair list: 15 blend-prone animal×animal pairs,
+- [x] Curate the first-draft pair list: 15 blend-prone animal×animal pairs,
   token-disjoint. Candidate list + blend rationale recorded in pair_pool.yaml comments.
-- [x] ✅ Write `pair_pool.yaml` and confirm it loads through
+- [x] Write `pair_pool.yaml` and confirm it loads through
   `pair_pool.py` with its built-in train/held-out overlap assertion passing (exit 0).
   Also passed a stronger animal-token-disjointness + prompt-coverage check.
-- [x] ✅ Score each pair fails-by-default over 8 seeds with the compose-scorer (fail-
+- [x] Score each pair fails-by-default over 8 seeds with the compose-scorer (fail-
   RATE, not eyeball). Keep pairs above the fail-rate threshold as training pairs;
   set aside a few compose-by-default pairs as the do-no-harm control.
   ✓ verified (fail_rate.{json,md}: 11 training pairs all blend-by-default, controls kept aside).
