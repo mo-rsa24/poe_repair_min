@@ -38,7 +38,7 @@ go/no-go call for Phase-2 (the LOPO in plan 03).
   0.96; the run continued 40k further steps that are still unscored — narrow remaining
   slice, not from scratch).
       - [ ] record the citable transfer number with its checkpoint in the Status
-        block (consumed by plans/interaction-term Goal 7: the paper never cites
+        block (consumed by plans/closing-the-compositional-gap/plans/interaction-term Goal 7: the paper never cites
         the number without its step)
 - [ ] Read Phase-1 on both axes (add direction-cosine + distance-reached, dep: plan 02
   direction metrics) so a floor pair is split delivery-null vs no-transfer.

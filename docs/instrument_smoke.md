@@ -1,6 +1,6 @@
 # Instrument smoke: interaction-term scope
 
-Recorded outputs from plan `plans/interaction-term/plans/00-build-the-instruments.md`.
+Recorded outputs from plan `plans/closing-the-compositional-gap/plans/interaction-term/plans/00-build-the-instruments.md`.
 Every number below was produced by running the command shown, on
 `a_cat__x__a_dog` seed 9 unless stated. Node mscluster85, RTX 3090, co3 env.
 

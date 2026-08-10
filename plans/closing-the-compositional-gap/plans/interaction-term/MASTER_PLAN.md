@@ -83,9 +83,9 @@ broke. No landing is narrated without its instrument.
 <!-- All three are scaffolded (MASTER_PLAN.md + Definition of Done) but hold
      ZERO plan files. 11 DoD items with no tasks behind them. Run
      /populate-plans on each before its parent plan needs it. -->
-- ⚠️ plans/interaction-term/plans/composition-type-cells/ — "the missing regime's cells + the validated instrument that can read them"
-- ⚠️ plans/interaction-term/plans/cross-model-replication/ — "the same story on three models and three samplers, or where it breaks"
-- ⚠️ plans/interaction-term/plans/inspector-interaction-term/ — "every headline figure explorable by hand, zero new generation"
+- ⚠️ plans/closing-the-compositional-gap/plans/interaction-term/plans/composition-type-cells/ — "the missing regime's cells + the validated instrument that can read them"
+- ⚠️ plans/closing-the-compositional-gap/plans/interaction-term/plans/cross-model-replication/ — "the same story on three models and three samplers, or where it breaks"
+- ⚠️ plans/closing-the-compositional-gap/plans/interaction-term/plans/inspector-interaction-term/ — "every headline figure explorable by hand, zero new generation"
 
 ## Plans
 

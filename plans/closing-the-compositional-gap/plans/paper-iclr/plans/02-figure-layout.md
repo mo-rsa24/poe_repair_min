@@ -52,8 +52,8 @@ within the page limit, and the owed rows ordered into the run order the result s
 
 ## Recommended skill
 ▶ `/plan-figures` ✅ to lock the narrative spine and the 3-6 load-bearing
-   figures, reading from `plans/animals-compose-transfer/plans/05-figures.md`
-   and `plans/interaction-term/plans/10-figures.md`.
+   figures, reading from `plans/closing-the-compositional-gap/plans/animals-compose-transfer/plans/05-figures.md`
+   and `plans/closing-the-compositional-gap/plans/interaction-term/plans/10-figures.md`.
 
 ## Engagement Instructions
 ```bash

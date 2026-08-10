@@ -48,7 +48,7 @@ The passive probes L1–L3 measure the binding vector b = e_J − normalized(e_A
 
 ### Results and experiments prose (blocked on the numbers)
 From: triage-plan (paper-iclr routing), 2026-08-05
-The results section cannot be written in phase 1 because most numbers do not exist. `interaction-term` plans 01–11 are unrun (only plan 00, the instruments, is complete); `animals-compose-transfer` has the pooled 03a read (out_out 0.96 at step 60k) but owes the leave-one-pair-out run, the mixed-pool contrast, and the 70k–100k scoring. Phase 1 writes section skeletons with named placeholders instead. Trigger: promote per figure as each run lands, not as one block. The figure layout from `plans/paper-iclr/plans/02-figure-layout.md` sets which numbers are needed first.
+The results section cannot be written in phase 1 because most numbers do not exist. `interaction-term` plans 01–11 are unrun (only plan 00, the instruments, is complete); `animals-compose-transfer` has the pooled 03a read (out_out 0.96 at step 60k) but owes the leave-one-pair-out run, the mixed-pool contrast, and the 70k–100k scoring. Phase 1 writes section skeletons with named placeholders instead. Trigger: promote per figure as each run lands, not as one block. The figure layout from `plans/closing-the-compositional-gap/plans/paper-iclr/plans/02-figure-layout.md` sets which numbers are needed first.
 
 ### Figure production stays in the result scopes
 From: triage-plan (paper-iclr routing), 2026-08-05
