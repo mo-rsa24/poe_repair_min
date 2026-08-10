@@ -11,6 +11,7 @@ Reads. Never writes. Four checks, in the order they cost you time:
 6. UNJUDGED   a review file whose run finished with questions still unanswered.
 7. JARGON     a design plan with the mechanical tells of prose that will not read cold.
 8. UNLISTED   a live plan in none of the root master plan's four lists, or in two.
+9. SLOTS      a reserved figure slot whose review question got answered (fillable or broken).
 
     python3 scripts/plan_pulse.py --brief   the three orientation lines, derived
 
@@ -403,6 +404,53 @@ def check_one_table(files):
     return hits
 
 
+FIGURES_MD = os.path.join(REPO, "paper", "iclr", "figures.md")
+REVIEW_PATH_IN_CELL = re.compile(r"plans/[\w-]+/review/[\w-]+\.md")
+
+
+def figure_slots():
+    """Rows of the figure register as (fig_id, status, answered_by_cell, file_cell)."""
+    if not os.path.isfile(FIGURES_MD):
+        return []
+    rows = []
+    for line in open(FIGURES_MD, errors="replace"):
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if len(cells) == 6 and re.match(r"F\d+$", cells[0]):
+            rows.append((cells[0], cells[1], cells[4], cells[5]))
+    return rows
+
+
+def check_slots():
+    """Watch the reserved figure slots against their review files.
+
+    A slot names the review file that must answer before its caption may claim
+    anything. When that file's pre-registered bar section carries an answer,
+    the slot is fillable (✅) or broken (❌). Broken means the result does not
+    fit the slot's claim: do not build the figure, run the diagnosis procedure
+    in docs/RESEARCH_GUIDELINES.md.
+    """
+    hits = []
+    for fig, status, answered_by, file_cell in figure_slots():
+        m = REVIEW_PATH_IN_CELL.search(answered_by)
+        if status in ("reserved", "fillable") and m:
+            rpath = os.path.join(REPO, m.group(0))
+            if not os.path.isfile(rpath):
+                continue
+            text = open(rpath, errors="replace").read()
+            bar = text.split("## The pre-registered bar", 1)
+            section = bar[1].split("\n## ", 1)[0] if len(bar) == 2 else ""
+            if "❌" in section:
+                hits.append((fig, f"BROKEN: bar answered against the claim, see {m.group(0)}"))
+            elif "- [x] ✅" in section and status == "reserved":
+                hits.append((fig, f"fillable: bar answered ✅ in {m.group(0)}, figure not built"))
+        if status == "built":
+            path_m = re.search(r"[\w./-]+\.(png|pdf)", file_cell)
+            if path_m and not os.path.exists(os.path.join(REPO, "paper", "iclr", path_m.group(0))) \
+               and not os.path.exists(os.path.join(REPO, path_m.group(0))):
+                hits.append((fig, f"built but its file is missing: {path_m.group(0)}"))
+    return hits
+
+
 def brief():
     """The three orientation lines, derived rather than remembered."""
     live = [l for l in live_jobs() if l.strip()]
@@ -433,10 +481,22 @@ def brief():
     else:
         nxt = "no paper table found in MASTER_PLAN.md."
 
+    # The time split: writing needs no GPU and no queue, a run does. Unblocked
+    # runs should be launched first, so they finish while the writing happens.
+    writable = [f"step {s} {p}" for s, p, st, w in sorted(ready) if p.startswith("paper-iclr")]
+    launchable = [f"step {s} {p}" for s, p, st, w in sorted(ready) if not p.startswith("paper-iclr")]
+
     print("Where things stand\n")
     print(f"  What is going on:      {going_on}")
     print(f"  The last thing we did: {last}")
     print(f"  Do this next:          {nxt}")
+    if launchable:
+        print(f"  Launch first:          {'; '.join(launchable[:4])} (runs; start them so they finish while you write)")
+    if writable:
+        print(f"  Write meanwhile:       {'; '.join(writable[:4])} (no GPU, no queue)")
+    slots = check_slots()
+    if slots:
+        print(f"  Figure slots:          " + "; ".join(f"{f} {msg}" for f, msg in slots[:3]))
 
 
 def rel(p):
@@ -448,7 +508,7 @@ def main():
     if "--brief" in sys.argv:
         brief()
         return
-    checks = {1, 2, 3, 4, 5, 6, 7, 8}
+    checks = {1, 2, 3, 4, 5, 6, 7, 8, 9}
     for a in sys.argv[1:]:
         if a.startswith("--checks"):
             checks = {int(x) for x in a.split("=")[-1].replace(",", " ").split()}
@@ -528,6 +588,14 @@ def main():
         for key, where in hits:
             place = "no list" if not where else f"{len(where)} lists"
             print(f"  {key}  ({place})")
+        print()
+
+    if 9 in checks:
+        hits = check_slots()
+        found += len(hits)
+        print(f"SLOTS: figure slots whose state changed under them ({len(hits)})")
+        for fig, msg in hits:
+            print(f"  {fig}  {msg}")
         print()
 
     if found == 0:

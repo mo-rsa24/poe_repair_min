@@ -66,7 +66,7 @@ Do not run two of these on the same thing hoping one lands. Pick on the input.
 Reading is a pool, not a step. `/paper-scout` to find, `/unpack-paper` to read one properly,
 `/drip --paper` when you want it paced across a week, `/master-paper` only when you intend to
 reimplement. Every read lands as a row in the register at
-`plans/literature/plans/01-reading-register.md`.
+`plans/standing/literature/plans/01-reading-register.md`.
 
 The rule that makes this pay off: **every run that tries an idea names the paper it came from.**
 An idea with no source is a hunch wearing a method's clothes.
@@ -80,6 +80,59 @@ record.
 Failing finishes the plan and opens one follow-on. Unclear names the cause and the next action,
 usually a fix to the instrument rather than to the hypothesis. Neither is a reason to move the
 bar.
+
+## Seven kinds of result, and what each one is allowed to do to the paper
+
+Decide which kind a result is before writing a word around it. The kind decides where it goes,
+what its caption may claim, and what happens next.
+
+| Kind | Enters the paper? | Where | The caption may claim | Next |
+|---|---|---|---|---|
+| Passes its bar, central | Yes | Results, a main figure | Exactly the bar's sentence, with the numbers | Fill the figure slot, add the register row |
+| Passes, supporting | Yes | Appendix, or folded into a table | The narrow thing it showed, nothing wider | Register row only if the paper cites it |
+| Suspiciously good | Not yet | Nowhere until cleared | Nothing | Treat as contamination until proven otherwise: the λ=0-style canary, what each flag actually selected (print the count), leakage between train and held-out. Only a clean check makes it kind 1 or 2 |
+| Fails in a bounded regime | Yes, and this strengthens the paper | The limitation, stated plainly where the claim is made | Where it holds AND where it does not, as one sentence | Review answer ❌ with the boundary named; a follow-on plan only if the boundary threatens the main claim |
+| Fails centrally, contradicts the premise | Nothing gets written around it | Nowhere, yet | Nothing | Stop. The diagnosis procedure below, before any prose |
+| Unclear by the pre-registered rule | Not until typed | Nowhere, yet | Nothing | 🟡 with the cause named. Instrument first: most unclear results are the scorer, not the science |
+| Good but orthogonal to the claim | No | `PARKING_LOT.md` | Nothing in this paper | It earns the right to propose an experiment |
+
+The dangerous mistake is writing the fourth kind as if it were the fifth (padding a real
+limitation into vagueness) or the fifth as if it were the fourth (shrinking a contradiction into
+a "limitation" paragraph). The bar's pre-registered sentence is the arbiter: a bounded miss fails
+in a regime the claim never needed; a central miss fails where the claim lives.
+
+## When a result contradicts the premise or cannot be typed: the diagnosis procedure
+
+Six steps, in this order, because the cheap explanations come first. The habit this formalises is
+the one that already works: look at the figures, ask questions, work through it in `/drip` and
+`/plain-speak --drip` sessions until the data's statement is plain.
+
+1. **Look at actual cells, not curves.** Open the images the number came from. `/analyze-figure`
+   on the key figure.
+2. **Check the instrument against your eyes.** Score five cells by eye, compare with the scorer.
+   The composition scorer once counted a 162px limb as a third animal; this step is why.
+3. **Check the harness.** Do the canaries still pass? Did every flag select a non-empty set
+   (print the count)? A knob with nothing to select is a silent no-op that reports a plausible
+   number for a configuration that never ran.
+4. **Check what actually ran.** The `## Runs` row's launch commit against the config the result
+   claims. The repo moves after launch; the row is the truth.
+5. **Understand it.** `/drip` on the mechanism the result touches; `/plain-speak --drip` on any
+   writeup of it that resists a cold read.
+6. **Attack your own reading.** `/grill-me` or `/defend-results` on the interpretation you are
+   about to commit to.
+
+**Exit condition: one sentence stating what the data says, typed as one of three.** If the six
+steps do not produce that sentence, the answer is the third exit by default, and the follow-up
+experiment is designed to distinguish the remaining candidates.
+
+- **A limitation.** Route: review answer `❌` with the boundary named, the caption and the figure
+  slot's claim rewritten to the bounded sentence, the limitation written where the claim is made.
+- **A contradiction.** Route: the plan finishes (a failed bar is a completed result), the figure
+  slot is marked broken and not built, one follow-on plan owns the question, and
+  `/frame-hypothesis` runs inside that follow-on, never in the plan that just closed.
+- **An artefact of the setup.** Route: a procedure file for the fix (the instrument, the harness,
+  or the config), the review answer stays `🟡` with the procedure as its named next action, and
+  the run re-scores or re-runs. The bar does not move.
 
 ## Attack the work before a reviewer does
 

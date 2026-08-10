@@ -13,7 +13,7 @@ object×object, so no existing group isolates "two similar animals that must not
 blend". This scope is that isolation.
 
 ## Depends on
-plans/compose-scorer: this scope's first step halts unless
+plans/completed/compose-scorer: this scope's first step halts unless
 `scorer_validated.json` exists and reads pass. That file is the machine-checkable
 precondition that lets the two scopes run in sequence unattended.
 

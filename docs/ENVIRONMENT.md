@@ -126,7 +126,7 @@ queryable: the only guard is the df check every job script runs before writing.
 Neither filesystem is under version control and neither is snapshotted. Every
 `✓ verified (...)` evidence tag in the plan tree points at a path on one of
 them, so an artifact deleted or moved silently breaks the claim it backs. That is
-what `plans/artifact-reconciliation/plans/05-resweep-on-new-runs.md` exists to
+what `plans/standing/artifact-reconciliation/plans/05-resweep-on-new-runs.md` exists to
 catch, and why it is a standing recurring plan rather than a finished one.
 
 A script writing large output must check the filesystem it actually writes to.
