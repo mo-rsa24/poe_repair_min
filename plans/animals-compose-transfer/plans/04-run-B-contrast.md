@@ -1,4 +1,10 @@
-# 🅱️ Contrast (B): animals pool vs size-matched mixed pool
+# 🅱️ The control pool: was it the animals, or just the amount of data?
+
+Design only. Verdicts live in [../review/04-run-B-contrast.md](../review/04-run-B-contrast.md).
+
+## What this asks, in one line
+Run the identical training on a same-size pool of non-animal concepts and evaluate on the same
+held-out animal pairs: if the mixed pool does as well, the win was data volume, not the pool.
 
 ## Why this plan exists
 A transfer win in plan 03 is worth little if any pool of the same size would have won.
@@ -20,12 +26,12 @@ A size-matched mixed pool built and run, evaluated on the identical animal held-
 set as (A), with the animals-vs-mixed contrast reported per held-out pair.
 
 ## Tasks
-- [ ] ⚠️ Build the size-matched mixed `pair_pool.yaml`: equal N to the animals pool,
+- [ ] Build the size-matched mixed `pair_pool.yaml`: equal N to the animals pool,
   animal pairs swapped for scene/style/object concepts, overlap assertion passing.
-- [ ] ⚠️ Run the mixed pool through the same training + wired-eval path as (A).
-- [ ] ⚠️ Evaluate the mixed-pool LoRA on the SAME animal held-out pairs used in (A),
+- [ ] Run the mixed pool through the same training + wired-eval path as (A).
+- [ ] Evaluate the mixed-pool LoRA on the SAME animal held-out pairs used in (A),
   two-tier read.
-- [ ] ⚠️ Report the animals-vs-mixed contrast per held-out pair (compose-rate +
+- [ ] Report the animals-vs-mixed contrast per held-out pair (compose-rate +
   direction), on the identical held-out set.
 
 ## Engagement Instructions

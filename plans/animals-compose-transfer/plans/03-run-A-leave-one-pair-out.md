@@ -1,4 +1,10 @@
-# 🅰️ Transfer (A): leave-one-pair-out over the 15 animal pairs
+# 🅰️ Hold out each pair in turn: transfer as a rate, not an anecdote
+
+Design only. Verdicts live in [../review/03-run-A-leave-one-pair-out.md](../review/03-run-A-leave-one-pair-out.md).
+
+## What this asks, in one line
+Train fifteen LoRAs, each missing one pair, and test each on exactly the pair it never saw:
+fifteen transfer points give a rate and a degradation curve where one test would give a yes or no.
 
 ## Why this plan exists
 This is the scope's main question: does the fix transfer to a pair the model never
@@ -21,14 +27,14 @@ Serves Objective 2 (Transfer A) and Definition-of-Done item 3.
 table (one row per held-out pair) and a degradation curve produced.
 
 ## Tasks
-- [ ] ⚠️ Configure the 15 leave-one-pair-out runs from `pair_pool.yaml` (each run holds
+- [ ] Configure the 15 leave-one-pair-out runs from `pair_pool.yaml` (each run holds
   out one pair, trains on the other ~14), reusing `multi_pair_trainer.py` /
   `train_pooled.py`.
-- [ ] ⚠️ Run the 15-run sweep with the wired eval hook (compose-rate + direction-cosine
+- [ ] Run the 15-run sweep with the wired eval hook (compose-rate + direction-cosine
   + distance-reached live per run), each to its step budget.
-- [ ] ⚠️ Eval each held-out pair on its own LoRA; collect compose/blend + direction-
+- [ ] Eval each held-out pair on its own LoRA; collect compose/blend + direction-
   cosine per held-out pair.
-- [ ] ⚠️ Build the cross-run leaderboard table (one row per held-out pair: compose y/n,
+- [ ] Build the cross-run leaderboard table (one row per held-out pair: compose y/n,
   distance-reached, direction-cosine, both embedding spaces) and the degradation curve.
 
 ## Engagement Instructions
