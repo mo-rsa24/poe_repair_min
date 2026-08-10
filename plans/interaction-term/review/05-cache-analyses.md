@@ -47,7 +47,7 @@ carries its own expected shape, named per question.
       those pairs where plain PoE composes 0%. The r_t vectors are mutually near-orthogonal
       (cosine about 0.00 even train-to-train), so no fitted subspace can contain unseen pairs
       whether or not the correction transfers. Full argument:
-      `docs/evidence/subspace-vs-transfer/QUERY.md`. Any paper sentence built on "shared
+      `docs/evidence/F6-subspace-vs-transfer/QUERY.md`. Any paper sentence built on "shared
       subspace" wording must be rewritten to this bounded form.
 
 ## Still open

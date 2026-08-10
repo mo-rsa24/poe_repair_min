@@ -24,7 +24,8 @@ claude/
 .vscode/local/
 
 # Local results — symlinks point at /datasets/mmolefe/poe_repair_min/outputs/
-outputs/
+outputs/*
+!outputs/INDEX.md
 logs/
 
 # Generated run artifacts (regenerable; large; canonical copies live under /datasets/mmolefe)

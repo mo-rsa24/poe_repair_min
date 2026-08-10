@@ -1,0 +1,32 @@
+# Evidence: what is here and what the paper does with it
+
+One row per item. A folder whose name starts with a slot id (F2, F6, F7, F8) feeds that row of
+the figure register, `paper/iclr/figures.md`. A folder without a prefix is supporting or
+superseded and is visibly not load-bearing. **Caption owed** means the result is good and its
+caption or writeup has to be rewritten fresh and plain before the paper may use it.
+
+## Feeds the paper
+
+| Item | Register slot | State |
+|---|---|---|
+| `F2-dose-response/` | F2, the headline dose figure | result stands (oracle 7% to 93%, controls flat); the exact percentages wait on the re-score; **caption owed** |
+| `F6-subspace-vs-transfer/` (`QUERY.md`, `geometry_vs_transfer.png`, `result.json`) | F6, why it is learnable | the bounded reading is settled: low-rank by ratio, and the held-out projection licenses nothing about transfer. `QUERY.md` is the argument the caption must not exceed |
+| `F7-mechanism-reprobe/` (`measure-fairness.md`, `RUN_ON_THIS_NODE.md`) | F7, the mechanism panel | replicated, median 1.52x over 64 cells. `measure-fairness.md` is why the obvious measure gives the opposite answer, which the appendix needs; **caption owed** |
+| `F8-animals-hard-vs-easy/` (`demo.py`, `hard_vs_easy_transfer.png`) | F8, transfer | supporting: the hard-vs-easy split behind the transfer read; **caption owed, and the figure regenerates from `demo.py`** |
+| `plausibility_climb.png` | corroborates F3/F5 | keep; the corrected sign reading lives in the cache-analyses review |
+
+## Supporting, not drawn from
+
+| Item | Why it stays |
+|---|---|
+| `../results-archive/group-a-failure.md`, `../results-archive/internal-force-failure.md` | the negative controls behind the paper's "external correctors and internal forces fail" sentence (DoD 6) |
+| `../results-archive/{lora-success,residual-diagnostics,conditioning-window}.md` | May-era writeups, superseded by the review files; history only |
+| `../instrument_smoke.md`, `../normalization_preregistration.md` | instrument provenance: what was committed before results were read |
+| `../DECISION_TIMELINE.md`, `../RESULTS_SUMMARY.md` | the running record; RESULTS_SUMMARY defers to the review files where they disagree |
+| root `evidence/` | the throwaway code that produced `F6`'s and `F8`'s images; regeneration path, never cited |
+| `../../inventory/` | the artifact-reconciliation scope's four output documents |
+
+## Not paper material
+
+`dl-scene/`, `learning-captures/`, `recap/`, `show-me/`, `todoist-staging/` at the repo root:
+learning and tooling artifacts. They serve sessions, not the manuscript.

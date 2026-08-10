@@ -475,7 +475,7 @@ overwritten.
 
 # The subspace test does not predict transfer (2026-08-05)
 
-Full write-up: `docs/evidence/subspace-vs-transfer/QUERY.md`.
+Full write-up: `docs/evidence/F6-subspace-vs-transfer/QUERY.md`.
 
 The corrected 6.0% held-out projection above was about to be read as evidence
 against the shared-correction claim. It is not, and the check that shows why is
