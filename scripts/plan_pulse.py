@@ -9,8 +9,9 @@ Reads. Never writes. Four checks, in the order they cost you time:
 4. DEBRIS     narration a plan file is not supposed to carry.
 5. RUNSTATE   a design plan carrying run state that belongs in its review file.
 6. UNJUDGED   a review file whose run finished with questions still unanswered.
+7. JARGON     a design plan with the mechanical tells of prose that will not read cold.
 
-Checks 5 and 6 apply only to a scope that has a review/ folder, so they switch
+Checks 5, 6 and 7 apply only to a scope that has a review/ folder, so they switch
 themselves on as scopes are converted and stay quiet on the ones that are not.
 
 Usage:
@@ -257,13 +258,84 @@ def check_unjudged(files):
     return hits
 
 
+# Terms that mean nothing to a cold reader without a gloss. Mechanical on purpose:
+# this check finds the tells, it does not judge whether prose reads well.
+JARGON = [
+    "λ", "delta_norm", "PMI", "norm-matched", "dose-response", "compose-rate",
+    "AUC", "canary", "r_t", "eps_poe", "eps_j", "eps_a", "eps_b", "eps_uncond",
+    "relative_norm", "oracle", "wrong_pair", "crossbar", "triptych", "SVD",
+    "MDS", "elbow", "held-out", "Mono", "PoE", "chimera", "logSNR",
+]
+DOUBLE_MARKER = re.compile(r"- \[[ x]\] *(✅|❌|🟡|◑|⚠️|➖|⏸|⧗)")
+LONG_SENTENCE_WORDS = 40
+
+
+def glossary_terms(scope):
+    """Terms defined in the root master plan plus this scope's own glossary."""
+    terms = set()
+    for path in (os.path.join(REPO, "MASTER_PLAN.md"),
+                 os.path.join(scope or "", "MASTER_PLAN.md")):
+        if not os.path.isfile(path):
+            continue
+        for m in re.finditer(r"^- \*\*(.+?)\*\*", open(path, errors="replace").read(), re.M):
+            # Lowercased and colon-stripped: a glossary writes "Chimera:" where a
+            # plan writes "chimera", and that is the same term.
+            terms.add(m.group(1).rstrip(":").lower())
+    return terms
+
+
+def check_jargon(files):
+    """Four mechanical tells that a design plan will not read cold."""
+    hits = []
+    for path in files:
+        scope = scope_of(path)
+        if not opted_in(scope):
+            continue
+        text = open(path, errors="replace").read()
+        defined = " ".join(glossary_terms(scope)).lower()
+        problems = []
+
+        body = text.split("\n", 1)[1] if "\n" in text else ""
+        opener = body[:600]
+        if not re.search(r"^## What this asks", body, re.M):
+            problems.append("no plain 'What this asks, in one line' opener")
+
+        lowered = text.lower()
+        ungloss = [t for t in JARGON if t.lower() in lowered and t.lower() not in defined]
+        if ungloss:
+            problems.append("unglossed: " + ", ".join(sorted(ungloss)[:6]))
+
+        doubles = len(DOUBLE_MARKER.findall(text))
+        if doubles:
+            problems.append(f"{doubles} task line(s) with both a checkbox and an outcome marker")
+
+        # Prose only. Code fences, headings, and blockquotes are excluded: the
+        # image-generation prompt is a long instruction to an image model on
+        # purpose, and counting it as an unreadable sentence is noise.
+        prose = re.sub(r"```.*?```", "", text, flags=re.S)
+        prose = "\n".join(
+            l for l in prose.splitlines()
+            if not l.lstrip().startswith((">", "#", "|", "*("))
+        )
+        long_ones = [
+            s.strip()[:60] for s in re.split(r"(?<=[.!?])\s", prose)
+            if len(s.split()) > LONG_SENTENCE_WORDS
+        ]
+        if long_ones:
+            problems.append(f"{len(long_ones)} sentence(s) over {LONG_SENTENCE_WORDS} words")
+
+        if problems:
+            hits.append((path, problems))
+    return hits
+
+
 def rel(p):
     return os.path.relpath(p, REPO)
 
 
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
-    checks = {1, 2, 3, 4, 5, 6}
+    checks = {1, 2, 3, 4, 5, 6, 7}
     for a in sys.argv[1:]:
         if a.startswith("--checks"):
             checks = {int(x) for x in a.split("=")[-1].replace(",", " ").split()}
@@ -324,6 +396,16 @@ def main():
             print(f"  {rel(path)}  {n_done} run(s) done, {len(unanswered)} question(s) open")
             for n, line in unanswered:
                 print(f"      :{n}  {line}")
+        print()
+
+    if 7 in checks:
+        hits = check_jargon(files)
+        found += len(hits)
+        print(f"JARGON: design plans that will not read cold ({len(hits)})")
+        for path, problems in hits:
+            print(f"  {rel(path)}")
+            for p in problems:
+                print(f"      {p}")
         print()
 
     if found == 0:

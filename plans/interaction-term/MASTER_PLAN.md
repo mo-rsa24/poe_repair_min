@@ -111,3 +111,43 @@ and level is the `## Running order` table in the repo root `MASTER_PLAN.md`.
 ## Environment Context
 See `docs/ENVIRONMENT.md` for this project's environment/architecture facts.
 Read before drafting or checking any plan in this scope.
+
+## Glossary
+
+Terms used only in this scope, one plain line each. The shared vocabulary (PoE, chimera,
+Mono, the residual `r_t`, λ, seed against pair, cell, crossbar, MDS) is in the root
+`MASTER_PLAN.md` and is not repeated here.
+
+- **The correction:** plain-English name for the residual `r_t`. The step-by-step gap between
+  what the model predicts from the joined prompt and what plain PoE predicts.
+- **Dose-response:** the shape borrowed from pharmacology. Add more of something and measure
+  more effect. A real cause gives a rising curve; a coincidence gives a flat one.
+- **The three rows (`oracle`, `random`, `wrong_pair`):** what gets injected. The pair's own real
+  correction, a random vector of the same size, and a different pair's correction. The last two
+  are the fakes that make the first one evidence.
+- **Norm-matched:** the fakes are scaled to the same length as the real correction at every step,
+  so a fake that fails cannot have failed for being too weak. Only direction differs.
+- **`delta_norm`:** how big the real correction is at a step. Recorded even during a fake run,
+  because it describes the pair of concepts and not what we injected.
+- **The PMI identity:** a relationship the real correction satisfies, recorded per step for the
+  same reason as `delta_norm`. A property of the pair, not of the injection.
+- **`eps_poe`, `eps_j`, `eps_a`, `eps_b`, `eps_uncond`:** the model's raw predictions at a step.
+  From plain PoE, from the joined prompt, from each concept alone, and from no prompt at all.
+  The four cached branches every analysis reads.
+- **Canary:** a check that the harness has not disturbed the thing it is measuring against. Ours
+  compares λ=0 output against the sampler's own saved plain-PoE output. It is a test that is
+  shown to fail against deliberately broken code, not a formality.
+- **`relative_norm`:** the fixed way of expressing the correction's size, chosen and committed
+  before any result was read so the choice cannot follow the answer.
+- **Compose-rate:** the fraction of pictures showing two separate animals rather than one blended
+  one, decided by the validated scorer.
+- **AUC:** area under the dose curve. One number summarising a whole curve, so three rows can be
+  compared at a glance.
+- **Fork, and the elbow:** where two denoising paths separate, and the step at which they start to.
+  The elbow is the answer to "when in the process does this decision get made".
+- **Sweep:** one run covering many cells in a loop, resumable, rather than one cell at a time.
+- **Held-out:** a pair or seed the LoRA never trained on. The only kind that tests transfer.
+- **Triptych:** the three-panel picture logged per cell, Mono beside PoE beside corrected, so a
+  number always has a picture next to it.
+- **SVD:** the decomposition used to ask how few directions the correction really needs. Cached
+  predictions are float16 and must be upcast before it accumulates.
