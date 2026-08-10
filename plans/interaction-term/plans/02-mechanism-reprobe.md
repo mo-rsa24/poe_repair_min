@@ -1,5 +1,8 @@
 # 🔬 Re-probe the mechanism beyond seed 9
 
+## What this asks, in one line
+When the trained fix is switched on, does it change WHAT a word paints or WHERE the word looks? The scope's account says the value channel (what), and this asks whether that survives 64 held-out cells.
+
 ## Background
 The value-channel finding (the LoRA changes what the dropped concept's token
 writes, not where words look) rests on one seed of one pair, with one prior
@@ -50,22 +53,22 @@ task below.)
   Its 420 LoRA tensors are under sd["lora_state"], not at the top level.
 
 ## Tasks
-- [x] ✅ generalize value_probe.py beyond the hardcoded cat/dog token indices:
+- [x] generalize value_probe.py beyond the hardcoded cat/dog token indices:
       a per-pair token map derived from each pair's prompts
       ✓ verified: token_map.py, checked across all 19 pool pairs, 0 mismatches.
       Caught 3 pairs the old index-2 hardcode would have read as fragments:
       walrus (wal|rus), chimpanzee (chim|pan|zee), porpoise. a_seal__x__a_walrus
       is IN this sweep, so it would have probed "wal" with no error.
-- [x] ✅ one-cell smoke in-session (one held-out pair, one seed): maps look
+- [x] one-cell smoke in-session (one held-out pair, one seed): maps look
       sane, token map verified against the tokenizer
       ✓ verified: an_eagle__x__a_hawk seed 9 (+ frog/toad, seal/walrus,
       cat/dog). Maps render as a bird/frog head in profile, not garbage.
       Figure: docs/evidence/mechanism-reprobe/smoke_eagle_hawk.png
-- [x] ✅ full sweep: 8 held-out pairs × seeds 9-16, adapter OFF vs ON at
+- [x] full sweep: 8 held-out pairs × seeds 9-16, adapter OFF vs ON at
       matched steps. 64/64 cells captured 2026-08-05 on mscluster109, 0 failed.
       Run directly on the node, not as a Slurm job: biggpu allows one job per
       user and an interactive session held the slot.
-- [x] ✅ compute the table, per cell. 384 token-step rows.
+- [x] compute the table, per cell. 384 token-step rows.
       NOTE the measure changed: this said
       "value-direction rotation vs attention-map correlation", but the obvious
       version of that comparison gives the WRONG answer. Weight maps are
@@ -74,9 +77,9 @@ task below.)
       the hypothesis) while the scale-free pattern change says content moves
       1.5-2x more (for it). scripts/mechanism_study/reprobe_table.py compares
       the PATTERN term. See docs/evidence/mechanism-reprobe/measure-fairness.md
-- [ ] ⚠️ /pair-figure decision: per-seed points vs pair-level means as the
+- [ ] /pair-figure decision: per-seed points vs pair-level means as the
       figure's statistical entity
-- [x] ✅ record the verdict against Goal 6: **REPLICATES**.
+- [x] record the verdict against Goal 6: **REPLICATES**.
       64 cells, 8 pairs, 384 rows. Median content/weight pattern ratio 1.52x,
       97% of rows above 1 (373/384), 6.4x headroom over the shuffled-map noise
       floor. All 8 pairs individually clear the pre-registered bar.

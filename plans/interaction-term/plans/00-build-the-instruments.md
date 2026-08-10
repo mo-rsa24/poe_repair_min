@@ -1,5 +1,8 @@
 # 🔧 Wrap and verify the instruments the rest of this scope measures with
 
+## What this asks, in one line
+Build the thirteen measuring scripts before any experiment needs them, and smoke each one on a cell where the right answer is known.
+
 ## Description
 Give plans 01-11 the commands they verify themselves against. The sampler that
 injects r_t at a dose and inside a window **already exists** and is already used
@@ -95,33 +98,33 @@ flowchart TD
   Its 420 LoRA tensors are under `sd["lora_state"]`, not at the top level.
 
 ## Tasks
-- [x] ✅ `scripts/cache_smoke.py`: scan every cached pair; per-file keys,
+- [x] `scripts/cache_smoke.py`: scan every cached pair; per-file keys,
       shapes `[1,4,128,128]`, dtype fp16, NaN check. Print `70/70 ok` or name
       every bad file. Cache-only, no GPU. Needed by plan 01.
-- [x] ✅ `poe_repair/experiments/interaction_term/cache.py`: one loader that,
+- [x] `poe_repair/experiments/interaction_term/cache.py`: one loader that,
       given pair slug and seed, returns the residual stack upcast to fp32 and
       computes `r_t` **the same way the sampler does**: guided
       `eps_a/eps_b/eps_j` via `guided_eps`, `eps_poe` via `poe_eps`,
       `r_t = eps_j - eps_poe`. Import those two helpers from
       `poe_repair.methods._sampling`; do not re-derive them.
-- [x] ✅ `scripts/interaction_term_inject.py`: thin CLI over
+- [x] `scripts/interaction_term_inject.py`: thin CLI over
       `composers.teacher_residual.run` exposing `--pair`, `--seed`, `--lambda`,
       `--check-canary`. No new sampling logic.
-- [x] ✅ `scripts/interaction_term_window.py`: same, exposing `--window
+- [x] `scripts/interaction_term_window.py`: same, exposing `--window
       start,end` and `--window off` (meaning `lambda_max=0`), plus
       `--check-identity`.
-- [x] ✅ Canary tests in `tests/test_interaction_term_canaries.py`: 8 tests,
+- [x] Canary tests in `tests/test_interaction_term_canaries.py`: 8 tests,
       all holding the UNet batch shape fixed. Each shown to fail against a
       deliberately broken sampler (two mutations, both reverted).
-- [x] ✅ Cache-only analysis scripts (no GPU): `snr_collapse.py` (collapse
+- [x] Cache-only analysis scripts (no GPU): `snr_collapse.py` (collapse
       spread %), `spectrum.py` (energy-at-k + held-out projection),
       `climb.py` (PoE vs Mono climb distributions).
-- [x] ✅ Trajectory-reading scripts: `fork_curve.py` (elbow step). Reads the
+- [x] Trajectory-reading scripts: `fork_curve.py` (elbow step). Reads the
       existing `latent_trajectory.pt` files; does not re-sample.
-- [x] ✅ Remaining scripts for plans 03/04/06/07: `plot_dose_curves.py`,
+- [x] Remaining scripts for plans 03/04/06/07: `plot_dose_curves.py`,
       `plot_window_curves.py`, `language_probes.py`, `quality_control.py`,
       `manifold_slide.py`, `composition_scatter.py`.
-- [x] ✅ Smoke each instrument on one cached pair and record the actual output
+- [x] Smoke each instrument on one cached pair and record the actual output
       in `docs/instrument_smoke.md`.
 
 ## Success/Failure Outcomes

@@ -1,5 +1,8 @@
 # 📏 Pre-register the correction-size measure
 
+## What this asks, in one line
+Fix how the correction's size is expressed, in a committed script, before any result is read, so the choice of measure cannot follow the answer.
+
 ## Description
 Choose, compute once, and write down the normalization used whenever ‖r_t‖ is
 compared across pairs or prompt types, before any cross-type plot exists.
@@ -38,14 +41,14 @@ flowchart LR
 - Runs in-session on the current node (mscluster85); no job needed.
 
 ## Tasks
-- [x] ✅ compute both candidates on 3 cached pairs (‖r_t‖/‖ε_PoE‖ and
+- [x] compute both candidates on 3 cached pairs (‖r_t‖/‖ε_PoE‖ and
       fraction of PoE→Mono distance). The second is VOID: identically 1.000000
       because r_t IS ε_Mono − ε_PoE, so it divides a quantity by itself. A
       third candidate (vs latent step size) was measured and rejected: its
       denominator moves with the sampler schedule, which plan 08 varies.
-- [x] ✅ write the memo with the committed choice and date
+- [x] write the memo with the committed choice and date
       (docs/normalization_preregistration.md, relative_norm, 2026-08-05)
-- [x] ✅ bulk-load smoke over the full cache: 70/70 ok, 790 cells, 38324 step
+- [x] bulk-load smoke over the full cache: 70/70 ok, 790 cells, 38324 step
       files, zero NaN. Note 70 distinct pairs, not 76: six slugs are cached
       under both splits (see docs/instrument_smoke.md).
 

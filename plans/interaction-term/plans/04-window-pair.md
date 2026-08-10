@@ -1,4 +1,13 @@
-# ⏱️ The timing pair: when is the correction needed
+# ⏱️ When in the denoising run is the correction needed?
+
+Design only. Verdicts and run state live in
+[../review/04-window-pair.md](../review/04-window-pair.md).
+
+## What this asks, in one line
+Let the correction act only inside a sliding window of the 50 denoising steps and measure the
+compose rate per window position: a peak says when the correction is needed, and a second
+experiment gating the conditioning itself says whether that is the same time conditioning is
+needed at all.
 
 ## Description
 Two matched window experiments on the same pairs, seeds, widths, and scorer.
@@ -40,16 +49,16 @@ width everywhere, plus peak-window vs tail-window image strips.
 - Disk guard on /datasets; W&B triptych logging per schedule.
 
 ## Tasks
-- [ ] ⚠️ W2 harness: window-gated r_t injection on an always-conditioned PoE
+- [ ] W2 harness: window-gated r_t injection on an always-conditioned PoE
       base (adapt the mask loop; the λ=0-outside-window case must equal plain
       PoE exactly)
-- [ ] ⚠️ pick the fixed width from the ‖r_t‖-vs-step curve (plan 05) and state
+- [ ] pick the fixed width from the ‖r_t‖-vs-step curve (plan 05) and state
       it in the run config; every window in both experiments uses it
-- [ ] ⚠️ W1 enhancement: add sliding fixed-width schedules to the existing
+- [ ] W1 enhancement: add sliding fixed-width schedules to the existing
       sweep and score all outputs (old and new) with the compose-scorer
-- [ ] ⚠️ smoke both harnesses in-session on one pair, one seed, three windows
-- [ ] ⚠️ full grids as jobs: both experiments, shared pairs and seeds
-- [ ] ⚠️ joint figure plus the two image strips
+- [ ] smoke both harnesses in-session on one pair, one seed, three windows
+- [ ] full grids as jobs: both experiments, shared pairs and seeds
+- [ ] joint figure plus the two image strips
 
 ## Success/Failure Outcomes
 - **W2 harness smoke**
@@ -58,8 +67,18 @@ width everywhere, plus peak-window vs tail-window image strips.
   - Failure: all-off differs from plain PoE, meaning the gating leaks. Fix
     before any grid.
 
-## Recommended skill
-▶ `/run-experiment` ✅ for the grids; `/demonstrate` ✅ for the smoke.
+## Next
+
+1. Read the fork elbow (step 16) from the cache-analyses review; pick the fixed window width
+   from the ‖r_t‖ curve and write it into the run config.
+2. Build the W2 harness and prove the all-off identity (the leak check in the review file).
+3. `/demonstrate` the smoke: one pair, one seed, three windows, eyeballed.
+4. `/run-experiment` for both grids. Cost: shared pairs and seeds, the largest grid in the
+   program; biggpu first. Buys: every question in the review file and slot F4.
+5. Answer the review questions; the joint figure goes through plan 10's `/design-figure` pass.
+
+**The short version:** run W2 only. W1's enhancement corroborates but F4 can carry the claim
+with W2 alone; say in the caption that the conditioning-window comparison is future work.
 
 ## Engagement Instructions
 ```bash

@@ -26,23 +26,23 @@ qualitative view with its number.
   hypothesis-to-scope pass; all other figures must come from real grids.
 
 ## Tasks
-- [ ] ⚠️ /design-figure: the two meanings of "and" (three-panel density
+- [ ] /design-figure: the two meanings of "and" (three-panel density
       diagram over real λ=0 exemplars; ChatGPT prompt exists)
-- [ ] ⚠️ /design-figure: the gap seen (y normalized ‖r_t‖, x log-SNR, thin
+- [ ] /design-figure: the gap seen (y normalized ‖r_t‖, x log-SNR, thin
       line per pair, one bold mean)
-- [ ] ⚠️ /design-figure: the cure dosed (image strip above the curve, shared
+- [ ] /design-figure: the cure dosed (image strip above the curve, shared
       λ axis, controls gray below)
-- [ ] ⚠️ /design-figure: the cure timed (W1+W2 curves, fork elbow as a
+- [ ] /design-figure: the cure timed (W1+W2 curves, fork elbow as a
       vertical band)
-- [ ] ⚠️ /design-figure: three spaces one dial (manifold walk, caption
+- [ ] /design-figure: three spaces one dial (manifold walk, caption
       crossover, density climb; shared λ colorbar)
-- [ ] ⚠️ /design-figure: why it is learnable (spectrum with Gaussian floor
+- [ ] /design-figure: why it is learnable (spectrum with Gaussian floor
       shaded, held-out projection inset)
-- [ ] ⚠️ /design-figure: the learned version (mechanism panel beside the
+- [ ] /design-figure: the learned version (mechanism panel beside the
       transfer table and replication strip; method-schematic ChatGPT prompt
       exists)
-- [ ] ⚠️ /evidence-ladder build of the approved specs
-- [ ] ⚠️ run the two paper-illustration prompts (three-regime diagram, method
+- [ ] /evidence-ladder build of the approved specs
+- [ ] run the two paper-illustration prompts (three-regime diagram, method
       schematic) through ChatGPT and drop the images in
       plans/interaction-term/assets/  [owner: human]
 

@@ -1,5 +1,8 @@
 # 🔁 Replication on other models and samplers
 
+## What this asks, in one line
+Does the dose result survive a different model and a different sampler? Background: a likely reviewer ask, not a claim the paper makes.
+
 ## Description
 Repeat the causal core cheaply beyond SDXL and DDIM: residual caches and dose
 tests on SD 1.5 and SD 2.1, a sampler sweep (DDIM, DDPM, Euler) testing that
@@ -23,7 +26,7 @@ the blend).
 - Starts after the SDXL core (plans 03-05) lands.
 
 ## Tasks
-- [ ] ⚠️ build the cross-model replication  → decomposed: see
+- [ ] build the cross-model replication  → decomposed: see
       `cross-model-replication/MASTER_PLAN.md`
 
 ## Environment Facts note
