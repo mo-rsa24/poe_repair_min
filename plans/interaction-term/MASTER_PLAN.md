@@ -88,25 +88,62 @@ broke. No landing is narrated without its instrument.
 - ⚠️ plans/interaction-term/plans/inspector-interaction-term/ — "every headline figure explorable by hand, zero new generation"
 
 ## Plans
-- ✅ 00-build-the-instruments.md — 13 instruments built and smoked 2026-08-05;
-  scripts take --pool (the cache dir mixes experiments, see instrument_smoke.md)
-- ✅ 01-preregister-normalization.md — relative_norm committed 2026-08-05
-- ✅ 02-mechanism-reprobe.md — replicates, median 1.52x over 64 cells
-- ⚠️ 03-dose-response.md
-- ⚠️ 04-window-pair.md
-- ⚠️ 05-cache-analyses.md
-- ⚠️ 06-corroborations.md
-- ⚠️ 07-composition-type.md
-- ⚠️ 08-replication.md
-- ⚠️ 09-print-gates.md — the two /pressure-test gates; the writing it used to
-  own moved to `plans/paper-iclr/plans/06-mechanism-and-caveats.md` 2026-08-05
-- ⚠️ 10-figures.md
-- ⚠️ 11-inspector.md
+
+Grouped by what the group is for. The file numbers are per folder and are not an order, so
+the Paper step column carries the position from the root `MASTER_PLAN.md`. "bg" means the
+plan sits in the root's background-experiments pool and does not block the paper.
+
+**The instruments, and the choices fixed before any result could be seen**
+
+| Plan | What it does | Paper step | Status | Owes |
+|---|---|---|---|---|
+| 00-build-the-instruments | the 13 measuring scripts, built and smoked | | ✅ | scripts take `--pool`, because the cache mixes experiments |
+| 01-preregister-normalization | fixes how the correction's size is expressed, committed before any result was read | | ✅ | |
+
+**Does the correction cause composition, or merely accompany it**
+
+| Plan | What it does | Paper step | Status | Owes |
+|---|---|---|---|---|
+| 03-dose-response | more correction, more composition, with two flat controls. The headline | 1 | ◑ | the re-score, then the figure and the strip |
+| 04-window-pair | when in the denoising run the correction matters | 3 | ⚠️ | all of it |
+| 06-corroborations | the independent checks on the causal claim | 8 | ⚠️ | all of it |
+
+**What changes inside the model when the fix is on**
+
+| Plan | What it does | Paper step | Status | Owes |
+|---|---|---|---|---|
+| 02-mechanism-reprobe | the fix changes what a word paints, not where it looks. Replicates: median 1.52x over 64 cells | 19 | ◑ | one decision: per-seed points or pair-level means, via /pair-figure |
+
+**Analyses off the cached predictions, needing no GPU and no queue**
+
+| Plan | What it does | Paper step | Status | Owes |
+|---|---|---|---|---|
+| 05-cache-analyses | how few directions the correction needs, how its size tracks noise level, where two paths fork | 2 | ⚠️ | five of six tasks. The fork curve is done, elbow at step 16 |
+
+**How far the claim reaches. Background: none of this blocks the paper**
+
+| Plan | What it does | Paper step | Status | Owes |
+|---|---|---|---|---|
+| 07-composition-type | whether attribute pairs behave like object pairs | bg | ⚠️ | its cells, via the composition-type-cells sub-scope |
+| 08-replication | the same result on another model and sampler | bg | ⚠️ | its runs, via the cross-model-replication sub-scope |
+| 11-inspector | the correction explorable by hand, for understanding rather than the manuscript | bg | ⚠️ | its build, via the inspector-interaction-term sub-scope |
+
+**What reaches the paper**
+
+| Plan | What it does | Paper step | Status | Owes |
+|---|---|---|---|---|
+| 09-print-gates | the two /pressure-test passes run before anything is written. Defends, among other things, the decision not to run a baseline | 9 | ⚠️ | both passes |
+| 10-figures | the figures this scope owes the manuscript, via /design-figure | 10 | ⚠️ | all of them |
+
+All three sub-scopes are empty, and all three belong to background plans. That is why nobody
+has populated them and why it is not urgent. Populate one when its parent plan is promoted out
+of the background pool.
 
 ## Running order
 
-This scope keeps no order of its own. The single flat order across every scope
-and level is the `## Running order` table in the repo root `MASTER_PLAN.md`.
+This scope keeps no order of its own. The order lives in the four lists in the repo root
+`MASTER_PLAN.md`, and the Paper step column above carries those positions verbatim. If a number
+here disagrees with the root, the root is right and this file is stale.
 
 ## Environment Context
 See `docs/ENVIRONMENT.md` for this project's environment/architecture facts.
