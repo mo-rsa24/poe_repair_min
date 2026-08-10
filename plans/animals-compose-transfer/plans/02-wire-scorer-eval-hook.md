@@ -38,16 +38,14 @@ fraction-of-distance-reached logging as three separate live W&B curves without e
 ## Tasks
 - [x] Wire the compose-scorer module into the eval hook (reuse the eval-crossbar /
   inline-sampling path in `cross_pair_lora_pooling`), computing a compose/blend label
-  per held-out eval output. ✓ verified (compose_rate.json: per-held-out-pair compose-rate
-  from the eval hook).
+  per held-out eval output.
 - [x] Add the direction-cosine (Task D) computation: cosine of the current
   correction to the pool-mean correction, logged per eval. ✓ verified
   (`_inline_sampling.py::direction_metrics`, `build_pool_mean_cache`; logged per-cell as
   `eval/direction_cosine/{quadrant}/{pair}/seed_{NN}` + an `eval/direction_cosine/mean`
   aggregate from `train_pooled.py::_run_inline_sample`).
 - [x] Add the fraction-of-distance-reached metric (toward the PoE→Mono target),
-  logged per eval, so the ~40% plateau is visible live. ✓ verified (same function,
-  `frac_distance_reached` = `_alpha_fit(delta_hat, pool_mean)`, logged as
+  logged per eval, so the ~40% plateau is visible live.`, logged as
   `eval/frac_distance_reached/{quadrant}/{pair}/seed_{NN}` + mean).
 - [ ] Run a 1-epoch smoke and confirm all three metrics appear as separate W&B
   curves (wandb.log/Table hooks in `experiments/lora/main.py` +

@@ -183,7 +183,8 @@ def check_orphans(files):
     for scope, members in by_scope.items():
         for path in members:
             name = os.path.basename(path)
-            if name in ("MASTER_PLAN.md", "CLAUDE.md", "README.md", "CHANGELOG.md"):
+            if name in ("MASTER_PLAN.md", "CLAUDE.md", "README.md", "CHANGELOG.md",
+                        "PARKING_LOT.md", "parked.md", "INDEX.md"):
                 continue
             stem = name[:-3]
             named = any(

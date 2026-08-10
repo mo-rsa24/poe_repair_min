@@ -31,10 +31,9 @@ go/no-go call for Phase-2 (the LOPO in plan 03).
 
 ## Tasks
 - [x] Train one pooled rank-8 cross-attention LoRA on the 11 training pairs.
-  ✓ verified (checkpoints to step 100000, config all_groups, dataset_meta 88 cells).
+ 
 - [x] Eval the held-out split (unseen blends + cat×dog + control) for compose-rate,
-  in-distribution vs held-out. ✓ verified (compose_rate.json: in_in 0.96 / out_out 0.96
-  at step 60000).
+  in-distribution vs held-out.
 - [ ] Score compose-rate for steps 70000–100000 (60000 is read and strong: out_out
   0.96; the run continued 40k further steps that are still unscored — narrow remaining
   slice, not from scratch).

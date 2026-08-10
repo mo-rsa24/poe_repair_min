@@ -39,8 +39,7 @@ controls), 38 distinct animals, no word repeated.
 
 ## Tasks
 - [x] Precondition check: assert `scorer_validated.json` (from plans/completed/compose-scorer)
-  exists and its pass flag is true. ✓ verified (outputs/compose_scorer/scorer_validated.json,
-  pass=true, instance-count read).
+  exists and its pass flag is true.
 - [x] Curate the first-draft pair list: 15 blend-prone animal×animal pairs,
   token-disjoint. Candidate list + blend rationale recorded in pair_pool.yaml comments.
 - [x] Write `pair_pool.yaml` and confirm it loads through
@@ -49,7 +48,7 @@ controls), 38 distinct animals, no word repeated.
 - [x] Score each pair fails-by-default over 8 seeds with the compose-scorer (fail-
   RATE, not eyeball). Keep pairs above the fail-rate threshold as training pairs;
   set aside a few compose-by-default pairs as the do-no-harm control.
-  ✓ verified (fail_rate.{json,md}: 11 training pairs all blend-by-default, controls kept aside).
+ 
 
 ## Engagement Instructions
 GATE (unattended pass/fail): (a) `scorer_validated.json` exists AND pass flag true;
