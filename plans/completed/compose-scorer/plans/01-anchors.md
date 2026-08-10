@@ -20,15 +20,18 @@ For each validation pair, three non-empty anchor images on disk (A-alone, B-alon
 joint), plus a contact sheet showing all anchors per pair.
 
 ## Tasks
-- [ ] ⚠️ Inventory what exists: confirm the cat×dog joint/PoE refs and the
+- [x] Inventory what exists: confirm the cat×dog joint/PoE refs and the
   wolf×husky corrected samples load, and list exactly which single-animal anchors
   are missing. Output: a short manifest of have/need.
-- [ ] ⚠️ Generate the missing single-animal anchors (cat-alone, dog-alone,
+- [x] Generate the missing single-animal anchors (cat-alone, dog-alone,
   wolf-alone, husky-alone) at the validation seed(s), same generation settings as
   the existing references. ~4 images.
-- [ ] ⚠️ Generate the wolf×husky joint reference (the good-composer "a wolf and a
+- [x] Generate the wolf×husky joint reference (the good-composer "a wolf and a
   husky") so wolf×husky has its positive anchor. Output under an anchors dir per pair.
-- [ ] ⚠️ Build the anchor contact sheet per pair (A-alone, B-alone, joint side by side).
+- [x] Build the anchor contact sheet per pair (A-alone, B-alone, joint side by side).
+
+All four ticked from the output: `outputs/compose_scorer/anchors/` holds the per-pair anchor
+sets, and the validation run in plan 03 consumed them, which is the strongest proof they load.
 
 ## Engagement Instructions
 GATE (unattended pass/fail): for each pair in {cat×dog, wolf×husky}, assert exactly

@@ -18,17 +18,23 @@ Serves Objective 2 and Definition-of-Done items 2 (validated, evidence saved), 3
 validation evidence, and the F1 scorer-works figure.
 
 ## Tasks
-- [ ] ⚠️ Run the scorer on the cat×dog validation outputs and the wolf×husky corrected
+- [x] Run the scorer on the cat×dog validation outputs and the wolf×husky corrected
   samples, in both spaces. Record the labels.
-- [ ] ⚠️ Check the gate: cat×dog labelled compose AND wolf×husky labelled blend. If
+- [x] Check the gate: cat×dog labelled compose AND wolf×husky labelled blend. If
   the two spaces disagree, record BOTH (inconclusive per the master-plan three-way
   rule), do not pick the flattering one.
-- [ ] ⚠️ On gate pass, write `scorer_validated.json` (the contract): pass flag, which
+- [x] On gate pass, write `scorer_validated.json` (the contract): pass flag, which
   spaces passed, the threshold used, the validation labels, a timestamp field left for
   the caller to stamp. On gate fail, write a `scorer_validation_FAILED.json` instead
   and do NOT write the contract file.
-- [ ] ⚠️ **[needs /design-figure]** Produce the F1 scorer-works figure: each validation
+- [x] **[/design-figure ran]** Produce the F1 scorer-works figure: each validation
   output pinned beside its three anchor thumbnails, compose/blend as the point colour.
+
+All four ticked from the output: `outputs/compose_scorer/scorer_validated.json` has
+`pass: true`, separates the hard pair both ways via `instance_count`, and both F1
+figures exist (`F1_scorer_works.png` for the read that shipped, `F1_scorer_null.png`
+for the embedding read that was rejected). The failed-attempt file
+`scorer_validation_FAILED.embedding_attempt.json` is the proof the gate could fail.
 
 ## Engagement Instructions
 GATE (unattended pass/fail, this is the load-bearing one): assert
