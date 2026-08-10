@@ -7,7 +7,7 @@ the broken method that just adds two prompts together (PoE) shows both concepts 
 blur, and it does so without ever seeing the two prompts joined into one at test time (Mono-free).
 Do cat×dog at seed 42 first, then one representative pair from each difficulty group (G1–G4, G6).
 This plan absorbs the old phase files 01–04 and 09 (setup, first success, breadth) and the two
-failed-corrector controls 05–06, now archived under `plans/phases/`.
+failed-corrector controls 05–06, now archived under `plans/shelved/phases/`.
 
 ## Purpose
 Serves Objective 1 (Overfit) and Definition-of-Done items 1 and 6. This is the foundation. If the
@@ -37,14 +37,14 @@ $PY scripts/build_lora_manifest.py && bash scripts/run_lora_inspector.sh        
 ```
 
 ## Tasks
-- [x] ✅ Groundwork: veracity (gap reachable), residual diagnostics (target structured), CFG-mask floor. → G01/G02/G03 landed (`plans/phases/01-03`).
+- [x] ✅ Groundwork: veracity (gap reachable), residual diagnostics (target structured), CFG-mask floor. → G01/G02/G03 landed (`plans/shelved/phases/01-03`).
 - [x] ✅ Train single-seed LoRA on cat×dog seed 42. → G04 headline: λ=0 byte-identical to PoE, λ=1 two distinct animals by ~ep600. Artifact `artifacts/rung1-overfit/lora/a_cat__x__a_dog/seed_42/run__local/checkpoints/lora_step_062500.pt`.  ✓ verified (loads, 420 lora keys)
 - [x] ✅ Train G4 `a_typewriter__x__a_cactus` single-seed. → trained to step 80000 (`artifacts/rung1-overfit/lora/a_typewriter__x__a_cactus/seed_42/run__wandb-wag4z592/`); MDS panels NOT run.
 - [ ] ⚠️ **[publishable-bar]** Train G1/G2/G3 single-seed LoRAs, then build their inspector manifests.
   Prompt (`/run-experiment`): `for PAIR in a_dolphin__x__an_ocean_wave a_dog__x__oil_painting_style a_mailbox__x__a_snowfield; do $PY -m poe_repair.experiments.lora --pair $PAIR --seed 42 --split heldout --total-epochs 600 --probe-every-epochs 50 --lr 1e-4 --lora-rank 8; $PY scripts/build_lora_manifest.py --results-root artifacts/rung1-overfit/lora/$PAIR/seed_42/run__local; done` (needs `training_cache/heldout/$PAIR/seed_42/` — build first if absent).
 - [ ] ⚠️ **[publishable-bar]** Run the MDS pre-render on G4 (owed from G08): `$PY scripts/build_lora_inspector_mds.py --results-root artifacts/rung1-overfit/lora/a_typewriter__x__a_cactus/seed_42/run__wandb-wag4z592 --pair-slug a_typewriter__x__a_cactus --epochs all --lambdas all --stages collect-static,collect-cells,project,render,update-manifest`
 - [ ] ⚠️ **[publishable-bar]** Run the MDS pre-render for G1/G2/G3 once trained (MDS is a separate step from the manifest build): `for PAIR in a_dolphin__x__an_ocean_wave a_dog__x__oil_painting_style a_mailbox__x__a_snowfield; do $PY scripts/build_lora_inspector_mds.py --results-root artifacts/rung1-overfit/lora/$PAIR/seed_42/run__local --pair-slug $PAIR --epochs all --lambdas all --stages collect-static,collect-cells,project,render,update-manifest; done` → closes the MDS-bend half of DoD-1 across the taxonomy.
-- [x] ✅ Negative controls: group-A external correctors (latent CNN/UNet/frozen-MLP) + internal-force (attention-overlap, score-alignment). → G05, all fail; the LoRA result is meaningful (`plans/phases/05-06`, `outputs/group_a_failure/`).  ✓ verified (outputs/group_a_failure/{latent_cnn,latent_unet,frozen_feature_mlp})
+- [x] ✅ Negative controls: group-A external correctors (latent CNN/UNet/frozen-MLP) + internal-force (attention-overlap, score-alignment). → G05, all fail; the LoRA result is meaningful (`plans/shelved/phases/05-06`, `outputs/group_a_failure/`).  ✓ verified (outputs/group_a_failure/{latent_cnn,latent_unet,frozen_feature_mlp})
 - [ ] ⚠️ **[publishable-bar]** Read the five-pair contact sheet; classify each poor/bad/unknown/good; retire or confirm the "Group-6-specific" worry.
 - [ ] ⚠️ **[publishable-bar]** Mono-free canary (closes Definition-of-Done item 6): confirm the deploy sampler never uses the joined prompt — at λ=0 the output is byte-identical to plain PoE, on every rung's sampler.
 
