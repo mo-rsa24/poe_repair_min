@@ -42,11 +42,23 @@ It is this scope's Goal 1 and the third item of its Definition of Done, both lis
 the scope's `MASTER_PLAN.md`.
 
 ## Goal
-Three curves on one axis, compose rate against λ, over animal pairs the fix never
-trained on, with a five-picture strip above them showing what one cell looks like at
-each λ. This is register slot **F2**, the paper's headline figure. The scored cells stay
-on disk, because `hypothesis-04-what-the-cached-runs-already-show` and
-`hypothesis-05-the-same-story-from-three-sides` both read them.
+Register slot **F2**, the paper's headline figure, in two halves that have to be read
+together:
+
+- **The number:** three curves on one axis, compose rate against λ, over animal pairs the
+  fix never trained on.
+- **The picture:** a 3 by 5 grid of real generated cells above them, one row per injected
+  vector and one column per strength, same pair and same starting noise throughout.
+  `scripts/dose_strip.py` already produces exactly this shape.
+
+The grid is the half that does the persuading. Reading **down** a column at full strength
+shows the real correction giving two animals while both fakes still give one blended
+animal, so the controls stop being a sentence in the caption and become something the
+reader sees. Reading **across** the top row shows the blend separating as the strength
+rises.
+
+The scored cells stay on disk, because `hypothesis-04-what-the-cached-runs-already-show`
+and `hypothesis-05-the-same-story-from-three-sides` both read them.
 
 ## Environment Facts This Plan Depends On
 - The corrections are already computed and cached, along with the exact starting noise
@@ -95,7 +107,7 @@ the experiment worked is a separate question and it is answered in the review fi
 
 - [x] Write the code that injects a chosen vector, and the two fake rows.
       `scripts/interaction_term_inject.py` over `run_teacher_residual`. Injecting
-      Injecting the real correction already existed from
+      the real correction already existed from
       `instrument-01-build-the-measuring-scripts`. Choosing a DIFFERENT vector did not,
       because the sampler always computed its own.
 - [x] Prove the harness does not disturb plain PoE when nothing is injected.
@@ -112,9 +124,9 @@ the experiment worked is a separate question and it is answered in the review fi
       to completion, do what it says, and answer the two open questions in the
       review file. It stops the scorer picking up pictures from older runs, and it
       sets its cutoffs by looking at a picture rather than by choosing a number.
-- [ ] Build the three curves and the five-picture strip. The layout is decided in
-      `figure-01-the-seven-paper-figures`, not here. The strip is rebuilt by step 6 of
-      the procedure above.
+- [ ] Build the three curves and the 3 by 5 grid of cells. The layout is decided in
+      `figure-01-the-seven-paper-figures`, not here. The grid is rebuilt by step 6 of the
+      procedure above.
 - [ ] Move the output off /home-mscluster and repoint `run_dose_sweep.sh`. Its
       `OUT=$REPO/outputs/...` put 3.4GB in the home repo, and its disk check looked
       at /datasets, a filesystem it was not writing to. Make the check follow the
@@ -174,6 +186,13 @@ anything. Each one leaves an artifact you can come back to.
 - **When the experiment's shape is the confusing part**, not the maths:
   `/experiment-atlas this plan: 8 unseen pairs x 4 seeds x 5 strengths x 3 rows, and
   which cells feed register slot F2`.
+- **To design F2 itself**, once the confidence cutoff is chosen: `/pair-figure the
+  quantitative half is three compose-rate curves against lambda (real correction, random
+  vector, other pair's correction) from dose_curves.json; the qualitative half is the 3x5
+  grid of real cells from dose_strip.py, one row per injected vector, one column per
+  strength, same pair and seed throughout. Decide which pair and seed the grid should
+  use, whether the grid sits above or beside the curves, and what the caption may claim
+  given that the percentages are provisional until the cutoff is set.`
 
 ## Engagement Instructions
 ```bash
