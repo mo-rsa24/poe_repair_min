@@ -47,27 +47,27 @@ Outputs land under `outputs/internal_force_failure/`.
 
 ## Commands
 
-```bash
+``bash
 PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
 export CUDA_VISIBLE_DEVICES=1
-```
+``
 
 ### Prerequisite — residual-existence cache (from Phase 2)
 
-```bash
+``bash
 $PY -m poe_repair.experiments.residual_diagnostics.existence \
     --pair "a cat|a dog" --seed 42
-```
+``
 
 This is what the force magnitude is calibrated against. If the cache
 is missing, the sweep aborts.
 
 ### Run the force sweep
 
-```bash
+``bash
 $PY -m poe_repair.experiments.internal_force_failure \
     --pair "a cat|a dog" --seed 42
-```
+``
 
 Sweeps both forces at calibrated magnitudes and decodes per-step
 results to `outputs/internal_force_failure/`.
@@ -116,5 +116,5 @@ available from the unaltered PoE forward.
 | `overlap` force run on cat × dog seed 42 at calibrated scale | ✅ | |
 | `alignment` force run on cat × dog seed 42 at calibrated scale | ✅ | |
 | Per-step `‖r̂_t‖` vs cached `‖r_t‖` comparison | ✅ | |
-| Negative-result writeup in `internal-force-failure.md` (root) | ✅ | |
+| Negative-result writeup in `docs/results-archive/internal-force-failure.md` (root) | ✅ | |
 | One-paragraph verdict added to master writeup | | ⬜ |

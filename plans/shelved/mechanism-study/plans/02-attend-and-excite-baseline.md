@@ -4,7 +4,7 @@
 No test-time attention-optimization baseline exists in this repo yet. `_CrossAttnRecorder`
 already supports `keep_grad=True` (built for FOCUS's velocity correction, per its own
 docstring), so the gradient path is not new — only the intervention loop itself is. The
-minimal scope: at the commitment-window steps (from `G02`/`residual-diagnostics.md`), compute
+minimal scope: at the commitment-window steps (from `G02`/`docs/results-archive/residual-diagnostics.md`), compute
 `L = Σ_tokens max(0, 1 − max_spatial_attn(token))` on plain PoE's attention, backprop through
 the latent (not the UNet weights), take 1-2 gradient steps per intervention step. Fixed step
 count, not swept — this is a comparison baseline, not the paper's method.
@@ -40,8 +40,8 @@ schema as Plan 01's output, confirmed with the same 12×50 sanity-table format.
    intervention loop itself.
 
 ## Engagement Instructions
-```bash
+``bash
 PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
 ls /datasets/mmolefe/poe_repair_min/outputs/attn_mechanism/aae_equiv/a_cat__x__a_dog/ | wc -l   # expect 12 seed dirs
 # spot-check one seed's decoded image shows visible intervention (attention boosted vs plain PoE)
-```
+``

@@ -4,7 +4,7 @@
 
 ## Reference while you do it
 - 📄 Plan: plans/mechanism-study/plans/03-read-the-mechanism.md
-- 📄 Spec: EXPERIMENTS.md (EXP-06), residual-diagnostics.md (commitment window)
+- 📄 Spec: EXPERIMENTS.md (EXP-06), docs/results-archive/residual-diagnostics.md (commitment window)
 - 📄 Parking lot (if inconclusive): PARKING_LOT.md ("Widen the mechanism study to a second pair")
 
 ## Section context (paste into the Todoist section)
@@ -12,12 +12,12 @@
 **Objective:** Serves Objective 3 (Read the Mechanism) and Definition-of-Done items 4–6 — the payload of the whole scope, where "does the LoRA understand compositionality" becomes a recorded, falsifiable verdict instead of an assertion.
 **Goal:** A recorded three-way verdict (support / null / inconclusive) on whether the LoRA's attention shift resembles the Attend-and-Excite-equivalent's shift, plus the prerequisite-check verdict, both backed by the headline scatter figure (Δ_attn(LoRA) vs Δ_attn(AAE), 12 points, colored by visual success).
 **Verify (whole leaf):**
-```bash
+``bash
 PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
 cat /datasets/mmolefe/poe_repair_min/outputs/attn_mechanism/verdict.json
 # expect {"prerequisite": "support|null|inconclusive", "headline": "support|null|inconclusive", "n_visual_success": <int>}
 ls /datasets/mmolefe/poe_repair_min/outputs/attn_mechanism/figures/delta_attn_scatter.png
-```
+``
 **▶ Recommended prompt:** — custom; no skill fits. This is a local analysis/read task over already-captured `.pt` files (no GPU job, no queue) — `run-experiment` explicitly excludes one-off local commands with no GPU or queue involved.
 
 ## Tasks (one at a time)

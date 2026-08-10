@@ -1,3 +1,7 @@
+> **Superseded.** This registry predates the plan tree. Experiments are designed in
+> `plans/<scope>/plans/`, judged in `plans/<scope>/review/`, and governed by
+> `~/.claude/EXPERIMENT_CONVENTIONS.md`. Kept because seven files cite its EXP numbers.
+
 # EXPERIMENTS — LoRA-Fixes-PoE (publishable bar)
 
 **Generated**: 2026-07-22 (experiment-planner over docs/RESULTS_SUMMARY.md + master Definition of Done).
@@ -127,9 +131,9 @@ Everything else in the rung plans is either done or optional (method extensions:
 - Checkpoints target `/datasets/mmolefe/poe_repair_min/artifacts/...`, NOT `/home-mscluster` (which has hit 100% and silently killed checkpointing). Keep a `df` guard in every job preamble.
 - Confirm partition/QOS before emitting a Slurm array; for the `hippo` single box use a sequential/GNU-parallel loop over configs, not an array.
 
-```bash
+``bash
 # Disk guard preamble (paste into every job; abort before a full FS eats the run's tail)
 CKPT_DIR=${CKPT_DIR:-/datasets/mmolefe/poe_repair_min/artifacts}
 USED=$(df --output=pcent "$CKPT_DIR" | tail -1 | tr -dc '0-9')
 [ "${USED:-100}" -ge 90 ] && { echo "ABORT: $CKPT_DIR ${USED}% full — checkpointing will fail." >&2; exit 1; }
-```
+``

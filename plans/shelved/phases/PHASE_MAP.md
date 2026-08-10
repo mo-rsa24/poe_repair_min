@@ -61,7 +61,7 @@ sense.
 
 ## How the phases gate each other
 
-```
+``
 Phase 1 (veracity)
    │  proves the gap is reachable from the PoE trajectory
    ▼
@@ -82,7 +82,7 @@ Phase 7 (cross-seed diagnostics)
    ▼
 Phase 8 (cross-seed LoRA)
         deployable cross-seed corrector — or a documented dead end
-```
+``
 
 ## What we keep fixed
 
@@ -129,7 +129,7 @@ Phase 8 (cross-seed LoRA)
 - [02-residual-diagnostics.md](02-residual-diagnostics.md) — existence + CLIP-window characterisation.
 - [03-conditioning-window-baseline.md](03-conditioning-window-baseline.md) — no-LoRA CFG-mask sweep.
 - [04-lora-single-seed.md](04-lora-single-seed.md) — the deployed single-seed LoRA.
-- [05-group-a-failure.md](05-group-a-failure.md) — external corrector failures.
+- [05-`docs/results-archive/group-a-failure.md](05-`docs/results-archive/group-a-failure.md) — external corrector failures.
 - [06-internal-force-failure.md](06-internal-force-failure.md) — PoE-internal force failures.
 - [07-cross-seed-delta-structure.md](07-cross-seed-delta-structure.md) — is Δ_t a seed-invariant signal?
 - [08-cross-seed-lora-pooling.md](08-cross-seed-lora-pooling.md) — pooled LoRA across seeds.
@@ -141,11 +141,11 @@ sections is not in the sub-plan.
 
 ## Sources superseded by this folder
 
-- `lora-success.md` (root) — superseded by 04.
-- `residual-diagnostics.md` (root) — superseded by 02.
-- `group-a-failure.md` (root) — superseded by 05.
-- `internal-force-failure.md` (root) — superseded by 06.
-- `conditioning-window.md` (root) — superseded by 03.
+- `docs/results-archive/lora-success.md` (root) — superseded by 04.
+- `docs/results-archive/residual-diagnostics.md` (root) — superseded by 02.
+- `docs/results-archive/group-a-failure.md` (root) — superseded by 05.
+- `docs/results-archive/internal-force-failure.md` (root) — superseded by 06.
+- `docs/results-archive/conditioning-window.md` (root) — superseded by 03.
 - `.claude/plans/cross-seed-lora-pooling.md` — superseded by 08.
 - `.claude/plans/delta-t-structure-or-noise.md` — superseded by 07.
 - `claude/veracity-figure-plan.md` — superseded by 01.
