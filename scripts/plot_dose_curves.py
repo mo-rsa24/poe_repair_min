@@ -39,6 +39,13 @@ DEFAULT_ROOTS = (
 )
 SCORER_CONTRACT = Path("outputs/compose_scorer/scorer_validated.json")
 LAM_RE = re.compile(r"lam(\d{3})")
+# Fault one, fixed in the source rather than on a command line so a later change
+# shows up in a diff. The dose sweep ran seeds 9 to 12 (see the SEEDS list in
+# scripts/mechanism_study/run_dose_sweep.sh). Earlier quick tests left cells at
+# other seeds under the same output root, and they exist only at lambda 0 and 1,
+# so including them scored the two end strengths over more cells than the three
+# middle ones. That is not a fair curve, so the collection is pinned here.
+SWEEP_SEEDS = (9, 10, 11, 12)
 ROW_RE = re.compile(r"lam\d{3}_(random|wrong_pair)$")
 ROWS = ("oracle", "random", "wrong_pair")
 
@@ -57,8 +64,11 @@ def require_validated_scorer(path: Path) -> dict:
     return contract
 
 
-def find_images(roots) -> dict[str, dict[tuple[str, int], dict[float, Path]]]:
+def find_images(roots, seeds=SWEEP_SEEDS) -> dict[str, dict[tuple[str, int], dict[float, Path]]]:
     """Map row -> (pair, seed) -> {lambda: image path}.
+
+    `seeds` restricts collection to the sweep's own seeds; pass None to take
+    every seed present, which is what produced the unequal cell counts.
 
     The row is read from the directory suffix the injection CLI writes
     (`..._random`, `..._wrong_pair`, bare for the oracle). Pooling the three
@@ -76,6 +86,8 @@ def find_images(roots) -> dict[str, dict[tuple[str, int], dict[float, Path]]]:
                 continue
             for seed_dir in sorted(pair_dir.glob("seed_*")):
                 seed = int(seed_dir.name.split("_")[1])
+                if seeds is not None and seed not in seeds:
+                    continue
                 for run_dir in sorted(seed_dir.glob("teacher_residual_const_lam*")):
                     m = LAM_RE.search(run_dir.name)
                     if not m:
@@ -101,13 +113,23 @@ def main() -> int:
     ap.add_argument("--contract", type=Path, default=SCORER_CONTRACT)
     ap.add_argument("--out-dir", type=Path, default=OUT_DIR)
     ap.add_argument("--no-figure", action="store_true")
+    ap.add_argument("--device", default=None,
+                    help="torch device for the detector, e.g. cpu. Default: "
+                         "let the detector choose, which means GPU if visible. "
+                         "Use cpu when another process holds the card.")
+    ap.add_argument("--all-seeds", action="store_true",
+                    help="collect every seed under the root instead of only the "
+                         "sweep's seeds (%s). Off by default: see SWEEP_SEEDS."
+                         % ", ".join(map(str, SWEEP_SEEDS)))
     args = ap.parse_args()
 
     contract = require_validated_scorer(args.contract)
     print(f"scorer: {contract['method']} via {contract['detector']}")
     print(f"  rule: {contract['compose_rule']}\n")
 
-    by_row = find_images(args.roots or DEFAULT_ROOTS)
+    seeds = None if args.all_seeds else SWEEP_SEEDS
+    print(f"  seeds: {'every seed present' if seeds is None else seeds}\n")
+    by_row = find_images(args.roots or DEFAULT_ROOTS, seeds=seeds)
     if not any(by_row[r] for r in ROWS):
         looked = args.roots or DEFAULT_ROOTS
         print(
@@ -121,12 +143,17 @@ def main() -> int:
 
     from poe_repair.experiments.compose_scorer.detection_scorer import count_instances
 
+    device = None
+    if args.device:
+        import torch
+        device = torch.device(args.device)
+
     scored: dict[str, dict[float, list[int]]] = {r: defaultdict(list) for r in ROWS}
     rows_out = []
     for row in ROWS:
         for (pair, seed), lam_map in sorted(by_row[row].items()):
             for lam, png in sorted(lam_map.items()):
-                n, _ = count_instances(png)
+                n, _ = count_instances(png, device=device)
                 composed = int(n >= 2)
                 scored[row][lam].append(composed)
                 rows_out.append({"row": row, "pair": pair, "seed": seed,

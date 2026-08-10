@@ -97,19 +97,25 @@ Read the panel where three boxes sit on two animals. Decide what the smallest bo
 genuinely a whole animal looks like, as a fraction of the image, and note the confidence on the
 sliver. Both numbers feed step 3.
 
-## 3. Fix both faults in the source code
+## 3. Set the cutoff in the source code
 
-Two edits, both in the source rather than on a command line, so that any later change to either
-one shows up in a git diff instead of hiding in someone's shell history.
+**Fault one is already fixed.** `scripts/plot_dose_curves.py` now carries `SWEEP_SEEDS = (9, 10,
+11, 12)` beside its collection code, so it takes only this sweep's cells and can never wander
+into old test output again. The comment above it says why. If you ever want the old behaviour
+back, `--all-seeds` gives it to you, and the run prints which seeds it used either way.
 
-**Fix fault one:** hard-code which folder the scorer reads, so it can never wander into old test
-output again. Use the sweep's own seed list `(9 10 11 12)` from
-`scripts/mechanism_study/run_dose_sweep.sh`, rather than collecting whatever folders happen to
-exist.
+**Fault two is yours, because it needs the picture from step 2.** Set the confidence cutoff
+beside the existing success rule in the scorer's source, not on a command line, so a later change
+shows up in a git diff instead of hiding in someone's shell history. Add a minimum box size next
+to it: a limb is usually caught by being too small, even when its confidence alone would let it
+through.
 
-**Fix fault two:** set the confidence cutoff beside the existing success rule, using the number
-you read off the picture in step 2. Add a minimum box size next to it, because a limb is usually
-caught by being too small even when its confidence alone would let it through.
+```bash
+grep -rn "conf\|nms_iou\|box_threshold" poe_repair/experiments/compose_scorer/detection_scorer.py
+```
+
+The defaults live in `count_instances`: `conf=0.30`, `nms_iou=0.5`, and no size floor at all,
+which is why the 162-pixel box survived.
 
 ```bash
 grep -rn "0.30\|conf\|iou" scripts/plot_dose_curves.py poe_repair/**/compose_scorer*.py | head
@@ -118,11 +124,13 @@ grep -rn "0.30\|conf\|iou" scripts/plot_dose_curves.py poe_repair/**/compose_sco
 ## 4. Re-score and re-read
 
 ```bash
-$PY scripts/plot_dose_curves.py --root outputs/interaction_term/dose/pairs
+$PY scripts/plot_dose_curves.py --root outputs/interaction_term/dose/pairs --device cpu
 ```
 
-Add `--device cpu` here too if the card is still held. The floor and the pinned seeds come from
-the source edit in step 3, so this command takes no threshold arguments by design.
+Drop `--device cpu` if the card is free; on CPU this takes tens of minutes for the full set
+rather than a couple of minutes, and the verdicts are identical. The cutoff comes from the source
+edit in step 3 and the seeds from `SWEEP_SEEDS`, so this command takes no threshold arguments by
+design: you cannot accidentally re-score with a different bar than the one in the diff.
 
 It prints the per-row table and the AUCs (one number summarising each curve's total area, so the
 three curves can be compared at a glance) and rewrites `dose_curves.json` and `dose_curves.png`.
