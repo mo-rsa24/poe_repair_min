@@ -1,5 +1,8 @@
 # Cross-Model-Replication
 
+> Shelved: an empty scaffold for background work (zero plan files). Comes back when its parent
+> plan is promoted out of the background pool into the paper table; /populate-plans it then.
+
 ## Mission
 If the interaction-term story holds only on SDXL with DDIM, it is a fact about
 one model. This scope repeats the causal core on SD 1.5 and SD 2.1 and across

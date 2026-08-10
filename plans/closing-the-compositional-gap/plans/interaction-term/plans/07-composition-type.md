@@ -33,7 +33,7 @@ The money scatter with regime coloring plus the per-regime exemplar strip at
 - [ ] λ=0 compose-rate per cached pair over its seeds (scorer on cached or
       cheaply regenerated λ=0 outputs)
 - [ ] build the attribute×object cells and their separate success
-      instrument  → decomposed: see `composition-type-cells/MASTER_PLAN.md`
+      instrument  → decomposed: see `plans/shelved/composition-type-cells/MASTER_PLAN.md`
 - [ ] the scatter with regime coloring; report the ordering result against
       Goal 5's rule
 - [ ] per-regime exemplar strip at λ=0
