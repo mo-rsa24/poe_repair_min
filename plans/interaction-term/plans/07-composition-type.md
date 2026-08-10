@@ -1,5 +1,8 @@
 # 🗺️ The composition-type scatter
 
+## What this asks, in one line
+Does the correction behave the same when the two concepts are an object and an attribute rather than two animals? Background: widens the claim's reach, blocks nothing.
+
 ## Description
 One dot per pair: normalized correction size (x) against plain PoE's own
 compose-rate (y), colored by regime (intersection is the target; a blend
@@ -25,15 +28,15 @@ The money scatter with regime coloring plus the per-regime exemplar strip at
 - Scatter itself computes in-session from cache once cells exist.
 
 ## Tasks
-- [ ] ⚠️ regime labels for the 76 cached pairs (rule-based from prompt
+- [ ] regime labels for the 76 cached pairs (rule-based from prompt
       structure, spot-checked by eye)
-- [ ] ⚠️ λ=0 compose-rate per cached pair over its seeds (scorer on cached or
+- [ ] λ=0 compose-rate per cached pair over its seeds (scorer on cached or
       cheaply regenerated λ=0 outputs)
-- [ ] ⚠️ build the attribute×object cells and their separate success
+- [ ] build the attribute×object cells and their separate success
       instrument  → decomposed: see `composition-type-cells/MASTER_PLAN.md`
-- [ ] ⚠️ the scatter with regime coloring; report the ordering result against
+- [ ] the scatter with regime coloring; report the ordering result against
       Goal 5's rule
-- [ ] ⚠️ per-regime exemplar strip at λ=0
+- [ ] per-regime exemplar strip at λ=0
 
 ## Success/Failure Outcomes
 - **the scatter**

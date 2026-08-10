@@ -1,5 +1,8 @@
 # 🎛️ Inspector tabs for this scope's results
 
+## What this asks, in one line
+Make every headline figure explorable by hand in the browser, from outputs that already exist. Background: for understanding, not for the manuscript.
+
 ## Description
 Extend the LoRA Inspector with tabs that make this scope's finished figures
 driveable: a dose slider over the λ-sweep images, a window slider for both
@@ -20,7 +23,7 @@ The enhanced Inspector serving the new tabs off the finished result grids.
 - Consumes /datasets result grids from plans 03-08; runs in-session.
 
 ## Tasks
-- [ ] ⚠️ build the tabs  → decomposed: see
+- [ ] build the tabs  → decomposed: see
       `inspector-interaction-term/MASTER_PLAN.md`
 
 ## Recommended skill

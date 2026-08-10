@@ -1,4 +1,12 @@
-# 🔭 Three-space corroboration
+# 🔭 The same story from three independent sides
+
+Design only. Verdicts live in [../review/06-corroborations.md](../review/06-corroborations.md).
+
+## What this asks, in one line
+Three reads that do not share the dose experiment's machinery: does the image slide out of the
+blend region as the dose rises (and not under a random push), does language-space arithmetic
+predict which pairs need a big correction, and are chimeras wrong content rather than low
+quality.
 
 ## Description
 Three independent reads of the same story: the image-map walk (dose-sweep
@@ -25,15 +33,15 @@ table.
 - CLIP embedding runs in-session on the 3090 (light).
 
 ## Tasks
-- [ ] ⚠️ L1 additivity gap per pair (both encoders, pooled and sequence);
+- [ ] L1 additivity gap per pair (both encoders, pooled and sequence);
       scatter against normalized ‖r_t‖
-- [ ] ⚠️ L3 binding direction: b = e_J − normalized(e_A+e_B) per pair; cosine
+- [ ] L3 binding direction: b = e_J − normalized(e_A+e_B) per pair; cosine
       matrix and SVD across pairs
-- [ ] ⚠️ chimera quality control on cached poe.png/mono.png: quality proxies,
+- [ ] chimera quality control on cached poe.png/mono.png: quality proxies,
       expect no gap
-- [ ] ⚠️ manifold slide: embed plan 03's λ-sweep outputs on the existing CLIP
+- [ ] manifold slide: embed plan 03's λ-sweep outputs on the existing CLIP
       axes; random-direction path as the control
-- [ ] ⚠️ L2 caption readback on plan 03's images: caption bank including the
+- [ ] L2 caption readback on plan 03's images: caption bank including the
       blend caption; crossover curve vs λ
 
 ## Success/Failure Outcomes
@@ -44,9 +52,15 @@ table.
   - Failure: pooled-only probing (the sequence form is the one cross-attention
     consumes; both must be reported).
 
-## Recommended skill
-▶ `/demonstrate` ✅ per probe; `/design-figure` ✅ rides plan 10 for the final
-   forms.
+## Next
+
+1. `/demonstrate` the two cache-only probes now (additivity gap, binding direction) and the
+   quality check; no GPU queue, they answer three review questions today.
+2. After plan 03's re-score: the manifold slide and the caption readback on the dose images.
+3. Answer the review questions; final figure forms ride plan 10.
+
+**The short version:** the quality check alone. It removes the one standing objection ("the
+correction just improves image quality") and runs from cache in minutes.
 
 ## Engagement Instructions
 ```bash
