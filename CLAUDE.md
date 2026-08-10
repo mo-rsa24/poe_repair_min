@@ -9,6 +9,18 @@ failed bar does, and the four-step pass for coming back after time away.
 This pointer is the opt-in. `populate-plans` emits review files for this repo's scopes and
 `verify-plan` checks for them because this line is here.
 
+## How the research gets done
+
+[docs/RESEARCH_GUIDELINES.md](docs/RESEARCH_GUIDELINES.md) is the practice: write the results
+section before running the experiments, name a run's cost and what it buys before it starts, look
+at the data before designing on top of it, which visual skill to pick by what you are pointing at,
+attack the work before a reviewer does, and kill work that is bleeding rather than only work that
+failed. It names the skill to reach for at each moment.
+
+The mechanics are elsewhere and not repeated there: `~/.claude/EXPERIMENT_CONVENTIONS.md` for what
+a run may change, and `~/.claude/skills/WORKFLOWS.md` for the eighteen end-to-end skill chains
+with their handoff files marked.
+
 ## The environment
 
 Read [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md) before drafting or checking any plan. It holds
