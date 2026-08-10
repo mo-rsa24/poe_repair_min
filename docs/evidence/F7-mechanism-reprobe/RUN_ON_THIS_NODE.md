@@ -30,7 +30,7 @@ re-run picks up where it stopped. Running it twice by accident does no harm.
 
 ## What it is measuring
 
-Plan 02 of the `interaction-term` scope, the mechanism re-probe. It decides
+Plan 02 of the `does-the-correction-cause-composition` scope, the mechanism re-probe. It decides
 Goal 6 of that scope's master plan.
 
 The question: when the trained LoRA is switched on, does it change **what** a
@@ -180,9 +180,9 @@ scancel 26881              # only if this node's run has finished the cells
 
 ## After the verdict
 
-Mark plan 02 in `plans/closing-the-compositional-gap/plans/interaction-term/plans/02-mechanism-reprobe.md`, record
+Mark plan 02 in `plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/plans/hypothesis-01-what-the-fix-changes-inside-the-model.md`, record
 the verdict either way, and update the Plans list in
-`plans/closing-the-compositional-gap/plans/interaction-term/MASTER_PLAN.md`.
+`plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/MASTER_PLAN.md`.
 
 Plans still open in that scope: 03 (dose-response, the causal headline), 04
 (window timing), 05 (cache analyses, task 1 done, five tasks left and all

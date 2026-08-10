@@ -5,7 +5,7 @@ Run the built scorer on the validation set and check it against ground truth we 
 see by eye: cat×dog should come out compose, wolf×husky should come out blend (that's
 the case that fools the eye and is the whole reason the scorer exists). Only if both
 land correctly does the scope write `scorer_validated.json`, the file the sibling
-`animals-compose-transfer` scope reads as its precondition to start. If the scorer
+`does-the-fix-reach-unseen-pairs` scope reads as its precondition to start. If the scorer
 cannot separate the wolf×husky blend in either space, the file is NOT written and the
 scope halts: the downstream read would be invalid.
 

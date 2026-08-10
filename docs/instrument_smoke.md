@@ -1,6 +1,6 @@
-# Instrument smoke: interaction-term scope
+# Instrument smoke: does-the-correction-cause-composition scope
 
-Recorded outputs from plan `plans/closing-the-compositional-gap/plans/interaction-term/plans/00-build-the-instruments.md`.
+Recorded outputs from plan `plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/plans/instrument-01-build-the-measuring-scripts.md`.
 Every number below was produced by running the command shown, on
 `a_cat__x__a_dog` seed 9 unless stated. Node mscluster85, RTX 3090, co3 env.
 
@@ -390,7 +390,7 @@ above was produced by the command shown.
 
 Everything in the sections above ran with `--all`, which scans the cache
 directory. **That directory holds more than one experiment.** Of the 18 pair
-folders under `train/`, 11 belong to animals-compose-transfer; of the 58 under
+folders under `train/`, 11 belong to does-the-fix-reach-unseen-pairs; of the 58 under
 `heldout/`, 8 do. The rest are leftovers from earlier work. Nothing on disk
 marks which is which, so `--all` silently blended them.
 

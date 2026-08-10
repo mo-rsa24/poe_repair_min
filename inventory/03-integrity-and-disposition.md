@@ -89,7 +89,7 @@ come from the scope call in `inventory/sweeps/2026-08-04-scope-call.md`.
 
 | Artifact | Load | Structure | Decision | Destination | Reason |
 |---|---|---|---|---|---|
-| R: `animals_compose_transfer/pooled_lora/phase1_r8_100k/checkpoints/lora_step_100000.pt` | ✓ PASS | `lora_state` 420 keys, rank-8; `step=100000`, `epoch=2000` | **keep** | `artifacts/scopes/animals-compose-transfer/` | The transfer headline. Run `1d3qy31e` finished 2026-07-30. Cite always with its checkpoint. |
+| R: `animals_compose_transfer/pooled_lora/phase1_r8_100k/checkpoints/lora_step_100000.pt` | ✓ PASS | `lora_state` 420 keys, rank-8; `step=100000`, `epoch=2000` | **keep** | `artifacts/scopes/does-the-fix-reach-unseen-pairs/` | The transfer headline. Run `1d3qy31e` finished 2026-07-30. Cite always with its checkpoint. |
 | R: same dir, `lora_step_005000.pt`, `lora_step_055000.pt` | ✓ PASS | identical envelope | **keep** | (same) | 20 checkpoints on disk; three load-tested across the range. |
 | R: `compose_scorer/` | n/a (no `.pt`) | `scorer_validated.json` records `pass: true`, method `instance_count` | **keep** | `artifacts/scopes/compose-scorer/` | The validated scorer contract the animals scope depends on. |
 | R: `poe/pairs/` | n/a (no `.pt`) | per-pair baseline sample grids | **keep** | `artifacts/scopes/poe-baselines/` | Baseline reference grids. |

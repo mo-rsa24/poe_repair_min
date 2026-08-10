@@ -20,7 +20,7 @@ themselves on as scopes are converted and stay quiet on the ones that are not.
 
 Usage:
     python3 scripts/plan_pulse.py                 # whole tree
-    python3 scripts/plan_pulse.py interaction-term  # one scope
+    python3 scripts/plan_pulse.py does-the-correction-cause-composition  # one scope
     python3 scripts/plan_pulse.py --checks 1,2    # only the expensive ones
 
 Exit code is 0 always. This tells you things; it does not gate anything.
@@ -484,8 +484,8 @@ def brief():
 
     # The time split: writing needs no GPU and no queue, a run does. Unblocked
     # runs should be launched first, so they finish while the writing happens.
-    writable = [f"step {s} {p}" for s, p, st, w in sorted(ready) if p.startswith("paper-iclr")]
-    launchable = [f"step {s} {p}" for s, p, st, w in sorted(ready) if not p.startswith("paper-iclr")]
+    writable = [f"step {s} {p}" for s, p, st, w in sorted(ready) if p.startswith("writing-the-paper")]
+    launchable = [f"step {s} {p}" for s, p, st, w in sorted(ready) if not p.startswith("writing-the-paper")]
 
     print("Where things stand\n")
     print(f"  What is going on:      {going_on}")

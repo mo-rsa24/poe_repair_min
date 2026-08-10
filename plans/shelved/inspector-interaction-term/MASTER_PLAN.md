@@ -4,7 +4,7 @@
 > plan is promoted out of the background pool into the paper table; /populate-plans it then.
 
 ## Mission
-Make the interaction-term results driveable. The existing LoRA Inspector gains
+Make the does-the-correction-cause-composition results driveable. The existing LoRA Inspector gains
 tabs where dragging a slider does the experiment in front of you: dose up the
 correction, slide the injection window, walk the manifold. The app displays
 what the experiments produced and never generates anything itself.

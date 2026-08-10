@@ -20,7 +20,7 @@
 #   -h, --help      this text
 #
 # Examples:
-#   scripts/run-plan-tree.sh plans/interaction-term
+#   scripts/run-plan-tree.sh plans/does-the-correction-cause-composition
 #   scripts/run-plan-tree.sh --verify-only plans/compose-scorer
 
 set -euo pipefail

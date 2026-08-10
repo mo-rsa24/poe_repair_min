@@ -1,7 +1,7 @@
 """Build a PairSeedCell from a cached pair slug.
 
 The rest of the codebase constructs cells from an explicit (prompt_a, prompt_b)
-pair. The interaction-term command lines are driven by a slug instead, because
+pair. The does-the-correction-cause-composition command lines are driven by a slug instead, because
 that is how the cache and the plan files name things. Every cached cell carries
 its own ``meta.json`` with the original prompts, so the slug is enough: no
 separate slug-to-prompt table to keep in sync.

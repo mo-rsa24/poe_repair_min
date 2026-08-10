@@ -19,7 +19,7 @@ obvious answer to "what does this buy". Written afterwards instead, the paper is
 whatever the experiments happened to produce, which is how a program of work turns into a
 collection of results.
 
-The skeleton is `plans/closing-the-compositional-gap/plans/paper-iclr/plans/05-results-skeleton.md`. Move it early, keep it ugly,
+The skeleton is `plans/closing-the-compositional-gap/plans/writing-the-paper/plans/writing-05-the-results-skeleton.md`. Move it early, keep it ugly,
 and fill it in as answers arrive.
 
 ## Every run names its cost and what it buys, before it starts

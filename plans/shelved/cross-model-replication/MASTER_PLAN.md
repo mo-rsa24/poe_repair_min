@@ -4,7 +4,7 @@
 > plan is promoted out of the background pool into the paper table; /populate-plans it then.
 
 ## Mission
-If the interaction-term story holds only on SDXL with DDIM, it is a fact about
+If the does-the-correction-cause-composition story holds only on SDXL with DDIM, it is a fact about
 one model. This scope repeats the causal core on SD 1.5 and SD 2.1 and across
 samplers, testing that the term exists, is noise-level-localized, and is
 causally sufficient wherever text-to-image diffusion composes by PoE.
