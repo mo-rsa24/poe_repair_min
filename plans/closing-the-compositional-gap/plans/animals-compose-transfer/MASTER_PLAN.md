@@ -88,12 +88,29 @@ two-tier read, so a null is diagnosed, not narrated.
 (none)
 
 ## Plans
-- ✅ plans/01-pool-and-precondition.md: precondition gate + curate + finalise pair_pool.yaml by fail-rate (DoD 1)
-- ⚠️ plans/02-wire-scorer-eval-hook.md: the one build: scorer into eval hook, three live W&B curves, green smoke gate (DoD 2) — compose-rate, direction-cosine, distance-reached all wired in code; the 1-epoch GPU smoke to confirm the three live curves remains
-- ⚠️ plans/03a-phase1-pooled.md: one pooled LoRA, held-out transfer read (cheap first pass ahead of the LOPO) — RUN DONE, read near-complete (out_out 0.96 @ 60k, all held-out pairs above floor; steps 70k-100k unscored, go/no-go note + direction axis remain)
-- ⚠️ plans/03-run-A-leave-one-pair-out.md: 15 LoRAs, leaderboard, degradation curve (DoD 3)
-- ⚠️ plans/04-run-B-contrast.md: size-matched mixed pool, animals-vs-mixed on same held-out set (DoD 4)
-- ⚠️ plans/05-figures.md: A2–A5 evidence cascade via /design-figure (DoD 5)
+
+Grouped by the run group each answers to. Statuses live in the review/ files.
+
+**Hypothesis runs: the transfer claim, seen to the end unless the science is wrong**
+
+| Plan | What it does | Status |
+|---|---|---|
+| 01-pool-and-precondition | the clean pool behind the scorer gate (DoD 1) | ✅ |
+| 02-wire-scorer-eval-hook | the three live curves; the sweep's safety gate (DoD 2) | ◑ wired, smoke owed |
+| 03a-phase1-pooled | one pooled LoRA: does the fix transfer at all | ◑ run done, read incomplete |
+| 03-run-A-leave-one-pair-out | transfer as a rate: 15 held-out points (DoD 3) | ⚠️ |
+
+**Baseline runs: frozen the moment they land**
+
+| Plan | What it does | Status |
+|---|---|---|
+| 04-run-B-contrast | the size-matched mixed pool on the identical held-out set (DoD 4) | ⚠️ |
+
+**Figure runs: settled results only, captions capped by the register**
+
+| Plan | What it does | Status |
+|---|---|---|
+| 05-figures | the A2 to A5 cascade feeding register slot F8 (DoD 5) | ⚠️ |
 
 ## Running order
 

@@ -90,14 +90,14 @@ Grouped by what the group is for. The file numbers are per folder and are not an
 the Paper step column carries the position from the root `MASTER_PLAN.md`. "bg" means the
 plan sits in the root's background-experiments pool and does not block the paper.
 
-**The instruments, and the choices fixed before any result could be seen**
+**The instruments, and the choices fixed before any result could be seen** (hypothesis-run discipline: committed pre-result)
 
 | Plan | What it does | Paper step | Status | Owes |
 |---|---|---|---|---|
 | 00-build-the-instruments | the 13 measuring scripts, built and smoked | | ✅ | scripts take `--pool`, because the cache mixes experiments |
 | 01-preregister-normalization | fixes how the correction's size is expressed, committed before any result was read | | ✅ | |
 
-**Does the correction cause composition, or merely accompany it**
+**Does the correction cause composition, or merely accompany it** (hypothesis runs)
 
 | Plan | What it does | Paper step | Status | Owes |
 |---|---|---|---|---|
@@ -105,19 +105,19 @@ plan sits in the root's background-experiments pool and does not block the paper
 | 04-window-pair | when in the denoising run the correction matters | 3 | ⚠️ | all of it |
 | 06-corroborations | the independent checks on the causal claim | 8 | ⚠️ | all of it |
 
-**What changes inside the model when the fix is on**
+**What changes inside the model when the fix is on** (hypothesis runs)
 
 | Plan | What it does | Paper step | Status | Owes |
 |---|---|---|---|---|
 | 02-mechanism-reprobe | the fix changes what a word paints, not where it looks. Replicates: median 1.52x over 64 cells | 19 | ◑ | one decision: per-seed points or pair-level means, via /pair-figure |
 
-**Analyses off the cached predictions, needing no GPU and no queue**
+**Analyses off the cached predictions, needing no GPU and no queue** (hypothesis runs)
 
 | Plan | What it does | Paper step | Status | Owes |
 |---|---|---|---|---|
 | 05-cache-analyses | how few directions the correction needs, how its size tracks noise level, where two paths fork | 2 | ⚠️ | five of six tasks. The fork curve is done, elbow at step 16 |
 
-**How far the claim reaches. Background: none of this blocks the paper**
+**How far the claim reaches** (idea and generalization runs; background, none of it blocks the paper)
 
 | Plan | What it does | Paper step | Status | Owes |
 |---|---|---|---|---|
@@ -125,7 +125,7 @@ plan sits in the root's background-experiments pool and does not block the paper
 | 08-replication | the same result on another model and sampler | bg | ⚠️ | its runs; the scaffold waits at plans/shelved/cross-model-replication |
 | 11-inspector | shelved with its sub-scope: tooling, not paper work; returns after submission or on promotion | | shelved | |
 
-**What reaches the paper**
+**What reaches the paper** (figure runs, plus the print gates)
 
 | Plan | What it does | Paper step | Status | Owes |
 |---|---|---|---|---|
