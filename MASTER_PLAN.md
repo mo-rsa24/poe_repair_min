@@ -55,7 +55,7 @@ from the output rather than from the scope's own claim.
 
 A pool, not an order. Pull from it when a claim needs backing or a method needs a source.
 Found with `/paper-scout`, read with `/unpack-paper` or `/drip --paper`, registered in
-[plans/literature/](plans/literature/). No row here blocks a row above.
+[plans/standing/literature/](plans/standing/literature/). No row here blocks a row above.
 
 | Paper | Why it matters to us | Which claim it touches | Read |
 |---|---|---|---|
@@ -77,8 +77,8 @@ number earns the right to propose an experiment and nothing more. Results land i
 
 No order and no end. Re-entered rather than closed.
 
-- [plans/artifact-reconciliation/plans/05-resweep-on-new-runs.md](plans/artifact-reconciliation/plans/05-resweep-on-new-runs.md): re-catalogue and integrity-check whenever new runs land. Every `✓ verified` tag points at a path on a filesystem that is not under version control.
-- [plans/literature/plans/01-reading-register.md](plans/literature/plans/01-reading-register.md): keep the reading table above current, and make sure every idea-trying run names the paper it came from.
+- [plans/standing/artifact-reconciliation/plans/05-resweep-on-new-runs.md](plans/standing/artifact-reconciliation/plans/05-resweep-on-new-runs.md): re-catalogue and integrity-check whenever new runs land. Every `✓ verified` tag points at a path on a filesystem that is not under version control.
+- [plans/standing/literature/plans/01-reading-register.md](plans/standing/literature/plans/01-reading-register.md): keep the reading table above current, and make sure every idea-trying run names the paper it came from.
 
 ## The scopes, and the state of each
 
@@ -87,15 +87,18 @@ above. Standing means it is re-entered, never finished. Done means its output ex
 use. Nothing here is ambiguous on purpose: a scope that cannot say its state in one line gets
 shelved until it can.
 
-| Scope | State | One line |
+The listing itself now says the state: a bare folder is live, and everything else sits in a
+container named for its state.
+
+| Folder | State | One line |
 |---|---|---|
-| `interaction-term` | live | the paper's causal claim; steps 1, 2, 3, 8, 9, 10, 19 |
-| `animals-compose-transfer` | live | the transfer claim; steps 4 to 7 and 11 |
-| `paper-iclr` | live | the manuscript; steps 12 to 18 |
-| `literature` | standing | the reading register |
-| `artifact-reconciliation` | standing | artifacts catalogued and integrity-checked |
-| `compose-scorer` | done, harvest owed | delivered `scorer_validated.json`, in use by both result scopes; its task lines were never ticked, which `/sync-plan-tree` settles from the output |
-| `shelved/` | the shelf | `rungs`, `mechanism-study`, and `phases`, each moved whole; one line at the top of each says what would bring it back |
+| `interaction-term/` | live | the paper's causal claim; steps 1, 2, 3, 8, 9, 10, 19 |
+| `animals-compose-transfer/` | live | the transfer claim; steps 4 to 7 and 11 |
+| `paper-iclr/` | live | the manuscript; steps 12 to 18 |
+| `standing/literature/` | standing | the reading register |
+| `standing/artifact-reconciliation/` | standing | artifacts catalogued and integrity-checked |
+| `completed/compose-scorer/` | done | delivered `scorer_validated.json`, in use by both result scopes |
+| `shelved/` | the shelf | `rungs`, `mechanism-study`, `phases`; one line at the top of each says what would bring it back |
 
 ## One plan, one table
 
@@ -167,10 +170,10 @@ recorded in the decision timeline.
 7. ✅ G5 (entanglement) explicitly deferred with rationale.
 
 ## Sub-Scopes
-- ⚠️ plans/artifact-reconciliation/ — "keep run artifacts catalogued, integrity-checked, canonically organised" (standing: carries a recurring re-sweep node)
-- ⚠️ plans/compose-scorer/ — reusable instrument: a 3-anchor scorer that tells a two-animal composition from a chimera blend; emits scorer_validated.json (the cross-scope contract)
+- ⚠️ plans/standing/artifact-reconciliation/ — "keep run artifacts catalogued, integrity-checked, canonically organised" (standing: carries a recurring re-sweep node)
+- ⚠️ plans/completed/compose-scorer/ — reusable instrument: a 3-anchor scorer that tells a two-animal composition from a chimera blend; emits scorer_validated.json (the cross-scope contract)
 - ⚠️ plans/animals-compose-transfer/ — animals-only hard-pair LoRA transfer (leave-one-pair-out + size-matched-mixed contrast); DEPENDS ON compose-scorer's scorer_validated.json
-- ⚠️ plans/literature/ — standing: what the field already knows, and the source behind every idea-trying run
+- ⚠️ plans/standing/literature/ — standing: what the field already knows, and the source behind every idea-trying run
 - ⚠️ plans/paper-iclr/ — the ICLR manuscript in `paper/iclr/`; no GPU, no queue
 
 ## Plans

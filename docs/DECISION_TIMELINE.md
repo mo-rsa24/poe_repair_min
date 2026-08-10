@@ -105,7 +105,7 @@ The linear account of what the objective was, what ran, what it said, and the de
 - **Ran.** `cross_pair_lora_pooling/all_groups/main` (W&B main `2em6frqv`), per-step multi-pair trainer, trained to `lora_step_030000.pt` (`plans/11`, `plans/15-cross-pair-cross-seed-lora-mscluster.md`). A later run `0y9un0o4` **died early** — the one noise run that changed direction (below).
 - **Result.** **Trained, never crossbar-evaluated.** `samples/` holds only `per_epoch/`; **no `cells.jsonl`** → `sample_crossbar` / `contact_sheet` / `task_d_bridge` never ran on it. The strongest quadrant (`out_out`) was **never sampled anywhere**. The checkpoint itself loads (bytes intact).
 - **Decision.** **RE-RUN (finish training + run the crossbar).** The taxonomy-spanning "one LoRA" claim — the strongest form of the deployable contribution — **does not yet exist as a result**. The died-early `0y9un0o4` is load-bearing precisely because it left this state: trained-but-unevaluated.
-- **Fired next.** Open re-run item; recorded in `plans/artifact-reconciliation/`.
+- **Fired next.** Open re-run item; recorded in `plans/standing/artifact-reconciliation/`.
 - **Evidence.** `artifacts/rung4-scale/cross_pair/all_groups/main__wandb-2em6frqv/` — ckpt loads; `samples/` has no `cells.jsonl` (verified 2026-07-21).
 
 ## G12 — Raw-latent MDS measures appearance, not co-occurrence [side-thread · ~2026-05-25 · ◑ reframed]
@@ -141,8 +141,8 @@ The linear account of what the objective was, what ran, what it said, and the de
 - **Question.** One naming/directory scheme keyed by rung→experiment→pair→seed so both roots are navigable, without breaking references?
 - **Ran.** `/rename`: `inventory/04-canonical-layout-move-plan.md` + guarded `inventory/scripts/04_apply_layout.sh` (dry-run → apply); then a code-side `cat_dog → a_cat__x__a_dog` pass (paths, inspector slug + discovery, docs).
 - **Result.** `artifacts/{rung1-overfit…rung4-scale, caches, _shared, _quarantine}` applied on both roots; within-root moves + compat symlinks at every old path; discards quarantined (reversible); re-run reports **0 residual actions**. Code repointed to canonical paths; inspector discovers/labels `a_cat__x__a_dog` once (no phantom); `cat_dog` fully retired in code + docs (memory `catdog-slug-shared-key`).
-- **Decision.** Canonical spine established. Spawned the **`artifact-reconciliation` sub-scope** (`plans/artifact-reconciliation/`) with 01–04 as done tasks + a standing "re-sweep on new runs" node, so this stays current.
-- **Fired next.** Standing re-sweep (`plans/artifact-reconciliation/plans/05-resweep-on-new-runs.md`).
+- **Decision.** Canonical spine established. Spawned the **`artifact-reconciliation` sub-scope** (`plans/standing/artifact-reconciliation/`) with 01–04 as done tasks + a standing "re-sweep on new runs" node, so this stays current.
+- **Fired next.** Standing re-sweep (`plans/standing/artifact-reconciliation/plans/05-resweep-on-new-runs.md`).
 
 ---
 

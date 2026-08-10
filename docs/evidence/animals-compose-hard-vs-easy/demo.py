@@ -31,15 +31,22 @@ OUT_DIR = Path(__file__).resolve().parent
 # for outcome. in_in (train) pairs start seeds at 01; out_out (held-out)
 # pairs start at 09 (see build_context / seed_pool.train_pool vs held_out).
 ROWS = [
-    ("out_out", "a_frog__x__a_toad", 9, "frog x toad"),
-    ("out_out", "an_eagle__x__a_hawk", 9, "eagle x hawk"),
-    ("out_out", "a_seal__x__a_walrus", 9, "seal x walrus"),
-    ("out_out", "a_leopard__x__a_jaguar", 9, "leopard x jaguar"),
-    ("in_in", "a_wolf__x__a_husky", 1, "wolf x husky"),
-    ("in_in", "a_lion__x__a_tiger", 1, "lion x tiger"),
+    ("out_out", "a_frog__x__a_toad", 9, "Frog x Toad"),
+    ("out_out", "an_eagle__x__a_hawk", 9, "Eagle x Hawk"),
+    ("out_out", "a_seal__x__a_walrus", 9, "Seal x Walrus"),
+    ("out_out", "a_leopard__x__a_jaguar", 9, "Leopard x Jaguar"),
+    ("in_in", "a_wolf__x__a_husky", 1, "Wolf x Husky"),
+    ("in_in", "a_lion__x__a_tiger", 1, "Lion x Tiger"),
 ]
 
 STEP = 60000
+
+# The cached triptychs carry baked-in header strips (26 px title +
+# 22 px panel labels with "@ step N", see compose_triptych); crop them
+# off and draw clean column captions once instead.
+BAKED_STRIP_H = 26 + 22
+TRIP_PAD = 8
+TRIP_THUMB = 320
 
 
 def load_compose_rate() -> dict:
@@ -73,36 +80,32 @@ def build_figure(rows: list[tuple[str, str, int, str]]) -> Image.Image:
     if missing:
         raise FileNotFoundError(f"missing triptych files: {missing}")
 
-    compose_rate = load_compose_rate()
-
     sample = Image.open(tiles[0][3])
     tile_w, tile_h = sample.size
+    tile_h -= BAKED_STRIP_H
     row_label_w = 260
     pad = 10
-    title_h = 46
+    header_h = 30
     W = row_label_w + tile_w + 2 * pad
-    H = title_h + len(tiles) * (tile_h + pad) + pad
+    H = header_h + len(tiles) * (tile_h + pad) + pad
 
     canvas = Image.new("RGB", (W, H), (14, 14, 14))
     draw = ImageDraw.Draw(canvas)
     try:
-        font_title = ImageFont.truetype("DejaVuSans-Bold.ttf", 20)
         font_label = ImageFont.truetype("DejaVuSans-Bold.ttf", 15)
-        font_sub = ImageFont.truetype("DejaVuSans.ttf", 13)
     except Exception:
-        font_title = font_label = font_sub = ImageFont.load_default()
+        font_label = ImageFont.load_default()
 
-    draw.text((pad, 12), "Transfer quality across held-out pairs, step 60000",
-              fill=(255, 255, 255), font=font_title)
+    for i, col in enumerate(["Mono (target)", "PoE", "LoRA"]):
+        x = row_label_w + TRIP_PAD + i * (TRIP_THUMB + TRIP_PAD)
+        draw.text((x, 8), col, fill=(200, 200, 200), font=font_label)
 
-    y = title_h
+    y = header_h
     for label, quadrant, pair_slug, p in tiles:
-        sub = rate_label(compose_rate, quadrant, pair_slug)
-        draw.text((pad, y + tile_h // 2 - 18), label,
+        draw.text((pad, y + tile_h // 2 - 8), label,
                   fill=(255, 255, 255), font=font_label)
-        draw.text((pad, y + tile_h // 2 + 4), sub,
-                  fill=(180, 180, 180), font=font_sub)
         im = Image.open(p).convert("RGB")
+        im = im.crop((0, BAKED_STRIP_H, im.width, im.height))
         canvas.paste(im, (row_label_w, y))
         y += tile_h + pad
 

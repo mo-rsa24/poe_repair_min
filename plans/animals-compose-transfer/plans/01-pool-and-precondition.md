@@ -40,7 +40,7 @@ compose-by-default controls (elephant×penguin, giraffe×crab, octopus×sparrow)
 19 pairs, 38 distinct animals, no animal-word repeat.
 
 ## Tasks
-- [x] ✅ Precondition check: assert `scorer_validated.json` (from plans/compose-scorer)
+- [x] ✅ Precondition check: assert `scorer_validated.json` (from plans/completed/compose-scorer)
   exists and its pass flag is true. ✓ verified (outputs/compose_scorer/scorer_validated.json,
   pass=true, instance-count read).
 - [x] ✅ Curate the first-draft pair list: 15 blend-prone animal×animal pairs,

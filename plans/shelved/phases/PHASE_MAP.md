@@ -116,11 +116,11 @@ Phase 8 (cross-seed LoRA)
 
 ## Operations
 
-- [ ] ⚠️ Reconcile, integrity-check, and canonically organise all run artifacts  → decomposed: see `plans/artifact-reconciliation/MASTER_PLAN.md`
+- [ ] ⚠️ Reconcile, integrity-check, and canonically organise all run artifacts  → decomposed: see `plans/standing/artifact-reconciliation/MASTER_PLAN.md`
 
 ## Sub-Scopes
 
-- ⚠️ plans/artifact-reconciliation/ — "keep run artifacts catalogued, integrity-checked, canonically organised"
+- ⚠️ plans/standing/artifact-reconciliation/ — "keep run artifacts catalogued, integrity-checked, canonically organised"
 
 ## How to read this folder
 

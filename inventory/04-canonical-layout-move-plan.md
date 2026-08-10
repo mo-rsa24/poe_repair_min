@@ -2,7 +2,7 @@
 
 **Generated**: 2026-07-21
 **Scope**: the surviving (keep) artifacts of `lora`, `cross_seed_lora_pooling`, `cross_pair_lora_pooling` + shared `training_cache`, across `R:` repo and `D:` `/datasets/mmolefe/poe_repair_min`. Disposition inherited from `03-integrity-and-disposition.md`.
-**Status**: APPLIED 2026-07-21 (within-root moves + compat symlinks done; see `plans/artifact-reconciliation/plans/04-canonical-layout-reorg.md`). Re-runnable idempotently with `inventory/scripts/04_apply_layout.sh` (dry-run by default; `APPLY=1`).
+**Status**: APPLIED 2026-07-21 (within-root moves + compat symlinks done; see `plans/standing/artifact-reconciliation/plans/04-canonical-layout-reorg.md`). Re-runnable idempotently with `inventory/scripts/04_apply_layout.sh` (dry-run by default; `APPLY=1`).
 
 ## Design
 

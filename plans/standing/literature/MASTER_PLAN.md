@@ -27,7 +27,7 @@ designed against a question the field already settled.
 
 ## Definition of Done
 This scope is never done. It is a standing scope, the same recurring shape as
-`plans/artifact-reconciliation/`. Its plan is re-entered, not closed.
+`plans/standing/artifact-reconciliation/`. Its plan is re-entered, not closed.
 
 ## Plans
 - ⚠️ 01-reading-register.md (standing / recurring)
