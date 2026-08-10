@@ -71,6 +71,24 @@ A plan file is not evidence about a run. Before updating any status, read the re
 Classify every run as not started, running, finished but unharvested, dead, or done. A run in the
 fourth state is the expensive one: the result exists and nothing has read it.
 
+## Coming back after time away
+
+Four steps, and only the last one writes. There is no skill that wraps them, on purpose: the
+decision in step 3 is the one that must not be automated, because a result that folds itself into
+the tree is a result that moved the goalposts without being asked.
+
+1. `python3 scripts/plan_pulse.py` says what the machine knows and the plan files do not: a task
+   line claiming a run is in flight when nothing is, output newer than the plan that owns it,
+   markdown no task names, narration debris. It reads only. The session-start hook already runs it.
+2. `/orient --progress` retells the story and reads what landed against it, then says wait, pick
+   something up, or start something new.
+3. You decide what each result is allowed to change, by the run-kind table above.
+4. `/integrate-plans` writes new or changed tasks. `/sync-plan-tree --clean` writes statuses and
+   tidies prose.
+
+End every such pass with one line: either the next task, or an honest wait naming what is in
+flight and what it will produce. Never both, and never neither.
+
 ## Evidence tags carry provenance for numbers that reach the paper
 
 Any task line producing a number that will appear in the manuscript carries the run id, the step

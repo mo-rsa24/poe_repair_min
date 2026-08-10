@@ -249,7 +249,8 @@ def main():
     if found == 0:
         print("nothing to report.")
     else:
-        print(f"{found} things to look at. Nothing was changed.")
+        thing = "thing" if found == 1 else "things"
+        print(f"{found} {thing} to look at. Nothing was changed.")
 
 
 if __name__ == "__main__":
