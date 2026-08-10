@@ -1,5 +1,8 @@
 # 🔍 The mechanism section and the three honesty caveats
 
+## What this asks, in one line
+Write the mechanism section from the answered review questions, honest about scope: what replicated (the value-channel read, median 1.52x over 64 cells) and exactly where its boundary sits.
+
 ## Description
 Write the mechanism section to match whatever verdict the re-probe returns, and
 write the three caveats that keep the paper's claims honest.
@@ -27,12 +30,12 @@ in the `.tex`, with both pressure-test verdicts reflected in the wording.
   paragraph is the deliverable in that case.
 
 ## Tasks
-- [ ] ⚠️ write the mechanism section per plan 02's verdict (full section if
+- [ ] write the mechanism section per plan 02's verdict (full section if
       replicated, negative paragraph if not)
-- [ ] ⚠️ write the three honesty caveats: the oracle uses the joint prompt
+- [ ] write the three honesty caveats: the oracle uses the joint prompt
       (not Mono-free, demonstration only); mid-λ doses are off-policy
       (endpoints exact); the transfer number is cited with its checkpoint
-- [ ] ⚠️ fold both /pressure-test verdicts into the wording: a verdict of
+- [ ] fold both /pressure-test verdicts into the wording: a verdict of
       "already measured" on the window claim downgrades the novelty wording,
       not the experiment
 

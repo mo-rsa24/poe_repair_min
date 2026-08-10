@@ -1,5 +1,8 @@
 # 🧭 The title and the order the story is told in
 
+## What this asks, in one line
+Commit one title and one sentence per section naming the claim that section carries, in an order where no claim depends on a later one.
+
 ## Description
 Commit one title, and write down which claim each section carries and why it
 comes where it does.
@@ -20,12 +23,12 @@ the single claim it carries, in reading order.
   `docs/ENVIRONMENT.md`, "Paper: where the LaTeX lives and how it is built".
 
 ## Tasks
-- [ ] ⚠️ write the one-sentence claim of the paper, the sentence a reader should
+- [ ] write the one-sentence claim of the paper, the sentence a reader should
       be able to repeat afterwards
-- [ ] ⚠️ decide the lead: does the paper open on the measurement (r_t is real,
+- [ ] decide the lead: does the paper open on the measurement (r_t is real,
       small, shared) or on the fix (a LoRA transfers to unseen pairs)
-- [ ] ⚠️ write SPINE.md: one line per section, each naming its single claim
-- [ ] ⚠️ commit a title in the `.tex` (a working title is fine; it is cheap to
+- [ ] write SPINE.md: one line per section, each naming its single claim
+- [ ] commit a title in the `.tex` (a working title is fine; it is cheap to
       change and expensive to keep deferring)
 
 ## Success/Failure Outcomes

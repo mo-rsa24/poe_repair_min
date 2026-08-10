@@ -1,5 +1,8 @@
 # 📄 The abstract
 
+## What this asks, in one line
+Write the abstract last, from the spine and the finished sections, because an abstract written first describes the paper you hoped for.
+
 ## Description
 Write the abstract, after the spine is locked and the method and introduction
 exist.
@@ -25,11 +28,11 @@ limit, inside the ICLR word budget.
   owed until its runs land.
 
 ## Tasks
-- [ ] ⚠️ draft the abstract: the problem, the measurement, the fix, the transfer
+- [ ] draft the abstract: the problem, the measurement, the fix, the transfer
       result, the limit
-- [ ] ⚠️ check every number in it exists and is cited with its checkpoint
-- [ ] ⚠️ /restyle pass against a named ICLR exemplar
-- [ ] ⚠️ check it against the ICLR word or line budget
+- [ ] check every number in it exists and is cited with its checkpoint
+- [ ] /restyle pass against a named ICLR exemplar
+- [ ] check it against the ICLR word or line budget
 
 ## Success/Failure Outcomes
 - **the abstract**

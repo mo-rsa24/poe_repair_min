@@ -1,5 +1,8 @@
 # 🧱 Experiments and results: the frame, not the prose
 
+## What this asks, in one line
+Write the results section with every number as XX and every figure as its reserved slot, so 'what should I run next' becomes 'what is still blank'.
+
 ## Description
 Build the experiments and results sections as structure with named placeholders.
 No results prose is written in phase 1, because most of the numbers do not exist.
@@ -30,13 +33,13 @@ a named placeholder that says which run closes it.
   an owed figure breaks the build.
 
 ## Tasks
-- [ ] ⚠️ write the experiments section structure: one subsection per experiment
+- [ ] write the experiments section structure: one subsection per experiment
       the spine names, each stating the question and the setup
-- [ ] ⚠️ write the results structure: one subsection per claim, each holding a
+- [ ] write the results structure: one subsection per claim, each holding a
       named placeholder rather than prose
-- [ ] ⚠️ label each placeholder with the run that closes it, matching the owed
+- [ ] label each placeholder with the run that closes it, matching the owed
       rows in FIGURES.md
-- [ ] ⚠️ write the one results paragraph that CAN be written today: the pooled
+- [ ] write the one results paragraph that CAN be written today: the pooled
       held-out transfer read, cited with its checkpoint
 
 ## Success/Failure Outcomes
@@ -50,6 +53,14 @@ a named placeholder that says which run closes it.
     stated.
   - Failure: the number quoted bare. A transfer number without its checkpoint is
     the specific dishonesty this project has already committed to avoiding.
+
+## Next
+
+1. One subsection stub per register slot (F1 to F8 in `paper/iclr/figures.md`): the slot's claim
+   as the topic sentence, the placeholder-figure macro from plan 00, every number as XX.
+2. Build the PDF and read it: the blank spots ARE the remaining run order.
+3. When a slot turns fillable (plan_pulse reports it at session start), replace its XX numbers
+   from the review file it names, never from memory.
 
 ## Engagement Instructions
 ```bash
