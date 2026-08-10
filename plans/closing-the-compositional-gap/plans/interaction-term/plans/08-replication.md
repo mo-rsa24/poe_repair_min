@@ -27,7 +27,7 @@ the blend).
 
 ## Tasks
 - [ ] build the cross-model replication  → decomposed: see
-      `cross-model-replication/MASTER_PLAN.md`
+      `plans/shelved/cross-model-replication/MASTER_PLAN.md`
 
 ## Environment Facts note
 All further facts live in the sub-scope's own plans.

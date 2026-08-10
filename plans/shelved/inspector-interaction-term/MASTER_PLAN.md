@@ -1,5 +1,8 @@
 # Inspector-Interaction-Term
 
+> Shelved: an empty scaffold for background work (zero plan files). Comes back when its parent
+> plan is promoted out of the background pool into the paper table; /populate-plans it then.
+
 ## Mission
 Make the interaction-term results driveable. The existing LoRA Inspector gains
 tabs where dragging a slider does the experiment in front of you: dose up the

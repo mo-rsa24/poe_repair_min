@@ -2,17 +2,17 @@
 
 ## Where things stand
 
-- **What is going on:** nothing is running. No Slurm jobs, no sweep processes on this node.
-  The GPU is free.
-- **The last thing we did:** commit `84a4c4f`, a glossary per scope and a check for plan prose
-  that will not read cold.
-- **Do this next:** re-score the dose sweep. Read
-  [plans/closing-the-compositional-gap/plans/interaction-term/procedures/03-rescore-the-dose-sweep.md](plans/closing-the-compositional-gap/plans/interaction-term/procedures/03-rescore-the-dose-sweep.md)
-  to completion and answer the two open questions in
-  [plans/closing-the-compositional-gap/plans/interaction-term/review/03-dose-response.md](plans/closing-the-compositional-gap/plans/interaction-term/review/03-dose-response.md).
-  The paper's headline figure waits on it.
+This block is a snapshot; the live version prints at session start, or on demand with
+`python3 scripts/plan_pulse.py --brief`.
 
-Regenerate these three lines with `python3 scripts/plan_pulse.py --brief`.
+- **What is going on:** nothing is running; the GPU is free.
+- **The last thing we did:** one parent scope for the paper, its cadence stated: figures first,
+  write at 5 to 10 resolved register slots.
+- **Do this next:** the dose re-score. Read
+  [the procedure](plans/closing-the-compositional-gap/plans/interaction-term/procedures/03-rescore-the-dose-sweep.md)
+  to completion and answer the two open questions in
+  [the review file](plans/closing-the-compositional-gap/plans/interaction-term/review/03-dose-response.md).
+  It resolves F2, the paper's headline slot.
 
 ## The paper: what has to land
 
@@ -71,7 +71,6 @@ number earns the right to propose an experiment and nothing more. Results land i
 |---|---|---|
 | interaction-term/07-composition-type | whether the correction behaves the same for attribute pairs as for object pairs, which would widen the claim's reach | ⚠️ not started |
 | interaction-term/08-replication | the same result on a second model and sampler, which is a likely reviewer ask but not a claim we make | ⚠️ not started |
-| interaction-term/11-inspector | an interactive read of the correction, useful for understanding and not for the manuscript | ⚠️ not started |
 
 ## Standing jobs
 

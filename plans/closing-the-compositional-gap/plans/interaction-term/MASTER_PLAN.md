@@ -80,12 +80,9 @@ broke. No landing is narrated without its instrument.
 11. Inspector tabs consuming only this scope's grids.
 
 ## Sub-Scopes
-<!-- All three are scaffolded (MASTER_PLAN.md + Definition of Done) but hold
-     ZERO plan files. 11 DoD items with no tasks behind them. Run
-     /populate-plans on each before its parent plan needs it. -->
-- ⚠️ plans/closing-the-compositional-gap/plans/interaction-term/plans/composition-type-cells/ — "the missing regime's cells + the validated instrument that can read them"
-- ⚠️ plans/closing-the-compositional-gap/plans/interaction-term/plans/cross-model-replication/ — "the same story on three models and three samplers, or where it breaks"
-- ⚠️ plans/closing-the-compositional-gap/plans/interaction-term/plans/inspector-interaction-term/ — "every headline figure explorable by hand, zero new generation"
+None live. The three background scaffolds (composition-type cells, cross-model replication,
+the inspector) are shelved whole at `plans/shelved/`, each carrying its return trigger:
+promotion of its parent plan out of the background pool.
 
 ## Plans
 
@@ -124,9 +121,9 @@ plan sits in the root's background-experiments pool and does not block the paper
 
 | Plan | What it does | Paper step | Status | Owes |
 |---|---|---|---|---|
-| 07-composition-type | whether attribute pairs behave like object pairs | bg | ⚠️ | its cells, via the composition-type-cells sub-scope |
-| 08-replication | the same result on another model and sampler | bg | ⚠️ | its runs, via the cross-model-replication sub-scope |
-| 11-inspector | the correction explorable by hand, for understanding rather than the manuscript | bg | ⚠️ | its build, via the inspector-interaction-term sub-scope |
+| 07-composition-type | whether attribute pairs behave like object pairs | bg | ⚠️ | its cells; the scaffold waits at plans/shelved/composition-type-cells |
+| 08-replication | the same result on another model and sampler | bg | ⚠️ | its runs; the scaffold waits at plans/shelved/cross-model-replication |
+| 11-inspector | shelved with its sub-scope: tooling, not paper work; returns after submission or on promotion | | shelved | |
 
 **What reaches the paper**
 
@@ -134,10 +131,6 @@ plan sits in the root's background-experiments pool and does not block the paper
 |---|---|---|---|---|
 | 09-print-gates | the two /pressure-test passes run before anything is written. Defends, among other things, the decision not to run a baseline | 9 | ⚠️ | both passes |
 | 10-figures | the figures this scope owes the manuscript, via /design-figure | 10 | ⚠️ | all of them |
-
-All three sub-scopes are empty, and all three belong to background plans. That is why nobody
-has populated them and why it is not urgent. Populate one when its parent plan is promoted out
-of the background pool.
 
 ## Running order
 

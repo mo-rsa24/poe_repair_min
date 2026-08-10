@@ -1,5 +1,8 @@
 # Composition-Type-Cells
 
+> Shelved: an empty scaffold for background work (zero plan files). Comes back when its parent
+> plan is promoted out of the background pool into the paper table; /populate-plans it then.
+
 ## Mission
 The composition-type scatter needs the one regime the cache lacks: pairs where
 both-at-once IS the target, like a red cube. This scope curates those cells,
