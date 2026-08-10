@@ -34,7 +34,7 @@ follow-on. It has not failed.
 |---|---|---|---|---|
 | dose sweep on mscluster109, log `results/mechanism_study/dose_sweep.log` | Tests the claim | commit a21ac8b | `outputs/interaction_term/dose/pairs`, 440 images, 3.4GB | done |
 | one-seed smoke, a_cat__x__a_dog seed 9, 20 steps | Tests the claim | before a21ac8b | folded into the sweep tree | done |
-| first scoring pass, grounding-dino-tiny instance_count | Tests the claim | commit a21ac8b | `dose_curves.json` | superseded twice: by the seed pinning, then by the size floor |
+| first scoring pass, grounding-dino-tiny instance_count | Tests the claim | commit a21ac8b | `dose_curves.json` | replaced, first by the seed pinning and then by the size floor |
 | re-score on the pinned seeds, CPU | Tests the claim | commit dcca290 | `dose_curves.json`, rewritten | done; showed the stray cells were not inflating anything |
 | re-score with the size floor in the scorer | Tests the claim | size floor in `detection_scorer.py` | `dose_curves.json`, and `dose_strip_an_elephant__x__a_penguin_seed10.png` | done; these are the paper's numbers |
 
