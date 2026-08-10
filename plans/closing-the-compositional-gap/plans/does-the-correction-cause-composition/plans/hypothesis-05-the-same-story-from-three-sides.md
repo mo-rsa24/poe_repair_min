@@ -3,16 +3,21 @@
 Design only. Verdicts live in [../review/hypothesis-05-the-same-story-from-three-sides.md](../review/hypothesis-05-the-same-story-from-three-sides.md).
 
 ## What this asks, in one line
-Three reads that do not share the dose experiment's machinery: does the image slide out of the
-blend region as the dose rises (and not under a random push), does language-space arithmetic
-predict which pairs need a big correction, and are chimeras wrong content rather than low
-quality.
+Three checks that share none of the strength-sweep's machinery, so they can agree with it
+independently rather than repeat it.
 
 ## Description
-Three independent reads of the same story: the image-map walk (dose-sweep
-outputs sliding out of the blend region), the language probes (is the joint
-prompt more than the sum of its parts; does the chimera match a blend caption),
-and the quality check (chimeras are wrong content, not bad images).
+Three independent reads:
+
+- **The picture moves out of the blend region.** Place the strength-sweep's images on the
+  existing image-similarity axes and watch them slide as the strength rises. The control is
+  the same-sized push in a random direction, which should not slide.
+- **The prompt's own arithmetic predicts which pairs are hard.** Ask whether the joined
+  prompt is more than the sum of its two parts in text space, and whether a blended picture
+  reads back as a blend caption.
+- **A blended animal is wrong content, not a bad picture.** Measure image quality on the
+  cached broken and working outputs and expect no gap. This removes the objection that the
+  correction merely improves quality.
 
 ## Purpose
 The causal claim shown from three sides (Goal 1's secondary reads). The

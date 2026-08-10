@@ -4,15 +4,22 @@ Design only. Findings and run state live in
 [../review/hypothesis-04-what-the-cached-runs-already-show.md](../review/hypothesis-04-what-the-cached-runs-already-show.md).
 
 ## What this asks, in one line
-Four questions the cached predictions can answer with no image generation and no queue: does the
-correction's size follow noise level, where do the two paths fork, does the correction align
-with the sampling motion, and is it low-rank enough to learn.
+Four questions the already-cached predictions can answer, with no image generation and no
+queue at all.
 
 ## Description
-Four analyses that read the cached trajectories and residuals directly, no
-image generation: the correction's size against noise level, where the PoE and
-Mono paths fork, the plausibility climb along each path, and the factorization
-that asks whether the correction is small and shared.
+Four analyses, each reading the cached predictions directly:
+
+- **Does the correction's size track the noise level?** If one curve fits every pair, the
+  correction is a property of the noise level rather than of the particular animals.
+- **Where do the two paths separate?** Walk the broken path and the working path from the
+  same starting noise, and measure the distance between them at each step. Where that
+  distance takes off is where the outcome gets decided.
+- **Does the correction push along the direction sampling is already moving?** With two
+  controls: a random vector, and the right correction taken from the wrong step.
+- **Is the correction low-rank enough for a small adapter to learn?** Stack the
+  corrections and ask how few directions carry most of their energy, against a
+  same-shape random floor.
 
 ## Purpose
 The theory core: the term is universal in noise level (Goal 4), the trajectory
