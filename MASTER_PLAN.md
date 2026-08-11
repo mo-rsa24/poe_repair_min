@@ -66,6 +66,10 @@ number earns the right to propose an experiment and nothing more. Results land i
 |---|---|---|
 | does-the-correction-cause-composition/idea-01-does-it-hold-for-attribute-pairs | whether the correction behaves the same for attribute pairs as for object pairs, which would widen the claim's reach | ⚠️ not started |
 | does-the-correction-cause-composition/generalization-01-other-models-and-samplers | the same result on a second model and sampler, which is a likely reviewer ask but not a claim we make | ⚠️ not started |
+| can-we-trust-the-compose-rate/gate-01-is-this-hole-already-known | whether "presence metrics miss fusion, count metrics miss a repeat" is already published. Already-known cancels the two rows below and leaves a methods paragraph | ⚠️ not started |
+| can-we-trust-the-compose-rate/instrument-01-the-three-state-labelled-set | the band on every compose rate the paper prints, and whether the scorer's error grows with λ. A 10-point growth caps F2's caption | ⚠️ not started, runs whatever gate-01 says |
+| can-we-trust-the-compose-rate/idea-01-what-the-current-benchmarks-score | whether any published metric agrees with people where ours does not, at 95% against our 85% | ⚠️ not started, blocked by gate-01 |
+| can-we-trust-the-compose-rate/gate-02-promote-or-close | the decision that moves this scope into the paper table with a step number, or closes it | ⚠️ not started, blocked by all three |
 
 ## Standing jobs
 
@@ -86,7 +90,7 @@ container named for its state.
 
 | Folder | State | One line |
 |---|---|---|
-| `closing-the-compositional-gap/` | live, the paper | one parent scope for the manuscript and its two result claims: `does-the-correction-cause-composition` (causal), `does-the-fix-reach-unseen-pairs` (transfer), `writing-the-paper` (the draft) |
+| `closing-the-compositional-gap/` | live, the paper | one parent scope for the manuscript and its two result claims: `does-the-correction-cause-composition` (causal), `does-the-fix-reach-unseen-pairs` (transfer), `writing-the-paper` (the draft), `can-we-trust-the-compose-rate` (tries an idea: can the printed rates be trusted) |
 | `standing/literature/` | standing | the reading register |
 | `standing/artifact-reconciliation/` | standing | artifacts catalogued and integrity-checked |
 | `completed/compose-scorer/` | done | delivered `scorer_validated.json`, in use by both result scopes |
