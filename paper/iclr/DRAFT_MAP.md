@@ -48,21 +48,25 @@ meets the failure before the formalism that names it.
       to PoE in the reader's order, sketch drafted in-chat, sub-pieces below. Home notation is the
       noise prediction epsilon_theta; the score appears once as its probabilistic reading.
       Placement (introduction vs. its own background section) deliberately open.
-      - [x] ¶A settled, author's wording: Diffusion models generate images by learning to
-            reverse a gradual noising process (Ho et al., 2020). In the forward process, Gaussian
-            noise is progressively added to a clean image x_0, producing increasingly noisy
-            samples x_1, ..., x_T. The reverse process is learned by a neural network that
-            predicts the noise eps_theta(x_t, t, c) present in x_t, where t denotes the diffusion
-            timestep and c is an optional conditioning signal such as a text prompt. At inference
-            time, generation begins from Gaussian noise x_T and repeatedly applies the learned
-            denoising process until a clean sample x_0 is obtained. In text-to-image diffusion
-            models, the conditioning c guides this reverse process toward images that match the
-            input prompt.
-            (needs ho2020denoising, NOT IN BIB. Join note: if the build stays in the
-            introduction, the opener takes one bridging clause from paragraph 2; as a section
-            opener it stands as written. Notation open: comma form eps_theta(x_t,t,c) as written
-            vs bar form eps_theta(x_t,t|c); the bar recommended since ¶C/¶D place conditional
-            and unconditional side by side.)
+      - [x] ¶A settled, author's complete reframing: In text-to-image diffusion models, the
+            conditioning signal (c) is typically derived from a text prompt and used to guide the
+            reverse process. Models such as Stable Diffusion (cite) condition the denoising
+            network on these text representations and can generate scenes containing multiple
+            objects and interactions from a single prompt. In this paper, we refer to this setting
+            as **joint prompting** or **Mono**. For example, a single model conditioned on *"a cat
+            and a dog"* is asked to generate both concepts jointly within the same scene.
+            We contrast this with **inference-time composition**, where the concepts are
+            represented by separate pretrained conditional models. For example, one model may be
+            conditioned on *"a cat"* and another on *"a dog"*. Their predictions are then
+            combined during the reverse process using a product-of-experts (PoE) formulation to
+            generate a sample that satisfies both conditions. Unlike joint prompting, the composed
+            model has not been trained directly on the joint condition. In practice, this setting
+            often fails to preserve the constituent concepts as distinct objects. Instead, the
+            composition can collapse into a single entangled or hybrid object. We study this gap
+            between joint generation and inference-time composition and investigate why PoE
+            composition fails even when the individual models represent each concept well.
+            (Needs Stable Diffusion cite. Joint prompting / Mono are synonyms here; Mono may
+            need full definition if it becomes a metric label later.)
       - [ ] ¶B the score reading: p_t(x_t|c), epsilon approximates -sigma_t times its score,
             steps accumulate into sampling (cites song2021scorebased)   ← current
       - [ ] ¶C guidance and sampling: Bayes split of the conditional, CFG amplifies the prompt's

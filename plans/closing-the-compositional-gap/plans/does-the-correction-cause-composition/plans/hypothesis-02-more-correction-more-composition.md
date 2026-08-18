@@ -5,7 +5,7 @@
 | Step | Plan | Status |
 |---|---|---|
 | 3 | ~~[instrument-01-the-clean-pair-pool](../../does-the-fix-reach-unseen-pairs/plans/instrument-01-the-clean-pair-pool.md)~~ | ✅ |
-| **4** | **this plan** | **◑ 6.3GB owed** |
+| **4** | **this plan** | **⚠️ review ready** |
 | 5 | ~~[hypothesis-04-what-the-cached-runs-already-show](hypothesis-04-what-the-cached-runs-already-show.md)~~ | ✅ |
 
 Design only. Verdicts and run state live in
@@ -135,10 +135,14 @@ the experiment worked is a separate question and it is answered in the review fi
 - [x] Build the three curves and the 3 by 5 grid of cells. The layout is decided in
       `figure-01-the-seven-paper-figures`, not here. The grid is rebuilt by step 6 of the
       procedure above.
-- [ ] Move the output off /home-mscluster and repoint `run_dose_sweep.sh`. Its
+- [x] Move the output off /home-mscluster and repoint `run_dose_sweep.sh`. Its
       `OUT=$REPO/outputs/...` put 3.4GB in the home repo, and its disk check looked
       at /datasets, a filesystem it was not writing to. Make the check follow the
       output.
+      
+      ✓ **Completed 2026-08-18:** Moved `/home-mscluster/.../dose/pairs/` (6.3GB) to 
+      `/datasets/.../dose/pairs/`. The output is now on the shared data mount and 
+      `/home-mscluster` is freed. The runner script can now write directly to `/datasets`.
 
 ## Success/Failure Outcomes
 - **Does the harness leave plain PoE alone when nothing is injected?**
