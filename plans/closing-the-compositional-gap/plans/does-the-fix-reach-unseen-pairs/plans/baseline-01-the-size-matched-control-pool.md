@@ -1,5 +1,13 @@
 # 🅱️ The control pool: was it the animals, or just the amount of data?
 
+**Step 12 of 22.** Waits on step 11. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../../../MASTER_PLAN.md).
+
+| Step | Plan | Status |
+|---|---|---|
+| 11 | [hypothesis-02-transfer-as-a-rate-over-fifteen-pairs](hypothesis-02-transfer-as-a-rate-over-fifteen-pairs.md) | ⚠️ |
+| **12** | **this plan** | **⚠️** |
+| 13 | [figure-01-the-seven-paper-figures](../../does-the-correction-cause-composition/plans/figure-01-the-seven-paper-figures.md) | ◑ F6 needs a decision |
+
 Design only. Verdicts live in [../review/baseline-01-the-size-matched-control-pool.md](../review/baseline-01-the-size-matched-control-pool.md).
 
 ## What this asks, in one line

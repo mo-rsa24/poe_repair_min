@@ -1,139 +1,219 @@
-> **Superseded.** This registry predates the plan tree. Experiments are designed in
-> `plans/<scope>/plans/`, judged in `plans/<scope>/review/`, and governed by
-> `~/.claude/EXPERIMENT_CONVENTIONS.md`. Kept because seven files cite its EXP numbers.
+# Experiments: does commitment timing explain PoE failure and adapter failure?
 
-# EXPERIMENTS — LoRA-Fixes-PoE (publishable bar)
+Written before any run. The falsification rule for each experiment is fixed here and is not
+revised after seeing results. Schema is the experiment-planner provisional block shape; reconcile
+against a canonical format if one is adopted.
 
-**Generated**: 2026-07-22 (experiment-planner over docs/RESULTS_SUMMARY.md + master Definition of Done).
-**Schema**: provisional (no canonical EXPERIMENTS.md format present; reconcile if one appears). One block per pyramid rung.
-**Claims**: no CLAIMS.md yet, so each experiment carries a `local:` claim tied to a master Objective.
+## The axes
 
-## Locked claim (from the master mission)
+Every experiment below is one choice on each of these. Nothing is planned per-cell.
 
-A rank-8 cross-attention LoRA trained on the cached guided PoE→Mono residual `r_t = ε̃_J − ε̃_PoE` makes Product-of-Experts composition co-occur like Mono at inference **without the joint prompt (Mono-free)**, and this fix generalises along the seed and pair axes to a **characterisable reach** (at minimum a per-group catalogue, at most one taxonomy-spanning LoRA).
+| Axis | Values | Notes |
+|---|---|---|
+| pair | 17 in the current pool, plus a new spread set built in EXP-02 | the current pool is selected on the outcome, see the warning below |
+| seed | 8 cached per pair | the sampling unit for anything about means |
+| step | 0 to 49 | the schedule is 50 steps everywhere in the cache |
+| arm | PoE, Mono (joint prompt), PoE plus oracle r_t over a window, PoE plus the trained adapter | one arm per comparison, never two changes at once |
+| space | DINOv2, CLIP | a nuisance axis, not a science axis: DINOv2 is pre-committed, CLIP is reported as a robustness check |
+| adapter strength | number of training pairs, training steps, rank | only used in EXP-05 to manufacture failures |
 
-**Global three-way rule** (each rung sharpens it): *support* = Mono-free composition holds and generalises to held-out seeds for ≥1 group; *null* = the LoRA fails to compose at λ=1 on the trained cell, or held-out-seed pass ≤1/4 across all groups; *inconclusive* = composes on trained cells but held-out lands in-between → rerun with more seeds/pairs, do not narrate into a win.
+## The selection warning that governs the whole file
 
-## The publishable bar (the decision this file locks)
+`outputs/animals_compose_transfer/fail_rate.json` records `train_min_fail: 0.5`. Pairs entered the
+pool by failing. 15 of 17 sit at fail-rate 1.00, donkey × pony at 0.75 and crocodile × alligator at
+0.62. The dissimilar control, elephant × penguin, also fails 8 of 8.
 
-The binding constraint is **delivery, not transfer**: the trained cell plateaus at ~40% of the PoE→Mono distance. So the defensible paper is **not** "one LoRA spans the taxonomy" (Scale is likely a fallback). The **minimal publishable unit** is the arc:
+Two consequences, both binding:
 
-> the fix works Mono-free (Rung 1) → survives seed noise per group (Rung 2) → transfers to unseen pairs within a difficulty group (Rung 4) → and the deployment unit is decided by the crossbar read (Rung 5), even if the honest answer is "ship the per-group catalogue."
+1. No analysis inside this pool can say what predicts PoE failure, because the pool has no
+   successes to contrast against. Any such analysis is conditioned on the outcome.
+2. The prediction "similar pairs fail, dissimilar pairs succeed" is already contradicted by
+   elephant × penguin at 8 of 8. It enters the plan as a pre-registered null, not as the
+   hypothesis.
 
-| Rung | DoD | Publishable bar | Verdict | Gates the paper? |
-|---|---|---|---|---|
-| 1 Overfit | 1 | Mono-free composition on cat×dog **+ ≥3 more groups**, λ=0 canary byte-identical, MDS bend | ⚠️ cat×dog only + G4 (MDS owed) | **MANDATORY** |
-| 2 Survive-Noise | 2 | Pooled LoRA composes on **≥3/4 held-out seeds for ≥3 groups** | ◑ G6 trained, held-out enactment pending | **MANDATORY** |
-| 3 Cross-Pair | 3 | (smoke only; confounded per the plan) | ⚠️ not run | **OPTIONAL — recommend downgrading DoD-3** |
-| 4 Group-Wise | 4 | Within-group pool composes on **≥2/3 held-out concept-disjoint pairs for ≥1 group**, beats single-pair, Task D cosine > baseline | ◑ G6 smoke only | **MANDATORY (the transfer claim)** |
-| 5 Scale | 5 | Four-quadrant crossbar **evaluated and classified**; deployment unit chosen. A null (single-LoRA underperforms → catalogue) is publishable. | ⏸ crossbar never run | **MANDATORY to READ, not to win** |
+## EXP-01: does the commitment step vary from pair to pair?
 
-**Recommended DoD change to lock**: downgrade DoD-3 (Cross-Pair) from a completion gate to an optional smoke. The plan file itself calls single-pair→sibling confounded and names Group-Wise (Rung 4) as the reviewer-credible transfer test. Keeping DoD-3 mandatory spends ~a day of runs on evidence a reviewer discounts. Your call; the blocks below treat it as optional.
+- claim_id: local: the step at which a run's outcome stops being changeable is a property of the
+  pair, not a constant of the sampler.
+- independent_var: pair.
+- dependent_var: commitment step, defined once here and reused everywhere. For each (pair, seed),
+  form the model's running estimate of the finished image at each step in latent space, by
+  Tweedie's formula from the cached state and the PoE prediction:
+  `x0(t) = (x_t - sqrt(1 - abar_t) * eps_PoE(t)) / sqrt(abar_t)`. Record how far that estimate has
+  settled, as the cosine between `x0(t)` and the run's final `x0`. The commitment step is the
+  first step after which that cosine stays at or above 0.90 for the rest of the run. Sensitivity
+  at 0.80 and 0.95 is reported beside it so the verdict cannot rest on one threshold.
 
-## Must be re-run (crashed / missing / pending) — the execute set
+  This is measured in latent space, not in DINOv2, and the reason is coverage rather than
+  preference: the DINOv2 reading exists for 3 pairs and 9 cells, where this one covers all 17
+  pairs at 8 seeds from the cache alone with no decoding and no GPU. The cost is that latent
+  distance is not perceptual distance, so the measure is validated against the DINOv2 reading on
+  the 3 pairs where both exist, and the agreement is reported with the result. If they disagree,
+  the DINOv2 reading wins and this experiment is re-run with decoding.
 
-Ordered by dependency. This is what steps 5–8 of the runbook schedule.
+  What the proxy assumes: that once the model's estimate of the finished image has settled, the
+  alternative outcome is no longer reachable. That is the speciation claim itself, so the proxy is
+  descriptive. Only the handover sweep can make it causal.
+- ablation_rows: none. This is a measurement, not a comparison.
+- metric: the commitment step per (pair, seed), then the median per pair. Report the between-pair
+  standard deviation of those medians against the pooled within-pair standard deviation across
+  seeds. Both numbers, always, because the second is what makes the first mean anything.
+- sample_size: 17 pairs x 8 seeds = 136 cells. Cache only.
+- falsify_condition: **varies** if the range of per-pair medians is at least 5 steps AND the
+  between-pair standard deviation is at least 1.5x the within-pair. **Does not vary** if the range
+  is under 2 steps OR the ratio is under 1.0. **Inconclusive** between those, which means add seeds
+  rather than interpret. The 5-step anchor is half the composing window (steps 0 to 10): a spread
+  smaller than that cannot plausibly make one fixed schedule miss a pair.
+- what would surprise us: every pair committing within 2 steps of the same point. The correction's
+  size profile varies a lot by pair, so a constant commitment step would mean timing is set by the
+  sampler and not by the content.
+- figures: commitment step per pair, one point per pair at the median with its 8 seeds behind it,
+  ordered by median. Qualitative half: the running estimate at the commitment step for the earliest
+  and latest pair, beside their two endpoints.
+- compute: in-session, no GPU, about 8 minutes over 162 cells.
+- status: ✅ done, with the perceptual check owed. `python scripts/commitment_step.py`, written up
+  in `docs/evidence/EXP01-commitment-step/QUERY.md`. **Varies**: per-pair medians span 18 steps
+  (dolphin × porpoise 18, cat × dog 36), between-over-within 1.90 against a bar of 1.5, and the
+  verdict holds at both sensitivity thresholds. The unregistered reading matters more: every pair
+  settles at step 18 or later while the correction only works over steps 0 to 10, so the
+  correction stops working 8 to 26 steps before the picture settles. Either the decision happens
+  well before settling, or this measure tracks the wrong event.
+- gates: EXP-04 then answered the question this one could not, and answered it against the measure:
+  the window sits at steps 0 to 10 for every pair regardless of when that pair settles. So failure
+  mode (c) of EXP-05 is removed, and the settling step is not the event that decides composition.
+- qualitative half built (`/pair-figure`, `scripts/commitment_step_frames.py`): two rows, cat × dog
+  seed 2 (individual step 36) and dolphin × porpoise seed 4 (individual step 20, pair median 18),
+  three decoded Tweedie estimates per row (step 0, commitment step, step 49). In both rows the
+  commitment-step frame already reads as the finished animal, close enough to the final frame that
+  the remaining steps look like cleanup rather than a decision. Small decode speckle sits on the
+  commitment frame near the dog's face and the dolphin's eye/snout, consistent with the estimate not
+  being fully denoised yet. `docs/evidence/EXP01-commitment-step/commitment-step-frames.png` (+ .pdf,
+  sidecar `.json` with per-row provenance). Perceptual validation of the 0.90 threshold is still owed
+  and is tagged on the figure itself, not just in prose.
 
-1. **Rung 5 crashed run** — `0y9un0o4` died early; **resume** `all_groups` from `2em6frqv/lora_step_030000.pt` (do NOT restart, the pool spec is unchanged), then run the crossbar (`cells.jsonl` absent → the gap).
-2. **Rung 2 pending enactment** — the G6 held-out-seed samples (seeds 9–12) that make DoD-2 real; `pueuo7bl` is trained (verdict ok) but the held-out-seed proof was never rendered.
-3. **Rung 1 missing MDS** — G4 `a_typewriter__x__a_cactus` MDS pre-render (owed from the old Plan 08).
-4. **Rung 1 missing trainings** — G1/G2/G3 single-seed LoRAs (currently 0-byte stubs).
-5. **Rung 2 unfinished** — G1–G4 pooled runs to ep2000 + verdicts (part-trained ~ep1000–1200).
-6. **Rung 4 missing** — build the ~520 Plan-16 cache cells, then G1 (most-opposite to G6) end-to-end + G6 full tail (final-checkpoint crossbar + Task D).
+## EXP-02: build a pair set that actually spans success and failure
 
-Everything else in the rung plans is either done or optional (method extensions: Attend-and-Excite grafts, SLERP-merge, orthogonal adaptation).
+- claim_id: local: prerequisite. Without outcome variance there is nothing for a predictor to
+  predict.
+- independent_var: pair, chosen to span a similarity range rather than to fail.
+- dependent_var: plain PoE compose rate per pair, from the validated instance-count scorer.
+- ablation_rows: one arm only (plain PoE). No correction, no adapter.
+- metric: compose rate over 8 seeds per pair. The pair set is admissible only if it spans the
+  range: at least 8 pairs above 0.5 and at least 8 below 0.5.
+- sample_size: 40 candidate pairs x 8 seeds = 320 samples, 50 steps each. Candidates chosen to
+  span text-embedding distance between the two nouns, deliberately including pairs expected to
+  succeed (different families, different scales, different habitats), because the current pool has
+  none.
+- falsify_condition: this experiment cannot fail, it can only come out unusable. **Usable** if at
+  least 8 pairs land above 0.5 compose. **Unusable** if fewer than 4 do, which would mean PoE
+  fails on essentially everything and Claim 1 is not a question about pairs at all, at which point
+  EXP-03 is cancelled rather than run on a degenerate axis.
+- figures: compose rate against pair, sorted, with the two-animal and blended samples shown for
+  the pairs at each end.
+- compute: GPU, plain sampling with no training. Estimate a few hours on one card, plus scorer
+  time. Write samples to /datasets.
+- status: ⚠️ pending
 
----
+## EXP-03: does endpoint separation at the commitment step predict PoE failure?
 
-## EXP-01: Overfit — Mono-free repair, pair-generic
-- claim_id: local:obj1 (Overfit)
-- independent_var: concept pair (cat×dog, then one representative per group G1–G4) and λ (0→1)
-- dependent_var: recognisable composition (two concepts visible by eye / two-object VQA), PoE→Mono distance reached, MDS trajectory bend toward the joint target
-- ablation_rows: λ=0 canary (must be byte-identical to plain PoE) · λ=1 full correction · negative controls (group-A external correctors, internal forces — already ✅, they fail)
-- metric: recognisable-composition rate across the ≥5 pairs; the λ=0 canary is the Mono-free proof (DoD-6). Must move if the claim is true: a residual-trained LoRA that composes is the whole foundation.
-- sample_size: 5 representative pairs (G1–G4, G6), seed 42, λ ∈ {0, 0.25, 0.5, 0.75, 1.0}; probes every 50 epochs to ~600
-- falsify_condition: **support** if ≥4/5 groups compose by eye at λ=1 with byte-identical λ=0; **null** if cat×dog fails to separate at any λ, or ≤1/5 groups compose; **inconclusive** between → train the remaining groups before reading
-- figures: per-pair epoch×λ morph (inspector LoRA-residual tab) + MDS bend (anti-corroboration: a pair whose corrected path does NOT bend toward the joint target)
-- compute: mscluster, 1×GPU per pair, ~few h each; checkpoints under `/datasets/.../artifacts/rung1-overfit/`; MDS pre-render ~30 min
-- status: ⚠️ pending (cat×dog ✅, G4 trained/MDS owed, G1–G3 owed)
+- claim_id: local: PoE fails when the blended outcome and the two-animal outcome are still close
+  together at the moment the run commits.
+- independent_var: the predictor, computed per pair with no access to the outcome: the distance
+  between that pair's PoE endpoint and its Mono endpoint in DINOv2, divided by the noise scale at
+  that pair's commitment step from EXP-01.
+- dependent_var: plain PoE compose rate from EXP-02.
+- ablation_rows: three predictors, each its own row, so the comparison is one axis at a time.
+  (a) endpoint separation alone, no noise scaling. (b) separation divided by noise at the
+  commitment step, the live hypothesis. (c) text-embedding distance between the two nouns, the
+  semantic-similarity version, entered as a pre-registered null because elephant × penguin already
+  contradicts it.
+- metric: Spearman correlation between predictor and compose rate across pairs, with a 95%
+  bootstrap interval over pairs. Spearman rather than Pearson because compose rate is a bounded
+  proportion.
+- sample_size: however many pairs EXP-02 yields, target 40. Correlations on fewer than 20 pairs are
+  not reported as evidence.
+- falsify_condition: **support** if row (b) reaches |rho| of at least 0.5 with the interval
+  excluding zero AND the sign is negative, meaning closer endpoints predict more failure. **null**
+  if |rho| is at most 0.2 with the interval containing zero. **inconclusive** between, which means
+  extend the pair set, not reinterpret. Row (b) must also beat row (a) by at least 0.15 in |rho|,
+  otherwise the noise scaling is decoration and the honest claim is the simpler one.
+- what would surprise us: row (c) winning. Semantic similarity predicting failure would contradict
+  the elephant × penguin measurement and would need that measurement re-examined first.
+- figures: predictor on x, compose rate on y, one point per pair, with the pairs at both extremes
+  shown as their actual PoE and Mono images.
+- compute: cache only once EXP-02 has produced the samples.
+- status: ⚠️ pending, blocked on EXP-01 and EXP-02.
 
-## EXP-02: Survive-Noise — the fix outlasts the seed
-- claim_id: local:obj2 (Survive-Noise)
-- independent_var: seed (train pool {1–8}, held-out {9–12}), per group
-- dependent_var: held-out-seed composition pass rate (of 4)
-- ablation_rows: pooled-k LoRA on held-out seeds (Task B) · per-seed ceiling (Task C, is the held-out seed just hard) · Δ̄_t bridge (Task D)
-- metric: held-out-seed pass rate ≥3/4. The training `verdict.json="ok"` is necessary but NOT sufficient — it is a training verdict, not a held-out read.
-- sample_size: 5 pairs (one per group), 4 held-out seeds each, pooled over ≥4 train seeds
-- falsify_condition: **support** if pooled composes on ≥3/4 held-out seeds for ≥3 groups; **null** if ≤1/4 for all groups (fix is seed-luck → the core claim fails here); **inconclusive** at 2/4 → add held-out seeds
-- figures: held-out-seed contact sheet per group (render_seed_summary) + anti-corroboration: a group where Task C shows the held-out seeds were simply easy
-- compute: mscluster; G6 held-out sampling is inference (~1 h); G1–G4 resume-to-ep2000 ~few h each
-- status: ⚠️ pending (G6 pool trained verdict ok; held-out-seed enactment pending; G1–G4 part-trained, no verdicts)
+## EXP-04: does the window where the correction works move with the pair?
 
-## EXP-03: Cross-Pair — sibling transfer (SMOKE, optional)
-- claim_id: local:obj3 (Cross-Pair)
-- independent_var: eval pair (a cousin the LoRA never trained on), holding the LoRA fixed
-- dependent_var: composition on the unseen sibling across held-out seeds
-- ablation_rows: G6 LoRA on wolf×husky / lion×dog (note: lion×dog shares "dog" → near-freebie, not real transfer)
-- metric: sibling composition ≥2/4 seeds — **but discount it**: a single-pair LoRA saw no variety, so a hit can't be told from a memorised correction that fits. Reviewer-credible transfer is EXP-04.
-- sample_size: 1–2 siblings per group, seeds 9–12
-- falsify_condition: not a publication gate. If it fails, it only nominates the sibling as a Scale-pool candidate. If it passes, EXP-04 still has to confirm with concept-disjoint pairs.
-- figures: `<train>__heldout__<eval>` triptych (sibling beside PoE/Mono refs)
-- compute: inference-only over `pueuo7bl`, ~1 h; **run only if cheap/time permits**
-- status: ⚠️ optional (code ready, not run)
+- claim_id: local: the effective correction window sits at the pair's own commitment step, so it
+  moves when the commitment step moves.
+- independent_var: window position, the 9 sliding windows already used, crossed with pair.
+- dependent_var: compose rate under oracle r_t injected over that window.
+- ablation_rows: one row per pair. The existing window sweep covers cat × dog only, so every other
+  pair is new.
+- metric: the window centre with the highest compose rate, per pair. Correlate that against the
+  commitment step from EXP-01.
+- sample_size: 6 pairs x 9 windows x 4 seeds = 216 cells. Six pairs chosen to span the commitment
+  range EXP-01 reports, which is why EXP-01 must come first.
+- falsify_condition: **support** if the best window centre spans at least 5 steps across pairs AND
+  correlates with the commitment step at Spearman rho of at least 0.5. **null** if every pair's
+  best window centre lands within 2 steps of the others, which would mean one fixed schedule fits
+  all pairs and mode (c) of EXP-05 is dead. **inconclusive** between.
+- figures: compose rate against window centre, one curve per pair, with each pair's commitment step
+  marked on its own curve.
+- compute: none needed. The sweep already existed at 8 pairs x 9 windows x 4 seeds, 288 scored
+  cells in `interaction_term/window/window_curves.json`, so this was a read rather than a run.
+- status: ✅ done. `python scripts/window_vs_commitment.py`, written up in
+  `docs/evidence/EXP04-window-vs-commitment/QUERY.md`. **Does not move.** All 8 pairs peak at
+  window centre 5 (steps 0 to 10), a span of 0 steps against a bar of 5, while their settling steps
+  span 13 (23 to 36). The registered correlation is undefined because the best window never varies,
+  which is the finding. Secondary summaries are weak: rho +0.16 for the compose-weighted centre and
+  +0.26 for the latest window that still works. Left-censored: centre 5 is the earliest the grid
+  holds, so the window is bounded rather than located.
 
-## EXP-04: Group-Wise — is a difficulty group a deployable unit
-- claim_id: local:obj4 (Group-Wise)
-- independent_var: held-out pair within a group (train 7 pairs, hold out 3), seed held or not
-- dependent_var: held-out-pair composition (`out_in`), two-tier — (a) deployable: image composes; (b) scientific: Task D cosine of Δ̂_t to the group-mean Δ̄_t^(G)
-- ablation_rows: within-group pool vs single-pair sibling (EXP-03 baseline) · concept-disjoint held-out (wolf×husky) vs shared-concept (lion×dog) · Task-D pre-screen (do the group's single-pair nudges line up before the ~30 h train)
-- metric: held-out-pair pass ≥2/3 with **concept-disjoint** siblings, beating the single-pair test; Task D cosine above a same-group-vs-cross-group baseline. Both tiers reported separately — never sell a high cosine as "it works."
-- sample_size: per group, 7 train pairs × up to 12 seeds, 3 held-out pairs; start G1 (most-opposite to G6) + G6 full tail
-- falsify_condition: **support** if ≥1 group composes on ≥2/3 concept-disjoint held-out pairs AND Task D > baseline; **null** if ≤1/3 concept-disjoint AND low Task D (group is not a transfer unit → claim narrows to per-pair); **inconclusive** → widen held-out pairs (degradation curve: rate vs fraction held out)
-- figures: `contact_sheet_out_in.png` per group + degradation curve (rate vs held-out fraction) + anti-corroboration: a failed transfer cell diagnosed (magnitude / timing / group-coarseness / off-manifold) landing below the ~40% plateau
-- compute: mscluster; Plan-16 cache build ~11 h GPU (once); per-group run ~30 h; Task-D pre-screen is forward-passes only (cheap, run FIRST to skip dead groups)
-- status: ⚠️ pending (G6 smoke only, 43 cells; G1–G4 not started; ~520 cache cells missing)
+## EXP-05: when the adapter fails, which of three things went wrong?
 
-## EXP-05: Scale — one LoRA, the crossbar, or the catalogue fallback
-- claim_id: local:obj5 (Scale)
-- independent_var: pair seen/unseen × seed seen/unseen (2×2 crossbar); headline cell `out_out` (both new)
-- dependent_var: per-quadrant composition + Task D, classified per group
-- ablation_rows: `in_in` / `in_out` / `out_in` / `out_out` · plain all-groups LoRA vs cross-group orthogonal-adaptation variant (method extension, only if plain is mixed)
-- metric: the crossbar **read** is the deliverable, not a win. `out_out` composing with per-group structure = support for one-LoRA-spans-taxonomy; `out_out` failing while EXP-04 per-group succeeds = null for the single LoRA → **ship the per-group catalogue** (a publishable decision).
-- sample_size: 5 pairs × 8 seeds = 40 train cells; crossbar over held pairs × held seeds
-- falsify_condition: **support (one LoRA)** if `out_out` composes across most groups with per-group Task-D structure; **null (→ catalogue)** if `out_out` fails while per-group holds; **inconclusive** if training is short — resume before reading. Either way the DoD-5 deliverable (cells.jsonl + `out_out` sheet + classification + unit chosen) is **mandatory**.
-- figures: four-quadrant contact sheets; the held-pair×held-seed (`out_out`) sheet is the paper figure; Task D bridge across (pair, seed)
-- compute: mscluster; resume `2em6frqv` from step 30000 (do not restart), then `sample_crossbar` all four quadrants; ~several h train tail + sampling
-- status: ⚠️ pending (trained to 30k, crossbar never run, `cells.jsonl` absent; `0y9un0o4` crashed)
+- claim_id: local: adapter failure on a pair is one of aims-wrong or delivers-too-little, and the
+  two are distinguishable from measurements already implemented. **The third mode, the adapter's
+  window sitting in the wrong place for a pair, is removed: EXP-04 measured every pair's window at
+  the same place, so there is no per-pair window to miss.**
+- independent_var: pair, within a set of runs weak enough to produce failures.
+- dependent_var: three per-cell measures. Direction cosine and fraction-of-distance-reached, both
+  already in `_inline_sampling.py::direction_metrics`. Plus the gap between that pair's commitment
+  step and the step where the adapter's correction is largest.
+- ablation_rows: the leave-one-pair-out runs already planned in the transfer scope, which produce
+  degradation by construction. If those have not run, deliberately weakened adapters (fewer
+  training pairs, fewer steps) serve the same purpose, and this is marked mixed because two things
+  change at once between a weakened adapter and the full one.
+- metric: for each failing cell, which of the three measures is out of range. Report the count in
+  each mode and the count that fits none, because a classification that explains nothing must be
+  visible as such.
+- sample_size: gated. **Print the number of failing cells before classifying anything.** Fewer than
+  5 failing cells means stop and report "no failures available to classify" rather than splitting
+  noise. Today that count is zero: the worst transfer pair is 0.9375 and none sit at the floor.
+- falsify_condition: **support** if at least 70% of failing cells fall into exactly one of the two
+  remaining modes. **null** if fewer than 40% do, meaning aiming and delivery are not the right
+  decomposition. **inconclusive** between, which means add failing cells from more leave-one-out
+  runs.
+- what would surprise us: a large group fitting neither mode. Both remaining modes are about the
+  correction the adapter emits, so failures fitting neither would mean the adapter emits a fine
+  correction and the run fails anyway, which nothing in the current picture explains.
+- figures: one row per failing pair showing what the adapter produced against the oracle correction
+  at matched steps, beside the two numbers.
+- compute: GPU-light, re-scoring existing checkpoints with the metrics already wired.
+- status: ⚠️ pending, blocked on failures existing at all.
 
----
+## Order, and why
 
-## Pre-registration (dated 2026-07-22, do not revise post-hoc)
+1. EXP-01, because it is free, it defines the quantity both claims share, and it can delete a
+   failure mode before anyone builds a classifier around it.
+2. EXP-02, because Claim 1 is untestable until an outcome axis exists.
+3. EXP-04 and EXP-03 in either order once their inputs land.
+4. EXP-05 last, and only when failing cells exist.
 
-- **If the claim is right**: EXP-01 composes on ≥4/5 groups (λ=0 canary byte-identical); EXP-02 ≥3/4 held-out seeds on ≥3 groups; EXP-04 ≥2/3 concept-disjoint held-out pairs on ≥1 group; EXP-05 crossbar read yields a deployment unit (single LoRA or catalogue).
-- **If it's wrong**: EXP-01 cat×dog fails to separate at any λ (kills everything), or EXP-02 ≤1/4 held-out across all groups (seed-luck), or EXP-04 ≤1/3 with concept-disjoint pairs (no group-level transfer → per-pair only).
-- **In-between**: rerun with more seeds/pairs per the three-way rule. The ~40% delivery plateau is the known confound — a failed transfer cell must be diagnosed (Task D norm/timing/coarseness) before it is read as "transfer failed" rather than "delivery failed."
+## What must be printed on every run
 
-## EXP-06: Mechanism — does the LoRA's attention shift match test-time attention optimization
-- claim_id: local:mechanism-attn (not yet in a CLAIMS.md; reconcile if one appears)
-- independent_var: correction method {PoE λ=0, LoRA λ=1 (`lora_step_062500.pt`), Attend-and-Excite-equivalent (test-time, no training)} × seed (cat×dog, train {1..8} + held-out {9..12}, from `outputs/cross_seed_lora_pooling/seed_pool.yaml`)
-- dependent_var: Δ_attn(method, seed) = commitment-window-averaged attention mass on the dropped concept's token, minus that seed's own λ=0 baseline, using the existing `_CrossAttnRecorder` AAE-canon aggregation (cross-attn layers with query_len ≤ 32², bilinear-resized to 16×16, `agg_resolution=16`); paired with the existing visual/eyeball composition label per seed
-- ablation_rows: A) plain PoE λ=0 (baseline) · B) LoRA λ=1 (the trained Mono-free fix) · C) Attend-and-Excite-equivalent (test-time attention-loss intervention, `keep_grad=True` recorder path, no UNet training) · D) visual composition label (reused from existing rung-1/rung-2 convention, not a new run)
-- metric: Δ_attn(LoRA) vs Δ_attn(AAE), sign + magnitude ratio, restricted to the commitment window from G02/residual-diagnostics.md (outside that window the residual is already known near-zero, so attention differences there are noise). Original (pre-pressure-test) metric — Δ_attn correlates with visual success — is retained as a prerequisite check but is not the headline claim per the pressure-test verdict (that correlation alone echoes Attend-and-Excite's founding premise, not novel).
-- sample_size: 12 seeds (8 train + 4 held-out), inherited from the existing rung-2 seed pool, not newly chosen for power. Small by benchmark standards; justified because the object under study is per-seed mechanism on an already-completed rung's cells, not a compositional-eval sweep.
-- falsify_condition (three-way, pressure-test-upgraded): **support** if ≥3 visually-successful LoRA seeds show Δ_attn(LoRA) matching Δ_attn(AAE) in sign and within 2x magnitude (commitment-window-restricted) → same mechanism, cheaper delivery; **null** if the majority of visually-successful seeds show sign-mismatch or >4x magnitude divergence between LoRA and AAE → different mechanism, reported as its own finding, not a failed experiment; **inconclusive** if fewer than 3 seeds show visual success at all (known ~40% delivery ceiling from rung 1), or the AAE baseline itself is noisy across seeds → add a second pair from the compose-by-default bucket (G1–G3), do not loosen the threshold on the same 12 seeds.
-  - Prerequisite check (not the headline, but gates it): does Δ_attn(LoRA) correlate with the visual label (row D) across the 12 seeds at all — support if yes, null if attention shifts regardless of visual outcome, inconclusive if noisy. If this prerequisite is null, the AAE comparison above is moot (there's no attention signature to compare).
-- figures: three-trajectory attention-shift plot per seed (PoE / LoRA / AAE, timestep on x-axis, attention mass on y-axis) for 2-3 representative seeds (one clear support case, one clear null/divergent case if any) + a 12-seed summary scatter (Δ_attn(LoRA) vs Δ_attn(AAE), commitment-window-averaged, colored by visual success) as the headline comparison figure + anti-corroboration: a seed where the LoRA visually succeeds but Δ_attn is near-zero (shift-free success, would undermine the whole attention-mechanism story if common)
-- compute: mscluster, single GPU, no training. Rows A/B: pure inference forward passes, ~50 steps × 12 seeds each, well under 1h total. Row C: adds backward-through-latent at commitment-window steps only (fixed 1-2 grad steps per intervention step, not swept), ~2h total. No Slurm array needed at this scale; disk guard still applies (attention `.pt` files accumulate, ~7,200 small files total across all rows, sized like the existing `veracity_attn` cache). Target: `/datasets/mmolefe/poe_repair_min/outputs/attn_mechanism/` (new subtree, mirrors existing `veracity_attn` layout).
-- status: ⚠️ pending — capture hook (`_CrossAttnRecorder`) and save logic already exist and work (proven on `teacher_residual`, not yet wired to `run_lora_residual_inject`); AAE-equivalent baseline is new code (~80-120 lines, reuses existing `keep_grad=True` recorder path + existing decode/visual-read utilities, not a new module tree). First do-able step: row A (plain PoE, λ=0, all 12 seeds) requires zero new code — `run_lora_residual_inject` already supports `disable_adapters()` — checkpoint is a 12×50 sanity table of Δ_attn(λ=0, seed, t) before any new capture wiring or AAE code is written.
-
-## Cluster notes
-
-- Checkpoints target `/datasets/mmolefe/poe_repair_min/artifacts/...`, NOT `/home-mscluster` (which has hit 100% and silently killed checkpointing). Keep a `df` guard in every job preamble.
-- Confirm partition/QOS before emitting a Slurm array; for the `hippo` single box use a sequential/GNU-parallel loop over configs, not an array.
-
-``bash
-# Disk guard preamble (paste into every job; abort before a full FS eats the run's tail)
-CKPT_DIR=${CKPT_DIR:-/datasets/mmolefe/poe_repair_min/artifacts}
-USED=$(df --output=pcent "$CKPT_DIR" | tail -1 | tr -dc '0-9')
-[ "${USED:-100}" -ge 90 ] && { echo "ABORT: $CKPT_DIR ${USED}% full — checkpointing will fail." >&2; exit 1; }
-``
+The count each selection actually made. The pair and seed beside every number. The measurement
+space, since DINOv2 is the pre-committed one and CLIP is the check. Anything read in fp16 upcast to
+fp32 before accumulation.

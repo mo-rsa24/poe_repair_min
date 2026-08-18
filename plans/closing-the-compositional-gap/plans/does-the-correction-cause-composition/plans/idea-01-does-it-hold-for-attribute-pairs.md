@@ -1,5 +1,7 @@
 # 🗺️ The composition-type scatter
 
+**No step number: nothing waits on this.** Background, listed in the background-experiments pool of the [repo root MASTER_PLAN.md](../../../../../MASTER_PLAN.md), which also holds the one `## Running order` table. This plan asks whether attribute pairs behave like object pairs. Its scaffold waits at `plans/shelved/composition-type-cells`.
+
 ## What this asks, in one line
 Does the correction behave the same when the two concepts are an object and an attribute rather than two animals? Background: widens the claim's reach, blocks nothing.
 

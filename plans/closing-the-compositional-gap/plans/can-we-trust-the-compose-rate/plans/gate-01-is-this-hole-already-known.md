@@ -1,5 +1,12 @@
 # 🔍 Has someone already said this?
 
+**No step number: nothing in the paper order waits on this.** This scope runs in its own internal order, and earns numbered steps only on the big-promotion condition its own `MASTER_PLAN.md` sets. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../../../MASTER_PLAN.md).
+
+| Within this scope | Plan | Status |
+|---|---|---|
+| **1 of 4** | **this plan** | **⚠️ not started** |
+| 2 of 4 | [instrument-01-the-three-state-labelled-set](instrument-01-the-three-state-labelled-set.md) | ⚠️ not started |
+
 Design only. The verdict lives in [../review/gate-01-is-this-hole-already-known.md](../review/gate-01-is-this-hole-already-known.md).
 
 ## What this asks, in one line

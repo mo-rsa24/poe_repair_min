@@ -1,5 +1,13 @@
 # 📊 What the cached trajectories already tell us
 
+**Step 5 of 22.** Waits on step 1. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../../../MASTER_PLAN.md).
+
+| Step | Plan | Status |
+|---|---|---|
+| 4 | [hypothesis-02-more-correction-more-composition](hypothesis-02-more-correction-more-composition.md) | ◑ 6.3GB owed |
+| **5** | **this plan** | **✅** |
+| 6 | [hypothesis-03-when-in-the-run-it-matters](hypothesis-03-when-in-the-run-it-matters.md) | ◑ timing tab owed |
+
 Design only. Findings and run state live in
 [../review/hypothesis-04-what-the-cached-runs-already-show.md](../review/hypothesis-04-what-the-cached-runs-already-show.md).
 
@@ -55,14 +63,13 @@ file, question by question.
       wrong-step control.
 - [x] The factorization: stack the windowed residuals in fp32, SVD, energy-at-k against a
       same-shape random floor, and the held-out projection. Feeds slot F6.
-- [ ] Decide the spectrum's statistical entity (per-timestep rows or time-averaged rows) with
-      `/pair-figure`, then freeze F6's caption.
+- [x] The spectrum's statistical entity, decided with `/pair-figure`: one row is the correction at
+      one denoising step of one cell, not a cell averaged over its timesteps. Reasoning and the
+      numbers that rule out the averaged version are in the review.
 
 ## Next
 
-1. `/pair-figure` on the spectrum: choose the statistical entity, write the choice into the open
-   review question.
-2. `/design-figure` rides plan 10 for F3 and F6's final forms; do not design them here.
+1. `/design-figure` rides plan 10 for F3 and F6's final forms; do not design them here.
 
 ## Success/Failure Outcomes
 - **factorization**

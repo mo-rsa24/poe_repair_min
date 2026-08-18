@@ -1,0 +1,53 @@
+{
+  "pair": "a_cat__x__a_dog",
+  "seed": 12,
+  "cells": {
+    "swap_w0-10_dose_of_w0-10": {
+      "seed": 12,
+      "window": [
+        0,
+        10
+      ],
+      "tag": "swap_w0-10_dose_of_w0-10",
+      "lambda_inside": 1.0,
+      "delivered_total": 3.628639541566372,
+      "image": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose_matched/pairs/a_cat__x__a_dog/seed_12/swap_w0-10_dose_of_w0-10/swap_w0-10_dose_of_w0-10.png"
+    },
+    "swap_w0-10_dose_of_w40-50": {
+      "seed": 12,
+      "window": [
+        0,
+        10
+      ],
+      "tag": "swap_w0-10_dose_of_w40-50",
+      "lambda_inside": 2.958366017558897,
+      "delivered_total": 10.734843909740448,
+      "image": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose_matched/pairs/a_cat__x__a_dog/seed_12/swap_w0-10_dose_of_w40-50/swap_w0-10_dose_of_w40-50.png"
+    },
+    "swap_w40-50_dose_of_w0-10": {
+      "seed": 12,
+      "window": [
+        40,
+        50
+      ],
+      "tag": "swap_w40-50_dose_of_w0-10",
+      "lambda_inside": 0.3380244344562721,
+      "delivered_total": 3.628639541566372,
+      "image": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose_matched/pairs/a_cat__x__a_dog/seed_12/swap_w40-50_dose_of_w0-10/swap_w40-50_dose_of_w0-10.png"
+    },
+    "swap_w40-50_dose_of_w40-50": {
+      "seed": 12,
+      "window": [
+        40,
+        50
+      ],
+      "tag": "swap_w40-50_dose_of_w40-50",
+      "lambda_inside": 1.0,
+      "delivered_total": 10.734843909740448,
+      "image": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose_matched/pairs/a_cat__x__a_dog/seed_12/swap_w40-50_dose_of_w40-50/swap_w40-50_dose_of_w40-50.png"
+    }
+  },
+  "decisive_cell": "swap_w40-50_dose_of_w0-10",
+  "measure": "delivered total = sum over the window of lambda_t * size_t, size being the same per-step measure F3 and F4b draw",
+  "verdict_by_eye": "the decisive cell holds one fused animal on every seed; the early window at the same total holds two animals"
+}

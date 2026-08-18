@@ -1,5 +1,13 @@
 # 📏 Pre-register the correction-size measure
 
+**Step 2 of 22.** Waits on nothing. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../../../MASTER_PLAN.md).
+
+| Step | Plan | Status |
+|---|---|---|
+| 1 | ~~[instrument-01-build-the-measuring-scripts](instrument-01-build-the-measuring-scripts.md)~~ | ✅ |
+| **2** | **this plan** | **✅** |
+| 3 | ~~[instrument-01-the-clean-pair-pool](../../does-the-fix-reach-unseen-pairs/plans/instrument-01-the-clean-pair-pool.md)~~ | ✅ |
+
 ## What this asks, in one line
 Fix how the correction's size is expressed, in a committed script, before any result is read, so the choice of measure cannot follow the answer.
 

@@ -1,5 +1,24 @@
 # Can We Trust The Compose Rate
 
+## Where this scope sits in the order
+
+**This scope owns none of the 22 numbered steps, by its own design.** Nothing in the paper order
+waits on it, so it carries no step number and blocks nothing. Its four plans run in the internal
+order below, and it earns numbered steps in the one `## Running order` table in the
+[repo root MASTER_PLAN.md](../../../../MASTER_PLAN.md) only on the big-promotion condition in the
+Definition of Done: the false-compose rate comes back contaminated at the ten-point bar, or a
+candidate detector clears the 95-versus-85 bar.
+
+**Next in this scope:** [gate-01-is-this-hole-already-known](plans/gate-01-is-this-hole-already-known.md),
+one `/pressure-test` verdict. Nothing but instrument-01 may start before it comes back.
+
+| Within this scope | Plan | What it does | Status |
+|---|---|---|---|
+| 1 of 4 | [gate-01-is-this-hole-already-known](plans/gate-01-is-this-hole-already-known.md) | is this hole already published | ⚠️ not started |
+| 2 of 4 | [instrument-01-the-three-state-labelled-set](plans/instrument-01-the-three-state-labelled-set.md) | the labelled set and the band | ⚠️ not started, runs whatever gate-01 says |
+| 3 of 4 | [idea-01-what-the-current-benchmarks-score](plans/idea-01-what-the-current-benchmarks-score.md) | score the candidate detectors | ⚠️ blocked by gate-01 |
+| 4 of 4 | [gate-02-promote-or-close](plans/gate-02-promote-or-close.md) | promote or close, in writing | ⚠️ blocked by the other three |
+
 ## Mission
 Every compose rate in the paper comes from a detector we ask "how many animals", never "which
 animals". Two dogs scores the same as a cat and a dog. So 94% is an upper bound, and nobody has
@@ -150,9 +169,6 @@ Grouped by the run group each answers to. Statuses live in the review/ files.
 |---|---|---|
 | gate-02-promote-or-close | reads the above, writes the verdict (DoD 9) | ⚠️ blocked by all three |
 
-## Running order
-This scope keeps no order of its own. The single flat order across every scope and level is the
-`## Running order` table in the repo root `MASTER_PLAN.md`.
 
 ## Environment Context
 See `docs/ENVIRONMENT.md`. Read before drafting or checking any plan in this scope. What this

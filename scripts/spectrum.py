@@ -104,6 +104,10 @@ def main() -> int:
     ap.add_argument("--cache-root", type=Path, default=CACHE_ROOT)
     ap.add_argument("--out-dir", type=Path, default=OUT_DIR)
     ap.add_argument("--no-figure", action="store_true")
+    ap.add_argument("--unit-rows", action="store_true",
+                    help="scale every row to unit norm first, so the spectrum "
+                         "reads directions only and the spread of ||r_t|| (F3's "
+                         "subject) cannot contribute")
     args = ap.parse_args()
 
     if not args.all and not args.pairs and not args.pool:
@@ -135,6 +139,14 @@ def main() -> int:
     print(f"train: {train.shape[0]} vectors x {train.shape[1]} dims "
           f"from {len(train_pairs)} pairs")
 
+    row_norms = train.norm(dim=1)
+    print(f"||r_t|| per row: min {row_norms.min():.1f}, median "
+          f"{row_norms.median():.1f}, max {row_norms.max():.1f}, "
+          f"max/median {row_norms.max() / row_norms.median():.1f}x")
+    if args.unit_rows:
+        train = torch.nn.functional.normalize(train, dim=1)
+        print("rows scaled to unit norm: this spectrum reads directions only")
+
     # Centre before the SVD: an uncentred stack reports its own mean as
     # component 1, which would flatter the low-rank claim for free.
     mean = train.mean(dim=0, keepdim=True)
@@ -142,19 +154,37 @@ def main() -> int:
     s = S.numpy()
     ek = energy_at_k(s)
 
-    # Same-shape Gaussian floor: how concentrated does a random stack look?
+    # Two floors, because they answer different questions and the loose one on
+    # its own has been read as more than it says.
+    #
+    # gaussian: same shape, every row the same expected norm. Controls for the
+    # row count and the dimension only.
+    #
+    # norm-matched: random directions carrying the REAL ||r_t|| values. Rows
+    # that point nowhere in particular still concentrate energy if some are far
+    # bigger than others, and ||r_t|| here spans a 4-5x range because it tracks
+    # the noise level (F3's subject). Only the excess over THIS floor is
+    # evidence that the corrections share directions.
     g = torch.randn(train.shape, generator=torch.Generator().manual_seed(0))
-    sg = torch.linalg.svdvals(g - g.mean(dim=0, keepdim=True)).numpy()
-    ekg = energy_at_k(sg)
+    gu = torch.nn.functional.normalize(g, dim=1)
+    ekg = energy_at_k(torch.linalg.svdvals(g - g.mean(dim=0, keepdim=True)).numpy())
+    scale = torch.ones_like(row_norms) if args.unit_rows else row_norms
+    gn = gu * scale[:, None]
+    ekn = energy_at_k(torch.linalg.svdvals(gn - gn.mean(dim=0, keepdim=True)).numpy())
 
     print("\nenergy in the top k directions (train stack, centred):")
-    print(f"  {'k':>4}  {'r_t':>8}  {'gaussian':>9}  {'ratio':>6}")
+    print(f"  {'k':>4}  {'r_t':>8}  {'gaussian':>9} {'ratio':>6}  "
+          f"{'norm-matched':>13} {'ratio':>6}")
     for k in sorted(ek):
-        print(f"  {k:>4}  {ek[k]:>7.1%}  {ekg[k]:>8.1%}  {ek[k]/ekg[k]:>5.1f}x")
+        print(f"  {k:>4}  {ek[k]:>7.1%}  {ekg[k]:>8.1%} {ek[k]/ekg[k]:>5.1f}x  "
+              f"{ekn[k]:>12.1%} {ek[k]/ekn[k]:>5.1f}x")
     print("  Read the ratio, not the raw percentage. With N vectors in D dims "
           "and N << D the\n  centred stack has rank N-1, so a high energy-at-k "
           "is partly forced by N alone:\n  random vectors give 56% at k=16 when "
           "N=30, but only 6% when N=300.")
+    print("  The norm-matched column is the one that says whether the "
+          "corrections share\n  DIRECTIONS. The gaussian column cannot tell "
+          "shared directions from uneven ||r_t||.")
     if train.shape[0] < 4 * max(k for k in ek):
         print(f"  WARNING: only {train.shape[0]} vectors for k up to "
               f"{max(ek)}. Raise --max-pairs or --max-seeds, or lower --stride, "
@@ -163,8 +193,15 @@ def main() -> int:
     result = {
         "train_pairs": train_pairs, "train_vectors": int(train.shape[0]),
         "dims": int(train.shape[1]),
+        "rows": "one denoising step of one cell (one pair, one seed)",
+        "unit_rows": bool(args.unit_rows),
+        "max_seeds": args.max_seeds, "stride": args.stride,
+        "row_norm_min": float(row_norms.min()),
+        "row_norm_median": float(row_norms.median()),
+        "row_norm_max": float(row_norms.max()),
         "energy_at_k": {str(k): v for k, v in ek.items()},
         "gaussian_floor_at_k": {str(k): v for k, v in ekg.items()},
+        "norm_matched_floor_at_k": {str(k): v for k, v in ekn.items()},
         "singular_values_head": s[:64].tolist(),
     }
 
@@ -211,7 +248,9 @@ def main() -> int:
         ax.plot(ks, [ek[k] for k in ks], "o-", color="tab:blue",
                 label="r_t, training pairs")
         ax.plot(ks, [ekg[k] for k in ks], "s--", color="0.6",
-                label="same-shape Gaussian")
+                label="random, equal norms")
+        ax.plot(ks, [ekn[k] for k in ks], "d--", color="tab:red",
+                label="random directions, real norms")
         if held.numel() > 0:
             ax.plot([k for k in ks if k in proj], [proj[k] for k in ks if k in proj],
                     "^-", color="tab:orange", label="held-out pairs, train subspace")

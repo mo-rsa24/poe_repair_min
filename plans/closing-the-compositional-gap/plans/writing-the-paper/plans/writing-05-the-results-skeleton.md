@@ -1,5 +1,13 @@
 # 🧱 Experiments and results: the frame, not the prose
 
+**Step 18 of 22.** Waits on nothing. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../../../MASTER_PLAN.md).
+
+| Step | Plan | Status |
+|---|---|---|
+| 17 | [writing-02-the-title-and-the-section-spine](writing-02-the-title-and-the-section-spine.md) | ⚠️ |
+| **18** | **this plan** | **⚠️** |
+| 19 | [writing-03-where-each-figure-goes](writing-03-where-each-figure-goes.md) | ⚠️ |
+
 ## What this asks, in one line
 Write the results section with every number as XX and every figure as its reserved slot, so 'what should I run next' becomes 'what is still blank'.
 

@@ -1,47 +1,73 @@
-
 \documentclass{article} % For LaTeX2e
 \usepackage{iclr2027_conference,times}
 
 % Optional math commands from https://github.com/goodfeli/dlbook_notation.
 \input{math_commands.tex}
 
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{xcolor}
 \usepackage{hyperref}
 \usepackage{url}
 
+\graphicspath{{figures/}}
 
-\title{Formatting Instructions for ICLR 2027 \\ Conference Submissions}
+\newcommand{\methodname}{\textsc{Methodus}}
+\definecolor{placeholderblue}{RGB}{28,105,135}
+\definecolor{placeholdercyan}{RGB}{225,244,247}
+\definecolor{placeholdergreen}{RGB}{44,142,91}
+\definecolor{placeholderorange}{RGB}{224,117,54}
+\definecolor{placeholderred}{RGB}{196,62,57}
+\definecolor{placeholdergray}{RGB}{242,243,244}
+
+% Editable building blocks for the two opening figures. Replace any individual
+% box with \includegraphics while preserving the surrounding layout.
+\newcommand{\figurepanel}[4][placeholderblue]{%
+\fcolorbox{#1}{placeholdergray}{%
+\begin{minipage}[c][#3][c]{#2}
+\centering\footnotesize #4
+\end{minipage}}}
+
+\newcommand{\storypanel}[2]{%
+\fcolorbox{placeholderblue}{placeholdergray}{%
+\begin{minipage}[c][0.68in][c]{0.164\linewidth}
+\centering\scriptsize\textbf{#1}\\[0.35em]
+\textcolor{placeholderorange}{$\circ$}\;\(\longrightarrow\)\;
+\textcolor{placeholdergreen}{$\bullet$}\\[-0.1em]
+#2
+\end{minipage}}}
+
+\newcommand{\stripcell}[2]{%
+\fcolorbox{placeholderblue}{placeholdercyan}{%
+\begin{minipage}[c][0.47in][c]{0.144\linewidth}
+\centering\scriptsize\textcolor{placeholderorange}{$\sim$}\,
+\textcolor{placeholdergreen}{$\sim$}\,
+\textcolor{placeholderblue}{$\sim$}\\[-0.1em]#1\\[-0.1em]#2
+\end{minipage}}}
+
+\newcommand{\placeholderfigure}[3][0.94\linewidth]{%
+\begin{center}
+\fbox{%
+\begin{minipage}[c][#2][c]{#1}
+\centering
+{\large \textbf{#3}}\\[0.7em]
+\begin{tabular}{c@{\hspace{0.35in}}c@{\hspace{0.35in}}c}
+\fbox{\rule{0pt}{0.55in}\rule{0.78in}{0pt}} &
+\fbox{\rule{0pt}{0.55in}\rule{0.78in}{0pt}} &
+\fbox{\rule{0pt}{0.55in}\rule{0.78in}{0pt}} \\
+Panel A & Panel B & Panel C
+\end{tabular}\\[0.8em]
+{\small Axes, curves, screenshots, legends, and annotations go here.}
+\end{minipage}}
+\end{center}
+}
+
+\title{Lorem Ipsum for a Future ICLR 2027 Submission}
 
 % Authors must not appear in the submitted version. They should be hidden
 % as long as the \iclrfinalcopy macro remains commented out below.
 % Non-anonymous submissions will be rejected without review.
-
-\author{Antiquus S.~Hippocampus, Natalia Cerebro \& Amelie P. Amygdale \thanks{ Use footnote for providing further information
-about author (webpage, alternative address)---\emph{not} for acknowledging
-funding agencies.  Funding acknowledgements go at the end of the paper.} \\
-Department of Computer Science\\
-Cranberry-Lemon University\\
-Pittsburgh, PA 15213, USA \\
-\texttt{\{hippo,brain,jen\}@cs.cranberry-lemon.edu} \\
-\And
-Ji Q. Ren \& Yevgeny LeNet \\
-Department of Computational Neuroscience \\
-University of the Witwatersrand \\
-Joburg, South Africa \\
-\texttt{\{robot,net\}@wits.ac.za} \\
-\AND
-Coauthor \\
-Affiliation \\
-Address \\
-\texttt{email}
-}
-
-% The \author macro works with any number of authors. There are two commands
-% used to separate the names and addresses of multiple authors: \And and \AND.
-%
-% Using \And between authors leaves it to \LaTeX{} to determine where to break
-% the lines. Using \AND forces a linebreak at that point. So, if \LaTeX{}
-% puts 3 of 4 authors names on the first line, and the last on the second
-% line, try using \AND instead of \And before the third author name.
+\author{Anonymous Authors}
 
 \newcommand{\fix}{\marginpar{FIX}}
 \newcommand{\new}{\marginpar{NEW}}
@@ -49,415 +75,475 @@ Address \\
 %\iclrfinalcopy % Uncomment for camera-ready version, but NOT for submission.
 \begin{document}
 
-
 \maketitle
 
 \begin{abstract}
-The abstract paragraph should be indented 1/2~inch (3~picas) on both left and
-right-hand margins. Use 10~point type, with a vertical spacing of 11~points.
-The word \textsc{Abstract} must be centered, in small caps, and in point size 12. Two
-line spaces precede the abstract. The abstract must be limited to one
-paragraph.
+A natural image typically depicts several distinct concepts arranged so that they form a single coherent scene, and text-to-image models generate compositional scenes from a description of their parts. Recent methods compose pretrained diffusion models at inference time by sampling from a product of experts, one expert per concept. Product-of-experts composition can fail catastrophically, producing a single blended chimera instead of a scene containing both concepts, and we trace this failure to a specific, correctable gap. This gap is the interaction term: the per-step residual between the model's joint-prompt prediction and its product-of-experts prediction, which makes explicit the signal omitted by linear score composition. We train a low-rank adapter on the cross-attention layers of Stable Diffusion XL to predict this interaction term at every denoising step without ever seeing the joint prompt and add its prediction back in as a correction. We show the correction transfers to concept pairs it was never trained on and restores scenes containing both concepts.
 \end{abstract}
 
-\section{Submission of conference papers to ICLR 2027}
+\section{Introduction}
 
-ICLR requires electronic submissions, processed by
-\url{https://openreview.net/}. See ICLR's website for more instructions.
+Complex visual scenes are compositional: a single image typically depicts several distinct concepts arranged together, such as a cat beside a dog or a cup on a table, rather than any one concept in isolation. Generating such a scene from text requires not only rendering each concept accurately, but also representing the relationships among them correctly. An apple described as resting on a table, for example, should appear supported by the tabletop rather than fused into it or floating above it.
 
-If your paper is ultimately accepted, the statement {\tt
-  {\textbackslash}iclrfinalcopy} should be inserted to adjust the
-format to the camera ready requirements.
+Modern text-to-image models compose multiple concepts with impressive fidelity, capturing both the appearance of individual objects and many complex relationships among them. Much of this progress has come from scaling language encoders and diffusion backbones, allowing a single model to represent an increasingly broad range of interactions (Saharia et al., 2022; Podell et al., 2023). The space of possible concept combinations nevertheless grows combinatorially and cannot be exhausted by any finite training set. An established alternative is therefore to combine pretrained diffusion models directly at inference time, without retraining on every desired combination (Liu et al., 2022).
 
-The format for the submissions is a variant of the NeurIPS format.
-Please read carefully the instructions below, and follow them
-faithfully.
+Let $x_t$ denote the noisy latent at diffusion time $t$, and let
+$s_t(x_t\mid c)=\nabla_{x_t}\log p_t(x_t\mid c)$ denote the conditional score (Song et al., 2021). Given two concept prompts $c_1$ and $c_2$, product-of-experts (PoE) composition forms a Bayes-composition ratio at every denoising step:
+\begin{equation}
+\begin{aligned}
+    \hat p_t(x_t\mid c_1,c_2)
+    &\propto
+    \frac{p_t(x_t\mid c_1)\,p_t(x_t\mid c_2)}{p_t(x_t)}, \\
+    \hat s_t(x_t\mid c_1,c_2)
+    &=s_t(x_t\mid c_1)+s_t(x_t\mid c_2)-s_t(x_t).
+\end{aligned}
+\label{eq:poe-composition}
+\end{equation}
+Equation~\ref{eq:poe-composition} reuses the two conditional scores and subtracts their shared unconditional score once, requiring neither a joint prompt nor additional training (Liu et al., 2022). Bradley et al. (2025) identify a sufficient condition under which this linear composition is guaranteed to be projective. Their \emph{Factorized Conditionals} assumption requires each expert to modify a distinct subset of the representation, to agree with a shared base distribution outside that subset, and for the corresponding subsets to be independent under the base distribution. Under these assumptions, reverse diffusion preserves the component controlled by each expert. Natural-image concepts, however, can interact through appearance, geometry, and spatial relationships, so this factorization need not hold.
 
-\subsection{Style}
+We make the resulting discrepancy explicit. Let $J$ denote the joint prompt containing both concepts, let tildes denote classifier-free-guided noise predictions, and let $w$ be the guidance scale. The score interaction $I_t$ and its equivalent correction in noise-prediction space are
+\begin{equation}
+\begin{aligned}
+    I_t(x_t;c_1,c_2)
+    &:=s_t(x_t\mid J)-\hat s_t(x_t\mid c_1,c_2), \\
+    r_t
+    &:=\widetilde{\epsilon}_{J}(x_t,t)
+      -\widetilde{\epsilon}_{\mathrm{PoE}}(x_t,t)
+      =-w\sigma_t I_t(x_t;c_1,c_2), \\
+    \widetilde{\epsilon}_{\mathrm{PoE}}
+    &:=\widetilde{\epsilon}_{1}
+      +\widetilde{\epsilon}_{2}
+      -\widetilde{\epsilon}_{\emptyset}.
+\end{aligned}
+\label{eq:interaction-term}
+\end{equation}
+Thus, $r_t$ is precisely the per-step residual between the model's joint-prompt prediction and its PoE prediction, with the known score-to-noise and guidance scaling $w\sigma_t$. Our central question is whether this missing interaction can be predicted without evaluating the joint prompt.
 
-Papers to be submitted to ICLR 2027 must be prepared according to the
-instructions presented here.
-
-%% Please note that we have introduced automatic line number generation
-%% into the style file for \LaTeXe. This is to help reviewers
-%% refer to specific lines of the paper when they make their comments. Please do
-%% NOT refer to these line numbers in your paper as they will be removed from the
-%% style file for the final version of accepted papers.
-
-Authors are required to use the ICLR \LaTeX{} style files obtainable at the
-ICLR website. Please make sure you use the current files and
-not previous versions. Tweaking the style files may be grounds for rejection.
-
-\subsection{Retrieval of style files}
-
-The style files for ICLR and other conference information are available online at:
-\begin{center}
-   \url{http://www.iclr.cc/}
-\end{center}
-The file \verb+iclr2027_conference.pdf+ contains these
-instructions and illustrates the
-various formatting requirements your ICLR paper must satisfy.
-Submissions must be made using \LaTeX{} and the style files
-\verb+iclr2027_conference.sty+ and \verb+iclr2027_conference.bst+ (to be used with \LaTeX{}2e). The file
-\verb+iclr2027_conference.tex+ may be used as a ``shell'' for writing your paper. All you
-have to do is replace the author, title, abstract, and text of the paper with
-your own.
-
-The formatting instructions contained in these style files are summarized in
-sections \ref{gen_inst}, \ref{headings}, and \ref{others} below.
-
-\section{General formatting instructions}
-\label{gen_inst}
-
-The text must be confined within a rectangle 5.5~inches (33~picas) wide and
-9~inches (54~picas) long. The left margin is 1.5~inch (9~picas).
-Use 10~point type with a vertical spacing of 11~points. Times New Roman is the
-preferred typeface throughout. Paragraphs are separated by 1/2~line space,
-with no indentation.
-
-Paper title is 17~point, in small caps and left-aligned.
-All pages should start at 1~inch (6~picas) from the top of the page.
-
-Authors' names are
-set in boldface, and each name is placed above its corresponding
-address. The lead author's name is to be listed first, and
-the co-authors' names are set to follow. Authors sharing the
-same address can be on the same line.
-
-Please pay special attention to the instructions in section \ref{others}
-regarding figures, tables, acknowledgments, and references.
-
-
-There will be a strict upper limit of \textbf{9 pages} for the main text of the initial submission, with unlimited additional pages for citations. This limit will be expanded to \textbf{10 pages} for rebuttal/camera ready.
-
-\section{Headings: first level}
-\label{headings}
-
-First level headings are in small caps,
-flush left and in point size 12. One line space before the first level
-heading and 1/2~line space after the first level heading.
-
-\subsection{Headings: second level}
-
-Second level headings are in small caps,
-flush left and in point size 10. One line space before the second level
-heading and 1/2~line space after the second level heading.
-
-\subsubsection{Headings: third level}
-
-Third level headings are in small caps,
-flush left and in point size 10. One line space before the third level
-heading and 1/2~line space after the third level heading.
-
-\section{Citations, figures, tables, references}
-\label{others}
-
-These instructions apply to everyone, regardless of the formatter being used.
-
-\subsection{Citations within the text}
-
-Citations within the text should be based on the \texttt{natbib} package
-and include the authors' last names and year (with the ``et~al.'' construct
-for more than two authors). When the authors or the publication are
-included in the sentence, the citation should not be in parenthesis using \verb|\citet{}| (as
-in ``See \citet{Hinton06} for more information.''). Otherwise, the citation
-should be in parenthesis using \verb|\citep{}| (as in ``Deep learning shows promise to make progress
-towards AI~\citep{Bengio+chapter2007}.'').
-
-The corresponding references are to be listed in alphabetical order of
-authors, in the \textsc{References} section. As to the format of the
-references themselves, any style is acceptable as long as it is used
-consistently.
-
-\subsection{Footnotes}
-
-Indicate footnotes with a number\footnote{Sample of the first footnote} in the
-text. Place the footnotes at the bottom of the page on which they appear.
-Precede the footnote with a horizontal rule of 2~inches
-(12~picas).\footnote{Sample of the second footnote}
-
-\subsection{Figures}
-
-All artwork must be neat, clean, and legible. Lines should be dark
-enough for purposes of reproduction; art work should not be
-hand-drawn. The figure number and caption always appear after the
-figure. Place one line space before the figure caption, and one line
-space after the figure. The figure caption is lower case (except for
-first word and proper nouns); figures are numbered consecutively.
-
-Make sure the figure caption does not get separated from the figure.
-Leave sufficient space to avoid splitting the figure and figure caption.
-
-You may use color figures.
-However, it is best for the
-figure captions and the paper body to make sense if the paper is printed
-either in black/white or in color.
-\begin{figure}[h]
-\begin{center}
-%\framebox[4.0in]{$\;$}
-\fbox{\rule[-.5cm]{0cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
-\end{center}
-\caption{Sample figure caption.}
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{F1-two-meanings.png}
+\caption{\textbf{Product-of-experts composition can produce a chimera.} \textbf{Left:} a schematic, not a measured density, contrasting the desired joint concept with the overlap favored by multiplying two concept experts. \textbf{Right:} an uncorrected PoE sample for cat $\times$ dog (seed 9) contains one blended animal rather than two distinct animals.}
+\label{fig:poe-failure}
 \end{figure}
 
-\subsection{Tables}
+Figure~\ref{fig:poe-failure} makes the failure concrete. The schematic shows how multiplying two overlapping concept experts can favor an intermediate configuration, while the corresponding SDXL sample combines visual attributes of a cat and a dog in a single animal. This example does not by itself establish that Factorized Conditionals are violated; rather, it exhibits the kind of interference that their independence structure is designed to exclude and motivates measuring the omitted interaction directly.
 
-All tables must be centered, neat, clean and legible. Do not use hand-drawn
-tables. The table number and title always appear before the table. See
-Table~\ref{sample-table}.
+To test whether $r_t$ contains the relevant missing signal, we add it back into the PoE sampler:
+\begin{equation}
+    \widetilde{\epsilon}^{(\lambda)}_t
+    =\widetilde{\epsilon}_{\mathrm{PoE}}+\lambda r_t,
+    \qquad \lambda\in[0,1].
+\label{eq:correction-strength}
+\end{equation}
+Here $\lambda=0$ recovers plain PoE, whereas $\lambda=1$ recovers the joint-prompt prediction at every visited state. We compare the matched residual with three controls of comparable size: a residual from another concept pair, one from another seed, and the matched residual with its denoising steps shuffled.
 
-Place one line space before the table title, one line space after the table
-title, and one line space after the table. The table title must be lower case
-(except for first word and proper nouns); tables are numbered consecutively.
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.94\linewidth]{F2-correction-strength.png}
+\caption{\textbf{The matched interaction correction restores composition; the controls do not.} \textbf{Top:} cat $\times$ dog, seed 9, as increasing amounts of the correction are added. The matched correction turns the blended animal into a two-animal scene. \textbf{Bottom:} the same pattern holds across the evaluation set: the matched correction moves toward two-object scenes, while the wrong-pair, wrong-seed, and shuffled-step controls stay close to the original PoE failure mode.}
+\label{fig:correction-strength}
+\end{figure}
+
+Figure~\ref{fig:correction-strength} shows that the effect grows as more of the matched correction is added. The matched residual changes the output from a blended animal into two distinct animals. The controls do not have the same effect, even though they are made comparable in size. These interventions show that composition is not recovered by just any similarly sized change: in this setting, it depends on the content, trajectory, and temporal order carried by $r_t$. The remainder of this paper makes that correction available without querying the joint prompt.
+
+\begin{samepage}
+\textbf{Contributions.} This paper makes three contributions:
+\begin{itemize}
+    \item \textbf{We define the missing interaction.} We write $r_t$ as the step-by-step difference between the model's joint-prompt prediction and its PoE prediction, turning the missing compositional signal into a quantity we can measure and correct.
+    \item \textbf{We show the residual is the signal that restores composition.} Adding the correct residual turns PoE failures into two-object scenes; mismatched residuals of comparable size do not have this effect.
+    \item \textbf{We learn a lightweight correction that transfers.} A low-rank adapter on SDXL's cross-attention layers predicts $r_t$ without access to the joint prompt and composes concept pairs excluded from its training set.
+\end{itemize}
+\end{samepage}
+
+\section{Related Work}
+
+\paragraph{Adaptation, representation, and model reuse.}
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor, aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In the real manuscript, this paragraph should explain how prior adaptation or representation methods define the object being studied, then contrast them with the proposed perspective (Goodfellow et al., 2016).
+
+\paragraph{Empirical benchmarks and privacy-style audits.}
+Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim; donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. Integer tincidunt cras dapibus vivamus elementum semper nisi. This paragraph mirrors a benchmark paper rhythm: define the audit question, list the axes of variation, and explain why a single aggregate number is insufficient.
+
+\paragraph{Exploration, diffusion-style procedures, and downstream transfer.}
+Nullam dictum felis eu pede mollis pretium. Integer tincidunt cras dapibus, vivamus elementum semper nisi. Aenean vulputate eleifend tellus; aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. This paragraph should eventually cover method families that generate trajectories, candidates, samples, interventions, or policies before adapting them to downstream tasks.
+
+\section{Problem Setting and Background}
+\label{sec:background}
+
+\subsection{Objects and notation}
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Let $\mathcal{D}_{0}$ denote a source collection, $\mathcal{D}_{1}$ an adaptation collection, and $\mathcal{D}_{2}$ a held-out evaluation collection. A model $f_{\theta}$ maps inputs $x \in \mathcal{X}$ to predictions, samples, or actions $\hat{y}$, while an adaptation operator $\mathcal{A}$ produces
+\begin{equation}
+    \theta' = \mathcal{A}(\theta_{0}, \mathcal{D}_{1}, \lambda, \tau).
+    \label{eq:adaptation}
+\end{equation}
+Here $\lambda$ is a placeholder regularization strength and $\tau$ is a placeholder compute or privacy budget. The variables are deliberately generic so the notation can be overwritten once the topic is fixed.
+
+Praesent vestibulum dapibus nibh. Etiam iaculis nunc ac metus; ut id nisl quis enim dignissim sagittis. Etiam sollicitudin ipsum eu pulvinar rutrum, tellus ipsum laoreet sapien, quis venenatis ante odio sit amet eros. The finished version should clarify the units of analysis, the adversary or evaluator, and the measurable output of each experiment.
+
+\subsection{Evaluation axes}
+
+Morbi nec metus. Phasellus blandit leo ut odio. Maecenas ullamcorper, dui et placerat feugiat, eros pede varius nisi, condimentum viverra felis nunc et lorem. We use three placeholder axes: distributional relationship, intervention strength, and observer knowledge. These axes mimic a benchmark organization in which the paper asks the same question under overlapping, in-domain, and out-of-domain regimes.
+
+\section{Methodology}
+\label{sec:method}
+
+\subsection{Overview}
+
+Phasellus ullamcorper ipsum rutrum nunc. Nunc nonummy metus; vestibulum volutpat pretium libero. Cras id dui, aenean ut eros et nisl sagittis vestibulum. Nullam nulla eros, ultricies sit amet, nonummy id, imperdiet feugiat, pede. This section should eventually explain the proposed method or benchmark pipeline at the level of Figure~\ref{fig:method}: what enters, what is transformed, and what evidence exits.
+
+\begin{figure}[t]
+\placeholderfigure{2.0in}{Pipeline placeholder}
+\caption{Placeholder method diagram. Replace Panel A with data construction, Panel B with the core algorithm or audit, and Panel C with the evaluation protocol.}
+\label{fig:method}
+\end{figure}
+
+\subsection{Placeholder objective}
+
+Curabitur ligula sapien, tincidunt non, euismod vitae, posuere imperdiet, leo. Maecenas malesuada; praesent congue erat at massa. Sed cursus turpis vitae tortor. The template objective below provides room for a likelihood term, a regularizer, and a constraint:
+\begin{equation}
+    \mathcal{L}(\theta')
+    =
+    \mathbb{E}_{(x,y)\sim \mathcal{D}_{1}}
+    \left[\ell(f_{\theta'}(x),y)\right]
+    +
+    \lambda \Omega(\theta',\theta_{0})
+    +
+    \beta \Delta(\mathcal{D}_{0},\mathcal{D}_{1}).
+    \label{eq:objective}
+\end{equation}
+Ut varius tincidunt libero. Phasellus dolor; maecenas vestibulum mollis diam. Pellentesque ut neque, pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+
+\subsection{Algorithmic skeleton}
+
+Donec vitae orci sed dolor rutrum auctor. Fusce egestas elit eget lorem. Suspendisse nisl elit, rhoncus eget, elementum ac, condimentum eget, diam. The following boxed list is a placeholder for an algorithm environment without adding extra package dependencies:
+
+\begin{center}
+\fbox{%
+\begin{minipage}{0.92\linewidth}
+\textbf{Algorithm 1: Placeholder procedure for \methodname}\\
+\textbf{Input:} source data $\mathcal{D}_{0}$, adaptation data $\mathcal{D}_{1}$, evaluation data $\mathcal{D}_{2}$, budget $\tau$.\\
+\textbf{Step 1:} Construct regimes $\{\mathcal{R}_{k}\}_{k=1}^{K}$ and initialize $f_{\theta_{0}}$.\\
+\textbf{Step 2:} For each regime, compute $\theta'_{k}$ using Eq.~\ref{eq:adaptation}.\\
+\textbf{Step 3:} Score utility, robustness, leakage, transfer, or coverage using Eq.~\ref{eq:score}.\\
+\textbf{Output:} tables, curves, ablations, and qualitative panels.
+\end{minipage}}
+\end{center}
+
+Pellentesque auctor neque nec urna. Proin sapien ipsum, porta a, auctor quis, euismod ut, mi. Aenean viverra rhoncus pede; pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+
+\subsection{Scoring rule}
+
+Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus. A placeholder score combines performance $u$, cost $c$, and risk $r$:
+\begin{equation}
+    S(\theta',\mathcal{D}_{2})
+    =
+    \underbrace{u(\theta',\mathcal{D}_{2})}_{\text{utility}}
+    -
+    \alpha \underbrace{c(\theta',\tau)}_{\text{cost}}
+    -
+    \gamma \underbrace{r(\theta',\mathcal{D}_{0},\mathcal{D}_{1})}_{\text{risk}}.
+    \label{eq:score}
+\end{equation}
+Vivamus laoreet. Nullam tincidunt adipiscing enim. Phasellus tempus; proin viverra, ligula sit amet ultrices semper, ligula arcu tristique sapien, a accumsan nisi mauris ac eros.
+
+\section{Benchmark Design and Experiments}
+\label{sec:experiments}
+
+This section intentionally follows a question-driven pacing: motivation, summary of findings, then detailed results. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Replace each research question with the actual experimental claim once the project direction is decided.
+
+\subsection{Experimental setup}
+
+Nunc sed turpis. Fusce fermentum odio nec arcu. Vivamus aliquet elit ac nisl; fusce pharetra convallis urna. Quisque ut nisi. Donec mi odio, faucibus at, scelerisque quis, convallis in, nisi. In the final paper, this paragraph should specify models, datasets, seeds, hardware, metrics, and early stopping rules.
 
 \begin{table}[t]
-\caption{Sample table title}
-\label{sample-table}
+\caption{Placeholder main results across regimes}
+\label{tab:main-results}
 \begin{center}
-\begin{tabular}{ll}
-\multicolumn{1}{c}{\bf PART}  &\multicolumn{1}{c}{\bf DESCRIPTION}
-\\ \hline \\
-Dendrite         &Input terminal \\
-Axon             &Output terminal \\
-Soma             &Cell body (contains cell nucleus) \\
+\begin{tabular}{lcccc}
+\hline
+\textbf{Method} & \textbf{Alpha} & \textbf{Beta} & \textbf{Gamma} & \textbf{Mean} \\
+\hline
+Baseline A & 71.2 $\pm$ 1.4 & 65.8 $\pm$ 2.2 & 58.3 $\pm$ 1.9 & 65.1 \\
+Baseline B & 73.5 $\pm$ 1.1 & 66.4 $\pm$ 1.8 & 60.7 $\pm$ 2.0 & 66.9 \\
+\methodname & 78.9 $\pm$ 0.9 & 72.1 $\pm$ 1.5 & 67.4 $\pm$ 1.6 & 72.8 \\
+Oracle & 82.0 $\pm$ 0.7 & 75.9 $\pm$ 1.1 & 70.5 $\pm$ 1.3 & 76.1 \\
+\hline
 \end{tabular}
 \end{center}
 \end{table}
 
-\section{Default Notation}
+\subsection{RQ1: How does the data relationship change the result?}
 
-In an attempt to encourage standardized notation, we have included the
-notation file from the textbook, \textit{Deep Learning}
-\cite{goodfellow2016deep} available at
-\url{https://github.com/goodfeli/dlbook_notation/}.  Use of this style
-is not required and can be disabled by commenting out
-\texttt{math\_commands.tex}.
+\paragraph{Motivation.}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec mollis hendrerit risus; phasellus nec sem in justo pellentesque facilisis. Etiam imperdiet imperdiet orci, nunc nec neque. This question is reserved for overlap, distribution shift, task similarity, or pretraining-to-adaptation interactions.
 
+\paragraph{Summary of findings.}
+Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. A real summary should state the sign, size, and practical meaning of the result before the reader reaches the details.
 
-\centerline{\bf Numbers and Arrays}
-\bgroup
-\def\arraystretch{1.5}
-\begin{tabular}{p{1in}p{3.25in}}
-$\displaystyle a$ & A scalar (integer or real)\\
-$\displaystyle \va$ & A vector\\
-$\displaystyle \mA$ & A matrix\\
-$\displaystyle \tA$ & A tensor\\
-$\displaystyle \mI_n$ & Identity matrix with $n$ rows and $n$ columns\\
-$\displaystyle \mI$ & Identity matrix with dimensionality implied by context\\
-$\displaystyle \ve^{(i)}$ & Standard basis vector $[0,\dots,0,1,0,\dots,0]$ with a 1 at position $i$\\
-$\displaystyle \text{diag}(\va)$ & A square, diagonal matrix with diagonal entries given by $\va$\\
-$\displaystyle \ra$ & A scalar random variable\\
-$\displaystyle \rva$ & A vector-valued random variable\\
-$\displaystyle \rmA$ & A matrix-valued random variable\\
+\paragraph{Detailed results.}
+Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo; sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. As shown in Table~\ref{tab:main-results}, the placeholder method improves the fake mean score by several points while preserving the ranking across regimes.
+
+\begin{figure}[t]
+\placeholderfigure{1.95in}{Main result curves}
+\caption{Placeholder main experiment. Replace with learning curves, privacy-utility curves, coverage curves, or accuracy-risk trade-offs.}
+\label{fig:main-curves}
+\end{figure}
+
+\subsection{RQ2: Which intervention is most protective or most useful?}
+
+\paragraph{Motivation.}
+Sed consequat, leo eget bibendum sodales, augue velit cursus nunc, quis gravida magna mi a libero. Fusce vulputate eleifend sapien; vestibulum purus quam, scelerisque ut, mollis sed, nonummy id, metus. This question is written to accept either a method comparison or an adaptation-family comparison.
+
+\paragraph{Summary of findings.}
+Quisque id mi. Ut tincidunt tincidunt erat. Etiam feugiat lorem non metus. Vestibulum dapibus nunc ac augue. The final paper should explain whether a smaller, cheaper, or more constrained method can match the full method.
+
+\paragraph{Detailed results.}
+Curabitur vestibulum aliquam leo. Praesent egestas neque eu enim. In hac habitasse platea dictumst. Fusce a quam. Table~\ref{tab:ablations} is a fake ablation table with columns that can become compute, risk, utility, sample efficiency, or transfer metrics.
+
+\begin{table}[t]
+\caption{Placeholder ablation study}
+\label{tab:ablations}
+\begin{center}
+\begin{tabular}{lccc}
+\hline
+\textbf{Variant} & \textbf{Score} & \textbf{Cost} & \textbf{Gap to full} \\
+\hline
+No calibration & 64.1 & 0.7x & -8.7 \\
+No replay & 68.5 & 0.9x & -4.3 \\
+No constraint & 69.0 & 0.8x & -3.8 \\
+Full \methodname & 72.8 & 1.0x & 0.0 \\
+\hline
 \end{tabular}
-\egroup
-\vspace{0.25cm}
+\end{center}
+\end{table}
 
-\centerline{\bf Sets and Graphs}
-\bgroup
-\def\arraystretch{1.5}
+\subsection{RQ3: Does the result survive stronger observers or harder tasks?}
 
-\begin{tabular}{p{1.25in}p{3.25in}}
-$\displaystyle \sA$ & A set\\
-$\displaystyle \R$ & The set of real numbers \\
-$\displaystyle \{0, 1\}$ & The set containing 0 and 1 \\
-$\displaystyle \{0, 1, \dots, n \}$ & The set of all integers between $0$ and $n$\\
-$\displaystyle [a, b]$ & The real interval including $a$ and $b$\\
-$\displaystyle (a, b]$ & The real interval excluding $a$ but including $b$\\
-$\displaystyle \sA \backslash \sB$ & Set subtraction, i.e., the set containing the elements of $\sA$ that are not in $\sB$\\
-$\displaystyle \gG$ & A graph\\
-$\displaystyle \parents_\gG(\ervx_i)$ & The parents of $\ervx_i$ in $\gG$
-\end{tabular}
-\vspace{0.25cm}
+\paragraph{Motivation.}
+Praesent ac massa at ligula laoreet iaculis. Nullam vel sem; nam ipsum risus, rutrum vitae, vestibulum eu, molestie vel, lacus. This slot mirrors robustness and attacker-knowledge experiments: change what the evaluator sees, change the difficulty, then check whether the conclusion remains stable.
 
+\paragraph{Summary of findings.}
+Sed magna purus, fermentum eu, tincidunt eu, varius ut, felis. In auctor lobortis lacus. Quisque libero metus, condimentum nec, tempor a, commodo mollis, magna. The final summary should separate predictable degradation from a genuine failure case.
 
-\centerline{\bf Indexing}
-\bgroup
-\def\arraystretch{1.5}
+\paragraph{Detailed results.}
+Curabitur a felis in nunc fringilla tristique. Morbi mattis ullamcorper velit. Phasellus gravida semper nisi; nullam vel sem. Figure~\ref{fig:robustness} is reserved for the strongest negative case, not only the cleanest positive result.
 
-\begin{tabular}{p{1.25in}p{3.25in}}
-$\displaystyle \eva_i$ & Element $i$ of vector $\va$, with indexing starting at 1 \\
-$\displaystyle \eva_{-i}$ & All elements of vector $\va$ except for element $i$ \\
-$\displaystyle \emA_{i,j}$ & Element $i, j$ of matrix $\mA$ \\
-$\displaystyle \mA_{i, :}$ & Row $i$ of matrix $\mA$ \\
-$\displaystyle \mA_{:, i}$ & Column $i$ of matrix $\mA$ \\
-$\displaystyle \etA_{i, j, k}$ & Element $(i, j, k)$ of a 3-D tensor $\tA$\\
-$\displaystyle \tA_{:, :, i}$ & 2-D slice of a 3-D tensor\\
-$\displaystyle \erva_i$ & Element $i$ of the random vector $\rva$ \\
-\end{tabular}
-\egroup
-\vspace{0.25cm}
+\begin{figure}[t]
+\placeholderfigure{1.9in}{Robustness and stress tests}
+\caption{Placeholder robustness panel. Replace with stress tests under stronger observers, harder tasks, larger shifts, or alternative metrics.}
+\label{fig:robustness}
+\end{figure}
 
+\subsection{RQ4: What trade-off controls the final behavior?}
 
-\centerline{\bf Calculus}
-\bgroup
-\def\arraystretch{1.5}
-\begin{tabular}{p{1.25in}p{3.25in}}
-% NOTE: the [2ex] on the next line adds extra height to that row of the table.
-% Without that command, the fraction on the first line is too tall and collides
-% with the fraction on the second line.
-$\displaystyle\frac{d y} {d x}$ & Derivative of $y$ with respect to $x$\\ [2ex]
-$\displaystyle \frac{\partial y} {\partial x} $ & Partial derivative of $y$ with respect to $x$ \\
-$\displaystyle \nabla_\vx y $ & Gradient of $y$ with respect to $\vx$ \\
-$\displaystyle \nabla_\mX y $ & Matrix derivatives of $y$ with respect to $\mX$ \\
-$\displaystyle \nabla_\tX y $ & Tensor containing derivatives of $y$ with respect to $\tX$ \\
-$\displaystyle \frac{\partial f}{\partial \vx} $ & Jacobian matrix $\mJ \in \R^{m\times n}$ of $f: \R^n \rightarrow \R^m$\\
-$\displaystyle \nabla_\vx^2 f(\vx)\text{ or }\mH( f)(\vx)$ & The Hessian matrix of $f$ at input point $\vx$\\
-$\displaystyle \int f(\vx) d\vx $ & Definite integral over the entire domain of $\vx$ \\
-$\displaystyle \int_\sS f(\vx) d\vx$ & Definite integral with respect to $\vx$ over the set $\sS$ \\
-\end{tabular}
-\egroup
-\vspace{0.25cm}
+\paragraph{Motivation.}
+Pellentesque commodo eros a enim. Vestibulum turpis sem, aliquet eget, lobortis pellentesque, rutrum eu, nisl. Sed libero. This question reserves space for a privacy-utility, cost-accuracy, exploration-exploitation, or robustness-performance trade-off.
 
-\centerline{\bf Probability and Information Theory}
-\bgroup
-\def\arraystretch{1.5}
-\begin{tabular}{p{1.25in}p{3.25in}}
-$\displaystyle P(\ra)$ & A probability distribution over a discrete variable\\
-$\displaystyle p(\ra)$ & A probability distribution over a continuous variable, or over
-a variable whose type has not been specified\\
-$\displaystyle \ra \sim P$ & Random variable $\ra$ has distribution $P$\\% so thing on left of \sim should always be a random variable, with name beginning with \r
-$\displaystyle  \E_{\rx\sim P} [ f(x) ]\text{ or } \E f(x)$ & Expectation of $f(x)$ with respect to $P(\rx)$ \\
-$\displaystyle \Var(f(x)) $ &  Variance of $f(x)$ under $P(\rx)$ \\
-$\displaystyle \Cov(f(x),g(x)) $ & Covariance of $f(x)$ and $g(x)$ under $P(\rx)$\\
-$\displaystyle H(\rx) $ & Shannon entropy of the random variable $\rx$\\
-$\displaystyle \KL ( P \Vert Q ) $ & Kullback-Leibler divergence of P and Q \\
-$\displaystyle \mathcal{N} ( \vx ; \vmu , \mSigma)$ & Gaussian distribution %
-over $\vx$ with mean $\vmu$ and covariance $\mSigma$ \\
-\end{tabular}
-\egroup
-\vspace{0.25cm}
+\paragraph{Summary of findings.}
+Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. A real summary should identify the useful operating range and the point where the trade-off breaks.
 
-\centerline{\bf Functions}
-\bgroup
-\def\arraystretch{1.5}
-\begin{tabular}{p{1.25in}p{3.25in}}
-$\displaystyle f: \sA \rightarrow \sB$ & The function $f$ with domain $\sA$ and range $\sB$\\
-$\displaystyle f \circ g $ & Composition of the functions $f$ and $g$ \\
-  $\displaystyle f(\vx ; \vtheta) $ & A function of $\vx$ parametrized by $\vtheta$.
-  (Sometimes we write $f(\vx)$ and omit the argument $\vtheta$ to lighten notation) \\
-$\displaystyle \log x$ & Natural logarithm of $x$ \\
-$\displaystyle \sigma(x)$ & Logistic sigmoid, $\displaystyle \frac{1} {1 + \exp(-x)}$ \\
-$\displaystyle \zeta(x)$ & Softplus, $\log(1 + \exp(x))$ \\
-$\displaystyle || \vx ||_p $ & $\normlp$ norm of $\vx$ \\
-$\displaystyle || \vx || $ & $\normltwo$ norm of $\vx$ \\
-$\displaystyle x^+$ & Positive part of $x$, i.e., $\max(0,x)$\\
-$\displaystyle \1_\mathrm{condition}$ & is 1 if the condition is true, 0 otherwise\\
-\end{tabular}
-\egroup
-\vspace{0.25cm}
+\paragraph{Detailed results.}
+Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus; vivamus elementum semper nisi. Figure~\ref{fig:tradeoff} and Eq.~\ref{eq:score} should eventually tell the same story from complementary views.
 
+\begin{figure}[t]
+\placeholderfigure{1.9in}{Trade-off map}
+\caption{Placeholder trade-off map. Replace with a sweep over budgets, regularization strengths, temperatures, privacy levels, or fine-tuning steps.}
+\label{fig:tradeoff}
+\end{figure}
 
+\section{Discussion}
+\label{sec:discussion}
 
-\section{Final instructions}
-Do not change any aspects of the formatting parameters in the style files.
-In particular, do not modify the width or length of the rectangle the text
-should fit into, and do not change font sizes (except perhaps in the
-\textsc{References} section; see below). Please note that pages should be
-numbered.
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. This discussion opening should restate the most important empirical pattern without repeating the entire experiment section.
 
-\section{Preparing PostScript or PDF files}
+\paragraph{When the method helps.}
+Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Replace this with the regimes where the future method is genuinely better.
 
-Please prepare PostScript or PDF files with paper size ``US Letter'', and
-not, for example, ``A4''. The -t
-letter option on dvips will produce US Letter files.
+\paragraph{When the method fails.}
+Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. Replace this with limitations that are specific enough to be useful, including counterexamples and sensitivity to assumptions.
 
-Consider directly generating PDF files using \verb+pdflatex+
-(especially if you are a MiKTeX user).
-PDF figures must be substituted for EPS figures, however.
+\paragraph{How to audit the full pipeline.}
+In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. This paragraph mirrors the holistic-audit section of a benchmark paper: identify stages, observers, decisions, and possible failure modes.
 
-Otherwise, please generate your PostScript and PDF files with the following commands:
-\begin{verbatim}
-dvips mypaper.dvi -t letter -Ppdf -G0 -o mypaper.ps
-ps2pdf mypaper.ps mypaper.pdf
-\end{verbatim}
+\begin{figure}[t]
+\placeholderfigure{1.75in}{Audit stages}
+\caption{Placeholder audit framing. Replace with stages of the pipeline, adversary games, deployment checks, or decision points.}
+\label{fig:audit}
+\end{figure}
 
-\subsection{Margins in LaTeX}
+\section{Conclusion}
 
-Most of the margin problems come from figures positioned by hand using
-\verb+\special+ or other commands. We suggest using the command
-\verb+\includegraphics+
-from the graphicx package. Always specify the figure width as a multiple of
-the line width as in the example below using .eps graphics
-\begin{verbatim}
-   \usepackage[dvips]{graphicx} ...
-   \includegraphics[width=0.8\linewidth]{myfile.eps}
-\end{verbatim}
-or % Apr 2009 addition
-\begin{verbatim}
-   \usepackage[pdftex]{graphicx} ...
-   \includegraphics[width=0.8\linewidth]{myfile.pdf}
-\end{verbatim}
-for .pdf graphics.
-See section~4.4 in the graphics bundle documentation (\url{http://www.ctan.org/tex-archive/macros/latex/required/graphics/grfguide.ps})
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo; sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. The conclusion should be short: one sentence for the problem, one for the contribution, one for the evidence, and one for the broader implication.
 
-A number of width problems arise when LaTeX cannot properly hyphenate a
-line. Please give LaTeX hyphenation hints using the \verb+\-+ command.
+\section*{Ethics Statement}
 
-\subsection*{AI use statement}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer tincidunt. Cras dapibus; vivamus elementum semper nisi. This placeholder should eventually discuss possible misuse, sensitive data, evaluation harms, environmental cost, or deployment constraints.
 
-(This section is \textbf{required} and does not count toward the page limit.)
+\section*{Reproducibility Statement}
 
-In this work, we used generative AI tools for [tasks with required disclosure].
-We have not used generative AI tools for [other tasks with required disclosure],
-and [the rest of the required disclosure tasks] are not applicable to this work.
-Additionally, we used generative AI tools for [tasks with recommended
-disclosure]. We have reviewed all AI-assisted work. [Elaborate. For example, “we
-checked LLM-generated research ideas for potential plagiarism through a manual
-literature survey”, “LLM-generated code was verified and tested for correctness
-by 2 authors”, etc.]. We take responsibility for the final content of this work,
-including text, claims or artifacts produced with the aid of generative AI.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent congue erat at massa. Sed cursus turpis vitae tortor. This placeholder should eventually list code release status, random seeds, hardware, dataset provenance, hyperparameters, and any withheld artifacts.
 
-See the ICLR 2027 AI Policy for Authors for more details. This statement should
-not be more than 1 page.
+\section*{Acknowledgments}
 
-\subsection*{Ethics statement}
+This anonymous placeholder contains no acknowledgments for submission. Replace this paragraph or remove the section for the initial blind review version if needed.
 
-(This section is \textbf{recommended} and does not count toward the page limit.)
-
-If authors feel that their paper submission raises questions regarding the Code
-of Ethics, they are encouraged to include a paragraph of Ethics Statement (at
-the end of the main text before references) to address potential concerns where
-appropriate. Topics include, but are not limited to, studies that involve human
-subjects, practices to data set releases, potentially harmful insights,
-methodologies and applications, potential conflicts of interest and sponsorship,
-discrimination/bias/fairness concerns, privacy and security issues, legal
-compliance, and research integrity issues (e.g., IRB, documentation, research
-ethics). This statement should not be more than 1 page.
-
-\subsection*{Reproducibility statement}
-
-(This section is \textbf{recommended} and does not count toward the page limit.)
-
-It is important that the work published in ICLR is reproducible. Authors are
-strongly encouraged to include a paragraph-long Reproducibility Statement at the
-end of the main text (before references) to discuss the efforts that have been
-made to ensure reproducibility. This paragraph should not itself describe
-details needed for reproducing the results, but rather reference the parts of
-the main paper, appendix, and supplemental materials that will help with
-reproducibility. For example, for novel models or algorithms, a link to an
-anonymous downloadable source code can be submitted as supplementary materials;
-for theoretical results, clear explanations of any assumptions and a complete
-proof of the claims can be included in the appendix; for any datasets used in
-the experiments, a complete description of the data processing steps can be
-provided in the supplementary materials. Each of the above are examples of
-things that can be referenced in the reproducibility statement.
-
-\subsubsection*{Author Contributions}
-If you'd like to, you may include  a section for author contributions as is done
-in many journals. This is optional and at the discretion of the authors.
-
-\subsubsection*{Acknowledgments}
-Use unnumbered third level headings for the acknowledgments. All
-acknowledgments, including those to funding agencies, go at the end of the paper.
-
-
-\bibliography{iclr2027_conference}
-\bibliographystyle{iclr2027_conference}
+% Citations are currently written as literal author-year text so this draft can
+% compile without BibTeX. Restore these commands when citation keys are finalized.
+% \bibliography{iclr2027_conference}
+% \bibliographystyle{iclr2027_conference}
 
 \appendix
-\section{Appendix}
-You may include other additional sections here.
 
+\section{Extended Related Work}
+\label{app:related}
+
+\subsection{Additional adaptation literature}
+
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. This appendix slot is for adjacent methods that matter but would slow the main narrative.
+
+\subsection{Additional benchmarking literature}
+
+Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. This paragraph can become a longer comparison of benchmarks, threat models, and evaluation protocols.
+
+\subsection{Additional generation or exploration literature}
+
+Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus; vivamus elementum semper nisi. Aenean vulputate eleifend tellus. This paragraph can become a longer bridge to diffusion models, search procedures, exploration policies, or sample generators.
+
+\section{Additional Method Details}
+\label{app:method-details}
+
+\subsection{Derivation of the placeholder objective}
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Let $\theta^{\star}$ denote the best adapted parameter under the placeholder score:
+\begin{equation}
+    \theta^{\star}
+    =
+    \argmin_{\theta'}
+    \left[
+    \mathcal{L}(\theta')
+    +
+    \eta
+    \left\|
+    \nabla_{\theta'} \mathcal{L}(\theta')
+    \right\|_{2}^{2}
+    \right].
+    \label{eq:appendix-objective}
+\end{equation}
+Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium. Replace this derivation with the real loss, estimator, theorem, or convergence argument.
+
+\subsection{Placeholder proposition}
+
+\newtheorem{proposition}{Proposition}
+\begin{proposition}[Placeholder stability]
+Assume the score in Eq.~\ref{eq:score} is $L$-Lipschitz in $\theta'$ and that the adaptation operator in Eq.~\ref{eq:adaptation} changes by at most $\epsilon$ under a single-regime perturbation. Then the reported score changes by at most $L\epsilon$.
+\end{proposition}
+
+\paragraph{Proof sketch.}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. By the Lipschitz assumption,
+\begin{equation}
+    \left|S(\theta'_{a},\mathcal{D}_{2}) - S(\theta'_{b},\mathcal{D}_{2})\right|
+    \leq
+    L\left\|\theta'_{a}-\theta'_{b}\right\|_{2}
+    \leq
+    L\epsilon.
+\end{equation}
+Quisque rutrum aenean imperdiet. Etiam ultricies nisi vel augue. Replace this proof sketch with the real theorem or delete it if the paper is purely empirical.
+
+\subsection{Implementation notes}
+
+Suspendisse potenti. Sed lectus. Integer euismod lacus luctus magna. Quisque cursus, metus vitae pharetra auctor, sem massa mattis sem, at interdum magna augue eget diam. Use this subsection for architecture details, preprocessing choices, batching, optimizer settings, and implementation deviations from prior work.
+
+\section{Additional Experimental Results}
+\label{app:additional-results}
+
+\subsection{Full metric matrix}
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus viverra nulla ut metus varius laoreet. Table~\ref{tab:full-matrix} is a fake expanded result table for all regimes and metrics.
+
+\begin{table}[h]
+\caption{Placeholder full metric matrix}
+\label{tab:full-matrix}
+\begin{center}
+\begin{tabular}{lcccccc}
+\hline
+\textbf{Method} & \textbf{U1} & \textbf{U2} & \textbf{R1} & \textbf{R2} & \textbf{C1} & \textbf{C2} \\
+\hline
+Baseline A & 71.2 & 68.9 & 22.4 & 19.5 & 1.00 & 0.82 \\
+Baseline B & 73.5 & 69.4 & 20.1 & 18.7 & 1.18 & 0.79 \\
+\methodname & 78.9 & 75.6 & 16.3 & 14.2 & 1.09 & 0.76 \\
+Oracle & 82.0 & 78.2 & 12.0 & 10.5 & 2.40 & 0.64 \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\subsection{Additional curves}
+
+Morbi nec metus. Phasellus blandit leo ut odio. Maecenas ullamcorper, dui et placerat feugiat, eros pede varius nisi, condimentum viverra felis nunc et lorem. Figure~\ref{fig:appendix-curves} is reserved for secondary sweeps or per-domain curves.
+
+\begin{figure}[h]
+\placeholderfigure{1.75in}{Appendix curves}
+\caption{Placeholder appendix curves. Replace with per-domain plots, seed-level traces, or confidence intervals.}
+\label{fig:appendix-curves}
+\end{figure}
+
+\subsection{Qualitative examples}
+
+Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. This subsection can hold generated samples, rollouts, extracted examples, failure cases, or visual inspection panels.
+
+\begin{figure}[h]
+\placeholderfigure{1.85in}{Qualitative examples}
+\caption{Placeholder qualitative examples. Replace with representative successes and failures, not only favorable cases.}
+\label{fig:qualitative}
+\end{figure}
+
+\section{Experimental Details}
+\label{app:experimental-details}
+
+\subsection{Datasets, domains, and splits}
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ullamcorper mauris at ligula. Fusce fermentum odio nec arcu. Table~\ref{tab:hyperparameters} is a placeholder for reproducibility-critical settings.
+
+\begin{table}[h]
+\caption{Placeholder hyperparameters}
+\label{tab:hyperparameters}
+\begin{center}
+\begin{tabular}{ll}
+\hline
+\textbf{Setting} & \textbf{Value} \\
+\hline
+Batch size & 128 \\
+Learning rate & $3 \times 10^{-4}$ \\
+Training steps & 100,000 \\
+Evaluation seeds & 10 \\
+Selection metric & Validation score \\
+Hardware & Placeholder accelerator \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\subsection{Baselines and implementations}
+
+Pellentesque auctor neque nec urna. Proin sapien ipsum, porta a, auctor quis, euismod ut, mi. Aenean viverra rhoncus pede. Replace this with exact baseline names, official repositories, commit hashes, and any local modifications.
+
+\subsection{Compute resources}
+
+Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Replace this with accelerator type, wall-clock cost, memory footprint, and total experiment budget.
+
+\section{Limitations, Broader Impact, and LLM Use}
+\label{app:limitations}
+
+\subsection{Limitations}
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse enim turpis, dictum sed, iaculis a, condimentum nec, nisi. Praesent nec nisl a purus blandit viverra. Replace this with the strongest known caveats, including assumptions that future reviewers are likely to probe.
+
+\subsection{Broader impact}
+
+Nullam vel sem. Nam ipsum risus, rutrum vitae, vestibulum eu, molestie vel, lacus. Sed magna purus, fermentum eu, tincidunt eu, varius ut, felis. Replace this with a domain-specific risk and benefit analysis.
+
+\subsection{Use of large language models}
+
+In the preparation of this placeholder manuscript, language models may be used for drafting filler, refactoring prose, and checking consistency. Replace this statement with the final, accurate disclosure for the submitted paper.
 
 \end{document}

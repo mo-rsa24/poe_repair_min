@@ -111,6 +111,23 @@ def cell_dir(pair_slug: str, seed: int, *, root: Path = CACHE_ROOT) -> Path:
     )
 
 
+def any_cell_dir(pair_slug: str, *, root: Path = CACHE_ROOT) -> Path:
+    """Any cached cell of this pair, for facts that belong to the pair rather
+    than to one run: the prompts, the slug, the image size. Callers that need
+    the cached TENSORS must use cell_dir and name their seed."""
+    for split in ("train", "heldout"):
+        d = root / split / pair_slug
+        if d.is_dir():
+            seeds = sorted(d.glob("seed_*"),
+                           key=lambda p: int(p.name.split("_")[1]))
+            for s in seeds:
+                if (s / "meta.json").exists():
+                    return s
+    raise FileNotFoundError(
+        f"no cached cell for pair={pair_slug!r} at any seed under {root}"
+    )
+
+
 def load_cell(
     pair_slug: str, seed: int, *, root: Path = CACHE_ROOT, max_steps: int | None = None,
 ) -> Cell:

@@ -1,0 +1,48 @@
+{
+  "pairs": [
+    "a_leopard__x__a_jaguar",
+    "a_frog__x__a_toad",
+    "an_eagle__x__a_hawk",
+    "a_seal__x__a_walrus",
+    "a_goose__x__a_swan",
+    "a_cow__x__a_buffalo",
+    "a_cat__x__a_dog",
+    "an_elephant__x__a_penguin"
+  ],
+  "seeds": [
+    9,
+    10,
+    11,
+    12,
+    13
+  ],
+  "n_runs": 40,
+  "rows": [
+    {
+      "condition": "same noise, same prompt",
+      "first3": 0.996,
+      "late": 0.427,
+      "n": "1 rerun"
+    },
+    {
+      "condition": "different noise, same prompt",
+      "first3": 0.3210584819316864,
+      "late": 0.0030864847358316183,
+      "n": "80 pairs of runs"
+    },
+    {
+      "condition": "same noise, different prompt",
+      "first3": 0.30207301676273346,
+      "late": 0.0057565036695450544,
+      "n": "140 pairs of runs"
+    },
+    {
+      "condition": "different noise, different prompt",
+      "first3": 0.21523236483335495,
+      "late": 0.0012330622412264347,
+      "n": "560 pairs of runs"
+    }
+  ],
+  "ceiling_note": "the first row is one rerun of a single cell from its own starting noise; it falls short of 1.0 because fp16 nondeterminism compounds through the sampler",
+  "caption_cap": "same-seed cells share identical starting noise only at step 0; their trajectories separate as the prompts differ, so the 'same noise' rows stop being same-state after the first steps. That is why the early and late columns are reported separately and the claim is made on the early one."
+}

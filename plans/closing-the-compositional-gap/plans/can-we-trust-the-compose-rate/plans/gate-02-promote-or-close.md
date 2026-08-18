@@ -1,5 +1,12 @@
 # ⚖️ Promote this, or close it
 
+**No step number: nothing in the paper order waits on this.** This scope runs in its own internal order, and earns numbered steps only on the big-promotion condition its own `MASTER_PLAN.md` sets. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../../../MASTER_PLAN.md).
+
+| Within this scope | Plan | Status |
+|---|---|---|
+| 3 of 4 | [idea-01-what-the-current-benchmarks-score](idea-01-what-the-current-benchmarks-score.md) | ⚠️ blocked by gate-01 |
+| **4 of 4** | **this plan** | **⚠️ blocked by the other three** |
+
 Design only. The decision lives in [../review/gate-02-promote-or-close.md](../review/gate-02-promote-or-close.md).
 
 ## What this asks, in one line

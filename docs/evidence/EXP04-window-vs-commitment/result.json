@@ -1,0 +1,164 @@
+{
+  "pairs": [
+    "a_frog__x__a_toad",
+    "a_seal__x__a_walrus",
+    "an_eagle__x__a_hawk",
+    "a_goose__x__a_swan",
+    "a_leopard__x__a_jaguar",
+    "a_cow__x__a_buffalo",
+    "an_elephant__x__a_penguin",
+    "a_cat__x__a_dog"
+  ],
+  "window_centres": [
+    5.0,
+    10.0,
+    15.0,
+    20.0,
+    25.0,
+    30.0,
+    35.0,
+    40.0,
+    45.0
+  ],
+  "compose_rate_by_pair": {
+    "a_frog__x__a_toad": [
+      0.25,
+      0.0,
+      0.25,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.25,
+      0.25
+    ],
+    "a_seal__x__a_walrus": [
+      1.0,
+      0.5,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "an_eagle__x__a_hawk": [
+      0.5,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "a_goose__x__a_swan": [
+      0.75,
+      0.25,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "a_leopard__x__a_jaguar": [
+      0.25,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "a_cow__x__a_buffalo": [
+      1.0,
+      0.25,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "an_elephant__x__a_penguin": [
+      0.75,
+      0.25,
+      0.25,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "a_cat__x__a_dog": [
+      0.75,
+      0.75,
+      0.25,
+      0.25,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "commitment_step": {
+    "a_frog__x__a_toad": 23.0,
+    "a_seal__x__a_walrus": 23.0,
+    "an_eagle__x__a_hawk": 23.0,
+    "a_goose__x__a_swan": 25.0,
+    "a_leopard__x__a_jaguar": 26.0,
+    "a_cow__x__a_buffalo": 27.0,
+    "an_elephant__x__a_penguin": 33.0,
+    "a_cat__x__a_dog": 36.0
+  },
+  "best_window_centre": {
+    "a_frog__x__a_toad": 5.0,
+    "a_seal__x__a_walrus": 5.0,
+    "an_eagle__x__a_hawk": 5.0,
+    "a_goose__x__a_swan": 5.0,
+    "a_leopard__x__a_jaguar": 5.0,
+    "a_cow__x__a_buffalo": 5.0,
+    "an_elephant__x__a_penguin": 5.0,
+    "a_cat__x__a_dog": 5.0
+  },
+  "compose_weighted_centroid": {
+    "a_frog__x__a_toad": 26.25,
+    "a_seal__x__a_walrus": 6.666666666666667,
+    "an_eagle__x__a_hawk": 5.0,
+    "a_goose__x__a_swan": 6.25,
+    "a_leopard__x__a_jaguar": 5.0,
+    "a_cow__x__a_buffalo": 6.0,
+    "an_elephant__x__a_penguin": 8.0,
+    "a_cat__x__a_dog": 10.0
+  },
+  "latest_window_still_working": {
+    "a_frog__x__a_toad": 45.0,
+    "a_seal__x__a_walrus": 10.0,
+    "an_eagle__x__a_hawk": 5.0,
+    "a_goose__x__a_swan": 10.0,
+    "a_leopard__x__a_jaguar": 5.0,
+    "a_cow__x__a_buffalo": 10.0,
+    "an_elephant__x__a_penguin": 15.0,
+    "a_cat__x__a_dog": 20.0
+  },
+  "span_of_best_centres": 0.0,
+  "rho_best": NaN,
+  "rho_centroid": 0.15953622544399018,
+  "rho_last_alive": 0.26415616784897955,
+  "bars": {
+    "min_span_steps": 5,
+    "min_rho": 0.5,
+    "null_span_steps": 2
+  },
+  "verdict": "DOES NOT MOVE",
+  "seeds_per_cell": 4
+}

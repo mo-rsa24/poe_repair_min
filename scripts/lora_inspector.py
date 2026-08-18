@@ -22,6 +22,7 @@ from pathlib import Path
 from flask import Flask, abort, jsonify, render_template_string, request, send_file
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from cross_tab import CROSS_INDEX_HTML  # noqa: E402
 from window_tab import WINDOW_INDEX_HTML  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -30,9 +31,13 @@ DEFAULT_CW_MANIFEST = REPO_ROOT / "outputs/conditioning_window/a_cat__x__a_dog/s
 DEFAULT_CWL_WP_MANIFEST = REPO_ROOT / "outputs/conditioning_window_lora/a_cat__x__a_dog/seed_42/with_prompt/results/inspector_manifest.json"
 DEFAULT_CWL_ALWAYS_MANIFEST = REPO_ROOT / "outputs/conditioning_window_lora/a_cat__x__a_dog/seed_42/always/results/inspector_manifest.json"
 DEFAULT_OUTPUTS_ROOT = REPO_ROOT / "outputs"
-# The correction-timing sweep writes to /datasets, not into the repo.
-DEFAULT_IW_ROOT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/window")
-DEFAULT_IW_MANIFEST = DEFAULT_IW_ROOT / "window_inspector_manifest.json"
+# The timing sweeps write to /datasets, not into the repo. The image route is
+# rooted at the whole interaction_term tree so one route serves the window
+# sweep, the crossed grid and the expert frames.
+DEFAULT_IT_ROOT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term")
+DEFAULT_IW_ROOT = DEFAULT_IT_ROOT
+DEFAULT_IW_MANIFEST = DEFAULT_IT_ROOT / "window/window_inspector_manifest.json"
+DEFAULT_CROSS_MANIFEST = DEFAULT_IT_ROOT / "cross/cross_manifest.json"
 
 
 _TAB_HEADER = r"""
@@ -98,6 +103,10 @@ _TAB_HEADER = r"""
   <a href="/interaction_window" class="{{ 'active' if active == 'iw' else '' }}">
     <span class="tab-title">Correction timing</span>
     <span class="tab-role">when &middot; sliding window</span>
+  </a>
+  <a href="/interaction_cross" class="{{ 'active' if active == 'ix' else '' }}">
+    <span class="tab-title">Prompt &times; correction</span>
+    <span class="tab-role">crossed &middot; step by step</span>
   </a>
   <span class="spacer"></span>
   {% if pair_options and pair_options|length > 1 %}
@@ -2014,14 +2023,18 @@ def create_app(
     cwl_always_manifest_path: Path | None = None,
     iw_manifest_path: Path | None = None,
     iw_root: Path = DEFAULT_IW_ROOT,
+    ix_manifest_path: Path | None = None,
 ) -> Flask:
     manifest = json.loads(manifest_path.read_text())
     outputs_root_abs = outputs_root.resolve()
 
-    # The timing tab renders with an empty manifest too, saying what to run.
+    # Both timing tabs render with an empty manifest too, saying what to run.
     iw_manifest: dict = {}
     if iw_manifest_path is not None and Path(iw_manifest_path).is_file():
         iw_manifest = json.loads(Path(iw_manifest_path).read_text())
+    ix_manifest: dict = {}
+    if ix_manifest_path is not None and Path(ix_manifest_path).is_file():
+        ix_manifest = json.loads(Path(ix_manifest_path).read_text())
 
     cw_manifest: dict | None = None
     if cw_manifest_path is not None and Path(cw_manifest_path).is_file():
@@ -2222,6 +2235,27 @@ def create_app(
             manifest_json=json.dumps(m),
         )
 
+    @app.route("/interaction_cross")
+    def interaction_cross():
+        m = ix_manifest or {}
+        return render_template_string(
+            _with_tabs(CROSS_INDEX_HTML),
+            **_tab_ctx("ix", _selected_pair()),
+            num_steps=m.get("num_steps", 50),
+            fork_step=m.get("fork_step", "—"),
+            width=m.get("width", "—"),
+            n_on_disk=m.get("n_cells_on_disk", 0),
+            n_planned=m.get("n_cells_planned", 0),
+            n_frames=m.get("n_cells_with_frames", 0),
+            manifest_json=json.dumps(m),
+        )
+
+    @app.route("/interaction_cross/manifest.json")
+    def interaction_cross_manifest():
+        if not ix_manifest:
+            abort(404)
+        return jsonify(ix_manifest)
+
     @app.route("/interaction_window/manifest.json")
     def interaction_window_manifest():
         if not iw_manifest:
@@ -2291,7 +2325,12 @@ def main() -> int:
     )
     ap.add_argument("--window-root", default=str(DEFAULT_IW_ROOT),
                     help="only images under this directory are served to the "
-                         "timing tab")
+                         "timing tabs")
+    ap.add_argument(
+        "--cross-manifest", default=str(DEFAULT_CROSS_MANIFEST),
+        help="crossed-grid manifest (scripts/build_cross_manifest.py). If "
+             "missing, /interaction_cross renders the commands that make it.",
+    )
     ap.add_argument("--outputs-root", default=str(DEFAULT_OUTPUTS_ROOT))
     ap.add_argument("--host", default="127.0.0.1")
     ap.add_argument("--port", type=int, default=5050)
@@ -2330,6 +2369,8 @@ def main() -> int:
         cwl_always_manifest_path=cwl_al_path,
         iw_manifest_path=iw_path,
         iw_root=Path(args.window_root),
+        ix_manifest_path=(Path(args.cross_manifest)
+                          if args.cross_manifest else None),
     )
     app.run(host=args.host, port=args.port, debug=args.debug)
     return 0

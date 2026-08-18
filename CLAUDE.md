@@ -11,15 +11,21 @@ This pointer is the opt-in. `populate-plans` emits review files for this repo's 
 
 ## How the research gets done
 
-[docs/RESEARCH_GUIDELINES.md](docs/RESEARCH_GUIDELINES.md) is the practice: write the results
-section before running the experiments, name a run's cost and what it buys before it starts, look
-at the data before designing on top of it, which visual skill to pick by what you are pointing at,
+Read `~/.claude/RESEARCH_PRACTICE.md` before designing, running, or writing up anything. It is
+the practice, shared across projects: write the results section before running the experiments,
+name a run's cost and what it buys before it starts, look at the data before designing on top of
+it, which visual skill to pick by what you are pointing at, the seven kinds of result and what
+each may do to the paper, the six-step diagnosis procedure when a result contradicts the premise,
 attack the work before a reviewer does, and kill work that is bleeding rather than only work that
-failed. It names the skill to reach for at each moment.
+failed. This pointer is the opt-in, same as the conventions pointer above.
 
-The mechanics are elsewhere and not repeated there: `~/.claude/EXPERIMENT_CONVENTIONS.md` for what
-a run may change, and `~/.claude/skills/WORKFLOWS.md` for the eighteen end-to-end skill chains
-with their handoff files marked.
+[docs/RESEARCH_GUIDELINES.md](docs/RESEARCH_GUIDELINES.md) is the local half: where each of those
+rules lands in this repo (paths, commands, the canary), and the specific mistakes this project has
+already made. It does not repeat the practice.
+
+The mechanics are elsewhere and not repeated in either: `~/.claude/EXPERIMENT_CONVENTIONS.md` for
+what a run may change, and `~/.claude/skills/WORKFLOWS.md` for the eighteen end-to-end skill
+chains with their handoff files marked.
 
 ## The environment
 

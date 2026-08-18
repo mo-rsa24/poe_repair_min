@@ -1,78 +1,371 @@
 # 🖼️ The seven figures the paper needs
 
+**Step 13 of 22.** Waits on steps 6, 7 and 8. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../../../MASTER_PLAN.md).
+
+| Step | Plan | Status |
+|---|---|---|
+| 12 | [baseline-01-the-size-matched-control-pool](../../does-the-fix-reach-unseen-pairs/plans/baseline-01-the-size-matched-control-pool.md) | ⚠️ |
+| **13** | **this plan** | **◑ F6 needs a decision** |
+| 14 | [figure-01-the-transfer-figures](../../does-the-fix-reach-unseen-pairs/plans/figure-01-the-transfer-figures.md) | ◑ F8 waits on the sweep |
+
 ## What this asks, in one line
-Seven figures, in the order a reader meets them, each making one claim with one
-control beside it. Decide the shape of each before drawing it, then draw it from
-real grids rather than from an impression of what the result looked like.
+Design and build the seven main-paper figures, in the order a reader meets them,
+each making one claim with its control visible in the figure, each drawn from real
+scored runs rather than from a memory of how the result looked.
+
+## Read this first
+[docs/figures/what-each-figure-argues.md](../../../../../docs/figures/what-each-figure-argues.md)
+says what each figure is for: the question it answers, what would change if the
+answer came out the other way, what is plotted on which axes, what the caption may
+not claim, and a paste-ready prompt for going deeper on the maths behind it. Read
+it to completion before designing or building anything below. Every task line here
+assumes you have.
 
 ## Description
-One `/design-figure` pass per figure, then the build via `/evidence-ladder`. The
-figures, in story order: the two meanings of "and"; the correction's size against
-noise level; the correction dosed; the correction timed; three spaces one dial;
-why it is learnable; the learned version.
+Two passes per figure. `/design-figure` decides the layout on paper, then
+`/evidence-ladder` builds the file from the real grids.
+
+| Slot | What it argues | State |
+|---|---|---|
+| F1 | the failure is specific: PoE paints one fused animal, not two | built |
+| F2 | the correction is what was missing: more of it composes more, three matched fakes (other pair, other seed, steps shuffled) do not | built |
+| F3 | the correction's size is set by the noise level, not by which animals | built |
+| F4a | the correction only works if it arrives in the first few steps | built |
+| F4b | where the correction is large is not where it matters | built |
+| F4c | the timing cliff shows up in an instrument that does not count animals | built |
+| F4d, F4e | timing decides rather than dose, and the cliff survives dose-matching | built |
+| F5 | the same λ dial moves three independent measurements together | built |
+| F5b | the meaning is steered from the first steps, the fork is its midpoint | built |
+| F6 | the correction is low-rank, so a small adapter can learn it | the argument does not stand, slot needs a decision |
+| F7 | the trained adapter changes what a word paints, not where it looks | design committed; band two waits on one rescore |
+| F7a | its mechanism panel, on eight pairs the adapter never trained on | built |
+| D1 | within one run the correction turns smoothly (appendix) | built |
+| D2 | a correction cannot be stored and reused, even for its own pair: it must be computed from the current image (mechanism companion, F6/F7 neighbourhood) | built |
+| D3 | different pairs' corrections share no direction at any step (appendix) | built |
+| D4 | the right correction buys composition on the very runs D1-D3 show failing (appendix, paired with D2) | built |
 
 ## Purpose
-The paper's evidence set, each figure carrying one claim with one control.
+The paper's evidence set: one claim per figure, each with its control visible.
 Serves DoD 10.
 
 ## Goal
-Seven design specs committed and seven built figures, each pairing a
-qualitative view with its number.
+Seven design specs committed and seven figures built. A figure carries a number
+only where the number is the argument. Where the figure's job is to make the reader
+understand something, the number lives in the results section and the caption
+points at it.
 
 ## Environment Facts This Plan Depends On
-- Consumes outputs of plans 02-08; builds run in-session.
-- The two purely illustrative figures (the three-regime diagram; the method
-  schematic) have ready-to-paste ChatGPT image prompts from the
-  hypothesis-to-scope pass; all other figures must come from real grids.
+- Consumes the outputs of plans 02 to 08. All builds run in-session, no queue.
+- Two figures elsewhere in the paper are purely illustrative (the three-regime
+  diagram and the method schematic) and have ready-to-paste image prompts from the
+  hypothesis-to-scope pass. Every figure in this plan comes from real grids.
 
 ## Tasks
-- [ ] /design-figure: the two meanings of "and" (three-panel density
-      diagram over real λ=0 exemplars; ChatGPT prompt exists)
-- [ ] /design-figure: the gap seen (y normalized ‖r_t‖, x log-SNR, thin
-      line per pair, one bold mean)
-- [ ] /design-figure: the cure dosed (image strip above the curve, shared
-      λ axis, controls gray below)
-- [ ] /design-figure: the cure timed (W1+W2 curves, fork elbow as a
-      vertical band)
-- [ ] /design-figure: three spaces one dial (manifold walk, caption
-      crossover, density climb; shared λ colorbar)
-- [ ] /design-figure: why it is learnable (spectrum with Gaussian floor
-      shaded, held-out projection inset)
-- [ ] /design-figure: the learned version (mechanism panel beside the
-      transfer table and replication strip; method-schematic ChatGPT prompt
-      exists)
-- [ ] /evidence-ladder build of the approved specs
-- [ ] run the two paper-illustration prompts (three-regime diagram, method
-      schematic) through ChatGPT and drop the images in
-      plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/assets/  [owner: human]
+
+- [x] F1, the two readings of "a cat and a dog": design and build.
+      `python scripts/make_f1.py` → `paper/iclr/figures/F1-two-meanings.pdf`.
+- [x] F2, more correction more composition: built as a 4x5 grid above four
+      curves. Rows: own r_t, other pair's r_t, other seed's r_t (the same
+      pair's correction cached from the run at seed+4), own r_t with the step
+      order deranged. The norm-matched random vector is not a row; its number
+      (AUC 0.023, flat) is owed to the appendix. All controls at the floor:
+      AUC 0.387 against 0.039 / 0.047 / 0.027, oracle 3% to 94%.
+      `python scripts/make_f2.py` → `paper/iclr/figures/F2-dose-response.pdf`.
+- [x] The two new control rows exist end to end: `--row wrong_seed` and
+      `--row wrong_step` in `scripts/interaction_term_inject.py` (donor rule
+      `donor_seed_for` in `poe_repair/experiments/interaction_term/wrong_pair.py`,
+      fixed derangement `WRONG_STEP_PERM_SEED = 0`), generated by
+      `scripts/mechanism_study/run_dose_sweep_controls2.sh` (256 cells), scored
+      by `scripts/plot_dose_curves.py`, which reads five rows and keeps the
+      causal verdict on random + wrong_pair only. Readings were declared in the
+      sweep script's header before it ran, and both came out: other seed at the
+      floor (the correction is state-specific, so it must be computed per run,
+      not stored), steps shuffled at the floor (the content must arrive on
+      time, corroborating F4 from the injection side).
+- [x] `/design-figure` F3: designed, then simplified in a reader pass to one
+      panel with one thing to look at. ‖r_t‖ relative to the prediction it
+      corrects, each curve scaled to its own median, against the denoising step
+      0 to 49 with "noise" and "image" labelled at the ends. The 17 pool pairs
+      as a median line plus a middle-half and a tenth-to-ninetieth band, legend
+      of three short words, y-axis "relative correction size" with the full
+      definition in the caption. No frames and no named pairs: the reader looks
+      at the band, the caption draws the conclusion. Spread numbers to the
+      appendix table.
+- [x] `scripts/snr_collapse.py` takes `--x-axis {log-snr,step}` and writes every
+      curve, not just the median and the band. The step branch stacks the cells
+      directly with no interpolation and refuses to run if they disagree on step
+      count, and it writes `step_collapse.json` beside the log-SNR file rather
+      than over it.
+- [x] F3 built: `python scripts/make_f3.py` writes
+      `paper/iclr/figures/F3-size-follows-noise.pdf` and a sidecar `.json`
+      recording what was drawn. The fan at the noisy end survives the step axis
+      and the figure shows it: spread is 30.0% over steps 0 to 24 against 15.6%
+      over steps 25 to 49, and 65.1% at step 0 against 13.1% at step 49, so the
+      caption may not say the collapse holds uniformly. The divergence is drawn
+      as the bands at their widest on the left.
+- [ ] Rewrite the F3 section of
+      [docs/figures/what-each-figure-argues.md](../../../../../docs/figures/what-each-figure-argues.md)
+      to the built minimal layout. It still describes decoded frames along the
+      top and two named pairs in colour, neither of which the figure carries
+      any more, so the doc and the file disagree until this is done.
+- [x] F4 designed and built, as two figures rather than one.
+      `python scripts/make_f4_grid.py` → `F4a-when-it-arrives.pdf` is every cat ×
+      dog cell in the window grid, 9 windows across and 4 seeds down, all 36 real
+      images. `python scripts/make_f4_curves.py` → `F4b-size-is-not-timing.pdf`
+      puts correction size and compose rate on one step axis.
+
+      Step 16 is not drawn as a band behind the timing curve, though the original
+      layout said it should be. The window sweep and the fork step disagree, and
+      the review records why: the fork step is where the two paths visibly
+      separate, which comes after the correction has done its work, so the two
+      were never measuring the same moment. The caption may not mention the
+      prompt-window comparison, which was designed and deliberately not run.
+- [x] The D-series, four cache-measured companions of the main chain, built and
+      registered with caption caps. All share one template: x is the denoising
+      step, y is direction agreement (cosine) between two correction vectors,
+      thumbnails float in empty axis space with coloured borders and their
+      height carries no data. D1, within one run the correction turns smoothly
+      (eagle × hawk seed 9 at +0.967; the caption must say smoothness varies by
+      pair, cat × dog alternates at −0.32). D2, the same pair rerun from new
+      noise needs a correction sharing no direction with the first run (cosine
+      +0.002), so a correction must be computed, not stored; the frames show the
+      two runs fusing toward different single animals. D3, different pairs share
+      nothing either (+0.007), with the one visible exception owned in the
+      caption: a near-universal shared push over steps 0 to 2 that dies by step
+      5. D4, the same three runs with the correction off beside on: every run
+      separates, each into a different scene; corrected seed 13 reads as a tan
+      dog and a white puppy, so its caption may claim separation, not "a cat
+      and a dog". Built by `scripts/rt_reuse_figure.py`,
+      `scripts/rt_direction_companions.py`, `scripts/rt_correction_payoff.py`.
+- [x] The measurements behind the D-series, saved for reuse:
+      `outputs/interaction_term/direction_wall/direction_wall.json` (per-pair
+      direction agreement in three groups) and `early_agreement.json` (the
+      early-step sharing: over steps 0 to 2, +0.34 median within pair across
+      seeds against +0.28 across pairs, so the early component is close to
+      universal, not pair-specific).
+- [x] D1 given its control and its counterexample, so the claim is falsifiable
+      on the page rather than in prose. D1b is cat × dog seed 9, whose
+      consecutive-step agreement swings from −0.85 to +0.9 (median −0.317,
+      −0.581 over steps 16 to 32) while its own correction still composes at
+      full dose in F2: temporal smoothness is not a precondition for the
+      injected correction to work. D1c runs the same computation on random
+      norm-matched vectors and lands flat on zero (median +0.0006), which is
+      what would falsify D1 wholesale; 14 of the 16 measured runs sit at +0.8
+      to +0.97 instead. Both from `scripts/rt_direction_companions.py`.
+- [x] D2 given its graded control, its counter-example hunt, and its floor.
+      D2b (`scripts/rt_noise_interpolation.py` then `scripts/make_d2b.py`)
+      walks the scale D2 only sampled at one end: move the starting noise a
+      fraction of the way toward another run's and measure how much of the
+      correction survives. The first three steps decay gently (+0.996 at zero
+      distance, +0.951 a tenth of the way, +0.769 a fifth) and level off near
+      +0.35; steps 10 to 49 are gone by a tenth of the way. Read with F4, the
+      part of the correction that composes is the part that behaves like a
+      smooth function of the state. The zero-distance point is +0.996 early
+      and +0.427 late rather than 1.0 because fp16 nondeterminism compounds
+      through the sampler; the drift was measured rather than assumed, 0.24%
+      at step 10, 0.93% at step 20, 17.1% at step 49, and it is the ceiling
+      every other point is read against.
+- [x] The counter-example hunt for D2, exhaustive and cache-only
+      (`scripts/rt_shared_component.py`): all 136 pairs of cat × dog's 17
+      cached runs, median +0.0029, and the most-agreeing pair of runs in the
+      whole set reaches only +0.0173. No two runs of the same pair agree, so
+      D2's zero is a property of the population rather than of the two runs it
+      happens to draw. The same script measures what the other runs CAN
+      explain: 19.6% of a run's correction energy over steps 0 to 2, 0.57%
+      over steps 3 to 9, 0.01% after step 20, against a 0.00% random floor. A
+      shared component exists and it lives in the first few steps, which is
+      also the window F4 measured as the only one that composes.
+- [x] D3b, the controlled version of D2 and D3 together
+      (`scripts/make_d3b.py`). D2 changes the starting noise, D3 changes the
+      pair, and neither holds one fixed while moving the other, so neither
+      says which the correction is a function of. Cells with the same seed
+      start from identical noise whatever the pair (cosine +1.0000), so all
+      four combinations are already cached. Early (first 3 steps) / late
+      (steps 10 to 49): same noise and prompt +0.996 / +0.427 (one rerun, the
+      ceiling), different noise same prompt +0.321 / +0.003, same noise
+      different prompt +0.302 / +0.006, both different +0.215 / +0.001.
+      Changing either factor costs about the same, and +0.215 survives
+      changing both, which is the universal early component measured a second
+      way.
+- [x] Does the shared early component compose on its own? No, and the null is
+      worth keeping. `scripts/mechanism_study/run_dose_sweep_mean_others.sh`
+      injected the mean r_t of each pair's other cached runs (norm-matched,
+      leave-one-out, 128 cells) and scored 3% / 3% / 6% / 9% / 6% across
+      λ = 0 to 1, AUC 0.059, against the oracle's 0.387 and a control band of
+      0.023 to 0.047. It is the highest control, and the margin is not real:
+      its peak is 3 cells of 32 against the wrong-seed row's 2 of 32. The
+      readings were declared in the script header before the run, and this is
+      the floor outcome: a shared component exists and is not sufficient, so
+      composition needs the state-specific part. This closes the cheapest
+      alternative to the method (ship one averaged correction, skip the
+      network) by measurement rather than by argument, and it is owed a
+      sentence in the results section beside F2's control numbers.
+- [ ] Does temporal smoothness predict where the trained adapter works? The
+      x-axis is already frozen on disk: per-pair consecutive-step agreement in
+      `outputs/interaction_term/direction_wall/direction_wall.json`, measured
+      before any adapter existed. When F8 reports per-pair compose rates, plot
+      one against the other. Adapter failing on the low-agreement pairs means
+      D1 becomes a predictor of where the method breaks and the paper gains a
+      measured limitation; the adapter succeeding on cat × dog means smoothness
+      is incidental and D1's caption may never say "smooth, hence learnable".
+- [ ] The early-agreement correlation, waiting on the window grid and F8's
+      per-pair transfer numbers: per pair, does agreement over the first steps
+      predict compose success under an early-window correction and under the
+      trained adapter? Supported means the paper gains a measured forecast of
+      where the fix works before generating anything; a null means early
+      sharing is universal noise and the hypothesis is dropped. The input table
+      is `early_agreement.json` above.
+- [ ] Two appendix figures that unfold F2's 32-cell average, one task each.
+      (a) Per-seed flip points: one image row per seed of cat × dog under the
+      real correction, a tick at the λ where that seed's picture separates, and
+      the distribution of flip-λ beneath; answers "is this just one seed?",
+      which a single seed cannot answer with a rate because it has only a flip
+      point. (b) Per-pair curve family: compose rate against λ, one curve per
+      pair with seeds averaged, cat × dog named in front, the rest as a band;
+      answers "is this just cat × dog?".
+- [ ] The overlap measurement, routed to `/frame-hypothesis` rather than a
+      figure slot (a half-right injection falsifies nothing, so it is not an F2
+      control): compose rate against how much the correction's source pair
+      overlaps the target pair, both animals shared, one shared (cat × jaguar),
+      none, plus a shared-word-but-dissimilar case (cat × penguin) to separate
+      word overlap from looking alike. Prior on file: r_t is near-orthogonal
+      across pairs and the wrong pair still travels 44% of the manifold walk.
+- [ ] Resolve the running-example mismatch: the F2 grid draws cat × dog seed 10
+      while this plan's running example is seed 9. Either rebuild the grid on
+      seed 9 (`python scripts/make_f2.py --seed 9`) and check the panels read
+      as well, or amend the running-example section to name the exception and
+      why (seed 10 composes from λ=0.5 with every control single-animal).
+- [x] F5 designed and built: `python scripts/make_f5.py` →
+      `paper/iclr/figures/F5-one-dial-three-instruments.pdf`. Three panels
+      from three measurements that already existed, each with its bars written
+      before its run. Where the picture sits (32 cells, 0.031 to 0.992 along
+      the cell's own PoE-to-Mono axis, controls flat), what it is called (32
+      cells, two-animal readback 3.1% to 81.2%, crossing the blend rate at
+      λ=0.75), and which way the correction pushes (38 cells, median +0.397
+      with none negative, against +0.114 wrong-step and +0.000 random).
+
+      The third panel does NOT share the λ axis, though the original design
+      said all three would. Its quantity is measured along the cached PoE path
+      and does not depend on λ, so drawing it against λ would imply a
+      relationship never measured. The caption carries three caps: the wrong
+      pair travels 44.0% of the right one's distance against a 50% bar; λ=1
+      reproduces the joint prediction by construction so every dose comparison
+      is read at λ=0.75; and panel (c) is the push at the states PoE visits,
+      not the climb along a corrected path.
+- [x] The register reconciled against the directory. F2b, F4c and F5b existed
+      as files with no row, which by the register's own rule made them
+      invisible, and all three now carry rows with their caption caps. F2b was
+      also stale: still drawn at three rows including random after F2 moved to
+      four, so it has been rebuilt and the two can no longer disagree about
+      which controls exist. F7's row now says plainly that F7a is its
+      mechanism panel and that its other two pieces wait on F8.
+- [x] `/pair-figure` on F6's spectrum answered: one row is the correction at one
+      denoising step of one cell (one pair, one seed), flattened over the
+      4x128x128 latent into 65536 numbers. Averaging a cell over its timesteps
+      is rejected. It is not what the adapter produces, since the LoRA is called
+      once per step; and the steps of one cell share no direction to average
+      over, cosine +0.81 between steps 1 apart but +0.012 between steps 20 to 49
+      apart, so the mean is set by whichever stretch carries the largest ‖r_t‖.
+      The energy agrees: at 11 pairs and 8 seeds keeping every 10th step, per
+      step is 22.6% at k=8 against a 2.1% Gaussian floor (10.7x), averaged is
+      39.1% against 9.8% (4.0x), higher and claiming less. Written into
+      hypothesis-04's review, which also carries an open item on how much of the
+      cache the quoted percentages should be measured on.
+- [ ] `/design-figure` F6, the correction is low-rank, so a small adapter can
+      learn it. How much of the correction's energy the first k directions
+      capture, against k, with the same measurement on random Gaussian vectors
+      shaded underneath as the floor to beat, and an inset showing how much of a
+      held-out pair's correction the directions fitted on the training pairs
+      explain.
+- [x] `/pair-figure` on F7's mechanism comparison answered: one point per pair,
+      median over that pair's 8 seeds, the seeds themselves shown as a pale
+      spread behind the diamond rather than averaged away. Rows inside a cell
+      (3 steps x 2 tokens) are the same image read differently and are not a
+      sampling unit; the 8 held-out pairs are. Written into hypothesis-01's
+      review file and already reflected in the built F7a
+      (`scripts/make_f7.py`, `figures/F7a-what-the-adapter-changes.pdf`).
+- [x] `/design-figure` F7 committed: three bands on one page sharing one pair
+      order, F7a's ascending-ratio order with cat × dog and elephant × penguin in
+      red. Band one is F7a unchanged. Band two is a table, one row per pair:
+      pair name, mechanism ratio (repeated from band one), compose rate, n seeds
+      scored, checkpoint step, with a rule separating the reference and control
+      pairs from the six transfer pairs. Band three is eight thumbnails in the
+      same pair order, one seed each (seed 9), corrected generation only, same
+      red border convention as F7a. The caption stays capped to what the adapter
+      does to any pair it touches, not why the fix works, since the control
+      pair's row and picture look the same in kind as the transfer pairs'.
+
+      Blocked on one rescore, not on F8. `hypothesis-01-does-one-pooled-fix-transfer-at-all`
+      already has compose-rate for these same eight pairs, but at checkpoint step
+      60000; F7a's mechanism probe used step 100000. Band two needs that same
+      checkpoint rescored for these eight pairs before it can sit beside F7a
+      without comparing two different adapters. That plan's own task list already
+      owes this ("score the checkpoints from step 70000 to 100000"), so it is a
+      narrow scoring pass, not a new run and not the fifteen-run leave-one-pair-out
+      sweep (F8, `hypothesis-02-transfer-as-a-rate-over-fifteen-pairs`).
+- [ ] `/evidence-ladder` build of the approved specs.
+- [ ] The λ=0 numbers, owed to the results section and not to any figure: the
+      compose rate over all 32 cells with nothing injected, and beside it the note
+      that the scorer's one positive (frog × toad, seed 10) is a detector mistake,
+      three boxes drawn on one fused body with a duplicated head and extra limbs.
+      The scorer's rule (count ≥ 2) does not change to remove it. F2's caption in
+      `paper/iclr/figures.md` quotes that 3% and needs the same note attached.
+- [ ] Run the two illustration prompts (three-regime diagram, method schematic)
+      through ChatGPT and drop the images in
+      `plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/assets/`  [owner: human]
+- [x] Add a row per built figure to `paper/iclr/figures.md`: F1 to F4b and D1
+      to D4 all carry rows with claim, file, source and caption caps; F5 to F8
+      hold reserved rows.
+- [x] `F4c-the-cliff-in-language` given its register row, so it is no longer
+      invisible by the register's own rule. The row carries its claim (the
+      timing cliff is visible to an instrument that does not count animals),
+      its source, and its caption cap: the margin is negative everywhere, so
+      only the fall corroborates the cliff, never the absolute score.
+
+## The running example
+
+Every figure that shows a picture shows cat × dog, seed 9. F1, D2 and D4 use it.
+Its λ=0 picture is one head split down the middle: cat ear, eye and whiskers on
+the left, dog ear, muzzle and tongue on the right. Carrying one cell through the
+figures gives the reader one animal to follow instead of seven unrelated ones,
+so anyone who understood figure 1 can read every later figure against it. One
+standing exception is open as a task above: F2's grid currently draws seed 10.
+
+The second cell is elephant × penguin. It appears only where a figure has to answer
+the objection that the two concepts fuse because they look alike, and it sits
+beside the running example, never in place of it.
+
+Figures are judged on whether they are clean, simple, and land in one pass. A
+figure whose job is to make the reader understand something carries no summary
+statistic; rates and frequencies belong in the results section beside the tables.
 
 ## Next
 
-The figure chain, in order. Each line says what it writes, so you can see where the
-previous step's output goes.
-
-1. `/plan-figures` on this plan. Writes the set-level order: which seven, in what
-   sequence, and whether any two collapse into one. Run once, not per figure.
-2. `/design-figure` on one figure at a time. Writes 2 to 3 layout options into that
-   figure's task line above: what it plots, what a reader is meant to see, and what
-   the plot cannot tell them. Pick one and strike the others.
-3. `/pair-figure` on the chosen layout. Names the qualitative partner that goes beside
-   the number, which for the dose figure is the five-picture strip.
-4. `/evidence-ladder` on the approved specs. Builds the files as
+1. `/plan-figures` on this plan. Decides the set-level questions: which seven, in
+   what order, whether any two collapse into one. Once for the set, not per figure.
+2. `/design-figure` one figure at a time. Writes 2 to 3 layout options into that
+   figure's task line: what it plots, what the reader should see, what the plot
+   cannot tell them. Pick one and strike the others.
+3. `/pair-figure` on the chosen layout, for the qualitative partner beside the
+   number. For F2 that was the five-picture strip.
+4. `/evidence-ladder` on the approved specs. Builds
    `figures/<name>_case/step<N>_quant.png` and `step<N>_qual.png`.
-5. Add a row per figure to `paper/iclr/figures.md`: what it claims, this plan as its
-   source, the file path, and the review question its claim rests on.
+5. The register row in `paper/iclr/figures.md`.
 
-**The short version, when time is short.** Skip 1 and 2. Use the figure that already
-exists (`dose_curves.png`), run step 3 to get its qualitative partner, and do step 5.
-A registered figure with an honest caption beats a beautifully designed one that is not
-in the paper.
+**When time is short.** Skip 1 and 2, use the figure that already exists
+(`dose_curves.png`), run step 3 for its qualitative partner, and do step 5. A
+registered figure with an honest caption beats a beautifully designed one that
+never makes it into the paper.
 
-**Do not skip step 5.** A figure not in the register is invisible, and there are 1611
-figure files in this repo against 3 in the manuscript.
+**Do not skip step 5.** A figure not in the register is invisible, and there are
+1611 figure files in this repo against 3 in the manuscript.
 
 ## Engagement Instructions
 ```bash
-ls paper/figures/                 # expect 7 built figures + specs
-# each figure: qualitative element present, control visible, one-line caption
+ls paper/iclr/figures/            # expect F1-F5b, F7a, F8a, F8b and D1-D4 built + sidecars
+                                  # F6 undecided; F7 bands two and three, F4g, F4h, F8 pending
+# per figure, check three things by eye:
+#   a real picture is present, not only a curve
+#   the control is visible in the figure itself, not only named in the caption
+#   the caption claims nothing its review question did not answer
 ```

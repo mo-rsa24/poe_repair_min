@@ -1,5 +1,13 @@
 # 💉 Does more correction give more composition?
 
+**Step 4 of 22.** Waits on steps 1 and 2, both done. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../../../MASTER_PLAN.md).
+
+| Step | Plan | Status |
+|---|---|---|
+| 3 | ~~[instrument-01-the-clean-pair-pool](../../does-the-fix-reach-unseen-pairs/plans/instrument-01-the-clean-pair-pool.md)~~ | ✅ |
+| **4** | **this plan** | **◑ 6.3GB owed** |
+| 5 | ~~[hypothesis-04-what-the-cached-runs-already-show](hypothesis-04-what-the-cached-runs-already-show.md)~~ | ✅ |
+
 Design only. Verdicts and run state live in
 [../review/hypothesis-02-more-correction-more-composition.md](../review/hypothesis-02-more-correction-more-composition.md).
 
@@ -120,11 +128,11 @@ the experiment worked is a separate question and it is answered in the review fi
       pictures, `scripts/mechanism_study/run_dose_sweep.sh`, resumable, about 50
       seconds each.
 - [x] Score every picture with the validated composition scorer.
-- [ ] Read [../procedures/hypothesis-02-recheck-the-headline-numbers.md](../procedures/hypothesis-02-recheck-the-headline-numbers.md)
+- [x] Read [../procedures/hypothesis-02-recheck-the-headline-numbers.md](../procedures/hypothesis-02-recheck-the-headline-numbers.md)
       to completion, do what it says, and answer the two open questions in the
       review file. It stops the scorer picking up pictures from older runs, and it
       sets its cutoffs by looking at a picture rather than by choosing a number.
-- [ ] Build the three curves and the 3 by 5 grid of cells. The layout is decided in
+- [x] Build the three curves and the 3 by 5 grid of cells. The layout is decided in
       `figure-01-the-seven-paper-figures`, not here. The grid is rebuilt by step 6 of the
       procedure above.
 - [ ] Move the output off /home-mscluster and repoint `run_dose_sweep.sh`. Its

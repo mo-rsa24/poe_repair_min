@@ -1,5 +1,13 @@
 # ✍️ Method and introduction, written by hand
 
+**Step 20 of 22.** Waits on step 17. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../../../MASTER_PLAN.md).
+
+| Step | Plan | Status |
+|---|---|---|
+| 19 | [writing-03-where-each-figure-goes](writing-03-where-each-figure-goes.md) | ⚠️ |
+| **20** | **this plan** | **⚠️** |
+| 21 | [writing-06-mechanism-and-limitations](writing-06-mechanism-and-limitations.md) | ⚠️ |
+
 ## What this asks, in one line
 Write the two sections that depend on no unfinished run: the method (settled) and the introduction (follows from the spine).
 

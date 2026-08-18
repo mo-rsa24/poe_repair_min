@@ -1,5 +1,12 @@
 # 📄 The abstract
 
+**Step 22 of 22.** Waits on steps 20 and 21. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../../../MASTER_PLAN.md).
+
+| Step | Plan | Status |
+|---|---|---|
+| 21 | [writing-06-mechanism-and-limitations](writing-06-mechanism-and-limitations.md) | ⚠️ |
+| **22** | **this plan** | **⚠️** |
+
 ## What this asks, in one line
 Write the abstract last, from the spine and the finished sections, because an abstract written first describes the paper you hoped for.
 

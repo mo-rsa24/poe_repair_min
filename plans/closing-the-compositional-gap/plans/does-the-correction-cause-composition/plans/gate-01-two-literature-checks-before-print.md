@@ -1,5 +1,13 @@
 # 🖨️ Two claims checked against the literature before they print
 
+**Step 15 of 22.** Waits on step 13. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../../../MASTER_PLAN.md).
+
+| Step | Plan | Status |
+|---|---|---|
+| 14 | [figure-01-the-transfer-figures](../../does-the-fix-reach-unseen-pairs/plans/figure-01-the-transfer-figures.md) | ◑ F8 waits on the sweep |
+| **15** | **this plan** | **⚠️** |
+| 16 | [writing-01-make-the-template-build](../../writing-the-paper/plans/writing-01-make-the-template-build.md) | ◑ title still a stub |
+
 ## What this asks, in one line
 Two sentences the paper wants to print rest on the literature rather than on our runs: that
 nobody has causally measured the correction's timing, and that reweighting two experts cannot

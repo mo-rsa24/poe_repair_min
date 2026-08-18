@@ -526,11 +526,17 @@ def run_teacher_residual(
                                 device="cpu" if g is not None else delta.device)
             noise = noise.to(device=delta.device, dtype=delta.dtype)
             delta_used = noise * (delta.float().norm() / noise.float().norm().clamp_min(1e-12))
-        elif delta_substitute == "wrong_pair":
+        elif delta_substitute in ("wrong_pair", "wrong_seed", "wrong_step",
+                                  "mean_others"):
+            # All four share the mechanics: inject source[step], norm-matched.
+            # They differ only in what the caller stacked into the source:
+            # another pair's r_t, the same pair's r_t from another seed's run,
+            # this cell's own r_t with the step order deranged, or the mean r_t
+            # over the other cached runs of the same pair.
             if delta_substitute_source is None:
                 raise ValueError(
-                    "delta_substitute='wrong_pair' needs delta_substitute_source: "
-                    "a [T,...] stack of another pair's r_t")
+                    f"delta_substitute={delta_substitute!r} needs "
+                    "delta_substitute_source: a [T,...] stack of r_t vectors")
             src = delta_substitute_source[
                 min(step_index, delta_substitute_source.shape[0] - 1)
             ].to(device=delta.device, dtype=delta.dtype)

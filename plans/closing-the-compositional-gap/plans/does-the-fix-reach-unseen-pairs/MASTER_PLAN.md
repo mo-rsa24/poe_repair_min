@@ -1,5 +1,20 @@
 # Animals-Compose-Transfer
 
+## Where this scope sits in the order
+
+This scope owns **6 of the 22 steps**, 1 of them done. The steps interleave with the other scopes', so the list below is a filter on the one `## Running order` table in the [repo root MASTER_PLAN.md](../../../../MASTER_PLAN.md), never an order of its own.
+
+**Next in this scope: step 9**, [instrument-02-three-live-curves-while-training](plans/instrument-02-three-live-curves-while-training.md), one epoch on a GPU, and it gates steps 10 to 14.
+
+| Step | Plan | What it does | Status |
+|---|---|---|---|
+| 3 | ~~[instrument-01-the-clean-pair-pool](plans/instrument-01-the-clean-pair-pool.md)~~ | the pool that blends by default | ✅ |
+| 9 | [instrument-02-three-live-curves-while-training](plans/instrument-02-three-live-curves-while-training.md) | the one-epoch smoke | ⚠️ do this next |
+| 10 | [hypothesis-01-does-one-pooled-fix-transfer-at-all](plans/hypothesis-01-does-one-pooled-fix-transfer-at-all.md) | finish the pooled read | ◑ read incomplete |
+| 11 | [hypothesis-02-transfer-as-a-rate-over-fifteen-pairs](plans/hypothesis-02-transfer-as-a-rate-over-fifteen-pairs.md) | fifteen adapters, one held out each | ⚠️ |
+| 12 | [baseline-01-the-size-matched-control-pool](plans/baseline-01-the-size-matched-control-pool.md) | the size-matched mixed pool | ⚠️ |
+| 14 | [figure-01-the-transfer-figures](plans/figure-01-the-transfer-figures.md) | the transfer figures | ◑ F8a and F8b built |
+
 ## Mission
 cat×dog through PoE makes a chimera, and that blend-two-animals failure is a
 specific, known problem. Train a rank-8 cross-attention LoRA on the cached
@@ -110,12 +125,8 @@ Grouped by the run group each answers to. Statuses live in the review/ files.
 
 | Plan | What it does | Status |
 |---|---|---|
-| figure-01-the-transfer-figures | the A2 to A5 cascade feeding register slot F8 (DoD 5) | ⚠️ |
+| figure-01-the-transfer-figures | the A2 to A5 cascade feeding register slot F8 (DoD 5) | ◑ F8a and F8b built; F8 itself waits on the sweep |
 
-## Running order
-
-This scope keeps no order of its own. The single flat order across every scope
-and level is the `## Running order` table in the repo root `MASTER_PLAN.md`.
 
 ## Environment Context
 See `docs/ENVIRONMENT.md` for this project's environment/architecture facts.

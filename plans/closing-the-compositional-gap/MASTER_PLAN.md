@@ -4,6 +4,29 @@ The paper, and everything it needs. If you have not opened this window in a whil
 is where you start, and you should not need to hold anything in your head that is not written
 below.
 
+## Do this next
+
+Two rows are unblocked and both are worth starting today.
+
+Start **step 9**, [transfer/instrument-02-three-live-curves-while-training](plans/does-the-fix-reach-unseen-pairs/plans/instrument-02-three-live-curves-while-training.md),
+first so it cooks: one epoch on a GPU, and it gates the whole transfer chain, since steps 10, 11,
+12 and 14 wait behind it and so does register slot F8. Then do **step 4** while it runs, a chore
+needing no compute: 6.3GB of dose cells sit on `/home-mscluster` and belong on `/datasets`.
+
+Steps 16 and 18 wait on nothing and need no GPU, so they are what to write meanwhile.
+
+The step numbers come from the one order in the repo root
+[MASTER_PLAN.md](../../MASTER_PLAN.md). This scope keeps no copy of it; the line above names only
+which row to open now. Every plan file carries its own number under its title.
+
+**Nothing waits on these, so they carry no step number.** `correction/generalization-01`
+(another model and sampler) and `correction/idea-01` (attribute pairs), both background with
+their scaffolds shelved, and the four plans of `can-we-trust-the-compose-rate/` in their own
+internal order: `gate-01`, then `instrument-01`, then `idea-01`, then `gate-02`. That scope earns
+numbered steps only on the big-promotion condition its own `MASTER_PLAN.md` sets: the
+false-compose rate comes back contaminated at the ten-point bar, or a candidate detector clears
+the 95-versus-85 bar. All six sit in the root's background pools.
+
 ## Start here, cold
 
 1. **`python3 scripts/plan_pulse.py --brief`** (the session-start hook already ran it): what is
@@ -12,8 +35,8 @@ below.
 2. **The figure register, `paper/iclr/figures.md`**: eight slots, each the claim a figure will
    make. What is not yet built or fillable there is what the paper still cannot show, and it is
    the whole reason any experiment below runs.
-3. **The paper table in the repo root `MASTER_PLAN.md`**: the ordered steps and what each waits
-   on. This scope keeps no competing copy of it.
+3. **The `## Running order` table in the repo root [MASTER_PLAN.md](../../MASTER_PLAN.md)**: the
+   ordered steps and what each waits on. `## Do this next` above names the row to open today.
 
 ## The three folders, in plain words
 
@@ -49,11 +72,11 @@ is wrong. Careful design is critical; they answer to benchmarks and faithfulness
 
 | Plan | Tests | Status |
 |---|---|---|
-| `correction/hypothesis-02-more-correction-more-composition.md` | more correction, more composition, two flat controls | ◑ re-score owed |
-| `correction/hypothesis-03-when-in-the-run-it-matters.md` | when in the denoising run the correction matters | ⚠️ |
-| `correction/hypothesis-04-what-the-cached-runs-already-show.md` | size follows noise; the paths fork; low-rank enough to learn | ◑ one decision left |
-| `correction/hypothesis-05-the-same-story-from-three-sides.md` | the same story from three independent sides | ⚠️ |
-| `correction/hypothesis-01-what-the-fix-changes-inside-the-model.md` | the fix changes what a word paints, not where it looks | ◑ one decision left |
+| `correction/hypothesis-02-more-correction-more-composition.md` | more correction, more composition, two flat controls | ◑ result done, 6.3GB owed off /home-mscluster |
+| `correction/hypothesis-03-when-in-the-run-it-matters.md` | when in the denoising run the correction matters | ◑ answered; the timing tab owed |
+| `correction/hypothesis-04-what-the-cached-runs-already-show.md` | size follows noise; the paths fork; low-rank enough to learn | ✅ |
+| `correction/hypothesis-05-the-same-story-from-three-sides.md` | the same story from three independent sides | ✅ |
+| `correction/hypothesis-01-what-the-fix-changes-inside-the-model.md` | the fix changes what a word paints, not where it looks | ✅ |
 | `transfer/instrument-02-three-live-curves-while-training.md` | the three live curves (the sweep's safety gate) | ⚠️ smoke owed |
 | `transfer/hypothesis-01-does-one-pooled-fix-transfer-at-all.md` | does the fix transfer at all | ◑ read incomplete |
 | `transfer/hypothesis-02-transfer-as-a-rate-over-fifteen-pairs.md` | transfer as a rate: 15 held-out points | ⚠️ |
@@ -71,8 +94,8 @@ more than the figure slot's sentence. The register (`paper/iclr/figures.md`) is 
 
 | Plan | Slots | Status |
 |---|---|---|
-| `correction/figure-01-the-seven-paper-figures.md` | F1 to F7 | ⚠️ F2 fillable after the re-score |
-| `transfer/figure-01-the-transfer-figures.md` | F8, via its A2 to A5 internals | ⚠️ waits on the sweep |
+| `correction/figure-01-the-seven-paper-figures.md` | F1 to F7 | ◑ F1 to F5b, F7a and D1 to D4 built; F6 needs a decision |
+| `transfer/figure-01-the-transfer-figures.md` | F8, via its A2 to A5 internals | ◑ F8a and F8b built; F8 waits on the sweep |
 
 **Reproduction runs: confirm or break an existing number against the original config and
 seed.** No standing plans; a rerun lands on the existing claim's evidence tag.
@@ -127,9 +150,10 @@ to a register slot, and every citation to the reading register.
 The eight register slots resolved (built, or honestly downgraded with the boundary stated), the
 sections compiled through `/draft-section`, and the two `/pressure-test` print gates passed.
 
-## Running order
-This scope keeps no order of its own. The single order is the paper table in the repo root
-`MASTER_PLAN.md`; the sub-scopes' rows carry their step numbers there.
+## Diagram Prompts
+See `diagram-prompts.md` for this scope's illustrated map: the system as connected
+image prompts, subject and process lanes. Process history lives in
+`diagrams/process-versions/`.
 
 ## Environment Context
 See `docs/ENVIRONMENT.md`. Read before drafting or checking any plan in this scope.

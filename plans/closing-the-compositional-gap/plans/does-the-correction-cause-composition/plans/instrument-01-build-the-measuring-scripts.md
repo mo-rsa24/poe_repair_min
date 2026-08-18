@@ -1,5 +1,12 @@
 # 🔧 Wrap and verify the instruments the rest of this scope measures with
 
+**Step 1 of 22.** Waits on nothing. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../../../MASTER_PLAN.md).
+
+| Step | Plan | Status |
+|---|---|---|
+| **1** | **this plan** | **✅** |
+| 2 | ~~[instrument-02-fix-the-size-measure-before-any-result](instrument-02-fix-the-size-measure-before-any-result.md)~~ | ✅ |
+
 ## What this asks, in one line
 Build the thirteen measuring scripts before any experiment needs them, and smoke each one on a cell where the right answer is known.
 
