@@ -32,6 +32,10 @@ from pathlib import Path
 
 import torch
 
+from poe_repair.experiments.compose_scorer.scorer import (
+    _Embedders,
+    score_output,
+)
 from poe_repair.experiments.cross_pair_lora_pooling import _inline_sampling
 from poe_repair.experiments.cross_pair_lora_pooling.multi_pair_trainer import (
     train_epoch_multi_pair,
@@ -75,6 +79,30 @@ def _git_commit() -> str:
         return out.stdout.strip()
     except Exception:
         return ""
+
+
+def _load_anchors_by_pair(
+    anchors_root: Path = REPO_ROOT / "outputs" / "compose_scorer" / "anchors",
+) -> dict[str, dict[str, Path]]:
+    """Load the three anchor paths per pair: a_alone, b_alone, joint.
+
+    Returns {pair_slug: {"a_alone": Path, "b_alone": Path, "joint": Path}}.
+    """
+    anchors = {}
+    for pair_dir in anchors_root.iterdir():
+        if not pair_dir.is_dir():
+            continue
+        pair_slug = pair_dir.name
+        anchor_a = pair_dir / "anchor_a_alone.png"
+        anchor_b = pair_dir / "anchor_b_alone.png"
+        anchor_j = pair_dir / "anchor_joint.png"
+        if anchor_a.exists() and anchor_b.exists() and anchor_j.exists():
+            anchors[pair_slug] = {
+                "a_alone": anchor_a,
+                "b_alone": anchor_b,
+                "joint": anchor_j,
+            }
+    return anchors
 
 
 def build_argparser() -> argparse.ArgumentParser:
@@ -354,6 +382,10 @@ def main(argv: list[str] | None = None) -> int:
             cache_root=cache_root,
         )
         record_delta_at_steps = list(range(int(args.sample_num_inference_steps)))
+        # Load anchors and compose-scorer embedders (plan 02): one anchor set
+        # per pair, used to score each rendered output as compose vs blend live.
+        anchors_by_pair = _load_anchors_by_pair()
+        embedders = _Embedders(device=device)
 
     def _run_inline_sample(tag: str) -> None:
         if sampler_ctx is None:
@@ -366,7 +398,7 @@ def main(argv: list[str] | None = None) -> int:
             record_delta_at_steps=record_delta_at_steps,
         )
         direction_payload: dict[str, float] = {}
-        all_cosines, all_alphas = [], []
+        all_cosines, all_alphas, all_compose_rates = [], [], []
         for cell, png, where_applied in rendered:
             key = f"samples/{cell.quadrant}/{cell.pair_slug}/seed_{cell.seed:02d}"
             # 3-column comparison: Mono (target) | PoE (default) | LoRA (this step).
@@ -397,12 +429,38 @@ def main(argv: list[str] | None = None) -> int:
             if metrics["direction_cosine"] == metrics["direction_cosine"]:  # not nan
                 all_cosines.append(metrics["direction_cosine"])
                 all_alphas.append(metrics["frac_distance_reached"])
+            # Compose-rate scoring (plan 02): score this output against the pair's
+            # 3 anchors, log as a separate curve so delivery-null vs no-transfer
+            # can be distinguished.
+            if cell.pair_slug in anchors_by_pair:
+                try:
+                    scores = score_output(
+                        Path(png),
+                        anchors_by_pair[cell.pair_slug],
+                        embedders=embedders,
+                        margin=0.0,
+                    )
+                    # Use the "dino" space label (COMPOSE / BLEND); average across spaces.
+                    dino_label = scores["dino"].label
+                    compose_score = 1.0 if dino_label == "compose" else 0.0
+                    compose_key = f"eval/compose_rate/{cell.quadrant}/{cell.pair_slug}/seed_{cell.seed:02d}"
+                    direction_payload[compose_key] = compose_score
+                    all_compose_rates.append(compose_score)
+                except Exception as e:
+                    log.warning(
+                        "compose-score failed for %s / seed %d: %s",
+                        cell.pair_slug, cell.seed, e,
+                    )
         if all_cosines:
             direction_payload["eval/direction_cosine/mean"] = (
                 sum(all_cosines) / len(all_cosines)
             )
             direction_payload["eval/frac_distance_reached/mean"] = (
                 sum(all_alphas) / len(all_alphas)
+            )
+        if all_compose_rates:
+            direction_payload["eval/compose_rate/mean"] = (
+                sum(all_compose_rates) / len(all_compose_rates)
             )
         if direction_payload:
             logger.log(direction_payload, step=state.optimizer_step)

@@ -106,9 +106,10 @@ def clip_image_embed(image_paths: Sequence[Path], *, device: torch.device | None
     clip = _get_clip(device)
     images = [Image.open(p).convert("RGB") for p in image_paths]
     inputs = clip.processor(images=images, return_tensors="pt")
-    feats = clip.model.get_image_features(
+    outputs = clip.model.get_image_features(
         pixel_values=inputs["pixel_values"].to(clip.device),
     )
+    feats = outputs.pooler_output if hasattr(outputs, 'pooler_output') else outputs
     feats = feats / (feats.norm(dim=-1, keepdim=True) + 1e-8)
     return feats.detach().cpu().float()
 
