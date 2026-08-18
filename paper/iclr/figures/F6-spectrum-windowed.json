@@ -1,0 +1,42 @@
+{
+  "windows": {
+    "early": "denoising steps 0 to 19 (of 50), inclusive",
+    "late": "denoising steps 20 to 49 (of 50), inclusive"
+  },
+  "why_windowed": "the correction's shared component is 19.6% at steps 0-2 and near zero after step 20 (D2b), so pooling all steps into one SVD would let whichever window dominates the vector norm decide the low-rank verdict for both",
+  "top_row_energy_at_k": {
+    "row_definition": "one row is r_t at one denoising step of one cell (pair x seed), flattened to 65536 numbers, centred by the train mean before SVD",
+    "train_pairs": 11,
+    "train_vectors": {"early": 880, "late": 1320},
+    "energy_at_k64": {
+      "early": {"r_t": 0.569, "gaussian_floor": 0.088, "ratio": 6.5},
+      "late": {"r_t": 0.549, "gaussian_floor": 0.061, "ratio": 8.9}
+    },
+    "heldout_projection_at_k64": {
+      "held_out_pairs": 8,
+      "early": 0.121,
+      "late": 0.008,
+      "reading": "the train-fitted subspace explains far less of a held-out pair's energy than of a training pair's own, and that gap widens late in the trajectory; consistent with the prior F6 finding that r_t vectors are mutually near-orthogonal even train-to-train (docs/evidence/F6-subspace-vs-transfer/QUERY.md)"
+    }
+  },
+  "bottom_row_direction_vs_outcome": {
+    "question": "does a held-out example's alignment with a high-singular-value direction predict whether that pair's correction, injected on its own, composes",
+    "x_axis": "direction rank, 1 = largest singular value from the train SVD, to 64",
+    "y_axis": "Spearman correlation across held-out examples between (that example's own energy along the direction, as a fraction of its own total window energy) and its compose outcome",
+    "compose_label_source": "outputs/interaction_term/dose/dose_curves.json, row=oracle, lambda=0.5",
+    "why_lambda_0.5": "at lambda=1.0 (full strength) the oracle correction composes 30 of 32 times, too skewed a label to correlate against; lambda=0.5 gives 24 no / 8 yes, the most balanced point on the dose curve",
+    "n_examples": 32,
+    "n_positive": 8,
+    "n_directions_tested": 64,
+    "permutation_null": "labels shuffled 500 times per window, band is the 2.5th to 97.5th percentile of the shuffled correlation at each direction",
+    "directions_outside_null_band": {"early": 5, "late": 4},
+    "expected_false_positives_by_chance": "0.05 x 64 = 3.2 per window at a 95% band",
+    "rank_of_directions_outside_band": {
+      "early": [4, 10, 32, 41, 56],
+      "late": [6, 32, 44, 62]
+    },
+    "verdict": "null: the directions clearing the permutation band are scattered across rank rather than concentrated at low rank, and their count is close to the number expected from testing 64 directions by chance alone. No evidence in this data that high-singular-value directions predict compose success or low-singular-value directions predict failure. N=32 (8 positive) is a small sample, so this is a null at the current sample size, not proof of no effect."
+  },
+  "source": "python scripts/spectrum_windowed.py",
+  "raw_output": "outputs/interaction_term/cache_analyses/spectrum_windowed.json (per-direction correlation arrays, full precision)"
+}

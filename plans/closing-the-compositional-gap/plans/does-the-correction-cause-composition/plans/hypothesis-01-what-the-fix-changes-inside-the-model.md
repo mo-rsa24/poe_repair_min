@@ -1,5 +1,13 @@
 # 🔬 Does the fix change what a word paints, or where it looks?
 
+**Step 8 of 22.** Waits on step 3. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../../../MASTER_PLAN.md).
+
+| Step | Plan | Status |
+|---|---|---|
+| 7 | ~~[hypothesis-05-the-same-story-from-three-sides](hypothesis-05-the-same-story-from-three-sides.md)~~ | ✅ |
+| **8** | **this plan** | **✅** |
+| 9 | [instrument-02-three-live-curves-while-training](../../does-the-fix-reach-unseen-pairs/plans/instrument-02-three-live-curves-while-training.md) | ⚠️ do this next |
+
 Design only. Findings and run state live in
 [../review/hypothesis-01-what-the-fix-changes-inside-the-model.md](../review/hypothesis-01-what-the-fix-changes-inside-the-model.md).
 
@@ -58,8 +66,9 @@ is in `docs/evidence/F7-mechanism-reprobe/measure-fairness.md`.
 - [x] Compute the comparison table, one row per token and step, using the pattern term described
       above. `scripts/mechanism_study/reprobe_table.py`.
 - [x] Record the verdict against the pre-registered bar in the review file.
-- [ ] Decide the figure's statistical entity with `/pair-figure`: per-seed points, or one point
-      per pair. Then freeze F7's caption to the narrower sentence the review file requires.
+- [x] Decide the figure's statistical entity with `/pair-figure`: one point per pair, median over
+      its 8 seeds, seeds shown as a pale spread behind rather than averaged away. F7's caption is
+      frozen to the narrower sentence the review file requires.
 
 ## Success/Failure Outcomes
 - **the smoke cell**

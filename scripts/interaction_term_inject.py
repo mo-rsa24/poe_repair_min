@@ -52,6 +52,21 @@ from poe_repair.methods._sampling import run_teacher_residual
 from poe_repair.run import make_ctx
 
 
+# The wrong-step control's permutation is fixed by this generator seed, so the
+# row is reproducible and cannot be re-drawn until it flatters. Drawn once as a
+# derangement: no step may keep its own vector, or those steps are secretly the
+# oracle row.
+WRONG_STEP_PERM_SEED = 0
+
+
+def _derangement(n: int) -> torch.Tensor:
+    g = torch.Generator().manual_seed(WRONG_STEP_PERM_SEED)
+    while True:
+        perm = torch.randperm(n, generator=g)
+        if (perm != torch.arange(n)).all():
+            return perm
+
+
 def check_canary(pair: str, seed: int, *, steps: int | None = None) -> int:
     """Assert lambda=0 steps with eps_PoE itself. Returns an exit code."""
     cell = cell_from_slug(pair, seed)
@@ -114,9 +129,13 @@ def main() -> int:
     ap.add_argument("--steps", type=int, help="override inference steps (smoke runs)")
     ap.add_argument("--exp-name", default="interaction_term/dose")
     ap.add_argument("--row", default="oracle",
-                    choices=("oracle", "random", "wrong_pair"),
-                    help="oracle = the pair's own r_t; the other two are the "
-                         "norm-matched controls (see plan 03)")
+                    choices=("oracle", "random", "wrong_pair",
+                             "wrong_seed", "wrong_step", "mean_others"),
+                    help="oracle = the pair's own r_t; the others are the "
+                         "norm-matched controls (see plan 03). wrong_seed "
+                         "injects the same pair's r_t cached from the run at "
+                         "seed+4; wrong_step injects this cell's own cached "
+                         "r_t with the step order deranged")
     ap.add_argument("--wrong-pair-source",
                     help="pair slug whose r_t to inject for --row wrong_pair; "
                          "defaults to a fixed, non-adjacent partner")
@@ -140,6 +159,45 @@ def main() -> int:
         donor = args.wrong_pair_source or partner_for(args.pair)
         sub_source = load_cell(donor, first_cached_seed(donor)).r_t()
         print(f"[wrong_pair] injecting r_t from {donor}")
+    elif args.row == "wrong_seed":
+        from poe_repair.experiments.interaction_term.cache import load_cell
+        from poe_repair.experiments.interaction_term.wrong_pair import (
+            donor_seed_for,
+        )
+        donor_seed = donor_seed_for(args.pair, args.seed)
+        sub_source = load_cell(args.pair, donor_seed).r_t()
+        print(f"[wrong_seed] injecting {args.pair} r_t from seed {donor_seed}")
+    elif args.row == "mean_others":
+        # The part of the correction that every run of this pair shares,
+        # distilled: the mean r_t over the OTHER cached seeds of the same pair,
+        # leaving this seed out so nothing of the target run leaks in. Measured
+        # to carry 20% of a run's correction energy over steps 0-2 and ~0% after
+        # step 10, so this row asks whether that shared early part alone
+        # composes.
+        from poe_repair.experiments.interaction_term.cache import (
+            CACHE_ROOT, cell_dir, load_cell,
+        )
+        d = cell_dir(args.pair, args.seed, root=CACHE_ROOT).parent
+        donors = sorted(int(p.name.split("_")[1]) for p in d.glob("seed_*")
+                        if int(p.name.split("_")[1]) != args.seed)
+        stacks = []
+        for s in donors:
+            try:
+                stacks.append(load_cell(args.pair, s).r_t())
+            except Exception:
+                continue
+        if not stacks:
+            raise SystemExit(f"no other cached seeds for {args.pair}")
+        sub_source = torch.stack(stacks).mean(0)
+        print(f"[mean_others] injecting the mean r_t over {len(stacks)} other "
+              f"seeds of {args.pair}: {donors}")
+    elif args.row == "wrong_step":
+        from poe_repair.experiments.interaction_term.cache import load_cell
+        stack = load_cell(args.pair, args.seed).r_t()
+        perm = _derangement(stack.shape[0])
+        sub_source = stack[perm]
+        print(f"[wrong_step] injecting own r_t, step order deranged "
+              f"(T={stack.shape[0]}, perm seed {WRONG_STEP_PERM_SEED})")
     # The method name must encode the row, or the three rows overwrite each
     # other on disk and the "control" silently becomes the oracle's file.
     name = cmp_tr.method_name_for(

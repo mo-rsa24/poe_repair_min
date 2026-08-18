@@ -1,0 +1,6775 @@
+{
+ "meta": {
+  "builtFrom": {
+   "curves": {
+    "path": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/dose_curves.json",
+    "abs": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/dose_curves.json",
+    "mtime": "2026-08-10T18:11:24+00:00",
+    "bytes": 75824
+   },
+   "review": {
+    "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
+    "abs": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
+    "mtime": "2026-08-10T19:14:11+00:00",
+    "bytes": 13276
+   },
+   "plan": {
+    "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/plans/hypothesis-02-more-correction-more-composition.md",
+    "abs": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/plans/hypothesis-02-more-correction-more-composition.md",
+    "mtime": "2026-08-10T18:37:11+00:00",
+    "bytes": 12484
+   },
+   "procedure": {
+    "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/procedures/hypothesis-02-recheck-the-headline-numbers.md",
+    "abs": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/procedures/hypothesis-02-recheck-the-headline-numbers.md",
+    "mtime": "2026-08-10T18:10:59+00:00",
+    "bytes": 12626
+   },
+   "scorer": {
+    "path": "poe_repair/experiments/compose_scorer/detection_scorer.py",
+    "abs": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/poe_repair/experiments/compose_scorer/detection_scorer.py",
+    "mtime": "2026-08-10T17:53:27+00:00",
+    "bytes": 6824
+   },
+   "plotter": {
+    "path": "scripts/plot_dose_curves.py",
+    "abs": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/scripts/plot_dose_curves.py",
+    "mtime": "2026-08-10T16:18:28+00:00",
+    "bytes": 10665
+   },
+   "canaries": {
+    "path": "tests/test_interaction_term_canaries.py",
+    "abs": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/tests/test_interaction_term_canaries.py",
+    "mtime": "2026-08-05T07:40:09+00:00",
+    "bytes": 10659
+   },
+   "sweepScript": {
+    "path": "scripts/mechanism_study/run_dose_sweep.sh",
+    "abs": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/scripts/mechanism_study/run_dose_sweep.sh",
+    "mtime": "2026-08-05T21:56:33+00:00",
+    "bytes": 3359
+   },
+   "pairPool": {
+    "path": "outputs/animals_compose_transfer/pair_pool.yaml",
+    "abs": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/outputs/animals_compose_transfer/pair_pool.yaml",
+    "mtime": "2026-07-30T03:42:49+00:00",
+    "bytes": 2173
+   },
+   "figureScript": {
+    "path": "scripts/make_f2.py",
+    "abs": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/scripts/make_f2.py",
+    "mtime": "2026-08-10T19:08:53+00:00",
+    "bytes": 10736
+   }
+  },
+  "imagesRoot": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/outputs/interaction_term/dose/pairs",
+  "figuresRoot": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose",
+  "runIdNote": "The sweep ran outside Slurm on the session node, so there is no job id. The log path is its identity.",
+  "runLog": "results/mechanism_study/dose_sweep.log",
+  "missingImages": 0,
+  "thumbs": {
+   "dir": "public/thumbs",
+   "px": 320,
+   "written": 0,
+   "upToDate": 416,
+   "unique": 416
+  },
+  "publicLinks": {
+   "full": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/outputs/interaction_term/dose/pairs",
+   "figures": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose",
+   "paperfigs": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/paper/iclr/figures"
+  }
+ },
+ "verdict": {
+  "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
+  "lines": [
+   7,
+   10
+  ],
+  "body": [
+   "Where it stands in one line: the correction takes the compose rate from 3% to 94% while both",
+   "controls stay at or below 6%, measured on an equal number of cells per strength and with a size",
+   "floor in the scorer that was chosen by looking at real detections. F2's caption may quote these",
+   "figures."
+  ]
+ },
+ "runKind": {
+  "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
+  "line": 28,
+  "text": "**Tests the claim.** So a failure of the pre-registered bar closes the plan and opens one"
+ },
+ "constants": {
+  "minBoxFraction": {
+   "name": "MIN_BOX_FRACTION",
+   "raw": "0.25",
+   "path": "poe_repair/experiments/compose_scorer/detection_scorer.py",
+   "line": 46
+  },
+  "sweepSeeds": {
+   "name": "SWEEP_SEEDS",
+   "raw": "(9, 10, 11, 12)",
+   "path": "scripts/plot_dose_curves.py",
+   "line": 48
+  }
+ },
+ "rows": [
+  {
+   "key": "oracle",
+   "label": "the real correction",
+   "isControl": false
+  },
+  {
+   "key": "random",
+   "label": "a random vector, same size",
+   "isControl": true
+  },
+  {
+   "key": "wrong_pair",
+   "label": "another pair's correction",
+   "isControl": true
+  }
+ ],
+ "lambdas": [
+  0.0,
+  0.25,
+  0.5,
+  0.75,
+  1.0
+ ],
+ "cells": [
+  {
+   "row": "oracle",
+   "pair": "a_cat__x__a_dog",
+   "seed": 9,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_9/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cat__x__a_dog",
+   "seed": 9,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_9/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cat__x__a_dog",
+   "seed": 9,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_9/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cat__x__a_dog",
+   "seed": 9,
+   "lam": 0.75,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_9/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cat__x__a_dog",
+   "seed": 9,
+   "lam": 1.0,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_9/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cat__x__a_dog",
+   "seed": 10,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_10/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cat__x__a_dog",
+   "seed": 10,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_10/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cat__x__a_dog",
+   "seed": 10,
+   "lam": 0.5,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_10/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cat__x__a_dog",
+   "seed": 10,
+   "lam": 0.75,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_10/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cat__x__a_dog",
+   "seed": 10,
+   "lam": 1.0,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_10/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cat__x__a_dog",
+   "seed": 11,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_11/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cat__x__a_dog",
+   "seed": 11,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_11/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cat__x__a_dog",
+   "seed": 11,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_11/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cat__x__a_dog",
+   "seed": 11,
+   "lam": 0.75,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_11/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cat__x__a_dog",
+   "seed": 11,
+   "lam": 1.0,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_11/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cat__x__a_dog",
+   "seed": 12,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_12/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cat__x__a_dog",
+   "seed": 12,
+   "lam": 0.25,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_12/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cat__x__a_dog",
+   "seed": 12,
+   "lam": 0.5,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_12/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cat__x__a_dog",
+   "seed": 12,
+   "lam": 0.75,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_12/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cat__x__a_dog",
+   "seed": 12,
+   "lam": 1.0,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_12/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 9,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_9/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 9,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_9/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 9,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_9/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 9,
+   "lam": 0.75,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_9/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 9,
+   "lam": 1.0,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_9/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 10,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_10/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 10,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_10/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 10,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_10/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 10,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_10/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 10,
+   "lam": 1.0,
+   "nInstances": 3,
+   "compose": 1,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_10/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 11,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_11/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 11,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_11/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 11,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_11/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 11,
+   "lam": 0.75,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_11/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 11,
+   "lam": 1.0,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_11/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 12,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_12/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 12,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_12/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 12,
+   "lam": 0.5,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_12/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 12,
+   "lam": 0.75,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_12/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 12,
+   "lam": 1.0,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_12/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_frog__x__a_toad",
+   "seed": 9,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_9/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_frog__x__a_toad",
+   "seed": 9,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_9/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_frog__x__a_toad",
+   "seed": 9,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_9/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_frog__x__a_toad",
+   "seed": 9,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_9/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_frog__x__a_toad",
+   "seed": 9,
+   "lam": 1.0,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_9/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_frog__x__a_toad",
+   "seed": 10,
+   "lam": 0.0,
+   "nInstances": 3,
+   "compose": 1,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_10/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_frog__x__a_toad",
+   "seed": 10,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_10/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_frog__x__a_toad",
+   "seed": 10,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_10/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_frog__x__a_toad",
+   "seed": 10,
+   "lam": 0.75,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_10/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_frog__x__a_toad",
+   "seed": 10,
+   "lam": 1.0,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_10/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_frog__x__a_toad",
+   "seed": 11,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_11/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_frog__x__a_toad",
+   "seed": 11,
+   "lam": 0.25,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_11/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_frog__x__a_toad",
+   "seed": 11,
+   "lam": 0.5,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_11/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_frog__x__a_toad",
+   "seed": 11,
+   "lam": 0.75,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_11/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_frog__x__a_toad",
+   "seed": 11,
+   "lam": 1.0,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_11/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_frog__x__a_toad",
+   "seed": 12,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_12/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_frog__x__a_toad",
+   "seed": 12,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_12/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_frog__x__a_toad",
+   "seed": 12,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_12/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_frog__x__a_toad",
+   "seed": 12,
+   "lam": 0.75,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_12/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_frog__x__a_toad",
+   "seed": 12,
+   "lam": 1.0,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_12/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_goose__x__a_swan",
+   "seed": 9,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_9/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_goose__x__a_swan",
+   "seed": 9,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_9/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_goose__x__a_swan",
+   "seed": 9,
+   "lam": 0.5,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_9/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_goose__x__a_swan",
+   "seed": 9,
+   "lam": 0.75,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_9/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_goose__x__a_swan",
+   "seed": 9,
+   "lam": 1.0,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_9/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_goose__x__a_swan",
+   "seed": 10,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_10/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_goose__x__a_swan",
+   "seed": 10,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_10/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_goose__x__a_swan",
+   "seed": 10,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_10/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_goose__x__a_swan",
+   "seed": 10,
+   "lam": 0.75,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_10/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_goose__x__a_swan",
+   "seed": 10,
+   "lam": 1.0,
+   "nInstances": 3,
+   "compose": 1,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_10/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_goose__x__a_swan",
+   "seed": 11,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_11/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_goose__x__a_swan",
+   "seed": 11,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_11/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_goose__x__a_swan",
+   "seed": 11,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_11/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_goose__x__a_swan",
+   "seed": 11,
+   "lam": 0.75,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_11/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_goose__x__a_swan",
+   "seed": 11,
+   "lam": 1.0,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_11/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_goose__x__a_swan",
+   "seed": 12,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_12/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_goose__x__a_swan",
+   "seed": 12,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_12/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_goose__x__a_swan",
+   "seed": 12,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_12/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_goose__x__a_swan",
+   "seed": 12,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_12/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_goose__x__a_swan",
+   "seed": 12,
+   "lam": 1.0,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_12/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 9,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_9/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 9,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_9/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 9,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_9/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 9,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_9/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 9,
+   "lam": 1.0,
+   "nInstances": 3,
+   "compose": 1,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_9/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 10,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_10/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 10,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_10/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 10,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_10/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 10,
+   "lam": 0.75,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_10/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 10,
+   "lam": 1.0,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_10/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 11,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_11/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 11,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_11/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 11,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_11/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 11,
+   "lam": 0.75,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_11/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 11,
+   "lam": 1.0,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_11/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 12,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_12/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 12,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_12/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 12,
+   "lam": 0.5,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_12/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 12,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_12/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 12,
+   "lam": 1.0,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_12/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 9,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_9/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 9,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_9/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 9,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_9/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 9,
+   "lam": 0.75,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_9/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 9,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_9/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 10,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_10/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 10,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_10/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 10,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_10/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 10,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_10/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 10,
+   "lam": 1.0,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_10/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 11,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_11/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 11,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_11/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 11,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_11/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 11,
+   "lam": 0.75,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_11/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 11,
+   "lam": 1.0,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_11/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 12,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_12/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 12,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_12/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 12,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_12/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 12,
+   "lam": 0.75,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_12/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 12,
+   "lam": 1.0,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_12/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 9,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_9/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 9,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_9/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 9,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_9/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 9,
+   "lam": 0.75,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_9/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 9,
+   "lam": 1.0,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_9/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 10,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_10/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 10,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_10/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 10,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_10/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 10,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_10/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 10,
+   "lam": 1.0,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_10/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 11,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_11/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 11,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_11/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 11,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_11/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 11,
+   "lam": 0.75,
+   "nInstances": 3,
+   "compose": 1,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_11/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 11,
+   "lam": 1.0,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_11/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 12,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_12/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 12,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_12/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 12,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_12/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 12,
+   "lam": 0.75,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_12/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 12,
+   "lam": 1.0,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_12/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 9,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_9/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 9,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_9/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 9,
+   "lam": 0.5,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_9/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 9,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_9/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 9,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_9/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 10,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_10/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 10,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_10/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 10,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_10/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 10,
+   "lam": 0.75,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_10/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 10,
+   "lam": 1.0,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_10/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 11,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_11/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 11,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_11/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 11,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_11/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 11,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_11/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 11,
+   "lam": 1.0,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_11/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 12,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_12/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 12,
+   "lam": 0.25,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_12/teacher_residual_const_lam025/teacher_residual_const_lam025.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 12,
+   "lam": 0.5,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_12/teacher_residual_const_lam050/teacher_residual_const_lam050.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 12,
+   "lam": 0.75,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_12/teacher_residual_const_lam075/teacher_residual_const_lam075.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "oracle",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 12,
+   "lam": 1.0,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_12/teacher_residual_const_lam100/teacher_residual_const_lam100.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cat__x__a_dog",
+   "seed": 9,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_9/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cat__x__a_dog",
+   "seed": 9,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_9/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cat__x__a_dog",
+   "seed": 9,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_9/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cat__x__a_dog",
+   "seed": 9,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_9/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cat__x__a_dog",
+   "seed": 9,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_9/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cat__x__a_dog",
+   "seed": 10,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_10/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cat__x__a_dog",
+   "seed": 10,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_10/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cat__x__a_dog",
+   "seed": 10,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_10/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cat__x__a_dog",
+   "seed": 10,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_10/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cat__x__a_dog",
+   "seed": 10,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_10/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cat__x__a_dog",
+   "seed": 11,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_11/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cat__x__a_dog",
+   "seed": 11,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_11/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cat__x__a_dog",
+   "seed": 11,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_11/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cat__x__a_dog",
+   "seed": 11,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_11/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cat__x__a_dog",
+   "seed": 11,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_11/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cat__x__a_dog",
+   "seed": 12,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_12/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cat__x__a_dog",
+   "seed": 12,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_12/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cat__x__a_dog",
+   "seed": 12,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_12/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cat__x__a_dog",
+   "seed": 12,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_12/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cat__x__a_dog",
+   "seed": 12,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_12/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 9,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_9/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 9,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_9/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 9,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_9/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 9,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_9/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 9,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_9/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 10,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_10/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 10,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_10/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 10,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_10/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 10,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_10/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 10,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_10/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 11,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_11/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 11,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_11/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 11,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_11/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 11,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_11/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 11,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_11/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 12,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_12/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 12,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_12/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 12,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_12/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 12,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_12/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 12,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_12/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_frog__x__a_toad",
+   "seed": 9,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_9/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_frog__x__a_toad",
+   "seed": 9,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_9/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_frog__x__a_toad",
+   "seed": 9,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_9/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_frog__x__a_toad",
+   "seed": 9,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_9/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_frog__x__a_toad",
+   "seed": 9,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_9/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_frog__x__a_toad",
+   "seed": 10,
+   "lam": 0.0,
+   "nInstances": 3,
+   "compose": 1,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_10/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_frog__x__a_toad",
+   "seed": 10,
+   "lam": 0.25,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_10/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_frog__x__a_toad",
+   "seed": 10,
+   "lam": 0.5,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_10/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_frog__x__a_toad",
+   "seed": 10,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_10/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_frog__x__a_toad",
+   "seed": 10,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_10/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_frog__x__a_toad",
+   "seed": 11,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_11/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_frog__x__a_toad",
+   "seed": 11,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_11/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_frog__x__a_toad",
+   "seed": 11,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_11/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_frog__x__a_toad",
+   "seed": 11,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_11/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_frog__x__a_toad",
+   "seed": 11,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_11/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_frog__x__a_toad",
+   "seed": 12,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_12/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_frog__x__a_toad",
+   "seed": 12,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_12/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_frog__x__a_toad",
+   "seed": 12,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_12/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_frog__x__a_toad",
+   "seed": 12,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_12/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_frog__x__a_toad",
+   "seed": 12,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_12/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_goose__x__a_swan",
+   "seed": 9,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_9/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_goose__x__a_swan",
+   "seed": 9,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_9/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_goose__x__a_swan",
+   "seed": 9,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_9/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_goose__x__a_swan",
+   "seed": 9,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_9/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_goose__x__a_swan",
+   "seed": 9,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_9/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_goose__x__a_swan",
+   "seed": 10,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_10/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_goose__x__a_swan",
+   "seed": 10,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_10/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_goose__x__a_swan",
+   "seed": 10,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_10/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_goose__x__a_swan",
+   "seed": 10,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_10/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_goose__x__a_swan",
+   "seed": 10,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_10/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_goose__x__a_swan",
+   "seed": 11,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_11/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_goose__x__a_swan",
+   "seed": 11,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_11/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_goose__x__a_swan",
+   "seed": 11,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_11/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_goose__x__a_swan",
+   "seed": 11,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_11/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_goose__x__a_swan",
+   "seed": 11,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_11/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_goose__x__a_swan",
+   "seed": 12,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_12/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_goose__x__a_swan",
+   "seed": 12,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_12/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_goose__x__a_swan",
+   "seed": 12,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_12/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_goose__x__a_swan",
+   "seed": 12,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_12/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_goose__x__a_swan",
+   "seed": 12,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_12/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 9,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_9/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 9,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_9/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 9,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_9/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 9,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_9/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 9,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_9/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 10,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_10/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 10,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_10/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 10,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_10/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 10,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_10/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 10,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_10/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 11,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_11/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 11,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_11/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 11,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_11/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 11,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_11/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 11,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_11/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 12,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_12/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 12,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_12/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 12,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_12/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 12,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_12/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 12,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_12/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 9,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_9/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 9,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_9/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 9,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_9/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 9,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_9/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 9,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_9/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 10,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_10/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 10,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_10/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 10,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_10/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 10,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_10/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 10,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_10/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 11,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_11/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 11,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_11/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 11,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_11/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 11,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_11/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 11,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_11/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 12,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_12/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 12,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_12/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 12,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_12/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 12,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_12/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 12,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_12/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 9,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_9/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 9,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_9/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 9,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_9/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 9,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_9/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 9,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_9/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 10,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_10/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 10,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_10/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 10,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_10/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 10,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_10/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 10,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_10/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 11,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_11/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 11,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_11/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 11,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_11/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 11,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_11/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 11,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_11/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 12,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_12/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 12,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_12/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 12,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_12/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 12,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_12/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 12,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_12/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 9,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_9/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 9,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_9/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 9,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_9/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 9,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_9/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 9,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_9/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 10,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_10/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 10,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_10/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 10,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_10/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 10,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_10/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 10,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_10/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 11,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_11/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 11,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_11/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 11,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_11/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 11,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_11/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 11,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_11/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 12,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_12/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 12,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_12/teacher_residual_const_lam025_random/teacher_residual_const_lam025_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 12,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_12/teacher_residual_const_lam050_random/teacher_residual_const_lam050_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 12,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_12/teacher_residual_const_lam075_random/teacher_residual_const_lam075_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "random",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 12,
+   "lam": 1.0,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_12/teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cat__x__a_dog",
+   "seed": 9,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_9/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cat__x__a_dog",
+   "seed": 9,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_9/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cat__x__a_dog",
+   "seed": 9,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_9/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cat__x__a_dog",
+   "seed": 9,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_9/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cat__x__a_dog",
+   "seed": 9,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_9/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cat__x__a_dog",
+   "seed": 10,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_10/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cat__x__a_dog",
+   "seed": 10,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_10/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cat__x__a_dog",
+   "seed": 10,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_10/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cat__x__a_dog",
+   "seed": 10,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_10/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cat__x__a_dog",
+   "seed": 10,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_10/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cat__x__a_dog",
+   "seed": 11,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_11/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cat__x__a_dog",
+   "seed": 11,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_11/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cat__x__a_dog",
+   "seed": 11,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_11/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cat__x__a_dog",
+   "seed": 11,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_11/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cat__x__a_dog",
+   "seed": 11,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_11/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cat__x__a_dog",
+   "seed": 12,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_12/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cat__x__a_dog",
+   "seed": 12,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_12/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cat__x__a_dog",
+   "seed": 12,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_12/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cat__x__a_dog",
+   "seed": 12,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_12/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cat__x__a_dog",
+   "seed": 12,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cat__x__a_dog/seed_12/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 9,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_9/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 9,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_9/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 9,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_9/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 9,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_9/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 9,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_9/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 10,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_10/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 10,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_10/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 10,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_10/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 10,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_10/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 10,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_10/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 11,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_11/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 11,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_11/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 11,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_11/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 11,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_11/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 11,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_11/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 12,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_12/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 12,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_12/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 12,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_12/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 12,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_12/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_cow__x__a_buffalo",
+   "seed": 12,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_cow__x__a_buffalo/seed_12/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_frog__x__a_toad",
+   "seed": 9,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_9/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_frog__x__a_toad",
+   "seed": 9,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_9/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_frog__x__a_toad",
+   "seed": 9,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_9/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_frog__x__a_toad",
+   "seed": 9,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_9/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_frog__x__a_toad",
+   "seed": 9,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_9/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_frog__x__a_toad",
+   "seed": 10,
+   "lam": 0.0,
+   "nInstances": 3,
+   "compose": 1,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_10/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_frog__x__a_toad",
+   "seed": 10,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_10/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_frog__x__a_toad",
+   "seed": 10,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_10/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_frog__x__a_toad",
+   "seed": 10,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_10/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_frog__x__a_toad",
+   "seed": 10,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_10/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_frog__x__a_toad",
+   "seed": 11,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_11/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_frog__x__a_toad",
+   "seed": 11,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_11/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_frog__x__a_toad",
+   "seed": 11,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_11/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_frog__x__a_toad",
+   "seed": 11,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_11/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_frog__x__a_toad",
+   "seed": 11,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_11/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_frog__x__a_toad",
+   "seed": 12,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_12/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_frog__x__a_toad",
+   "seed": 12,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_12/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_frog__x__a_toad",
+   "seed": 12,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_12/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_frog__x__a_toad",
+   "seed": 12,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_12/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_frog__x__a_toad",
+   "seed": 12,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_frog__x__a_toad/seed_12/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_goose__x__a_swan",
+   "seed": 9,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_9/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_goose__x__a_swan",
+   "seed": 9,
+   "lam": 0.25,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_9/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_goose__x__a_swan",
+   "seed": 9,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_9/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_goose__x__a_swan",
+   "seed": 9,
+   "lam": 0.75,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_9/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_goose__x__a_swan",
+   "seed": 9,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_9/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_goose__x__a_swan",
+   "seed": 10,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_10/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_goose__x__a_swan",
+   "seed": 10,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_10/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_goose__x__a_swan",
+   "seed": 10,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_10/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_goose__x__a_swan",
+   "seed": 10,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_10/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_goose__x__a_swan",
+   "seed": 10,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_10/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_goose__x__a_swan",
+   "seed": 11,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_11/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_goose__x__a_swan",
+   "seed": 11,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_11/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_goose__x__a_swan",
+   "seed": 11,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_11/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_goose__x__a_swan",
+   "seed": 11,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_11/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_goose__x__a_swan",
+   "seed": 11,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_11/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_goose__x__a_swan",
+   "seed": 12,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_12/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_goose__x__a_swan",
+   "seed": 12,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_12/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_goose__x__a_swan",
+   "seed": 12,
+   "lam": 0.5,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_12/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_goose__x__a_swan",
+   "seed": 12,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_12/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_goose__x__a_swan",
+   "seed": 12,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_goose__x__a_swan/seed_12/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 9,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_9/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 9,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_9/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 9,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_9/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 9,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_9/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 9,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_9/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 10,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_10/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 10,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_10/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 10,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_10/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 10,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_10/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 10,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_10/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 11,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_11/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 11,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_11/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 11,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_11/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 11,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_11/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 11,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_11/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 12,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_12/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 12,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_12/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 12,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_12/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 12,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_12/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_leopard__x__a_jaguar",
+   "seed": 12,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_leopard__x__a_jaguar/seed_12/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 9,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_9/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 9,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_9/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 9,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_9/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 9,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_9/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 9,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_9/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 10,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_10/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 10,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_10/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 10,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_10/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 10,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_10/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 10,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_10/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 11,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_11/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 11,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_11/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 11,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_11/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 11,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_11/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 11,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_11/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 12,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_12/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 12,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_12/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 12,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_12/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 12,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_12/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "a_seal__x__a_walrus",
+   "seed": 12,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "a_seal__x__a_walrus/seed_12/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 9,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_9/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 9,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_9/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 9,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_9/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 9,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_9/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 9,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_9/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 10,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_10/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 10,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_10/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 10,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_10/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 10,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_10/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 10,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_10/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 11,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_11/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 11,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_11/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 11,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_11/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 11,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_11/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 11,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_11/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 12,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_12/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 12,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_12/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 12,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_12/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 12,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_12/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_eagle__x__a_hawk",
+   "seed": 12,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_eagle__x__a_hawk/seed_12/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 9,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_9/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 9,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_9/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 9,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_9/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 9,
+   "lam": 0.75,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_9/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 9,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_9/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 10,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_10/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 10,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_10/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 10,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_10/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 10,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_10/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 10,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_10/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 11,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_11/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 11,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_11/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 11,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_11/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 11,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_11/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 11,
+   "lam": 1.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_11/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 12,
+   "lam": 0.0,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_12/teacher_residual_const_lam000/teacher_residual_const_lam000.png",
+    "exists": true,
+    "sharedAtZero": true
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 12,
+   "lam": 0.25,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_12/teacher_residual_const_lam025_wrong_pair/teacher_residual_const_lam025_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 12,
+   "lam": 0.5,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_12/teacher_residual_const_lam050_wrong_pair/teacher_residual_const_lam050_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 12,
+   "lam": 0.75,
+   "nInstances": 1,
+   "compose": 0,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_12/teacher_residual_const_lam075_wrong_pair/teacher_residual_const_lam075_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  },
+  {
+   "row": "wrong_pair",
+   "pair": "an_elephant__x__a_penguin",
+   "seed": 12,
+   "lam": 1.0,
+   "nInstances": 2,
+   "compose": 1,
+   "image": {
+    "relPath": "an_elephant__x__a_penguin/seed_12/teacher_residual_const_lam100_wrong_pair/teacher_residual_const_lam100_wrong_pair.png",
+    "exists": true,
+    "sharedAtZero": false
+   }
+  }
+ ],
+ "fileSummary": {
+  "curves": {
+   "oracle": [
+    0.03125,
+    0.09375,
+    0.25,
+    0.71875,
+    0.9375
+   ],
+   "random": [
+    0.03125,
+    0.03125,
+    0.03125,
+    0.0,
+    0.03125
+   ],
+   "wrong_pair": [
+    0.03125,
+    0.03125,
+    0.03125,
+    0.0625,
+    0.03125
+   ]
+  },
+  "auc": {
+   "oracle": 0.38671875,
+   "random": 0.0234375,
+   "wrong_pair": 0.0390625
+  },
+  "nCells": {
+   "oracle": 32,
+   "random": 32,
+   "wrong_pair": 32
+  },
+  "scorer": "instance_count",
+  "note": "The app recomputes all of these from the cells and shows the comparison. These are the file's own values, kept for that check."
+ },
+ "claims": [
+  {
+   "id": "C1",
+   "type": "dose-response",
+   "state": "measured",
+   "mark": "\u2705",
+   "question": "Does the oracle compose-rate rise with \u03bb while both control rows stay near the floor?",
+   "answer": [
+    "Yes. Oracle 3% at \u03bb=0 to 94% at \u03bb=1. Random ends at 3%, wrong-pair at 3%, neither above 6%",
+    "at any dose. AUC 0.387 against 0.023 and 0.039, so the oracle carries about ten times the",
+    "area of the better control. The oracle rises 91 points across the sweep; the better control",
+    "rises 0.",
+    "\u2713 verified (32 cells per row-and-strength, seeds 9 to 12, size floor in",
+    "`detection_scorer.py`)"
+   ],
+   "source": {
+    "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
+    "lines": [
+     56,
+     62
+    ]
+   },
+   "fill": null
+  },
+  {
+   "id": "C2",
+   "type": "threshold",
+   "state": "measured",
+   "mark": "\u2705",
+   "question": "Do the curves hold when only this sweep's own cells are scored?",
+   "answer": [
+    "**Yes, and they barely moved.** With the seeds pinned to 9 to 12 in",
+    "`plot_dose_curves.py`'s source, every (row, strength) pair now holds exactly 32 cells,",
+    "where the two end strengths previously held 44 against the middle three's 32. The unfair",
+    "comparison is gone."
+   ],
+   "source": {
+    "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
+    "lines": [
+     131,
+     135
+    ]
+   },
+   "fill": null
+  },
+  {
+   "id": "C3",
+   "type": "threshold",
+   "state": "quoted",
+   "mark": "\u2705",
+   "question": "Does the scorer's instance count mean what the rule says it means?",
+   "answer": [
+    "It does now, under the size floor. Without one it did not, and the failure was worse than a",
+    "spare box on a correct verdict. On `an_elephant__x__a_penguin` seed 10 the `random` control",
+    "at \u03bb=1 shows one fused creature and scored two boxes: the animal at 888px, and a 220px box",
+    "on a shadow at confidence **0.60**. That flipped a control-row blend into a `compose`, which",
+    "is the worst place for a false positive, because the controls are what the oracle's rise is",
+    "measured against.",
+    "No confidence cutoff separates that case: 0.60 sits above the real penguin's 0.54 on the",
+    "same strip. Size does. Every genuine animal there spans 458px or more and every spurious box",
+    "220px or less, on a 1024px image, so the floor is `MIN_BOX_FRACTION = 0.25`, a quarter of the",
+    "image's longer side. It is the same line `dose_strip.py` already draws when it colours a box",
+    "yellow or magenta, so the diagnostic picture and the scorer agree by construction. The filter",
+    "can only remove detections, so it can only lower compose rates.",
+    "\u2713 verified (control \u03bb=1 goes 2 boxes to 1; oracle \u03bb=1 goes 3 to 2 and stays `compose`)"
+   ],
+   "source": {
+    "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
+    "lines": [
+     82,
+     95
+    ]
+   },
+   "fill": {
+    "what": "the before-and-after box counts on the known cells: the control's false positive dropping 2 to 1, and the oracle staying at 2 or above",
+    "command": "the step 3 snippet in procedures/hypothesis-02-recheck-the-headline-numbers.md, writing its two counts to JSON instead of printing them",
+    "output": "a small JSON beside dose_curves.json",
+    "cost": "about a minute on CPU, no GPU needed",
+    "hasCommand": true
+   }
+  },
+  {
+   "id": "C4",
+   "type": "invariance",
+   "state": "quoted",
+   "mark": "\u2705",
+   "question": "Does the harness leave plain PoE untouched at \u03bb=0?",
+   "answer": [
+    "Yes, against the sampler's own saved `eps_poe`. Not against a fresh `run_cfg_poe`",
+    "regeneration: that batches 3 UNet branches where this sampler batches 4, and the same UNet",
+    "returns different numbers per batch shape, about 2e-3 per step compounding to 0.6 over 50",
+    "steps. 8 tests, each shown to fail against a deliberately mutated sampler."
+   ],
+   "source": {
+    "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
+    "lines": [
+     66,
+     70
+    ]
+   },
+   "fill": {
+    "what": "a stored pass record for the eight canary tests, rather than the assertions read from source",
+    "command": "pytest tests/test_interaction_term_canaries.py --junitxml=plans/.../scene/data/canaries.xml",
+    "output": "canaries.xml beside the data file",
+    "cost": "seconds, CPU",
+    "hasCommand": true
+   }
+  },
+  {
+   "id": "C5",
+   "type": "comparison",
+   "state": "quoted",
+   "mark": "\u2705",
+   "question": "Do the two control rows actually inject something different from the oracle?",
+   "answer": [
+    "Yes. All three reach different final latents, max absolute difference 2.33 and 2.21 against",
+    "the oracle and 2.67 between the two controls, while `delta_norm_per_step` reads 9.53 in all",
+    "three. So the rows differ in direction and not in magnitude, which is what the control is for."
+   ],
+   "source": {
+    "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
+    "lines": [
+     71,
+     74
+    ]
+   },
+   "fill": {
+    "what": "the latent distances between the three rows and the per-step size of the real correction, so direction-not-magnitude is a loaded number",
+    "command": "none. No procedure in this scope names the command that produced 2.33, 2.21, 2.67 or 9.53",
+    "output": "unknown until a procedure is written",
+    "cost": "unknown",
+    "hasCommand": false
+   }
+  },
+  {
+   "id": "C6",
+   "type": "existence",
+   "state": "measured",
+   "mark": "\u2705",
+   "question": "Does the eyeball agree with the scorer on the smoke cell?",
+   "answer": [
+    "Yes. Oracle 100%, random 0%, wrong-pair 0% at \u03bb=1 on a_cat__x__a_dog seed 9. Both controls",
+    "show one blended animal (cat ears and whiskers on a dog muzzle); the oracle gives two",
+    "separate animals. The controls are real, not cosmetic."
+   ],
+   "source": {
+    "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
+    "lines": [
+     75,
+     78
+    ]
+   },
+   "fill": null
+  },
+  {
+   "id": "C7",
+   "type": "existence",
+   "state": "measured",
+   "mark": "\u2705",
+   "question": "Does the five-image strip read the same on complete cells?",
+   "answer": [
+    "**Yes.** F2 is `paper/iclr/figures/F2-dose-response.pdf`: `a_cat__x__a_dog` seed 9, all",
+    "three rows across all five strengths, above the curves on a shared \u03bb axis.",
+    "The oracle row holds one ginger cat-dog chimera at \u03bb=0, 0.25 and 0.5, then a tabby cat",
+    "sitting beside a white labrador at 0.75 and 1. The random row holds that same chimera at",
+    "every strength. The other-pair row degrades into cartoon artifacts and never separates. So",
+    "reading down a column shows it is which vector was injected that matters, not how large the",
+    "nudge was.",
+    "",
+    "Cat \u00d7 dog carries the figure because it is the strongest pair in the set: 0% to 100%, AUC",
+    "0.562, and the only pair whose two controls score exactly 0.000. Seed 9 over seeds 10, 11",
+    "and 12 because its two composing panels were checked by eye and hold a real cat beside a",
+    "real dog.",
+    "",
+    "**The second figure answers the obvious objection.**",
+    "`paper/iclr/figures/F2b-dissimilar-pair.pdf` is `an_elephant__x__a_penguin` seed 10. An",
+    "elephant and a penguin share nothing, and PoE still fuses them into one creature at \u03bb=0, so"
+   ],
+   "source": {
+    "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
+    "lines": [
+     176,
+     192
+    ]
+   },
+   "fill": null
+  },
+  {
+   "id": "C8",
+   "type": "null",
+   "state": "measured",
+   "mark": null,
+   "question": "A control the pool does not actually have.",
+   "answer": [
+    "`pair_pool.yaml` lists",
+    "`an_elephant__x__a_penguin` as the compose-by-default control, the do-no-harm check. It",
+    "scores 0 of 4 at \u03bb=0 and the four images are single fused creatures, so the scorer is right",
+    "and the pool's assumption is wrong. There is no working do-no-harm control in the pool. That",
+    "is a limitations sentence, owed by writing-06."
+   ],
+   "source": {
+    "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
+    "lines": [
+     197,
+     201
+    ]
+   },
+   "fill": null
+  },
+  {
+   "id": "C9",
+   "type": "environment",
+   "state": "measured",
+   "mark": "\u274c",
+   "question": "Did the output land where the plan said it would?",
+   "answer": [
+    "No. 3.4GB of cells are on `/home-mscluster`, not `/datasets`. `run_dose_sweep.sh` sets",
+    "`OUT=$REPO/outputs/...` while its disk guard reads `df /datasets/mmolefe`, so the guard",
+    "reported healthy about a filesystem nothing was being written to.",
+    "Owned by the last task in the design plan."
+   ],
+   "source": {
+    "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
+    "lines": [
+     121,
+     125
+    ]
+   },
+   "fill": null
+  }
+ ],
+ "supersededTable": {
+  "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
+  "lines": [
+   137,
+   141
+  ],
+  "rows": [
+   [
+    "",
+    "\u03bb=0",
+    "\u03bb=0.25",
+    "\u03bb=0.5",
+    "\u03bb=0.75",
+    "\u03bb=1",
+    "AUC"
+   ],
+   [
+    "---",
+    "---",
+    "---",
+    "---",
+    "---",
+    "---",
+    "---"
+   ],
+   [
+    "real correction",
+    "6%",
+    "16%",
+    "28%",
+    "75%",
+    "**94%**",
+    "0.422"
+   ],
+   [
+    "random vector",
+    "6%",
+    "6%",
+    "6%",
+    "3%",
+    "9%",
+    "0.059"
+   ],
+   [
+    "other pair's correction",
+    "6%",
+    "9%",
+    "3%",
+    "9%",
+    "6%",
+    "0.070"
+   ]
+  ],
+  "why": "Its results file was overwritten by the re-score, so these figures exist only as text in the review file."
+ },
+ "environment": {
+  "outputBytes": 3571318784,
+  "outputFilesystem": "/home-mscluster",
+  "scriptWrites": {
+   "path": "scripts/mechanism_study/run_dose_sweep.sh",
+   "line": 26,
+   "text": "OUT=$REPO/outputs/$EXP/pairs"
+  },
+  "scriptGuardChecks": {
+   "path": "scripts/mechanism_study/run_dose_sweep.sh",
+   "line": 46,
+   "text": "USE=$(df --output=pcent /datasets/mmolefe | tail -1 | tr -dc '0-9')"
+  },
+  "guardFilesystem": "/datasets",
+  "planTask": {
+   "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/plans/hypothesis-02-more-correction-more-composition.md",
+   "line": 130,
+   "text": "- [ ] Move the output off /home-mscluster and repoint `run_dose_sweep.sh`. Its"
+  }
+ },
+ "figures": {
+  "f2": {
+   "path": "paper/iclr/figures/F2-dose-response.png",
+   "abs": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/paper/iclr/figures/F2-dose-response.png",
+   "mtime": "2026-08-10T19:11:41+00:00",
+   "bytes": 1747766,
+   "publicPath": "/paperfigs/F2-dose-response.png"
+  },
+  "f2b": {
+   "path": "paper/iclr/figures/F2b-dissimilar-pair.png",
+   "abs": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/paper/iclr/figures/F2b-dissimilar-pair.png",
+   "mtime": "2026-08-10T19:09:19+00:00",
+   "bytes": 2045978,
+   "publicPath": "/paperfigs/F2b-dissimilar-pair.png"
+  },
+  "f2Halfwidth": {
+   "path": "paper/iclr/figures/F2-dose-response-halfwidth.png",
+   "abs": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/paper/iclr/figures/F2-dose-response-halfwidth.png",
+   "mtime": "2026-08-10T19:11:46+00:00",
+   "bytes": 1538670,
+   "publicPath": "/paperfigs/F2-dose-response-halfwidth.png"
+  },
+  "stripBoxes": {
+   "path": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/dose_strip_an_elephant__x__a_penguin_seed10_boxes.png",
+   "abs": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/dose_strip_an_elephant__x__a_penguin_seed10_boxes.png",
+   "mtime": "2026-08-10T17:51:47+00:00",
+   "bytes": 1779494,
+   "publicPath": "/figures/dose_strip_an_elephant__x__a_penguin_seed10_boxes.png"
+  },
+  "stripDissimilar": {
+   "path": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/dose_strip_an_elephant__x__a_penguin_seed10.png",
+   "abs": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/dose_strip_an_elephant__x__a_penguin_seed10.png",
+   "mtime": "2026-08-10T17:50:00+00:00",
+   "bytes": 1787571,
+   "publicPath": "/figures/dose_strip_an_elephant__x__a_penguin_seed10.png"
+  },
+  "stripSupplementary": {
+   "path": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/dose_strip_a_leopard__x__a_jaguar_seed9.png",
+   "abs": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/dose_strip_a_leopard__x__a_jaguar_seed9.png",
+   "mtime": "2026-08-05T22:07:58+00:00",
+   "bytes": 2026360,
+   "publicPath": "/figures/dose_strip_a_leopard__x__a_jaguar_seed9.png"
+  },
+  "curvesPng": {
+   "path": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/dose_curves.png",
+   "abs": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/dose_curves.png",
+   "mtime": "2026-08-10T18:11:25+00:00",
+   "bytes": 59113,
+   "publicPath": "/figures/dose_curves.png"
+  }
+ }
+}

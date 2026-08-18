@@ -33,6 +33,13 @@ follow-on. It has not failed.
 | Run | Kind | Launched at | Output | State |
 |---|---|---|---|---|
 | dose sweep on mscluster109, log `results/mechanism_study/dose_sweep.log` | Tests the claim | commit a21ac8b | `outputs/interaction_term/dose/pairs`, 440 images, 3.4GB | done |
+
+440 images and 480 scored records are both right and count different things. 416 of the images are
+this sweep's own (8 pairs, seeds 9 to 12, 13 runs each); the other 24 sit at seed 1 and the scorer
+no longer reads them. The 416 score as 480 records because at λ=0 nothing is injected, so all three
+rows share one image and it is scored once per row. That is also why the three rows read exactly
+the same rate at λ=0.
+
 | one-seed smoke, a_cat__x__a_dog seed 9, 20 steps | Tests the claim | before a21ac8b | folded into the sweep tree | done |
 | first scoring pass, grounding-dino-tiny instance_count | Tests the claim | commit a21ac8b | `dose_curves.json` | replaced, first by the seed pinning and then by the size floor |
 | re-score on the pinned seeds, CPU | Tests the claim | commit dcca290 | `dose_curves.json`, rewritten | done; showed the stray cells were not inflating anything |
@@ -47,10 +54,12 @@ no job id, so the log path is its identity.
 the plan.**
 
 - [x] ✅ Does the oracle compose-rate rise with λ while both control rows stay near the floor?
-      Yes. Oracle 7% at λ=0 to 93% at λ=1. Random ends at 9%, wrong-pair at 6%, neither above 10%
-      at any dose. AUC 0.422 against 0.059 and 0.071, so the oracle carries about six times the
-      area of the better control.
-      ✓ verified (dose sweep, 480 cells, oracle AUC 0.422 against control 0.059, commit a21ac8b)
+      Yes. Oracle 3% at λ=0 to 94% at λ=1. Random ends at 3%, wrong-pair at 3%, neither above 6%
+      at any dose. AUC 0.387 against 0.023 and 0.039, so the oracle carries about ten times the
+      area of the better control. The oracle rises 91 points across the sweep; the better control
+      rises 0.
+      ✓ verified (32 cells per row-and-strength, seeds 9 to 12, size floor in
+      `detection_scorer.py`)
 
 ## Was the comparison fair
 
@@ -70,13 +79,34 @@ the plan.**
 
 ## Was the instrument sound
 
-- [x] 🟡 Does the scorer's instance count mean what the rule says it means?
-      Unknown, and it does not always. On one image containing two cats it reports 3 instances:
-      boxes at 818px (confidence 0.69), 393px (0.58), and a 162px sliver at 0.309, just over the
-      0.30 floor and almost certainly a limb. The rule is "compose iff distinct-instance-count
-      >= 2", so a spurious third instance does not flip a verdict on its own, but the floor has not
-      been chosen against this case.
-      Next action: [../procedures/hypothesis-02-recheck-the-headline-numbers.md](../procedures/hypothesis-02-recheck-the-headline-numbers.md)
+- [x] ✅ Does the scorer's instance count mean what the rule says it means?
+      It does now, under the size floor. Without one it did not, and the failure was worse than a
+      spare box on a correct verdict. On `an_elephant__x__a_penguin` seed 10 the `random` control
+      at λ=1 shows one fused creature and scored two boxes: the animal at 888px, and a 220px box
+      on a shadow at confidence **0.60**. That flipped a control-row blend into a `compose`, which
+      is the worst place for a false positive, because the controls are what the oracle's rise is
+      measured against.
+      No confidence cutoff separates that case: 0.60 sits above the real penguin's 0.54 on the
+      same strip. Size does. Every genuine animal there spans 458px or more and every spurious box
+      220px or less, on a 1024px image, so the floor is `MIN_BOX_FRACTION = 0.25`, a quarter of the
+      image's longer side. It is the same line `dose_strip.py` already draws when it colours a box
+      yellow or magenta, so the diagnostic picture and the scorer agree by construction. The filter
+      can only remove detections, so it can only lower compose rates.
+      ✓ verified (control λ=1 goes 2 boxes to 1; oracle λ=1 goes 3 to 2 and stays `compose`)
+
+      **The count is reliable. It is still not an identity check, and that costs us.** The rule
+      asks a detector for "animal" and counts distinct boxes, so it cannot tell which animals are
+      present. On `a_cat__x__a_dog` seed 10 at λ=1 the panel holds **two dogs**: two canine
+      muzzles, two black noses, no cat anywhere. It scores `2` and therefore `compose`, and it is
+      a composition failure. The pair was requested as a cat and a dog and the model returned two
+      of one concept.
+      So the 94% endpoint counts an unknown number of same-concept pairs as successes, and the
+      true compose rate is at or below it. The direction of the result is unaffected, because a
+      control row producing two dogs would score the same way and the controls sit at 3%. The
+      magnitude is an upper bound, and the paper must say so rather than quote 94% flat.
+      Next action: a per-concept read (query "cat" and "dog" separately, require one box each)
+      would measure the gap. Not built. Owed as a limitations sentence by
+      `writing-06-mechanism-and-limitations` until it is.
 - [x] ❌ Is every dose scored over the same set of cells?
       No. λ=0 and λ=1 are scored over 44 cells while λ=0.25, 0.5 and 0.75 use 32. The extra 12 are
       earlier smoke cells at seeds 1 and 42, picked up because the scorer globs the whole dose tree
@@ -144,21 +174,25 @@ The original question asked about two things at once, so it splits.
 
 ## What is still open
 - [x] ✅ Does the five-image strip read the same on complete cells?
-      **Yes.** The strip is `an_elephant__x__a_penguin` seed 10, all three rows across all five
-      strengths, at
-      `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/dose_strip_an_elephant__x__a_penguin_seed10.png`.
-      The oracle row goes fused creature, fused creature, elephant alone, penguin beside elephant,
-      penguin beside elephant. Both control rows stay fused at every strength, so reading down a
-      column shows it is which vector was injected that matters, not how large the nudge was.
+      **Yes.** F2 is `paper/iclr/figures/F2-dose-response.pdf`: `a_cat__x__a_dog` seed 9, all
+      three rows across all five strengths, above the curves on a shared λ axis.
+      The oracle row holds one ginger cat-dog chimera at λ=0, 0.25 and 0.5, then a tabby cat
+      sitting beside a white labrador at 0.75 and 1. The random row holds that same chimera at
+      every strength. The other-pair row degrades into cartoon artifacts and never separates. So
+      reading down a column shows it is which vector was injected that matters, not how large the
+      nudge was.
 
-      That pair carries the strip because a reviewer cannot dismiss it. An elephant and a penguin
-      share nothing, and PoE still fuses them at λ=0, so the failure is not "the two animals look
-      alike". `a_leopard__x__a_jaguar` seed 9 is the supplementary strip.
+      Cat × dog carries the figure because it is the strongest pair in the set: 0% to 100%, AUC
+      0.562, and the only pair whose two controls score exactly 0.000. Seed 9 over seeds 10, 11
+      and 12 because its two composing panels were checked by eye and hold a real cat beside a
+      real dog.
 
-      Two things in it belong in the text rather than smoothed over. At λ=0.5 the failure changes
-      character: it stops fusing and drops the penguin entirely. At λ=1 the panel holds three
-      animals, not two. Seed 10 is also the seed whose oracle row rises monotonically; seeds 9 and
-      11 do not.
+      **The second figure answers the obvious objection.**
+      `paper/iclr/figures/F2b-dissimilar-pair.pdf` is `an_elephant__x__a_penguin` seed 10. An
+      elephant and a penguin share nothing, and PoE still fuses them into one creature at λ=0, so
+      the failure cannot be dismissed as "the two animals look alike". Two things in it belong in
+      the text rather than smoothed over: at λ=0.5 the failure changes character, dropping the
+      penguin entirely instead of fusing, and seeds 9 and 11 of that pair are not monotone.
 
       **A control the pool does not actually have.** `pair_pool.yaml` lists
       `an_elephant__x__a_penguin` as the compose-by-default control, the do-no-harm check. It

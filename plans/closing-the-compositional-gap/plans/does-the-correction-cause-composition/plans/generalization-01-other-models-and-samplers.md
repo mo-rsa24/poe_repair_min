@@ -1,5 +1,7 @@
 # 🔁 Replication on other models and samplers
 
+**No step number: nothing waits on this.** Background, listed in the background-experiments pool of the [repo root MASTER_PLAN.md](../../../../../MASTER_PLAN.md), which also holds the one `## Running order` table. This plan asks the same result on another model and sampler. Its scaffold waits at `plans/shelved/cross-model-replication`.
+
 ## What this asks, in one line
 Does the dose result survive a different model and a different sampler? Background: a likely reviewer ask, not a claim the paper makes.
 

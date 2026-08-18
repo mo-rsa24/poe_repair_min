@@ -1,5 +1,13 @@
 # 🔍 The mechanism section and the three honesty caveats
 
+**Step 21 of 22.** Waits on step 15. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../../../MASTER_PLAN.md).
+
+| Step | Plan | Status |
+|---|---|---|
+| 20 | [writing-04-method-and-introduction](writing-04-method-and-introduction.md) | ⚠️ |
+| **21** | **this plan** | **⚠️** |
+| 22 | [writing-07-the-abstract-written-last](writing-07-the-abstract-written-last.md) | ⚠️ |
+
 ## What this asks, in one line
 Write the mechanism section from the answered review questions, honest about scope: what replicated (the value-channel read, median 1.52x over 64 cells) and exactly where its boundary sits.
 

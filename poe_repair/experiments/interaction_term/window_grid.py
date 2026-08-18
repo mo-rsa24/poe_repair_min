@@ -68,3 +68,35 @@ def centre(window: tuple[int, int]) -> float:
 def contains_fork(window: tuple[int, int], *, fork: int = FORK_STEP) -> bool:
     """Does this window cover the step where the two paths pull apart?"""
     return window[0] <= fork < window[1]
+
+
+# F4g/F4h: a growing window anchored at one end, instead of a fixed width
+# slid along the run. F4a asks whether a narrow band suffices and where it has
+# to sit; these ask how much of the trajectory, counted from one end, needs
+# the correction on. Same PAIRS and SEEDS as the fixed-width grid, so all
+# three curves describe one population of cells.
+CUTOFFS = (10, 20, 30, 40, 50)
+
+
+def prefix_windows(cutoffs: tuple[int, ...] = CUTOFFS) -> list[tuple[int, int]]:
+    """Correct 0..c, plain PoE from c to the end. c=NUM_STEPS corrects every step.
+
+    c=10 is (0, 10), the same window F4a's own leftmost cell already used, so a
+    sweep over these windows reuses those images instead of resampling them.
+    """
+    return [(0, c) for c in cutoffs]
+
+
+def suffix_windows(
+    cutoffs: tuple[int, ...] = CUTOFFS, *, n: int = NUM_STEPS,
+) -> list[tuple[int, int]]:
+    """Plain PoE for 0..c, correct c..end. c=NUM_STEPS corrects no step.
+
+    ``correction_window=(c, n)`` requires ``c < n``; a plain-PoE-everywhere
+    point can't be written that way. c=NUM_STEPS is written as ``(n, n+10)``
+    instead: a window entirely past the last step index, so lambda is forced
+    to 0 at every step. This is the same "window past the end" trick
+    ``interaction_term_window.py``'s own identity check already uses to
+    represent off without leaving the windowed code path.
+    """
+    return [(c, n) if c < n else (n, n + 10) for c in cutoffs]

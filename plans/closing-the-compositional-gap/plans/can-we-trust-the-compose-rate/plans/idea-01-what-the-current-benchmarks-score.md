@@ -1,5 +1,13 @@
 # 🧪 What the published metrics score on the same images
 
+**No step number: nothing in the paper order waits on this.** This scope runs in its own internal order, and earns numbered steps only on the big-promotion condition its own `MASTER_PLAN.md` sets. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../../../MASTER_PLAN.md).
+
+| Within this scope | Plan | Status |
+|---|---|---|
+| 2 of 4 | [instrument-01-the-three-state-labelled-set](instrument-01-the-three-state-labelled-set.md) | ⚠️ not started |
+| **3 of 4** | **this plan** | **⚠️ blocked by gate-01** |
+| 4 of 4 | [gate-02-promote-or-close](gate-02-promote-or-close.md) | ⚠️ blocked by the other three |
+
 Design only. The verdict lives in [../review/idea-01-what-the-current-benchmarks-score.md](../review/idea-01-what-the-current-benchmarks-score.md).
 
 ## What this asks, in one line

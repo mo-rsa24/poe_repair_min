@@ -1,0 +1,61 @@
+{
+  "panels": {
+    "a": {
+      "source": "cache_analyses/manifold_slide_clip.json",
+      "n_cells": 32,
+      "axis": "cached poe.png -> cached mono.png",
+      "bars": {
+        "min_oracle_mid": 0.3,
+        "max_control_fraction": 0.5,
+        "max_endpoint_drift": 5.0
+      },
+      "verdicts": {
+        "endpoint_drift_grey_levels": 1.9101622203985849,
+        "endpoint_is_identity": true,
+        "interior_lambdas": [
+          0.25,
+          0.5,
+          0.75
+        ],
+        "oracle_mid": 0.4131009468965205,
+        "oracle_monotone": true,
+        "oracle_clears_bar": true,
+        "random_fraction_of_oracle_travel": 0.05052121080006216,
+        "wrong_pair_fraction_of_oracle_travel": 0.4396590326883114
+      }
+    },
+    "b": {
+      "source": "cache_analyses/caption_readback.json",
+      "n_cells": 32,
+      "bars": {
+        "min_two_rate_end": 0.5,
+        "min_two_rate_gain": 0.2,
+        "max_control_fraction": 0.5
+      },
+      "verdicts": {
+        "scored_at_lambda": 0.75,
+        "two_rate_base": 0.03125,
+        "two_rate_at_scored_lambda": 0.5625,
+        "gain": 0.53125,
+        "crossover_lambda": 0.75,
+        "two_rate_at_lambda_1": 0.8125,
+        "crossed": true,
+        "random_fraction_of_oracle_gain": -0.058823529411764705,
+        "wrong_pair_fraction_of_oracle_gain": 0.11764705882352941
+      }
+    },
+    "c": {
+      "source": "cache_analyses/plausibility_climb.json",
+      "n_cells": 38,
+      "measure": "sum_t r_t . (x_{t+1} - x_t), along the cached PoE path",
+      "caveat": "the cache walks only the PoE path, so this is the push at the states PoE visits, not the climb along a corrected path",
+      "median": 0.39737836746226474,
+      "n_negative": 0
+    }
+  },
+  "caption_caps": [
+    "panel a: the wrong pair's correction still travels 44% of the distance the right one travels, against a 50% bar written beforehand. It passes, barely, and the caption says so.",
+    "lambda=1 reproduces the joint prediction by construction (endpoint drift 1.9 grey levels of 255), so the lambda=1 point carries no evidence and every dose comparison is read at 0.75.",
+    "panel c does not depend on lambda and is not drawn against it; it is measured along the cached PoE path, so it is the push at the states PoE visits, not the climb along a corrected path."
+  ]
+}

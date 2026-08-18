@@ -1,0 +1,56 @@
+{
+  "space": "clip",
+  "population_pairs": [
+    "a_cheetah__x__a_cougar",
+    "a_cow__x__a_buffalo",
+    "a_crocodile__x__an_alligator",
+    "a_crow__x__a_raven",
+    "a_dolphin__x__a_porpoise",
+    "a_donkey__x__a_pony",
+    "a_frog__x__a_toad",
+    "a_goose__x__a_swan",
+    "a_gorilla__x__a_chimpanzee",
+    "a_horse__x__a_zebra",
+    "a_leopard__x__a_jaguar",
+    "a_lion__x__a_tiger",
+    "a_rabbit__x__a_hare",
+    "a_seal__x__a_walrus",
+    "a_turtle__x__a_tortoise",
+    "a_wolf__x__a_husky",
+    "an_eagle__x__a_hawk"
+  ],
+  "n_population_pairs": 17,
+  "population_grid": "20-step DDIM, timesteps 951..1, seeds 9 and 10 averaged per pair, x0 recovered in closed form",
+  "named": {
+    "a_cat__x__a_dog": "50-step grid, seeds 9/10/11, per-seed faint + mean bold",
+    "an_elephant__x__a_penguin": "20-step grid, 2 seeds meaned"
+  },
+  "x_axis": "schedule timestep, 1000 (noise) to 0 (image); both grids live on it with no interpolation",
+  "y_axis": "pos(on) - pos(off) along the cell's own PoE-to-Mono CLIP endpoint axis; 0 = indistinguishable, 1 = final separation",
+  "fork_band_timesteps": [
+    581,
+    721
+  ],
+  "fork_timestep": 661,
+  "frames": {
+    "cell": "a_cat__x__a_dog seed_9, 50-step run",
+    "steps": [
+      0,
+      16,
+      33,
+      49
+    ],
+    "rows": [
+      "call__rall (= Mono)",
+      "call__roff (PoE)"
+    ]
+  },
+  "smoothing": {
+    "fine_50_step": 5,
+    "coarse_20_step": 3
+  },
+  "sources": [
+    "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cache_analyses/trajectory_divergence/divergence.json",
+    "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cache_analyses/trajectory_divergence/dose_divergence.json"
+  ]
+}

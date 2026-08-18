@@ -1,5 +1,13 @@
 # 📊 The four figures that carry the transfer argument
 
+**Step 14 of 22.** Waits on steps 11 and 12. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../../../MASTER_PLAN.md).
+
+| Step | Plan | Status |
+|---|---|---|
+| 13 | [figure-01-the-seven-paper-figures](../../does-the-correction-cause-composition/plans/figure-01-the-seven-paper-figures.md) | ◑ F6 needs a decision |
+| **14** | **this plan** | **◑ F8 waits on the sweep** |
+| 15 | [gate-01-two-literature-checks-before-print](../../does-the-correction-cause-composition/plans/gate-01-two-literature-checks-before-print.md) | ⚠️ |
+
 ## What this asks, in one line
 Turn the sweep outputs into four figures a reviewer reads in order: the fix arrives (A2), it
 transfers (A3), arrival and transfer split apart (A4), and the animals pool beats the

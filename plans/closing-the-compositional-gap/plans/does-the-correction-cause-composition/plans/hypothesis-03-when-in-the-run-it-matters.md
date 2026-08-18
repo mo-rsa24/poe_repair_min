@@ -1,5 +1,13 @@
 # ⏱️ When in the denoising run is the correction needed?
 
+**Step 6 of 22.** Waits on steps 4 and 5. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../../../MASTER_PLAN.md).
+
+| Step | Plan | Status |
+|---|---|---|
+| 5 | ~~[hypothesis-04-what-the-cached-runs-already-show](hypothesis-04-what-the-cached-runs-already-show.md)~~ | ✅ |
+| **6** | **this plan** | **◑ timing tab owed** |
+| 7 | ~~[hypothesis-05-the-same-story-from-three-sides](hypothesis-05-the-same-story-from-three-sides.md)~~ | ✅ |
+
 Design only. Verdicts and run state live in
 [../review/hypothesis-03-when-in-the-run-it-matters.md](../review/hypothesis-03-when-in-the-run-it-matters.md).
 
@@ -82,10 +90,10 @@ about which grid was run.
       `scripts/window_width.py`, `window_grid.py`.
 - [x] Smoke in-session on one pair, one seed, three windows: early, over the
       fork step, and late. `SMOKE=1 bash scripts/mechanism_study/run_window_sweep.sh`.
-- [ ] Full W2 grid: 288 cells, resumable, then score every image.
+- [x] Full W2 grid: 288 cells, resumable, then score every image.
       `bash scripts/mechanism_study/run_window_sweep.sh`, then
       `python scripts/plot_window_curves.py`.
-- [ ] The curve and the image strips. `scripts/plot_window_curves.py` for the
+- [x] The curve and the image strips. `scripts/plot_window_curves.py` for the
       curve with the fork step drawn on it, `scripts/window_strip.py` for the
       same cell across all nine windows.
 - [ ] Drive it by hand in the inspector: the Correction timing tab, built from
@@ -110,12 +118,12 @@ with the compose scorer.
 
 ## Next
 
-1. Let the 288-cell grid finish, then score it and rebuild the curve, the strips, and the
-   inspector manifest. The four commands are in Engagement Instructions below.
-2. Answer the review questions, in particular whether the peak lands near the fork step at
-   16 and what to do if it does not.
-3. F4 goes through plan 10's `/design-figure` pass, carrying the caution that the caption
-   may not claim the conditioning-window comparison, which was not run.
+1. Drive the Correction timing tab by hand, the one task still open above. The manifest it
+   reads is already built; the command is in Engagement Instructions below.
+2. F4 goes through plan 10's `/design-figure` pass, carrying two cautions the review
+   settled: the caption may not claim the conditioning-window comparison, which was not
+   run, and it may not draw step 16 as a band behind the timing curve, because the peak
+   and the fork step disagree.
 
 ## Engagement Instructions
 ```bash

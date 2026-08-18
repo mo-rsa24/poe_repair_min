@@ -1,0 +1,27 @@
+{
+  "rows": [
+    {
+      "pair": "a_cat__x__a_dog",
+      "seed": 9
+    },
+    {
+      "pair": "a_cat__x__a_dog",
+      "seed": 13
+    },
+    {
+      "pair": "an_eagle__x__a_hawk",
+      "seed": 9
+    }
+  ],
+  "shown_steps": [
+    2,
+    6,
+    10,
+    20
+  ],
+  "uncorrected": "Tweedie x0 from cached x_t + PoE prediction (the PoE path's own estimate), frames shared with D1-D3",
+  "corrected": "cat x dog seed 9 from the cross run's saved x0_estimates; the other two solved from consecutive lambda=1 dose-run latents (DDIM step linear in x0 and eps) and VAE-decoded fp32",
+  "step_choice": "steps sit inside F4's composing window (0-10) and just past it. An even spread over the run starts at step 10, by which point both sides have already committed",
+  "what_is_visible": "at step 2 neither side has committed to anything; by step 6 the uncorrected run is already one animal and the corrected run is already two. Three cells, so this locates the commitment for illustration and F4's 9-window sweep is what measures it",
+  "caption_caveat": "corrected seed 13 reads as a tan dog and a white puppy; count>=2 calls it composed, but the caption may not call that cell a cat and a dog"
+}

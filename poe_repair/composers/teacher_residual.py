@@ -70,6 +70,7 @@ def run(
     attn_resolution: int = 32,
     delta_substitute: str | None = None,
     delta_substitute_source=None,
+    init_latents_override=None,
 ) -> Path:
     """Run teacher-residual on (cell, knobs) and return the image path.
 
@@ -99,6 +100,12 @@ def run(
         return image_path
 
     init_latents, euler_sigma = init_latents_for_cell(cell, ctx)
+    if init_latents_override is not None:
+        # A start that is not any seed's: used to walk between two seeds, or
+        # to sample a constructed slice of noise space. The cell still supplies
+        # the prompts and the noise scale, so only the starting point changes.
+        init_latents = init_latents_override.to(
+            device=init_latents.device, dtype=init_latents.dtype)
     emb = encode_pair(cell, ctx)
     seq_j, pool_j = get_joint_embeds(cell, ctx)
 

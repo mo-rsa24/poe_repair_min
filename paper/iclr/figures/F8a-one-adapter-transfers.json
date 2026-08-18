@@ -1,0 +1,127 @@
+{
+  "run": "outputs/animals_compose_transfer/pooled_lora/phase1_r8_100k",
+  "scored_steps": [
+    10000,
+    20000,
+    30000,
+    40000,
+    50000,
+    60000
+  ],
+  "train_pairs": [
+    "a_wolf__x__a_husky",
+    "a_lion__x__a_tiger",
+    "a_cheetah__x__a_cougar",
+    "a_horse__x__a_zebra",
+    "a_donkey__x__a_pony",
+    "a_crocodile__x__an_alligator",
+    "a_rabbit__x__a_hare",
+    "a_dolphin__x__a_porpoise",
+    "a_crow__x__a_raven",
+    "a_gorilla__x__a_chimpanzee",
+    "a_turtle__x__a_tortoise"
+  ],
+  "heldout_pairs": [
+    "a_leopard__x__a_jaguar",
+    "a_frog__x__a_toad",
+    "an_eagle__x__a_hawk",
+    "a_seal__x__a_walrus",
+    "a_goose__x__a_swan",
+    "a_cow__x__a_buffalo",
+    "a_cat__x__a_dog",
+    "an_elephant__x__a_penguin"
+  ],
+  "in_distribution": {
+    "10000": 0.9204545454545454,
+    "20000": 0.9772727272727273,
+    "30000": 0.9602272727272727,
+    "40000": 0.9659090909090909,
+    "50000": 0.9659090909090909,
+    "60000": 0.9602272727272727
+  },
+  "held_out": {
+    "10000": 0.8125,
+    "20000": 0.9375,
+    "30000": 0.921875,
+    "40000": 0.9453125,
+    "50000": 0.9609375,
+    "60000": 0.9609375
+  },
+  "per_heldout_pair": {
+    "a_leopard__x__a_jaguar": {
+      "10000": 0.625,
+      "20000": 0.875,
+      "30000": 0.9375,
+      "40000": 1.0,
+      "50000": 1.0,
+      "60000": 1.0
+    },
+    "a_frog__x__a_toad": {
+      "10000": 0.75,
+      "20000": 0.875,
+      "30000": 0.8125,
+      "40000": 0.9375,
+      "50000": 0.875,
+      "60000": 0.9375
+    },
+    "an_eagle__x__a_hawk": {
+      "10000": 0.875,
+      "20000": 0.9375,
+      "30000": 0.9375,
+      "40000": 0.9375,
+      "50000": 0.9375,
+      "60000": 0.9375
+    },
+    "a_seal__x__a_walrus": {
+      "10000": 0.75,
+      "20000": 0.9375,
+      "30000": 0.8125,
+      "40000": 0.9375,
+      "50000": 0.9375,
+      "60000": 0.9375
+    },
+    "a_goose__x__a_swan": {
+      "10000": 0.875,
+      "20000": 1.0,
+      "30000": 0.9375,
+      "40000": 1.0,
+      "50000": 1.0,
+      "60000": 1.0
+    },
+    "a_cow__x__a_buffalo": {
+      "10000": 1.0,
+      "20000": 1.0,
+      "30000": 1.0,
+      "40000": 1.0,
+      "50000": 1.0,
+      "60000": 1.0
+    },
+    "a_cat__x__a_dog": {
+      "10000": 0.625,
+      "20000": 0.875,
+      "30000": 0.9375,
+      "40000": 0.75,
+      "50000": 0.9375,
+      "60000": 0.875
+    },
+    "an_elephant__x__a_penguin": {
+      "10000": 1.0,
+      "20000": 1.0,
+      "30000": 1.0,
+      "40000": 1.0,
+      "50000": 1.0,
+      "60000": 1.0
+    }
+  },
+  "n_cells": {
+    "in_distribution": 176,
+    "held_out": 128
+  },
+  "poe_floor": 0.03,
+  "caption_caps": [
+    "training ran to step 100000 and only checkpoints to 60000 were scored, so every number carries its step and 60000 is the best-read rather than the final word",
+    "elephant x penguin is the control pair: it composes without any adapter, so its 1.0 is not evidence of transfer and the figure labels it on the line",
+    "the PoE floor is the dose sweep's lambda=0 rate over 32 cells. Its single positive is a detector mistake on frog x toad seed 10 and the scorer's rule was not changed to remove it",
+    "held-out here means pairs the adapter never trained on, not a leave-one-pair-out sweep. The 15-run version is a separate experiment and is not what this figure shows"
+  ]
+}

@@ -1,5 +1,13 @@
 # 🗺️ Which figure goes where, and which ones we do not have yet
 
+**Step 19 of 22.** Waits on steps 13 and 14. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../../../MASTER_PLAN.md).
+
+| Step | Plan | Status |
+|---|---|---|
+| 18 | [writing-05-the-results-skeleton](writing-05-the-results-skeleton.md) | ⚠️ |
+| **19** | **this plan** | **⚠️** |
+| 20 | [writing-04-method-and-introduction](writing-04-method-and-introduction.md) | ⚠️ |
+
 ## What this asks, in one line
 Place every figure slot from the register into a section, split main text from appendix against the page limit, and hand the owed rows back to the result scopes as their run order.
 

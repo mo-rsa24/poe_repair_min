@@ -1,0 +1,40 @@
+{
+  "source": "outputs/interaction_term/direction_wall/noise_interpolation.json",
+  "pair": "a_cat__x__a_dog",
+  "from_seed": 9,
+  "to_seed": 13,
+  "curves": {
+    "first3": [
+      0.9959585070610046,
+      0.992742657661438,
+      0.983988344669342,
+      0.9511128664016724,
+      0.7691161036491394,
+      0.4054746925830841,
+      0.3471646308898926,
+      0.34794390201568604
+    ],
+    "late": [
+      0.4271075129508972,
+      0.22313891351222992,
+      0.21934190392494202,
+      -0.08437666296958923,
+      0.013745310716331005,
+      0.007811412680894136,
+      3.2121315598487854e-06,
+      0.002314295619726181
+    ],
+    "fraction": [
+      0.0,
+      0.02,
+      0.05,
+      0.1,
+      0.2,
+      0.4,
+      0.7,
+      1.0
+    ]
+  },
+  "ceiling_note": "the leftmost point reruns the identical starting noise and still reaches only +0.996 early and +0.427 late, because fp16 nondeterminism compounds through the sampler: measured trajectory drift 0.24% at step 10, 0.93% at step 20, 17.13% at step 49",
+  "caption_cap": "the late curve's collapse mixes two things that this figure cannot separate: the correction changing with the state, and the two trajectories being at genuinely different states by then. The early curve carries the claim."
+}

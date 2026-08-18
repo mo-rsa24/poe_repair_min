@@ -1,0 +1,599 @@
+{
+  "measure": "first step after which cos(x0_hat(t), x0_hat(final)) stays above threshold",
+  "space": "latent, Tweedie estimate, no decoding",
+  "threshold": 0.9,
+  "bars": {
+    "min_range_steps": 5,
+    "min_between_within": 1.5,
+    "null_range_steps": 2
+  },
+  "cells_measured": 162,
+  "cells_skipped_short": 4,
+  "per_pair": {
+    "a_wolf__x__a_husky": {
+      "seeds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        42
+      ],
+      "steps": [
+        26,
+        22,
+        25,
+        26,
+        22,
+        24,
+        21,
+        25,
+        22
+      ],
+      "median": 24.0
+    },
+    "a_lion__x__a_tiger": {
+      "seeds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "steps": [
+        34,
+        34,
+        25,
+        35,
+        32,
+        35,
+        36,
+        36
+      ],
+      "median": 34.5
+    },
+    "a_cheetah__x__a_cougar": {
+      "seeds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "steps": [
+        37,
+        35,
+        34,
+        33,
+        31,
+        31,
+        31,
+        30
+      ],
+      "median": 32.0
+    },
+    "a_horse__x__a_zebra": {
+      "seeds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "steps": [
+        26,
+        25,
+        30,
+        14,
+        20,
+        23,
+        17,
+        22
+      ],
+      "median": 22.5
+    },
+    "a_donkey__x__a_pony": {
+      "seeds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "steps": [
+        30,
+        29,
+        33,
+        27,
+        26,
+        27,
+        27,
+        29
+      ],
+      "median": 28.0
+    },
+    "a_crocodile__x__an_alligator": {
+      "seeds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "steps": [
+        24,
+        24,
+        25,
+        25,
+        21,
+        22,
+        22,
+        25
+      ],
+      "median": 24.0
+    },
+    "a_rabbit__x__a_hare": {
+      "seeds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "steps": [
+        25,
+        26,
+        21,
+        25,
+        23,
+        24,
+        24,
+        21
+      ],
+      "median": 24.0
+    },
+    "a_dolphin__x__a_porpoise": {
+      "seeds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "steps": [
+        20,
+        21,
+        12,
+        20,
+        14,
+        12,
+        23,
+        16
+      ],
+      "median": 18.0
+    },
+    "a_crow__x__a_raven": {
+      "seeds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "steps": [
+        20,
+        22,
+        16,
+        21,
+        20,
+        19,
+        21,
+        19
+      ],
+      "median": 20.0
+    },
+    "a_gorilla__x__a_chimpanzee": {
+      "seeds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "steps": [
+        27,
+        22,
+        22,
+        29,
+        25,
+        25,
+        25,
+        21
+      ],
+      "median": 25.0
+    },
+    "a_turtle__x__a_tortoise": {
+      "seeds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "steps": [
+        26,
+        25,
+        23,
+        26,
+        23,
+        24,
+        25,
+        28
+      ],
+      "median": 25.0
+    },
+    "a_leopard__x__a_jaguar": {
+      "seeds": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+      ],
+      "steps": [
+        27,
+        24,
+        25,
+        25,
+        29,
+        27,
+        25,
+        27
+      ],
+      "median": 26.0
+    },
+    "a_frog__x__a_toad": {
+      "seeds": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+      ],
+      "steps": [
+        21,
+        20,
+        24,
+        22,
+        24,
+        25,
+        20,
+        25
+      ],
+      "median": 23.0
+    },
+    "an_eagle__x__a_hawk": {
+      "seeds": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+      ],
+      "steps": [
+        23,
+        25,
+        23,
+        25,
+        28,
+        20,
+        17,
+        23
+      ],
+      "median": 23.0
+    },
+    "a_seal__x__a_walrus": {
+      "seeds": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+      ],
+      "steps": [
+        23,
+        23,
+        19,
+        24,
+        17,
+        25,
+        21,
+        28
+      ],
+      "median": 23.0
+    },
+    "a_goose__x__a_swan": {
+      "seeds": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+      ],
+      "steps": [
+        21,
+        28,
+        28,
+        25,
+        24,
+        24,
+        25,
+        26
+      ],
+      "median": 25.0
+    },
+    "a_cow__x__a_buffalo": {
+      "seeds": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+      ],
+      "steps": [
+        22,
+        29,
+        24,
+        27,
+        26,
+        28,
+        27,
+        28
+      ],
+      "median": 27.0
+    },
+    "a_cat__x__a_dog": {
+      "seeds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        42
+      ],
+      "steps": [
+        37,
+        36,
+        38,
+        38,
+        31,
+        37,
+        33,
+        37,
+        35,
+        36,
+        29,
+        38,
+        36,
+        32,
+        33,
+        30,
+        36
+      ],
+      "median": 36.0
+    },
+    "an_elephant__x__a_penguin": {
+      "seeds": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+      ],
+      "steps": [
+        33,
+        29,
+        33,
+        38,
+        33,
+        33,
+        32,
+        32
+      ],
+      "median": 33.0
+    }
+  },
+  "range_of_medians": 18.0,
+  "between_spread": 4.68169654596242,
+  "within_spread": 2.466120310790204,
+  "between_over_within": 1.8984055747313855,
+  "verdict": "VARIES",
+  "sensitivity": {
+    "0.8": {
+      "a_wolf__x__a_husky": 16.0,
+      "a_lion__x__a_tiger": 30.5,
+      "a_cheetah__x__a_cougar": 27.5,
+      "a_horse__x__a_zebra": 17.5,
+      "a_donkey__x__a_pony": 21.5,
+      "a_crocodile__x__an_alligator": 17.0,
+      "a_rabbit__x__a_hare": 15.5,
+      "a_dolphin__x__a_porpoise": 9.5,
+      "a_crow__x__a_raven": 11.5,
+      "a_gorilla__x__a_chimpanzee": 18.0,
+      "a_turtle__x__a_tortoise": 17.0,
+      "a_leopard__x__a_jaguar": 19.0,
+      "a_frog__x__a_toad": 14.0,
+      "an_eagle__x__a_hawk": 15.0,
+      "a_seal__x__a_walrus": 17.0,
+      "a_goose__x__a_swan": 16.0,
+      "a_cow__x__a_buffalo": 19.5,
+      "a_cat__x__a_dog": 30.0,
+      "an_elephant__x__a_penguin": 27.0
+    },
+    "0.95": {
+      "a_wolf__x__a_husky": 32.0,
+      "a_lion__x__a_tiger": 37.0,
+      "a_cheetah__x__a_cougar": 38.0,
+      "a_horse__x__a_zebra": 29.5,
+      "a_donkey__x__a_pony": 34.5,
+      "a_crocodile__x__an_alligator": 30.0,
+      "a_rabbit__x__a_hare": 31.0,
+      "a_dolphin__x__a_porpoise": 26.0,
+      "a_crow__x__a_raven": 29.0,
+      "a_gorilla__x__a_chimpanzee": 32.0,
+      "a_turtle__x__a_tortoise": 31.0,
+      "a_leopard__x__a_jaguar": 32.5,
+      "a_frog__x__a_toad": 30.5,
+      "an_eagle__x__a_hawk": 31.0,
+      "a_seal__x__a_walrus": 28.0,
+      "a_goose__x__a_swan": 32.0,
+      "a_cow__x__a_buffalo": 33.0,
+      "a_cat__x__a_dog": 39.0,
+      "an_elephant__x__a_penguin": 36.5
+    }
+  },
+  "fork_check_cells": [
+    {
+      "commitment": 37,
+      "fork": 20
+    },
+    {
+      "commitment": 37,
+      "fork": 11
+    },
+    {
+      "commitment": 22,
+      "fork": 16
+    },
+    {
+      "commitment": 24,
+      "fork": 15
+    },
+    {
+      "commitment": 20,
+      "fork": 15
+    },
+    {
+      "commitment": 20,
+      "fork": 15
+    },
+    {
+      "commitment": 30,
+      "fork": 17
+    },
+    {
+      "commitment": 21,
+      "fork": 15
+    },
+    {
+      "commitment": 21,
+      "fork": 15
+    },
+    {
+      "commitment": 27,
+      "fork": 8
+    },
+    {
+      "commitment": 26,
+      "fork": 17
+    },
+    {
+      "commitment": 27,
+      "fork": 19
+    },
+    {
+      "commitment": 34,
+      "fork": 16
+    },
+    {
+      "commitment": 25,
+      "fork": 13
+    },
+    {
+      "commitment": 23,
+      "fork": 16
+    },
+    {
+      "commitment": 26,
+      "fork": 16
+    },
+    {
+      "commitment": 26,
+      "fork": 14
+    },
+    {
+      "commitment": 23,
+      "fork": 16
+    },
+    {
+      "commitment": 33,
+      "fork": 16
+    }
+  ],
+  "perceptual_validation": "OWED: needs decoded frames, GPU"
+}

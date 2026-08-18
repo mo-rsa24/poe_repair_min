@@ -1,0 +1,12 @@
+{
+  "pair": "an_eagle__x__a_hawk",
+  "seed": 9,
+  "shown_steps": [
+    10,
+    20,
+    30,
+    40
+  ],
+  "cosine_median": 0.9667260050773621,
+  "caption_cap": "smoothness varies by pair: same-run adjacent-step medians range -0.32 (cat x dog) to +0.97 over the 8 dose pairs x 2 seeds; see outputs/interaction_term/direction_wall/direction_wall.json"
+}

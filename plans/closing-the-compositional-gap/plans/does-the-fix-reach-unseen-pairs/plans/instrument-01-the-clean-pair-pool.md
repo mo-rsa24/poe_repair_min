@@ -1,5 +1,13 @@
 # 🧬 A clean pool, behind the scorer gate
 
+**Step 3 of 22.** Waits on nothing. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../../../MASTER_PLAN.md).
+
+| Step | Plan | Status |
+|---|---|---|
+| 2 | ~~[instrument-02-fix-the-size-measure-before-any-result](../../does-the-correction-cause-composition/plans/instrument-02-fix-the-size-measure-before-any-result.md)~~ | ✅ |
+| **3** | **this plan** | **✅** |
+| 4 | [hypothesis-02-more-correction-more-composition](../../does-the-correction-cause-composition/plans/hypothesis-02-more-correction-more-composition.md) | ◑ 6.3GB owed |
+
 Design only. Verdicts live in [../review/instrument-01-the-clean-pair-pool.md](../review/instrument-01-the-clean-pair-pool.md).
 
 ## What this asks, in one line

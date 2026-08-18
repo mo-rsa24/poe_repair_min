@@ -8,43 +8,45 @@ This block is a snapshot; the live version prints at session start, or on demand
 - **What is going on:** nothing is running; the GPU is free.
 - **The last thing we did:** one parent scope for the paper, its cadence stated: figures first,
   write at 5 to 10 resolved register slots.
-- **Do this next:** step 2,
-  [hypothesis-04-what-the-cached-runs-already-show](plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/plans/hypothesis-04-what-the-cached-runs-already-show.md).
-  No GPU and no queue. Two finished runs in this scope are waiting on a judgement rather than on
-  compute: hypothesis-01 and hypothesis-04 each carry one unanswered design question about which
-  points a figure plots, and `python3 scripts/plan_pulse.py` lists both.
+- **Do this next:** two rows are unblocked and both are worth starting today. Step 4 is a chore
+  needing no compute: 6.3GB of dose cells sit on `/home-mscluster` and belong on `/datasets`.
+  Step 9,
+  [instrument-02-three-live-curves-while-training](plans/closing-the-compositional-gap/plans/does-the-fix-reach-unseen-pairs/plans/instrument-02-three-live-curves-while-training.md),
+  is one epoch on a GPU and it gates the whole transfer chain: steps 10, 11, 12 and 14 wait behind
+  it, and so does register slot F8. Start step 9 first so it cooks, then do step 4 while it runs.
 
 ## The paper: what has to land
 
-An order, so every row has a step number and says what it waits on. Only unfinished rows
-appear: 11 earlier steps are done and their evidence lives in the `review/` files and in git,
-not here. This table is meant to be readable in under a minute, and finished rows do not help
-with that.
+One order across every plan in every scope. **Step numbers are permanent:** a finished plan keeps
+its number and stays struck through, so the count tells you where you are rather than how much is
+left in a queue that renumbers itself. A plan's own file carries this same number under its title.
 
 | Step | Plan | What it does | Status | Waits on |
 |---|---|---|---|---|
-| 1 | does-the-correction-cause-composition/hypothesis-02-more-correction-more-composition | the headline causal result: more correction, more composition, with two flat controls | ◑ result done, 3.4GB owed off /home-mscluster | |
-| 2 | does-the-correction-cause-composition/hypothesis-04-what-the-cached-runs-already-show | the analyses needing no GPU and no queue, five of six tasks left | ⚠️ | |
-| 3 | does-the-correction-cause-composition/hypothesis-03-when-in-the-run-it-matters | when in the denoising process the correction matters | ⚠️ | 1 |
-| 4 | does-the-fix-reach-unseen-pairs/instrument-02-three-live-curves-while-training | the one-epoch GPU smoke confirming three live curves | ⚠️ | |
-| 5 | does-the-fix-reach-unseen-pairs/hypothesis-01-does-one-pooled-fix-transfer-at-all | finish the read: steps 70k to 100k unscored, go/no-go note owed | ⚠️ | 4 |
-| 6 | does-the-fix-reach-unseen-pairs/hypothesis-02-transfer-as-a-rate-over-fifteen-pairs | 15 LoRAs, leaderboard, degradation curve | ⚠️ | 5 |
-| 7 | does-the-fix-reach-unseen-pairs/baseline-01-the-size-matched-control-pool | size-matched mixed pool against animals-only | ⚠️ | 6 |
-| 8 | does-the-correction-cause-composition/hypothesis-05-the-same-story-from-three-sides | the independent checks on the causal claim | ⚠️ | 1, 3 |
-| 9 | does-the-correction-cause-composition/gate-01-two-literature-checks-before-print | the two /pressure-test passes before anything is written | ⚠️ | 8 |
-| 10 | does-the-correction-cause-composition/figure-01-the-seven-paper-figures | the figures this scope owes the paper | ⚠️ | 9 |
-| 11 | does-the-fix-reach-unseen-pairs/figure-01-the-transfer-figures | the transfer evidence figures | ⚠️ | 7 |
-| 12 | writing-the-paper/writing-01-make-the-template-build | tectonic build, de-stub, the figure-path rule | ◑ | |
-| 13 | writing-the-paper/writing-02-the-title-and-the-section-spine | the claim in one line, section order | ⚠️ | 12 |
-| 14 | writing-the-paper/writing-03-where-each-figure-goes | which figure goes where, and the run order that implies | ⚠️ | 10, 11 |
-| 15 | writing-the-paper/writing-04-method-and-introduction | method and intro prose | ⚠️ | 13 |
-| 16 | writing-the-paper/writing-05-the-results-skeleton | placeholders, not prose: empty tables and XX numbers, one per figure-register slot | ⚠️ | |
-| 17 | writing-the-paper/writing-06-mechanism-and-limitations | the mechanism section, honest about what did not replicate | ⚠️ | 9 |
-| 18 | writing-the-paper/writing-07-the-abstract-written-last | written last, from the spine and the method | ⚠️ | 15, 16 |
-| 19 | does-the-correction-cause-composition/hypothesis-01-what-the-fix-changes-inside-the-model | one task left: the /pair-figure decision, per-seed points against pair-level means | ⚠️ | |
+| 1 | ~~does-the-correction-cause-composition/instrument-01-build-the-measuring-scripts~~ | the thirteen measuring scripts, built and smoked | ✅ |  |
+| 2 | ~~does-the-correction-cause-composition/instrument-02-fix-the-size-measure-before-any-result~~ | how the correction's size is expressed, fixed before any result was read | ✅ |  |
+| 3 | ~~does-the-fix-reach-unseen-pairs/instrument-01-the-clean-pair-pool~~ | the pool of pairs that blend by default, confirmed by the scorer | ✅ |  |
+| 4 | does-the-correction-cause-composition/hypothesis-02-more-correction-more-composition | the headline: more correction, more composition, controls flat | ◑ 6.3GB owed off /home-mscluster |  |
+| 5 | ~~does-the-correction-cause-composition/hypothesis-04-what-the-cached-runs-already-show~~ | the analyses needing no GPU and no queue | ✅ | 1 |
+| 6 | does-the-correction-cause-composition/hypothesis-03-when-in-the-run-it-matters | when the correction matters: the cliff is at the start | ◑ driving the timing tab by hand | 4, 5 |
+| 7 | ~~does-the-correction-cause-composition/hypothesis-05-the-same-story-from-three-sides~~ | the independent checks: two image-side yes, two language-side null | ✅ | 4 |
+| 8 | ~~does-the-correction-cause-composition/hypothesis-01-what-the-fix-changes-inside-the-model~~ | the fix changes what a word paints, not where it looks | ✅ | 3 |
+| 9 | does-the-fix-reach-unseen-pairs/instrument-02-three-live-curves-while-training | the one-epoch smoke confirming three live curves | ⚠️ **do this next** |  |
+| 10 | does-the-fix-reach-unseen-pairs/hypothesis-01-does-one-pooled-fix-transfer-at-all | finish the read: steps 70k to 100k unscored, go/no-go note owed | ◑ run done, read incomplete | 9 |
+| 11 | does-the-fix-reach-unseen-pairs/hypothesis-02-transfer-as-a-rate-over-fifteen-pairs | fifteen adapters, leaderboard, degradation curve | ⚠️ | 10 |
+| 12 | does-the-fix-reach-unseen-pairs/baseline-01-the-size-matched-control-pool | the size-matched mixed pool against animals-only | ⚠️ | 11 |
+| 13 | does-the-correction-cause-composition/figure-01-the-seven-paper-figures | the figures this scope owes the paper | ◑ F1 to F5b, F7a, D1 to D4 built; F6 needs a decision | 6, 7, 8 |
+| 14 | does-the-fix-reach-unseen-pairs/figure-01-the-transfer-figures | the transfer evidence figures | ◑ F8a and F8b built; F8 waits on the sweep | 11, 12 |
+| 15 | does-the-correction-cause-composition/gate-01-two-literature-checks-before-print | the two `/pressure-test` passes before anything is written | ⚠️ | 13 |
+| 16 | writing-the-paper/writing-01-make-the-template-build | tectonic build, de-stub, the figure-path rule | ◑ figure-path rule written; the title is still a stub |  |
+| 17 | writing-the-paper/writing-02-the-title-and-the-section-spine | the claim in one line, section order | ⚠️ | 16 |
+| 18 | writing-the-paper/writing-05-the-results-skeleton | placeholders, not prose: empty tables and XX numbers, one per register slot | ⚠️ |  |
+| 19 | writing-the-paper/writing-03-where-each-figure-goes | which figure goes where, and the run order that implies | ⚠️ | 13, 14 |
+| 20 | writing-the-paper/writing-04-method-and-introduction | method and intro prose | ⚠️ | 17 |
+| 21 | writing-the-paper/writing-06-mechanism-and-limitations | the mechanism section, honest about what did not replicate | ⚠️ | 15 |
+| 22 | writing-the-paper/writing-07-the-abstract-written-last | written last, from the spine and the method | ⚠️ | 20, 21 |
 
-Step 19 is unblocked and cheap despite its number. Step numbers are positions in the
-order, and `sync-plan-tree` renumbers on its next pass.
+Steps 16 and 18 wait on nothing and need no GPU, so they are what to write while a run cooks.
 
 ## Reading, in the background
 

@@ -1,0 +1,778 @@
+{
+  "measure": "relative_norm",
+  "n_pairs": 75,
+  "n_content_tokens": 10,
+  "views": [
+    "pooled_bigG",
+    "seq_clipL",
+    "seq_bigG",
+    "seq_both"
+  ],
+  "view_median_norm": {
+    "pooled_bigG": 36.70539855957031,
+    "seq_clipL": 1190.91748046875,
+    "seq_bigG": 105.10894775390625,
+    "seq_both": 1195.537353515625
+  },
+  "cells": [
+    {
+      "pair": "a_bear__x__a_salmon",
+      "seed": 1,
+      "correction_size": 0.19936563074588776,
+      "gap_pooled_bigG": 1.102795124053955,
+      "gap_seq_clipL": 0.0626492127776146,
+      "gap_seq_bigG": 1.0442514419555664,
+      "gap_seq_both": 0.11100554466247559
+    },
+    {
+      "pair": "a_butterfly__x__a_flower_meadow",
+      "seed": 4,
+      "correction_size": 0.09209925681352615,
+      "gap_pooled_bigG": 1.0463465452194214,
+      "gap_seq_clipL": 0.06105410307645798,
+      "gap_seq_bigG": 1.020585060119629,
+      "gap_seq_both": 0.10772339999675751
+    },
+    {
+      "pair": "a_cat__x__a_lion",
+      "seed": 1,
+      "correction_size": 0.21956554055213928,
+      "gap_pooled_bigG": 1.1924055814743042,
+      "gap_seq_clipL": 0.06068061292171478,
+      "gap_seq_bigG": 1.051841139793396,
+      "gap_seq_both": 0.11237183958292007
+    },
+    {
+      "pair": "a_cheetah__x__a_cougar",
+      "seed": 1,
+      "correction_size": 0.17396759986877441,
+      "gap_pooled_bigG": 1.4615552425384521,
+      "gap_seq_clipL": 0.060795288532972336,
+      "gap_seq_bigG": 1.0755157470703125,
+      "gap_seq_both": 0.11058587580919266
+    },
+    {
+      "pair": "a_crocodile__x__an_alligator",
+      "seed": 1,
+      "correction_size": 0.12948757410049438,
+      "gap_pooled_bigG": 1.4069650173187256,
+      "gap_seq_clipL": 0.059551119804382324,
+      "gap_seq_bigG": 1.1118760108947754,
+      "gap_seq_both": 0.11244605481624603
+    },
+    {
+      "pair": "a_crow__x__a_raven",
+      "seed": 1,
+      "correction_size": 0.06599655747413635,
+      "gap_pooled_bigG": 1.3627214431762695,
+      "gap_seq_clipL": 0.06544884294271469,
+      "gap_seq_bigG": 1.1042301654815674,
+      "gap_seq_both": 0.11488243192434311
+    },
+    {
+      "pair": "a_dog__x__a_duck",
+      "seed": 1,
+      "correction_size": 0.1662292778491974,
+      "gap_pooled_bigG": 1.1037509441375732,
+      "gap_seq_clipL": 0.06105441600084305,
+      "gap_seq_bigG": 1.052903175354004,
+      "gap_seq_both": 0.11307854950428009
+    },
+    {
+      "pair": "a_dog__x__a_horse",
+      "seed": 1,
+      "correction_size": 0.217330202460289,
+      "gap_pooled_bigG": 1.1685727834701538,
+      "gap_seq_clipL": 0.06075916811823845,
+      "gap_seq_bigG": 1.0555590391159058,
+      "gap_seq_both": 0.11150774359703064
+    },
+    {
+      "pair": "a_dolphin__x__a_porpoise",
+      "seed": 1,
+      "correction_size": 0.06946173310279846,
+      "gap_pooled_bigG": 1.3467406034469604,
+      "gap_seq_clipL": 0.06218805909156799,
+      "gap_seq_bigG": 1.036059856414795,
+      "gap_seq_both": 0.10768318176269531
+    },
+    {
+      "pair": "a_donkey__x__a_pony",
+      "seed": 1,
+      "correction_size": 0.12241808325052261,
+      "gap_pooled_bigG": 1.341501235961914,
+      "gap_seq_clipL": 0.06189000606536865,
+      "gap_seq_bigG": 1.0746783018112183,
+      "gap_seq_both": 0.11155127733945847
+    },
+    {
+      "pair": "a_gorilla__x__a_chimpanzee",
+      "seed": 1,
+      "correction_size": 0.13364407420158386,
+      "gap_pooled_bigG": 1.5055692195892334,
+      "gap_seq_clipL": 0.0647616982460022,
+      "gap_seq_bigG": 1.0556881427764893,
+      "gap_seq_both": 0.11149153858423233
+    },
+    {
+      "pair": "a_horse__x__a_zebra",
+      "seed": 1,
+      "correction_size": 0.09927444159984589,
+      "gap_pooled_bigG": 1.327805757522583,
+      "gap_seq_clipL": 0.05833880603313446,
+      "gap_seq_bigG": 1.042204737663269,
+      "gap_seq_both": 0.1103731095790863
+    },
+    {
+      "pair": "a_lion__x__a_dog",
+      "seed": 1,
+      "correction_size": 0.2309035062789917,
+      "gap_pooled_bigG": 1.1811275482177734,
+      "gap_seq_clipL": 0.05924007669091225,
+      "gap_seq_bigG": 1.049785852432251,
+      "gap_seq_both": 0.11056070029735565
+    },
+    {
+      "pair": "a_lion__x__a_tiger",
+      "seed": 1,
+      "correction_size": 0.20843489468097687,
+      "gap_pooled_bigG": 1.3389142751693726,
+      "gap_seq_clipL": 0.06579288095235825,
+      "gap_seq_bigG": 1.0814428329467773,
+      "gap_seq_both": 0.11613438278436661
+    },
+    {
+      "pair": "a_rabbit__x__a_hare",
+      "seed": 1,
+      "correction_size": 0.09841516613960266,
+      "gap_pooled_bigG": 1.3652188777923584,
+      "gap_seq_clipL": 0.06549672037363052,
+      "gap_seq_bigG": 1.076041579246521,
+      "gap_seq_both": 0.11365006119012833
+    },
+    {
+      "pair": "a_tiger__x__a_dog",
+      "seed": 2,
+      "correction_size": 0.31018757820129395,
+      "gap_pooled_bigG": 1.2470595836639404,
+      "gap_seq_clipL": 0.057488709688186646,
+      "gap_seq_bigG": 1.0369601249694824,
+      "gap_seq_both": 0.10852423310279846
+    },
+    {
+      "pair": "a_turtle__x__a_tortoise",
+      "seed": 1,
+      "correction_size": 0.11655022203922272,
+      "gap_pooled_bigG": 1.3115291595458984,
+      "gap_seq_clipL": 0.06057802215218544,
+      "gap_seq_bigG": 1.0909494161605835,
+      "gap_seq_both": 0.11149191111326218
+    },
+    {
+      "pair": "a_wolf__x__a_husky",
+      "seed": 1,
+      "correction_size": 0.10060353577136993,
+      "gap_pooled_bigG": 1.2261626720428467,
+      "gap_seq_clipL": 0.06438606232404709,
+      "gap_seq_bigG": 1.0383641719818115,
+      "gap_seq_both": 0.11238117516040802
+    },
+    {
+      "pair": "a_barn__x__pencil_drawing_style",
+      "seed": 1,
+      "correction_size": 0.045973170548677444,
+      "gap_pooled_bigG": 0.9406234622001648,
+      "gap_seq_clipL": 0.060503456741571426,
+      "gap_seq_bigG": 1.0356457233428955,
+      "gap_seq_both": 0.10689383745193481
+    },
+    {
+      "pair": "a_bathtub__x__a_streetlamp",
+      "seed": 1,
+      "correction_size": 0.063512422144413,
+      "gap_pooled_bigG": 1.3820767402648926,
+      "gap_seq_clipL": 0.05954466387629509,
+      "gap_seq_bigG": 1.0526187419891357,
+      "gap_seq_both": 0.11149165034294128
+    },
+    {
+      "pair": "a_bicycle__x__sketch_style",
+      "seed": 1,
+      "correction_size": 0.16123263537883759,
+      "gap_pooled_bigG": 1.019420862197876,
+      "gap_seq_clipL": 0.0638105496764183,
+      "gap_seq_bigG": 0.9999558925628662,
+      "gap_seq_both": 0.10529053956270218
+    },
+    {
+      "pair": "a_birdcage__x__a_watering_can",
+      "seed": 1,
+      "correction_size": 0.1909237951040268,
+      "gap_pooled_bigG": 1.3834431171417236,
+      "gap_seq_clipL": 0.06757795810699463,
+      "gap_seq_bigG": 1.0307281017303467,
+      "gap_seq_both": 0.11333617568016052
+    },
+    {
+      "pair": "a_bookcase__x__a_glacier",
+      "seed": 1,
+      "correction_size": 0.12092761695384979,
+      "gap_pooled_bigG": 1.2085994482040405,
+      "gap_seq_clipL": 0.05950774997472763,
+      "gap_seq_bigG": 0.9540228247642517,
+      "gap_seq_both": 0.10343211889266968
+    },
+    {
+      "pair": "a_briefcase__x__a_ceramic_bowl",
+      "seed": 1,
+      "correction_size": 0.18831384181976318,
+      "gap_pooled_bigG": 1.3790518045425415,
+      "gap_seq_clipL": 0.06666863709688187,
+      "gap_seq_bigG": 1.0743904113769531,
+      "gap_seq_both": 0.11592993885278702
+    },
+    {
+      "pair": "a_butterfly__x__a_flower_meadow",
+      "seed": 1,
+      "correction_size": 0.0625012218952179,
+      "gap_pooled_bigG": 1.046268343925476,
+      "gap_seq_clipL": 0.06105410307645798,
+      "gap_seq_bigG": 1.0205565690994263,
+      "gap_seq_both": 0.10772354155778885
+    },
+    {
+      "pair": "a_cactus__x__mosaic_style",
+      "seed": 1,
+      "correction_size": 0.1546451896429062,
+      "gap_pooled_bigG": 0.9651740193367004,
+      "gap_seq_clipL": 0.05820270627737045,
+      "gap_seq_bigG": 0.9769309759140015,
+      "gap_seq_both": 0.1026536375284195
+    },
+    {
+      "pair": "a_camel__x__a_desert_landscape",
+      "seed": 1,
+      "correction_size": 0.0815596804022789,
+      "gap_pooled_bigG": 1.2058533430099487,
+      "gap_seq_clipL": 0.06107266619801521,
+      "gap_seq_bigG": 1.0476818084716797,
+      "gap_seq_both": 0.11138609796762466
+    },
+    {
+      "pair": "a_camera__x__watercolor_style",
+      "seed": 1,
+      "correction_size": 0.0794110894203186,
+      "gap_pooled_bigG": 0.9188342690467834,
+      "gap_seq_clipL": 0.05971715599298477,
+      "gap_seq_bigG": 0.9962702989578247,
+      "gap_seq_both": 0.10534821450710297
+    },
+    {
+      "pair": "a_candle__x__a_waterfall",
+      "seed": 1,
+      "correction_size": 0.1523626446723938,
+      "gap_pooled_bigG": 1.2025967836380005,
+      "gap_seq_clipL": 0.058723084628582,
+      "gap_seq_bigG": 1.035596489906311,
+      "gap_seq_both": 0.10991426557302475
+    },
+    {
+      "pair": "a_castle__x__stained_glass_style",
+      "seed": 1,
+      "correction_size": 0.081059530377388,
+      "gap_pooled_bigG": 0.9662681221961975,
+      "gap_seq_clipL": 0.06688472628593445,
+      "gap_seq_bigG": 1.022841215133667,
+      "gap_seq_both": 0.11023534834384918
+    },
+    {
+      "pair": "a_cat__x__a_dog",
+      "seed": 1,
+      "correction_size": 0.18164756894111633,
+      "gap_pooled_bigG": 1.1531403064727783,
+      "gap_seq_clipL": 0.05759664252400398,
+      "gap_seq_bigG": 1.076041579246521,
+      "gap_seq_both": 0.10895968973636627
+    },
+    {
+      "pair": "a_cat__x__a_horse",
+      "seed": 1,
+      "correction_size": 0.19366034865379333,
+      "gap_pooled_bigG": 1.2073440551757812,
+      "gap_seq_clipL": 0.05823352560400963,
+      "gap_seq_bigG": 1.0457936525344849,
+      "gap_seq_both": 0.1099756509065628
+    },
+    {
+      "pair": "a_cat__x__a_lion",
+      "seed": 2,
+      "correction_size": 0.20033255219459534,
+      "gap_pooled_bigG": 1.1924055814743042,
+      "gap_seq_clipL": 0.06068061292171478,
+      "gap_seq_bigG": 1.051841139793396,
+      "gap_seq_both": 0.11237183958292007
+    },
+    {
+      "pair": "a_cat__x__charcoal_drawing_style",
+      "seed": 1,
+      "correction_size": 0.06222831457853317,
+      "gap_pooled_bigG": 0.8752868175506592,
+      "gap_seq_clipL": 0.058716319501399994,
+      "gap_seq_bigG": 1.044528603553772,
+      "gap_seq_both": 0.1103457435965538
+    },
+    {
+      "pair": "a_chessboard__x__a_lantern",
+      "seed": 1,
+      "correction_size": 0.09198431670665741,
+      "gap_pooled_bigG": 1.131772756576538,
+      "gap_seq_clipL": 0.06067398563027382,
+      "gap_seq_bigG": 0.9712342023849487,
+      "gap_seq_both": 0.1039617657661438
+    },
+    {
+      "pair": "a_cow__x__a_buffalo",
+      "seed": 9,
+      "correction_size": 0.08373627811670303,
+      "gap_pooled_bigG": 1.341626763343811,
+      "gap_seq_clipL": 0.06092332676053047,
+      "gap_seq_bigG": 1.0906157493591309,
+      "gap_seq_both": 0.1130167543888092
+    },
+    {
+      "pair": "a_cow__x__a_horse",
+      "seed": 1,
+      "correction_size": 0.22913070023059845,
+      "gap_pooled_bigG": 1.4414631128311157,
+      "gap_seq_clipL": 0.06169700622558594,
+      "gap_seq_bigG": 1.0976696014404297,
+      "gap_seq_both": 0.11346223205327988
+    },
+    {
+      "pair": "a_deer__x__a_forest_clearing",
+      "seed": 1,
+      "correction_size": 0.13104772567749023,
+      "gap_pooled_bigG": 1.1929445266723633,
+      "gap_seq_clipL": 0.060036551207304,
+      "gap_seq_bigG": 1.0444656610488892,
+      "gap_seq_both": 0.10790935158729553
+    },
+    {
+      "pair": "a_dog__x__a_horse",
+      "seed": 2,
+      "correction_size": 0.23346982896327972,
+      "gap_pooled_bigG": 1.1685727834701538,
+      "gap_seq_clipL": 0.06075916811823845,
+      "gap_seq_bigG": 1.0555590391159058,
+      "gap_seq_both": 0.11150774359703064
+    },
+    {
+      "pair": "a_dog__x__oil_painting_style",
+      "seed": 1,
+      "correction_size": 0.058083076030015945,
+      "gap_pooled_bigG": 0.9318063259124756,
+      "gap_seq_clipL": 0.0585731565952301,
+      "gap_seq_bigG": 1.0287508964538574,
+      "gap_seq_both": 0.10572613030672073
+    },
+    {
+      "pair": "a_dolphin__x__an_ocean_wave",
+      "seed": 1,
+      "correction_size": 0.17285318672657013,
+      "gap_pooled_bigG": 1.351036548614502,
+      "gap_seq_clipL": 0.06243541091680527,
+      "gap_seq_bigG": 1.0574904680252075,
+      "gap_seq_both": 0.1110612228512764
+    },
+    {
+      "pair": "a_drum_set__x__a_snowman",
+      "seed": 1,
+      "correction_size": 0.22570574283599854,
+      "gap_pooled_bigG": 1.4156074523925781,
+      "gap_seq_clipL": 0.06353632360696793,
+      "gap_seq_bigG": 1.006525993347168,
+      "gap_seq_both": 0.11025536805391312
+    },
+    {
+      "pair": "a_duck__x__a_pond",
+      "seed": 1,
+      "correction_size": 0.08448592573404312,
+      "gap_pooled_bigG": 1.1459394693374634,
+      "gap_seq_clipL": 0.0573849193751812,
+      "gap_seq_bigG": 1.030914306640625,
+      "gap_seq_both": 0.10678593814373016
+    },
+    {
+      "pair": "a_feather_pillow__x__a_cast_iron_pan",
+      "seed": 1,
+      "correction_size": 0.21802325546741486,
+      "gap_pooled_bigG": 1.2787429094314575,
+      "gap_seq_clipL": 0.06966179609298706,
+      "gap_seq_bigG": 1.0819419622421265,
+      "gap_seq_both": 0.12019117176532745
+    },
+    {
+      "pair": "a_fire_hydrant__x__a_snowfield",
+      "seed": 1,
+      "correction_size": 0.049983274191617966,
+      "gap_pooled_bigG": 1.0849968194961548,
+      "gap_seq_clipL": 0.06463265419006348,
+      "gap_seq_bigG": 1.066271424293518,
+      "gap_seq_both": 0.11624135822057724
+    },
+    {
+      "pair": "a_flamingo__x__a_lagoon",
+      "seed": 1,
+      "correction_size": 0.05973277986049652,
+      "gap_pooled_bigG": 1.1602551937103271,
+      "gap_seq_clipL": 0.058288224041461945,
+      "gap_seq_bigG": 1.030003547668457,
+      "gap_seq_both": 0.1059071272611618
+    },
+    {
+      "pair": "a_frog__x__a_toad",
+      "seed": 9,
+      "correction_size": 0.10668600350618362,
+      "gap_pooled_bigG": 1.3065905570983887,
+      "gap_seq_clipL": 0.0663958340883255,
+      "gap_seq_bigG": 1.1211912631988525,
+      "gap_seq_both": 0.11566389352083206
+    },
+    {
+      "pair": "a_goose__x__a_swan",
+      "seed": 9,
+      "correction_size": 0.08450678735971451,
+      "gap_pooled_bigG": 1.3377211093902588,
+      "gap_seq_clipL": 0.06435858458280563,
+      "gap_seq_bigG": 1.0945913791656494,
+      "gap_seq_both": 0.11533863097429276
+    },
+    {
+      "pair": "a_horse__x__a_grassy_field",
+      "seed": 1,
+      "correction_size": 0.04870559275150299,
+      "gap_pooled_bigG": 1.1444729566574097,
+      "gap_seq_clipL": 0.0583711713552475,
+      "gap_seq_bigG": 1.0115140676498413,
+      "gap_seq_both": 0.10374633222818375
+    },
+    {
+      "pair": "a_lab_microscope__x__a_hay_bale",
+      "seed": 1,
+      "correction_size": 0.10625137388706207,
+      "gap_pooled_bigG": 1.491513729095459,
+      "gap_seq_clipL": 0.067745640873909,
+      "gap_seq_bigG": 1.0856460332870483,
+      "gap_seq_both": 0.11678966879844666
+    },
+    {
+      "pair": "a_lamppost__x__a_desert_dune",
+      "seed": 1,
+      "correction_size": 0.16334028542041779,
+      "gap_pooled_bigG": 1.1650407314300537,
+      "gap_seq_clipL": 0.06685708463191986,
+      "gap_seq_bigG": 1.0828564167022705,
+      "gap_seq_both": 0.1171257272362709
+    },
+    {
+      "pair": "a_leopard__x__a_jaguar",
+      "seed": 9,
+      "correction_size": 0.1142486184835434,
+      "gap_pooled_bigG": 1.4118155241012573,
+      "gap_seq_clipL": 0.05923261120915413,
+      "gap_seq_bigG": 1.0551069974899292,
+      "gap_seq_both": 0.11002735048532486
+    },
+    {
+      "pair": "a_lighthouse__x__a_desert_dune",
+      "seed": 1,
+      "correction_size": 0.1725139021873474,
+      "gap_pooled_bigG": 1.104040265083313,
+      "gap_seq_clipL": 0.06349936872720718,
+      "gap_seq_bigG": 1.0665483474731445,
+      "gap_seq_both": 0.11321889609098434
+    },
+    {
+      "pair": "a_lighthouse__x__an_ocean_with_stormy_waves",
+      "seed": 1,
+      "correction_size": 0.04891272261738777,
+      "gap_pooled_bigG": 1.1670163869857788,
+      "gap_seq_clipL": 0.06715339422225952,
+      "gap_seq_bigG": 1.0355652570724487,
+      "gap_seq_both": 0.11417040228843689
+    },
+    {
+      "pair": "a_lighthouse__x__watercolour_style",
+      "seed": 1,
+      "correction_size": 0.04343181103467941,
+      "gap_pooled_bigG": 0.9662290811538696,
+      "gap_seq_clipL": 0.06407530605792999,
+      "gap_seq_bigG": 1.0059348344802856,
+      "gap_seq_both": 0.10621071606874466
+    },
+    {
+      "pair": "a_lion__x__a_dog",
+      "seed": 2,
+      "correction_size": 0.25464141368865967,
+      "gap_pooled_bigG": 1.1811275482177734,
+      "gap_seq_clipL": 0.05924007669091225,
+      "gap_seq_bigG": 1.049785852432251,
+      "gap_seq_both": 0.11056070029735565
+    },
+    {
+      "pair": "a_lion__x__a_horse",
+      "seed": 1,
+      "correction_size": 0.25474128127098083,
+      "gap_pooled_bigG": 1.3955799341201782,
+      "gap_seq_clipL": 0.06313614547252655,
+      "gap_seq_bigG": 1.0607311725616455,
+      "gap_seq_both": 0.1139308512210846
+    },
+    {
+      "pair": "a_mailbox__x__a_snowfield",
+      "seed": 1,
+      "correction_size": 0.12169075757265091,
+      "gap_pooled_bigG": 1.1121822595596313,
+      "gap_seq_clipL": 0.06233884021639824,
+      "gap_seq_bigG": 1.097575306892395,
+      "gap_seq_both": 0.11496653407812119
+    },
+    {
+      "pair": "a_microwave__x__a_potted_plant",
+      "seed": 1,
+      "correction_size": 0.07948807626962662,
+      "gap_pooled_bigG": 1.249319314956665,
+      "gap_seq_clipL": 0.06506634503602982,
+      "gap_seq_bigG": 1.0102533102035522,
+      "gap_seq_both": 0.10732374340295792
+    },
+    {
+      "pair": "a_mug__x__a_wine_glass",
+      "seed": 1,
+      "correction_size": 0.05778222158551216,
+      "gap_pooled_bigG": 1.1498156785964966,
+      "gap_seq_clipL": 0.0653790608048439,
+      "gap_seq_bigG": 1.0580302476882935,
+      "gap_seq_both": 0.1102130115032196
+    },
+    {
+      "pair": "a_park_bench__x__a_sand_dune",
+      "seed": 1,
+      "correction_size": 0.13341055810451508,
+      "gap_pooled_bigG": 1.244918704032898,
+      "gap_seq_clipL": 0.0663304552435875,
+      "gap_seq_bigG": 1.086352825164795,
+      "gap_seq_both": 0.11819321662187576
+    },
+    {
+      "pair": "a_phone_booth__x__a_tropical_beach",
+      "seed": 1,
+      "correction_size": 0.15747910737991333,
+      "gap_pooled_bigG": 1.0378841161727905,
+      "gap_seq_clipL": 0.06400791555643082,
+      "gap_seq_bigG": 1.0947723388671875,
+      "gap_seq_both": 0.11641579121351242
+    },
+    {
+      "pair": "a_picnic_table__x__a_snowstorm",
+      "seed": 1,
+      "correction_size": 0.14749906957149506,
+      "gap_pooled_bigG": 1.1065415143966675,
+      "gap_seq_clipL": 0.05932377651333809,
+      "gap_seq_bigG": 0.9532232284545898,
+      "gap_seq_both": 0.10280558466911316
+    },
+    {
+      "pair": "a_polar_bear__x__an_iceberg",
+      "seed": 1,
+      "correction_size": 0.10615231841802597,
+      "gap_pooled_bigG": 1.420432448387146,
+      "gap_seq_clipL": 0.06045198813080788,
+      "gap_seq_bigG": 0.9922019839286804,
+      "gap_seq_both": 0.10617562383413315
+    },
+    {
+      "pair": "a_rowboat__x__a_cactus_garden",
+      "seed": 1,
+      "correction_size": 0.1336664855480194,
+      "gap_pooled_bigG": 1.369053602218628,
+      "gap_seq_clipL": 0.06441035866737366,
+      "gap_seq_bigG": 1.1145925521850586,
+      "gap_seq_both": 0.11897159367799759
+    },
+    {
+      "pair": "a_sailboat__x__a_harbor",
+      "seed": 1,
+      "correction_size": 0.05062047764658928,
+      "gap_pooled_bigG": 1.199599266052246,
+      "gap_seq_clipL": 0.056820761412382126,
+      "gap_seq_bigG": 0.9659662842750549,
+      "gap_seq_both": 0.10038872063159943
+    },
+    {
+      "pair": "a_seal__x__a_walrus",
+      "seed": 9,
+      "correction_size": 0.0793486088514328,
+      "gap_pooled_bigG": 1.5015355348587036,
+      "gap_seq_clipL": 0.06397104263305664,
+      "gap_seq_bigG": 1.0444903373718262,
+      "gap_seq_both": 0.11114658415317535
+    },
+    {
+      "pair": "a_suitcase__x__a_desk_fan",
+      "seed": 1,
+      "correction_size": 0.16333703696727753,
+      "gap_pooled_bigG": 1.3857202529907227,
+      "gap_seq_clipL": 0.06539948284626007,
+      "gap_seq_bigG": 1.0662815570831299,
+      "gap_seq_both": 0.11238480359315872
+    },
+    {
+      "pair": "a_teapot__x__claymation_style",
+      "seed": 1,
+      "correction_size": 0.14840435981750488,
+      "gap_pooled_bigG": 0.8414671421051025,
+      "gap_seq_clipL": 0.06753764301538467,
+      "gap_seq_bigG": 1.0240581035614014,
+      "gap_seq_both": 0.1102016419172287
+    },
+    {
+      "pair": "a_tiger__x__a_dog",
+      "seed": 1,
+      "correction_size": 0.21540704369544983,
+      "gap_pooled_bigG": 1.2470595836639404,
+      "gap_seq_clipL": 0.057488709688186646,
+      "gap_seq_bigG": 1.0369601249694824,
+      "gap_seq_both": 0.10852423310279846
+    },
+    {
+      "pair": "a_train__x__pixel_art_style",
+      "seed": 1,
+      "correction_size": 0.08415340632200241,
+      "gap_pooled_bigG": 0.9637911319732666,
+      "gap_seq_clipL": 0.0592532679438591,
+      "gap_seq_bigG": 1.0334748029708862,
+      "gap_seq_both": 0.10755673050880432
+    },
+    {
+      "pair": "a_typewriter__x__a_cactus",
+      "seed": 1,
+      "correction_size": 0.17240390181541443,
+      "gap_pooled_bigG": 1.4038586616516113,
+      "gap_seq_clipL": 0.05865906551480293,
+      "gap_seq_bigG": 1.0777513980865479,
+      "gap_seq_both": 0.11150190979242325
+    },
+    {
+      "pair": "a_wolf__x__a_horse",
+      "seed": 1,
+      "correction_size": 0.2566204071044922,
+      "gap_pooled_bigG": 1.4445366859436035,
+      "gap_seq_clipL": 0.06377562880516052,
+      "gap_seq_bigG": 1.0747060775756836,
+      "gap_seq_both": 0.11390162259340286
+    },
+    {
+      "pair": "an_eagle__x__a_hawk",
+      "seed": 9,
+      "correction_size": 0.0940641537308693,
+      "gap_pooled_bigG": 1.3840358257293701,
+      "gap_seq_clipL": 0.06361784040927887,
+      "gap_seq_bigG": 1.050855040550232,
+      "gap_seq_both": 0.11060397326946259
+    },
+    {
+      "pair": "an_elephant__x__a_penguin",
+      "seed": 9,
+      "correction_size": 0.1790008544921875,
+      "gap_pooled_bigG": 1.5059114694595337,
+      "gap_seq_clipL": 0.06128289923071861,
+      "gap_seq_bigG": 1.0581908226013184,
+      "gap_seq_both": 0.11152215301990509
+    }
+  ],
+  "l1": {
+    "pooled_bigG": {
+      "median_gap": 1.2073440551757812,
+      "min_gap": 0.8414671421051025,
+      "max_gap": 1.5059114694595337,
+      "spearman_rho": 0.2934649635601179,
+      "p_value": 0.010608860593351675,
+      "predicts": false
+    },
+    "seq_clipL": {
+      "median_gap": 0.06107266619801521,
+      "min_gap": 0.056820761412382126,
+      "max_gap": 0.06966179609298706,
+      "spearman_rho": 0.004836587363917711,
+      "p_value": 0.9671501750563513,
+      "predicts": false
+    },
+    "seq_bigG": {
+      "median_gap": 1.050855040550232,
+      "min_gap": 0.9532232284545898,
+      "max_gap": 1.1211912631988525,
+      "spearman_rho": 0.2908496036548868,
+      "p_value": 0.011357287142654332,
+      "predicts": false
+    },
+    "seq_both": {
+      "median_gap": 0.1110612228512764,
+      "min_gap": 0.10038872063159943,
+      "max_gap": 0.12019117176532745,
+      "spearman_rho": 0.3175339271250098,
+      "p_value": 0.005503741298370415,
+      "predicts": true
+    }
+  },
+  "l3": {
+    "pooled_bigG": {
+      "mean_pairwise_cosine": 0.4315112829208374,
+      "top_direction_share": 0.2009955644607544,
+      "mismatched_mean_pairwise_cosine": 0.2831760048866272,
+      "mismatched_top_direction_share": 0.12806576490402222,
+      "joint_anisotropy_cosine": 0.3890974223613739,
+      "joint_anisotropy_share": 0.13743238151073456,
+      "random_floor": 0.02015493348330605,
+      "ratio_over_floor": 9.972524326474964,
+      "ratio_over_mismatched": 1.5694714712506406,
+      "shared": false
+    },
+    "seq_clipL": {
+      "mean_pairwise_cosine": 0.4168011546134949,
+      "top_direction_share": 0.19709205627441406,
+      "mismatched_mean_pairwise_cosine": 0.3477453291416168,
+      "mismatched_top_direction_share": 0.15192082524299622,
+      "joint_anisotropy_cosine": 0.9987212419509888,
+      "joint_anisotropy_share": 0.16089816391468048,
+      "random_floor": 0.01623405804669497,
+      "ratio_over_floor": 12.140652430064415,
+      "ratio_over_mismatched": 1.2973340288217023,
+      "shared": false
+    },
+    "seq_bigG": {
+      "mean_pairwise_cosine": 0.35619786381721497,
+      "top_direction_share": 0.18335363268852234,
+      "mismatched_mean_pairwise_cosine": 0.3570547103881836,
+      "mismatched_top_direction_share": 0.15141946077346802,
+      "joint_anisotropy_cosine": 0.6635640263557434,
+      "joint_anisotropy_share": 0.15752555429935455,
+      "random_floor": 0.015497526419849238,
+      "ratio_over_floor": 11.831154709546611,
+      "ratio_over_mismatched": 1.21089872960801,
+      "shared": false
+    },
+    "seq_both": {
+      "mean_pairwise_cosine": 0.3482474982738495,
+      "top_direction_share": 0.18108133971691132,
+      "mismatched_mean_pairwise_cosine": 0.32903721928596497,
+      "mismatched_top_direction_share": 0.15191808342933655,
+      "joint_anisotropy_cosine": 0.9961448907852173,
+      "joint_anisotropy_share": 0.15513955056667328,
+      "random_floor": 0.01506667117574946,
+      "ratio_over_floor": 12.018669393168315,
+      "ratio_over_mismatched": 1.1919669839775184,
+      "shared": false
+    }
+  }
+}

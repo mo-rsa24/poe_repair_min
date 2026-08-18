@@ -12,13 +12,23 @@ from __future__ import annotations
 import json
 
 from poe_repair.experiments._eval_common import cell_for
-from poe_repair.experiments.interaction_term.cache import cell_dir
+from poe_repair.experiments.interaction_term.cache import any_cell_dir, cell_dir
 from poe_repair.runtime import PairSeedCell
 
 
 def prompts_for_slug(pair_slug: str, seed: int) -> tuple[str, str]:
-    """Recover (prompt_a, prompt_b) from a cached cell's meta.json."""
-    meta = json.loads((cell_dir(pair_slug, seed) / "meta.json").read_text())
+    """Recover (prompt_a, prompt_b) from a cached cell's meta.json.
+
+    The prompts belong to the pair, not to the seed, so any cached seed of the
+    pair answers the question. Requiring the exact seed made every experiment
+    that samples fresh seeds fail at the naming step, before it reached
+    anything that actually needs cached tensors.
+    """
+    try:
+        d = cell_dir(pair_slug, seed)
+    except FileNotFoundError:
+        d = any_cell_dir(pair_slug)
+    meta = json.loads((d / "meta.json").read_text())
     a, b = meta["pair"]
     return str(a), str(b)
 

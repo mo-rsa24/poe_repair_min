@@ -1,5 +1,13 @@
 # 🏷️ The labelled set, and the band it puts on 94%
 
+**No step number: nothing in the paper order waits on this.** This scope runs in its own internal order, and earns numbered steps only on the big-promotion condition its own `MASTER_PLAN.md` sets. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../../../MASTER_PLAN.md).
+
+| Within this scope | Plan | Status |
+|---|---|---|
+| 1 of 4 | [gate-01-is-this-hole-already-known](gate-01-is-this-hole-already-known.md) | ⚠️ not started |
+| **2 of 4** | **this plan** | **⚠️ not started** |
+| 3 of 4 | [idea-01-what-the-current-benchmarks-score](idea-01-what-the-current-benchmarks-score.md) | ⚠️ blocked by gate-01 |
+
 Design only. The verdict lives in [../review/instrument-01-the-three-state-labelled-set.md](../review/instrument-01-the-three-state-labelled-set.md).
 
 ## What this asks, in one line

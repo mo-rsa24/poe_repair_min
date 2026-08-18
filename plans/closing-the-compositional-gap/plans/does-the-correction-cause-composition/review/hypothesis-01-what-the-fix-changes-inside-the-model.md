@@ -85,5 +85,17 @@ one strong pair cannot carry a weak average.
 
 ## Still open
 
-- [ ] ⚠️ The figure's statistical entity: per-seed points, or one point per pair. A design
-      decision for `/pair-figure`, recorded here because F7's caption depends on it.
+- [x] ✅ The figure's statistical entity: one point per pair, with its seeds as a light spread
+      behind it. The data nests three deep, 384 rows inside 64 cells inside 8 pairs, and the rows
+      within a cell are the same image read at different steps and tokens. They are not
+      independent, so plotting rows as points would inflate the sample 48-fold and turn a claim
+      about eight pairs into an apparent claim about hundreds of observations.
+
+      Seeds stay visible rather than averaged away, because the spread is what tells a reader
+      whether the effect is a property of the pair or of one lucky run. This matches what F3 and
+      F4b already do, so a point means the same thing everywhere in the paper.
+
+      What follows for the writing: F7's caption reports the per-pair median and says n=8 pairs.
+      It may not quote 384 or 64 as a sample size. The bar it was judged against
+      (median 1.52, 97% of rows above one) was computed over rows and stays as the pre-registered
+      number, cited as such rather than as the figure's statistic.

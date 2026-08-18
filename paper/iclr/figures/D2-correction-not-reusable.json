@@ -1,0 +1,19 @@
+{
+  "pair": "a_cat__x__a_dog",
+  "seeds": [
+    9,
+    13
+  ],
+  "shown_steps": [
+    10,
+    20,
+    30,
+    40
+  ],
+  "cosine_median": 0.0021206443198025227,
+  "cosine_range": [
+    -0.05344786122441292,
+    0.3665425479412079
+  ],
+  "frames": "the run's own x0 estimate per step: Tweedie from cached x_t and the guided PoE prediction that steered the path, decoded by the SDXL VAE, fp32. The cached trajectory is the PoE path (decoded endpoint matches poe.png, not mono.png)"
+}

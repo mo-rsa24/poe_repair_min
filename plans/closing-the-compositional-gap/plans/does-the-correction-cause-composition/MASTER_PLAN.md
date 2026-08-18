@@ -1,5 +1,23 @@
 # Interaction-Term
 
+## Where this scope sits in the order
+
+This scope owns **9 of the 22 steps**, 5 of them done. The steps interleave with the other scopes', so the list below is a filter on the one `## Running order` table in the [repo root MASTER_PLAN.md](../../../../MASTER_PLAN.md), never an order of its own.
+
+**Next in this scope: step 6**, [hypothesis-03-when-in-the-run-it-matters](plans/hypothesis-03-when-in-the-run-it-matters.md), driving the timing tab by hand.
+
+| Step | Plan | What it does | Status |
+|---|---|---|---|
+| 1 | ~~[instrument-01-build-the-measuring-scripts](plans/instrument-01-build-the-measuring-scripts.md)~~ | the thirteen measuring scripts | ✅ |
+| 2 | ~~[instrument-02-fix-the-size-measure-before-any-result](plans/instrument-02-fix-the-size-measure-before-any-result.md)~~ | how the correction's size is expressed | ✅ |
+| 4 | [hypothesis-02-more-correction-more-composition](plans/hypothesis-02-more-correction-more-composition.md) | the headline causal result | ◑ 6.3GB owed off /home-mscluster |
+| 5 | ~~[hypothesis-04-what-the-cached-runs-already-show](plans/hypothesis-04-what-the-cached-runs-already-show.md)~~ | the analyses needing no GPU | ✅ |
+| 6 | [hypothesis-03-when-in-the-run-it-matters](plans/hypothesis-03-when-in-the-run-it-matters.md) | when the correction matters | ◑ driving the timing tab |
+| 7 | ~~[hypothesis-05-the-same-story-from-three-sides](plans/hypothesis-05-the-same-story-from-three-sides.md)~~ | the independent checks | ✅ |
+| 8 | ~~[hypothesis-01-what-the-fix-changes-inside-the-model](plans/hypothesis-01-what-the-fix-changes-inside-the-model.md)~~ | what the fix changes inside | ✅ |
+| 13 | [figure-01-the-seven-paper-figures](plans/figure-01-the-seven-paper-figures.md) | the figures this scope owes | ◑ F6 needs a decision |
+| 15 | [gate-01-two-literature-checks-before-print](plans/gate-01-two-literature-checks-before-print.md) | the two print gates | ⚠️ |
+
 ## Mission
 PoE fails at "a cat and a dog" because multiplying two predictions asks for an
 image that is both things at once, while the sentence means two things side by
@@ -32,12 +50,13 @@ scope proves that account and produces the paper's figures.
    <!-- ⚠ CONFLICT surfaced by sync 2026-08-05, wording NOT changed here.
         The second clause cannot pass, and not because the method fails.
         Measured on the 11-train / 6-transfer split: the train-fitted subspace
-        captures 6.0% of held-out energy at k=64, while the adapter trained on
+        captures 13.3% of held-out energy at k=64, while the adapter trained on
         the same split composes 96.9% on those pairs (0% without it). r_t
         vectors are mutually near-orthogonal (cosine ~0.00, even train-to-
         train), so no fitted subspace can contain unseen pairs and the test
         reads low regardless of transfer.
-        First clause HOLDS: 62.6% vs a 13.2% Gaussian floor, 4.8x.
+        First clause HOLDS: 63.0% vs a 16.4% Gaussian floor, 3.8x, from
+        scripts/spectrum.py --pool --stride 10 --max-seeds 8 (440 rows).
         Evidence: docs/evidence/F6-subspace-vs-transfer/QUERY.md
         Rewording direction text is /integrate-plans or /refine-plan, not
         sync-plan-tree. -->
@@ -101,21 +120,21 @@ plan sits in the root's background-experiments pool and does not block the paper
 
 | Plan | What it does | Paper step | Status | Owes |
 |---|---|---|---|---|
-| hypothesis-02-more-correction-more-composition | more correction, more composition, with two flat controls. The headline | 1 | ◑ | the re-score, then the figure and the strip |
-| hypothesis-03-when-in-the-run-it-matters | when in the denoising run the correction matters | 3 | ⚠️ | all of it |
-| hypothesis-05-the-same-story-from-three-sides | the independent checks on the causal claim | 8 | ⚠️ | all of it |
+| hypothesis-02-more-correction-more-composition | more correction, more composition, with two flat controls. The headline | 1 | ◑ | 6.3GB of cells owed off /home-mscluster |
+| hypothesis-03-when-in-the-run-it-matters | when in the denoising run the correction matters. The cliff is at the start | 3 | ◑ | driving the timing tab by hand |
+| hypothesis-05-the-same-story-from-three-sides | the independent checks on the causal claim. Two image-side yes, two language-side null | 8 | ✅ | |
 
 **What changes inside the model when the fix is on** (hypothesis runs)
 
 | Plan | What it does | Paper step | Status | Owes |
 |---|---|---|---|---|
-| hypothesis-01-what-the-fix-changes-inside-the-model | the fix changes what a word paints, not where it looks. Replicates: median 1.52x over 64 cells | 19 | ◑ | one decision: per-seed points or pair-level means, via /pair-figure |
+| hypothesis-01-what-the-fix-changes-inside-the-model | the fix changes what a word paints, not where it looks. Replicates: median 1.52x over 64 cells | 19 | ✅ | |
 
 **Analyses off the cached predictions, needing no GPU and no queue** (hypothesis runs)
 
 | Plan | What it does | Paper step | Status | Owes |
 |---|---|---|---|---|
-| hypothesis-04-what-the-cached-runs-already-show | how few directions the correction needs, how its size tracks noise level, where two paths fork | 2 | ⚠️ | five of six tasks. The fork curve is done, elbow at step 16 |
+| hypothesis-04-what-the-cached-runs-already-show | how few directions the correction needs, how its size tracks noise level, where two paths fork | 2 | ✅ | |
 
 **How far the claim reaches** (idea and generalization runs; background, none of it blocks the paper)
 
@@ -130,13 +149,8 @@ plan sits in the root's background-experiments pool and does not block the paper
 | Plan | What it does | Paper step | Status | Owes |
 |---|---|---|---|---|
 | gate-01-two-literature-checks-before-print | the two /pressure-test passes run before anything is written. Defends, among other things, the decision not to run a baseline | 9 | ⚠️ | both passes |
-| figure-01-the-seven-paper-figures | the figures this scope owes the manuscript, via /design-figure | 10 | ⚠️ | all of them |
+| figure-01-the-seven-paper-figures | the figures this scope owes the manuscript, via /design-figure | 10 | ◑ | F6's decision, F7's remaining two bands, and eight smaller tasks. F1 to F5b, F7a and D1 to D4 are built |
 
-## Running order
-
-This scope keeps no order of its own. The order lives in the four lists in the repo root
-`MASTER_PLAN.md`, and the Paper step column above carries those positions verbatim. If a number
-here disagrees with the root, the root is right and this file is stale.
 
 ## Environment Context
 See `docs/ENVIRONMENT.md` for this project's environment/architecture facts.

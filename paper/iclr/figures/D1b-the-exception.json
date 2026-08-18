@@ -1,0 +1,13 @@
+{
+  "pair": "a_cat__x__a_dog",
+  "seed": 9,
+  "shown_steps": [
+    10,
+    20,
+    30,
+    40
+  ],
+  "cosine_median": -0.3167138993740082,
+  "mid_run_median_steps_16_32": -0.5809928178787231,
+  "role": "the real counterexample to D1: this pair's correction alternates sign mid-run, and per F2 it still composes at full dose, so temporal coherence is not necessary for the injected correction to work"
+}

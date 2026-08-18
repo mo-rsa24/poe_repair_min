@@ -1,0 +1,78 @@
+{
+  "pair": "a_cat__x__a_dog",
+  "cells_per_point": 4,
+  "windows": [
+    [
+      0,
+      10
+    ],
+    [
+      5,
+      15
+    ],
+    [
+      10,
+      20
+    ],
+    [
+      15,
+      25
+    ],
+    [
+      20,
+      30
+    ],
+    [
+      25,
+      35
+    ],
+    [
+      30,
+      40
+    ],
+    [
+      35,
+      45
+    ],
+    [
+      40,
+      50
+    ]
+  ],
+  "lambda_inside": [
+    1.0,
+    0.5187188088252312,
+    0.3738038214715002,
+    0.3202031542924407,
+    0.27592632714670995,
+    0.24628223692913026,
+    0.246458296772947,
+    0.2638093667158395,
+    0.3400029382079597
+  ],
+  "compose_rate_dose_matched": [
+    0.75,
+    0.5,
+    0.25,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "compose_rate_full_strength": [
+    0.75,
+    0.75,
+    0.25,
+    0.25,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "delivered_total": 3.316713258624077,
+  "measure": "delivered total = sum over the window of lambda_t * size_t; compose = detector counts >= 2 animals",
+  "caveat": "four cells per point, one pair. The cliff survives matching, and the windows at 5-15 and 10-20 compose at fraction strength, so the late tail is not explained by the smaller lambda alone."
+}

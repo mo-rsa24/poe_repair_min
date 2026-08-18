@@ -1,5 +1,13 @@
 # 🔨 Make the template build, and keep it building
 
+**Step 16 of 22.** Waits on nothing. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../../../MASTER_PLAN.md).
+
+| Step | Plan | Status |
+|---|---|---|
+| 15 | [gate-01-two-literature-checks-before-print](../../does-the-correction-cause-composition/plans/gate-01-two-literature-checks-before-print.md) | ⚠️ |
+| **16** | **this plan** | **◑ title still a stub** |
+| 17 | [writing-02-the-title-and-the-section-spine](writing-02-the-title-and-the-section-spine.md) | ⚠️ |
+
 ## What this asks, in one line
 Prove the paper builds to a PDF on this cluster, remove the template's stock content, and fix the two conventions that get expensive to change later: how figures are pathed and what the bibliography is called.
 
@@ -33,14 +41,16 @@ for the full picture. What this plan depends on specifically:
 ## Tasks
 - [x] confirm the stock template builds with tectonic (done 2026-08-05, 73 KB
       PDF written)
-- [ ] replace the stock title and the Cranberry-Lemon author block with the
-      real author block; keep `\iclrfinalcopy` commented out so the submission
-      stays anonymous  [inferred]
-- [ ] decide the bib: keep the 23-line stub filename or rename, and add the
+- [ ] replace the stock title `Lorem Ipsum for a Future ICLR 2027 Submission`
+      with the real one (author block done: now `Anonymous Authors`, and
+      `\iclrfinalcopy` stays commented out so the submission is anonymous)
+      [inferred]
+- [ ] finish the bib: it is past the stub at 67 lines, so what remains is the
       references this paper actually cites  [inferred]
-- [ ] write the figure-path rule into `paper/iclr/README.md`: one
+- [x] write the figure-path rule into `paper/iclr/README.md`: one
       `\graphicspath` root plus a naming rule, chosen so a figure that does not
       exist yet can be referenced without breaking the build  [inferred]
+      ✓ verified (`paper/iclr/README.md`: root, names, formats; untracked in git)
 - [ ] add a placeholder-figure macro so an owed figure renders as a visible
       grey box with its slot name, instead of failing the build  [inferred]
 - [ ] set `latex-workshop.latex.recipe.default` to `tectonic` in

@@ -81,6 +81,28 @@ def iter_cells(root: Path, pairs: list[str] | None, max_seeds: int | None,
                 yield pair_dir.name, s
 
 
+def curve_for(slug: str, seed: int, *, normalize: str = "prereg",
+              root: Path = CACHE_ROOT):
+    """One cell's correction-size curve: (slug, seed, log_snr, scaled size).
+
+    The single definition of the measure. `make_f3.py` draws named pairs from
+    outside the pool and imports this rather than repeating the arithmetic,
+    because two copies of a measure drift and the drift is invisible in the
+    figure.
+    """
+    c = load_cell(slug, seed, root=root)
+    n = c.r_t_norm().numpy()
+    if normalize == "prereg":
+        # The plan-01 committed measure: correction size relative to the
+        # prediction being corrected. docs/normalization_preregistration.md
+        n = n / c.eps_poe().flatten(1).norm(dim=1).numpy()
+    # Then scale each curve to its own median. The claim is about SHAPE over the
+    # run, not about every pair needing the same correction size, so a per-curve
+    # scale still has to come out. Median, not peak: dividing by the max makes
+    # every curve hostage to one noisy point and visibly amplifies jitter.
+    return slug, seed, c.log_snr().numpy(), n / max(np.median(n), 1e-12)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--pair", action="append", dest="pairs")
@@ -92,6 +114,11 @@ def main() -> int:
     ap.add_argument("--max-pairs", type=int, help="cap distinct pairs (smoke runs)")
     ap.add_argument("--max-seeds", type=int, default=2, help="seeds per pair")
     ap.add_argument("--bins", type=int, default=20, help="log-SNR bins")
+    ap.add_argument("--x-axis", default="log-snr", choices=("log-snr", "step"),
+                    help="step plots one point per real denoising step and needs "
+                         "no interpolation, so it cannot stretch a few steps "
+                         "across several bins the way the log-SNR grid does at "
+                         "the noisy end. log-snr is the sampler-independent axis")
     ap.add_argument("--normalize", default="prereg",
                     choices=("prereg", "own-median"),
                     help="prereg = ||r_t||/||eps_PoE|| then scaled to its own "
@@ -124,27 +151,27 @@ def main() -> int:
         print("no cached cells matched")
         return 2
 
-    curves: list[tuple[str, int, np.ndarray, np.ndarray]] = []
-    for slug, seed in cells:
-        c = load_cell(slug, seed, root=args.cache_root)
-        n = c.r_t_norm().numpy()
-        if args.normalize == "prereg":
-            # The plan-01 committed measure: correction size relative to the
-            # prediction being corrected. docs/normalization_preregistration.md
-            n = n / c.eps_poe().flatten(1).norm(dim=1).numpy()
-        # Then scale each curve to its own median. The claim is about SHAPE in
-        # log-SNR, not about every pair needing the same correction size, so a
-        # per-curve scale still has to come out. Median, not peak: dividing by
-        # the max makes every curve hostage to one noisy point and visibly
-        # amplifies step-to-step jitter.
-        curves.append((slug, seed, c.log_snr().numpy(), n / max(np.median(n), 1e-12)))
+    curves = [curve_for(slug, seed, normalize=args.normalize, root=args.cache_root)
+              for slug, seed in cells]
 
-    lo = max(x.min() for _, _, x, _ in curves)
-    hi = min(x.max() for _, _, x, _ in curves)
-    grid = np.linspace(lo, hi, args.bins)
-    stack = np.stack([
-        np.interp(grid, x, y) for _, _, x, y in curves   # log-SNR ascends with step
-    ])
+    if args.x_axis == "step":
+        # Every cell runs the same schedule, so the curves already share an
+        # x-axis and stack directly. No interpolation means no chance of the
+        # grid disagreeing with where the steps actually are.
+        lengths = {len(y) for _, _, _, y in curves}
+        if len(lengths) != 1:
+            print(f"cells disagree on step count {sorted(lengths)}; "
+                  f"the step axis needs one schedule")
+            return 2
+        grid = np.arange(lengths.pop(), dtype=float)
+        stack = np.stack([y for _, _, _, y in curves])
+    else:
+        lo = max(x.min() for _, _, x, _ in curves)
+        hi = min(x.max() for _, _, x, _ in curves)
+        grid = np.linspace(lo, hi, args.bins)
+        stack = np.stack([
+            np.interp(grid, x, y) for _, _, x, y in curves   # log-SNR ascends with step
+        ])
 
     q75, q25 = np.percentile(stack, [75, 25], axis=0)
     med_curve = np.median(stack, axis=0)
@@ -156,26 +183,39 @@ def main() -> int:
     spread = float(np.median(iqr / np.maximum(med_curve, 1e-12))) * 100.0
 
     n_pairs = len({s for s, _, _, _ in curves})
+    axis_name = "log-SNR" if args.x_axis == "log-snr" else "step"
     print(f"collapse spread: {spread:.1f}%   ({n_pairs} pairs, {len(curves)} curves)")
-    print(f"  log-SNR range {lo:.2f} to {hi:.2f} in {args.bins} bins")
+    if args.x_axis == "log-snr":
+        print(f"  log-SNR range {lo:.2f} to {hi:.2f} in {args.bins} bins")
+    else:
+        print(f"  steps 0 to {int(grid[-1])}, one point per real step, no interpolation")
+    # The median spread hides how uneven it is, and on the log-SNR axis the two
+    # ends differ by a factor of seven. Print the extremes so a figure caption
+    # cannot quote the median as if it held everywhere.
+    ratio = iqr / np.maximum(med_curve, 1e-12) * 100.0
+    iw, it = int(np.argmax(ratio)), int(np.argmin(ratio))
+    print(f"  widest {ratio[iw]:.1f}% at {axis_name} {grid[iw]:.2f}, "
+          f"tightest {ratio[it]:.1f}% at {axis_name} {grid[it]:.2f}")
     # A maximum at the first or last bin is a truncation, not a peak: the grid
     # stops where the shortest cell stops, so the curve is still moving there.
     imax = int(np.argmax(med_curve))
     at_edge = imax in (0, len(med_curve) - 1)
     if at_edge:
         print(f"  median curve still rising at the {'left' if imax == 0 else 'right'} "
-              f"edge (log-SNR {grid[imax]:.2f}); no interior peak in this range")
+              f"edge ({axis_name} {grid[imax]:.2f}); no interior peak in this range")
     else:
-        print(f"  peak of the median curve at log-SNR {grid[imax]:.2f}")
+        print(f"  peak of the median curve at {axis_name} {grid[imax]:.2f}")
     # State the reading rather than leaving the number to speak for itself.
     verdict = ("tight" if spread < 15 else
                "loose" if spread < 40 else "no collapse")
     print(f"  reading: {verdict}")
 
     args.out_dir.mkdir(parents=True, exist_ok=True)
-    (args.out_dir / "snr_collapse.json").write_text(json.dumps({
+    out_name = "snr_collapse.json" if args.x_axis == "log-snr" else "step_collapse.json"
+    (args.out_dir / out_name).write_text(json.dumps({
         "collapse_spread_pct": spread,
         "normalize": args.normalize,
+        "x_axis": args.x_axis,
         "n_pairs": n_pairs, "n_curves": len(curves),
         "log_snr_grid": grid.tolist(),
         "median_curve": med_curve.tolist(),
@@ -183,7 +223,14 @@ def main() -> int:
         "peak_log_snr": float(grid[imax]),
         "peak_at_edge": bool(at_edge),
         "iqr": iqr.tolist(),
+        "q25": q25.tolist(), "q75": q75.tolist(),
+        "spread_pct_per_bin": ratio.tolist(),
+        "widest": {"pct": float(ratio[iw]), "x": float(grid[iw])},
+        "tightest": {"pct": float(ratio[it]), "x": float(grid[it])},
         "cells": [[s, int(sd)] for s, sd, _, _ in curves],
+        # The per-curve values, so a figure can draw named curves instead of
+        # only the median and the band. Row i belongs to cells[i].
+        "curves": stack.tolist(),
     }, indent=2))
 
     if not args.no_figure:
@@ -198,17 +245,18 @@ def main() -> int:
                         label="interquartile range")
         ax.plot(grid, med_curve, color="tab:blue", lw=2.2, zorder=3,
                 label="median")
-        ax.set_xlabel("log-SNR")
+        ax.set_xlabel("log-SNR" if args.x_axis == "log-snr" else "denoising step")
         ax.set_ylabel("correction size, scaled to own median")
         # Report the number; do not assert the conclusion in the title.
         ax.set_title(
-            f"Correction size vs log-SNR: spread {spread:.0f}% "
+            f"Correction size vs {axis_name}: spread {spread:.0f}% "
             f"({n_pairs} pairs, {verdict})"
         )
         ax.legend(frameon=False, fontsize=8)
         fig.tight_layout()
-        fig.savefig(args.out_dir / "snr_collapse.png", dpi=150)
-        print(f"  figure: {args.out_dir / 'snr_collapse.png'}")
+        png = args.out_dir / out_name.replace(".json", ".png")
+        fig.savefig(png, dpi=150)
+        print(f"  figure: {png}")
 
     return 0
 

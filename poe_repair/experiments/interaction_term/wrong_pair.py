@@ -78,6 +78,29 @@ def _shares_a_word(a: str, b: str) -> bool:
     return bool(_words(a) & _words(b))
 
 
+def donor_seed_for(pair_slug: str, seed: int, *, root=CACHE_ROOT,
+                   min_steps: int = 50) -> int:
+    """The fixed donor seed for the wrong-seed control: seed + 4.
+
+    The dose sweep runs seeds 9 to 12 and the cache holds full 50-step
+    trajectories at seeds 9 to 16 for every sweep pair, so seed + 4 always
+    lands on a fully cached run outside the sweep itself. Fixed here in source
+    for the same reason as DONOR above: a donor chosen at run time is not a
+    control. Raises rather than falling back, because a donor with fewer steps
+    than the run would silently repeat its last vector.
+    """
+    donor = seed + 4
+    for split in ("train", "heldout"):
+        d = root / split / pair_slug / f"seed_{donor}" / "residuals"
+        if len(list(d.glob("step_*.pt"))) >= min_steps:
+            return donor
+    raise FileNotFoundError(
+        f"no full cached trajectory for {pair_slug!r} seed {donor} "
+        f"(wanted >= {min_steps} residual steps). The wrong-seed control "
+        "needs a complete donor run; cache it first."
+    )
+
+
 def first_cached_seed(pair_slug: str, *, root=CACHE_ROOT, min_steps: int = 2) -> int:
     """First seed of this pair with a real trajectory, not an eval stub."""
     for split in ("train", "heldout"):

@@ -1,5 +1,13 @@
 # 🅰️₀ One pooled LoRA first: does the fix transfer at all?
 
+**Step 10 of 22.** Waits on step 9. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../../../MASTER_PLAN.md).
+
+| Step | Plan | Status |
+|---|---|---|
+| 9 | [instrument-02-three-live-curves-while-training](instrument-02-three-live-curves-while-training.md) | ⚠️ do this next |
+| **10** | **this plan** | **◑ read incomplete** |
+| 11 | [hypothesis-02-transfer-as-a-rate-over-fifteen-pairs](hypothesis-02-transfer-as-a-rate-over-fifteen-pairs.md) | ⚠️ |
+
 Design only. Verdicts live in [../review/hypothesis-01-does-one-pooled-fix-transfer-at-all.md](../review/hypothesis-01-does-one-pooled-fix-transfer-at-all.md).
 
 ## What this asks, in one line

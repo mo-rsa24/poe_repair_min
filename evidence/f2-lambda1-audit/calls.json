@@ -1,0 +1,258 @@
+[
+  {
+    "bucket": "01-both-there",
+    "pair": "a_cat__x__a_dog",
+    "seed": 9,
+    "n_instances": 2,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/a_cat__x__a_dog/seed_9/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "02-two-of-one",
+    "pair": "a_cat__x__a_dog",
+    "seed": 10,
+    "n_instances": 2,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/a_cat__x__a_dog/seed_10/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "01-both-there",
+    "pair": "a_cat__x__a_dog",
+    "seed": 11,
+    "n_instances": 2,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/a_cat__x__a_dog/seed_11/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "01-both-there",
+    "pair": "a_cat__x__a_dog",
+    "seed": 12,
+    "n_instances": 2,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/a_cat__x__a_dog/seed_12/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "04-look-alike-by-design",
+    "pair": "a_cow__x__a_buffalo",
+    "seed": 9,
+    "n_instances": 2,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/a_cow__x__a_buffalo/seed_9/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "04-look-alike-by-design",
+    "pair": "a_cow__x__a_buffalo",
+    "seed": 10,
+    "n_instances": 3,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/a_cow__x__a_buffalo/seed_10/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "04-look-alike-by-design",
+    "pair": "a_cow__x__a_buffalo",
+    "seed": 11,
+    "n_instances": 2,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/a_cow__x__a_buffalo/seed_11/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "04-look-alike-by-design",
+    "pair": "a_cow__x__a_buffalo",
+    "seed": 12,
+    "n_instances": 2,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/a_cow__x__a_buffalo/seed_12/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "04-look-alike-by-design",
+    "pair": "a_frog__x__a_toad",
+    "seed": 9,
+    "n_instances": 2,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/a_frog__x__a_toad/seed_9/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "04-look-alike-by-design",
+    "pair": "a_frog__x__a_toad",
+    "seed": 10,
+    "n_instances": 2,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/a_frog__x__a_toad/seed_10/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "04-look-alike-by-design",
+    "pair": "a_frog__x__a_toad",
+    "seed": 11,
+    "n_instances": 2,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/a_frog__x__a_toad/seed_11/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "04-look-alike-by-design",
+    "pair": "a_frog__x__a_toad",
+    "seed": 12,
+    "n_instances": 2,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/a_frog__x__a_toad/seed_12/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "01-both-there",
+    "pair": "a_goose__x__a_swan",
+    "seed": 9,
+    "n_instances": 2,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/a_goose__x__a_swan/seed_9/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "03-cannot-call",
+    "pair": "a_goose__x__a_swan",
+    "seed": 10,
+    "n_instances": 3,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/a_goose__x__a_swan/seed_10/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "01-both-there",
+    "pair": "a_goose__x__a_swan",
+    "seed": 11,
+    "n_instances": 2,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/a_goose__x__a_swan/seed_11/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "03-cannot-call",
+    "pair": "a_goose__x__a_swan",
+    "seed": 12,
+    "n_instances": 2,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/a_goose__x__a_swan/seed_12/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "04-look-alike-by-design",
+    "pair": "a_leopard__x__a_jaguar",
+    "seed": 9,
+    "n_instances": 3,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/a_leopard__x__a_jaguar/seed_9/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "04-look-alike-by-design",
+    "pair": "a_leopard__x__a_jaguar",
+    "seed": 10,
+    "n_instances": 2,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/a_leopard__x__a_jaguar/seed_10/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "04-look-alike-by-design",
+    "pair": "a_leopard__x__a_jaguar",
+    "seed": 11,
+    "n_instances": 2,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/a_leopard__x__a_jaguar/seed_11/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "04-look-alike-by-design",
+    "pair": "a_leopard__x__a_jaguar",
+    "seed": 12,
+    "n_instances": 2,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/a_leopard__x__a_jaguar/seed_12/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "05-scored-failure",
+    "pair": "a_seal__x__a_walrus",
+    "seed": 9,
+    "n_instances": 1,
+    "compose": 0,
+    "source": "outputs/interaction_term/dose/pairs/a_seal__x__a_walrus/seed_9/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "03-cannot-call",
+    "pair": "a_seal__x__a_walrus",
+    "seed": 10,
+    "n_instances": 2,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/a_seal__x__a_walrus/seed_10/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "01-both-there",
+    "pair": "a_seal__x__a_walrus",
+    "seed": 11,
+    "n_instances": 2,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/a_seal__x__a_walrus/seed_11/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "03-cannot-call",
+    "pair": "a_seal__x__a_walrus",
+    "seed": 12,
+    "n_instances": 2,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/a_seal__x__a_walrus/seed_12/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "01-both-there",
+    "pair": "an_eagle__x__a_hawk",
+    "seed": 9,
+    "n_instances": 2,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/an_eagle__x__a_hawk/seed_9/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "01-both-there",
+    "pair": "an_eagle__x__a_hawk",
+    "seed": 10,
+    "n_instances": 2,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/an_eagle__x__a_hawk/seed_10/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "03-cannot-call",
+    "pair": "an_eagle__x__a_hawk",
+    "seed": 11,
+    "n_instances": 2,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/an_eagle__x__a_hawk/seed_11/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "01-both-there",
+    "pair": "an_eagle__x__a_hawk",
+    "seed": 12,
+    "n_instances": 2,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/an_eagle__x__a_hawk/seed_12/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "05-scored-failure",
+    "pair": "an_elephant__x__a_penguin",
+    "seed": 9,
+    "n_instances": 1,
+    "compose": 0,
+    "source": "outputs/interaction_term/dose/pairs/an_elephant__x__a_penguin/seed_9/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "01-both-there",
+    "pair": "an_elephant__x__a_penguin",
+    "seed": 10,
+    "n_instances": 2,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/an_elephant__x__a_penguin/seed_10/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "01-both-there",
+    "pair": "an_elephant__x__a_penguin",
+    "seed": 11,
+    "n_instances": 2,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/an_elephant__x__a_penguin/seed_11/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  },
+  {
+    "bucket": "01-both-there",
+    "pair": "an_elephant__x__a_penguin",
+    "seed": 12,
+    "n_instances": 2,
+    "compose": 1,
+    "source": "outputs/interaction_term/dose/pairs/an_elephant__x__a_penguin/seed_12/teacher_residual_const_lam100/teacher_residual_const_lam100.png"
+  }
+]

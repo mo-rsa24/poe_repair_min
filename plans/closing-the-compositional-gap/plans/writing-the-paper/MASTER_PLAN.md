@@ -1,5 +1,21 @@
 # Paper-ICLR
 
+## Where this scope sits in the order
+
+This scope owns **7 of the 22 steps**, 0 of them done. The steps interleave with the other scopes', so the list below is a filter on the one `## Running order` table in the [repo root MASTER_PLAN.md](../../../../MASTER_PLAN.md), never an order of its own.
+
+**Next in this scope: step 16**, [writing-01-make-the-template-build](plans/writing-01-make-the-template-build.md), it waits on nothing and needs no GPU.
+
+| Step | Plan | What it does | Status |
+|---|---|---|---|
+| 16 | [writing-01-make-the-template-build](plans/writing-01-make-the-template-build.md) | build, de-stub, figure-path rule | ◑ title still a stub |
+| 17 | [writing-02-the-title-and-the-section-spine](plans/writing-02-the-title-and-the-section-spine.md) | the claim in one line, section order | ⚠️ |
+| 18 | [writing-05-the-results-skeleton](plans/writing-05-the-results-skeleton.md) | placeholders, not prose | ⚠️ |
+| 19 | [writing-03-where-each-figure-goes](plans/writing-03-where-each-figure-goes.md) | which figure goes where | ⚠️ |
+| 20 | [writing-04-method-and-introduction](plans/writing-04-method-and-introduction.md) | method and intro prose | ⚠️ |
+| 21 | [writing-06-mechanism-and-limitations](plans/writing-06-mechanism-and-limitations.md) | mechanism and the honest caveats | ⚠️ |
+| 22 | [writing-07-the-abstract-written-last](plans/writing-07-the-abstract-written-last.md) | the abstract, written last | ⚠️ |
+
 ## Mission
 Write and submit the ICLR 2027 paper arguing that PoE's compositional failure is a
 measurable quantity, not a mystery. Multiplying two predictions asks for one image
@@ -82,8 +98,8 @@ a narrower claim, decided at the phase-3 boundary rather than at the deadline.
 
 ## Plans
 (Phase 1, the rough draft. Later phases get their plan files when phase 1 lands.)
-- ◑ writing-01-make-the-template-build.md — the build works; de-stubbing and the figure-path
-  rule remain (DoD 1-3)
+- ◑ writing-01-make-the-template-build.md: the build works and the figure-path rule is written
+  in `paper/iclr/README.md`; the title is still the stock stub (DoD 1-3)
 - ⚠️ writing-02-the-title-and-the-section-spine.md — gates 03, 04, 05 (DoD 4)
 - ⚠️ writing-03-where-each-figure-goes.md — the phase-1 deliverable; its owed column is the run
   order handed back to the two result scopes (DoD 5)
@@ -93,10 +109,6 @@ a narrower claim, decided at the phase-3 boundary rather than at the deadline.
 - ⚠️ writing-06-mechanism-and-limitations.md — moved here from `does-the-correction-cause-composition` plan 09 on
   2026-08-05; blocked on that scope's plans 02 and 09 (DoD 9)
 
-## Running order
-
-This scope keeps no order of its own. The single flat order across every scope
-and level is the `## Running order` table in the repo root `MASTER_PLAN.md`.
 
 ## Environment Context
 See `docs/ENVIRONMENT.md` for this project's environment/architecture facts.

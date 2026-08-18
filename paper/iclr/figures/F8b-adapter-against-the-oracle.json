@@ -1,0 +1,72 @@
+{
+  "sources": {
+    "oracle": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/dose_curves.json",
+    "adapter": "outputs/animals_compose_transfer/pooled_lora/phase1_r8_100k/compose_rate.json"
+  },
+  "adapter_checkpoint_step": 60000,
+  "rows": [
+    {
+      "pair": "a_cat__x__a_dog",
+      "poe": 0.0,
+      "oracle_075": 1.0,
+      "oracle_1": 1.0,
+      "adapter": 0.875
+    },
+    {
+      "pair": "a_frog__x__a_toad",
+      "poe": 0.25,
+      "oracle_075": 0.75,
+      "oracle_1": 1.0,
+      "adapter": 0.9375
+    },
+    {
+      "pair": "a_seal__x__a_walrus",
+      "poe": 0.0,
+      "oracle_075": 0.75,
+      "oracle_1": 0.75,
+      "adapter": 0.9375
+    },
+    {
+      "pair": "an_eagle__x__a_hawk",
+      "poe": 0.0,
+      "oracle_075": 0.75,
+      "oracle_1": 1.0,
+      "adapter": 0.9375
+    },
+    {
+      "pair": "a_cow__x__a_buffalo",
+      "poe": 0.0,
+      "oracle_075": 0.75,
+      "oracle_1": 1.0,
+      "adapter": 1.0
+    },
+    {
+      "pair": "a_goose__x__a_swan",
+      "poe": 0.0,
+      "oracle_075": 0.75,
+      "oracle_1": 1.0,
+      "adapter": 1.0
+    },
+    {
+      "pair": "a_leopard__x__a_jaguar",
+      "poe": 0.0,
+      "oracle_075": 0.5,
+      "oracle_1": 1.0,
+      "adapter": 1.0
+    },
+    {
+      "pair": "an_elephant__x__a_penguin",
+      "poe": 0.0,
+      "oracle_075": 0.5,
+      "oracle_1": 0.75,
+      "adapter": 1.0
+    }
+  ],
+  "adapter_at_or_above_oracle_075": "7 of 8 pairs",
+  "caption_caps": [
+    "pair-matched, not cell-matched: the oracle arm ran seeds 9-12 (4 cells per pair) and the adapter arm seeds 9-16 (16 cells per pair). The pair is the sampling unit; a cell-matched version needs the adapter rescored per seed",
+    "oracle at lambda=1 reproduces the joint prediction exactly (1.9 grey levels of 255), so it is the target rather than a method and is drawn hollow",
+    "the adapter is at training step 60000; steps 70000 to 100000 were never scored",
+    "elephant x penguin composes without any intervention, so its row is a control and not evidence for either arm"
+  ]
+}

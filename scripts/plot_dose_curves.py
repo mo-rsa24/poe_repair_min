@@ -46,8 +46,9 @@ LAM_RE = re.compile(r"lam(\d{3})")
 # so including them scored the two end strengths over more cells than the three
 # middle ones. That is not a fair curve, so the collection is pinned here.
 SWEEP_SEEDS = (9, 10, 11, 12)
-ROW_RE = re.compile(r"lam\d{3}_(random|wrong_pair)$")
-ROWS = ("oracle", "random", "wrong_pair")
+ROW_RE = re.compile(
+    r"lam\d{3}_(random|wrong_pair|wrong_seed|wrong_step|mean_others)$")
+ROWS = ("oracle", "random", "wrong_pair", "wrong_seed", "wrong_step", "mean_others")
 
 
 def require_validated_scorer(path: Path) -> dict:
@@ -102,7 +103,7 @@ def find_images(roots, seeds=SWEEP_SEEDS) -> dict[str, dict[tuple[str, int], dic
                     # lambda=0 injects nothing, so the oracle image IS the
                     # control image. Share it rather than sampling it 3x.
                     if lam == 0.0 and row == "oracle":
-                        for other in ("random", "wrong_pair"):
+                        for other in ROWS[1:]:
                             out[other][(pair_dir.name, seed)][0.0] = png
     return out
 
@@ -204,6 +205,19 @@ def main() -> int:
         else:
             print("\n  MIXED: the oracle leads but a control is not at the floor.")
 
+    # The two newer rows are not floor-expected controls; each has a reading
+    # declared before its sweep ran (see run_dose_sweep_controls2.sh):
+    #   wrong_seed  composes -> r_t is a function of prompt + noise level, not
+    #               of the particular run, which is what makes it learnable;
+    #               stays fused -> the adapter story owes an explanation.
+    #   wrong_step  stays fused -> the correction's content is needed at the
+    #               right time (F4's premise from the injection side);
+    #               composes -> only the total amount matters.
+    for r in ("wrong_seed", "wrong_step"):
+        y = np.array(curves.get(r, []), dtype=float)
+        if len(y) > 1 and not np.isnan(y[-1]):
+            print(f"  {r} rises {y[-1] - y[0]:+.0%} (own reading, not a floor control)")
+
     args.out_dir.mkdir(parents=True, exist_ok=True)
     (args.out_dir / "dose_curves.json").write_text(json.dumps({
         "scorer": contract["method"], "lambdas": lams,
@@ -219,9 +233,15 @@ def main() -> int:
 
         style = {"oracle": ("tab:blue", "o-", "the pair's own r_t"),
                  "random": ("tab:red", "s--", "norm-matched random"),
-                 "wrong_pair": ("tab:orange", "^--", "another pair's r_t")}
+                 "wrong_pair": ("tab:orange", "^--", "another pair's r_t"),
+                 "wrong_seed": ("tab:green", "v--", "same pair, another seed's r_t"),
+                 "wrong_step": ("tab:purple", "d--", "own r_t, steps deranged"),
+                 "mean_others": ("tab:brown", "P--",
+                                 "mean r_t of the pair's other runs")}
         fig, ax = plt.subplots(figsize=(6.5, 4.2))
         for r in ROWS:
+            if not by_row[r]:
+                continue
             c, m, lab = style[r]
             y = np.array(curves[r], dtype=float)
             ok = ~np.isnan(y)
