@@ -1,4 +1,14 @@
 {
+  "permissions": {
+    "allow": [
+      "Edit(~/.claude/skills/drip-idea/**)",
+      "Bash(xargs -I{} sh -c 'echo \"$\\(wc -l < {}\\) {}\"')",
+      "Edit(~/.claude/skills/drip-plan/**)",
+      "Bash(grep -n '^#\\\\{1,3\\\\} ' WORKFLOWS.md)",
+      "Bash(nvidia-smi --query-gpu=index,name,memory.used,memory.total --format=csv)",
+      "Bash(nohup /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python scripts/xhat0_readback.py --pair a_cat__x__a_dog --seed 1 --steps 10 25 40)"
+    ]
+  },
   "hooks": {
     "SessionStart": [
       {

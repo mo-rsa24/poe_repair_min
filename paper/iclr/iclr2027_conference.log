@@ -368,42 +368,55 @@ LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
 
 
 LaTeX Font Warning: Font shape `TU/ptm/m/it' undefined
-(Font)              using `TU/ptm/m/n' instead on input line 102.
+(Font)              using `TU/ptm/m/n' instead on input line 90.
 
 [1
 
 ]
 File: figures//F1-two-meanings.png Graphic file (type bmp)
 <figures//F1-two-meanings.png>
-File: figures//F2-dose-response.png Graphic file (type bmp)
-<figures//F2-dose-response.png>
+
+Underfull \vbox (badness 5970) has occurred while \output is active []
+
  [2]
-Underfull \vbox (badness 2799) has occurred while \output is active []
+[3]
+File: figures//F1b-two-regimes.pdf Graphic file (type pdf)
+<use figures//F1b-two-regimes.pdf>
+ [4]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [3]
-[4]
-
-LaTeX Font Warning: Font shape `TU/ptm/b/sc' undefined
-(Font)              using `TU/ptm/b/n' instead on input line 248.
-
-[5] [6] [7] [8] [9]
+ [5]
+[6]
 \c@proposition=\count294
 
 
+LaTeX Warning: Reference `eq:score' on page 7 undefined on input line 282.
+
+
+LaTeX Warning: Reference `eq:adaptation' on page 7 undefined on input line 282.
+
+
+
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[10]
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[11] [12] (iclr2027_conference.aux)
+[7]
+Underfull \vbox (badness 6658) has occurred while \output is active []
+
+ [8]
+[9] (iclr2027_conference.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
+
+LaTeX Warning: There were undefined references.
+
 Package rerunfilecheck Info: File `iclr2027_conference.out' has not changed.
-(rerunfilecheck)             Checksum: 32BC6ADC6E95A7E8DA346E94B52534BA;7155.
+(rerunfilecheck)             Checksum: A0CF530239A4107DD580E63C2E6DB0B7;4660.
  )
-Output written on iclr2027_conference.xdv (12 pages, 296932 bytes).
+Output written on iclr2027_conference.xdv (9 pages, 210600 bytes).

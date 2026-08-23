@@ -66,6 +66,9 @@ the three-way bar. In the repo: `evidence/f2-lambda1-audit/README.md` giving the
   judgeable if each animal has a visible feature you can name that the other lacks. Apply it to
   all 19 pairs in `outputs/interaction_term/dose/pairs/` and commit the 19-row split BEFORE
   opening a single image. [inferred prerequisite, DoD 2]
+  - 💡 before this: `/demonstrate show me the 19 pairs as a contact sheet, one
+    representative image each` gives you the pairs to write the rule against without seeing
+    any of the images the rule will later be applied to.
 - [ ] Build the labelling tool: it strips λ out of the file path, shuffles, shows one image
   with its prompt, and records one of four labels plus the scorer's own call. Any detector call
   it makes takes `--device cpu`. [inferred prerequisite, DoD 3]
@@ -79,9 +82,14 @@ the three-way bar. In the repo: `evidence/f2-lambda1-audit/README.md` giving the
 - [ ] Compute the false-compose rate at λ=1 and at λ=0.50, each with its denominator, and the
   coverage number. Judge against the three-way bar, whose 10-point and 5-point thresholds are
   constants in the scoring script. [DoD 6]
+  - 💡 `/pair-figure` before plotting anything. Whether a point is one image, one seed, or
+    one pair is a live design question on three other review files in this tree, and
+    answering it here differently would make the numbers uncomparable.
 - [ ] Rewrite the band in `evidence/f2-lambda1-audit/README.md` to 75% to 94%, stating it
   cannot be narrowed from those images. It currently says 87% to 94%, which counts the 17
   uncallable cells as successes. [DoD 8]
+  - 💡 after this: `/reconcile evidence/f2-lambda1-audit/README.md` to check nothing else
+    in that file still assumes the old 87% figure.
 
 ## Engagement Instructions
 Five checks, all mechanical:
@@ -104,13 +112,3 @@ the split, do not compute any rate.
 ▶ `/run-experiment` ✅: drives the labelling pass and the rate computation, and stamps the run
    into the review file's Runs table. alt: `/write-tests` for checks 1 and 2, which are the two
    worth having as permanent assertions rather than a one-off look.
-
-## Recommended Prompts
-- **Before task 1** (the judgeable-pair rule): `/demonstrate show me the 19 pairs as a contact
-  sheet, one representative image each` gives you the pairs to write the rule against without
-  seeing any of the images the rule will later be applied to.
-- **On task 5** (the two rates): `/pair-figure` before plotting anything. Whether a point is one
-  image, one seed, or one pair is a live design question on three other review files in this
-  tree, and answering it here differently would make the numbers uncomparable.
-- **After task 6** (the corrected band): `/reconcile evidence/f2-lambda1-audit/README.md` to
-  check nothing else in that file still assumes the old 87% figure.

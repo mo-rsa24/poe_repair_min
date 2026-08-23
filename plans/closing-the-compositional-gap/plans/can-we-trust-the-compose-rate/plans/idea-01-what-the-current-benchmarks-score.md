@@ -66,8 +66,13 @@ on CPU.
   therefore expected to reproduce the hole. It goes in the review file, not in a comment.
 - [ ] Score each candidate at its published defaults on the judgeable pairs of the labelled
   set. No threshold tuning.
+  - 💡 `/debug-config` on the first candidate's checkpoint load. Getting one
+    open-vocabulary detector running offline on this cluster is the step most likely to eat a
+    day, and it is worth doing once carefully before the other candidates queue behind it.
 - [ ] Build the agreement table, current scorer as row 1, judged against the 95%-versus-85%
   bar held as constants in the script.
+  - 💡 `/pair-figure` if the table is going anywhere near the paper. A table of agreement
+    rates wants one example image per disagreement type beside it.
 - [ ] Any candidate clearing the bar goes to `PARKING_LOT.md` with its number and its source
   paper, as a proposed group-1 run. Nothing here changes a paper number.
 
@@ -85,11 +90,3 @@ labels do not exist yet → halt, there is nothing to score against.
 ▶ `/paper-scout` ✅ for tasks 1 and 2, then `/run-experiment` ✅ for tasks 3 to 5.
    alt: `/pressure-test` on any single candidate that looks like it solves the problem, before
    believing it.
-
-## Recommended Prompts
-- **On task 3** (scoring the candidates): `/debug-config` on the first candidate's checkpoint
-  load. Getting one open-vocabulary detector running offline on this cluster is the step most
-  likely to eat a day, and it is worth doing once carefully before the other candidates queue
-  behind it.
-- **On task 4** (the agreement table): `/pair-figure` if the table is going anywhere near the
-  paper. A table of agreement rates wants one example image per disagreement type beside it.

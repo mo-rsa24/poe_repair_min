@@ -83,68 +83,35 @@ A natural image typically depicts several distinct concepts arranged so that the
 
 \section{Introduction}
 
-Complex visual scenes are compositional: a single image typically depicts several distinct concepts arranged together, such as a cat beside a dog or a cup on a table, rather than any one concept in isolation. Generating such a scene from text requires not only rendering each concept accurately, but also representing the relationships among them correctly. An apple described as resting on a table, for example, should appear supported by the tabletop rather than fused into it or floating above it.
+Natural images usually depict several objects that appear together and interact as part of a coherent scene. A cat may sit beside a dog, or a cup may rest on a table. Thus, generating such scenes requires more than producing each object correctly. The model must also capture how the objects are arranged and how they relate to one another. A cup described as resting on a table should sit naturally on the tabletop rather than float above it, appear underneath it, or merge into its surface.
 
-Modern text-to-image models compose multiple concepts with impressive fidelity, capturing both the appearance of individual objects and many complex relationships among them. Much of this progress has come from scaling language encoders and diffusion backbones, allowing a single model to represent an increasingly broad range of interactions (Saharia et al., 2022; Podell et al., 2023). The space of possible concept combinations nevertheless grows combinatorially and cannot be exhausted by any finite training set. An established alternative is therefore to combine pretrained diffusion models directly at inference time, without retraining on every desired combination (Liu et al., 2022).
+Recently, text-to-image diffusion models (Saharia et al., 2022; Podell et al., 2023) have demonstrated a remarkable ability to generate complex scenes with high visual fidelity. Much of this progress has been driven by scaling model capacity and training data, enabling these models to represent a broad range of objects and their interactions within a scene. Recent work has shown that these models can also capture aspects of the physical structure and dynamics of visual scenes (Author et al., YYYY). Despite this progress, they remain unreliable on several forms of compositional reasoning, including counting (Author et al., YYYY), negation (Author et al., YYYY), and attribute binding (Author et al., YYYY). Many specific concept compositions also remain rare or unseen during training, which has motivated methods that compose pretrained diffusion models directly at inference time, without additional training (Liu et al., 2022).
 
-Let $x_t$ denote the noisy latent at diffusion time $t$, and let
-$s_t(x_t\mid c)=\nabla_{x_t}\log p_t(x_t\mid c)$ denote the conditional score (Song et al., 2021). Given two concept prompts $c_1$ and $c_2$, product-of-experts (PoE) composition forms a Bayes-composition ratio at every denoising step:
+In text-to-image diffusion models, the conditioning signal $(c)$ is typically derived from a text prompt and used to guide the reverse process. Models such as Stable Diffusion (cite) condition the denoising network on these text representations and can generate scenes containing multiple objects and interactions from a single prompt. In this paper, we refer to this setting as \textbf{joint prompting} or \textbf{Mono}. For example, a single model conditioned on \textit{``a cat and a dog''} is asked to generate both concepts jointly within the same scene.
+
+We contrast this with \textbf{inference-time composition}, where the concepts are represented by separate pretrained conditional models. For example, one model may be conditioned on \textit{``a cat''} and another on \textit{``a dog''}. Their predictions are then combined during the reverse process using a product-of-experts (PoE) formulation to generate a sample that satisfies both conditions. Unlike joint prompting, the composed model has not been trained directly on the joint condition. In practice, this setting often fails to preserve the constituent concepts as distinct objects. Instead, the composition can collapse into a single entangled or hybrid object. We study this gap between joint generation and inference-time composition and investigate why PoE composition fails even when the individual models represent each concept well.
+
+Product-of-experts composition assumes the two concepts are conditionally independent given the image. Section~\ref{sec:interaction} derives what follows from that assumption, and what it leaves out.
+
+In diffusion models, the noise prediction $\epsilon_\theta$ relates to the score via $\epsilon_\theta(x_t, t \mid c) = -\sigma_t \nabla_{x_t} \log p(x_t \mid c)$, where $\sigma_t$ is the noise standard deviation at step $t$. The assumption then gives the product-of-experts composition rule:
+
 \begin{equation}
-\begin{aligned}
-    \hat p_t(x_t\mid c_1,c_2)
-    &\propto
-    \frac{p_t(x_t\mid c_1)\,p_t(x_t\mid c_2)}{p_t(x_t)}, \\
-    \hat s_t(x_t\mid c_1,c_2)
-    &=s_t(x_t\mid c_1)+s_t(x_t\mid c_2)-s_t(x_t).
-\end{aligned}
+\hat\epsilon_{\mathrm{PoE}}(x_t,t) = \epsilon_\theta(x_t,t\mid c_1) + \epsilon_\theta(x_t,t\mid c_2) - \epsilon_\theta(x_t,t),
 \label{eq:poe-composition}
 \end{equation}
-Equation~\ref{eq:poe-composition} reuses the two conditional scores and subtracts their shared unconditional score once, requiring neither a joint prompt nor additional training (Liu et al., 2022). Bradley et al. (2025) identify a sufficient condition under which this linear composition is guaranteed to be projective. Their \emph{Factorized Conditionals} assumption requires each expert to modify a distinct subset of the representation, to agree with a shared base distribution outside that subset, and for the corresponding subsets to be independent under the base distribution. Under these assumptions, reverse diffusion preserves the component controlled by each expert. Natural-image concepts, however, can interact through appearance, geometry, and spatial relationships, so this factorization need not hold.
 
-We make the resulting discrepancy explicit. Let $J$ denote the joint prompt containing both concepts, let tildes denote classifier-free-guided noise predictions, and let $w$ be the guidance scale. The score interaction $I_t$ and its equivalent correction in noise-prediction space are
-\begin{equation}
-\begin{aligned}
-    I_t(x_t;c_1,c_2)
-    &:=s_t(x_t\mid J)-\hat s_t(x_t\mid c_1,c_2), \\
-    r_t
-    &:=\widetilde{\epsilon}_{J}(x_t,t)
-      -\widetilde{\epsilon}_{\mathrm{PoE}}(x_t,t)
-      =-w\sigma_t I_t(x_t;c_1,c_2), \\
-    \widetilde{\epsilon}_{\mathrm{PoE}}
-    &:=\widetilde{\epsilon}_{1}
-      +\widetilde{\epsilon}_{2}
-      -\widetilde{\epsilon}_{\emptyset}.
-\end{aligned}
-\label{eq:interaction-term}
-\end{equation}
-Thus, $r_t$ is precisely the per-step residual between the model's joint-prompt prediction and its PoE prediction, with the known score-to-noise and guidance scaling $w\sigma_t$. Our central question is whether this missing interaction can be predicted without evaluating the joint prompt.
+This linear composition is exact only when the two concepts are truly conditionally independent given the image. Natural concepts, however, interact through appearance, geometry, and spatial arrangement. The gap between what the true joint model would predict and what PoE predicts is what we call the interaction residual $r_t$, and it is this missing term that we measure, understand, and learn to correct.
+
+To make this concrete, consider two visually similar concepts: a cat and a dog. When prompted jointly, a single model trained on both concepts generates two distinct animals in one scene. When the same two concepts are composed using product-of-experts, the result is a single blended animal that combines features of both, as shown in Figure 1. This failure is not incidental; it reflects a systematic gap in how PoE composition works, one we make explicit and study throughout this paper.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{F1-two-meanings.png}
-\caption{\textbf{Product-of-experts composition can produce a chimera.} \textbf{Left:} a schematic, not a measured density, contrasting the desired joint concept with the overlap favored by multiplying two concept experts. \textbf{Right:} an uncorrected PoE sample for cat $\times$ dog (seed 9) contains one blended animal rather than two distinct animals.}
+\caption{\textbf{Product-of-experts composition can produce a chimera.} \textbf{Left:} a schematic contrasting the desired joint concept with the overlap favored by multiplying two concept experts. \textbf{Right:} an uncorrected PoE sample for cat $\times$ dog shows one blended animal rather than two distinct animals.}
 \label{fig:poe-failure}
 \end{figure}
 
-Figure~\ref{fig:poe-failure} makes the failure concrete. The schematic shows how multiplying two overlapping concept experts can favor an intermediate configuration, while the corresponding SDXL sample combines visual attributes of a cat and a dog in a single animal. This example does not by itself establish that Factorized Conditionals are violated; rather, it exhibits the kind of interference that their independence structure is designed to exclude and motivates measuring the omitted interaction directly.
-
-To test whether $r_t$ contains the relevant missing signal, we add it back into the PoE sampler:
-\begin{equation}
-    \widetilde{\epsilon}^{(\lambda)}_t
-    =\widetilde{\epsilon}_{\mathrm{PoE}}+\lambda r_t,
-    \qquad \lambda\in[0,1].
-\label{eq:correction-strength}
-\end{equation}
-Here $\lambda=0$ recovers plain PoE, whereas $\lambda=1$ recovers the joint-prompt prediction at every visited state. We compare the matched residual with three controls of comparable size: a residual from another concept pair, one from another seed, and the matched residual with its denoising steps shuffled.
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.94\linewidth]{F2-correction-strength.png}
-\caption{\textbf{The matched interaction correction restores composition; the controls do not.} \textbf{Top:} cat $\times$ dog, seed 9, as increasing amounts of the correction are added. The matched correction turns the blended animal into a two-animal scene. \textbf{Bottom:} the same pattern holds across the evaluation set: the matched correction moves toward two-object scenes, while the wrong-pair, wrong-seed, and shuffled-step controls stay close to the original PoE failure mode.}
-\label{fig:correction-strength}
-\end{figure}
-
-Figure~\ref{fig:correction-strength} shows that the effect grows as more of the matched correction is added. The matched residual changes the output from a blended animal into two distinct animals. The controls do not have the same effect, even though they are made comparable in size. These interventions show that composition is not recovered by just any similarly sized change: in this setting, it depends on the content, trajectory, and temporal order carried by $r_t$. The remainder of this paper makes that correction available without querying the joint prompt.
+Understanding and fixing this gap matters because inference-time composition is the practical path forward for generative models. As the space of possible concept combinations grows, retraining on every combination becomes infeasible. Composition methods that work reliably, even for concept pairs unseen during training, unlock a new mode of model reuse: combine pretrained models without additional training, and get reliable compositional generation. This paper traces a specific failure in one composition method and shows that the failure is correctable.
 
 \begin{samepage}
 \textbf{Contributions.} This paper makes three contributions:
@@ -155,226 +122,107 @@ Figure~\ref{fig:correction-strength} shows that the effect grows as more of the 
 \end{itemize}
 \end{samepage}
 
-\section{Related Work}
-
-\paragraph{Adaptation, representation, and model reuse.}
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor, aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In the real manuscript, this paragraph should explain how prior adaptation or representation methods define the object being studied, then contrast them with the proposed perspective (Goodfellow et al., 2016).
-
-\paragraph{Empirical benchmarks and privacy-style audits.}
-Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim; donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. Integer tincidunt cras dapibus vivamus elementum semper nisi. This paragraph mirrors a benchmark paper rhythm: define the audit question, list the axes of variation, and explain why a single aggregate number is insufficient.
-
-\paragraph{Exploration, diffusion-style procedures, and downstream transfer.}
-Nullam dictum felis eu pede mollis pretium. Integer tincidunt cras dapibus, vivamus elementum semper nisi. Aenean vulputate eleifend tellus; aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. This paragraph should eventually cover method families that generate trajectories, candidates, samples, interventions, or policies before adapting them to downstream tasks.
-
-\section{Problem Setting and Background}
+\section{Background and Related Work}
 \label{sec:background}
+\section{The Interaction Term}
+\label{sec:interaction}
 
-\subsection{Objects and notation}
+At each denoising step, product-of-experts composition evaluates the pretrained network on the same noisy latent under three conditions: the first prompt, the second prompt, and the unconditional condition. These three predictions are then combined to form the PoE noise estimate given in \eqref{eq:poe-composition}, by adding the two conditional predictions and subtracting the unconditional one. Each conditional prediction contains the unconditional prediction plus a term carrying its own prompt. Three properties of this construction carry into the rest of the section: nothing is trained, the network is never shown both prompts at once, and the composed prediction is a fixed linear combination of three of its own outputs.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Let $\mathcal{D}_{0}$ denote a source collection, $\mathcal{D}_{1}$ an adaptation collection, and $\mathcal{D}_{2}$ a held-out evaluation collection. A model $f_{\theta}$ maps inputs $x \in \mathcal{X}$ to predictions, samples, or actions $\hat{y}$, while an adaptation operator $\mathcal{A}$ produces
+The rule follows from that assumption and from nothing else.
+
+\begin{align}
+p(x \mid c_1, c_2)
+  &\propto p(x)\, p(c_1 \mid x)\, p(c_2 \mid x) \label{eq:independence}\\
+  &= p(x) \cdot \frac{p(x \mid c_1)\, p(c_1)}{p(x)} \cdot \frac{p(x \mid c_2)\, p(c_2)}{p(x)} \\
+  &= p(c_1)\, p(c_2) \cdot \frac{p(x \mid c_1)\, p(x \mid c_2)}{p(x)} \\
+  &\propto \frac{p(x \mid c_1)\, p(x \mid c_2)}{p(x)}
+\end{align}
+
+The unconditional density is in the denominator because it is already contained in both conditional experts, so their product carries it twice and one copy has to be removed.
+
+\begin{align}
+\log p_{\mathrm{PoE}}
+  &= \log p(x \mid c_1) + \log p(x \mid c_2) - \log p(x) + \text{const} \\
+\nabla_x \log p_{\mathrm{PoE}}
+  &= \nabla_x \log p(x \mid c_1) + \nabla_x \log p(x \mid c_2) - \nabla_x \log p(x) \\
+\hat\epsilon_{\mathrm{PoE}}(x_t, t)
+  &= \epsilon_\theta(x_t, t \mid c_1) + \epsilon_\theta(x_t, t \mid c_2) - \epsilon_\theta(x_t, t) \\
+  &= \epsilon_\theta(x_t, t) + \sum_{i=1}^{2}
+     \big[ \epsilon_\theta(x_t, t \mid c_i) - \epsilon_\theta(x_t, t) \big]
+\end{align}
+
+Attaching a weight $w_i$ to each push gives $\hat\epsilon = \epsilon_\theta(x_t,t) + \sum_i w_i[\epsilon_\theta(x_t,t \mid c_i) - \epsilon_\theta(x_t,t)]$, which is the form used in practice and which recovers the derivation exactly at $w_i = 1$.
+
+So far $r_t$ has been defined through one network's behaviour. The quantity it stands in for can be written exactly, in terms of the two concepts themselves.
+
+\begin{align}
+R_t &\;\equiv\; \frac{p(c_1, c_2 \mid x_t)}{p(c_1 \mid x_t)\, p(c_2 \mid x_t)}\\
+p(c_1, c_2 \mid x_t) &= p(c_1 \mid x_t)\, p(c_2 \mid x_t)\, R_t
+\end{align}
+
+$R_t$ equals one exactly when the two concepts are independent given the state.
+
+\begin{align}
+p(x_t \mid c_1, c_2)
+  &\propto p(x_t)\, p(c_1, c_2 \mid x_t) \\
+  &= p(x_t)\, p(c_1 \mid x_t)\, p(c_2 \mid x_t)\, R_t \\
+  &\propto p(x_t)\, \frac{p(x_t \mid c_1)}{p(x_t)}\, \frac{p(x_t \mid c_2)}{p(x_t)}\, R_t
+  &&\text{(Bayes on each factor, as in \eqref{eq:independence})}\\
+  &\propto \frac{p(x_t \mid c_1)\, p(x_t \mid c_2)}{p(x_t)}\, R_t \\
+  &\propto p_{\mathrm{PoE}}(x_t \mid c_1, c_2)\, R_t
+\end{align}
+
+At every step the sampler combines the two experts as though this factor were one, whether or not it is. Writing $\epsilon_{\text{true}}$ for the noise prediction of the true joint score, which no model gives us,
+
+\begin{align}
+\nabla_{x_t} \log p(x_t \mid c_1, c_2)
+  &= \nabla_{x_t} \log p_{\mathrm{PoE}}(x_t \mid c_1, c_2) + \nabla_{x_t} \log R_t \\
+-\sigma_t \nabla_{x_t} \log p(x_t \mid c_1, c_2)
+  &= -\sigma_t \nabla_{x_t} \log p_{\mathrm{PoE}}(x_t \mid c_1, c_2) - \sigma_t \nabla_{x_t} \log R_t \\
+\epsilon_{\text{true}}(x_t, t)
+  &= \hat\epsilon_{\mathrm{PoE}}(x_t, t) - \sigma_t \nabla_{x_t} \log R_t
+\end{align}
+
+Figure~\ref{fig:two-regimes} shows one sample from each of two prompt pairs, with the size of $r_t$ at every denoising step beneath it, and the correction is present in both trajectories while only one sample is wrong. $R_t$ is a property of the two concepts and $r_t$ is a property of one model's two predictions, so no reading of size carries from one to the other. What the curves do carry is timing, and when the correction has to arrive is what we measure next.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{F1b-two-regimes.pdf}
+\caption{\textbf{The same rule composes one pair and blends another.} Columns are prompt pairs, both sampled with uncorrected product-of-experts composition. \textbf{Top:} one real sample each, seed 42. \textbf{Bottom:} $\|r_t\|$ as a fraction of $\|\hat\epsilon_{\mathrm{PoE}}\|$ at every denoising step, median over seeds 4, 42 and 123 with a min-to-max band, both panels on one $y$ axis. The figure says nothing about $R_t$, which is measured nowhere, and two pairs cannot say whether the size of the correction predicts which pairs fail.}
+\label{fig:two-regimes}
+\end{figure}
+
+We define the interaction term $r_t$ as the difference between the model's prediction under the joint prompt and its product-of-experts prediction, both evaluated on the same noisy latent at the same step.
+
 \begin{equation}
-    \theta' = \mathcal{A}(\theta_{0}, \mathcal{D}_{1}, \lambda, \tau).
-    \label{eq:adaptation}
+r_t \;=\; \epsilon_{\mathrm{Mono}}(x_t, t) \;-\; \hat\epsilon_{\mathrm{PoE}}(x_t, t)
+\label{eq:interaction-term}
 \end{equation}
-Here $\lambda$ is a placeholder regularization strength and $\tau$ is a placeholder compute or privacy budget. The variables are deliberately generic so the notation can be overwritten once the topic is fixed.
 
-Praesent vestibulum dapibus nibh. Etiam iaculis nunc ac metus; ut id nisl quis enim dignissim sagittis. Etiam sollicitudin ipsum eu pulvinar rutrum, tellus ipsum laoreet sapien, quis venenatis ante odio sit amet eros. The finished version should clarify the units of analysis, the adversary or evaluator, and the measurable output of each experiment.
+The identity $\epsilon_{\mathrm{Mono}} = \hat\epsilon_{\mathrm{PoE}} + r_t$ holds by construction and is not a result, whereas the size of $r_t$, its structure across denoising steps, and its transfer to concept pairs held out of training are. Correcting the sampler means adding a scaled copy of $r_t$ back at each step, with $\lambda = 0$ leaving composition uncorrected and $\lambda = 1$ reproducing the joint-prompt prediction exactly.
 
-\subsection{Evaluation axes}
+\begin{equation}
+\hat\epsilon_\lambda(x_t, t) = \hat\epsilon_{\mathrm{PoE}}(x_t, t) + \lambda\, r_t
+\label{eq:corrected-sampler}
+\end{equation}
 
-Morbi nec metus. Phasellus blandit leo ut odio. Maecenas ullamcorper, dui et placerat feugiat, eros pede varius nisi, condimentum viverra felis nunc et lorem. We use three placeholder axes: distributional relationship, intervention strength, and observer knowledge. These axes mimic a benchmark organization in which the paper asks the same question under overlapping, in-domain, and out-of-domain regimes.
+Product-of-experts sampling never sees the joint prompt. The difference $r_t$ therefore serves as a signal we can measure, one that establishes what the missing correction is, when in the denoising trajectory it matters, and why composition fails without it. $r_t$ is a full noise-prediction vector at every step, so it has a direction as well as a magnitude.
 
-\section{Methodology}
+The independence assumption in \eqref{eq:independence} fails once the two concepts have to share one image, since a patch of pixels that reads strongly as one animal cannot read equally strongly as the other. Sampling from that product therefore steers toward whatever image satisfies both experts at once, and for two animals competing for the same region that is a single blended animal rather than two. In every pair we study both concepts are foreground subjects, rather than a subject and a setting that could occupy different parts of the image. The same network produces two distinct animals when it is given the joint prompt, so the failure belongs to the composition rule and not to the model.
+
+In practice both predictions come from one pass of the network per denoising step, evaluated on the first concept, the second concept, the joint prompt, and no prompt. Both are read at the same noisy latent, the one the corrected sampler is currently visiting, so $r_t$ is measured along the trajectory it is applied to rather than imported from a separate run. The true joint score $\nabla_x \log p(x \mid c_1, c_2)$ is a property of the world, whereas $\epsilon_{\mathrm{Mono}}$ is what this network outputs when its text encoder is handed one prompt naming both concepts. So $r_t$ measures a gap between two behaviours of one model, not a gap to the correct distribution. At $\lambda = 1$ the corrected sampler reproduces the joint-prompt prediction exactly, so the most this correction can do is bring composition up to what joint prompting already achieves. Joint prompting is the behaviour inference-time composition is trying to reproduce, so matching it is what this correction is for.
+
+\section{Analysing and Correcting Product-of-Experts with the Scaled Residual}
+\label{sec:analysis}
+
+\section{Learning the Residual}
 \label{sec:method}
-
-\subsection{Overview}
-
-Phasellus ullamcorper ipsum rutrum nunc. Nunc nonummy metus; vestibulum volutpat pretium libero. Cras id dui, aenean ut eros et nisl sagittis vestibulum. Nullam nulla eros, ultricies sit amet, nonummy id, imperdiet feugiat, pede. This section should eventually explain the proposed method or benchmark pipeline at the level of Figure~\ref{fig:method}: what enters, what is transformed, and what evidence exits.
-
-\begin{figure}[t]
-\placeholderfigure{2.0in}{Pipeline placeholder}
-\caption{Placeholder method diagram. Replace Panel A with data construction, Panel B with the core algorithm or audit, and Panel C with the evaluation protocol.}
-\label{fig:method}
-\end{figure}
-
-\subsection{Placeholder objective}
-
-Curabitur ligula sapien, tincidunt non, euismod vitae, posuere imperdiet, leo. Maecenas malesuada; praesent congue erat at massa. Sed cursus turpis vitae tortor. The template objective below provides room for a likelihood term, a regularizer, and a constraint:
-\begin{equation}
-    \mathcal{L}(\theta')
-    =
-    \mathbb{E}_{(x,y)\sim \mathcal{D}_{1}}
-    \left[\ell(f_{\theta'}(x),y)\right]
-    +
-    \lambda \Omega(\theta',\theta_{0})
-    +
-    \beta \Delta(\mathcal{D}_{0},\mathcal{D}_{1}).
-    \label{eq:objective}
-\end{equation}
-Ut varius tincidunt libero. Phasellus dolor; maecenas vestibulum mollis diam. Pellentesque ut neque, pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
-
-\subsection{Algorithmic skeleton}
-
-Donec vitae orci sed dolor rutrum auctor. Fusce egestas elit eget lorem. Suspendisse nisl elit, rhoncus eget, elementum ac, condimentum eget, diam. The following boxed list is a placeholder for an algorithm environment without adding extra package dependencies:
-
-\begin{center}
-\fbox{%
-\begin{minipage}{0.92\linewidth}
-\textbf{Algorithm 1: Placeholder procedure for \methodname}\\
-\textbf{Input:} source data $\mathcal{D}_{0}$, adaptation data $\mathcal{D}_{1}$, evaluation data $\mathcal{D}_{2}$, budget $\tau$.\\
-\textbf{Step 1:} Construct regimes $\{\mathcal{R}_{k}\}_{k=1}^{K}$ and initialize $f_{\theta_{0}}$.\\
-\textbf{Step 2:} For each regime, compute $\theta'_{k}$ using Eq.~\ref{eq:adaptation}.\\
-\textbf{Step 3:} Score utility, robustness, leakage, transfer, or coverage using Eq.~\ref{eq:score}.\\
-\textbf{Output:} tables, curves, ablations, and qualitative panels.
-\end{minipage}}
-\end{center}
-
-Pellentesque auctor neque nec urna. Proin sapien ipsum, porta a, auctor quis, euismod ut, mi. Aenean viverra rhoncus pede; pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
-
-\subsection{Scoring rule}
-
-Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus. A placeholder score combines performance $u$, cost $c$, and risk $r$:
-\begin{equation}
-    S(\theta',\mathcal{D}_{2})
-    =
-    \underbrace{u(\theta',\mathcal{D}_{2})}_{\text{utility}}
-    -
-    \alpha \underbrace{c(\theta',\tau)}_{\text{cost}}
-    -
-    \gamma \underbrace{r(\theta',\mathcal{D}_{0},\mathcal{D}_{1})}_{\text{risk}}.
-    \label{eq:score}
-\end{equation}
-Vivamus laoreet. Nullam tincidunt adipiscing enim. Phasellus tempus; proin viverra, ligula sit amet ultrices semper, ligula arcu tristique sapien, a accumsan nisi mauris ac eros.
-
-\section{Benchmark Design and Experiments}
+\section{Experiments and Results}
 \label{sec:experiments}
-
-This section intentionally follows a question-driven pacing: motivation, summary of findings, then detailed results. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Replace each research question with the actual experimental claim once the project direction is decided.
-
-\subsection{Experimental setup}
-
-Nunc sed turpis. Fusce fermentum odio nec arcu. Vivamus aliquet elit ac nisl; fusce pharetra convallis urna. Quisque ut nisi. Donec mi odio, faucibus at, scelerisque quis, convallis in, nisi. In the final paper, this paragraph should specify models, datasets, seeds, hardware, metrics, and early stopping rules.
-
-\begin{table}[t]
-\caption{Placeholder main results across regimes}
-\label{tab:main-results}
-\begin{center}
-\begin{tabular}{lcccc}
-\hline
-\textbf{Method} & \textbf{Alpha} & \textbf{Beta} & \textbf{Gamma} & \textbf{Mean} \\
-\hline
-Baseline A & 71.2 $\pm$ 1.4 & 65.8 $\pm$ 2.2 & 58.3 $\pm$ 1.9 & 65.1 \\
-Baseline B & 73.5 $\pm$ 1.1 & 66.4 $\pm$ 1.8 & 60.7 $\pm$ 2.0 & 66.9 \\
-\methodname & 78.9 $\pm$ 0.9 & 72.1 $\pm$ 1.5 & 67.4 $\pm$ 1.6 & 72.8 \\
-Oracle & 82.0 $\pm$ 0.7 & 75.9 $\pm$ 1.1 & 70.5 $\pm$ 1.3 & 76.1 \\
-\hline
-\end{tabular}
-\end{center}
-\end{table}
-
-\subsection{RQ1: How does the data relationship change the result?}
-
-\paragraph{Motivation.}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec mollis hendrerit risus; phasellus nec sem in justo pellentesque facilisis. Etiam imperdiet imperdiet orci, nunc nec neque. This question is reserved for overlap, distribution shift, task similarity, or pretraining-to-adaptation interactions.
-
-\paragraph{Summary of findings.}
-Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. A real summary should state the sign, size, and practical meaning of the result before the reader reaches the details.
-
-\paragraph{Detailed results.}
-Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo; sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. As shown in Table~\ref{tab:main-results}, the placeholder method improves the fake mean score by several points while preserving the ranking across regimes.
-
-\begin{figure}[t]
-\placeholderfigure{1.95in}{Main result curves}
-\caption{Placeholder main experiment. Replace with learning curves, privacy-utility curves, coverage curves, or accuracy-risk trade-offs.}
-\label{fig:main-curves}
-\end{figure}
-
-\subsection{RQ2: Which intervention is most protective or most useful?}
-
-\paragraph{Motivation.}
-Sed consequat, leo eget bibendum sodales, augue velit cursus nunc, quis gravida magna mi a libero. Fusce vulputate eleifend sapien; vestibulum purus quam, scelerisque ut, mollis sed, nonummy id, metus. This question is written to accept either a method comparison or an adaptation-family comparison.
-
-\paragraph{Summary of findings.}
-Quisque id mi. Ut tincidunt tincidunt erat. Etiam feugiat lorem non metus. Vestibulum dapibus nunc ac augue. The final paper should explain whether a smaller, cheaper, or more constrained method can match the full method.
-
-\paragraph{Detailed results.}
-Curabitur vestibulum aliquam leo. Praesent egestas neque eu enim. In hac habitasse platea dictumst. Fusce a quam. Table~\ref{tab:ablations} is a fake ablation table with columns that can become compute, risk, utility, sample efficiency, or transfer metrics.
-
-\begin{table}[t]
-\caption{Placeholder ablation study}
-\label{tab:ablations}
-\begin{center}
-\begin{tabular}{lccc}
-\hline
-\textbf{Variant} & \textbf{Score} & \textbf{Cost} & \textbf{Gap to full} \\
-\hline
-No calibration & 64.1 & 0.7x & -8.7 \\
-No replay & 68.5 & 0.9x & -4.3 \\
-No constraint & 69.0 & 0.8x & -3.8 \\
-Full \methodname & 72.8 & 1.0x & 0.0 \\
-\hline
-\end{tabular}
-\end{center}
-\end{table}
-
-\subsection{RQ3: Does the result survive stronger observers or harder tasks?}
-
-\paragraph{Motivation.}
-Praesent ac massa at ligula laoreet iaculis. Nullam vel sem; nam ipsum risus, rutrum vitae, vestibulum eu, molestie vel, lacus. This slot mirrors robustness and attacker-knowledge experiments: change what the evaluator sees, change the difficulty, then check whether the conclusion remains stable.
-
-\paragraph{Summary of findings.}
-Sed magna purus, fermentum eu, tincidunt eu, varius ut, felis. In auctor lobortis lacus. Quisque libero metus, condimentum nec, tempor a, commodo mollis, magna. The final summary should separate predictable degradation from a genuine failure case.
-
-\paragraph{Detailed results.}
-Curabitur a felis in nunc fringilla tristique. Morbi mattis ullamcorper velit. Phasellus gravida semper nisi; nullam vel sem. Figure~\ref{fig:robustness} is reserved for the strongest negative case, not only the cleanest positive result.
-
-\begin{figure}[t]
-\placeholderfigure{1.9in}{Robustness and stress tests}
-\caption{Placeholder robustness panel. Replace with stress tests under stronger observers, harder tasks, larger shifts, or alternative metrics.}
-\label{fig:robustness}
-\end{figure}
-
-\subsection{RQ4: What trade-off controls the final behavior?}
-
-\paragraph{Motivation.}
-Pellentesque commodo eros a enim. Vestibulum turpis sem, aliquet eget, lobortis pellentesque, rutrum eu, nisl. Sed libero. This question reserves space for a privacy-utility, cost-accuracy, exploration-exploitation, or robustness-performance trade-off.
-
-\paragraph{Summary of findings.}
-Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. A real summary should identify the useful operating range and the point where the trade-off breaks.
-
-\paragraph{Detailed results.}
-Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus; vivamus elementum semper nisi. Figure~\ref{fig:tradeoff} and Eq.~\ref{eq:score} should eventually tell the same story from complementary views.
-
-\begin{figure}[t]
-\placeholderfigure{1.9in}{Trade-off map}
-\caption{Placeholder trade-off map. Replace with a sweep over budgets, regularization strengths, temperatures, privacy levels, or fine-tuning steps.}
-\label{fig:tradeoff}
-\end{figure}
-
 \section{Discussion}
 \label{sec:discussion}
-
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. This discussion opening should restate the most important empirical pattern without repeating the entire experiment section.
-
-\paragraph{When the method helps.}
-Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Replace this with the regimes where the future method is genuinely better.
-
-\paragraph{When the method fails.}
-Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. Replace this with limitations that are specific enough to be useful, including counterexamples and sensitivity to assumptions.
-
-\paragraph{How to audit the full pipeline.}
-In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. This paragraph mirrors the holistic-audit section of a benchmark paper: identify stages, observers, decisions, and possible failure modes.
-
-\begin{figure}[t]
-\placeholderfigure{1.75in}{Audit stages}
-\caption{Placeholder audit framing. Replace with stages of the pipeline, adversary games, deployment checks, or decision points.}
-\label{fig:audit}
-\end{figure}
-
 \section{Conclusion}
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo; sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. The conclusion should be short: one sentence for the problem, one for the contribution, one for the evidence, and one for the broader implication.
-
 \section*{Ethics Statement}
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer tincidunt. Cras dapibus; vivamus elementum semper nisi. This placeholder should eventually discuss possible misuse, sensitive data, evaluation harms, environmental cost, or deployment constraints.

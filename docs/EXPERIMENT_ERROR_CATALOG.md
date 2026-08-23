@@ -2,8 +2,8 @@
 
 Patterns specific to this project: codebase structure, model sizes, dataset characteristics, cluster constraints observed in practice.
 
-**Last updated:** 2026-08-18  
-**Total entries:** 5  
+**Last updated:** 2026-08-19  
+**Total entries:** 6  
 **Seed entries from:** step-09 (three-live-curves-while-training)
 
 ---
@@ -129,5 +129,30 @@ Check `docs/ENVIRONMENT.md: Partition GPU models and constraints` for which part
 **Category:** 🟡 warning
 
 **Environment reference:** docs/ENVIRONMENT.md (needs section: Pool-mean computation and cache invalidation)
+
+---
+
+### Launching runs
+
+#### Entry ID: poe-launch-001
+**Name:** SSH-direct launch dies instantly: relative paths resolve in $HOME, not the repo
+
+**Symptom:** `bash: line 1: logs/<name>.log: No such file or directory` the moment the SSH launch command runs; `pgrep` on the node shows no process; no log file is ever created
+
+**Root cause:** A non-interactive SSH command starts in `$HOME`, not the repo, so every relative path in the launch line (the script path, the nohup log redirect) resolves against `$HOME`. The redirect fails before nohup even starts the script, so the run dies silently. Prefixing `cd <repo> &&` is not reliable either: Claude Code's permission layer can strip or block `cd` inside compound Bash commands, which produced three identical failures in a row on 2026-08-19.
+
+**Solution:** Make every path in an SSH launch line absolute: the script, the log redirect, and anything else on the line. The launch script itself does `cd "$REPO"` internally, so the caller needs no working directory at all:
+```bash
+ssh <node> 'GPU=<idx> nohup bash /abs/path/to/launch.sh > /abs/path/to/logs/<name>.log 2>&1 &'
+```
+Verify the launch in the same SSH call: `sleep 5; pgrep -af "train"` plus `tail` of the absolute log path.
+
+**First discovered:** poe_repair_min, step-09 (smoke run launch on mscluster106, shared-device path)
+
+**Affects steps:** any step launched over SSH on a node this session is not on (step-09, step-10, step-11 sweeps)
+
+**Category:** 🟡 warning
+
+**Environment reference:** docs/ENVIRONMENT.md (Execution model, shared-device path)
 
 ---

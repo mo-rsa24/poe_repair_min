@@ -23,3 +23,17 @@ Regenerate the bundle from the repository root with:
 ```bash
 scripts/make_overleaf_bundle.sh
 ```
+
+## The slim bundle
+
+The full bundle carries every file under `figures/`, including working drafts, and has grown past
+what Overleaf accepts on upload. `--slim` keeps only the figure files the manuscript actually
+includes, read out of the `\includegraphics` calls in the tex:
+
+```bash
+scripts/make_overleaf_bundle.sh --slim
+```
+
+It writes `paper/iclr-overleaf-slim.zip` and prints the figures it kept. Rerun it whenever a
+section starts referencing a figure that was not in the last bundle, since a figure the tex names
+but the bundle omits is a missing-file error in Overleaf and nowhere else.

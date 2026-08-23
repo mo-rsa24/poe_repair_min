@@ -1,4 +1,4 @@
-# Review: when in the run is the correction needed?
+# 🧪 Review: when in the run is the correction needed?
 
 **Answered: timing decides, and it decides at the very start.** The questions below were written
 before the runs, so the answers cannot be chosen after the fact. This file judges
@@ -6,7 +6,37 @@ before the runs, so the answers cannot be chosen after the fact. This file judge
 and its answers fill register slot **F4**, the figure showing when in the denoising run the
 correction does its work.
 
+## Recommended prompt (to write the figure)
+
+```
+/design-figure F4 the timing curve, compose rate against window position
+```
+
+## Position in the plan tree
+
+| File | What it holds |
+|---|---|
+| [design](../plans/hypothesis-03-when-in-the-run-it-matters.md) | the sliding window, the grid, the bar |
+| **this file** | **the verdict: timing decides, and it decides at the very start** |
+| [the independent estimate](hypothesis-04-what-the-cached-runs-already-show.md) | the fork step, step 16, which disagrees with this and is not a contradiction |
+| [the register](../../../../../paper/iclr/figures.md) | F4's row, whose layout this result changes |
+
+## Table of contents
+
+- [Words this file uses](#words-this-file-uses)
+- [Run kind](#run-kind)
+- [Runs](#runs)
+- [The pre-registered bar](#the-pre-registered-bar)
+- [Written before the run, answered after](#written-before-the-run-answered-after)
+- [Asked after the result](#asked-after-the-result)
+- [Could the answer be an artefact](#could-the-answer-be-an-artefact)
+- [What the write-up owes](#what-the-write-up-owes)
+- [Still open](#still-open)
+- [Next step](#next-step)
+
 ## Words this file uses
+
+Navigation: 📋 [TOC](#table-of-contents) | [Next](#run-kind) ➡️
 - **The correction**: the step-by-step gap between what the joined prompt predicts and what
   adding the two separate prompts predicts. It is what the broken method leaves out.
 - **A window**: a stretch of the 50 denoising steps. Inside it the correction is allowed to act;
@@ -20,17 +50,23 @@ correction does its work.
   same moment, from cached data rather than new runs.
 
 ## Run kind
+
+Navigation: ⬅️ [Words this file uses](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#runs) ➡️
 **Tests the claim.** A failure of the bar below closes the plan and opens one follow-on.
 
 ## Runs
 
-| Run | Kind | Launched at | Output | State |
-|---|---|---|---|---|
-| Leak check, `--window off --check-identity`, a_cat×a_dog seed 9, 50 steps | Checks the harness | 2026-08-10, in-session mscluster GPU 1 | stdout only | done, passed |
-| Smoke, 3 windows (0-10, 15-25, 40-50), a_cat×a_dog seed 9 | Checks the harness | 2026-08-10, in-session GPU 1 | `window/pairs/a_cat__x__a_dog/seed_9/` | done, passed |
-| Timing grid, 9 windows × 8 pairs × 4 seeds = 288 cells | Tests the claim | 2026-08-10 19:00, `run_window_sweep.sh` under nohup, GPU 1 | `/datasets/.../interaction_term/window/pairs/`, scored into `window_curves.json` | done, all 288 present, no missing or skipped windows |
+Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+
+| Run | Kind | Launched at | Cost | Output | State |
+|---|---|---|---|---|---|
+| Leak check, `--window off --check-identity`, a_cat×a_dog seed 9, 50 steps | Checks the harness | 2026-08-10, in-session mscluster GPU 1 | 1 cell | stdout only | done, passed |
+| Smoke, 3 windows (0-10, 15-25, 40-50), a_cat×a_dog seed 9 | Checks the harness | 2026-08-10, in-session GPU 1 | 3 cells | `window/pairs/a_cat__x__a_dog/seed_9/` | done, passed |
+| Timing grid, 9 windows × 8 pairs × 4 seeds = 288 cells | Tests the claim | 2026-08-10 19:00, `run_window_sweep.sh` under nohup, GPU 1 | 288 cells | `/datasets/.../interaction_term/window/pairs/`, scored into `window_curves.json` | done, all 288 present, no missing or skipped windows |
 
 ## The pre-registered bar
+
+Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
 - [x] ✅ Does the compose rate peak at some window position rather than staying flat?
       Yes, and more sharply than the bar expected. It is not a peak in the middle of the run but
@@ -44,6 +80,8 @@ correction does its work.
       needs a narrower window near the start, not a longer sweep.
 
 ## Written before the run, answered after
+
+Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
 - [x] ✅ With the window switched off everywhere, does the output match plain PoE exactly?
       Yes, byte-identical on a_cat×a_dog seed 9 at 50 steps. The comparison is against a full-dose
@@ -81,7 +119,12 @@ correction does its work.
       the register's layout currently says it should. That layout was written when the two
       numbers were expected to agree.
 
-## Asked after the timing result, to remove its one confound
+## Asked after the result
+
+Navigation: ⬅️ [Written before the run](#written-before-the-run-answered-after) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
+
+**Nothing here may ever become a bar**, because it was written with the timing answer already
+visible. These two runs exist to remove that answer's one confound.
 
 The nine-window sweep could not separate two things. The windows differ in when the correction
 lands, and also in how much of it lands, because the correction's own size grows through the run.
@@ -123,3 +166,54 @@ seeds, through the same sampler as the sweep and verified against it.
       What follows for the writing: the caption may say the cliff survives dose-matching. It may
       not present these as population rates. Four cells per point on one pair is a rate over four
       runs, and the eight-pair sweep remains the population estimate.
+
+## Could the answer be an artefact
+
+Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC](#table-of-contents) | [Next](#what-the-write-up-owes) ➡️
+
+- [x] ✅ **Was the comparison fair?** The nine windows differed in when the correction lands and
+      also in how much of it lands, because the correction's own size grows through the run. That
+      confound was real and it is removed: the two dose-matched runs under
+      [Asked after the result](#asked-after-the-result) hold the delivered total constant and the
+      cliff survives. Same seed, same noise, same prompt, same delivered correction, only the
+      timing differs.
+- [x] ✅ **Was the instrument sound?** The leak check answers it, and it was pre-registered rather
+      than added afterwards: with the window switched off everywhere the output is byte-identical
+      to plain PoE on a_cat×a_dog seed 9 at 50 steps. See the first question under
+      [Written before the run](#written-before-the-run-answered-after) for why the comparison is
+      against a full-dose window placed past the last step and not against `run_cfg_poe`.
+- [x] ✅ **Did the run respect the environment?** All 288 cells present, no missing or skipped
+      windows, output under `/datasets`. The sweep ran under `nohup` on GPU 1 outside Slurm, so
+      harvest it by `pgrep` rather than `squeue`.
+
+## What the write-up owes
+
+Navigation: ⬅️ [Could the answer be an artefact](#could-the-answer-be-an-artefact) | 📋 [TOC](#table-of-contents) | [Next](#still-open) ➡️
+
+Every row here has its reasoning in one of the answered questions above; the table is the index a
+writer reads, not a second copy of the argument.
+
+| What the paper says | What it owes alongside it |
+|---|---|
+| the correction matters early | that the best window measured is also the earliest window measured, so the curve cannot say whether the true best sits earlier still |
+| why the correction matters early | not because it is large there. It is about 2.7 times larger late than early, and it rises where the compose rate falls. No figure may put size and timing on one axis without saying they disagree, which is what `F4b-size-is-not-timing` exists to show |
+| step 16, the fork step | it may not be described as the moment the correction matters, and F4's caption may not draw it as a band behind the timing curve. The register's current layout says it should, and that layout was written when the two numbers were expected to agree |
+| timing decides rather than dose | the verdict is by eye on the images. The detector's count is in `dose_matched/swap_scores.json` beside it and disagrees with the pictures on this pair often enough that the eye read is the one cited |
+| the cliff survives dose-matching | these are not population rates. Four cells per point on one pair is a rate over four runs; the eight-pair sweep remains the population estimate |
+
+## Still open
+
+Navigation: ⬅️ [What the write-up owes](#what-the-write-up-owes) | 📋 [TOC](#table-of-contents) | [Next](#next-step) ➡️
+
+| What is unresolved | What would settle it | Who or what is blocked by it |
+|---|---|---|
+| whether the true best window sits earlier than steps 0 to 10 | a narrower window near the start, not a longer sweep. A ten-step window cannot begin before step 0 | nothing is blocked; F4's caption states the limit instead |
+| F4's layout in the register, which draws the fork step as a band behind the timing curve | rewriting that row, since the two estimates disagree and neither confirms the other | building F4, which would otherwise be drawn to a layout the result contradicts |
+| why the detector disagrees with the eye on cat × dog | comparing `dose_matched/swap_scores.json` against the images cell by cell | nothing yet, but every claim on this pair currently rests on an eye read rather than a count |
+
+## Next step
+
+Navigation: ⬅️ [Still open](#still-open) | 📋 [TOC](#table-of-contents)
+
+Rewrite F4's row in [the register](../../../../../paper/iclr/figures.md) to drop the fork-step
+band, then build F4.
