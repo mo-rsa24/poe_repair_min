@@ -1,4 +1,4 @@
-# Review: does more correction give more composition?
+# 🧪 Review: does more correction give more composition?
 
 **Answered, and these are the paper's numbers.** This file judges
 [../plans/hypothesis-02-more-correction-more-composition.md](../plans/hypothesis-02-more-correction-more-composition.md)
@@ -9,7 +9,42 @@ controls stay at or below 6%, measured on an equal number of cells per strength 
 floor in the scorer that was chosen by looking at real detections. F2's caption may quote these
 figures.
 
+## Recommended prompt (to re-read the numbers)
+
+```
+/analyze-figure paper/iclr/figures/F2-dose-response.pdf
+```
+(To redo the counting and the bars: work through
+[the procedure](../procedures/hypothesis-02-recheck-the-headline-numbers.md).)
+
+## Position in the plan tree
+
+| File | What it holds |
+|---|---|
+| [design](../plans/hypothesis-02-more-correction-more-composition.md) | the strength sweep, the two controls, the bar |
+| **this file** | **the verdict: 3% to 94% with both controls at or below 6%. F2's caption may quote these** |
+| [procedure](../procedures/hypothesis-02-recheck-the-headline-numbers.md) | the steps that produced the re-score, and how to redo it |
+| [the register](../../../../../paper/iclr/figures.md) | F2's row, the paper's headline figure |
+
+## Table of contents
+
+- [Words this file uses](#words-this-file-uses)
+- [Run kind](#run-kind)
+- [Runs](#runs)
+- [The pre-registered bar](#the-pre-registered-bar)
+- [Written before the run, answered after](#written-before-the-run-answered-after)
+- [Could the answer be an artefact](#could-the-answer-be-an-artefact)
+- [Asked after the result](#asked-after-the-result)
+- [What the write-up owes](#what-the-write-up-owes)
+- [Still open](#still-open)
+- [Next step](#next-step)
+
+The artefact checks sit before the questions the result raised, because that is the order it
+happened in: two of those checks failed, and the re-score exists to answer them.
+
 ## Words this file uses
+
+Navigation: 📋 [TOC](#table-of-contents) | [Next](#run-kind) ➡️
 - **A cell**: one picture, for one animal pair, at one strength, from one starting seed.
 - **The three rows**: the real correction, a random vector of the same size, and a different
   pair's correction. The last two are the controls, and they are what makes the first one evidence.
@@ -25,14 +60,18 @@ Every question below was written at design time, from that plan's Success/Failur
 the sweep ran. Answers are `✅` good, `❌` bad, `🟡` unknown, `⚠️` not yet answered.
 
 ## Run kind
+
+Navigation: ⬅️ [Words this file uses](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#runs) ➡️
 **Tests the claim.** So a failure of the pre-registered bar closes the plan and opens one
 follow-on. It has not failed.
 
 ## Runs
 
-| Run | Kind | Launched at | Output | State |
-|---|---|---|---|---|
-| dose sweep on mscluster109, log `results/mechanism_study/dose_sweep.log` | Tests the claim | commit a21ac8b | `outputs/interaction_term/dose/pairs`, 440 images, 3.4GB | done |
+Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+
+| Run | Kind | Launched at | Cost | Output | State |
+|---|---|---|---|---|---|
+| dose sweep on mscluster109, log `results/mechanism_study/dose_sweep.log` | Tests the claim | commit a21ac8b | 440 images, 3.4GB | `outputs/interaction_term/dose/pairs`, 440 images, 3.4GB | done |
 
 440 images and 480 scored records are both right and count different things. 416 of the images are
 this sweep's own (8 pairs, seeds 9 to 12, 13 runs each); the other 24 sit at seed 1 and the scorer
@@ -40,15 +79,17 @@ no longer reads them. The 416 score as 480 records because at λ=0 nothing is in
 rows share one image and it is scored once per row. That is also why the three rows read exactly
 the same rate at λ=0.
 
-| one-seed smoke, a_cat__x__a_dog seed 9, 20 steps | Tests the claim | before a21ac8b | folded into the sweep tree | done |
-| first scoring pass, grounding-dino-tiny instance_count | Tests the claim | commit a21ac8b | `dose_curves.json` | replaced, first by the seed pinning and then by the size floor |
-| re-score on the pinned seeds, CPU | Tests the claim | commit dcca290 | `dose_curves.json`, rewritten | done; showed the stray cells were not inflating anything |
-| re-score with the size floor in the scorer | Tests the claim | size floor in `detection_scorer.py` | `dose_curves.json`, and `dose_strip_an_elephant__x__a_penguin_seed10.png` | done; these are the paper's numbers |
+| one-seed smoke, a_cat__x__a_dog seed 9, 20 steps | Tests the claim | before a21ac8b | 1 cell | folded into the sweep tree | done |
+| first scoring pass, grounding-dino-tiny instance_count | Tests the claim | commit a21ac8b | scoring only, no generation | `dose_curves.json` | replaced, first by the seed pinning and then by the size floor |
+| re-score on the pinned seeds, CPU | Tests the claim | commit dcca290 | CPU only, about an hour | `dose_curves.json`, rewritten | done; showed the stray cells were not inflating anything |
+| re-score with the size floor in the scorer | Tests the claim | size floor in `detection_scorer.py` | scoring only, no generation | `dose_curves.json`, and `dose_strip_an_elephant__x__a_penguin_seed10.png` | done; these are the paper's numbers |
 
 The sweep ran outside Slurm, on the session node, because biggpu allows one job per user. There is
 no job id, so the log path is its identity.
 
 ## The pre-registered bar
+
+Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
 **This is the question the experiment exists to answer, and the only one whose failure may move
 the plan.**
@@ -61,7 +102,18 @@ the plan.**
       ✓ verified (32 cells per row-and-strength, seeds 9 to 12, size floor in
       `detection_scorer.py`)
 
-## Was the comparison fair
+## Written before the run, answered after
+
+Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
+
+Nothing beyond the bar and the three artefact checks below. All of them were written before the
+sweep ran, which is why two of them could fail and did.
+
+## Could the answer be an artefact
+
+Navigation: ⬅️ [Written before the run](#written-before-the-run-answered-after) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
+
+**Was the comparison fair?**
 
 - [x] ✅ Does the harness leave plain PoE untouched at λ=0?
       Yes, against the sampler's own saved `eps_poe`. Not against a fresh `run_cfg_poe`
@@ -77,7 +129,7 @@ the plan.**
       show one blended animal (cat ears and whiskers on a dog muzzle); the oracle gives two
       separate animals. The controls are real, not cosmetic.
 
-## Was the instrument sound
+**Was the instrument sound?**
 
 - [x] ✅ Does the scorer's instance count mean what the rule says it means?
       It does now, under the size floor. Without one it did not, and the failure was worse than a
@@ -116,7 +168,7 @@ the plan.**
       population. It does mean the exact percentages will move on re-score.
       Next action: same procedure as the question above.
 
-## Did the run respect the environment
+**Did the run respect the environment?**
 
 - [x] ❌ Did the output land where the plan said it would?
       No. 3.4GB of cells are on `/home-mscluster`, not `/datasets`. `run_dose_sweep.sh` sets
@@ -124,7 +176,13 @@ the plan.**
       reported healthy about a filesystem nothing was being written to.
       Owned by the last task in the design plan.
 
-## The re-score, in two halves
+## Asked after the result
+
+Navigation: ⬅️ [Could the answer be an artefact](#could-the-answer-be-an-artefact) | 📋 [TOC](#table-of-contents) | [Next](#what-the-write-up-owes) ➡️
+
+**Nothing here may ever become a bar**, because it was written with the answers already visible.
+Two of the artefact checks above failed, and the re-score is what answers them. The steps are in
+[the procedure](../procedures/hypothesis-02-recheck-the-headline-numbers.md).
 
 The original question asked about two things at once, so it splits.
 
@@ -172,7 +230,7 @@ The original question asked about two things at once, so it splits.
 
       **These are the paper's numbers.** F2's caption may now quote them.
 
-## What is still open
+**And the strip that carries the figure.**
 - [x] ✅ Does the five-image strip read the same on complete cells?
       **Yes.** F2 is `paper/iclr/figures/F2-dose-response.pdf`: `a_cat__x__a_dog` seed 9, all
       three rows across all five strengths, above the curves on a shared λ axis.
@@ -199,3 +257,30 @@ The original question asked about two things at once, so it splits.
       scores 0 of 4 at λ=0 and the four images are single fused creatures, so the scorer is right
       and the pool's assumption is wrong. There is no working do-no-harm control in the pool. That
       is a limitations sentence, owed by writing-06.
+
+## What the write-up owes
+
+Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC](#table-of-contents) | [Next](#still-open) ➡️
+
+| What the paper says | What it owes alongside it |
+|---|---|
+| F2's headline numbers, 3% to 94% with both controls at or below 6% | that they are the re-scored figures, computed over this sweep's own cells with the size floor in the scorer. The first scoring pass read cells from outside the sweep, and its numbers are not the ones to quote |
+| the compose rate at any strength | the band on it, which [the compose-rate scope](../../can-we-trust-the-compose-rate/review/instrument-01-the-three-state-labelled-set.md) is measuring. 94% is an upper bound until that lands |
+| cat × dog carrying the strip | that it is the strongest pair in the set (0% to 100%, AUC 0.562, the only pair whose two controls score exactly 0.000), and that seed 9 was chosen because its two composing panels were checked by eye. A reader should know the strip shows the best case |
+| the control pair, elephant × penguin | that it scores 0 of 4 at strength 0 here, which contradicts the transfer scope listing it as a compose-by-default control. See [Still open](#still-open) |
+
+## Still open
+
+Navigation: ⬅️ [What the write-up owes](#what-the-write-up-owes) | 📋 [TOC](#table-of-contents) | [Next](#next-step) ➡️
+
+| What is unresolved | What would settle it | Who or what is blocked by it |
+|---|---|---|
+| 3.4GB of cells sitting on `/home-mscluster` rather than `/datasets`, because `run_dose_sweep.sh` sets `OUT=$REPO/outputs/...` while its disk guard reads `df /datasets/mmolefe` | moving them, and pointing the guard at the filesystem the script actually writes to | owned by the last task in the design plan. `/home-mscluster` has hit 100% once before and silently killed checkpointing |
+| whether elephant × penguin composes by default | re-scoring that pair under both runs' conditions | the do-no-harm claim. The transfer scope lists it as a compose-by-default control and it scores 0 of 4 at strength 0 here. Recorded on both sides: [instrument-01 of the transfer claim](../../does-the-fix-reach-unseen-pairs/review/instrument-01-the-clean-pair-pool.md) |
+
+## Next step
+
+Navigation: ⬅️ [Still open](#still-open) | 📋 [TOC](#table-of-contents)
+
+Move the 3.4GB off `/home-mscluster` and fix the disk guard to check the filesystem the script
+writes to.

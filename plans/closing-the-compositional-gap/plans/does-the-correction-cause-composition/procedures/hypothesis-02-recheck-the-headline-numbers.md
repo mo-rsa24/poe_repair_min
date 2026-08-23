@@ -1,6 +1,42 @@
-# Re-check the numbers behind the paper's headline figure
+# 🧭 Re-check the numbers behind the paper's headline figure
+
+Task 4 of [the design plan](../plans/hypothesis-02-more-correction-more-composition.md) sends you
+here. When you are done, F2's percentages are safe to print and two questions in
+[the review file](../review/hypothesis-02-more-correction-more-composition.md) are answered.
+
+## Recommended prompt (when you finish)
+
+```
+/analyze-figure paper/iclr/figures/F2-dose-response.pdf
+```
+
+## Position in the plan tree
+
+| File | What it holds |
+|---|---|
+| [design](../plans/hypothesis-02-more-correction-more-composition.md) | the task that sends you here |
+| [review](../review/hypothesis-02-more-correction-more-composition.md) | the two questions your result answers |
+| **this file** | **the steps, and the reason behind each one** |
+
+## Table of contents
+
+- [Why you are doing this, and where it lands](#why-you-are-doing-this-and-where-it-lands)
+- [Words this file uses](#words-this-file-uses)
+- [Before you start](#before-you-start)
+- [What you need to understand first: the two faults in the counting tool](#what-you-need-to-understand-first-the-two-faults-in-the-counting-tool)
+- [1. Confirm what the scorer is reading](#1-confirm-what-the-scorer-is-reading)
+- [2. Look at the bad box before choosing a bar](#2-look-at-the-bad-box-before-choosing-a-bar)
+- [3. Set the bars in the source code](#3-set-the-bars-in-the-source-code)
+- [4. Re-score and re-read](#4-re-score-and-re-read)
+- [5. If the direction does not survive](#5-if-the-direction-does-not-survive)
+- [6. The five-picture strip](#6-the-five-picture-strip)
+- [What you produce](#what-you-produce)
+- [Recommended Prompts](#recommended-prompts)
+- [Next step](#next-step)
 
 ## Why you are doing this, and where it lands
+
+Navigation: 📋 [TOC](#table-of-contents) | [Next](#words-this-file-uses) ➡️
 
 The paper's central claim is that composition fails because one correction term is missing. The
 figure that carries that claim is **F2** in `paper/iclr/figures.md`, and its caption will say:
@@ -25,8 +61,25 @@ rise mean something.
 
 When you finish, answer the two open questions in
 [../review/hypothesis-02-more-correction-more-composition.md](../review/hypothesis-02-more-correction-more-composition.md).
+## Words this file uses
 
-## Before you start: is the GPU free?
+Navigation: ⬅️ [Why you are doing this](#why-you-are-doing-this-and-where-it-lands) | 📋 [TOC](#table-of-contents) | [Next](#before-you-start) ➡️
+
+- **GroundingDINO**: the pretrained object detector used to count animals in generated images.
+- **λ (lambda)**: the strength setting, how much of the correction is added back, from 0 to 1.
+- **AUC**: area under the curve, one number summarising a whole curve so three can be compared
+  at a glance.
+- **oracle / controls**: the oracle uses the true interaction term; the two controls are
+  deliberately wrong versions that should fail, and do.
+- **NMS**: the step that merges overlapping detections, so one animal found twice counts once.
+- **MIN_BOX_FRACTION**: the size bar, 0.25. A detection must span at least a quarter of the
+  image's longer side to count as an animal.
+
+## Before you start
+
+Navigation: ⬅️ [Words this file uses](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#what-you-need-to-understand-first-the-two-faults-in-the-counting-tool) ➡️
+
+**Is the GPU free?**
 
 Step 1 needs no GPU. Steps 2 and 4 load GroundingDINO (the object detector that counts animals in
 each image), and this node's card is shared, so check first:
@@ -44,7 +97,11 @@ If someone else holds most of the 23.5GB, do NOT try anyway: the detector dies w
   no waiting.
 - **Or submit to biggpu** with `/run-experiment`, and do the writing tasks meanwhile.
 
-## The two faults in the counting tool
+## What you need to understand first: the two faults in the counting tool
+
+Navigation: ⬅️ [Before you start](#before-you-start) | 📋 [TOC](#table-of-contents) | [Next](#1-confirm-what-the-scorer-is-reading) ➡️
+
+Both are fixed in source. You are applying the fixes and reading what comes out, so you need to know what each fault did before the steps make sense.
 
 **Fault one: the scorer read pairs that are not part of this sweep.** It collected every image
 folder under the output directory rather than only the ones this sweep wrote. Eleven folders hold
@@ -70,6 +127,8 @@ box 220px or less, on a 1024px image.
 
 ## 1. Confirm what the scorer is reading
 
+Navigation: ⬅️ [What you need to understand first](#what-you-need-to-understand-first-the-two-faults-in-the-counting-tool) | 📋 [TOC](#table-of-contents) | [Next](#2-look-at-the-bad-box-before-choosing-a-bar) ➡️
+
 ```bash
 PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
 $PY -c "
@@ -87,6 +146,8 @@ If a seed 1 appears, the seed restriction in step 3 is not taking effect and not
 worth reading.
 
 ## 2. Look at the bad box before choosing a bar
+
+Navigation: ⬅️ [1. Confirm what the scorer is reading](#1-confirm-what-the-scorer-is-reading) | 📋 [TOC](#table-of-contents) | [Next](#3-set-the-bars-in-the-source-code) ➡️
 
 Do not pick a threshold from a number alone. Draw the boxes and look at them.
 
@@ -108,6 +169,8 @@ figure is either spurious or a duplicate of a box already kept; every yellow one
 That is the picture the bar in step 3 is set from.
 
 ## 3. Set the bars in the source code
+
+Navigation: ⬅️ [2. Look at the bad box](#2-look-at-the-bad-box-before-choosing-a-bar) | 📋 [TOC](#table-of-contents) | [Next](#4-re-score-and-re-read) ➡️
 
 Both bars live in source, not on a command line, so a later change shows up in a git diff instead
 of hiding in someone's shell history.
@@ -147,6 +210,8 @@ The false positive on the control drops from 2 to 1, and the real composition st
 
 ## 4. Re-score and re-read
 
+Navigation: ⬅️ [3. Set the bars](#3-set-the-bars-in-the-source-code) | 📋 [TOC](#table-of-contents) | [Next](#5-if-the-direction-does-not-survive) ➡️
+
 ```bash
 $PY scripts/plot_dose_curves.py --root outputs/interaction_term/dose/pairs --device cpu
 ```
@@ -174,6 +239,8 @@ What to check, in order:
 
 ## 5. If the direction does not survive
 
+Navigation: ⬅️ [4. Re-score and re-read](#4-re-score-and-re-read) | 📋 [TOC](#table-of-contents) | [Next](#6-the-five-picture-strip) ➡️
+
 Then this was a run testing a scientific claim, and the claim failed its pre-set pass mark. The
 standing rule applies: answer the review question `❌` with the numbers, close the plan, and write
 one follow-on plan file asking why. Do not loosen either bar until the curve comes back. Both were
@@ -181,6 +248,8 @@ chosen in step 3 by looking at actual boxes, and moving one afterwards to rescue
 exactly the kind of after-the-fact adjustment this whole setup exists to prevent.
 
 ## 6. The five-picture strip
+
+Navigation: ⬅️ [5. If the direction does not survive](#5-if-the-direction-does-not-survive) | 📋 [TOC](#table-of-contents) | [Next](#what-you-produce) ➡️
 
 The strip is the row of five images, one per strength setting, that sits above the curves in
 figure F2. It is the qualitative half of the claim: the curves say the rate went up, the strip
@@ -206,7 +275,19 @@ one: it scores 0 of 4 at λ=0, and the four images are single fused creatures, s
 right and the pool's assumption is wrong. The pool has no working do-no-harm control. That is a
 limitations sentence, not a blocker.
 
+## What you produce
+
+Navigation: ⬅️ [6. The five-picture strip](#6-the-five-picture-strip) | 📋 [TOC](#table-of-contents) | [Next](#recommended-prompts) ➡️
+
+| What | Where it lands | What it answers |
+|---|---|---|
+| the re-scored curves | `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/dose_curves.json` | *Do the curves hold when only this sweep's own cells are scored?* and *Do they hold under a bar chosen against the picture of the boxes?*, both in [the review file](../review/hypothesis-02-more-correction-more-composition.md) |
+| the annotated box diagnostic | `dose_strip_an_elephant__x__a_penguin_seed10_boxes.png` | why `MIN_BOX_FRACTION` is 0.25 rather than a number picked from a table |
+| the five-picture strip | `paper/iclr/figures/F2-dose-response.pdf` | register slot F2, the paper's headline figure |
+
 ## Recommended Prompts
+
+Navigation: ⬅️ [What you produce](#what-you-produce) | 📋 [TOC](#table-of-contents) | [Next](#next-step) ➡️
 
 Run these when a term here stops meaning anything. Each leaves something you can return to.
 
@@ -218,14 +299,10 @@ Run these when a term here stops meaning anything. Each leaves something you can
 - **On the shape of the whole sweep:** `/experiment-atlas the dose sweep: 8 pairs x 4 seeds x 5
   strengths x 3 rows, which cells are missing, and which feed slot F2`.
 
-## Kept terms
+## Next step
 
-- **GroundingDINO**: the pretrained object detector used to count animals in generated images.
-- **λ (lambda)**: the strength setting, how much of the correction is added back, from 0 to 1.
-- **AUC**: area under the curve, one number summarising a whole curve so three can be compared
-  at a glance.
-- **oracle / controls**: the oracle uses the true interaction term; the two controls are
-  deliberately wrong versions that should fail, and do.
-- **NMS**: the step that merges overlapping detections, so one animal found twice counts once.
-- **MIN_BOX_FRACTION**: the size bar, 0.25. A detection must span at least a quarter of the
-  image's longer side to count as an animal.
+Navigation: ⬅️ [Recommended Prompts](#recommended-prompts) | 📋 [TOC](#table-of-contents)
+
+Go back to [the design plan](../plans/hypothesis-02-more-correction-more-composition.md), tick
+task 4, then answer the two re-score questions in
+[the review file](../review/hypothesis-02-more-correction-more-composition.md).

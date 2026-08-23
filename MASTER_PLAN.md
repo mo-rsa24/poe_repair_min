@@ -5,15 +5,15 @@
 This block is a snapshot; the live version prints at session start, or on demand with
 `python3 scripts/plan_pulse.py --brief`.
 
-- **What is going on:** nothing is running; the GPU is free.
-- **The last thing we did:** one parent scope for the paper, its cadence stated: figures first,
-  write at 5 to 10 resolved register slots.
-- **Do this next:** two rows are unblocked and both are worth starting today. Step 4 is a chore
-  needing no compute: 6.3GB of dose cells sit on `/home-mscluster` and belong on `/datasets`.
-  Step 9,
+- **What is going on:** step 9's one-epoch smoke run is in flight on a shared biggpu device.
+- **The last thing we did:** taught the environment the shared-device launch path (an allocated
+  biggpu node with an idle second GPU, reached over SSH) and launched step 9's smoke run with it.
+- **Do this next:** step 9's one-epoch smoke run,
   [instrument-02-three-live-curves-while-training](plans/closing-the-compositional-gap/plans/does-the-fix-reach-unseen-pairs/plans/instrument-02-three-live-curves-while-training.md),
-  is one epoch on a GPU and it gates the whole transfer chain: steps 10, 11, 12 and 14 wait behind
-  it, and so does register slot F8. Start step 9 first so it cooks, then do step 4 while it runs.
+  is cooking on a shared biggpu device; it gates the whole transfer chain (steps 10, 11, 12 and 14
+  wait behind it, and so does register slot F8). While it runs, do step 4, the chore needing no
+  compute: 6.3GB of dose cells sit on `/home-mscluster` and belong on `/datasets`. When the run
+  finishes, judge its three curves against the review file's bar.
 
 ## The paper: what has to land
 
@@ -31,7 +31,7 @@ left in a queue that renumbers itself. A plan's own file carries this same numbe
 | 6 | does-the-correction-cause-composition/hypothesis-03-when-in-the-run-it-matters | when the correction matters: the cliff is at the start | ◑ driving the timing tab by hand | 4, 5 |
 | 7 | ~~does-the-correction-cause-composition/hypothesis-05-the-same-story-from-three-sides~~ | the independent checks: two image-side yes, two language-side null | ✅ | 4 |
 | 8 | ~~does-the-correction-cause-composition/hypothesis-01-what-the-fix-changes-inside-the-model~~ | the fix changes what a word paints, not where it looks | ✅ | 3 |
-| 9 | does-the-fix-reach-unseen-pairs/instrument-02-three-live-curves-while-training | the one-epoch smoke confirming three live curves | ⚠️ **do this next** |  |
+| 9 | does-the-fix-reach-unseen-pairs/instrument-02-three-live-curves-while-training | the one-epoch smoke confirming three live curves | ◑ run in flight; verdict lands in the review file |  |
 | 10 | does-the-fix-reach-unseen-pairs/hypothesis-01-does-one-pooled-fix-transfer-at-all | finish the read: steps 70k to 100k unscored, go/no-go note owed | ◑ run done, read incomplete | 9 |
 | 11 | does-the-fix-reach-unseen-pairs/hypothesis-02-transfer-as-a-rate-over-fifteen-pairs | fifteen adapters, leaderboard, degradation curve | ⚠️ | 10 |
 | 12 | does-the-fix-reach-unseen-pairs/baseline-01-the-size-matched-control-pool | the size-matched mixed pool against animals-only | ⚠️ | 11 |
@@ -219,6 +219,7 @@ The kept terms, one plain line each. The plan prose uses these; the commands and
 - **Chimera:** that failure. One animal with parts of both, instead of two animals.
 - **Mono / the ceiling:** the cheat that works — give the model the literal joined prompt "a cat and a dog". It composes fine, but it defeats the point, so we only use it as the target.
 - **Mono-free:** at test time the LoRA never sees the joined prompt. That is the whole point.
+- **The oracle:** the correction computed from the joined prompt, the thing a trained LoRA is imitating. It is the target and not a shippable method: at full dose it reproduces the Mono render by construction.
 - **The residual (`r_t = ε̃_J − ε̃_PoE`, also `Δ_t`):** the step-by-step correction, the gap from broken-PoE toward the Mono target.
 - **LoRA (rank-8, cross-attention / `attn2`):** a small set of extra weights bolted onto the layer where the text prompt enters. What we train.
 - **λ (lambda), `PoE+λ·R`:** the dial for how much of the correction to add. 0 is off (identical to plain PoE), 1 is full.

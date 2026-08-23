@@ -10,7 +10,7 @@ GPU", not "login vs compute". Partitions (verified via sinfo, 2026-08-04):
 
 | Partition | Nodes | Time limit | Notes |
 |---|---|---|---|
-| biggpu | mscluster[106-112] | 3 days | FIRST CHOICE for GPU jobs: ~100GB VRAM (user-stated; sinfo GRES reads null, so not machine-verified) |
+| biggpu | mscluster[106-112] | 3 days | FIRST CHOICE for GPU jobs. mscluster106: 2× Quadro RTX 8000, 49GB each (verified via nvidia-smi 2026-08-19). mscluster110: Blackwell-class (user-stated). sinfo GRES reads null, so per-node GPUs are only discoverable by SSH + nvidia-smi |
 | bigbatch | mscluster[42-89] | 3 days | fallback when no biggpu node is idle |
 | batch | mscluster[120-219] | 1 day | short jobs only |
 | stampede | mscluster[22-41] | 3 days | rarely used for this project |
@@ -44,15 +44,34 @@ order:
 1. `squeue -u mmolefe`: if an interactive node is already allocated on biggpu,
    run directly there (no sbatch).
 2. Else `sinfo -p biggpu`: if a biggpu node is idle, target biggpu; otherwise
-   target bigbatch.
-3. Every job script carries a preflight block: df disk guard on the checkpoint
+   check for a shared device (next step) before falling back to bigbatch.
+3. Shared-device path: an `alloc` biggpu node is often only half used, because
+   Slurm here allocates whole nodes while knowing nothing about GPUs (GRES is
+   null) and most users run on one device. SSH in and read per-device state:
+   `ssh <node> nvidia-smi --query-gpu=index,memory.used,utilization.gpu
+   --format=csv`. A device at ~0MiB used and 0% utilisation is free. Slurm
+   cannot schedule onto that node (it is allocated, and biggpu allows one job
+   per user anyway), so run there directly: SSH in, pin
+   `CUDA_VISIBLE_DEVICES=<free index>`, launch with `nohup`, tee to a log the
+   session node can read. Every path on the SSH launch line must be absolute
+   (script and log redirect): the SSH command starts in `$HOME`, and a
+   `cd <repo> &&` prefix does not reliably survive the tooling
+   (see docs/EXPERIMENT_ERROR_CATALOG.md, poe-launch-001). Safety rules, all
+   mandatory: never start on a device
+   carrying a foreign process; re-check the device in the launch script itself
+   (a guard that aborts if the chosen device has >1GB in use), not only in the
+   preflight minutes earlier; keep VRAM within the free device; record node,
+   device index, and PID in the log header. These runs are invisible to
+   `squeue`, so harvest checks `pgrep -af 'sweep|train'` on the node.
+4. Every job script carries a preflight block: df disk guard on the checkpoint
    target (abort at 90% full), `co3` python path check, `nvidia-smi` guard
    (abort in seconds if no GPU is visible).
-4. Submit, then poll `squeue`/`sacct`. On failure, read the log and classify:
+5. Submit, then poll `squeue`/`sacct` (or, for a shared-device run, tail the
+   nohup log and `pgrep` on the node). On failure, read the log and classify:
    OOM (reduce batch/resolution or move to biggpu), wrong env (fix the path),
    missing GPU or bad #SBATCH directives (fix and resubmit), node failure
    (resubmit elsewhere). Bounded retries; never silently loop.
-5. In-session tier: cache-only analyses (SVD, SNR curves, language probes,
+6. In-session tier: cache-only analyses (SVD, SNR curves, language probes,
    scoring cached pngs) and light GPU inference run directly on the current
    session node (mscluster85, RTX 3090 24GB), no queue, while bigger jobs
    wait. Reference point: phase1_r8_100k TRAINING peaked at 22.95GB VRAM, so
@@ -154,8 +173,11 @@ of sweep cells landed on the wrong mount with the guard reporting healthy.
 
 ## Provenance
 Partitions, node lists, time limits, idle counts, and empty allocation state
-verified live via `sinfo`/`squeue` on 2026-08-04. The biggpu 100GB VRAM figure
-is user-stated (not machine-verifiable via sinfo here). Disk-guard and
+verified live via `sinfo`/`squeue` on 2026-08-04. mscluster106's devices
+(2× Quadro RTX 8000, 49152MiB each) and the shared-device path verified live
+over SSH on 2026-08-19: GPU 1 sat at 1MiB/0% while GPU 0 carried another
+user's 8GB process, and a torch matmul from `co3_bw` on GPU 1 succeeded
+without touching GPU 0. Other biggpu nodes' GPU models remain user-stated. Disk-guard and
 hippo/array rules carried from EXPERIMENTS.md cluster notes (hard-won during
 earlier runs). Cache contents verified by direct filesystem inspection and a
 loaded residual file on 2026-08-04. Env list verified by ls of

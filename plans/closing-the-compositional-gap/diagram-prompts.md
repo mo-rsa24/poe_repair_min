@@ -1,7 +1,8 @@
 # Closing the Compositional Gap: illustrated map
 
 Six pictures of the system this scope builds, six of the process that builds it, and a capstone
-closing each lane. Every prompt below is self-contained: paste any one into ChatGPT on its own and
+closing each lane. Where one plan needs its own pair, it is filed as a lettered zoom into the piece
+it belongs to (2a zooms into piece 2) rather than as a seventh piece. Every prompt below is self-contained: paste any one into ChatGPT on its own and
 it comes back matching its siblings.
 
 ## Art direction
@@ -101,6 +102,27 @@ Exclusions: no product logos, no numbers on the dial, no components other than t
 ```
 
 Faithfulness note: the four substitutes must be drawn the same size as the real correction and differ only in being hollow, because they are matched in size and differ only in direction. The amber line must enter only the segments under the bracket, and the blue line must run the strip's full length, or the picture claims the prompt is switched off outside the window, which it is not.
+
+### Prompt 2a (Subject): One thing changes, which is when the correction acts
+
+[planned] Zoom into prompt 2's window bracket, for
+`plans/does-the-correction-cause-composition/plans/hypothesis-03-when-in-the-run-it-matters.md`.
+
+```
+Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded dashed arrow lines, each color meaning exactly one kind of flow, with a small legend inside the image. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Official product logos only on components that ARE that product; every other component gets a clean generic glyph. Small cartoon figures or vehicles for external actors (users, clients). Clean sans-serif labels under every icon, short and lowercase-friendly. Generous spacing, no clutter, no watermark.
+
+Scene: one tall composition, read top to bottom. Nine identical horizontal strips stacked with even spacing, each divided into many small equal segments, each dark and grainy at its left end and resolving into a clear picture at its right end. Above each strip sits a rounded bracket covering one fifth of that strip's length; the bracket sits at the far left on the topmost strip and shifts one notch further right on each strip below, reaching the far right on the bottom strip. A single thin vertical guide line runs down through all nine strips at a position just under a third from the left, crossing inside the bracket on only two of the strips. At the right edge, level with the topmost strip, one outcome tile bordered amber showing two separate animals; level with the bottom strip, one outcome tile bordered blue showing one blended animal. On the far left, a small rounded soft-tinted panel holding a grid glyph labelled with its three dimensions.
+
+Cast: nine step strips (the 50 denoising steps, one strip per window placement), nine window brackets (the stretch of steps during which the correction may act), the vertical guide line (the fork step, step 16, measured independently from cached runs), two outcome tiles, one grid glyph.
+
+Flows: a blue dashed line running the full length of every one of the nine strips, underneath it, meaning the uncorrected base and the prompt run at every step in every row. An amber dashed line entering each strip only in the segments its own bracket covers. Legend inside the image, lower left.
+
+Text in the image: title banner "one thing changes: when the correction acts". Labels: "noise", "finished image", "50 steps", "steps 0-10", "steps 40-50", "window gate", "fork step, measured elsewhere", "9 windows x 8 pairs x 4 seeds = 288 cells", "two separate animals", "one blended animal". Legend: "blue: base and prompt run always", "amber: correction injected".
+
+Exclusions: no product logos, no numbered step badges, no status pills, no arrows implying the nine rows happen in sequence, no curve or chart, no components other than those listed, no placeholder gibberish text, no watermark.
+```
+
+Faithfulness note: the blue line must run the full length of all nine strips. If it stops outside a bracket the picture claims conditioning is gated too, which is the confound the whole design exists to avoid. The fork-step guide must cross inside only two of the nine brackets, because that is what lets the sweep disagree with it rather than being built to agree. The nine rows are placements, not stages, so no arrows between them.
 
 ### Prompt 3 (Subject): The instruments that decide what happened
 
@@ -228,18 +250,39 @@ Faithfulness note: all three stages carry a completed pill. Each of these instru
 ```
 Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded dashed arrow lines, each color meaning exactly one kind of flow, with a small legend inside the image. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Official product logos only on components that ARE that product; every other component gets a clean generic glyph. Small cartoon figures or vehicles for external actors (users, clients). Clean sans-serif labels under every icon, short and lowercase-friendly. Generous spacing, no clutter, no watermark.
 
-Scene: one rounded soft-tinted phase container spanning the image, titled at its top, holding five stage cards. Four sit in a horizontal row connected by directional arrows; the fifth sits below the row, connected upward into the third card. Each card carries a numbered circular badge at its upper left and two or three tiny bullet lines. Card one holds the dose dial, card two holds the sliding window bracket over a short step strip, card three holds the cache analysis bench, card four holds three small instrument glyphs side by side, and the lower card holds the scorer lens over a probe map. All five carry a green "Completed" pill. A small red warning badge with a dashed callout box is attached to card one only, hanging below it.
+Scene: one rounded soft-tinted phase container spanning the image, titled at its top, holding five stage cards. Four sit in a horizontal row connected by directional arrows; the fifth sits below the row, connected upward into the third card. Each card carries a numbered circular badge at its upper left and two or three tiny bullet lines. Card one holds the dose dial, card two holds the sliding window bracket over a short step strip, card three holds the cache analysis bench, card four holds three small instrument glyphs side by side, and the lower card holds the scorer lens over a probe map. All five carry a green "Completed" pill.
 
 Cast: the dose dial, the window bracket and step strip, the cache analysis bench, the three second-opinion probes, the scorer lens over a probe map, all carrying their subject-lane meanings.
 
-Flows: green solid arrows between the cards, meaning each finished. One red dashed line from card one down into its callout box, meaning an outstanding cleanup on an otherwise finished stage. Legend inside the image, bottom edge.
+Flows: green solid arrows between the cards, meaning each finished. Legend inside the image, bottom edge.
 
-Text in the image: title banner "the causal runs". Phase container title: "all five answered". Card titles: "more correction, more composition", "when in the run it matters", "read the cached runs", "the same story three ways", "what changes inside the model". Bullets: "three rows compared", "controls stayed flat", "early window only", "cliff at the start", "no new generation", "two nulls kept", "held-out pairs". Pills: "Completed". Callout: "output on the wrong disk". Legend: "green: completed", "red: cleanup owed".
+Text in the image: title banner "the causal runs". Phase container title: "all five answered". Card titles: "more correction, more composition", "when in the run it matters", "read the cached runs", "the same story three ways", "what changes inside the model". Bullets: "three rows compared", "controls stayed flat", "early window only", "cliff at the start", "no new generation", "two nulls kept", "held-out pairs". Pills: "Completed". Legend: "green: completed".
 
-Exclusions: no product logos, no stage other than the five listed, no gray skipped pills in this image, no placeholder gibberish text, no watermark.
+Exclusions: no product logos, no stage other than the five listed, no gray skipped pills, no red callout or warning badge anywhere in this image, no placeholder gibberish text, no watermark.
 ```
 
-Faithfulness note: all five stages are completed and the red callout attaches only to the dose stage. Its result is answered and its numbers are the paper's; what remains is that the output landed on the wrong filesystem. Drawing the stage itself as failed would misreport a result that passed its bar.
+Faithfulness note: all five stages are completed and none carries an outstanding cleanup. The dose stage's output now sits on `/datasets` where it belongs, so a red callout on card one would report a problem that no longer exists.
+
+### Prompt 2a (Process): The stages that produced the timing answer
+
+[planned] Zoom into prompt 2's card two, for
+`plans/does-the-correction-cause-composition/plans/hypothesis-03-when-in-the-run-it-matters.md`.
+
+```
+Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded dashed arrow lines, each color meaning exactly one kind of flow, with a small legend inside the image. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Official product logos only on components that ARE that product; every other component gets a clean generic glyph. Small cartoon figures or vehicles for external actors (users, clients). Clean sans-serif labels under every icon, short and lowercase-friendly. Generous spacing, no clutter, no watermark.
+
+Scene: one rounded soft-tinted phase container spanning most of the image, titled at its top, holding six stage cards in a horizontal row connected by directional arrows. Each card carries a numbered circular badge at its upper left and two or three tiny bullet lines. Card one holds a caliper glyph measuring a short step strip. Card two holds a window bracket sitting entirely off the end of a step strip, with a small equals sign beside it. Card three holds a step strip with three brackets at left, middle and right. Card four holds a grid glyph. Card five holds two step strips stacked with a dose dial between them. Card six holds a register board. Cards one to five carry a green "Completed" pill; card six carries a green "Completed" pill and a red warning badge with a dashed callout box hanging below it. Below the container and to the right, a seventh card sits on its own, connected upward into card six, holding a researcher persona beside a slider glyph and carrying an amber "In progress" pill. A red dashed branch leaves card two downward into a small muted card holding a crossed-out step strip.
+
+Cast: the caliper over a step strip, the window bracket and step strip, the grid glyph, the dose dial, the register board, the researcher persona with a slider, all carrying their subject-lane meanings.
+
+Flows: green solid arrows between cards one through six, meaning each finished. A red dashed branch from card two into the muted card, meaning the run that stops everything if it fires. A green solid arrow from card six down into the seventh card. Legend inside the image, bottom edge.
+
+Text in the image: title banner "when in the run it matters". Phase container title: "answered: the cliff is at the start". Card titles: "fix the width in source", "prove the gate does not leak", "smoke three windows", "run 288 cells and score", "untie timing from dose", "eight figures built". Bullets: "width 10, stride 5", "chosen before any run", "all-off equals plain PoE", "early, middle, late", "9 x 8 x 4", "no missing windows", "same total, later", "cliff survives", "F4a to F4h". Seventh card: "drive the timing tab by hand", bullets "slider moves picture and curve", "the check numbers cannot make". Pills: "Completed", "In progress". Muted card: "the gating leaks, stop". Callout: "one figure unregistered, two rows still say reserved". Legend: "green: completed", "amber: yours to do", "red: stops the plan".
+
+Exclusions: no product logos, no stage other than the seven listed, no gray "Skipped" pills, no chart or curve, no placeholder gibberish text, no watermark.
+```
+
+Faithfulness note: card six is completed and its red callout is a register gap, not a failed result. Drawing the stage as failed would misreport eight figures that exist. The seventh card is the only work not done and it is the human's, which is why it carries the researcher persona and sits outside the container.
 
 ### Prompt 3 (Process): The transfer runs
 

@@ -17,7 +17,7 @@ This extracts error patterns from the run transcript, deduplicates against globa
 | Step | Plan | What it does |
 |------|------|-------------|
 | 8 (previous) | [hypothesis-01: what-the-fix-changes-inside-the-model](../../does-the-correction-cause-composition/plans/hypothesis-01-what-the-fix-changes-inside-the-model.md) ✅ | Measured what $r_t$ does inside training |
-| **9 (current)** | **instrument-02: three-live-curves** ⚠️ Do this next | **Wire live logging for two diagnostic axes** |
+| **9 (current)** | **instrument-02: three-live-curves** ◑ run in flight | **Wire live logging for three diagnostic axes** |
 | 10 (next) | [hypothesis-01: does-one-pooled-fix-transfer-at-all](hypothesis-01-does-one-pooled-fix-transfer-at-all.md) | Use those live curves to run the 15-run sweep |
 
 ---
@@ -26,16 +26,19 @@ This extracts error patterns from the run transcript, deduplicates against globa
 - [Position in the plan tree](#position-in-the-plan-tree)
 - [Quick context: where you are](#quick-context-where-you-are)
 - [Considerations](#considerations)
+- [Environment Facts This Plan Depends On](#environment-facts-this-plan-depends-on)
 - [The claim](#the-claim)
 - [Why this plan exists](#why-this-plan-exists)
 - [What the fix actually does (visual)](#what-the-fix-actually-does-visual)
 - [Description: what to build](#description-what-to-build)
 - [Purpose and goal](#purpose-and-goal)
-- [Tasks](#tasks)
+- [Tasks](#tasks) — things for Claude to execute
+- [Instructions](#instructions) — things for you to do manually
 - [The engagement gate](#the-engagement-gate)
 - [Figure Catalog](#figure-catalog)
 - [Orchestration: keeping catalogs and plan files in sync](#orchestration-keeping-catalogs-and-plan-files-in-sync)
 - [Code references](#code-references)
+- [Next step](#next-step)
 - [Error Matrix](#error-matrix)
 
 ---
@@ -65,15 +68,15 @@ Diagnose why a fix doesn't transfer (or confirm that it does). To do that, we ru
 Before running that 15-run sweep, we need to know *while it's training* whether the fix is even arriving at the eval set. Post-run analysis is too late; you'd waste GPU hours. So this plan wires three diagnostic metrics into the live training loop, so you can kill bad runs early.
 
 **Dataset details:**  
-- **Training pairs:** 11 pairs (cat×dog, eagle×hawk quadrants plus others)
-- **Eval pairs:** 4 held-out pairs from the training set (to verify the fix works at all)
+- **Training pairs:** 11 blend-prone animal pairs (wolf×husky, lion×tiger, and so on; the pool is `outputs/animals_compose_transfer/pair_pool.yaml`), each over 8 train seeds.
+- **Held-out pairs:** 8, each over 8 held-out seeds: 4 unseen blend pairs (the transfer test), cat×dog (the known-failure reference), and 3 compose-by-default controls (the do-no-harm check).
 - **Unseen pairs:** Tested later in step 10 (the 15-run sweep tests transfer)
 - **Known phenomenon:** The $\sim 40\%$ plateau in correction magnitude is well-established; we measure it live in this plan.
 
 **Associated materials:**
 - **Review questions:** [../review/instrument-02-three-live-curves-while-training.md](../review/instrument-02-three-live-curves-while-training.md)
 - **Procedures:** (if any; add link here)
-- **Assets/outputs:** Will be saved to `outputs/interaction_term/live_curves_smoke_run/`
+- **Assets/outputs:** Saved to `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/live_curves_smoke_run/` (large artifacts live on `/datasets`, never under the repo)
   - **Figure organization:** Use [figure-coverage-prompt.md](diagrams/figure-coverage-prompt.md) to scan the repo, rename all related figures to the step-09 naming convention, and consolidate them into `outputs/interaction_term/live_curves_smoke_run/figures/`. This prompt will generate a FIGURE_CATALOG.md that maps each figure to axes, meaning, and original location.
   - **Locations scanned:** `docs/evidence/`, `outputs/interaction_term/`, `paper/iclr/figures/`, `/show-me` artifacts, results/ folders
 
@@ -83,16 +86,16 @@ For the full picture, see the [repo MASTER_PLAN.md](../../../../../MASTER_PLAN.m
 
 ## Considerations
 
-⬅️ [Previous](#quick-context-where-you-are) | 📋 [TOC](#table-of-contents) | [Next](#the-claim) ➡️
+⬅️ [Previous](#quick-context-where-you-are) | 📋 [TOC](#table-of-contents) | [Next](#environment-facts-this-plan-depends-on) ➡️
 
 **Expected runtime:**  
-On `mscluster85` or `mscluster110` (biggpu partition, see [docs/ENVIRONMENT.md](../../../../../docs/ENVIRONMENT.md) for current partition details), a single 1-epoch smoke run takes approximately **1 hour**. This was empirically tested in a prior smoke run (log: [prior_smoke_run.log](outputs/interaction_term/live_curves_smoke_run/prior_smoke_run.log), wall time: 58 minutes). Full 15-run sweep takes approximately 6 hours per run. See [docs/ENVIRONMENT.md: Walltime Limits](../../../../../docs/ENVIRONMENT.md#walltime-limits) for partition-specific constraints.
+On one biggpu device (49GB Quadro RTX 8000 on mscluster106, or the Blackwell-class GPUs on mscluster110; see [docs/ENVIRONMENT.md](../../../../../docs/ENVIRONMENT.md#compute--runtime)), a 1-epoch smoke run is roughly **1 to 3 hours**: the training epoch itself is minutes, and nearly all the wall time is the inline eval pass (every train and held-out cell rendered at 25 DDIM steps). The measured wall time of each run is recorded in the [review file](../review/instrument-02-three-live-curves-while-training.md). The full 15-run sweep in step 10 takes approximately 6 hours per run.
 
 **Prerequisites:**  
-Before running, you must set up the environment. See [Terminal setup and execution](#1-terminal-setup-and-execution) for the exact commands. The environment variables `WANDB_PROJECT` and `SLURM_GPUS_PER_NODE` must be verified. Reference [docs/ENVIRONMENT.md: The environment](../../../../../docs/ENVIRONMENT.md) for cluster facts and absolute Python paths.
+The launcher `scripts/animals_compose_transfer/smoke_live_curves.sh` carries the setup: the `co3_bw` python, `POE_REPAIR_TRAINING_CACHE`, the device and disk guards, and the W&B flags. Nothing needs exporting by hand beyond `GPU=<free device index>` at launch. Cluster facts and absolute python paths are in [docs/ENVIRONMENT.md](../../../../../docs/ENVIRONMENT.md).
 
 **GPU allocation:**  
-Request one GPU node via Slurm (see [docs/ENVIRONMENT.md: Partitions](../../../../../docs/ENVIRONMENT.md#partitions) for available partitions and constraints). The smoke run is single-epoch, so it won't need the full compute budget. Monitor `squeue -u mmolefe` to confirm allocation. See [docs/ENVIRONMENT.md: Disk guard](../../../../../docs/ENVIRONMENT.md#disk-guard) for output storage guidance.
+Two launch paths, decided by [docs/ENVIRONMENT.md: Execution model](../../../../../docs/ENVIRONMENT.md#execution-model): an idle biggpu node gets a Slurm submit; when none is idle but an allocated node has a free device (Slurm here cannot see GPUs, so this is common), the run goes over SSH onto that device with `CUDA_VISIBLE_DEVICES` pinned and `nohup`, and `squeue` is blind to it, so monitoring is the nohup log plus `pgrep` on the node. Output goes to `/datasets` only; the launcher's disk guard checks that filesystem.
 
 **W&B project:**  
 All runs log to `prime_lab/poe-repair-animals-compose`. This is where you'll inspect the three live curves after the run finishes. Credentials are loaded from environment; verify with `echo $WANDB_API_KEY`.
@@ -102,9 +105,21 @@ This plan may encounter common errors when running. See the [Error Matrix](#erro
 
 ---
 
+## Environment Facts This Plan Depends On
+
+⬅️ [Previous](#considerations) | 📋 [TOC](#table-of-contents) | [Next](#the-claim) ➡️
+
+- biggpu nodes carry two GPU devices each; Slurm registers no GPUs (no GRES), so a free device on an allocated node is found only by SSH + `nvidia-smi`, and the shared-device launch path in [docs/ENVIRONMENT.md: Execution model](../../../../../docs/ENVIRONMENT.md#execution-model) is how this plan's run launches when no node is idle.
+- Python is the `co3_bw` env at `/home-mscluster/mmolefe/miniforge3/envs/co3_bw/bin/python` (the launcher hard-codes it); never a bare `python`.
+- Large outputs go to `/datasets/mmolefe/poe_repair_min/` only; the launcher's disk guard checks `/datasets`, the filesystem it writes to.
+- W&B credentials load from `~/.netrc` / `WANDB_API_KEY` with no human step; the project is `prime_lab/poe-repair-animals-compose`.
+- The training cache the run reads is `/datasets/mmolefe/poe_repair_min/artifacts/caches/training_cache/` (train and heldout splits, mono/poe references and residuals per cell).
+
+---
+
 ## The claim
 
-⬅️ [Previous](#considerations) | 📋 [TOC](#table-of-contents) | [Next](#why-this-plan-exists) ➡️
+⬅️ [Previous](#environment-facts-this-plan-depends-on) | 📋 [TOC](#table-of-contents) | [Next](#why-this-plan-exists) ➡️
 
 **Wire the composer-scorer and direction metrics into the eval hook during training, so every run reports three separate live W&B curves: compose-rate, direction-cosine, and fraction-of-distance-reached.**
 
@@ -226,105 +241,104 @@ Serves [Objective 4 (Diagnose) and Definition-of-Done item 2](../../../../../MAS
 
 ## Tasks
 
-⬅️ [Previous](#purpose-and-goal) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
+⬅️ [Previous](#purpose-and-goal) | 📋 [TOC](#table-of-contents) | [Next](#instructions) ➡️
 
-### 1. 🔧 High-level code wiring
+**For Claude to execute.** Ask Claude to do these.
 
-1.1 ✅ **Wire the compose-scorer module into the eval hook.**
-   - Reuse the eval-crossbar / inline-sampling path in `cross_pair_lora_pooling`.
-   - Compute a compose/blend label per held-out eval output.
-   - Imports: `_Embedders`, `score_output` from `compose_scorer.scorer`.
-   - Implementation: in [train_pooled.py::_run_inline_sample](#code-reference-compose-rate).
+### 1. ✅ High-level code wiring
 
-1.2 ✅ **Add the direction-cosine (Task D) computation.**
-   - Cosine of the current correction to the pool-mean correction.
-   - Verified: `_inline_sampling.py::direction_metrics` and `build_pool_mean_cache` in place.
-   - Logged per-cell as `eval/direction_cosine/{quadrant}/{pair}/seed_{NN}`.
-   - Aggregate: `eval/direction_cosine/mean` from `train_pooled.py::_run_inline_sample`.
+- [x] **Wire the compose-scorer module into the eval hook.**
+  - Reuse the eval-crossbar / inline-sampling path in `cross_pair_lora_pooling`.
+  - Compute a compose/blend label per held-out eval output.
+  - Imports: `_Embedders`, `score_output` from `compose_scorer.scorer`.
+  - Implementation: [train_pooled.py:_run_inline_sample](#code-reference-compose-rate).
 
-1.3 ✅ **Add the fraction-of-distance-reached metric.**
-   - Toward the PoE→Mono target, logged per eval so the $\sim 40\%$ plateau is visible live.
-   - Logged as `eval/frac_distance_reached/{quadrant}/{pair}/seed_{NN}` plus mean.
+- [x] **Add the direction-cosine (Task D) computation.**
+  - Cosine of the current correction to the pool-mean correction.
+  - Verified: `_inline_sampling.py:direction_metrics` and `build_pool_mean_cache` in place.
+  - Logged per-cell as `eval/direction_cosine/{quadrant}/{pair}/seed_{NN}`.
+  - Aggregate: `eval/direction_cosine/mean` from `train_pooled.py:_run_inline_sample`.
 
-### 2. ⚙️ Terminal setup and execution
+- [x] **Add the fraction-of-distance-reached metric.**
+  - Toward the PoE→Mono target, logged per eval so the ~40% plateau is visible live.
+  - Logged as `eval/frac_distance_reached/{quadrant}/{pair}/seed_{NN}` plus mean.
 
-2.1 🖥️ **Environment setup:**
+▶ **Next: task 2.1**, which launches the run this wiring makes readable.
 
-- [ ] Start a tmux session for this run.
-  ```bash
-  tmux new-session -s live-curves
-  ```
+◀ **Needs: tasks 1.1 to 1.3**, the wiring this run exercises.
 
-- [ ] Navigate to the repo and activate the environment.
-  ```bash
-  cd /home-mscluster/mmolefe/Playground/PhD/poe_repair_min
-  source /path/to/venv/bin/activate
-  ```
+### 2. ⚙️ Run the 1-epoch smoke test
 
-- [ ] Verify environment variables are set correctly.
-  ```bash
-  echo $WANDB_PROJECT  # Should output: prime_lab/poe-repair-animals-compose
-  echo $SLURM_GPUS_PER_NODE  # Verify GPU allocation
-  ```
+- [x] **Launch the smoke run in the background.**
+  - Launcher: `scripts/animals_compose_transfer/smoke_live_curves.sh` (1 epoch on the 11 training pairs, then one inline-sampling eval pass over every train and held-out cell), started over SSH on a biggpu device per the shared-device path in [docs/ENVIRONMENT.md](../../../../../docs/ENVIRONMENT.md#execution-model).
+  - Cost: roughly 1 to 3 hours wall time on one 49GB biggpu device.
+  - W&B project: `prime_lab/poe-repair-animals-compose` (live logging).
+  - Output root: `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/live_curves_smoke_run/`
+  - The run's identity, launch history, and verdict live in the [review file](../review/instrument-02-three-live-curves-while-training.md); run state never sits in this plan.
+  - **Ask Claude:** "Run the step 9 smoke test for three live curves while training. Start it in the background and give me the W&B link when it begins logging."
 
-2.2 🚀 **Running the smoke:**
+- [x] ~~**Teach the environment the shared-device launch path.**~~
+  - Done while launching: [docs/ENVIRONMENT.md](../../../../../docs/ENVIRONMENT.md#execution-model) gained the shared-device step (SSH into an allocated biggpu node, read per-device nvidia-smi, run on a free device with `CUDA_VISIBLE_DEVICES` pinned), the `/run-experiment` node picker gained `--probe-shared`, and the launch-failure pattern landed as `poe-launch-001` in [docs/EXPERIMENT_ERROR_CATALOG.md](../../../../../docs/EXPERIMENT_ERROR_CATALOG.md).
 
-- [ ] Execute [/run-experiment](#code-reference-run-experiment) to start the 1-epoch smoke run on a GPU node.
-  
-  Cost: approximately 1 hour wall time, 1 GPU node
-  
-  What it does: One epoch of training on all 11 training pairs, full eval pass on all 4 held-out pairs and seeds. Logs compose-rate, direction-cosine, and fraction-of-distance-reached to W&B live.
-  
-  Expected terminal output:
-  ```
-  Training epoch 1 / 1
-  Eval step 50 of 100: logging compose_rate, direction_cosine, frac_distance...
-  ...
-  Run finished. Exit code 0.
-  W&B run: https://wandb.ai/prime_lab/poe-repair-animals-compose/runs/abc123def456
-  ```
+▶ **Next: instruction 3.1**, reading the curves in W&B while the run cooks.
 
-- [ ] Copy the W&B run URL from the terminal output and save it for later reference.
+---
 
-### 3. 📊 Manual verification in W&B
+## Instructions
 
-3.1 🌐 **After the run completes (or while it's running), perform these checks:**
+⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
 
-- [ ] Open [W&B project: prime_lab/poe-repair-animals-compose](https://wandb.ai/prime_lab/poe-repair-animals-compose/overview).
+**For you to follow manually.** Do these yourself while Claude runs the experiment.
 
-- [ ] Find the smoke run (will be the most recent run, labeled with this plan's name or date).
+◀ **Needs: task 2.1** launched and logging.
+
+### 3. 📊 Monitor the live run in W&B
+
+3.1 🌐 **While the smoke run is training (or after it completes), open W&B:**
+
+- Open browser: [prime_lab/poe-repair-animals-compose](https://wandb.ai/prime_lab/poe-repair-animals-compose/overview)
+- Find the most recent run named `smoke_YYYYMMDD_HHMMSS` (the current run's id and URL are in the [review file's Runs table](../review/instrument-02-three-live-curves-while-training.md))
+- Click into the run
 
 3.2 ✔️ **Verify compose-rate curve exists:**
-  - [ ] Click the **Charts** tab.
-  - [ ] Search for `eval/compose_rate/mean` in the chart list.
-  - [ ] You should see a line graph. It may look flat (if the fix didn't arrive) or show a climb (if it did).
-  - [ ] ✅ If present and non-null, proceed. ❌ If missing or all-null, the logging hook failed.
+- Click **Charts** tab
+- Search for `eval/compose_rate/mean` in the chart list
+- You should see a line graph (flat if fix didn't arrive, climbing if it did)
+- ✅ If present and non-null, mark as verified
+- ❌ If missing or all-null, note the failure
 
 3.3 ✔️ **Verify direction-cosine curve exists:**
-  - [ ] Search for `eval/direction_cosine/mean`.
-  - [ ] Should show a scalar line, ideally high (0.7–1.0 means aligned with the pool).
-  - [ ] ✅ If present and non-null, proceed. ❌ If missing, the direction metric logging failed.
+- Search for `eval/direction_cosine/mean`
+- Should show a scalar line, ideally high (0.7–1.0 means aligned with pool)
+- ✅ If present and non-null, mark as verified
+- ❌ If missing, note the failure
 
 3.4 ✔️ **Verify fraction-of-distance-reached curve exists:**
-  - [ ] Search for `eval/frac_distance_reached/mean`.
-  - [ ] Should show a line capped around 0.4 (the known plateau).
-  - [ ] ✅ If present and non-null, proceed. ❌ If missing, the distance metric logging failed.
+- Search for `eval/frac_distance_reached/mean`
+- Should show a line capped around 0.4 (the known plateau)
+- ✅ If present and non-null, mark as verified
+- ❌ If missing, note the failure
 
 3.5 🔍 **If any metric is missing or all-null:**
-  - [ ] Click **Logs** tab and search for the metric key (e.g., "compose_rate"). If it doesn't appear, the logging hook failed.
-  - [ ] Go to the **System** tab and check stderr for import errors (`ImportError: compose_scorer.scorer`) or scoring crashes.
-  - [ ] **Do not proceed to step 10 until all three curves exist and have data.**
+- Click **Logs** tab and search for the metric key (e.g., "compose_rate"). If it doesn't appear, the logging hook failed
+- Go to **System** tab and check stderr for import errors (`ImportError: compose_scorer.scorer`) or scoring crashes
+- Screenshot the error and save for debugging
+- **Do not proceed to step 10 until all three curves exist and have data**
 
 3.6 📝 **Record observations:**
-  - [ ] Copy the run ID from the URL (e.g., `abc123def456`).
-  - [ ] Note what each curve shows (e.g., "compose_rate climbed to 0.3 by end of epoch", "direction_cosine stayed at 0.85").
-  - [ ] Take a screenshot of the three curves together for the review file.
+- Copy the run ID from the URL (e.g., `abc123def456`)
+- Screenshot the three curves together
+- Note what each curve shows (e.g., "compose_rate climbed to 0.3 by end of epoch", "direction_cosine stayed at 0.85")
+- Save notes and screenshots for the review file
+- Coverage caveat when reading compose-rate: anchors exist for 2 of the 19 sampled pairs (`a_wolf__x__a_husky` in-train, `a_cat__x__a_dog` held-out), so `eval/compose_rate/mean` averages over those cells only; the direction and distance curves cover every cell
+
+▶ **Next: the engagement gate.**
 
 ---
 
 ## The engagement gate
 
-⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
+⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
 > **This is the single safety check for the entire sweep.** If live logging is wrong here, the 15-run fan-out finishes producing silent garbage. The metrics look plausible, but they are measuring the wrong thing or not appearing at all. Do not proceed past this gate without a green smoke run.
 
@@ -362,9 +376,15 @@ Run each `.prompt.md` file through Claude (or /prompt-storyboard) and save outpu
 
 | Figure | Prompt file | What it shows | Save to |
 |--------|-------------|---------------|---------|
-| Why this plan exists | [why-this-plan-exists.prompt.md](diagrams/why-this-plan-exists.prompt.md) | Visual comparison: 90 wasted hours without live logging versus 2 hours to decision with it | `diagrams/figures/why-this-plan-exists.png` |
-| Before/after logging | [before-after-logging.prompt.md](diagrams/before-after-logging.prompt.md) | Side-by-side: post-run analysis versus live logging during training | `diagrams/figures/before-after-logging.png` |
+| Why this plan exists | [why-this-plan-exists.prompt.md](diagrams/why-this-plan-exists.prompt.md) | Two bars drawn to scale: 90 GPU hours spent blind against ~2 hours to the same decision | `diagrams/figures/why-this-plan-exists.png` |
 | Three metrics explained | [three-metrics-explained.prompt.md](diagrams/three-metrics-explained.prompt.md) | Three panels explaining compose-rate, direction-cosine, fraction-of-distance-reached | `diagrams/figures/three-metrics-explained.png` |
+| Where this plan sits | [context-diagram.prompt.md](diagrams/context-diagram.prompt.md) | This instrument's place between the wiring it needs and the 15-run sweep it gates | `diagrams/figures/context-diagram.png` |
+
+### Built
+
+| Figure | Prompt file | What it shows | File |
+|--------|-------------|---------------|------|
+| Before/after logging | [before-after-logging.prompt.md](diagrams/before-after-logging.prompt.md) | Side-by-side: post-run analysis versus live logging during training | [diagrams/figures/before-after-logging.png](diagrams/figures/before-after-logging.png) |
 
 ### Generated during plan execution
 
@@ -425,11 +445,11 @@ Without orchestration, the Error Matrix section becomes stale after a run comple
 
 ## Code references
 
-⬅️ [Previous](#orchestration-keeping-catalogs-and-plan-files-in-sync) | 📋 [TOC](#table-of-contents) | [Next](#) ➡️
+⬅️ [Previous](#orchestration-keeping-catalogs-and-plan-files-in-sync) | 📋 [TOC](#table-of-contents) | [Next](#next-step) ➡️
 
 ### Code reference: Compose-rate
 
-**File:** `cross_pair_lora_pooling/train_pooled.py`  
+**File:** `poe_repair/experiments/cross_pair_lora_pooling/train_pooled.py`  
 **Function:** `_run_inline_sample`  
 **Relevant section:** The eval hook where `compose_rate` is computed and logged.
 
@@ -449,11 +469,11 @@ def _run_inline_sample(model, eval_outputs, compose_scorer):
     wandb.log({"eval/frac_distance_reached/mean": distance})
 ```
 
-### Code reference: Run-experiment
+### Code reference: The launcher
 
-**Command:** `/run-experiment`  
-**What it does:** Dispatches a Slurm job for the 1-epoch smoke run. The config determines whether it runs on `biggpu` or a specific partition.  
-**Configuration:** Controlled by the experiment runner (likely `experiments/lora/main.py`).
+**Script:** `scripts/animals_compose_transfer/smoke_live_curves.sh`  
+**What it does:** Runs the 1-epoch smoke directly on a biggpu device (never sbatch: biggpu allows one job per user and Slurm cannot see GPUs here). Guards its own device (`GPU=<index>`, aborts if the device has >1GB in use) and the `/datasets` disk, stamps the launch commit into the log header, then calls `train_pooled` with 1 epoch, inline sampling every epoch, and W&B online.  
+**Node choice:** `/run-experiment`'s `pick_node.py --gpu --probe-shared` prints the decision (RUN HERE / SUBMIT / SSH SHARED / QUEUE).
 
 ---
 
@@ -650,6 +670,20 @@ assert eval_output.min() >= -0.1 and eval_output.max() <= 1.1, f"Range error: [{
 3. If both are correct, the divergence is data, not an error. Document in run notes.
 
 **Reference:** [docs/EXPERIMENT_ERROR_CATALOG.md#entry-id-poe-lora-002](../../../../../docs/EXPERIMENT_ERROR_CATALOG.md#entry-id-poe-lora-002)
+
+---
+
+#### 🟡 poe-launch-001: SSH-direct launch dies instantly on relative paths
+
+**When it happens:** Launching a run over SSH on a node the session is not on (the shared-device path on biggpu)
+
+**What you see:** `bash: line 1: logs/<name>.log: No such file or directory` immediately; no process on the node, no log file ever created
+
+**Why:** A non-interactive SSH command starts in `$HOME`, so relative paths in the launch line resolve there, and the nohup log redirect fails before the script starts. Prefixing `cd <repo> &&` is unreliable: Claude Code's permission layer can strip `cd` from compound commands (three identical failures in a row, 2026-08-19).
+
+**How to fix:** Make every path on the SSH launch line absolute (script and log redirect); the launch script does its own `cd "$REPO"` internally. Verify in the same call with `sleep 5; pgrep -af "train"` and a `tail` of the absolute log path.
+
+**Reference:** [docs/EXPERIMENT_ERROR_CATALOG.md#entry-id-poe-launch-001](../../../../../docs/EXPERIMENT_ERROR_CATALOG.md#entry-id-poe-launch-001)
 
 ---
 

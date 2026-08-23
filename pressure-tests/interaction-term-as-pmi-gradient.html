@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.10.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>interaction-term-as-pmi-gradient</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="tufte.css" />
+  <script defer="" src="katex/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet" href="katex/katex.min.css" />
+</head>
+<body>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a
+href="#pressure-test-the-dropped-term-in-density-form-and-in-score-form"
+id="toc-pressure-test-the-dropped-term-in-density-form-and-in-score-form">Pressure
+test: the dropped term, in density form and in score form</a>
+<ul>
+<li><a href="#the-three-claims-distilled"
+id="toc-the-three-claims-distilled">The three claims, distilled</a></li>
+<li><a href="#the-load-bearing-claim"
+id="toc-the-load-bearing-claim">The load-bearing claim</a>
+<ul>
+<li><a
+href="#unstated-premise-a-the-joint-prompt-is-not-the-conjunction-event"
+id="toc-unstated-premise-a-the-joint-prompt-is-not-the-conjunction-event">Unstated
+premise A: the joint prompt is not the conjunction event</a></li>
+<li><a
+href="#unstated-premise-b-one-consistent-distribution-across-all-three-conditionings"
+id="toc-unstated-premise-b-one-consistent-distribution-across-all-three-conditionings">Unstated
+premise B: one consistent distribution across all three
+conditionings</a></li>
+<li><a
+href="#unstated-premise-c-the-product-of-experts-prediction-is-the-w1-one"
+id="toc-unstated-premise-c-the-product-of-experts-prediction-is-the-w1-one">Unstated
+premise C: the product-of-experts prediction is the <span
+class="math inline">w=1</span> one</a></li>
+</ul></li>
+<li><a href="#where-this-sits-in-the-literature"
+id="toc-where-this-sits-in-the-literature">Where this sits in the
+literature</a></li>
+<li><a href="#what-is-likely-right" id="toc-what-is-likely-right">What
+is likely right</a></li>
+<li><a href="#what-is-likely-wrong" id="toc-what-is-likely-wrong">What
+is likely wrong</a>
+<ul>
+<li><a
+href="#claim-1-is-incomplete-and-the-missing-piece-is-the-one-the-paper-is-about"
+id="toc-claim-1-is-incomplete-and-the-missing-piece-is-the-one-the-paper-is-about">Claim
+1 is incomplete, and the missing piece is the one the paper is
+about</a></li>
+<li><a
+href="#claim-3-is-wrong-in-direction-and-the-reasoning-has-two-separate-faults"
+id="toc-claim-3-is-wrong-in-direction-and-the-reasoning-has-two-separate-faults">Claim
+3 is wrong in direction, and the reasoning has two separate
+faults</a></li>
+<li><a href="#a-measurement-confound-follows-immediately"
+id="toc-a-measurement-confound-follows-immediately">A measurement
+confound follows immediately</a></li>
+<li><a
+href="#on-the-secondary-question-yes-defensible-and-stronger-than-put"
+id="toc-on-the-secondary-question-yes-defensible-and-stronger-than-put">On
+the secondary question: yes, defensible, and stronger than put</a></li>
+<li><a
+href="#the-positioning-threat-larger-than-any-of-the-three-claims"
+id="toc-the-positioning-threat-larger-than-any-of-the-three-claims">The
+positioning threat, larger than any of the three claims</a></li>
+</ul></li>
+<li><a href="#verdict" id="toc-verdict">Verdict</a></li>
+<li><a href="#what-to-do-next" id="toc-what-to-do-next">What to do
+next</a></li>
+<li><a href="#sources" id="toc-sources">Sources</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1
+id="pressure-test-the-dropped-term-in-density-form-and-in-score-form">Pressure
+test: the dropped term, in density form and in score form</h1>
+<p>A <code>/pressure-test</code> run on three claims drafted for section
+5 of the ICLR submission (<a
+href="../paper/iclr/iclr2027_conference.tex"><code>paper/iclr/iclr2027_conference.tex</code></a>),
+plus the novelty question behind them.</p>
+<p>It answers, ahead of time, the question piece 5 of the <a
+href="../drips/poe-two-concept-factorization/00-INDEX.md">Product-of-Experts
+factorization thread</a> was going to ask: what exactly is the term
+dropped when the two concepts are not conditionally independent, written
+both as a density gap and as a score correction.</p>
+<p>Verdicts, per claim: Claim 1 correct with a caveat that changes the
+statement, Claim 2 correct but already published, Claim 3 wrong in
+direction.</p>
+<div class="marginnote">
+<p>Notation follows the thread: <span class="math inline">x</span> the
+clean image, <span class="math inline">c_1</span> and <span
+class="math inline">c_2</span> the two concepts, and now <span
+class="math inline">x_t</span> the noisy state at step <span
+class="math inline">t</span>, <span class="math inline">\sigma_t</span>
+its noise scale, <span class="math inline">\varepsilon_\theta</span> the
+noise-prediction network. <span class="math inline">r_t</span> is the
+per-step residual between the joint-prompt prediction and the
+product-of-experts prediction.</p>
+</div>
+<h2 id="the-three-claims-distilled">The three claims, distilled</h2>
+<p><strong>Claim 1</strong> says the independence assumption Liu et
+al. state over the clean image does not survive transport to the noisy
+state, and the leftover is exactly a covariance under the denoising
+posterior:</p>
+<p><a id="eq-claimed-cov"></a><strong>(1) The covariance identity, as
+claimed</strong></p>
+<p><span class="math display">p(c_1,c_2 \mid x_t) - p(c_1 \mid
+x_t)\,p(c_2 \mid x_t)
+= \operatorname{Cov}_{x_0 \sim p(x_0 \mid x_t)}\big[\, p(c_1 \mid
+x_0),\; p(c_2 \mid x_0) \,\big]</span></p>
+<p><strong>Claim 2</strong> says the residual between joint-prompt and
+product-of-experts noise prediction is a gradient of pointwise mutual
+information:</p>
+<p><a id="eq-pmi-gradient"></a><strong>(2) The interaction term in score
+form</strong></p>
+<p><span class="math display">r_t = -\sigma_t \,\nabla_{x_t} \log
+\left[ \frac{p(c_1,c_2 \mid x_t)}{p(c_1 \mid x_t)\, p(c_2 \mid x_t)}
+\right]</span></p>
+<p><strong>Claim 3</strong> says the covariance in <a
+href="#eq-claimed-cov">(1)</a> shrinks as the posterior <span
+class="math inline">p(x_0 \mid x_t)</span> narrows, so <span
+class="math inline">r_t</span> vanishes at <span class="math inline">t
+\to 0</span> and the correction matters most early in sampling, at high
+noise.</p>
+<h2 id="the-load-bearing-claim">The load-bearing claim</h2>
+<p><strong>Load-bearing: Claim 2.</strong> If <span
+class="math inline">r_t</span> is not the PMI gradient, the paper’s
+central sentence (“the failure is exactly a missing interaction term”)
+loses its formal content and the LoRA becomes an unmotivated
+residual-fitter. Claim 1 is a supporting lemma about <em>where</em> the
+term comes from; Claim 3 is a testable consequence.</p>
+<h3
+id="unstated-premise-a-the-joint-prompt-is-not-the-conjunction-event">Unstated
+premise A: the joint prompt is not the conjunction event</h3>
+<p>Fatal if unexamined. The math is about conditioning on <span
+class="math inline">\{c_1 \wedge c_2\}</span>. The measurement
+conditions SDXL on the string <code>"a cat and a dog"</code>. Those are
+different conditioning variables. Nothing guarantees</p>
+<p><span class="math display">p(x_t \mid \texttt{&quot;a cat and a
+dog&quot;}) = p(x_t \mid c_1, c_2)</span></p>
+<p>This is the gap a reviewer will find first, and it is not addressed
+by anything in claims 1 to 3.</p>
+<h3
+id="unstated-premise-b-one-consistent-distribution-across-all-three-conditionings">Unstated
+premise B: one consistent distribution across all three
+conditionings</h3>
+<p>Claim 2 is a Bayes identity over true densities. The measured <span
+class="math inline">r_t</span> is a difference of three separate forward
+passes of an imperfectly-trained network. So</p>
+<p><span class="math display">r_t^{\text{measured}} =
+\underbrace{\text{PMI gradient}}_{\text{what (2) describes}}
++ \underbrace{\text{cross-conditioning inconsistency of the
+network}}_{\text{unmeasured}}</span></p>
+<p>and no experiment in the current design separates them.</p>
+<h3
+id="unstated-premise-c-the-product-of-experts-prediction-is-the-w1-one">Unstated
+premise C: the product-of-experts prediction is the <span
+class="math inline">w=1</span> one</h3>
+<p>The identity holds for <span class="math inline">\varepsilon_1 +
+\varepsilon_2 - \varepsilon_0</span>. Every run is at <span
+class="math inline">w = 7.5</span>. The secondary question is not a
+footnote, it is a precondition on Claim 2.</p>
+<h2 id="where-this-sits-in-the-literature">Where this sits in the
+literature</h2>
+<p>This is the part that changes what can be claimed.</p>
+<p><strong>Claim 2 is already published, as an equation, at the noisy
+state.</strong> GCDM, in <em>Enhanced Controllability of Diffusion
+Models via Feature Disentanglement and Realism-Enhanced Sampling
+Methods</em> (arXiv 2302.14368, ECCV 2024), derives <span
+class="math inline">\nabla_{x_t} \log p(x_t, z_c, z_s)</span> explicitly
+<strong>without</strong> assuming conditional independence, and their
+equations 28 to 29 factor it as the product-of-experts score times
+exactly the ratio</p>
+<p><span class="math display">\frac{p(z_c, z_s \mid x_t)}{p(z_c \mid
+x_t)\, p(z_s \mid x_t)}</span></p>
+<p>Their stated motivation is the same: two conditions that both carry
+object information are not independent, and composable diffusion fails
+on them. They do not use the phrase “mutual information” and they do not
+derive Claim 1’s covariance, but the score-space identity is theirs.</p>
+<div class="marginnote">
+<p>Confidence: high. This came from the paper’s own appendix text (their
+Appendix 0.B.3), not from memory.</p>
+</div>
+<p><strong>The PMI reading of the ratio is also in the compositional
+diffusion literature.</strong> CompLift (Yu &amp; Gao, ICML 2025, arXiv
+2505.13740) builds compositional generation around the lift score <span
+class="math inline">\log p(x \mid c) / p(x)</span>, estimated from the
+denoising-error difference</p>
+<p><span class="math display">\operatorname{lift}(x \mid c) \approx
+\mathbb{E}_{t,\varepsilon}\Big[\; \lVert \varepsilon -
+\varepsilon_\theta(x_t, \varnothing) \rVert^2
+- \lVert \varepsilon - \varepsilon_\theta(x_t, c) \rVert^2
+\;\Big]</span></p>
+<p>and cites Kong et al. (<em>Interpretable Diffusion via Information
+Decomposition</em>, arXiv 2310.07972, ICLR 2024) for reading lift scores
+as pointwise mutual information. Kong et al. write exact expressions for
+mutual and conditional mutual information in terms of the denoising
+model, including pointwise estimates.</p>
+<p><strong>Two caveats in your favour:</strong> CompLift’s lift is
+between the <em>image and one concept</em>, not between the <em>two
+concepts given the state</em>, and it is used as a post-hoc
+rejection-and-resample criterion, not a gradient added into the sampler.
+So the PMI machinery is established, but not aimed at your object.</p>
+<p><strong>A rival explanation for the failure mode is published and it
+contradicts the framing.</strong> Du et al., <em>Reduce, Reuse,
+Recycle</em> (arXiv 2302.11552, ICML 2023), conclude that <strong>the
+sampler, not the model, is responsible</strong> for compositional
+generation failure: reverse diffusion does not sample the product
+distribution because the score of the diffused product is not the sum of
+the diffused scores, and their fix is MCMC-corrected sampling with an
+energy parameterization. Skreta et al.’s Feynman-Kac Correctors (arXiv
+2503.02819) and SuperDiff (arXiv 2412.17762) continue this line,
+correcting the sampler for products, tempering, and logical AND from
+continuity-equation and sequential-Monte-Carlo arguments rather than by
+learning a term.</p>
+<p><strong>Nobody found writing Claim 1’s covariance form.</strong> GCDM
+gestures at the clean-versus-noisy question through a manifold argument
+in a figure, not an identity. That specific decomposition looks like
+yours.</p>
+<h2 id="what-is-likely-right">What is likely right</h2>
+<p>Claim 2 is <strong>correct</strong>, and cleanly so. It needs
+<strong>no</strong> independence assumption at all, at either <span
+class="math inline">x_0</span> or <span class="math inline">x_t</span>.
+It is a pure identity.</p>
+<div class="worked-example">
+<p><strong>Verifying <a href="#eq-pmi-gradient">(2)</a> by
+cancellation.</strong> Substitute Bayes, <span class="math inline">\log
+p(x_t \mid c) = \log p(c \mid x_t) + \log p(x_t) - \log p(c)</span>,
+into each of the four score terms in <span
+class="math inline">\varepsilon_{\text{joint}} - (\varepsilon_1 +
+\varepsilon_2 - \varepsilon_0)</span>:</p>
+<p><span class="math display">\log p(x_t \mid c_1,c_2) - \log p(x_t \mid
+c_1) - \log p(x_t \mid c_2) + \log p(x_t)</span></p>
+<p>The <span class="math inline">\log p(x_t)</span> contributions carry
+coefficients <span class="math inline">+1, -1, -1, +1</span> and cancel
+exactly. The constants <span class="math inline">\log p(c)</span> vanish
+under <span class="math inline">\nabla_{x_t}</span>. What remains is</p>
+<p><span class="math display">\log p(c_1,c_2 \mid x_t) - \log p(c_1 \mid
+x_t) - \log p(c_2 \mid x_t) + \text{const}</span></p>
+<p>which is the log of the ratio in <a
+href="#eq-pmi-gradient">(2)</a>.</p>
+</div>
+<p>Being right and being yours are different questions, and here they
+separate.</p>
+<p>The conditional-independence step in Claim 1, <span
+class="math inline">c \perp x_t \mid x_0</span>, is safe. It holds by
+construction: the forward kernel <span class="math inline">q(x_t \mid
+x_0)</span> does not depend on <span class="math inline">c</span>, so
+the graphical model is <span class="math inline">c \to x_0 \to
+x_t</span> and the tower property applies. This is the same identity
+underneath diffusion classifiers and Kong et al.’s estimator. It
+smuggles nothing as probability. It does smuggle something as a claim
+about SDXL, per unstated premise B.</p>
+<h2 id="what-is-likely-wrong">What is likely wrong</h2>
+<h3
+id="claim-1-is-incomplete-and-the-missing-piece-is-the-one-the-paper-is-about">Claim
+1 is incomplete, and the missing piece is the one the paper is
+about</h3>
+<p>Apply the tower property to both sides and add and subtract <span
+class="math inline">\mathbb{E}[p(c_1 \mid x_0)\,p(c_2 \mid
+x_0)]</span>:</p>
+<p><a id="eq-two-term"></a><strong>(3) The exact decomposition, both
+terms</strong></p>
+<p><span class="math display">
+p(c_1,c_2 \mid x_t) - p(c_1 \mid x_t)\,p(c_2 \mid x_t)
+= \underbrace{\mathbb{E}_{x_0 \mid x_t}\Big[\, p(c_1,c_2 \mid x_0) -
+p(c_1 \mid x_0)\,p(c_2 \mid x_0) \,\Big]}_{\text{clean-image dependence,
+averaged}}
++ \underbrace{\operatorname{Cov}_{x_0 \mid x_t}\Big[\, p(c_1 \mid
+x_0),\; p(c_2 \mid x_0) \,\Big]}_{\text{your term}}
+</span></p>
+<p>The claimed identity <a href="#eq-claimed-cov">(1)</a> is the second
+term alone. It is the whole story <strong>only if the first term is
+zero</strong>, which is precisely Liu et al.’s clean-image assumption,
+the one the paper exists to attack. As written, Claim 1 assumes the
+thing it denies.</p>
+<p>The fix is not to weaken it. State <a href="#eq-two-term">(3)</a> and
+make the rhetorical move explicit: <em>even granting Liu et al. their
+assumption at the clean image, dependence reappears at the noisy state
+through the covariance.</em> That is a stronger argument than the one
+you have, and it is honest.</p>
+<h3
+id="claim-3-is-wrong-in-direction-and-the-reasoning-has-two-separate-faults">Claim
+3 is wrong in direction, and the reasoning has two separate faults</h3>
+<p><strong>The first fault.</strong> The covariance measures the size of
+the numerator gap, but <span class="math inline">r_t</span> depends on
+the <strong>gradient of the log ratio</strong>, which is a different
+object. At <span class="math inline">t \to 0</span> the gradient tends
+to</p>
+<p><span class="math display">\nabla \log \left[ \frac{p(c_1,c_2 \mid
+x_0)}{p(c_1 \mid x_0)\, p(c_2 \mid x_0)} \right]</span></p>
+<p>which is finite and generically nonzero. <span
+class="math inline">r_t</span> still vanishes, but only because of the
+<span class="math inline">\sigma_t</span> prefactor. Right answer, wrong
+mechanism.</p>
+<p><strong>The second fault is the one that bites.</strong> Run the same
+analysis at the other end.</p>
+<div class="worked-example">
+<p><strong>The counterexample at <span class="math inline">t \to
+T</span>.</strong> As <span class="math inline">t \to T</span>, <span
+class="math inline">x_t</span> is pure noise, so <span
+class="math inline">p(c \mid x_t) \to p(c)</span> for
+<strong>every</strong> conditioning. The log ratio tends to the
+constant</p>
+<p><span class="math display">\log
+\frac{p(c_1,c_2)}{p(c_1)\,p(c_2)}</span></p>
+<p>and its gradient tends to zero. The covariance is <em>largest</em>
+here, since the posterior is the full data distribution, while <span
+class="math inline">r_t</span> goes to zero. That is the direct
+counterexample to the reasoning.</p>
+<p>Scaling it out: the posterior mean moves with the state at rate <span
+class="math inline">\alpha_t / \sigma_t^2</span>, so</p>
+<p><span class="math display">\sigma_t \cdot \nabla \;\sim\;
+\frac{\alpha_t}{\sigma_t} = \sqrt{\mathrm{SNR}} \;\to\; 0</span></p>
+</div>
+<p>So <span class="math inline">\lVert r_t \rVert</span> vanishes at
+<strong>both</strong> ends and peaks at an interior log-SNR. Not “early
+in sampling.”</p>
+<figure class="slot">
+<img src="figures/rt-interior-peak.png" alt="The residual norm against log-SNR, vanishing at both ends with an interior peak">
+<figcaption>
+The corrected prediction: the residual norm vanishes at both ends of the
+noise schedule and peaks at an interior log-SNR. <span
+class="slot-note">Waiting on <code>figures/rt-interior-peak.png</code>:
+generate from the prompt below (class: maths-visual) and save it
+here.</span>
+</figcaption>
+</figure>
+<p><strong>Prompt</strong> (class: maths-visual, save as
+<code>figures/rt-interior-peak.png</code>)</p>
+<pre class="text"><code>A dark background. A single smooth curve sweeping left to right across the
+frame, rising from zero at the far left, reaching one broad rounded maximum
+near the middle, and falling back to zero at the far right. The curve is
+drawn in one restrained accent colour, thin and clean. At the far left and
+far right, where the curve meets zero, two short faint tick marks in a second
+accent colour mark the two vanishing limits. Beneath the curve, very faint,
+two contrasting dashed guide curves: one decaying monotonically from left to
+right, clearly not matching the solid curve, shown only to be visibly
+different in shape. No axes boxes, no gridlines, no legend. A small
+serif-set label at the left tick reading sigma-t to zero and at the right
+tick reading square-root-SNR to zero. Clean serif mathematical type. No
+cards, no pills, no flowchart boxes.</code></pre>
+<h3 id="a-measurement-confound-follows-immediately">A measurement
+confound follows immediately</h3>
+<p>In <span class="math inline">\varepsilon</span> units, <span
+class="math inline">r_t \to 0</span> at low <span
+class="math inline">t</span> for pure <span
+class="math inline">\sigma_t</span> scaling reasons, whatever the
+composition story. An observed “the correction is bigger early” curve is
+therefore <em>not</em> evidence for the mechanism, because a model with
+no interaction structure at all predicts the same decay. Normalize
+before claiming anything from it: divide by <span
+class="math inline">\lVert \varepsilon_{\text{joint}} -
+\varepsilon_{\text{uncond}} \rVert</span> at the same step, or convert
+to <span class="math inline">x_0</span>-space, and plot against log-SNR
+rather than step index.</p>
+<figure class="slot">
+<img src="figures/posterior-narrowing-covariance.png" alt="The denoising posterior narrowing as t decreases, with two concept-probability functions over it">
+<figcaption>
+Where the covariance term comes from: two concept-probability functions
+read over a denoising posterior that narrows as the noise falls. <span
+class="slot-note">Waiting on
+<code>figures/posterior-narrowing-covariance.png</code>: generate from
+the prompt below (class: maths-visual) and save it here.</span>
+</figcaption>
+</figure>
+<p><strong>Prompt</strong> (class: maths-visual, save as
+<code>figures/posterior-narrowing-covariance.png</code>)</p>
+<pre class="text"><code>A dark background. Three wide bell-shaped density curves stacked from back to
+front in receding perspective, each narrower and taller than the one behind
+it, all drawn in one restrained accent colour, representing one distribution
+contracting toward a point. Across the widest back curve only, two smooth
+scalar functions are laid over its support in a second accent colour, one
+rising and one falling, their overlap region lightly filled to suggest a
+covariance between them. On the narrowest front curve the same two functions
+have collapsed to a single point with no spread and no fill. No axes, no
+gridlines, no legend. One small serif-set label near the back curve reading
+p(x0 given xt). Clean serif mathematical type. No cards, no pills, no
+flowchart boxes.</code></pre>
+<h3
+id="on-the-secondary-question-yes-defensible-and-stronger-than-put">On
+the secondary question: yes, defensible, and stronger than put</h3>
+<p>Classifier-free guidance at weight <span class="math inline">w</span>
+targets <span class="math inline">p(x)\,p(c \mid x)^w</span>, a tempered
+distribution, not <span class="math inline">p(x \mid c)</span>. There is
+no probabilistic derivation licensing <span class="math inline">w &gt;
+1</span> even for a single condition. Composed at <span
+class="math inline">w = 7.5</span> per expert, the sampler targets</p>
+<p><span class="math display">p(x) \prod_i p(c_i \mid
+x_t)^{w_i}</span></p>
+<p>which is neither the joint nor the product the derivation describes.
+Do not present this as your observation: Feynman-Kac Correctors
+formalizes exactly the “annealed, geometric-averaged, or product
+distributions” gap and states that score mixing heuristics do not
+approximate the intermediate distributions. Cite it and move on in two
+sentences.</p>
+<h3 id="the-positioning-threat-larger-than-any-of-the-three-claims">The
+positioning threat, larger than any of the three claims</h3>
+<p>Du et al. 2023 say the failure mode is caused by the sampler and is
+fixable without learning anything. If an annealed MCMC or SMC corrector
+removes chimeras at fixed <span class="math inline">w</span>, the
+missing-term story is not just unmotivated, it is refuted. This is a
+confound in the experiment design, not only a related-work
+paragraph.</p>
+<h2 id="verdict">Verdict</h2>
+<p><strong>Promising but needs rework</strong>, with the rework confined
+to section 5’s claims. The empirical contribution (measure <span
+class="math inline">r_t</span>, fit it with a low-rank adapter that
+never sees the joint prompt, show transfer to unseen pairs) is untouched
+by everything above and remains the paper’s real contribution.</p>
+<p>On the direct question, novel enough to present as a
+contribution:</p>
+<p><strong>Claim 2: no. Present as a restatement and cite GCDM.</strong>
+Their equations 28 to 29 are <a href="#eq-pmi-gradient">(2)</a> in score
+space at the noisy state. Converting to <span
+class="math inline">\varepsilon</span>-space via <span
+class="math inline">-\sigma_t</span> and naming the ratio “pointwise
+mutual information” is presentation, not contribution. Claiming it will
+be caught, and it is the kind of catch that costs a reviewer’s trust in
+the rest.</p>
+<p><strong>Claim 1: yes, as a lemma, in the corrected two-term form <a
+href="#eq-two-term">(3)</a>.</strong> The covariance decomposition
+appears to be yours, and it does work GCDM does not: it says
+<em>why</em> the dependence appears at <span
+class="math inline">x_t</span> and what controls its size. Frame it as
+“even under Liu et al.’s assumption, this term survives.” One
+proposition, not a section.</p>
+<p><strong>Claim 3: no, it is wrong. Replace it with the corrected
+prediction, which is worth more.</strong> “<span
+class="math inline">\lVert r_t \rVert</span> peaks at an interior
+log-SNR and vanishes at both ends” is sharp, falsifiable, non-obvious,
+and the log-SNR curve to test it against already exists. A
+monotone-decaying prediction is neither surprising nor separable from
+<span class="math inline">\sigma_t</span> scaling; an interior peak at a
+predicted location is both.</p>
+<h2 id="what-to-do-next">What to do next</h2>
+<p><strong>First, the cheap experiment that decides whether the paper
+survives.</strong> Run the chimera-producing pairs through an annealed
+MCMC or SMC corrector at fixed <span class="math inline">w</span> (Du et
+al.’s released code at
+<code>github.com/yilundu/reduce_reuse_recycle</code> is the direct
+route). If chimeras persist, the published rival explanation is ruled
+out and the missing-term story stands. If they vanish, better to know
+now, before section 5 is written around it.</p>
+<p><strong>Second, close the conjunction gap (premise A).</strong> State
+plainly in the paper that <span class="math inline">r_t</span> is
+measured with a joint prompt string standing in for the conjunction
+event, and give one measurement bounding the substitution: compare <span
+class="math inline">r_t</span> from <code>"a cat and a dog"</code>
+against <span class="math inline">r_t</span> from a different surface
+form of the same conjunction, at the same seeds and steps. If the two
+differ by an amount comparable to <span class="math inline">\lVert r_t
+\rVert</span> itself, the identity is not measuring what the math
+describes, and better to find that yourself.</p>
+<p><strong>Third, re-plot before re-claiming.</strong> <span
+class="math inline">\lVert r_t \rVert</span> normalized by <span
+class="math inline">\lVert \varepsilon_{\text{joint}} -
+\varepsilon_{\text{uncond}} \rVert</span>, against log-SNR, not step
+index. The corrected Claim 3 predicts an interior maximum. Record the
+predicted location before looking.</p>
+<p><strong>Fourth, rewrite section 5 in this order:</strong> state Liu
+et al.’s assumption at <span class="math inline">x_0</span>; cite GCDM
+for the exact ratio at <span class="math inline">x_t</span> and for the
+observation that it does not decompose; contribute the two-term
+covariance decomposition <a href="#eq-two-term">(3)</a> as your
+proposition; derive the interior-peak prediction; cite Feynman-Kac
+Correctors for the guidance-weight mismatch in two sentences. That
+ordering makes the maths section a short, correct, well-cited setup for
+the empirical work rather than a novelty claim that will not hold.</p>
+<h2 id="sources">Sources</h2>
+<ul>
+<li><a href="https://arxiv.org/html/2302.14368v5">Enhanced
+Controllability of Diffusion Models via Feature Disentanglement (GCDM),
+arXiv 2302.14368</a></li>
+<li><a href="https://arxiv.org/html/2505.13740v1">Improving
+Compositional Generation with Diffusion Models Using Lift Scores, arXiv
+2505.13740</a></li>
+<li><a href="https://chenningyu.com/complift/">CompLift project
+page</a></li>
+<li><a href="https://arxiv.org/abs/2310.07972">Interpretable Diffusion
+via Information Decomposition, arXiv 2310.07972</a></li>
+<li><a href="https://arxiv.org/abs/2302.11552">Reduce, Reuse, Recycle,
+arXiv 2302.11552</a></li>
+<li><a href="https://arxiv.org/pdf/2503.02819">Feynman-Kac Correctors in
+Diffusion, arXiv 2503.02819</a></li>
+<li><a href="https://arxiv.org/abs/2412.17762">SuperDiff, arXiv
+2412.17762</a></li>
+<li><a href="https://arxiv.org/html/2506.08894v1">Product of Experts for
+Visual Generation, arXiv 2506.08894</a></li>
+</ul>
+</body>
+</html>
