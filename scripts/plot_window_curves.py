@@ -35,7 +35,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from poe_repair.experiments.interaction_term import window_grid as wg  # noqa: E402
 from scripts.plot_dose_curves import require_validated_scorer  # noqa: E402
 
-OUT_DIR = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/window")
+OUT_DIR = paths.resolve(paths.WINDOW)
 # /datasets only. The home-filesystem copy holds an early 20-step smoke run, and
 # pooling runs of different step counts is exactly what pulled the fork-curve
 # median off before a guard was added there. Pass --root to score it deliberately.

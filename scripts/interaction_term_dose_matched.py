@@ -46,6 +46,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -65,7 +66,7 @@ STRIDE = 5
 STEPS = 50
 BATCH = 8            # the window sweep's batch; cells only match it at this shape
 EXP_NAME = "interaction_term/dose_matched"
-OUT_DIR = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose_matched")
+OUT_DIR = paths.resolve(paths.SAME_TOTAL_CORRECTION_DIFFERENT_WINDOW)
 
 
 def window_lambdas(win: tuple[int, int], scale: float) -> np.ndarray:

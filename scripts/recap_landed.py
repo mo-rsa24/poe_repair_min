@@ -24,7 +24,7 @@ from poe_repair import paths
 REPO = Path(__file__).resolve().parents[1]
 RECAP = REPO / "recap"
 FIGS = RECAP / "figs"
-DAT = Path("/datasets/mmolefe/poe_repair_min/artifacts/caches/training_cache/heldout/a_cat__x__a_dog")
+DAT = paths.resolve(paths.TRAINING_CACHE) / "heldout/a_cat__x__a_dog"
 BEACH = paths.resolve(paths.ONE_PAIR_ONE_SEED) / "a_cat__x__a_dog/seed_42/run__local/probes/epoch_1600"
 G6GEN = REPO / "results/recap_landed/gen/g6_survive_noise"
 

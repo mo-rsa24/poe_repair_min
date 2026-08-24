@@ -81,7 +81,7 @@ from poe_repair.experiments.interaction_term.cache import (  # noqa: E402
 from scripts.plot_dose_curves import require_validated_scorer  # noqa: E402
 from scripts.snr_collapse import iter_cells  # noqa: E402
 
-OUT_DIR = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cache_analyses")
+OUT_DIR = paths.resolve(paths.CACHE_ANALYSES)
 DOSE_ROOTS = (
     Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/pairs"),
     Path("outputs/interaction_term/dose/pairs"),

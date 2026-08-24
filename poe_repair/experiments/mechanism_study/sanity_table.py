@@ -27,10 +27,9 @@ import re
 from pathlib import Path
 
 import torch
+from poe_repair import paths
 
-DEFAULT_ATTN_ROOT = Path(
-    "/datasets/mmolefe/poe_repair_min/outputs/attn_mechanism"
-)
+DEFAULT_ATTN_ROOT = paths.resolve(paths.ATTENTION_MECHANISM)
 
 _STEP_RE = re.compile(r"step_(\d+)_token_(.+)\.pt$")
 

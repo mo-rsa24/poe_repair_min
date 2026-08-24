@@ -25,12 +25,13 @@ import json
 from pathlib import Path
 
 import matplotlib
+from poe_repair import paths
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
 
-REPROBE = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/reprobe")
+REPROBE = paths.resolve(paths.CONTENT_CHANGE_RELATIVE_TO_ATTENTION_CHANGE)
 OUT = Path(__file__).resolve().parent / "follow-along"
 DEFAULT_CELLS = ("a_cat__x__a_dog/seed_10", "a_frog__x__a_toad/seed_9")
 

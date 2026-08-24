@@ -20,10 +20,9 @@ from poe_repair.runtime import (
     infer_device, infer_dtype, load_ddim_scheduler, load_sdxl_models,
 )
 from poe_repair.training_cache import DEFAULT_CACHE_ROOT, CellPath
+from poe_repair import paths
 
-DEFAULT_ATTN_ROOT = Path(
-    "/datasets/mmolefe/poe_repair_min/outputs/attn_mechanism"
-)
+DEFAULT_ATTN_ROOT = paths.resolve(paths.ATTENTION_MECHANISM)
 
 
 def _parse_seeds(arg: str) -> list[int]:

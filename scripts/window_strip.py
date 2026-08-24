@@ -22,12 +22,13 @@ import argparse
 import json
 import sys
 from pathlib import Path
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from poe_repair.experiments.interaction_term import window_grid as wg
 
-WINDOW_ROOT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/window")
+WINDOW_ROOT = paths.resolve(paths.WINDOW)
 DEFAULT_ROOT = WINDOW_ROOT / "pairs"
 DEFAULT_CURVES = WINDOW_ROOT / "window_curves.json"
 

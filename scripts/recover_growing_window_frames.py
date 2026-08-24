@@ -27,6 +27,7 @@ import sys
 from pathlib import Path
 
 import torch
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -36,7 +37,7 @@ from poe_repair._sdxl.runtime import decode_latents  # noqa: E402
 from poe_repair.run import make_ctx  # noqa: E402
 from poe_repair.experiments.interaction_term import window_grid as wg  # noqa: E402
 
-WINDOW_ROOT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/window")
+WINDOW_ROOT = paths.resolve(paths.WINDOW)
 PAIR = "a_cat__x__a_dog"
 SEED = 12
 STEPS = (10, 20, 30, 40, 50)

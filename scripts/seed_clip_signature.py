@@ -32,6 +32,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -40,7 +41,7 @@ LABELS = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/"
 IMAGE_ROOT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/"
                   "window_seeds/pairs")
 IMAGE_TAG = "teacher_residual_const_lam100_w0-10"
-OUT_DIR = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cache_analyses")
+OUT_DIR = paths.resolve(paths.CACHE_ANALYSES)
 CLIP_MODEL_ID = "openai/clip-vit-base-patch32"   # same checkpoint used elsewhere in this project
 N_SHUFFLES = 2000
 

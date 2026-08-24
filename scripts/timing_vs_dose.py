@@ -35,10 +35,11 @@ import json
 from pathlib import Path
 
 import matplotlib
+from poe_repair import paths
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-ROOT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose_matched")
+ROOT = paths.resolve(paths.SAME_TOTAL_CORRECTION_DIFFERENT_WINDOW)
 MANIFEST = ROOT / "swap_manifest.json"
 FIG_DIR = Path("paper/iclr/figures")
 FIG_NAME = "samples-as-window-and-strength-both-change"

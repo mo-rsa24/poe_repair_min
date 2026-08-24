@@ -38,10 +38,9 @@ from poe_repair.runtime import (
     load_sdxl_models, write_json,
 )
 from poe_repair.training_cache import DEFAULT_CACHE_ROOT, CellPath
+from poe_repair import paths
 
-DEFAULT_OUT = Path(
-    "/datasets/mmolefe/poe_repair_min/outputs/attn_mechanism/lora_train_sweep"
-)
+DEFAULT_OUT = paths.resolve(paths.ATTENTION_MECHANISM) / "lora_train_sweep"
 
 
 def _parse_ints(arg: str) -> list[int]:
