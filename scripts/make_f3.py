@@ -49,7 +49,7 @@ POOL = "outputs/animals_compose_transfer/pair_pool.yaml"
 # unsmoothed curves stay in cache_analyses/step_collapse.json.
 SMOOTH = 5
 OUT_DIR = Path("paper/iclr/figures")
-FIG_NAME = "F3-size-follows-noise"
+FIG_NAME = "correction-size-over-the-denoising-run-across-17-pairs"
 
 
 def smooth(y, w=SMOOTH):

@@ -44,7 +44,7 @@ PAIRS_ROOT = Path("/datasets/mmolefe/poe_repair_min/outputs/veracity/pairs")
 # Beside the manuscript, not on /datasets: a paper figure is a few hundred KB and
 # LaTeX has to reach it. Naming rule in paper/iclr/README.md.
 FIG_DIR = Path("paper/iclr/figures")
-FIG_NAME = "F1b-two-regimes"
+FIG_NAME = "correction-size-over-the-denoising-run"
 
 COLUMNS = [
     ("a_butterfly__x__a_flower_meadow", "a butterfly $\\times$ a flower meadow",

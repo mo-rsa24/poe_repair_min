@@ -170,39 +170,39 @@ disk; only the second name goes.
 
 | Now | Becomes |
 |---|---|
-| `F1-two-meanings` | `what-the-product-misses-explainer` |
-| `F1b-two-regimes` | `correction-size-over-the-denoising-run` |
-| `F1b-two-regimes-images` | `samples-as-the-seed-changes` |
+| `what-the-product-misses-explainer` | `what-the-product-misses-explainer` |
+| `correction-size-over-the-denoising-run` | `correction-size-over-the-denoising-run` |
+| `samples-as-the-seed-changes` | `samples-as-the-seed-changes` |
 | `F1b-two-regimes-seed42` | **drop**: the top row of `correction-size-over-the-denoising-run`, named by nothing |
-| `F2-correction-strength` | **drop**: byte-identical to `F2-dose-response`, md5 `0aeb4016…` |
-| `F2-dose-response` | `compose-rate-as-correction-rises` |
-| `F2-dose-response_b` | `compose-rate-as-correction-rises-with-detector-boxes` |
-| `F2b-dissimilar-pair` | `compose-rate-as-correction-rises-for-a-dissimilar-pair` |
-| `F2-dose-response-halfwidth` | `compose-rate-as-correction-rises-with-a-random-control` |
-| `F3-size-follows-noise` | `correction-size-over-the-denoising-run-across-17-pairs` |
-| `F4a-when-it-arrives` | `samples-as-the-correction-window-moves` |
-| `F4b-size-is-not-timing` | `correction-size-per-step-beside-outcome-per-window` |
-| `F4c-the-cliff-in-language` | `language-score-as-the-correction-window-moves` |
-| `F4d-timing-not-dose` | `samples-as-window-and-strength-both-change` |
-| `F4e-cliff-survives-dose-matching` | `compose-rate-as-the-window-moves-at-matched-total` |
-| `F4f-the-window-map` | `how-many-seeds-composed-as-the-window-moves`, **and a register row** |
-| `F4g-more-start-same-ceiling` | `samples-as-the-correction-runs-longer` |
-| `F4h-too-late-to-fix` | `samples-as-the-correction-starts-later` |
+| `F2-correction-strength` | **drop**: byte-identical to `compose-rate-as-correction-rises`, md5 `0aeb4016…` |
+| `compose-rate-as-correction-rises` | `compose-rate-as-correction-rises` |
+| `compose-rate-as-correction-rises-with-detector-boxes` | `compose-rate-as-correction-rises-with-detector-boxes` |
+| `compose-rate-as-correction-rises-for-a-dissimilar-pair` | `compose-rate-as-correction-rises-for-a-dissimilar-pair` |
+| `compose-rate-as-correction-rises-with-a-random-control` | `compose-rate-as-correction-rises-with-a-random-control` |
+| `correction-size-over-the-denoising-run-across-17-pairs` | `correction-size-over-the-denoising-run-across-17-pairs` |
+| `samples-as-the-correction-window-moves` | `samples-as-the-correction-window-moves` |
+| `correction-size-per-step-beside-outcome-per-window` | `correction-size-per-step-beside-outcome-per-window` |
+| `language-score-as-the-correction-window-moves` | `language-score-as-the-correction-window-moves` |
+| `samples-as-window-and-strength-both-change` | `samples-as-window-and-strength-both-change` |
+| `compose-rate-as-the-window-moves-at-matched-total` | `compose-rate-as-the-window-moves-at-matched-total` |
+| `how-many-seeds-composed-as-the-window-moves` | `how-many-seeds-composed-as-the-window-moves`, **and a register row** |
+| `samples-as-the-correction-runs-longer` | `samples-as-the-correction-runs-longer` |
+| `samples-as-the-correction-starts-later` | `samples-as-the-correction-starts-later` |
 | `F4g-overcorrection-grid` + `-seed12` | a two-cell set: `samples-as-the-window-moves-and-strength-goes-past-one/{seed-09,seed-12}.png` |
 | `F5-one-dial-three-instruments` | **redraw as three**: `where-the-picture-sits-as-correction-rises`, `compose-rate-as-correction-rises-by-the-detector`, `direction-agreement-with-the-sampler-step` |
-| `F5b-gradual-commitment` | `how-far-the-corrected-run-separates-from-the-uncorrected-one` |
+| `how-far-the-corrected-run-separates-from-the-uncorrected-one` | `how-far-the-corrected-run-separates-from-the-uncorrected-one` |
 | `F6-spectrum-windowed` | **redraw as two**: `energy-captured-as-directions-are-added`, `outcome-correlation-by-direction-rank`; **and a register row** |
-| `F7a-what-the-adapter-changes` | `content-change-relative-to-attention-change-under-lora` |
-| `F8a-one-adapter-transfers` | `compose-rate-as-the-lora-trains` |
-| `F8b-adapter-against-the-oracle` | `compose-rate-by-pair-for-lora-against-the-joint-prompt-correction` |
-| `D1-correction-turns-smoothly` | `direction-agreement-between-consecutive-steps` |
-| `D1b-the-exception` | `direction-agreement-between-consecutive-steps-when-it-alternates` |
-| `D1c-random-floor` | `direction-agreement-for-random-vectors` |
-| `D2-correction-not-reusable` | `direction-agreement-between-two-seeds` |
-| `D2b-smooth-early-chaotic-late` | `direction-agreement-as-the-starting-noise-is-moved` |
-| `D3-nothing-shared-across-pairs` | `direction-agreement-between-two-pairs` |
-| `D3b-what-the-correction-depends-on` | `direction-agreement-by-what-the-two-runs-share` |
-| `D4-what-the-correction-buys` | `samples-per-step-with-the-correction-on-and-off` |
+| `content-change-relative-to-attention-change-under-lora` | `content-change-relative-to-attention-change-under-lora` |
+| `compose-rate-as-the-lora-trains` | `compose-rate-as-the-lora-trains` |
+| `compose-rate-by-pair-for-lora-against-the-joint-prompt-correction` | `compose-rate-by-pair-for-lora-against-the-joint-prompt-correction` |
+| `direction-agreement-between-consecutive-steps` | `direction-agreement-between-consecutive-steps` |
+| `direction-agreement-between-consecutive-steps-when-it-alternates` | `direction-agreement-between-consecutive-steps-when-it-alternates` |
+| `direction-agreement-for-random-vectors` | `direction-agreement-for-random-vectors` |
+| `direction-agreement-between-two-seeds` | `direction-agreement-between-two-seeds` |
+| `direction-agreement-as-the-starting-noise-is-moved` | `direction-agreement-as-the-starting-noise-is-moved` |
+| `direction-agreement-between-two-pairs` | `direction-agreement-between-two-pairs` |
+| `direction-agreement-by-what-the-two-runs-share` | `direction-agreement-by-what-the-two-runs-share` |
+| `samples-per-step-with-the-correction-on-and-off` | `samples-per-step-with-the-correction-on-and-off` |
 
 ### The run families
 
@@ -267,8 +267,8 @@ disk; only the second name goes.
 
 | Copy | Original |
 |---|---|
-| `F2-correction-strength.png` | `F2-dose-response.png`, md5 `0aeb4016…` |
-| `evidence/f5b-trajectory-divergence/F5b-gradual-commitment.png` | `paper/iclr/figures/F5b-gradual-commitment.png`, md5 `026b6a08…` |
+| `F2-correction-strength.png` | `compose-rate-as-correction-rises.png`, md5 `0aeb4016…` |
+| `evidence/f5b-trajectory-divergence/how-far-the-corrected-run-separates-from-the-uncorrected-one.png` | `paper/iclr/figures/how-far-the-corrected-run-separates-from-the-uncorrected-one.png`, md5 `026b6a08…` |
 | `evidence/h05-three-sides/` 5 images | the mount's `cache_analyses/`, all five identical |
 | `outputs/interaction_term/dose` | a zero-byte husk of the mount's 6.3G `dose` |
 
@@ -367,7 +367,7 @@ Each is untracked, so there is no undo. Confirm one path at a time.
 ## Still open
 
 **Two figures have no referrer at all.** `midrun_separation_example.png` and
-`F4f-the-window-map.png`. Each needs a register row or a `Held since` line.
+`how-many-seeds-composed-as-the-window-moves.png`. Each needs a register row or a `Held since` line.
 
 **Five figures carry their claim rendered into the pixels**, as a title: "More of the correction,
 more composition" on two, "the same cliff, scored in language", "the cliff is not a dose effect",

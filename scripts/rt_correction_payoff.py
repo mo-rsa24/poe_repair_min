@@ -44,7 +44,7 @@ from scripts.rt_reuse_figure import FRAME_DIR  # noqa: E402
 # four frames of the aftermath and none of the moment the paths separate.
 STEPS = (2, 6, 10, 20)
 OUT_DIR = Path("paper/iclr/figures")
-FIG_NAME = "D4-what-the-correction-buys"
+FIG_NAME = "samples-per-step-with-the-correction-on-and-off"
 CROSS9_FRAMES = Path(
     "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cross/pairs/"
     "a_cat__x__a_dog/seed_9/call__rall/frames")

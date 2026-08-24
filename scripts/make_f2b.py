@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-"""F2-dose-response_b: F2's qualitative grid, with the detector's own boxes drawn on.
+"""compose-rate-as-correction-rises-with-detector-boxes: F2's qualitative grid, with the detector's own boxes drawn on.
 
-F2 (paper/iclr/figures/F2-dose-response.png) puts a number in the corner of
+F2 (paper/iclr/figures/compose-rate-as-correction-rises.png) puts a number in the corner of
 every panel: 1 or 2, filled if composed. This figure answers where that
 number comes from. Every box GroundingDINO detected and the scorer kept
 (confidence >= 0.30, spans at least 25% of the image's longer side, survives
@@ -36,7 +36,7 @@ from matplotlib.patches import FancyBboxPatch, Rectangle
 
 PAIRS_ROOT = Path("outputs/interaction_term/dose/pairs")
 FIG_DIR = Path("paper/iclr/figures")
-FIG_NAME = "F2-dose-response_b"
+FIG_NAME = "compose-rate-as-correction-rises-with-detector-boxes"
 SCORER_CONTRACT = Path("outputs/compose_scorer/scorer_validated.json")
 
 ROWS = ("oracle", "wrong_pair", "wrong_seed", "wrong_step")

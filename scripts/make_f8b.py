@@ -45,7 +45,7 @@ DOSE = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/"
 LORA = Path("outputs/animals_compose_transfer/pooled_lora/phase1_r8_100k/"
             "compose_rate.json")
 OUT_DIR = Path("paper/iclr/figures")
-FIG_NAME = "F8b-adapter-against-the-oracle"
+FIG_NAME = "compose-rate-by-pair-for-lora-against-the-joint-prompt-correction"
 STEP = "60000"
 
 POE_C, O75_C, O1_C, AD_C = "0.45", "#ff7f0e", "#ff7f0e", "#1f77b4"

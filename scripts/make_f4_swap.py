@@ -41,7 +41,7 @@ import matplotlib.pyplot as plt
 ROOT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose_matched")
 MANIFEST = ROOT / "swap_manifest.json"
 FIG_DIR = Path("paper/iclr/figures")
-FIG_NAME = "F4d-timing-not-dose"
+FIG_NAME = "samples-as-window-and-strength-both-change"
 
 PAIR = "a_cat__x__a_dog"
 PAIR_LABEL = "a cat and a dog"

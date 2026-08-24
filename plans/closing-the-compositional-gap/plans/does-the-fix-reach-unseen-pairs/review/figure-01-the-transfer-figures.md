@@ -13,7 +13,7 @@ overclaims is worse than a missing one, because it survives review until someone
 ## Recommended prompt (to judge a built figure)
 
 ```
-/analyze-figure paper/iclr/figures/F8a-one-adapter-transfers.png
+/analyze-figure paper/iclr/figures/compose-rate-as-the-lora-trains.png
 ```
 (For a figure that fails its read: `/design-figure` to redesign it, never a caption edit.)
 
@@ -64,8 +64,8 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 
 | Figure | Kind | Built | Cost | Output | State |
 |---|---|---|---|---|---|
-| F8a one adapter transfers | Figure run | commit 252441b | no GPU, drawn from scored results | `paper/iclr/figures/F8a-one-adapter-transfers.{png,pdf,json}` | built, unjudged |
-| F8b adapter against the oracle | Figure run | commit 252441b | no GPU, drawn from scored results | `paper/iclr/figures/F8b-adapter-against-the-oracle.{png,pdf,json}` | built, unjudged |
+| F8a one adapter transfers | Figure run | commit 252441b | no GPU, drawn from scored results | `paper/iclr/figures/compose-rate-as-the-lora-trains.{png,pdf,json}` | built, unjudged |
+| F8b adapter against the oracle | Figure run | commit 252441b | no GPU, drawn from scored results | `paper/iclr/figures/compose-rate-by-pair-for-lora-against-the-joint-prompt-correction.{png,pdf,json}` | built, unjudged |
 | A2 delivery-live | Figure run | | | | not started |
 | A3 transfer | Figure run | | | | blocked on step 11 |
 | A4 delivery against transfer | Figure run | | | | blocked on step 11 |

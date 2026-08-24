@@ -38,7 +38,7 @@ SCORES = ROOT / "matched_scores.json"
 WINDOW_CURVES = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/"
                      "window/window_curves.json")
 FIG_DIR = Path("paper/iclr/figures")
-FIG_NAME = "F4e-cliff-survives-dose-matching"
+FIG_NAME = "compose-rate-as-the-window-moves-at-matched-total"
 
 PAIR = "a_cat__x__a_dog"
 PAIR_LABEL = "a cat and a dog"

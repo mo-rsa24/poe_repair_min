@@ -6576,7 +6576,7 @@
    "mark": "\u2705",
    "question": "Does the five-image strip read the same on complete cells?",
    "answer": [
-    "**Yes.** F2 is `paper/iclr/figures/F2-dose-response.pdf`: `a_cat__x__a_dog` seed 9, all",
+    "**Yes.** F2 is `paper/iclr/figures/compose-rate-as-correction-rises.pdf`: `a_cat__x__a_dog` seed 9, all",
     "three rows across all five strengths, above the curves on a shared \u03bb axis.",
     "The oracle row holds one ginger cat-dog chimera at \u03bb=0, 0.25 and 0.5, then a tabby cat",
     "sitting beside a white labrador at 0.75 and 1. The random row holds that same chimera at",
@@ -6590,7 +6590,7 @@
     "real dog.",
     "",
     "**The second figure answers the obvious objection.**",
-    "`paper/iclr/figures/F2b-dissimilar-pair.pdf` is `an_elephant__x__a_penguin` seed 10. An",
+    "`paper/iclr/figures/compose-rate-as-correction-rises-for-a-dissimilar-pair.pdf` is `an_elephant__x__a_penguin` seed 10. An",
     "elephant and a penguin share nothing, and PoE still fuses them into one creature at \u03bb=0, so"
    ],
    "source": {
@@ -6723,25 +6723,25 @@
  },
  "figures": {
   "f2": {
-   "path": "paper/iclr/figures/F2-dose-response.png",
-   "abs": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/paper/iclr/figures/F2-dose-response.png",
+   "path": "paper/iclr/figures/compose-rate-as-correction-rises.png",
+   "abs": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/paper/iclr/figures/compose-rate-as-correction-rises.png",
    "mtime": "2026-08-10T19:11:41+00:00",
    "bytes": 1747766,
-   "publicPath": "/paperfigs/F2-dose-response.png"
+   "publicPath": "/paperfigs/compose-rate-as-correction-rises.png"
   },
   "f2b": {
-   "path": "paper/iclr/figures/F2b-dissimilar-pair.png",
-   "abs": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/paper/iclr/figures/F2b-dissimilar-pair.png",
+   "path": "paper/iclr/figures/compose-rate-as-correction-rises-for-a-dissimilar-pair.png",
+   "abs": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/paper/iclr/figures/compose-rate-as-correction-rises-for-a-dissimilar-pair.png",
    "mtime": "2026-08-10T19:09:19+00:00",
    "bytes": 2045978,
-   "publicPath": "/paperfigs/F2b-dissimilar-pair.png"
+   "publicPath": "/paperfigs/compose-rate-as-correction-rises-for-a-dissimilar-pair.png"
   },
   "f2Halfwidth": {
-   "path": "paper/iclr/figures/F2-dose-response-halfwidth.png",
-   "abs": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/paper/iclr/figures/F2-dose-response-halfwidth.png",
+   "path": "paper/iclr/figures/compose-rate-as-correction-rises-with-a-random-control.png",
+   "abs": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/paper/iclr/figures/compose-rate-as-correction-rises-with-a-random-control.png",
    "mtime": "2026-08-10T19:11:46+00:00",
    "bytes": 1538670,
-   "publicPath": "/paperfigs/F2-dose-response-halfwidth.png"
+   "publicPath": "/paperfigs/compose-rate-as-correction-rises-with-a-random-control.png"
   },
   "stripBoxes": {
    "path": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/dose_strip_an_elephant__x__a_penguin_seed10_boxes.png",

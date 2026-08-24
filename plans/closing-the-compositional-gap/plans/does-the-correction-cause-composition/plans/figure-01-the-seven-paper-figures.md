@@ -63,14 +63,14 @@ points at it.
 ## Tasks
 
 - [x] F1, the two readings of "a cat and a dog": design and build.
-      `python scripts/make_f1.py` → `paper/iclr/figures/F1-two-meanings.pdf`.
+      `python scripts/make_f1.py` → `paper/iclr/figures/what-the-product-misses-explainer.pdf`.
 - [x] F2, more correction more composition: built as a 4x5 grid above four
       curves. Rows: own r_t, other pair's r_t, other seed's r_t (the same
       pair's correction cached from the run at seed+4), own r_t with the step
       order deranged. The norm-matched random vector is not a row; its number
       (AUC 0.023, flat) is owed to the appendix. All controls at the floor:
       AUC 0.387 against 0.039 / 0.047 / 0.027, oracle 3% to 94%.
-      `python scripts/make_f2.py` → `paper/iclr/figures/F2-dose-response.pdf`.
+      `python scripts/make_f2.py` → `paper/iclr/figures/compose-rate-as-correction-rises.pdf`.
 - [x] The two new control rows exist end to end: `--row wrong_seed` and
       `--row wrong_step` in `scripts/interaction_term_inject.py` (donor rule
       `donor_seed_for` in `poe_repair/experiments/interaction_term/wrong_pair.py`,
@@ -97,7 +97,7 @@ points at it.
       count, and it writes `step_collapse.json` beside the log-SNR file rather
       than over it.
 - [x] F3 built: `python scripts/make_f3.py` writes
-      `paper/iclr/figures/F3-size-follows-noise.pdf` and a sidecar `.json`
+      `paper/iclr/figures/correction-size-over-the-denoising-run-across-17-pairs.pdf` and a sidecar `.json`
       recording what was drawn. The fan at the noisy end survives the step axis
       and the figure shows it: spread is 30.0% over steps 0 to 24 against 15.6%
       over steps 25 to 49, and 65.1% at step 0 against 13.1% at step 49, so the
@@ -109,9 +109,9 @@ points at it.
       top and two named pairs in colour, neither of which the figure carries
       any more, so the doc and the file disagree until this is done.
 - [x] F4 designed and built, as two figures rather than one.
-      `python scripts/make_f4_grid.py` → `F4a-when-it-arrives.pdf` is every cat ×
+      `python scripts/make_f4_grid.py` → `samples-as-the-correction-window-moves.pdf` is every cat ×
       dog cell in the window grid, 9 windows across and 4 seeds down, all 36 real
-      images. `python scripts/make_f4_curves.py` → `F4b-size-is-not-timing.pdf`
+      images. `python scripts/make_f4_curves.py` → `correction-size-per-step-beside-outcome-per-window.pdf`
       puts correction size and compose rate on one step axis.
 
       Step 16 is not drawn as a band behind the timing curve, though the original
@@ -283,7 +283,7 @@ points at it.
       (3 steps x 2 tokens) are the same image read differently and are not a
       sampling unit; the 8 held-out pairs are. Written into hypothesis-01's
       review file and already reflected in the built F7a
-      (`scripts/make_f7.py`, `figures/F7a-what-the-adapter-changes.pdf`).
+      (`scripts/make_f7.py`, `figures/content-change-relative-to-attention-change-under-lora.pdf`).
 - [x] `/design-figure` F7 committed: three bands on one page sharing one pair
       order, F7a's ascending-ratio order with cat × dog and elephant × penguin in
       red. Band one is F7a unchanged. Band two is a table, one row per pair:
@@ -316,7 +316,7 @@ points at it.
 - [x] Add a row per built figure to `paper/iclr/figures.md`: F1 to F4b and D1
       to D4 all carry rows with claim, file, source and caption caps; F5 to F8
       hold reserved rows.
-- [x] `F4c-the-cliff-in-language` given its register row, so it is no longer
+- [x] `language-score-as-the-correction-window-moves` given its register row, so it is no longer
       invisible by the register's own rule. The row carries its claim (the
       timing cliff is visible to an instrument that does not count animals),
       its source, and its caption cap: the margin is negative everywhere, so

@@ -135,9 +135,9 @@ def main() -> int:
             transform=ax.transAxes, fontsize=7, color="0.35", ha="right")
     fig.tight_layout()
     for ext in ("png", "pdf"):
-        fig.savefig(OUT_DIR / f"D1-correction-turns-smoothly.{ext}", dpi=300)
+        fig.savefig(OUT_DIR / f"direction-agreement-between-consecutive-steps.{ext}", dpi=300)
     plt.close(fig)
-    (OUT_DIR / "D1-correction-turns-smoothly.json").write_text(json.dumps({
+    (OUT_DIR / "direction-agreement-between-consecutive-steps.json").write_text(json.dumps({
         "pair": D1_PAIR, "seed": D1_SEED, "shown_steps": SHOW_STEPS,
         "cosine_median": float(np.median(c1)),
         "caption_cap": "smoothness varies by pair: same-run adjacent-step "
@@ -160,9 +160,9 @@ def main() -> int:
             transform=ax.transAxes, fontsize=7, color="0.35", ha="right")
     fig.tight_layout()
     for ext in ("png", "pdf"):
-        fig.savefig(OUT_DIR / f"D1b-the-exception.{ext}", dpi=300)
+        fig.savefig(OUT_DIR / f"direction-agreement-between-consecutive-steps-when-it-alternates.{ext}", dpi=300)
     plt.close(fig)
-    (OUT_DIR / "D1b-the-exception.json").write_text(json.dumps({
+    (OUT_DIR / "direction-agreement-between-consecutive-steps-when-it-alternates.json").write_text(json.dumps({
         "pair": "a_cat__x__a_dog", "seed": 9, "shown_steps": SHOW_STEPS,
         "cosine_median": float(np.median(c1b)),
         "mid_run_median_steps_16_32": float(np.median(c1b[16:33])),
@@ -184,9 +184,9 @@ def main() -> int:
             transform=ax.transAxes, fontsize=7, color="0.35", ha="right")
     fig.tight_layout()
     for ext in ("png", "pdf"):
-        fig.savefig(OUT_DIR / f"D1c-random-floor.{ext}", dpi=300)
+        fig.savefig(OUT_DIR / f"direction-agreement-for-random-vectors.{ext}", dpi=300)
     plt.close(fig)
-    (OUT_DIR / "D1c-random-floor.json").write_text(json.dumps({
+    (OUT_DIR / "direction-agreement-for-random-vectors.json").write_text(json.dumps({
         "generator_seed": 0, "shape": list(r.shape),
         "cosine_median": float(np.median(c1c)),
         "role": "falsification floor: if real corrections looked like this, "
@@ -211,9 +211,9 @@ def main() -> int:
             transform=ax.transAxes, fontsize=7, color="0.35", ha="right")
     fig.tight_layout()
     for ext in ("png", "pdf"):
-        fig.savefig(OUT_DIR / f"D3-nothing-shared-across-pairs.{ext}", dpi=300)
+        fig.savefig(OUT_DIR / f"direction-agreement-between-two-pairs.{ext}", dpi=300)
     plt.close(fig)
-    (OUT_DIR / "D3-nothing-shared-across-pairs.json").write_text(json.dumps({
+    (OUT_DIR / "direction-agreement-between-two-pairs.json").write_text(json.dumps({
         "pair_a": D3_A, "pair_b": D3_B, "shown_steps": SHOW_STEPS,
         "cosine_median": float(np.median(c3)),
         "cosine_range": [float(c3.min()), float(c3.max())],
@@ -221,8 +221,8 @@ def main() -> int:
 
     print(f"D1 adjacent-step median {np.median(c1):+.3f}")
     print(f"D3 cross-pair median {np.median(c3):+.3f}")
-    print(f"wrote {OUT_DIR}/D1-correction-turns-smoothly.* and "
-          f"D3-nothing-shared-across-pairs.*")
+    print(f"wrote {OUT_DIR}/direction-agreement-between-consecutive-steps.* and "
+          f"direction-agreement-between-two-pairs.*")
     return 0
 
 

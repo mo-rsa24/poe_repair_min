@@ -102,7 +102,7 @@ Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC
 
       What follows for the writing: the paper may not argue that the correction matters because
       it is large there, and no figure may put size and timing on one axis without saying they
-      disagree. `F4b-size-is-not-timing` exists to show exactly that.
+      disagree. `correction-size-per-step-beside-outcome-per-window` exists to show exactly that.
 - [x] ✅ Does the peak land near step 16, the fork step measured from cached data?
       No. The peak is at window centre 5 and the window centred at 15 composes 0.094, seven
       times worse. The two estimates disagree, so neither may be printed as confirming the other.
@@ -196,7 +196,7 @@ writer reads, not a second copy of the argument.
 | What the paper says | What it owes alongside it |
 |---|---|
 | the correction matters early | that the best window measured is also the earliest window measured, so the curve cannot say whether the true best sits earlier still |
-| why the correction matters early | not because it is large there. It is about 2.7 times larger late than early, and it rises where the compose rate falls. No figure may put size and timing on one axis without saying they disagree, which is what `F4b-size-is-not-timing` exists to show |
+| why the correction matters early | not because it is large there. It is about 2.7 times larger late than early, and it rises where the compose rate falls. No figure may put size and timing on one axis without saying they disagree, which is what `correction-size-per-step-beside-outcome-per-window` exists to show |
 | step 16, the fork step | it may not be described as the moment the correction matters, and F4's caption may not draw it as a band behind the timing curve. The register's current layout says it should, and that layout was written when the two numbers were expected to agree |
 | timing decides rather than dose | the verdict is by eye on the images. The detector's count is in `dose_matched/swap_scores.json` beside it and disagrees with the pictures on this pair often enough that the eye read is the one cited |
 | the cliff survives dose-matching | these are not population rates. Four cells per point on one pair is a rate over four runs; the eight-pair sweep remains the population estimate |

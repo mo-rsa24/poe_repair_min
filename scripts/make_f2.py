@@ -45,7 +45,7 @@ PAIRS_ROOT = Path("outputs/interaction_term/dose/pairs")
 # does not apply here. Names carry the register slot, so a file found on its own says
 # which slot it fills.
 FIG_DIR = Path("paper/iclr/figures")
-FIG_NAME = {"grid5": "F2-dose-response", "shared0": "F2-dose-response-halfwidth"}
+FIG_NAME = {"grid5": "compose-rate-as-correction-rises", "shared0": "compose-rate-as-correction-rises-with-a-random-control"}
 
 ROWS = ("oracle", "wrong_pair", "wrong_seed", "wrong_step")
 ROW_LABEL = {"oracle": "real correction", "wrong_pair": "wrong pair",

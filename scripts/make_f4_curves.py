@@ -48,7 +48,7 @@ from make_f3 import smooth          # noqa: E402  the same smoothing F3 draws wi
 WINDOW_CURVES = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/"
                      "window/window_curves.json")
 FIG_DIR = Path("paper/iclr/figures")
-FIG_NAME = "F4b-size-is-not-timing"
+FIG_NAME = "correction-size-per-step-beside-outcome-per-window"
 
 PAIR = "a_cat__x__a_dog"
 SEEDS = (9, 10, 11, 12)

@@ -37,7 +37,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 RUN = Path("outputs/animals_compose_transfer/pooled_lora/phase1_r8_100k")
 OUT_DIR = Path("paper/iclr/figures")
-FIG_NAME = "F8a-one-adapter-transfers"
+FIG_NAME = "compose-rate-as-the-lora-trains"
 
 # Measured in the dose sweep over 32 cells with nothing injected. Its single
 # positive is a detector mistake (frog x toad seed 10: three boxes on one fused

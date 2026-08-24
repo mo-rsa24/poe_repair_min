@@ -366,7 +366,7 @@ them.
 ◀ **Needs: task 2.4** done, so all eight figures exist on disk.
 
 4.1 **Give F4f a register row, or retire the figure**
-   - `paper/iclr/figures/F4f-the-window-map.{png,pdf,json}` exists and is tracked, and no row in
+   - `paper/iclr/figures/how-many-seeds-composed-as-the-window-moves.{png,pdf,json}` exists and is tracked, and no row in
      `paper/iclr/figures.md` describes it
    - A figure with no row has no ceiling on what its caption may claim
    - ✅ a row exists naming its claim sentence, its layout, its evidence and its build command
