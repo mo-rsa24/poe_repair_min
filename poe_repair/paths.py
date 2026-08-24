@@ -94,23 +94,35 @@ CACHE_ANALYSES = "outputs/interaction_term/cache_analyses"
 
 # Training
 TRAINING_RUN_SCORED_WHILE_IT_TRAINS = "outputs/interaction_term/live_curves_smoke_run"
-DOES_THE_FIX_REACH_UNSEEN_PAIRS = "outputs/animals_compose_transfer"
+DOES_THE_FIX_REACH_UNSEEN_PAIRS = "artifacts/results/does-the-fix-reach-unseen-pairs"
 
-# The earlier eras. Renamed off private labels and off stated claims.
-CORRECTION_OUTSIDE_THE_UNET = "outputs/group_a_failure"
-RESIDUAL_BETWEEN_MONO_AND_POE = "outputs/residual_diagnostics"
-CFG_WINDOW_WITHOUT_LORA = "outputs/conditioning_window"
-CFG_WINDOW_WITH_LORA = "outputs/conditioning_window_lora"
+# The earlier eras. Renamed off private labels and off stated claims. Moved on
+# 2026-08-24: the repository is the only filesystem holding each of these five, so
+# the move was a plain rename with nothing to reconcile on the mount.
+CORRECTION_OUTSIDE_THE_UNET = "artifacts/results/residual-dynamics/correction-outside-the-unet"
+RESIDUAL_BETWEEN_MONO_AND_POE = "artifacts/results/residual-dynamics/residual-between-mono-and-poe"
+CFG_WINDOW_WITHOUT_LORA = "artifacts/results/when-the-correction-must-arrive/cfg-window-without-lora"
+CFG_WINDOW_WITH_LORA = "artifacts/results/when-the-correction-must-arrive/cfg-window-with-lora"
 INTERNAL_FORCE_FAILURE = "outputs/internal_force_failure"  # declared, never produced
 ATTENTION_MECHANISM = "outputs/attn_mechanism"
 
 # Baselines and instruments
-POE_BASELINE_SAMPLES = "outputs/poe"
-COMPOSE_SCORER_VALIDATION = "outputs/compose_scorer"
+POE_BASELINE_SAMPLES = "artifacts/results/poe-blends-instead-of-composing/poe-baseline-samples"
+COMPOSE_SCORER_VALIDATION = "artifacts/results/can-we-trust-the-compose-score/compose-scorer-validation"
 
 # The pooled-adapter runs. The `rung` level is dropped: the level below it already
 # carried the axis, and the number carried nothing.
-ONE_PAIR_ONE_SEED = "artifacts/rung1-overfit/lora"
+ONE_PAIR_ONE_SEED = "artifacts/results/can-lora-learn-a-residual-that-corrects-poe/one-pair-one-seed"
+
+# Not renamed on 2026-08-24 despite the walk's verdict: the mount holds a second,
+# disjoint copy of this family (a four-seed pooled-run set the repository's copy does
+# not have) under the *old* name, and the safety floor for that sitting forbade
+# touching /datasets bytes. `resolve()` needs one relative path that means the same
+# family on both filesystems, so renaming only the repository side would have made
+# the mount's four-seed runs invisible through this constant. Still open: someone
+# with mount write access renames `/datasets/mmolefe/poe_repair_min/artifacts/
+# rung2-survive-noise` to match, then this becomes
+# "artifacts/results/can-lora-learn-a-residual-that-corrects-poe/held-out-seeds".
 HELD_OUT_SEEDS = "artifacts/rung2-survive-noise/cross_seed"
 HELD_OUT_SEEDS_INDEX = "outputs/cross_seed_lora_pooling"
 
