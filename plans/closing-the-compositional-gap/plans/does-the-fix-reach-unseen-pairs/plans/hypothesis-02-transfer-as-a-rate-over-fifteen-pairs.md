@@ -96,7 +96,7 @@ This extracts error patterns from the run transcript, deduplicates against globa
 - W&B project: `prime_lab/poe-repair-animals-compose` (verify with `echo $WANDB_PROJECT`).
 - Python 3.9+ required (DINOv2 and CLIP imports depend on it).
 
-**Project tracking**: Results logged to W&B per run; leaderboard aggregated manually to `outputs/transfer-rate/leaderboard.json` after all 15 complete.
+**Project tracking**: Results logged to W&B per run; leaderboard aggregated manually to `artifacts/results/does-the-fix-reach-unseen-pairs/transfer-rate-over-fifteen-pairs/leaderboard.json` after all 15 complete.
 
 **Known issues**: See [Error Matrix](#error-matrix) section at the bottom for a full catalog of known issues and solutions.
 
@@ -193,7 +193,7 @@ If the fix is pair-general, the curve declines smoothly. If it's pair-specific o
    - Use wired eval hook that logs compose-rate, direction-cosine, distance-reached per step.
    - Each run trains to its step budget (e.g., 10,000 steps or convergence).
    - Runs may be parallel (if cluster allows) or sequential via Slurm array job.
-   - Store outputs in `outputs/transfer-rate/run-{pair-name}/` per run.
+   - Store outputs in `artifacts/results/does-the-fix-reach-unseen-pairs/transfer-rate-over-fifteen-pairs/run-{pair-name}/` per run.
 
 3. **Eval each held-out pair on its LoRA**
    - After all 15 LoRAs are trained, eval each held-out pair on its corresponding LoRA.
@@ -203,7 +203,7 @@ If the fix is pair-general, the curve declines smoothly. If it's pair-specific o
 4. **Build the leaderboard and degradation curve**
    - Leaderboard: one row per held-out pair (columns: pair name, compose y/n, distance-reached, direction-cosine, embedding space 1 score, embedding space 2 score).
    - Degradation curve: compose-rate (y-axis, 0–100%) vs fraction-of-pool-held-out (x-axis, 1/15 to 15/15), one point per pair, with error bars if multiple seeds exist.
-   - Save outputs to `outputs/transfer-rate/leaderboard.json` and `outputs/transfer-rate/degradation_curve.png`.
+   - Save outputs to `artifacts/results/does-the-fix-reach-unseen-pairs/transfer-rate-over-fifteen-pairs/leaderboard.json` and `artifacts/results/does-the-fix-reach-unseen-pairs/transfer-rate-over-fifteen-pairs/degradation_curve.png`.
 
 ---
 
@@ -221,6 +221,15 @@ If the fix is pair-general, the curve declines smoothly. If it's pair-specific o
 
 ---
 
+## Environment Facts This Plan Depends On
+- **`biggpu` allows one Slurm job per user**, so task 2's "Slurm array job" cannot run all 15 as
+  one array on `biggpu`; either run sequentially on one allocation, or use the shared-device
+  path (SSH in, pin `CUDA_VISIBLE_DEVICES`, launch with `nohup`) across whichever nodes have an
+  idle second GPU. See [environment/hpc/execution-protocol.md](../../../../../environment/hpc/execution-protocol.md).
+- Checkpoints and eval output go to `/datasets`, per the disk guard rule in
+  [environment/storage.md](../../../../../environment/storage.md), not the `outputs/` paths this
+  plan's tasks still name (see the conflict flagged in task 3 and 4 below).
+
 ## Tasks
 
 ⬅️ [Previous](#purpose-and-goal) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
@@ -234,7 +243,9 @@ If the fix is pair-general, the curve declines smoothly. If it's pair-specific o
 
 ### 2. 🖥️ Run the 15-run sweep
 
-- [ ] Launch all 15 runs via Slurm array job or sequential submission.
+- [ ] Launch the 15 runs sequentially on one `biggpu` allocation, or across nodes' idle second
+  GPUs via the shared-device path; a Slurm array job does not fit, since `biggpu` allows one job
+  per user (see Environment Facts above).
 - [ ] Each run uses wired eval hook: compose-rate, direction-cosine, distance-reached logged to W&B per step.
 - [ ] Monitor runs via W&B dashboard and `squeue`; mark delivery-null runs (see gate below) and skip full budget.
 - [ ] Collect W&B run IDs and checkpoint paths after all complete.
@@ -243,13 +254,13 @@ If the fix is pair-general, the curve declines smoothly. If it's pair-specific o
 
 - [ ] For each trained LoRA, load checkpoint and eval on its corresponding held-out pair.
 - [ ] Collect compose-rate (binary), direction-cosine, distance-reached from eval output.
-- [ ] Save per-pair results to `outputs/transfer-rate/{pair-name}-eval.json`.
+- [ ] Save per-pair results to `artifacts/results/does-the-fix-reach-unseen-pairs/transfer-rate-over-fifteen-pairs/{pair-name}-eval.json`.
 
 ### 4. 📊 Build leaderboard and degradation curve
 
-- [ ] Aggregate all per-pair results into `outputs/transfer-rate/leaderboard.json`.
+- [ ] Aggregate all per-pair results into `artifacts/results/does-the-fix-reach-unseen-pairs/transfer-rate-over-fifteen-pairs/leaderboard.json`.
 - [ ] Compute degradation curve: compose-rate (%) vs fraction-held-out (1/15, 2/15, ..., 15/15).
-- [ ] Generate plot and save to `outputs/transfer-rate/degradation_curve.png`.
+- [ ] Generate plot and save to `artifacts/results/does-the-fix-reach-unseen-pairs/transfer-rate-over-fifteen-pairs/degradation_curve.png`.
 
 ---
 

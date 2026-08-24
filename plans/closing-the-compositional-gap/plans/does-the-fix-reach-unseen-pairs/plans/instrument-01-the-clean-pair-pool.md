@@ -47,9 +47,16 @@ entry-gate: this is where the dependency on compose-scorer is enforced.
 pairs + a few controls, each training pair's fails-by-default rate over 8 seeds
 recorded, gated behind a passing `scorer_validated.json`.
 
-The pool on disk: `outputs/animals_compose_transfer/{pair_pool.yaml, pair_prompts.yaml}`,
+The pool on disk: `artifacts/results/does-the-fix-reach-unseen-pairs/{pair_pool.yaml, pair_prompts.yaml}`,
 19 pairs (15 blend-prone, cat×dog as the known-failure reference, 3 compose-by-default
 controls), 38 distinct animals, no word repeated.
+
+## Environment Facts This Plan Depends On
+- `co3` python at its absolute path. The fail-rate scoring pass (8 seeds × 19 pairs) fit the
+  in-session GPU; no biggpu/bigbatch request was needed for a set this size.
+- Output lives at `artifacts/results/does-the-fix-reach-unseen-pairs/{pair_pool.yaml,
+  pair_prompts.yaml, fail_rate.{json,md}}`, moved there from the old `outputs/` location by an
+  earlier retrofit pass.
 
 ## Tasks
 - [x] Precondition check: assert `scorer_validated.json` (from plans/completed/compose-scorer)

@@ -265,6 +265,14 @@ evidence set. F1 belongs to the compose-scorer scope, not here.
 
 ---
 
+## Environment Facts This Plan Depends On
+- No GPU needed: every figure here reads existing JSON (`compose_rate.json`, `pair_pool.json`,
+  `dose_curves.json`) rather than running anything new. `co3`'s absolute path is only needed if a
+  script under `scripts/` is invoked to regenerate one of those source files first.
+- Figures 2.1 to 2.4 read `artifacts/results/does-the-fix-reach-unseen-pairs/`, which may span
+  both `/home-mscluster` and `/datasets`; check `environment/storage.md` before assuming a path
+  resolves on this filesystem alone.
+
 ## Tasks
 
 ⬅️ [Previous](#purpose-and-goal) | 📋 [TOC](#table-of-contents) | [Next](#instructions) ➡️

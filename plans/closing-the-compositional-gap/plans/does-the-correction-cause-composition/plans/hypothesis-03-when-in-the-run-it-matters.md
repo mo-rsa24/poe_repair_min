@@ -277,6 +277,13 @@ window positions with the scorer's verdict on each.
 
 ---
 
+## Environment Facts This Plan Depends On
+- `co3` python at its absolute path. The 288-cell grid sweep goes to biggpu first, else bigbatch;
+  the three-window smoke test fits the in-session GPU.
+- `run_window_sweep.sh` writes under `$POE_REPAIR_OUTPUT_ROOT`, which must point at `/datasets`
+  before launching a full grid, per the disk guard rule in
+  [environment/storage.md](../../../../../environment/storage.md).
+
 ## Tasks
 
 ⬅️ [Previous](#purpose-and-goal) | 📋 [TOC](#table-of-contents) | [Next](#instructions) ➡️

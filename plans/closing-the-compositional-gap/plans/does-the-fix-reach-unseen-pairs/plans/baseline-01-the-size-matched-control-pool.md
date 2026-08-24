@@ -33,6 +33,13 @@ Serves Objective 3 (Contrast B) and Definition-of-Done item 4.
 A size-matched mixed pool built and run, evaluated on the identical animal held-out
 set as (A), with the animals-vs-mixed contrast reported per held-out pair.
 
+## Environment Facts This Plan Depends On
+- `co3` python at its absolute path. The training + wired-eval path this plan reuses from (A) is
+  a full pooled-LoRA run: goes to biggpu first, else bigbatch.
+- Checkpoints and eval output write to `/datasets`, per the disk guard rule in
+  [environment/storage.md](../../../../../environment/storage.md); (A)'s own checkpoint is
+  `artifacts/results/does-the-fix-reach-unseen-pairs/pooled_lora/phase1_r8_100k/checkpoints/`.
+
 ## Tasks
 - [ ] Build the size-matched mixed `pair_pool.yaml`: equal N to the animals pool,
   animal pairs swapped for scene/style/object concepts, overlap assertion passing.

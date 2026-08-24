@@ -68,7 +68,7 @@ Diagnose why a fix doesn't transfer (or confirm that it does). To do that, we ru
 Before running that 15-run sweep, we need to know *while it's training* whether the fix is even arriving at the eval set. Post-run analysis is too late; you'd waste GPU hours. So this plan wires three diagnostic metrics into the live training loop, so you can kill bad runs early.
 
 **Dataset details:**  
-- **Training pairs:** 11 blend-prone animal pairs (wolf×husky, lion×tiger, and so on; the pool is `outputs/animals_compose_transfer/pair_pool.yaml`), each over 8 train seeds.
+- **Training pairs:** 11 blend-prone animal pairs (wolf×husky, lion×tiger, and so on; the pool is `artifacts/results/does-the-fix-reach-unseen-pairs/pair_pool.yaml`), each over 8 train seeds.
 - **Held-out pairs:** 8, each over 8 held-out seeds: 4 unseen blend pairs (the transfer test), cat×dog (the known-failure reference), and 3 compose-by-default controls (the do-no-harm check).
 - **Unseen pairs:** Tested later in step 10 (the 15-run sweep tests transfer)
 - **Known phenomenon:** The $\sim 40\%$ plateau in correction magnitude is well-established; we measure it live in this plan.

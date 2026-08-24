@@ -221,6 +221,14 @@ At λ=0, nothing is injected, so all three rows are the same picture by construc
 
 ---
 
+## Environment Facts This Plan Depends On
+- `co3` python at its absolute path. The 480-cell sweep (~6h at ~50s/cell) goes to biggpu first,
+  else bigbatch; the smoke test on one cell fits the in-session GPU.
+- `scripts/mechanism_study/run_dose_sweep.sh` writes to `$REPO/outputs/...` while its own disk
+  guard checks `/datasets/mmolefe`, so a sweep this size will fill `/home-mscluster` unless the
+  output is moved by hand afterward (as this plan's own last task had to do). See
+  [environment/storage.md](../../../../../environment/storage.md).
+
 ## Tasks
 
 ⬅️ [Why the controls are fair](#why-the-controls-are-fair) | 📋 [TOC](#table-of-contents) | [The engagement gate](#the-engagement-gate) ➡️
