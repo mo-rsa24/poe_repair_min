@@ -4,7 +4,7 @@ poe_plus_lora on a list of seeds, recording **both** per-step latents
 
 Stores arrays in the plan-15 manifold_cache layout:
 
-    outputs/manifold_cache/<pair_slug>/
+    artifacts/caches/manifold_cache/<pair_slug>/
       mono_bank/{z_t,eps_t}/seed_NNN.npy
       poe_no_lora/{z_t,eps_t}/seed_NNN.npy
       poe_plus_lora/lambda_LL.LL/{z_t,eps_t}/seed_NNN.npy
