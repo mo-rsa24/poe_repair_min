@@ -34,4 +34,4 @@ echo "=== C) held-out-eval caches: 5 pairs x 8 seeds ==="
 $PY -m poe_repair.experiments.does_the_fix_reach_unseen_pairs.build_caches --which heldout_eval
 
 echo "=== DONE. fail-rate table: ==="
-cat outputs/animals_compose_transfer/fail_rate.md
+cat artifacts/results/does-the-fix-reach-unseen-pairs/fail_rate.md

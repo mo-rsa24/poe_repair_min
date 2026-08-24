@@ -35,7 +35,7 @@ fi
 
 export CUDA_VISIBLE_DEVICES="$GPU"
 export POE_REPAIR_TRAINING_CACHE=/datasets/mmolefe/poe_repair_min/artifacts/caches/training_cache
-SCOPE=$REPO/outputs/animals_compose_transfer
+SCOPE=$REPO/artifacts/results/does-the-fix-reach-unseen-pairs
 mkdir -p "$OUT"
 
 RUN_ID="smoke_$(date +%Y%m%d_%H%M%S)"
