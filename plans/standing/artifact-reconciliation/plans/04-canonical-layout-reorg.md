@@ -10,7 +10,7 @@ Propose one naming and directory scheme for the surviving artifacts, keyed by ex
 
 ## Goal
 
-`inventory/04-canonical-layout-move-plan.md` (scheme + old→new table + external-contract risks) and a guarded `inventory/scripts/04_apply_layout.sh` (dry-run by default, `APPLY=1` to execute). Applied result: the `artifacts/` tree on both roots, compat symlinks at every old path, discards quarantined (not deleted).
+`plans/standing/artifact-reconciliation/inventory/04-canonical-layout-move-plan.md` (scheme + old→new table + external-contract risks) and a guarded `plans/standing/artifact-reconciliation/inventory/scripts/04_apply_layout.sh` (dry-run by default, `APPLY=1` to execute). Applied result: the `artifacts/` tree on both roots, compat symlinks at every old path, discards quarantined (not deleted).
 
 ## Tasks
 
@@ -41,7 +41,7 @@ constants and the inspector slug to a_cat__x__a_dog.
 ## Engagement Instructions
 
 ```
-$ bash inventory/scripts/04_apply_layout.sh 2>&1 | grep -cE "^(MOVE\+LINK|QUARANTINE|RMDIR \(empty\))"
+$ bash plans/standing/artifact-reconciliation/inventory/scripts/04_apply_layout.sh 2>&1 | grep -cE "^(MOVE\+LINK|QUARANTINE|RMDIR \(empty\))"
 # Expect: 0  (idempotent — everything already filed; a fresh run finds no real action).
 $ find artifacts -maxdepth 2 -type d | sort            # rung1-overfit … rung4-scale, caches, _shared, _quarantine
 $ ls -l outputs/lora/cat_dog                            # compat symlink -> a_cat__x__a_dog

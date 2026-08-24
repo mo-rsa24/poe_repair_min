@@ -10,19 +10,19 @@ An inventory says what exists; this says whether it can be trusted. It is the ch
 
 ## Goal
 
-`inventory/03-integrity-and-disposition.md`: one table of artifact → integrity check (load / shards / manifest) → pass/fail → W&B status → suspect? → decision (keep / re-run / discard) with a one-line reason per suspect. Backed by re-runnable `inventory/scripts/03_integrity.py` (checkpoints) and `03b_cache_check.py` (caches).
+`plans/standing/artifact-reconciliation/inventory/03-integrity-and-disposition.md`: one table of artifact → integrity check (load / shards / manifest) → pass/fail → W&B status → suspect? → decision (keep / re-run / discard) with a one-line reason per suspect. Backed by re-runnable `plans/standing/artifact-reconciliation/inventory/scripts/03_integrity.py` (checkpoints) and `03b_cache_check.py` (caches).
 
 ## Tasks
 
 - [x] ✅ Load-test the kept checkpoints + all suspects; check caches vs manifests; check run-dir JSON consistency.
 - [x] ✅ Reconcile against W&B suspects and 0-byte stubs; assign keep / re-run / discard.
-- [x] ✅ Write `inventory/03-integrity-and-disposition.md` + the two scripts.
+- [x] ✅ Write `plans/standing/artifact-reconciliation/inventory/03-integrity-and-disposition.md` + the two scripts.
 
 Fully-qualified prompt (invoke via `/data-integrity-check`):
 
 ```
 /data-integrity-check the "kept" artifacts from this repo's inventory session
-(inventory/01-artifact-inventory.md, inventory/02-two-root-classified.md). Scope:
+(plans/standing/artifact-reconciliation/inventory/01-artifact-inventory.md, plans/standing/artifact-reconciliation/inventory/02-two-root-classified.md). Scope:
 experiments lora, cross_seed_lora_pooling, cross_pair_lora_pooling + shared
 training_cache, across two roots (repo + /datasets/mmolefe/poe_repair_min/outputs).
 
@@ -51,7 +51,7 @@ du/find -type f do not traverse symlinks, so a symlink view reads as 0 bytes.
 
 Produce one table: artifact → integrity (load / shards / manifest) → pass/fail →
 W&B status → suspect? → decision (keep / re-run / discard) with a one-line reason.
-Read-only; recommend only. Save to inventory/03-integrity-and-disposition.md.
+Read-only; recommend only. Save to plans/standing/artifact-reconciliation/inventory/03-integrity-and-disposition.md.
 ```
 
 ## Recommended skill
@@ -61,10 +61,10 @@ Read-only; recommend only. Save to inventory/03-integrity-and-disposition.md.
 ## Engagement Instructions
 
 ```
-$ CUDA_VISIBLE_DEVICES="" python inventory/scripts/03_integrity.py
+$ CUDA_VISIBLE_DEVICES="" python plans/standing/artifact-reconciliation/inventory/scripts/03_integrity.py
 # Expect: every tested checkpoint PASS (420 lora keys, shape (8,640)), incl. the
 # four suspects (bytes intact; suspect = run completeness, not corruption).
-$ CUDA_VISIBLE_DEVICES="" python inventory/scripts/03b_cache_check.py 2>&1 | tail -3
+$ CUDA_VISIBLE_DEVICES="" python plans/standing/artifact-reconciliation/inventory/scripts/03b_cache_check.py 2>&1 | tail -3
 # Expect: 645 cells, 24 "1-shard" cells (the by-design eval stubs), 0 real gaps.
-$ grep -c "keep\|re-run\|discard" inventory/03-integrity-and-disposition.md   # per-artifact dispositions present
+$ grep -c "keep\|re-run\|discard" plans/standing/artifact-reconciliation/inventory/03-integrity-and-disposition.md   # per-artifact dispositions present
 ```

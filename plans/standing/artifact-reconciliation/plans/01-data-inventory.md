@@ -10,12 +10,12 @@ This is the master list of what exists and which run made it. Every later task (
 
 ## Goal
 
-`inventory/01-artifact-inventory.md` with an experiment → runs (id · step · state) → status → surviving-artifact-path table, plus a re-runnable `inventory/scripts/01_inventory.py`. W&B projects recovered from the local run dirs when not supplied.
+`plans/standing/artifact-reconciliation/inventory/01-artifact-inventory.md` with an experiment → runs (id · step · state) → status → surviving-artifact-path table, plus a re-runnable `plans/standing/artifact-reconciliation/inventory/scripts/01_inventory.py`. W&B projects recovered from the local run dirs when not supplied.
 
 ## Tasks
 
 - [x] ✅ Run the inventory + W&B reconciliation with the prompt below.
-- [x] ✅ Write `inventory/01-artifact-inventory.md` and `inventory/scripts/01_inventory.py`.
+- [x] ✅ Write `plans/standing/artifact-reconciliation/inventory/01-artifact-inventory.md` and `plans/standing/artifact-reconciliation/inventory/scripts/01_inventory.py`.
 
 Fully-qualified prompt (invoke via `/data-inventory`):
 
@@ -38,10 +38,10 @@ failure, checkpoint still landed). Produce one table: experiment → runs
 ## Engagement Instructions
 
 ```
-$ python inventory/scripts/01_inventory.py
+$ python plans/standing/artifact-reconciliation/inventory/scripts/01_inventory.py
 # regenerates the outputs/ size + file-count roll-up used by the table.
 # Expect: 22G outputs, four W&B projects, and an experiment→status→artifact table
-# in inventory/01-artifact-inventory.md (group_a_failure worked, lora 3 pairs +
+# in plans/standing/artifact-reconciliation/inventory/01-artifact-inventory.md (group_a_failure worked, lora 3 pairs +
 # 3 empty stubs, cross_seed/cross_pair per the table).
-$ test -f inventory/01-artifact-inventory.md && echo OK
+$ test -f plans/standing/artifact-reconciliation/inventory/01-artifact-inventory.md && echo OK
 ```

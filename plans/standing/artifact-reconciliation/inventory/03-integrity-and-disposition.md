@@ -3,7 +3,7 @@
 **Generated**: 2026-07-21
 **Roots**: `R:` repo (`/home-mscluster/mmolefe/Playground/PhD/poe_repair_min`) · `D:` datasets (`/datasets/mmolefe/poe_repair_min/outputs`)
 **Method**: read-only. Checkpoints load-tested with `torch.load(weights_only=True)` (CPU); caches checked by shard-count vs the per-cell contract plus a spot-open of 12 random cells; run dirs checked for internal JSON consistency. Nothing was written, moved, or deleted.
-**Re-run**: `inventory/scripts/03_integrity.py` (checkpoints), `inventory/scripts/03b_cache_check.py` (caches).
+**Re-run**: `plans/standing/artifact-reconciliation/inventory/scripts/03_integrity.py` (checkpoints), `plans/standing/artifact-reconciliation/inventory/scripts/03b_cache_check.py` (caches).
 **Chains from**: `01-artifact-inventory.md` (W&B status) and `02-two-root-classified.md` (two-root scope).
 
 ## Headline
@@ -85,7 +85,7 @@ symlinks. Two decisions changed:
 ## Re-sweep 2026-08-04: the eight previously-unfiled top-dirs
 
 Method as above: read-only, `torch.load(weights_only=True)` on CPU. Destinations
-come from the scope call in `inventory/sweeps/2026-08-04-scope-call.md`.
+come from the scope call in `plans/standing/artifact-reconciliation/inventory/sweeps/2026-08-04-scope-call.md`.
 
 | Artifact | Load | Structure | Decision | Destination | Reason |
 |---|---|---|---|---|---|

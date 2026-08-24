@@ -10,12 +10,12 @@ The `01` inventory only covers the repo, but the heavy files (seed banks, the 22
 
 ## Goal
 
-`inventory/02-two-root-classified.md`: a path → type → group → owning-experiment → size → last-modified table for `lora`, `cross_seed_lora_pooling`, `cross_pair_lora_pooling` + their caches, with a duplicates section and an orphans section, and an explicit out-of-scope list for the other `/datasets` families.
+`plans/standing/artifact-reconciliation/inventory/02-two-root-classified.md`: a path → type → group → owning-experiment → size → last-modified table for `lora`, `cross_seed_lora_pooling`, `cross_pair_lora_pooling` + their caches, with a duplicates section and an orphans section, and an explicit out-of-scope list for the other `/datasets` families.
 
 ## Tasks
 
 - [x] ✅ Sweep both roots and classify per the prompt below.
-- [x] ✅ Write `inventory/02-two-root-classified.md` with duplicates + orphans flagged.
+- [x] ✅ Write `plans/standing/artifact-reconciliation/inventory/02-two-root-classified.md` with duplicates + orphans flagged.
 
 Fully-qualified prompt (freeform, builds on `01`):
 
@@ -38,10 +38,10 @@ imaging checkpoints, etc.) as out of scope.
 ## Engagement Instructions
 
 ```
-$ test -f inventory/02-two-root-classified.md && echo OK
+$ test -f plans/standing/artifact-reconciliation/inventory/02-two-root-classified.md && echo OK
 # Expect: a path→type→group→experiment→size→last-mod table; a "Duplicates flagged"
 # section noting the cross_seed pair-name collision (heavy datasets banks vs light
 # repo eval samples, different stages); an "Orphans" section (the 0-byte-looking
 # lora alias dirs + manifold_cache); and an "Out of scope" list.
-$ grep -c "Duplicates flagged\|Orphans\|Out of scope" inventory/02-two-root-classified.md   # expect 3
+$ grep -c "Duplicates flagged\|Orphans\|Out of scope" plans/standing/artifact-reconciliation/inventory/02-two-root-classified.md   # expect 3
 ```

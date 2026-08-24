@@ -39,6 +39,3 @@ results/
 .DS_Store
 *.tmp
 paper/*-overleaf*.zip
-
-# Todoist bridge staging (transient input for todoist-publish)
-todoist-staging/
