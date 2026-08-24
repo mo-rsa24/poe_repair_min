@@ -47,7 +47,7 @@ Navigation: ⬅️ [What a good result looks like](#what-a-good-result-looks-lik
 
 **A compose rate that does not clear the scorer's own uncertainty.** ✅
 
-`evidence/f2-lambda1-audit/README.md`: a headline of 94% at full correction strength has a true
+`artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md`: a headline of 94% at full correction strength has a true
 rate bounded around 87% to 94%, once the 32 cells behind it are opened by eye. A result that
 depends on reading the difference between, say, 90% and 94% as a real effect is not trustworthy on
 this scorer without a tighter check.
@@ -68,7 +68,7 @@ Navigation: ⬅️ [What a bad result looks like](#what-a-bad-result-looks-like)
 The validated scorer counts distinct "animal" instances; it cannot tell a cat-and-dog image from a
 two-dog image by construction. See
 [world/compose-rate.md § What people get wrong](../world/compose-rate.md#what-people-get-wrong).
-`evidence/f2-lambda1-audit/02-two-of-one/` is the one confirmed case of this in the current
+`artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/02-two-of-one/` is the one confirmed case of this in the current
 32-cell audit.
 
 **Anything about pairs outside the animal-pair pool.** ✍️
@@ -92,6 +92,6 @@ Navigation: ⬅️ [What this cannot tell you](#what-this-cannot-tell-you) | �
 |---|---|---|
 | The mission statement and the five-rung ladder | Read in `MASTER_PLAN.md`, Mission and Objectives | 2026-08-24 |
 | The dose-response and held-out-seed bars | Read in `MASTER_PLAN.md`, Goals, and `EXPERIMENTS.md` | 2026-08-24 |
-| The scorer's true-rate bound at λ=1 | Read in `evidence/f2-lambda1-audit/README.md` | 2026-08-24 |
+| The scorer's true-rate bound at λ=1 | Read in `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md` | 2026-08-24 |
 | The two-mode failure classification and its null | Read in `EXPERIMENTS.md`, EXP-05 | 2026-08-24 |
 | The animal-pair scope boundary | Read in `plans/retrofit-poe-repair-min.md`, "Words this uses" | 2026-08-24 |

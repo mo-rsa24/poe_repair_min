@@ -14,7 +14,7 @@ Search recursively in:
 - `artifacts/results/ (per-question) and report/paper-evidence-index.md`
 - `outputs/interaction_term/`
 - `paper/iclr/figures/`
-- Any `/show-me` artifacts or results directories
+- Any ``artifacts/notes/` items (formerly `/show-me`) or results directories
 - Any previously generated figures from earlier runs of this plan
 
 **Filter:** Only images created or modified within the last 3 months (or since the last plan run).

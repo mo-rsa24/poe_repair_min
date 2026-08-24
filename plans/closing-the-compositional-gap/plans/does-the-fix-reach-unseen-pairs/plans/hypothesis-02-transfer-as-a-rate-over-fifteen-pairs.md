@@ -72,7 +72,7 @@ This extracts error patterns from the run transcript, deduplicates against globa
 - **Procedures**: (none yet; recommend creating [procedures/hypothesis-02-run-lopo-sweep.md](procedures/hypothesis-02-run-lopo-sweep.md) if manual steps emerge)
 - **Assets/outputs**: Will be saved to `outputs/interaction_term/transfer_rate/`
   - **Figure organization**: Use [figure-coverage-prompt.md](diagrams/figure-coverage-prompt.md) to scan the repo, rename all related figures to the step-11 naming convention, and consolidate them into `outputs/interaction_term/transfer_rate/figures/`. This prompt generates a FIGURE_CATALOG.md that maps each figure to axes, meaning, and original location.
-  - **Locations scanned**: `artifacts/results/ (per-question) and report/paper-evidence-index.md`, `outputs/interaction_term/`, `paper/iclr/figures/`, `/show-me` artifacts, results/ folders.
+  - **Locations scanned**: `artifacts/results/ (per-question) and report/paper-evidence-index.md`, `outputs/interaction_term/`, `paper/iclr/figures/`, ``artifacts/notes/` items (formerly `/show-me`), results/ folders.
 
 **For the full picture**: This plan serves Objective 2 (Transfer A) and Definition-of-Done item 3 of the scope. See [../MASTER_PLAN.md](../MASTER_PLAN.md) for the full experimental context.
 

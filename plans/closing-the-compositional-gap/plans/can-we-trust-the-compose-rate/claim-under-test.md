@@ -18,7 +18,7 @@ detector-presence scoring alike, because all three ask the same question of the 
 distinct object instances returns 2 for a picture of two dogs when the prompt asked for a cat
 and a dog. The failing case: two dogs scored as a successful "a cat and a dog". Observed in our
 own data once in 30 scored successes, at `a_cat__x__a_dog` seed 10, recorded in
-`evidence/f2-lambda1-audit/02-two-of-one/`.
+`artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/02-two-of-one/`.
 
 **The joint claim.** Neither family alone measures what a person means by "it composed". The
 minimal thing that would is: at least one instance of each requested concept, present as

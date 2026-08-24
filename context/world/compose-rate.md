@@ -87,7 +87,7 @@ Navigation: ⬅️ [How it shows up in the data](#how-it-shows-up-in-the-data) |
 
 **The scorer counts animals, it does not identify them.** ⚠️
 
-`evidence/f2-lambda1-audit/README.md`, its own summary: of 32 cells behind a 94% headline compose
+`artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md`, its own summary: of 32 cells behind a 94% headline compose
 rate at full correction strength, 1 is a confirmed error (two of the same animal, called a
 success), 5 more "cannot be called" confidently by eye (mostly waterfowl and raptor pairs that look
 alike even to a person), and 12 more are pairs chosen *because* they look alike (leopard/jaguar,
@@ -110,6 +110,6 @@ Navigation: ⬅️ [What people get wrong](#what-people-get-wrong) | 📋 [TOC](
 |---|---|---|
 | The validated compose rule and its detector | Read in `artifacts/results/can-we-trust-the-compose-score/compose-scorer-validation/scorer_validated.json` | 2026-08-24 |
 | Fail-rate as the same fraction under plain PoE | Read in `artifacts/results/does-the-fix-reach-unseen-pairs/fail_rate.md` | 2026-08-24 |
-| The scorer's true-error bound at λ=1 | Read in `evidence/f2-lambda1-audit/README.md` | 2026-08-24 |
-| The two example images | Read directly, `evidence/f2-lambda1-audit/{01-both-there,02-two-of-one}/` | 2026-08-24 |
+| The scorer's true-error bound at λ=1 | Read in `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md` | 2026-08-24 |
+| The two example images | Read directly, `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/{01-both-there,02-two-of-one}/` | 2026-08-24 |
 | The scorer-trust standing effort | Read in `MASTER_PLAN.md`, background experiment table | 2026-08-24 |
