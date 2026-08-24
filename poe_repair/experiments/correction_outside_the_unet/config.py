@@ -138,8 +138,11 @@ def derive_run_id(cfg: RunConfig, *, timestamp: str) -> str:
 
 
 def run_dir_for(cfg: RunConfig, *, output_root: Path) -> Path:
+    """``output_root`` is the resolved family root (``paths.CORRECTION_OUTSIDE_THE_UNET``),
+    not a generic outputs directory — the caller resolves that before calling in.
+    """
     return (
-        output_root / "group_a_failure" / cfg.technique.name
+        output_root / cfg.technique.name
         / cfg.cell.pair_slug / f"seed_{cfg.cell.seed}"
         / cfg.run_id
     )

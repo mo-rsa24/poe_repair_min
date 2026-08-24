@@ -32,6 +32,7 @@ from pathlib import Path
 
 import torch
 
+from poe_repair import paths
 from poe_repair.experiments.compose_scorer_validation.scorer import (
     _Embedders,
     score_output,
@@ -82,7 +83,7 @@ def _git_commit() -> str:
 
 
 def _load_anchors_by_pair(
-    anchors_root: Path = REPO_ROOT / "outputs" / "compose_scorer" / "anchors",
+    anchors_root: Path = paths.resolve(paths.COMPOSE_SCORER_VALIDATION) / "anchors",
 ) -> dict[str, dict[str, Path]]:
     """Load the three anchor paths per pair: a_alone, b_alone, joint.
 
@@ -136,7 +137,7 @@ def build_argparser() -> argparse.ArgumentParser:
                     choices=("online", "offline", "disabled"))
     ap.add_argument("--wandb-project", default="poe-repair-cross-pair")
     ap.add_argument("--output-root",
-                    default=str(REPO_ROOT / "outputs" / "cross_pair_lora_pooling"
+                    default=str(paths.resolve(paths.GROUP_POOL_CONFIGS)
                                 / "all_groups"))
     ap.add_argument("--run-id", default="auto")
     ap.add_argument("--cache-root", default=None)

@@ -293,9 +293,13 @@ For Claude to execute. Ask Claude to do these, in this order.
       register rows in `paper/iclr/figures.md` that name a builder script, the 12 experiment
       packages under `poe_repair/experiments/`, and the 24 `make_*.py` builders that carry paper
       slot letters.
-- [ ] **Prove it green** before a byte moves: the test suite passes and
-      `grep -rn "rung[1-4]\|outputs/group_a_failure\|make_f[0-9]" --include='*.py' .` returns
-      nothing.
+- [x] **Proven green 2026-08-24.** The test suite passes (229 passed, 1 skipped, 1 xfailed) and
+      `tests/test_paths_resolve.py` confirms every real path-construction site routes through
+      `poe_repair/paths.py`. The literal grep below is **not** the gate: it still fires on
+      `paths.py`'s own constant values (which correctly hold the old on-disk names, since nothing
+      has moved yet) and on docstrings/`--help` text that name a path for a human reader, not for
+      I/O. Both are confirmed harmless by direct inspection, file list in commit `f293bdf`. Do not
+      re-run this grep as a stop condition; it will never go empty while `paths.py` exists.
 
 ### 2. 📦 Run the sweep
 

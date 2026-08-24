@@ -33,7 +33,7 @@ log = logging.getLogger("compose_scorer.gen_validation_outputs")
 
 REPO = Path(__file__).resolve().parents[3]
 CACHE_ROOT = paths.resolve(paths.TRAINING_CACHE)
-OUT_DIR = REPO / "outputs" / "compose_scorer" / "validation_outputs" / "a_cat__x__a_dog_compose"
+OUT_DIR = paths.resolve(paths.COMPOSE_SCORER_VALIDATION) / "validation_outputs" / "a_cat__x__a_dog_compose"
 
 MODEL_ID = "stabilityai/stable-diffusion-xl-base-1.0"
 GUIDANCE, STEPS, H, W, EULER_SIGMA = 7.5, 50, 1024, 1024, 1.0

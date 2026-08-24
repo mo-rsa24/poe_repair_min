@@ -10,8 +10,10 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw
 
+from poe_repair import paths
+
 REPO = Path(__file__).resolve().parents[3]
-ANCHOR_ROOT = REPO / "outputs" / "compose_scorer" / "anchors"
+ANCHOR_ROOT = paths.resolve(paths.COMPOSE_SCORER_VALIDATION) / "anchors"
 PAIRS = ["a_cat__x__a_dog", "a_wolf__x__a_husky"]
 EDGE = 384
 PAD = 12

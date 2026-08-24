@@ -20,6 +20,7 @@ from pathlib import Path
 import yaml
 import torch
 
+from poe_repair import paths
 from poe_repair.run import make_ctx, run_method
 from poe_repair.experiments._eval_common import cell_for
 from poe_repair.experiments.compose_scorer_validation.detection_scorer import score_output_instances
@@ -27,7 +28,7 @@ from poe_repair.experiments.compose_scorer_validation.detection_scorer import sc
 log = logging.getLogger("animals_compose_transfer.fail_rate")
 
 REPO = Path(__file__).resolve().parents[3]
-SCOPE = REPO / "outputs" / "animals_compose_transfer"
+SCOPE = paths.resolve(paths.DOES_THE_FIX_REACH_UNSEEN_PAIRS)
 POOL = SCOPE / "pair_pool.yaml"
 PROMPTS = SCOPE / "pair_prompts.yaml"
 SEEDS = list(range(1, 9))  # 8 seeds, paired with the eval seeds later

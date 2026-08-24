@@ -29,10 +29,13 @@ SCENE = Path(__file__).resolve().parent.parent
 SCOPE = SCENE.parent
 REPO = Path("/home-mscluster/mmolefe/Playground/PhD/poe_repair_min")
 
+sys.path.insert(0, str(REPO))
+from poe_repair import paths  # noqa: E402
+
 DEFAULTS = {
-    "curves": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/dose_curves.json",
-    "images": REPO / "outputs/interaction_term/dose/pairs",
-    "figures": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose",
+    "curves": str(paths.resolve(paths.HOW_MUCH_CORRECTION_IS_NEEDED) / "dose_curves.json"),
+    "images": paths.resolve(paths.HOW_MUCH_CORRECTION_IS_NEEDED) / "pairs",
+    "figures": str(paths.resolve(paths.HOW_MUCH_CORRECTION_IS_NEEDED)),
 }
 
 REVIEW = SCOPE / "review/hypothesis-02-more-correction-more-composition.md"
@@ -42,7 +45,7 @@ SCORER = REPO / "poe_repair/experiments/compose_scorer_validation/detection_scor
 PLOTTER = REPO / "scripts/plot_dose_curves.py"
 SWEEP_SH = REPO / "scripts/mechanism_study/run_dose_sweep.sh"
 CANARIES = REPO / "tests/test_interaction_term_canaries.py"
-PAIR_POOL = REPO / "outputs/animals_compose_transfer/pair_pool.yaml"
+PAIR_POOL = paths.resolve(paths.DOES_THE_FIX_REACH_UNSEEN_PAIRS) / "pair_pool.yaml"
 PAPER_FIGS = REPO / "paper/iclr/figures"
 MAKE_F2 = REPO / "scripts/compose_rate_vs_correction.py"
 

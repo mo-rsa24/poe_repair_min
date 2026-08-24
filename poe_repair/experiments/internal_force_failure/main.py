@@ -20,6 +20,7 @@ from pathlib import Path
 
 import torch
 
+from poe_repair import paths
 from poe_repair.config import RunConfig
 from poe_repair.experiments._eval_common import HEADLINE_PAIR
 from poe_repair.experiments.internal_force_failure import figures as F
@@ -113,7 +114,7 @@ def _stage_metrics(
     trajectory_by_force: dict[str, dict] = {}
 
     veracity_seed_dir = (
-        cfg.paths.output_root / "residual_diagnostics" / "existence" / "pairs"
+        paths.resolve(paths.RESIDUAL_BETWEEN_MONO_AND_POE) / "existence" / "pairs"
         / cell.pair_slug / f"seed_{cell.seed}"
     )
     poe_run = veracity_seed_dir / "teacher_residual_const_lam000"
@@ -146,8 +147,8 @@ def _stage_metrics(
 
     method_comparison = IM.compute_method_comparison(
         distances_by_force=distances_by_force,
-        veracity_distances_path=cfg.paths.output_root / "residual_diagnostics" / "existence" / "metrics" / "distances.json",
-        veracity_residual_stats_path=cfg.paths.output_root / "residual_diagnostics" / "existence" / "metrics" / "residual_stats.json",
+        veracity_distances_path=paths.resolve(paths.RESIDUAL_BETWEEN_MONO_AND_POE) / "existence" / "metrics" / "distances.json",
+        veracity_residual_stats_path=paths.resolve(paths.RESIDUAL_BETWEEN_MONO_AND_POE) / "existence" / "metrics" / "residual_stats.json",
         force_stats_by_force=force_stats_by_force,
     )
 
@@ -274,7 +275,7 @@ def main() -> None:
 
     cfg = RunConfig()
     cell = S.make_cell(prompt_a, prompt_b, headline_seed)
-    out_root = cfg.paths.output_root / EXP_NAME
+    out_root = paths.resolve(paths.INTERNAL_FORCE_FAILURE)
     seed_dir = out_root / "pairs" / cell.pair_slug / f"seed_{cell.seed}"
     metrics_dir = ensure_dir(out_root / "metrics")
     fig_dir = ensure_dir(out_root / "figures")

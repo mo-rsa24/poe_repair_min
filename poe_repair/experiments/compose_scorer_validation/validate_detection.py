@@ -31,7 +31,7 @@ from poe_repair.experiments.compose_scorer_validation.detection_scorer import (
 log = logging.getLogger("compose_scorer.validate_detection")
 
 REPO = Path(__file__).resolve().parents[3]
-OUT_DIR = REPO / "outputs" / "compose_scorer"
+OUT_DIR = paths.resolve(paths.COMPOSE_SCORER_VALIDATION)
 ANCHORS = OUT_DIR / "anchors"
 ART = paths.resolve(paths.HELD_OUT_SEEDS) / "a_cat__x__a_dog"
 CATDOG_COMPOSE_DIR = OUT_DIR / "validation_outputs" / "a_cat__x__a_dog_compose"

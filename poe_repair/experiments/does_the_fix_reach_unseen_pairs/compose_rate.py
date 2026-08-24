@@ -25,12 +25,13 @@ from pathlib import Path
 import torch
 import yaml
 
+from poe_repair import paths
 from poe_repair.experiments.compose_scorer_validation.detection_scorer import score_output_instances
 
 log = logging.getLogger("animals_compose_transfer.compose_rate")
 
 REPO = Path(__file__).resolve().parents[3]
-SCOPE = REPO / "outputs" / "animals_compose_transfer"
+SCOPE = paths.resolve(paths.DOES_THE_FIX_REACH_UNSEEN_PAIRS)
 PROMPTS = yaml.safe_load((SCOPE / "pair_prompts.yaml").read_text())
 STEP_RE = re.compile(r"epoch_(\d+)_step_(\d+)")
 SEED_RE = re.compile(r"seed_(\d+)")

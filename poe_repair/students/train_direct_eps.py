@@ -47,6 +47,7 @@ from poe_repair.students.direct_eps import (
     build_direct_eps_student,
     build_hourglass_student,
 )
+from poe_repair import paths
 from poe_repair.runtime import ensure_dir, infer_device, infer_dtype, write_json
 
 
@@ -270,10 +271,10 @@ def main() -> None:
         train_dtype = torch.float32
 
     out_dir = ensure_dir(
-        REPO_ROOT / "outputs" / "group_a_failure" / "students" / args.output_name
+        paths.resolve(paths.CORRECTION_OUTSIDE_THE_UNET) / "students" / args.output_name
     )
     ckpt_dir = ensure_dir(
-        REPO_ROOT / "outputs" / "group_a_failure" / "checkpoints"
+        paths.resolve(paths.CORRECTION_OUTSIDE_THE_UNET) / "checkpoints"
         / "direct_eps" / args.output_name
     )
 
