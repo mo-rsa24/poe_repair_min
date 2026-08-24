@@ -31,6 +31,7 @@ import sys
 from pathlib import Path
 
 import matplotlib
+from poe_repair import paths
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
@@ -40,7 +41,7 @@ LAMBDAS = (0.5, 1.0, 1.5, 2.0)
 
 IMAGE_ROOT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/"
                   "overcorrection_grid/pairs")
-SCORER_CONTRACT = Path("outputs/compose_scorer/scorer_validated.json")
+SCORER_CONTRACT = paths.resolve(paths.COMPOSE_SCORER_VALIDATION) / "scorer_validated.json"
 OUT_DIR = Path("paper/iclr/figures")
 
 FIG_W = 5.5

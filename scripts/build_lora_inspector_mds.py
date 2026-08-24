@@ -45,6 +45,7 @@ import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path
+from poe_repair import paths
 
 _REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(_REPO_ROOT) not in sys.path:
@@ -77,7 +78,7 @@ from poe_repair.training_cache import DEFAULT_CACHE_ROOT, CellPath
 log = logging.getLogger("build_lora_inspector_mds")
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_RESULTS = REPO_ROOT / "artifacts/rung1-overfit/lora/a_cat__x__a_dog/seed_42/run__local"
+DEFAULT_RESULTS = paths.resolve(paths.ONE_PAIR_ONE_SEED) / "a_cat__x__a_dog/seed_42/run__local"
 DEFAULT_PAIR_SLUG = "a_cat__x__a_dog"
 
 # Style — copied from neurips2026 render_taxonomy_paper_figure.py.

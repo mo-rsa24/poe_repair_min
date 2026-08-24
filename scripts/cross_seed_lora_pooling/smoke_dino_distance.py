@@ -26,6 +26,7 @@ import argparse
 import logging
 import sys
 from pathlib import Path
+from poe_repair import paths
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
@@ -37,7 +38,7 @@ from PIL import Image
 log = logging.getLogger("smoke_dino_distance")
 
 
-DEFAULT_RESULTS = REPO_ROOT / "artifacts/rung1-overfit/lora/a_cat__x__a_dog/seed_42/run__local"
+DEFAULT_RESULTS = paths.resolve(paths.ONE_PAIR_ONE_SEED) / "a_cat__x__a_dog/seed_42/run__local"
 DEFAULT_CASE1 = DEFAULT_RESULTS / "probes/epoch_0900/lambda_0.50/decoded.png"
 DEFAULT_CASE2 = DEFAULT_RESULTS / "probes/epoch_1600/lambda_1.00/decoded.png"
 DEFAULT_MONO = DEFAULT_RESULTS / "mds_cache/static/mono.png"

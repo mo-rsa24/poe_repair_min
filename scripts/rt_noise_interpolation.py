@@ -38,6 +38,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -53,7 +54,7 @@ PAIR = "a_cat__x__a_dog"
 SEED_FROM, SEED_TO = 9, 13
 # Dense near zero: that is where a decay, if there is one, has to show.
 FRACTIONS = (0.0, 0.02, 0.05, 0.10, 0.20, 0.40, 0.70, 1.0)
-OUT_DIR = Path("outputs/interaction_term/direction_wall")
+OUT_DIR = paths.resolve(paths.DIRECTION_WALL)
 
 
 def slerp(a: torch.Tensor, b: torch.Tensor, t: float) -> torch.Tensor:

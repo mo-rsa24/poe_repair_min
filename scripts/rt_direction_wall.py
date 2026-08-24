@@ -31,6 +31,7 @@ from itertools import combinations
 from pathlib import Path
 
 import matplotlib
+from poe_repair import paths
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
@@ -47,7 +48,7 @@ PAIRS = (
     "a_cat__x__a_dog", "an_elephant__x__a_penguin",
 )
 SEEDS = (9, 13)          # 13 = the wrong-seed control's donor (seed + 4)
-OUT_DIR = Path("outputs/interaction_term/direction_wall")
+OUT_DIR = paths.resolve(paths.DIRECTION_WALL)
 
 BLUE = "#1f77b4"         # cat x dog, the running example, as in F2/F3
 RED = "#d62728"          # elephant x penguin, the not-alike pair, as in F3

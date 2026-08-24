@@ -34,6 +34,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -41,7 +42,7 @@ from poe_repair.experiments.interaction_term.cache import (  # noqa: E402
     CACHE_ROOT, load_cell,
 )
 
-OUT = Path("outputs/interaction_term/direction_wall/shared_component.json")
+OUT = paths.resolve(paths.DIRECTION_WALL) / "shared_component.json"
 # Reported as ranges rather than 50 numbers: the interesting structure is that
 # the shared part dies within the first few steps, which these bands show.
 BANDS = ((0, 3), (3, 10), (10, 20), (20, 35), (35, 50))

@@ -21,9 +21,10 @@ import argparse
 import json
 import re
 from pathlib import Path
+from poe_repair import paths
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_RUN_DIR = REPO_ROOT / "outputs/conditioning_window_lora/a_cat__x__a_dog/seed_42"
+DEFAULT_RUN_DIR = paths.resolve(paths.CFG_WINDOW_WITH_LORA) / "a_cat__x__a_dog/seed_42"
 
 EPOCH_RE = re.compile(r"^epoch_(\d+)$")
 LAMBDA_RE = re.compile(r"^lambda_(\d+\.\d+)$")

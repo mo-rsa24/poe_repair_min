@@ -31,6 +31,7 @@ import json
 from pathlib import Path
 
 import matplotlib
+from poe_repair import paths
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch, Rectangle
@@ -38,7 +39,7 @@ import numpy as np
 
 DOSE = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose")
 CURVES = DOSE / "dose_curves.json"
-PAIRS_ROOT = Path("outputs/interaction_term/dose/pairs")
+PAIRS_ROOT = paths.resolve(paths.HOW_MUCH_CORRECTION_IS_NEEDED) / "pairs"
 
 # The figure lands beside the manuscript, not on /datasets. A paper figure is a few
 # hundred KB and LaTeX has to reach it, so the "large artifacts to /datasets" rule

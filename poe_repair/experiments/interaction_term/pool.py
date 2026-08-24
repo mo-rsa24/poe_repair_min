@@ -25,8 +25,9 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 import yaml
+from poe_repair import paths
 
-DEFAULT_POOL = Path("outputs/animals_compose_transfer/pair_pool.yaml")
+DEFAULT_POOL = paths.resolve(paths.DOES_THE_FIX_REACH_UNSEEN_PAIRS) / "pair_pool.yaml"
 
 # The pool file records roles in trailing comments rather than structured
 # fields, so they are matched here. A pair whose comment says nothing

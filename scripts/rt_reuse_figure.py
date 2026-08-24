@@ -35,6 +35,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -45,7 +46,7 @@ from poe_repair.experiments.interaction_term.cache import (  # noqa: E402
 PAIR = "a_cat__x__a_dog"
 SEED_A, SEED_B = 9, 13          # 13 = seed 9's wrong-seed donor in the dose sweep
 SHOW_STEPS = (10, 20, 30, 40)
-OUT_DIR = Path("outputs/interaction_term/direction_wall")
+OUT_DIR = paths.resolve(paths.DIRECTION_WALL)
 FRAME_DIR = OUT_DIR / "frames"
 BLUE, GREEN = "#1f77b4", "#2ca02c"
 
