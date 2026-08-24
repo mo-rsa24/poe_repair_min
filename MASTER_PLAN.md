@@ -196,6 +196,11 @@ What this project is about in the real world lives in `context/`. Start at
 `context/00-INDEX.md`. A plan that names a column, a code, an ID or a real-world object (`r_t`,
 `arm`, `pair_slug`, a chimera, an animal pair) links its entry there rather than explaining it.
 
+## Runbook
+How to do the recurring things here by hand lives in `runbook/`. Start at
+`runbook/00-INDEX.md`. Check there before writing out a command sequence or click path for
+something done here regularly.
+
 ## 🖥️ Viewing results (web apps)
 
 The fastest way to *see* the results is the **LoRA Inspector** — a Flask app with four

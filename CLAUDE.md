@@ -75,6 +75,16 @@ must check the filesystem it actually writes to.
 plan tree owns the verdict. Never copy a curve into markdown; copy the verdict, the run id, and the
 bar it was judged against.
 
+## Runbook
+
+How to do the recurring things here by hand (checking the plan tree's state, launching or
+harvesting a run on the cluster) is in `runbook/`. Start at `runbook/00-INDEX.md`, which lists
+them as questions.
+
+Before writing out a sequence of commands or click paths for something done here regularly,
+check whether a recipe already exists. If one does and it is now wrong, fix the recipe rather
+than answering around it.
+
 ## Where to look first
 
 The root [MASTER_PLAN.md](MASTER_PLAN.md) carries `## Do this next` above a flat `## Running order`
