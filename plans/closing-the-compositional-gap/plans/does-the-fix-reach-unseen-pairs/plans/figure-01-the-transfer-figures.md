@@ -278,14 +278,14 @@ evidence set. F1 belongs to the compose-scorer scope, not here.
   pair.
   - Built by `python scripts/make_f8.py`, reads the pooled run's `compose_rate.json` and
     `pair_pool.json`
-  - Outputs `paper/iclr/figures/F8a-one-adapter-transfers.{png,pdf,json}`
+  - Outputs `paper/iclr/figures/compose-rate-as-the-lora-trains.{png,pdf,json}`
   - Which commit built it, and whether it has been judged: the
     [review file](../review/figure-01-the-transfer-figures.md)
 - [x] **1.2** F8b, the shippable adapter against the oracle correction it imitates: one horizontal
   dot row per pair, four markers per row.
   - Built by `python scripts/make_f8b.py`, reads `dose_curves.json` and the pooled run's
     `compose_rate.json`, no new runs
-  - Outputs `paper/iclr/figures/F8b-adapter-against-the-oracle.{png,pdf,json}`
+  - Outputs `paper/iclr/figures/compose-rate-by-pair-for-lora-against-the-joint-prompt-correction.{png,pdf,json}`
   - Which commit built it, and whether it has been judged: the
     [review file](../review/figure-01-the-transfer-figures.md)
 
@@ -401,8 +401,8 @@ guessed.
 
 | Item | Lane | What it shows | Built by | Output | Register row |
 |------|------|---------------|----------|--------|--------------|
-| F8a one adapter transfers | — | Compose rate over training steps, trained-on against held-out, with the uncorrected floor; second panel unpooled per pair | `python scripts/make_f8.py` | `paper/iclr/figures/F8a-one-adapter-transfers.{png,pdf,json}` | F8a, **built** |
-| F8b adapter against the oracle | — | One dot row per pair: no injection, oracle at two doses, adapter at step 60000 | `python scripts/make_f8b.py` | `paper/iclr/figures/F8b-adapter-against-the-oracle.{png,pdf,json}` | F8b, **built** |
+| F8a one adapter transfers | — | Compose rate over training steps, trained-on against held-out, with the uncorrected floor; second panel unpooled per pair | `python scripts/make_f8.py` | `paper/iclr/figures/compose-rate-as-the-lora-trains.{png,pdf,json}` | F8a, **built** |
+| F8b adapter against the oracle | — | One dot row per pair: no injection, oracle at two doses, adapter at step 60000 | `python scripts/make_f8b.py` | `paper/iclr/figures/compose-rate-by-pair-for-lora-against-the-joint-prompt-correction.{png,pdf,json}` | F8b, **built** |
 
 Numbers for both live in their sidecar `.json` and in the register row, never in this plan.
 

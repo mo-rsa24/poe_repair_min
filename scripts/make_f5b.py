@@ -45,7 +45,7 @@ CROSS_FRAMES = Path(
     "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cross/pairs"
     "/a_cat__x__a_dog/seed_9")
 OUT_DIR = Path("paper/iclr/figures")
-FIG_NAME = "F5b-gradual-commitment"
+FIG_NAME = "how-far-the-corrected-run-separates-from-the-uncorrected-one"
 
 NAMED = ("a_cat__x__a_dog", "an_elephant__x__a_penguin")
 FRAME_STEPS = (0, 16, 33, 49)

@@ -35,7 +35,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 SRC = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/window/"
            "window_curves.json")
 OUT_DIR = Path("paper/iclr/figures")
-FIG_NAME = "F4f-the-window-map"
+FIG_NAME = "how-many-seeds-composed-as-the-window-moves"
 
 
 def pretty(slug: str) -> str:

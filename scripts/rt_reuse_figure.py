@@ -149,12 +149,12 @@ def main() -> int:
 
     fig_dir = Path("paper/iclr/figures")
     fig_dir.mkdir(parents=True, exist_ok=True)
-    out = fig_dir / "D2-correction-not-reusable.png"
+    out = fig_dir / "direction-agreement-between-two-seeds.png"
     fig.savefig(out, dpi=300)
     fig.savefig(out.with_suffix(".pdf"))
     plt.close(fig)
 
-    (fig_dir / "D2-correction-not-reusable.json").write_text(json.dumps({
+    (fig_dir / "direction-agreement-between-two-seeds.json").write_text(json.dumps({
         "pair": PAIR, "seeds": [SEED_A, SEED_B], "shown_steps": SHOW_STEPS,
         "cosine_median": float(np.median(cosine)),
         "cosine_range": [float(cosine.min()), float(cosine.max())],

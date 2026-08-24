@@ -41,7 +41,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 SRC = Path("outputs/interaction_term/direction_wall/noise_interpolation.json")
 OUT_DIR = Path("paper/iclr/figures")
-FIG_NAME = "D2b-smooth-early-chaotic-late"
+FIG_NAME = "direction-agreement-as-the-starting-noise-is-moved"
 EARLY, LATE = "#1f77b4", "#d62728"
 # Measured by rerunning seed 9 from its own starting noise and comparing the
 # trajectory with the cached one, step by step. Quoted in the caption so the

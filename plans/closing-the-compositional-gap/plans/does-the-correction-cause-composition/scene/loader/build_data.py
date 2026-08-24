@@ -379,9 +379,9 @@ def main() -> int:
     # sweep output. Both are served, from two different roots.
     figures = {}
     for key, root, public, fname in [
-        ("f2", PAPER_FIGS, "/paperfigs", "F2-dose-response.png"),
-        ("f2b", PAPER_FIGS, "/paperfigs", "F2b-dissimilar-pair.png"),
-        ("f2Halfwidth", PAPER_FIGS, "/paperfigs", "F2-dose-response-halfwidth.png"),
+        ("f2", PAPER_FIGS, "/paperfigs", "compose-rate-as-correction-rises.png"),
+        ("f2b", PAPER_FIGS, "/paperfigs", "compose-rate-as-correction-rises-for-a-dissimilar-pair.png"),
+        ("f2Halfwidth", PAPER_FIGS, "/paperfigs", "compose-rate-as-correction-rises-with-a-random-control.png"),
         ("stripBoxes", figures_root, "/figures",
          "dose_strip_an_elephant__x__a_penguin_seed10_boxes.png"),
         ("stripDissimilar", figures_root, "/figures",

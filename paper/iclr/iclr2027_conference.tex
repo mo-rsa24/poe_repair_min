@@ -106,7 +106,7 @@ To make this concrete, consider two visually similar concepts: a cat and a dog. 
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\textwidth]{F1-two-meanings.png}
+\includegraphics[width=\textwidth]{what-the-product-misses-explainer.png}
 \caption{\textbf{Product-of-experts composition can produce a chimera.} \textbf{Left:} a schematic contrasting the desired joint concept with the overlap favored by multiplying two concept experts. \textbf{Right:} an uncorrected PoE sample for cat $\times$ dog shows one blended animal rather than two distinct animals.}
 \label{fig:poe-failure}
 \end{figure}
@@ -188,7 +188,7 @@ Figure~\ref{fig:two-regimes} shows one sample from each of two prompt pairs, wit
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\textwidth]{F1b-two-regimes.pdf}
+\includegraphics[width=\textwidth]{correction-size-over-the-denoising-run.pdf}
 \caption{\textbf{The same rule composes one pair and blends another.} Columns are prompt pairs, both sampled with uncorrected product-of-experts composition. \textbf{Top:} one real sample each, seed 42. \textbf{Bottom:} $\|r_t\|$ as a fraction of $\|\hat\epsilon_{\mathrm{PoE}}\|$ at every denoising step, median over seeds 4, 42 and 123 with a min-to-max band, both panels on one $y$ axis. The figure says nothing about $R_t$, which is measured nowhere, and two pairs cannot say whether the size of the correction predicts which pairs fail.}
 \label{fig:two-regimes}
 \end{figure}

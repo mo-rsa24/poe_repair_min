@@ -40,7 +40,7 @@ import numpy as np
 VERDICT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/"
                "reprobe/verdict.json")
 FIG_DIR = Path("paper/iclr/figures")
-FIG_NAME = "F7a-what-the-adapter-changes"
+FIG_NAME = "content-change-relative-to-attention-change-under-lora"
 
 RUNNING = "a_cat__x__a_dog"
 DISSIMILAR = "an_elephant__x__a_penguin"

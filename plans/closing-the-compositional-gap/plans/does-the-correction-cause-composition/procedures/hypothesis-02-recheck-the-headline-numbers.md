@@ -7,7 +7,7 @@ here. When you are done, F2's percentages are safe to print and two questions in
 ## Recommended prompt (when you finish)
 
 ```
-/analyze-figure paper/iclr/figures/F2-dose-response.pdf
+/analyze-figure paper/iclr/figures/compose-rate-as-correction-rises.pdf
 ```
 
 ## Position in the plan tree
@@ -283,7 +283,7 @@ Navigation: ⬅️ [6. The five-picture strip](#6-the-five-picture-strip) | 📋
 |---|---|---|
 | the re-scored curves | `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/dose_curves.json` | *Do the curves hold when only this sweep's own cells are scored?* and *Do they hold under a bar chosen against the picture of the boxes?*, both in [the review file](../review/hypothesis-02-more-correction-more-composition.md) |
 | the annotated box diagnostic | `dose_strip_an_elephant__x__a_penguin_seed10_boxes.png` | why `MIN_BOX_FRACTION` is 0.25 rather than a number picked from a table |
-| the five-picture strip | `paper/iclr/figures/F2-dose-response.pdf` | register slot F2, the paper's headline figure |
+| the five-picture strip | `paper/iclr/figures/compose-rate-as-correction-rises.pdf` | register slot F2, the paper's headline figure |
 
 ## Recommended Prompts
 

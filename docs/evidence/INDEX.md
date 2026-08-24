@@ -9,7 +9,7 @@ caption or writeup has to be rewritten fresh and plain before the paper may use 
 
 | Item | Register slot | State |
 |---|---|---|
-| `F2-dose-response/` | F2, the headline dose figure | result stands (oracle 7% to 93%, controls flat); the exact percentages wait on the re-score; **caption owed** |
+| `compose-rate-as-correction-rises/` | F2, the headline dose figure | result stands (oracle 7% to 93%, controls flat); the exact percentages wait on the re-score; **caption owed** |
 | `F6-subspace-vs-transfer/` (`QUERY.md`, `geometry_vs_transfer.png`, `result.json`) | F6, why it is learnable | the held-out projection licenses nothing about transfer. `QUERY.md` is the argument the caption must not exceed |
 | `F6-what-the-spectrum-measures/` (`QUERY.md`, `result.json`) | F6, why it is learnable | **the spectrum's floor does not control for ‖r_t‖ spread, and against one that does the pooled stack is 1.4x at k=8 rather than 10.7x.** What direction structure survives is within single runs (4.8x at k=8), not across pairs (1.2x). F6's shared-structure argument does not stand and the slot needs a decision |
 | `F7-mechanism-reprobe/` (`measure-fairness.md`, `RUN_ON_THIS_NODE.md`) | F7, the mechanism panel | replicated, median 1.52x over 64 cells. `measure-fairness.md` is why the obvious measure gives the opposite answer, which the appendix needs; **caption owed** |

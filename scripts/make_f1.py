@@ -35,7 +35,7 @@ PAIRS_ROOT = Path("outputs/interaction_term/dose/pairs")
 # Beside the manuscript, not on /datasets: a paper figure is a few hundred KB and
 # LaTeX has to reach it. Naming rule in paper/iclr/README.md.
 FIG_DIR = Path("paper/iclr/figures")
-FIG_NAME = "F1-two-meanings"
+FIG_NAME = "what-the-product-misses-explainer"
 
 # The drawn plane. Nothing here is measured; the ranges exist so the panel's physical
 # aspect is fixed and the labels always land clear of the contours.

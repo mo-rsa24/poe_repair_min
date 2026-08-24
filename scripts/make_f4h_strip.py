@@ -34,7 +34,7 @@ from poe_repair.experiments.interaction_term import window_grid as wg  # noqa: E
 
 WINDOW_ROOT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/window")
 FIG_DIR = Path("paper/iclr/figures")
-FIG_NAME = "F4h-too-late-to-fix"
+FIG_NAME = "samples-as-the-correction-starts-later"
 
 PAIR = "a_cat__x__a_dog"
 SEED = 12

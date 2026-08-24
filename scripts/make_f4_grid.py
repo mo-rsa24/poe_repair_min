@@ -35,7 +35,7 @@ import matplotlib.pyplot as plt
 WINDOW_ROOT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/window")
 CURVES = WINDOW_ROOT / "window_curves.json"
 FIG_DIR = Path("paper/iclr/figures")
-FIG_NAME = "F4a-when-it-arrives"
+FIG_NAME = "samples-as-the-correction-window-moves"
 
 PAIR = "a_cat__x__a_dog"
 

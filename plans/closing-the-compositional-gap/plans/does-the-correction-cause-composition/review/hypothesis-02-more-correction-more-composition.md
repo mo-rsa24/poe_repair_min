@@ -12,7 +12,7 @@ figures.
 ## Recommended prompt (to re-read the numbers)
 
 ```
-/analyze-figure paper/iclr/figures/F2-dose-response.pdf
+/analyze-figure paper/iclr/figures/compose-rate-as-correction-rises.pdf
 ```
 (To redo the counting and the bars: work through
 [the procedure](../procedures/hypothesis-02-recheck-the-headline-numbers.md).)
@@ -232,7 +232,7 @@ The original question asked about two things at once, so it splits.
 
 **And the strip that carries the figure.**
 - [x] ✅ Does the five-image strip read the same on complete cells?
-      **Yes.** F2 is `paper/iclr/figures/F2-dose-response.pdf`: `a_cat__x__a_dog` seed 9, all
+      **Yes.** F2 is `paper/iclr/figures/compose-rate-as-correction-rises.pdf`: `a_cat__x__a_dog` seed 9, all
       three rows across all five strengths, above the curves on a shared λ axis.
       The oracle row holds one ginger cat-dog chimera at λ=0, 0.25 and 0.5, then a tabby cat
       sitting beside a white labrador at 0.75 and 1. The random row holds that same chimera at
@@ -246,7 +246,7 @@ The original question asked about two things at once, so it splits.
       real dog.
 
       **The second figure answers the obvious objection.**
-      `paper/iclr/figures/F2b-dissimilar-pair.pdf` is `an_elephant__x__a_penguin` seed 10. An
+      `paper/iclr/figures/compose-rate-as-correction-rises-for-a-dissimilar-pair.pdf` is `an_elephant__x__a_penguin` seed 10. An
       elephant and a penguin share nothing, and PoE still fuses them into one creature at λ=0, so
       the failure cannot be dismissed as "the two animals look alike". Two things in it belong in
       the text rather than smoothed over: at λ=0.5 the failure changes character, dropping the
