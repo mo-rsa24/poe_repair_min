@@ -32,10 +32,11 @@ import sys
 from pathlib import Path
 
 import numpy as np
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-RUN = Path("outputs/animals_compose_transfer/pooled_lora/phase1_r8_100k")
+RUN = paths.resolve(paths.DOES_THE_FIX_REACH_UNSEEN_PAIRS) / "pooled_lora/phase1_r8_100k"
 OUT_DIR = Path("paper/iclr/figures")
 FIG_NAME = "compose-rate-as-the-lora-trains"
 

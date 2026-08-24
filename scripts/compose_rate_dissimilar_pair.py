@@ -30,14 +30,15 @@ import sys
 from pathlib import Path
 
 import matplotlib
+from poe_repair import paths
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch, Rectangle
 
-PAIRS_ROOT = Path("outputs/interaction_term/dose/pairs")
+PAIRS_ROOT = paths.resolve(paths.HOW_MUCH_CORRECTION_IS_NEEDED) / "pairs"
 FIG_DIR = Path("paper/iclr/figures")
 FIG_NAME = "compose-rate-as-correction-rises-with-detector-boxes"
-SCORER_CONTRACT = Path("outputs/compose_scorer/scorer_validated.json")
+SCORER_CONTRACT = paths.resolve(paths.COMPOSE_SCORER_VALIDATION) / "scorer_validated.json"
 
 ROWS = ("oracle", "wrong_pair", "wrong_seed", "wrong_step")
 ROW_LABEL = {"oracle": "real correction", "wrong_pair": "wrong pair",

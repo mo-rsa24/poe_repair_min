@@ -53,6 +53,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from poe_repair.config import DEFAULT_MODEL_ID  # noqa: E402
@@ -64,7 +65,7 @@ CLIP_L_WIDTH = 768   # where the CLIP-L half ends inside the 2048-wide seq_both
 WHITEN_POOL = "outputs/animals_compose_transfer/pair_pool.yaml"
 
 DOSE_CURVES = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/dose_curves.json")
-PAIRS_ROOT = Path("outputs/interaction_term/dose/pairs")
+PAIRS_ROOT = paths.resolve(paths.HOW_MUCH_CORRECTION_IS_NEEDED) / "pairs"
 OUT_DIR = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cache_analyses")
 LAMS = (0.0, 0.25, 0.5, 0.75, 1.0)
 

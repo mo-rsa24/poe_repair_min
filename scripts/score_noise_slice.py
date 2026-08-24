@@ -34,12 +34,13 @@ import sys
 from pathlib import Path
 
 import numpy as np
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-SLICE_DIR = Path("outputs/interaction_term/noise_slice")
-SCORER_CONTRACT = Path("outputs/compose_scorer/scorer_validated.json")
-OUT_DIR = Path("outputs/interaction_term/noise_slice")
+SLICE_DIR = paths.resolve(paths.NOISE_SLICE)
+SCORER_CONTRACT = paths.resolve(paths.COMPOSE_SCORER_VALIDATION) / "scorer_validated.json"
+OUT_DIR = paths.resolve(paths.NOISE_SLICE)
 
 
 def neighbour_agreement(M: np.ndarray) -> float:

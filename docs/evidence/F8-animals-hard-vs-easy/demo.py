@@ -18,9 +18,10 @@ import json
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
+from poe_repair import paths
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
-RUN_DIR = REPO_ROOT / "outputs/animals_compose_transfer/pooled_lora/phase1_r8_100k"
+RUN_DIR = paths.resolve(paths.DOES_THE_FIX_REACH_UNSEEN_PAIRS) / "pooled_lora/phase1_r8_100k"
 STEP_DIR = RUN_DIR / "samples/per_epoch/epoch_1200_step_060000"
 COMPOSE_RATE_PATH = RUN_DIR / "compose_rate.json"
 OUT_DIR = Path(__file__).resolve().parent

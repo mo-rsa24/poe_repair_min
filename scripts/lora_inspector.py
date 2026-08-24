@@ -20,6 +20,7 @@ import sys
 from pathlib import Path
 
 from flask import Flask, abort, jsonify, render_template_string, request, send_file
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from cross_tab import CROSS_INDEX_HTML  # noqa: E402
@@ -27,9 +28,9 @@ from window_tab import WINDOW_INDEX_HTML  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_MANIFEST = REPO_ROOT / "outputs/lora/a_cat__x__a_dog/seed_42/results/inspector_manifest.json"
-DEFAULT_CW_MANIFEST = REPO_ROOT / "outputs/conditioning_window/a_cat__x__a_dog/seed_42/results/inspector_manifest.json"
-DEFAULT_CWL_WP_MANIFEST = REPO_ROOT / "outputs/conditioning_window_lora/a_cat__x__a_dog/seed_42/with_prompt/results/inspector_manifest.json"
-DEFAULT_CWL_ALWAYS_MANIFEST = REPO_ROOT / "outputs/conditioning_window_lora/a_cat__x__a_dog/seed_42/always/results/inspector_manifest.json"
+DEFAULT_CW_MANIFEST = paths.resolve(paths.CFG_WINDOW_WITHOUT_LORA) / "a_cat__x__a_dog/seed_42/results/inspector_manifest.json"
+DEFAULT_CWL_WP_MANIFEST = paths.resolve(paths.CFG_WINDOW_WITH_LORA) / "a_cat__x__a_dog/seed_42/with_prompt/results/inspector_manifest.json"
+DEFAULT_CWL_ALWAYS_MANIFEST = paths.resolve(paths.CFG_WINDOW_WITH_LORA) / "a_cat__x__a_dog/seed_42/always/results/inspector_manifest.json"
 DEFAULT_OUTPUTS_ROOT = REPO_ROOT / "outputs"
 # The timing sweeps write to /datasets, not into the repo. The image route is
 # rooted at the whole interaction_term tree so one route serves the window

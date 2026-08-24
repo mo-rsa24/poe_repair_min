@@ -36,10 +36,11 @@ import sys
 from pathlib import Path
 
 import numpy as np
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-SRC = Path("outputs/interaction_term/direction_wall/noise_interpolation.json")
+SRC = paths.resolve(paths.DIRECTION_WALL) / "noise_interpolation.json"
 OUT_DIR = Path("paper/iclr/figures")
 FIG_NAME = "direction-agreement-as-the-starting-noise-is-moved"
 EARLY, LATE = "#1f77b4", "#d62728"

@@ -70,6 +70,7 @@ from pathlib import Path
 import numpy as np
 import torch
 from PIL import Image
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -85,7 +86,7 @@ DOSE_ROOTS = (
     Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/pairs"),
     Path("outputs/interaction_term/dose/pairs"),
 )
-SCORER_CONTRACT = Path("outputs/compose_scorer/scorer_validated.json")
+SCORER_CONTRACT = paths.resolve(paths.COMPOSE_SCORER_VALIDATION) / "scorer_validated.json"
 LAM_RE = re.compile(r"lam(\d{3})")
 
 # A quality proxy counts as showing NO gap when the paired difference is under

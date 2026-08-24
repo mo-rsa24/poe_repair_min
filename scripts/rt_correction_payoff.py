@@ -32,6 +32,7 @@ import sys
 from pathlib import Path
 
 import torch
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -48,7 +49,7 @@ FIG_NAME = "samples-per-step-with-the-correction-on-and-off"
 CROSS9_FRAMES = Path(
     "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cross/pairs/"
     "a_cat__x__a_dog/seed_9/call__rall/frames")
-DOSE = Path("outputs/interaction_term/dose/pairs")
+DOSE = paths.resolve(paths.HOW_MUCH_CORRECTION_IS_NEEDED) / "pairs"
 
 ROWS = [("a_cat__x__a_dog", 9, "#1f77b4", "cat x dog, seed 9"),
         ("a_cat__x__a_dog", 13, "#2ca02c", "cat x dog, seed 13"),

@@ -32,6 +32,7 @@ import json
 import re
 import sys
 from pathlib import Path
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -40,7 +41,7 @@ DEFAULT_ROOTS = (
     Path("outputs/interaction_term/dose/pairs"),
     Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/pairs"),
 )
-SCORER_CONTRACT = Path("outputs/compose_scorer/scorer_validated.json")
+SCORER_CONTRACT = paths.resolve(paths.COMPOSE_SCORER_VALIDATION) / "scorer_validated.json"
 ROWS = ("oracle", "random", "wrong_pair")
 ROW_LABEL = {
     "oracle": "the pair's own r_t",

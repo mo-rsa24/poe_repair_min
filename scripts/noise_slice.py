@@ -51,6 +51,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -59,7 +60,7 @@ from poe_repair.composers._helpers import init_latents_for_cell  # noqa: E402
 from poe_repair.experiments.interaction_term.cell import cell_from_slug  # noqa: E402
 from poe_repair.run import make_ctx  # noqa: E402
 
-OUT_DIR = Path("outputs/interaction_term/noise_slice")
+OUT_DIR = paths.resolve(paths.NOISE_SLICE)
 # Corners chosen from the window grid's earliest-window column, where these
 # three seeds of cat x dog did not all agree, so the slice has a boundary in
 # it rather than being uniformly good or uniformly bad.

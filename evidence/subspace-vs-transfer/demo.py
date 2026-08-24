@@ -28,16 +28,15 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from poe_repair.experiments.interaction_term.cache import CACHE_ROOT, load_cell
 from poe_repair.experiments.interaction_term.pool import load_pool
 
-COMPOSE_RATE = Path(
-    "outputs/animals_compose_transfer/pooled_lora/phase1_r8_100k/compose_rate.json"
-)
-FAIL_RATE = Path("outputs/animals_compose_transfer/fail_rate.md")
+COMPOSE_RATE = paths.resolve(paths.DOES_THE_FIX_REACH_UNSEEN_PAIRS) / "pooled_lora/phase1_r8_100k/compose_rate.json"
+FAIL_RATE = paths.resolve(paths.DOES_THE_FIX_REACH_UNSEEN_PAIRS) / "fail_rate.md"
 OUT = Path("docs/evidence/subspace-vs-transfer")
 KS = (1, 2, 4, 8, 16, 32, 64)
 MIN_STEPS = 2       # below this a cell is an eval stub with zeroed eps

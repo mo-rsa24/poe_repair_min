@@ -32,6 +32,7 @@ from collections import defaultdict
 from pathlib import Path
 
 import numpy as np
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -42,7 +43,7 @@ OUT_DIR = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/window
 DEFAULT_ROOTS = (
     Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/window/pairs"),
 )
-SCORER_CONTRACT = Path("outputs/compose_scorer/scorer_validated.json")
+SCORER_CONTRACT = paths.resolve(paths.COMPOSE_SCORER_VALIDATION) / "scorer_validated.json"
 WIN_RE = re.compile(r"_w(\d+)-(\d+)")
 
 # A window at step 20 of a 50-step run and a window at step 20 of a 20-step

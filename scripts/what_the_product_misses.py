@@ -25,12 +25,13 @@ import argparse
 from pathlib import Path
 
 import matplotlib
+from poe_repair import paths
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import ConnectionPatch, Ellipse
 import numpy as np
 
-PAIRS_ROOT = Path("outputs/interaction_term/dose/pairs")
+PAIRS_ROOT = paths.resolve(paths.HOW_MUCH_CORRECTION_IS_NEEDED) / "pairs"
 
 # Beside the manuscript, not on /datasets: a paper figure is a few hundred KB and
 # LaTeX has to reach it. Naming rule in paper/iclr/README.md.

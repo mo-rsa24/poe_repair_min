@@ -49,6 +49,7 @@ import json
 import logging
 import sys
 from pathlib import Path
+from poe_repair import paths
 
 _REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(_REPO_ROOT) not in sys.path:
@@ -94,7 +95,7 @@ from scripts.build_lora_inspector_mds import (  # noqa: E402  (path-mod import)
 log = logging.getLogger("build_lora_inspector_mds_semantic")
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_RESULTS = REPO_ROOT / "artifacts/rung1-overfit/lora/a_cat__x__a_dog/seed_42/run__local"
+DEFAULT_RESULTS = paths.resolve(paths.ONE_PAIR_ONE_SEED) / "a_cat__x__a_dog/seed_42/run__local"
 DEFAULT_PAIR_SLUG = "a_cat__x__a_dog"
 
 
