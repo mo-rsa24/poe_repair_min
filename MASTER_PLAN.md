@@ -77,8 +77,12 @@ task in the plan tree directly, never in a separate holding file.
 
 No order and no end. Re-entered rather than closed.
 
-- [plans/standing/artifact-reconciliation/plans/05-resweep-on-new-runs.md](plans/standing/artifact-reconciliation/plans/05-resweep-on-new-runs.md): re-catalogue and integrity-check whenever new runs land. Every `✓ verified` tag points at a path on a filesystem that is not under version control.
 - [plans/standing/literature/plans/01-reading-register.md](plans/standing/literature/plans/01-reading-register.md): keep the reading table above current, and make sure every idea-trying run names the paper it came from.
+
+Artifact reconciliation (`plans/shelved/artifact-reconciliation/`) is shelved, not standing: the
+two-filesystem catalogue-and-integrity-check job it did is not currently worth the overhead it
+costs to keep current. Revive by moving it back to `plans/standing/` if lost or untrustworthy
+artifacts become a real problem again.
 
 ## The scopes, and the state of each
 
@@ -94,7 +98,7 @@ container named for its state.
 |---|---|---|
 | `closing-the-compositional-gap/` | live, the paper | one parent scope for the manuscript and its two result claims: `does-the-correction-cause-composition` (causal), `does-the-fix-reach-unseen-pairs` (transfer), `writing-the-paper` (the draft), `can-we-trust-the-compose-rate` (tries an idea: can the printed rates be trusted) |
 | `standing/literature/` | standing | the reading register |
-| `standing/artifact-reconciliation/` | standing | artifacts catalogued and integrity-checked |
+| `shelved/artifact-reconciliation/` | shelved | artifacts catalogued and integrity-checked; retired 2026-08-24, not worth the overhead |
 | `completed/compose-scorer/` | done | delivered `scorer_validated.json`, in use by both result scopes |
 | `shelved/` | the shelf | `rungs`, `mechanism-study`, `phases`; one line at the top of each says what would bring it back |
 
@@ -168,7 +172,7 @@ recorded in the decision timeline.
 7. ✅ G5 (entanglement) explicitly deferred with rationale.
 
 ## Sub-Scopes
-- ⚠️ plans/standing/artifact-reconciliation/ — "keep run artifacts catalogued, integrity-checked, canonically organised" (standing: carries a recurring re-sweep node)
+- ⚠️ plans/shelved/artifact-reconciliation/ — "keep run artifacts catalogued, integrity-checked, canonically organised" (shelved 2026-08-24, not worth the overhead)
 - ⚠️ plans/completed/compose-scorer/ — reusable instrument: a 3-anchor scorer that tells a two-animal composition from a chimera blend; emits scorer_validated.json (the cross-scope contract)
 - ⚠️ plans/closing-the-compositional-gap/plans/does-the-fix-reach-unseen-pairs/ — animals-only hard-pair LoRA transfer (leave-one-pair-out + size-matched-mixed contrast); DEPENDS ON compose-scorer's scorer_validated.json
 - ⚠️ plans/standing/literature/ — standing: what the field already knows, and the source behind every idea-trying run

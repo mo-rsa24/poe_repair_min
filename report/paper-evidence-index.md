@@ -30,7 +30,7 @@ updated to where the retrofit moved that item.
 | `report/instrument_smoke.md`, `report/normalization_preregistration.md` | instrument provenance: what was committed before results were read |
 | `report/decision-timeline.md` (repo root), `report/RESULTS_SUMMARY.md` | the running record; RESULTS_SUMMARY defers to the review files where they disagree |
 | the regeneration code for F6/F8, now merged beside each figure's evidence folder under `artifacts/results/which-way-the-correction-points/` | the throwaway code that produced `F6`'s and `F8`'s images; regeneration path, never cited |
-| `plans/standing/artifact-reconciliation/inventory/` | the artifact-reconciliation scope's four output documents |
+| `plans/shelved/artifact-reconciliation/inventory/` | the artifact-reconciliation scope's four output documents |
 
 ## Not paper material
 
