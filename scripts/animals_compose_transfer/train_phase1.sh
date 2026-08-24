@@ -9,7 +9,7 @@ PY=/home-mscluster/mmolefe/miniforge3/envs/co3_bw/bin/python
 REPO=/home-mscluster/mmolefe/Playground/PhD/poe_repair_min
 cd "$REPO"
 export POE_REPAIR_TRAINING_CACHE=/datasets/mmolefe/poe_repair_min/artifacts/caches/training_cache
-SCOPE=$REPO/outputs/animals_compose_transfer
+SCOPE=$REPO/artifacts/results/does-the-fix-reach-unseen-pairs
 
 MODE="${1:-run}"   # "dry" for a 1-epoch validation (wandb off), else full 100k
 if [ "$MODE" = "dry" ]; then

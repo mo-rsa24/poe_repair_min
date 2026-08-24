@@ -24,7 +24,7 @@ REPO=/home-mscluster/mmolefe/Playground/PhD/poe_repair_min
 cd "$REPO"
 mkdir -p results/mechanism_study
 
-CKPT=$REPO/outputs/animals_compose_transfer/pooled_lora/phase1_r8_100k/checkpoints/lora_step_100000.pt
+CKPT=$REPO/artifacts/results/does-the-fix-reach-unseen-pairs/pooled_lora/phase1_r8_100k/checkpoints/lora_step_100000.pt
 OUT=/datasets/mmolefe/poe_repair_min/outputs/interaction_term/reprobe
 STEPS=10,25,40
 

@@ -15,10 +15,10 @@ PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
 REPO=/home-mscluster/mmolefe/Playground/PhD/poe_repair_min
 cd "$REPO"
 export POE_REPAIR_TRAINING_CACHE=/datasets/mmolefe/poe_repair_min/artifacts/caches/training_cache
-POOL=$REPO/outputs/animals_compose_transfer/pair_pool.yaml
-PROMPTS=$REPO/outputs/animals_compose_transfer/pair_prompts.yaml
+POOL=$REPO/artifacts/results/does-the-fix-reach-unseen-pairs/pair_pool.yaml
+PROMPTS=$REPO/artifacts/results/does-the-fix-reach-unseen-pairs/pair_prompts.yaml
 SEEDS=$REPO/outputs/cross_pair_lora_pooling/seed_pool.yaml
-OUTROOT=$REPO/outputs/animals_compose_transfer/pooled_lora
+OUTROOT=$REPO/artifacts/results/does-the-fix-reach-unseen-pairs/pooled_lora
 RUNID=phase1_r8
 
 echo "[$(date -u +%H:%M:%S)] node=$(hostname) === train pooled LoRA (11 pairs, ~20k steps) ==="

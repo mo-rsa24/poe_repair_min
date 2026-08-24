@@ -32,4 +32,4 @@ echo "[$(date -u +%H:%M:%S)] === C) held-out-eval caches (5 pairs x 8 seeds) ===
 $PY -m poe_repair.experiments.animals_compose_transfer.build_caches --which heldout_eval
 
 echo "[$(date -u +%H:%M:%S)] DONE prereqs. fail_rate.md:"
-cat outputs/animals_compose_transfer/fail_rate.md || true
+cat artifacts/results/does-the-fix-reach-unseen-pairs/fail_rate.md || true
