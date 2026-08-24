@@ -137,7 +137,7 @@ def main() -> int:
         )
         return 2
 
-    from poe_repair.experiments.compose_scorer.detection_scorer import count_instances
+    from poe_repair.experiments.compose_scorer_validation.detection_scorer import count_instances
 
     centres, rates, ns, rows = [], [], [], []
     for (start, end), items in sorted(windows.items()):

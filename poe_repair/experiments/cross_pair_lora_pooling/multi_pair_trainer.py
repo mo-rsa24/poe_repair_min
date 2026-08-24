@@ -23,8 +23,8 @@ from typing import Any
 import torch
 from torch.optim import AdamW
 
-from poe_repair.experiments.lora import trainer as lora_trainer
-from poe_repair.experiments.lora.config import RunConfig
+from poe_repair.experiments.one_pair_one_seed import trainer as lora_trainer
+from poe_repair.experiments.one_pair_one_seed.config import RunConfig
 
 
 log = logging.getLogger(__name__)

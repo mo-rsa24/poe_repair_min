@@ -1996,7 +1996,7 @@ code{background:#161a22;padding:2px 6px;border-radius:4px;color:#7ab7ff;}</style
 <p>Expected at:</p>
 <p><code>{{ path }}</code></p>
 <p>Build it by running:</p>
-<p><code>python -m poe_repair.experiments.conditioning_window</code></p>
+<p><code>python -m poe_repair.experiments.cfg_window_without_lora</code></p>
 </body></html>
 """
 
@@ -2008,9 +2008,9 @@ code{background:#161a22;padding:2px 6px;border-radius:4px;color:#7ab7ff;}</style
 </head><body>
 <h2>conditioning_window_lora manifests not found</h2>
 <p>Missing: <code>{{ missing|safe }}</code></p>
-<p>Also requires the no-LoRA baseline at <code>{{ off_path }}</code> (rendered by <code>python -m poe_repair.experiments.conditioning_window</code>).</p>
+<p>Also requires the no-LoRA baseline at <code>{{ off_path }}</code> (rendered by <code>python -m poe_repair.experiments.cfg_window_without_lora</code>).</p>
 <p>Build the LoRA sweeps with:</p>
-<p><code>python -m poe_repair.experiments.conditioning_window_lora</code></p>
+<p><code>python -m poe_repair.experiments.cfg_window_with_lora</code></p>
 </body></html>
 """
 
@@ -2304,7 +2304,7 @@ def main() -> int:
     ap.add_argument(
         "--cw-manifest", default=str(DEFAULT_CW_MANIFEST),
         help="conditioning_window manifest (produced by "
-             "`python -m poe_repair.experiments.conditioning_window`). "
+             "`python -m poe_repair.experiments.cfg_window_without_lora`). "
              "If missing, the /conditioning_window route renders a hint page.",
     )
     ap.add_argument(

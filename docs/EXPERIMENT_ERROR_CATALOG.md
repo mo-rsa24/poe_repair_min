@@ -25,7 +25,7 @@ assert eval_output.dtype == torch.float32, f"Expected float32, got {eval_output.
 assert eval_output.device.type == 'cuda', f"Expected GPU tensor, got {eval_output.device}"
 assert eval_output.min() >= -0.1 and eval_output.max() <= 1.1, f"Range error: [{eval_output.min()}, {eval_output.max()}]"
 ```
-Check normalization pipeline in `experiments/lora/main.py::eval_hook`.
+Check normalization pipeline in `experiments/one_pair_one_seed/main.py::eval_hook`.
 
 **First discovered:** poe_repair_min, step-09
 

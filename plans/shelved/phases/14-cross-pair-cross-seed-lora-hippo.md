@@ -53,8 +53,8 @@ New code under `poe_repair.experiments.cross_pair_lora_pooling/`:
 | `poe_repair.experiments.cross_pair_lora_pooling.sample_crossbar` | new | Four-quadrant sampling. For each `(pair, seed)` chosen by the quadrant policy (`in/in`, `in/out`, `out/in`, `out/out`), calls `run_lora_residual_inject` with the trained adapter; tags each output dir with `quadrant=<...>`. |
 | `poe_repair.experiments.cross_pair_lora_pooling.contact_sheet` | new | Renders the held-pair × held-seed sheet (the paper figure) and the three calibration sheets. Rows = pairs, cols = `{PoE, pooled-LoRA, per-group-LoRA from Plan 10 if available, per-pair-LoRA from Plan 09 if available, mono}`. |
 | `scripts/cross_pair_lora_pooling/train_all_groups.sh` | new | One-shot wrapper: validates pools → trains → samples crossbar → renders contact sheets. Sized for one 32 GB Blackwell GPU. |
-| `poe_repair.experiments.cross_seed_lora_pooling.seed_pool` | reused verbatim | Seed-pool YAML loader. |
-| `poe_repair.experiments.cross_seed_lora_pooling.task_d_bridge` | reused with `--pair`/`--seed` | Δ̄_t bridge per `(pair, seed)`. Inputs are per-cell. |
+| `poe_repair.experiments.held_out_seeds.seed_pool` | reused verbatim | Seed-pool YAML loader. |
+| `poe_repair.experiments.held_out_seeds.task_d_bridge` | reused with `--pair`/`--seed` | Δ̄_t bridge per `(pair, seed)`. Inputs are per-cell. |
 | `scripts/build_training_cache.py`, `scripts/build_eval_cache.py` | reused | Cache builders. Same scripts used on mscluster. |
 | `scripts/cross_seed_lora_pooling/build_sibling_caches.sh` | reused | Coordinated with Plan 10's driver task: builds the five sibling-pair caches at seeds `{9..12}`. Idempotent. |
 
@@ -323,7 +323,7 @@ mkdir -p outputs/cross_pair_lora_pooling
 $PY -m poe_repair.experiments.cross_pair_lora_pooling.pair_pool \
     --pair-pool outputs/cross_pair_lora_pooling/pair_pool.yaml \
     --check-only
-$PY -m poe_repair.experiments.cross_seed_lora_pooling.seed_pool \
+$PY -m poe_repair.experiments.held_out_seeds.seed_pool \
     --seed-pool-path outputs/cross_pair_lora_pooling/seed_pool.yaml \
     --check-only
 
@@ -404,7 +404,7 @@ Contact sheets: ~2 min.
 ### 10. Task D — Δ̄_t bridge
 
 ```bash
-$PY -m poe_repair.experiments.cross_seed_lora_pooling.task_d_bridge \
+$PY -m poe_repair.experiments.held_out_seeds.task_d_bridge \
     --pooled-run outputs/cross_pair_lora_pooling/all_groups/main \
     --cells outputs/cross_pair_lora_pooling/all_groups/main/samples/cells.jsonl
 ```
@@ -497,7 +497,7 @@ visually inspected and classified into one of the buckets below.
 
 ### Task D — Δ̄_t bridge across `(pair, seed)` (~20 min)
 
-Reuse `poe_repair.experiments.cross_seed_lora_pooling.task_d_bridge`
+Reuse `poe_repair.experiments.held_out_seeds.task_d_bridge`
 with the new `--cells` argument (already supported by Plan 08's
 version; verify before launch). Per cell, emits three cosine curves
 vs. t: against own `Δ_t`, against `Δ̄_t^(P)` (pair-mean), against

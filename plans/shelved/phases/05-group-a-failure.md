@@ -39,7 +39,7 @@ documents that result and explains why we ran each one.
   - `poe_repair/students/latent_cnn.py`,
   - `poe_repair/students/latent_unet.py`,
   - `poe_repair/students/frozen_feature_mlp.py`.
-- Experiment package: `poe_repair/experiments/group_a_failure/`
+- Experiment package: `poe_repair/experiments/correction_outside_the_unet/`
   (one package; `--technique` selects which architecture).
 - Sampler: `poe_repair/methods/_sampling.py::run_external_corrector_inject`.
   Takes a `corrector` callback. At `λ=0` reproduces vanilla PoE
@@ -63,19 +63,19 @@ export CUDA_VISIBLE_DEVICES=0   # one technique per GPU
 
 ``bash
 # A1 — latent CNN
-CUDA_VISIBLE_DEVICES=0 $PY -m poe_repair.experiments.group_a_failure \
+CUDA_VISIBLE_DEVICES=0 $PY -m poe_repair.experiments.correction_outside_the_unet \
     --technique latent_cnn \
     --pair a_cat__x__a_dog --seed 42 --split heldout \
     --total-epochs 600 --probe-every-epochs 50 --lr 1e-4
 
 # A2 — latent UNet
-CUDA_VISIBLE_DEVICES=1 $PY -m poe_repair.experiments.group_a_failure \
+CUDA_VISIBLE_DEVICES=1 $PY -m poe_repair.experiments.correction_outside_the_unet \
     --technique latent_unet \
     --pair a_cat__x__a_dog --seed 42 --split heldout \
     --total-epochs 600 --probe-every-epochs 50 --lr 1e-4
 
 # A3 — frozen-feature MLP
-CUDA_VISIBLE_DEVICES=0 $PY -m poe_repair.experiments.group_a_failure \
+CUDA_VISIBLE_DEVICES=0 $PY -m poe_repair.experiments.correction_outside_the_unet \
     --technique frozen_feature_mlp \
     --pair a_cat__x__a_dog --seed 42 --split heldout \
     --total-epochs 600 --probe-every-epochs 50 --lr 1e-4 --train-batch-size 2
@@ -84,7 +84,7 @@ CUDA_VISIBLE_DEVICES=0 $PY -m poe_repair.experiments.group_a_failure \
 ### Dry-run wiring check (any technique, no training)
 
 ``bash
-$PY -m poe_repair.experiments.group_a_failure \
+$PY -m poe_repair.experiments.correction_outside_the_unet \
     --technique latent_cnn --dry-run
 ``
 

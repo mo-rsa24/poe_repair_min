@@ -68,7 +68,7 @@ def main() -> int:
     print(f"scorer: {contract['method']} via {contract['detector']}")
     print(f"  rule: {contract['compose_rule']}\n")
 
-    from poe_repair.experiments.compose_scorer.detection_scorer import (
+    from poe_repair.experiments.compose_scorer_validation.detection_scorer import (
         count_instances,
     )
     device = None

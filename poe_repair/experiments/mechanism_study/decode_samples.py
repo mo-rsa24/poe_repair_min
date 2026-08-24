@@ -10,8 +10,8 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from poe_repair.experiments.lora.main import encode_all_prompts
-from poe_repair.experiments.lora.probe import load_pinned_init_latents
+from poe_repair.experiments.one_pair_one_seed.main import encode_all_prompts
+from poe_repair.experiments.one_pair_one_seed.probe import load_pinned_init_latents
 from poe_repair.methods._sampling import (
     run_lora_residual_inject,
     write_decoded_image,

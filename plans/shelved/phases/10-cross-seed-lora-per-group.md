@@ -101,12 +101,12 @@ from `outputs/cross_seed_lora_pooling/` to
 
 | Module | Reused / changed | Role |
 |---|---|---|
-| `poe_repair.experiments.cross_seed_lora_pooling.seed_pool` | reused | YAML seed-pool loader + leak guard. |
-| `poe_repair.experiments.cross_seed_lora_pooling.train_pooled` | reused; takes `--pair <slug>` | Pooled trainer per pair. |
-| `poe_repair.experiments.cross_seed_lora_pooling.sample_heldout` | **changed**: adds `--heldout-pair <slug>` | Held-out evaluator; if `--heldout-pair` differs from training pair, attaches the trained LoRA and samples on the held-out pair's cache. |
-| `poe_repair.experiments.cross_seed_lora_pooling.step0_prescreen` | reused | Inference-time mono-average pre-screen per pair. |
-| `poe_repair.experiments.cross_seed_lora_pooling.task_d_bridge` | reused | Δ̄_t bridge per pair. |
-| `poe_repair.experiments.cross_seed_lora_pooling.contact_sheet` | reused; takes `--pair` | Renders task B/C/heldout-pair grids per pair. |
+| `poe_repair.experiments.held_out_seeds.seed_pool` | reused | YAML seed-pool loader + leak guard. |
+| `poe_repair.experiments.held_out_seeds.train_pooled` | reused; takes `--pair <slug>` | Pooled trainer per pair. |
+| `poe_repair.experiments.held_out_seeds.sample_heldout` | **changed**: adds `--heldout-pair <slug>` | Held-out evaluator; if `--heldout-pair` differs from training pair, attaches the trained LoRA and samples on the held-out pair's cache. |
+| `poe_repair.experiments.held_out_seeds.step0_prescreen` | reused | Inference-time mono-average pre-screen per pair. |
+| `poe_repair.experiments.held_out_seeds.task_d_bridge` | reused | Δ̄_t bridge per pair. |
+| `poe_repair.experiments.held_out_seeds.contact_sheet` | reused; takes `--pair` | Renders task B/C/heldout-pair grids per pair. |
 | `scripts/cross_seed_lora_pooling/task_b_learning_curve.sh` | reused via `PAIR=` env var | Wraps `train_pooled` + `sample_heldout`. |
 | `scripts/cross_seed_lora_pooling/task_c_per_seed_ceiling.sh` | reused via `PAIR=` env var | Per-seed ceiling. |
 | `scripts/cross_seed_lora_pooling/heldout_pair.sh` *(new)* | new | Loops over groups (`LORA_GROUPS=G1..G6`), resolves each group's pooled checkpoint via `checkpoints/latest.json`, runs `sample_heldout --heldout-pair <sibling>` for seeds {9..12}. Per-group ckpt override via `G{N}_CHECKPOINT=`. |
@@ -174,7 +174,7 @@ cd /home-mscluster/mmolefe/Playground/PhD/poe_repair_min
 for PAIR in a_dolphin__x__an_ocean_wave a_dog__x__oil_painting_style \
             a_mailbox__x__a_snowfield a_typewriter__x__a_cactus \
             a_cat__x__a_dog; do
-  $PY -m poe_repair.experiments.cross_seed_lora_pooling.step0_prescreen \
+  $PY -m poe_repair.experiments.held_out_seeds.step0_prescreen \
       --pair $PAIR \
       --output-root outputs/cross_seed_lora_pooling/$PAIR/step0_prescreen
 done
@@ -235,7 +235,7 @@ held-out seeds. Output lands at
 Direct invocation:
 
 ```bash
-$PY -m poe_repair.experiments.cross_seed_lora_pooling.sample_heldout \
+$PY -m poe_repair.experiments.held_out_seeds.sample_heldout \
     --checkpoint outputs/cross_seed_lora_pooling/a_cat__x__a_dog/task_b_learning_curve/k08__ep1600/checkpoints/lora_step_<...>.pt \
     --pair       a_cat__x__a_dog \
     --heldout-pair a_wolf__x__a_husky \
@@ -248,7 +248,7 @@ $PY -m poe_repair.experiments.cross_seed_lora_pooling.sample_heldout \
 for PAIR in a_dolphin__x__an_ocean_wave a_dog__x__oil_painting_style \
             a_mailbox__x__a_snowfield a_typewriter__x__a_cactus \
             a_cat__x__a_dog; do
-  $PY -m poe_repair.experiments.cross_seed_lora_pooling.task_d_bridge \
+  $PY -m poe_repair.experiments.held_out_seeds.task_d_bridge \
       --pooled-run outputs/cross_seed_lora_pooling/$PAIR/task_b_learning_curve/k08__ep1600
 done
 ```
@@ -259,11 +259,11 @@ done
 for PAIR in a_dolphin__x__an_ocean_wave a_dog__x__oil_painting_style \
             a_mailbox__x__a_snowfield a_typewriter__x__a_cactus \
             a_cat__x__a_dog; do
-  $PY -m poe_repair.experiments.cross_seed_lora_pooling.contact_sheet \
+  $PY -m poe_repair.experiments.held_out_seeds.contact_sheet \
       --pair $PAIR --task B
-  $PY -m poe_repair.experiments.cross_seed_lora_pooling.contact_sheet \
+  $PY -m poe_repair.experiments.held_out_seeds.contact_sheet \
       --pair $PAIR --task C
-  $PY -m poe_repair.experiments.cross_seed_lora_pooling.contact_sheet \
+  $PY -m poe_repair.experiments.held_out_seeds.contact_sheet \
       --pair $PAIR --task heldout_pair
 done
 ```

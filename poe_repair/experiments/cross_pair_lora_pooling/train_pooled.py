@@ -32,7 +32,7 @@ from pathlib import Path
 
 import torch
 
-from poe_repair.experiments.compose_scorer.scorer import (
+from poe_repair.experiments.compose_scorer_validation.scorer import (
     _Embedders,
     score_output,
 )
@@ -49,9 +49,9 @@ from poe_repair.experiments.cross_pair_lora_pooling.pair_prompts import (
 from poe_repair.experiments.cross_pair_lora_pooling.seed_pool import (
     load_seed_pool,
 )
-from poe_repair.experiments.lora import trainer as lora_trainer
-from poe_repair.experiments.lora.config import RunConfig
-from poe_repair.experiments.lora.main import (
+from poe_repair.experiments.one_pair_one_seed import trainer as lora_trainer
+from poe_repair.experiments.one_pair_one_seed.config import RunConfig
+from poe_repair.experiments.one_pair_one_seed.main import (
     REPO_ROOT,
     WandBLogger,
     encode_all_prompts,

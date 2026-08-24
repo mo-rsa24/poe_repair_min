@@ -253,11 +253,11 @@ disk; only the second name goes.
 
 | Now | Becomes |
 |---|---|
-| `poe_repair/experiments/group_a_failure/` | `correction_outside_the_unet/` |
-| `poe_repair/experiments/conditioning_window{,_lora}/` | `cfg_window_without_lora/`, `cfg_window_with_lora/` |
-| `poe_repair/experiments/residual_diagnostics/` | `residual_between_mono_and_poe/` |
-| `poe_repair/experiments/animals_compose_transfer/` | `does_the_fix_reach_unseen_pairs/` |
-| `poe_repair/experiments/compose_scorer/` | `compose_scorer_validation/` |
+| `poe_repair/experiments/correction_outside_the_unet/` | `correction_outside_the_unet/` |
+| `poe_repair/experiments/cfg_window_without_lora{,_lora}/` | `cfg_window_without_lora/`, `cfg_window_with_lora/` |
+| `poe_repair/experiments/residual_between_mono_and_poe/` | `residual_between_mono_and_poe/` |
+| `poe_repair/experiments/does_the_fix_reach_unseen_pairs/` | `does_the_fix_reach_unseen_pairs/` |
+| `poe_repair/experiments/compose_scorer_validation/` | `compose_scorer_validation/` |
 | the 24 `scripts/make_*.py` | named for the figure each draws, not its paper slot |
 | the 9 `scripts/build_*.py` | `scripts/build/`, names unchanged |
 | the other 53 in `scripts/` | grouped by the experiment they probe |

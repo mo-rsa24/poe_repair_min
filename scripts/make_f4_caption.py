@@ -71,7 +71,7 @@ def main() -> int:
 
     # The same two helpers caption_readback.py uses. Both return L2-normalised
     # features already, so nothing here renormalises them.
-    from poe_repair.experiments.residual_diagnostics.metrics import (
+    from poe_repair.experiments.residual_between_mono_and_poe.metrics import (
         clip_image_embed, clip_text_embed,
     )
 

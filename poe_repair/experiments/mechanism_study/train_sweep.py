@@ -24,9 +24,9 @@ from pathlib import Path
 
 import torch
 
-from poe_repair.experiments.lora.main import encode_all_prompts
-from poe_repair.experiments.lora.probe import load_pinned_init_latents
-from poe_repair.experiments.lora import trainer as lora_trainer
+from poe_repair.experiments.one_pair_one_seed.main import encode_all_prompts
+from poe_repair.experiments.one_pair_one_seed.probe import load_pinned_init_latents
+from poe_repair.experiments.one_pair_one_seed import trainer as lora_trainer
 from poe_repair.experiments.mechanism_study.capture_attention import (
     CAT_DOG_TOKEN_INDICES, _maybe_attach_lora,
 )

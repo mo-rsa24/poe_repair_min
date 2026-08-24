@@ -121,7 +121,7 @@ run_group () {
     echo "    seeds  : $SEEDS"
 
     local cmd=(
-        "$PY" -m poe_repair.experiments.cross_seed_lora_pooling.sample_heldout
+        "$PY" -m poe_repair.experiments.held_out_seeds.sample_heldout
         --checkpoint "$ckpt"
         --heldout-pair "$sibling"
         --prompt-a "$A" --prompt-b "$B" --joint-prompt "$J"
@@ -142,5 +142,5 @@ done
 
 echo "==> heldout_pair sweep complete."
 echo "    next: render per-group contact sheets, e.g."
-echo "    \$PY -m poe_repair.experiments.cross_seed_lora_pooling.contact_sheet \\"
+echo "    \$PY -m poe_repair.experiments.held_out_seeds.contact_sheet \\"
 echo "        --pair <train-pair> --task heldout_pair"

@@ -26,8 +26,8 @@
     "bytes": 12626
    },
    "scorer": {
-    "path": "poe_repair/experiments/compose_scorer/detection_scorer.py",
-    "abs": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/poe_repair/experiments/compose_scorer/detection_scorer.py",
+    "path": "poe_repair/experiments/compose_scorer_validation/detection_scorer.py",
+    "abs": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/poe_repair/experiments/compose_scorer_validation/detection_scorer.py",
     "mtime": "2026-08-10T17:53:27+00:00",
     "bytes": 6824
    },
@@ -102,7 +102,7 @@
   "minBoxFraction": {
    "name": "MIN_BOX_FRACTION",
    "raw": "0.25",
-   "path": "poe_repair/experiments/compose_scorer/detection_scorer.py",
+   "path": "poe_repair/experiments/compose_scorer_validation/detection_scorer.py",
    "line": 46
   },
   "sweepSeeds": {

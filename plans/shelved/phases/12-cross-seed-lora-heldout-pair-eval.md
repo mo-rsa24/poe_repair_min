@@ -84,7 +84,7 @@ We classify per held-out pair, then look for per-pair structure (is
 | Path | Status | Role |
 |---|---|---|
 | `scripts/build_eval_cache.py` | **new** | Build a minimal cell at `$POE_REPAIR_TRAINING_CACHE/heldout/<pair>/seed_N/`: `meta.json`, `embeddings.pt`, `residuals/step_000.pt` (init latent only — eps tensors zeroed for `load_step_raw` compat), optional `poe.png` + `mono.png` for the figure's left panel. ~75s per cell with PoE+Mono refs; ~1s per cell with `--skip-refs`. |
-| `poe_repair/experiments/cross_seed_lora_pooling/sample_heldout.py` | **patched** | New CLI flags `--heldout-pair`, `--prompt-a`, `--prompt-b`, `--joint-prompt`. When `--heldout-pair` differs from the checkpoint's training pair, the eval pair's cache cells are read and the override prompts are encoded. |
+| `poe_repair/experiments/held_out_seeds/sample_heldout.py` | **patched** | New CLI flags `--heldout-pair`, `--prompt-a`, `--prompt-b`, `--joint-prompt`. When `--heldout-pair` differs from the checkpoint's training pair, the eval pair's cache cells are read and the override prompts are encoded. |
 | `scripts/cross_seed_lora_pooling/render_per_epoch.py` | **patched** | New flag `--pair-slug-override`. When set, init latents and PoE/Mono ref columns are pulled from the held-out pair's cache rather than the checkpoint's training pair. Prompt overrides (`--prompt-a/-b/--joint-prompt`) already exist. |
 | `scripts/cross_seed_lora_pooling/render_seed_summary.py` | **unchanged** | Already accepts `--pair-slug` + `--per-epoch-subdir`. Point it at `samples/per_epoch_heldout/<pair>` and the held-out pair's cache. |
 
@@ -138,7 +138,7 @@ for PAIR_SLUG in a_wolf__x__a_husky a_lion__x__a_dog; do
     a_wolf__x__a_husky) A="a wolf"; B="a husky"; J="a wolf and a husky" ;;
     a_lion__x__a_dog)   A="a lion"; B="a dog";   J="a lion and a dog" ;;
   esac
-  $PY -m poe_repair.experiments.cross_seed_lora_pooling.sample_heldout \
+  $PY -m poe_repair.experiments.held_out_seeds.sample_heldout \
       --checkpoint $CKPT \
       --heldout-pair $PAIR_SLUG --prompt-a "$A" --prompt-b "$B" --joint-prompt "$J" \
       --seeds 9,10,11,12 \

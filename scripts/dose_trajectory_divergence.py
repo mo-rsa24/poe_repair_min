@@ -150,7 +150,7 @@ def main() -> int:
     from PIL import Image
 
     from poe_repair._sdxl.runtime import decode_latents
-    from poe_repair.experiments.residual_diagnostics.metrics import (
+    from poe_repair.experiments.residual_between_mono_and_poe.metrics import (
         clip_image_embed,
     )
     from poe_repair.run import make_ctx

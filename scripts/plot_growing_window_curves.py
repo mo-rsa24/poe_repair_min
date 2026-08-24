@@ -198,7 +198,7 @@ def main() -> int:
         )
         return 2
 
-    from poe_repair.experiments.compose_scorer.detection_scorer import count_instances
+    from poe_repair.experiments.compose_scorer_validation.detection_scorer import count_instances
 
     # window -> (direction, cutoff). Everything else found under the shared
     # output root (e.g. F4a's own fixed-width windows) is scored by that

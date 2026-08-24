@@ -45,7 +45,7 @@ Plan 14, Task B: *"Implement `train_pooled` as a thin wrapper around
 the Plan-08 trainer body. Only the loader changes."*
 
 This is incorrect. Concrete evidence from
-[poe_repair/experiments/lora/trainer.py:400-440](../poe_repair/experiments/lora/trainer.py#L400-L440):
+[poe_repair/experiments/one_pair_one_seed/trainer.py:400-440](../poe_repair/experiments/one_pair_one_seed/trainer.py#L400-L440):
 
 ```python
 def train_epoch(
@@ -59,7 +59,7 @@ def train_epoch(
 
 `train_epoch` takes one frozen tuple of `(A, B, ∅)` text embeddings.
 These are looked up once at run start by
-[encode_all_prompts](../poe_repair/experiments/lora/main.py#L320) from
+[encode_all_prompts](../poe_repair/experiments/one_pair_one_seed/main.py#L320) from
 `cfg.cell.prompt_a / prompt_b / joint_prompt` — single-pair fields.
 The seed-only `train_pooled` works because all 8 seeds share one pair
 and therefore one set of embeddings. Cross-pair training needs a
@@ -137,8 +137,8 @@ New code under `poe_repair.experiments.cross_pair_lora_pooling/`:
 | `poe_repair/experiments/cross_pair_lora_pooling/contact_sheet.py` | new | Rows × cols layout per quadrant; reference columns from Plans 09 / 10 if found. |
 | `poe_repair/experiments/cross_pair_lora_pooling/task_d_bridge.py` | new | Thin wrapper around `cross_seed_lora_pooling/task_d_bridge.py` that consumes `cells.jsonl` and computes the three cosines per `(pair, seed)`. If the underlying bridge already supports the inputs we need, this becomes a 10-line CLI shim. |
 | `scripts/cross_pair_lora_pooling/run_all.sh` | new | One-shot driver: validate pools → train → sample → render. mscluster RTX 8000 sizing. |
-| `poe_repair/experiments/lora/trainer.py` | **modified, +1 line** | Add `source_pair: str = ""` to `CachedStep`. Backwards-compatible default. |
-| `poe_repair/experiments/cross_seed_lora_pooling.seed_pool.load_seed_pool` | reused | The existing loader's `pair_slug` field is required. For cross-pair YAMLs without a `pair_slug`, the new `cross_pair_lora_pooling.seed_pool` loads them; the cross-seed loader is left untouched. |
+| `poe_repair/experiments/one_pair_one_seed/trainer.py` | **modified, +1 line** | Add `source_pair: str = ""` to `CachedStep`. Backwards-compatible default. |
+| `poe_repair/experiments/held_out_seeds.seed_pool.load_seed_pool` | reused | The existing loader's `pair_slug` field is required. For cross-pair YAMLs without a `pair_slug`, the new `cross_pair_lora_pooling.seed_pool` loads them; the cross-seed loader is left untouched. |
 | `poe_repair/training_cache.resolve_cells` | reused | Called once per pair in `train_pooled.py`. |
 | `poe_repair/runtime`, `lora/trainer.attach_lora`, `lora/main.encode_all_prompts`, `make_grad_scaler`, `make_optimizer`, etc. | reused | All untouched. |
 | `outputs/cross_pair_lora_pooling/{pair_pool,seed_pool,pair_prompts}.yaml` | new | The three configs that drive the run. |
@@ -153,13 +153,13 @@ Each task is sized to be a coherent unit of work. Sequential.
 ### Task A — Pools, prompts, and leak guards  (~45 min, code only)
 
 **A1.** Add `source_pair: str = ""` to `CachedStep` in
-[poe_repair/experiments/lora/trainer.py:47-57](../poe_repair/experiments/lora/trainer.py#L47-L57).
+[poe_repair/experiments/one_pair_one_seed/trainer.py:47-57](../poe_repair/experiments/one_pair_one_seed/trainer.py#L47-L57).
 Default empty string keeps every existing caller compatible.
 
 **A2.** Create [poe_repair/experiments/cross_pair_lora_pooling/__init__.py](../poe_repair/experiments/cross_pair_lora_pooling/__init__.py) (empty file).
 
 **A3.** Create [pair_pool.py](../poe_repair/experiments/cross_pair_lora_pooling/pair_pool.py).
-Interface mirrors [seed_pool.py](../poe_repair/experiments/cross_seed_lora_pooling/seed_pool.py):
+Interface mirrors [seed_pool.py](../poe_repair/experiments/held_out_seeds/seed_pool.py):
 
 ```python
 @dataclass(frozen=True)
@@ -271,7 +271,7 @@ is unchanged. Keep this file under ~200 lines; do not re-implement
 LoRA attach, scheduler init, or anything in the original trainer.
 
 **B2.** Create [train_pooled.py](../poe_repair/experiments/cross_pair_lora_pooling/train_pooled.py).
-Structure follows [cross_seed_lora_pooling/train_pooled.py](../poe_repair/experiments/cross_seed_lora_pooling/train_pooled.py)
+Structure follows [cross_seed_lora_pooling/train_pooled.py](../poe_repair/experiments/held_out_seeds/train_pooled.py)
 closely. Differences:
 
 - CLI flags: `--pair-pool PATH` (required), `--seed-pool-path PATH`
@@ -460,7 +460,7 @@ lines; `quadrant_table.csv` exists with skeleton rows.
 ### Task D — Δ̄_t bridge across (pair, seed)  (~30 min)
 
 **D1.** Audit
-[cross_seed_lora_pooling/task_d_bridge.py](../poe_repair/experiments/cross_seed_lora_pooling/task_d_bridge.py).
+[cross_seed_lora_pooling/task_d_bridge.py](../poe_repair/experiments/held_out_seeds/task_d_bridge.py).
 CLI today: `--pooled-run`, `--out-dir`, `--seed-pool-path`. Plan 14
 mentions a `--cells` flag — verify whether it exists. If it does,
 write a thin wrapper that forwards arguments. If it doesn't, choose

@@ -142,7 +142,7 @@ def main() -> int:
         )
         return 2
 
-    from poe_repair.experiments.compose_scorer.detection_scorer import count_instances
+    from poe_repair.experiments.compose_scorer_validation.detection_scorer import count_instances
 
     device = None
     if args.device:

@@ -77,7 +77,7 @@ def rolling_median(x: np.ndarray, w: int) -> np.ndarray:
 
 
 def clip_embed_paths(paths: list[Path]) -> np.ndarray:
-    from poe_repair.experiments.residual_diagnostics.metrics import clip_image_embed
+    from poe_repair.experiments.residual_between_mono_and_poe.metrics import clip_image_embed
     chunks = [clip_image_embed(paths[i:i + 32]) for i in range(0, len(paths), 32)]
     import torch
     return torch.cat(chunks).numpy()

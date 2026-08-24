@@ -106,10 +106,10 @@ thin batch driver.
 
 | Module | Reused from | Role |
 |---|---|---|
-| `poe_repair.experiments.lora` (entrypoint) | Phase 4 | Trainer per pair, with `--pair <slug>`. |
-| `poe_repair.experiments.lora.trainer.attach_lora` | Phase 4 | LoRA attachment to `attn2.{to_q,to_k,to_v}`. |
+| `poe_repair.experiments.one_pair_one_seed` (entrypoint) | Phase 4 | Trainer per pair, with `--pair <slug>`. |
+| `poe_repair.experiments.one_pair_one_seed.trainer.attach_lora` | Phase 4 | LoRA attachment to `attn2.{to_q,to_k,to_v}`. |
 | `poe_repair.methods._sampling.run_lora_residual_inject` | Phase 4 | Mono-free deployment sampler. |
-| `poe_repair.experiments.lora.probe` | Phase 4 | Per-epoch probe across λ grid. |
+| `poe_repair.experiments.one_pair_one_seed.probe` | Phase 4 | Per-epoch probe across λ grid. |
 | `scripts/build_lora_manifest.py` | Phase 4 | Builds `inspector_manifest.json` per pair. |
 | `scripts/build_lora_inspector_mds.py` | Phase 4 | Five-stage MDS pre-renderer (per-pair). |
 | `scripts/lora_inspector.py` | Phase 4 | Inspector app; route `/` carries the residual tab + MDS panel. |
@@ -135,7 +135,7 @@ cd /home-mscluster/mmolefe/Playground/PhD/poe_repair_min
 PAIR=a_typewriter__x__a_cactus   # for example — Group 4
 
 # 1. Train. Same recipe as Phase 4; same checkpoint cadence.
-$PY -m poe_repair.experiments.lora \
+$PY -m poe_repair.experiments.one_pair_one_seed \
     --pair $PAIR --seed 42 --split heldout \
     --total-epochs 600 --probe-every-epochs 50 \
     --lr 1e-4 --lora-rank 8

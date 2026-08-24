@@ -102,7 +102,7 @@ YAML enforces `S_train ∩ S_heldout = ∅`. Optional richer-pool variant
 ## Code
 
 This plan adds two new modules to the existing
-`poe_repair.experiments.cross_seed_lora_pooling` namespace plus a new
+`poe_repair.experiments.held_out_seeds` namespace plus a new
 two-axis evaluator. Trainer reuses Plan 10's flow but pools across
 pairs.
 
@@ -111,8 +111,8 @@ pairs.
 | `poe_repair.experiments.cross_pair_lora_pooling.pair_pool` *(new)* | new | Loads `pair_pool.yaml`; enforces `train ∩ heldout = ∅`. |
 | `poe_repair.experiments.cross_pair_lora_pooling.train_pooled` *(new)* | new | Pools cache cells across `(pair, seed)`. Trainer body delegates to the Plan-08 trainer; only the loader differs. |
 | `poe_repair.experiments.cross_pair_lora_pooling.sample_crossbar` *(new)* | new | For each `(pair, seed)` in the four-quadrant grid, samples through `run_lora_residual_inject` with the trained adapter. Writes a `quadrant=<...>` tag on each output dir. |
-| `poe_repair.experiments.cross_seed_lora_pooling.seed_pool` | reused | Seed-pool YAML loader (verbatim from Plan 08). |
-| `poe_repair.experiments.cross_seed_lora_pooling.task_d_bridge` | reused; takes `--pair` and `--seed` | Δ̄_t bridge per (pair, seed). Inputs are now per-cell. |
+| `poe_repair.experiments.held_out_seeds.seed_pool` | reused | Seed-pool YAML loader (verbatim from Plan 08). |
+| `poe_repair.experiments.held_out_seeds.task_d_bridge` | reused; takes `--pair` and `--seed` | Δ̄_t bridge per (pair, seed). Inputs are now per-cell. |
 | `poe_repair.experiments.cross_pair_lora_pooling.contact_sheet` *(new)* | new | Renders the four-quadrant grid: rows × quadrants × pairs. |
 | `scripts/cross_pair_lora_pooling/train_all_groups.sh` *(new)* | new | One-shot wrapper: builds the pair pool, calls trainer with `--total-epochs`, evaluates the crossbar, renders the contact sheet. |
 
@@ -175,7 +175,7 @@ cd /home-mscluster/mmolefe/Playground/PhD/poe_repair_min
 $PY -m poe_repair.experiments.cross_pair_lora_pooling.pair_pool \
     --pair-pool outputs/cross_pair_lora_pooling/pair_pool.yaml \
     --check-only
-$PY -m poe_repair.experiments.cross_seed_lora_pooling.seed_pool \
+$PY -m poe_repair.experiments.held_out_seeds.seed_pool \
     --seed-pool outputs/cross_pair_lora_pooling/seed_pool.yaml \
     --check-only
 ```
@@ -223,7 +223,7 @@ for paired panels.
 ### Task D — Δ̄_t bridge across (pair, seed)
 
 ```bash
-$PY -m poe_repair.experiments.cross_seed_lora_pooling.task_d_bridge \
+$PY -m poe_repair.experiments.held_out_seeds.task_d_bridge \
     --pooled-run outputs/cross_pair_lora_pooling/all_groups/main \
     --cells outputs/cross_pair_lora_pooling/all_groups/main/samples/cells.jsonl
 ```

@@ -110,7 +110,7 @@ LoRA inference-only (load an existing checkpoint, run the startup probe,
 exit — no training):
 
 ``bash
-$PY -m poe_repair.experiments.lora \
+$PY -m poe_repair.experiments.one_pair_one_seed \
     --resume-from outputs/lora/a_cat__x__a_dog/seed_42/results/checkpoints/lora_step_062500.pt \
     --total-epochs 0
 ``
@@ -118,7 +118,7 @@ $PY -m poe_repair.experiments.lora \
 LoRA re-training from scratch:
 
 ``bash
-$PY -m poe_repair.experiments.lora \
+$PY -m poe_repair.experiments.one_pair_one_seed \
     --pair a_cat__x__a_dog --seed 42 --split heldout \
     --total-epochs 200 --probe-every-epochs 50 \
     --lr 1e-4 --lora-rank 8
@@ -129,15 +129,15 @@ $PY -m poe_repair.experiments.lora \
 See [`docs/results-archive/residual-diagnostics.md`](docs/results-archive/residual-diagnostics.md). Summary:
 
 ``bash
-$PY -m poe_repair.experiments.residual_diagnostics \
+$PY -m poe_repair.experiments.residual_between_mono_and_poe \
     --pair "a cat|a dog" --seed 42        # runs both existence + clip_window
 ``
 
 Or run them individually:
 
 ``bash
-$PY -m poe_repair.experiments.residual_diagnostics.existence    --pair "a cat|a dog" --seed 42
-$PY -m poe_repair.experiments.residual_diagnostics.clip_window  --pair "a cat|a dog" --seed 42
+$PY -m poe_repair.experiments.residual_between_mono_and_poe.existence    --pair "a cat|a dog" --seed 42
+$PY -m poe_repair.experiments.residual_between_mono_and_poe.clip_window  --pair "a cat|a dog" --seed 42
 ``
 
 ### Thread 3 — Group-A failure cases
@@ -145,9 +145,9 @@ $PY -m poe_repair.experiments.residual_diagnostics.clip_window  --pair "a cat|a 
 See [`docs/results-archive/group-a-failure.md`](`docs/results-archive/group-a-failure.md):
 
 ``bash
-$PY -m poe_repair.experiments.group_a_failure --technique latent_unet
-$PY -m poe_repair.experiments.group_a_failure --technique latent_cnn
-$PY -m poe_repair.experiments.group_a_failure --technique frozen_feature_mlp
+$PY -m poe_repair.experiments.correction_outside_the_unet --technique latent_unet
+$PY -m poe_repair.experiments.correction_outside_the_unet --technique latent_cnn
+$PY -m poe_repair.experiments.correction_outside_the_unet --technique frozen_feature_mlp
 ``
 
 ### Thread 4 — Internal-force failure case
@@ -156,7 +156,7 @@ See [`docs/results-archive/internal-force-failure.md`](docs/results-archive/inte
 the residual-existence diagnostic for basin-barrier calibration:
 
 ``bash
-$PY -m poe_repair.experiments.residual_diagnostics.existence --pair "a cat|a dog" --seed 42
+$PY -m poe_repair.experiments.residual_between_mono_and_poe.existence --pair "a cat|a dog" --seed 42
 $PY -m poe_repair.experiments.internal_force_failure         --pair "a cat|a dog" --seed 42
 ``
 
@@ -167,9 +167,9 @@ sweep on clean SDXL; no LoRA, no Mono. Reuses the same x_T as the LoRA
 experiment so the marginal-effect comparison is valid.
 
 ``bash
-$PY -m poe_repair.experiments.conditioning_window --sanity-only   # equivalence checks
-$PY -m poe_repair.experiments.conditioning_window --smoke         # 2-schedule wiring test
-$PY -m poe_repair.experiments.conditioning_window                  # full STANDARD_SUITE (~10–15 min)
+$PY -m poe_repair.experiments.cfg_window_without_lora --sanity-only   # equivalence checks
+$PY -m poe_repair.experiments.cfg_window_without_lora --smoke         # 2-schedule wiring test
+$PY -m poe_repair.experiments.cfg_window_without_lora                  # full STANDARD_SUITE (~10–15 min)
 ``
 
 The interactive readout is the inspector at

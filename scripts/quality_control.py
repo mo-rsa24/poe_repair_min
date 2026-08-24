@@ -177,7 +177,7 @@ def colorfulness(img: Image.Image) -> float:
 
 def clip_iqa(paths: list[Path]) -> np.ndarray:
     """CLIP's own good-vs-bad-picture preference, one score per image."""
-    from poe_repair.experiments.residual_diagnostics.metrics import (
+    from poe_repair.experiments.residual_between_mono_and_poe.metrics import (
         clip_image_embed,
         clip_text_embed,
     )
@@ -334,7 +334,7 @@ def main() -> int:
         contract = require_validated_scorer(args.contract)
         print(f"\nCONTENT positive control: {contract['method']} via "
               f"{contract['detector']}")
-        from poe_repair.experiments.compose_scorer.detection_scorer import (
+        from poe_repair.experiments.compose_scorer_validation.detection_scorer import (
             count_instances,
         )
 

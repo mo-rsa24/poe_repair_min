@@ -85,7 +85,7 @@ def main() -> int:
         raise SystemExit(f"scorer at {SCORER_CONTRACT} is not marked validated: refusing.")
 
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-    from poe_repair.experiments.compose_scorer.detection_scorer import count_instances
+    from poe_repair.experiments.compose_scorer_validation.detection_scorer import count_instances
 
     panels = {}
     for win in WINDOWS:

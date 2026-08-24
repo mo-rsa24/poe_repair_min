@@ -25,7 +25,7 @@ See it (forward-looking — produces the evidence):
 ```bash
 PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
 DATA=/datasets/mmolefe/poe_repair_min/artifacts
-$PY -m poe_repair.experiments.cross_seed_lora_pooling.sample_heldout \
+$PY -m poe_repair.experiments.held_out_seeds.sample_heldout \
   --checkpoint "$DATA/rung2-survive-noise/cross_seed/a_cat__x__a_dog/taskB__k04_ep2000_resumed__wandb-pueuo7bl/checkpoints/lora_step_100000.pt" \
   --pair a_cat__x__a_dog --heldout-pair a_wolf__x__a_husky \
   --out-dir "$DATA/rung2-survive-noise/cross_seed/a_cat__x__a_dog/heldout_pair/a_wolf__x__a_husky"
@@ -36,7 +36,7 @@ $PY -m poe_repair.experiments.cross_seed_lora_pooling.sample_heldout \
 - [ ] ⚠️ **[optional]** Build the sibling-pair eval caches (seeds 9–12), then run the held-out-pair driver.
   Prompt: `POE_REPAIR_TRAINING_CACHE=/datasets/mmolefe/poe_repair_min/artifacts/caches/training_cache bash scripts/cross_seed_lora_pooling/build_sibling_caches.sh && bash scripts/cross_seed_lora_pooling/heldout_pair.sh` (note: siblings like `training_cache/heldout/a_wolf__x__a_husky` already exist as minimal eval stubs — verify before rebuilding).
 - [ ] ⚠️ **[optional]** Direct G6 run:
-  `$PY -m poe_repair.experiments.cross_seed_lora_pooling.sample_heldout --checkpoint /datasets/mmolefe/poe_repair_min/artifacts/rung2-survive-noise/cross_seed/a_cat__x__a_dog/taskB__k04_ep2000_resumed__wandb-pueuo7bl/checkpoints/lora_step_100000.pt --pair a_cat__x__a_dog --heldout-pair a_wolf__x__a_husky --out-dir /datasets/mmolefe/poe_repair_min/artifacts/rung2-survive-noise/cross_seed/a_cat__x__a_dog/heldout_pair/a_wolf__x__a_husky`
+  `$PY -m poe_repair.experiments.held_out_seeds.sample_heldout --checkpoint /datasets/mmolefe/poe_repair_min/artifacts/rung2-survive-noise/cross_seed/a_cat__x__a_dog/taskB__k04_ep2000_resumed__wandb-pueuo7bl/checkpoints/lora_step_100000.pt --pair a_cat__x__a_dog --heldout-pair a_wolf__x__a_husky --out-dir /datasets/mmolefe/poe_repair_min/artifacts/rung2-survive-noise/cross_seed/a_cat__x__a_dog/heldout_pair/a_wolf__x__a_husky`
 - [ ] ⚠️ **[optional]** Render `render_heldout_summary.py`; classify transfer per sibling; flag pairs that fail as Scale-pool candidates.
 - [ ] ⚠️ **[optional]** Read this rung as a SMOKE TEST, not transfer evidence: single-pair → sibling is confounded — a cat×dog-only LoRA saw no variety, so a hit can't be told from "the memorised correction happens to fit." The reviewer-credible transfer test is Plan 16 ([04-group-wise.md](04-group-wise.md)) with concept-disjoint siblings.
 - [ ] ⚠️ **[optional]** Delivery boost, inference-only (graft B1): if a cousin pair barely composes, add Attend-and-Excite on top of the LoRA at sampling time — it nudges the model to keep every subject visible, no retraining. Always score LoRA-only vs LoRA+A&E, so the LoRA gets the credit, not the nudge.

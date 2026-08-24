@@ -53,9 +53,9 @@ if str(_REPO_ROOT) not in sys.path:
 import numpy as np
 import torch
 
-from poe_repair.experiments.lora import trainer as lora_trainer
-from poe_repair.experiments.lora.main import encode_all_prompts
-from poe_repair.experiments.lora.probe import load_pinned_init_latents
+from poe_repair.experiments.one_pair_one_seed import trainer as lora_trainer
+from poe_repair.experiments.one_pair_one_seed.main import encode_all_prompts
+from poe_repair.experiments.one_pair_one_seed.probe import load_pinned_init_latents
 from poe_repair.methods._sampling import (
     add_time_ids,
     initial_latents_for_pair,
