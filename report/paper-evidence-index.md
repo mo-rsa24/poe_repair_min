@@ -29,10 +29,11 @@ updated to where the retrofit moved that item.
 | `artifacts/_quarantine/results-archive/{lora-success,residual-diagnostics,conditioning-window}.md` | May-era writeups, superseded by the review files; history only |
 | `report/instrument_smoke.md`, `report/normalization_preregistration.md` | instrument provenance: what was committed before results were read |
 | `DECISION_TIMELINE.md` (repo root), `report/RESULTS_SUMMARY.md` | the running record; RESULTS_SUMMARY defers to the review files where they disagree |
-| root `evidence/` (pending its own move) | the throwaway code that produced `F6`'s and `F8`'s images; regeneration path, never cited |
+| the regeneration code for F6/F8, now merged beside each figure's evidence folder under `artifacts/results/which-way-the-correction-points/` | the throwaway code that produced `F6`'s and `F8`'s images; regeneration path, never cited |
 | `inventory/` (pending its own move) | the artifact-reconciliation scope's four output documents |
 
 ## Not paper material
 
-`dl-scene/`, `learning-captures/`, `recap/` (already archived), `show-me/`, `todoist-staging/`:
-learning and tooling artifacts. They serve sessions, not the manuscript.
+`dl-scene/`, `learning-captures/`, `recap/` (already archived), `artifacts/notes/batch-shape-nondeterminism/`
+(formerly `show-me/`), `todoist-staging/`: learning and tooling artifacts. They serve sessions, not
+the manuscript.

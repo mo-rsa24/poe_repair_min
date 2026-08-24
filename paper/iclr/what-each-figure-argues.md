@@ -445,7 +445,7 @@ failure is the finding: steepest rise inside steps 13 to 20 for 3 of 9 cells
 in CLIP and 1 of 9 in DINOv2 on the 50-step grid, with separation near zero at
 step 0 and roughly half the axis covered by the fork band. All curves, checks
 and bars live in `cache_analyses/trajectory_divergence/` with copies in
-`evidence/f5b-trajectory-divergence/`.
+`artifacts/results/how-far-the-corrected-run-separates-from-the-uncorrected-one/`.
 
 **Built.** `python scripts/run_separation_over_time.py` →
 `paper/iclr/figures/how-far-the-corrected-run-separates-from-the-uncorrected-one.pdf`, sidecar `.json` beside it.
@@ -573,7 +573,7 @@ change that swamps the spatial change the hypothesis is about. So each change is
 split into **gain**, the single best uniform rescaling of the off-map onto the on-map,
 and **pattern**, whatever a rescaling cannot explain. Only pattern is compared. Full
 argument with its guards in
-[../evidence/F7-mechanism-reprobe/measure-fairness.md](../evidence/F7-mechanism-reprobe/measure-fairness.md).
+[../artifacts/results/residual-dynamics/content-change-relative-to-attention-change/measure-fairness.md](../artifacts/results/residual-dynamics/content-change-relative-to-attention-change/measure-fairness.md).
 
 **Blocked on one decision.** One point per seed or one point per pair.
 `/pair-figure` decides it.

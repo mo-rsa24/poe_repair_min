@@ -61,7 +61,7 @@ made twice in this repo.
   mechanism probe, comparing raw norms said attention moved 1.70× more than painted content,
   because the two maps are not on the same footing and the adapter dims attention by 25%
   overall. The argument for the scale-free measure is in
-  [evidence/F7-mechanism-reprobe/measure-fairness.md](evidence/F7-mechanism-reprobe/measure-fairness.md).
+  [artifacts/results/residual-dynamics/content-change-relative-to-attention-change/measure-fairness.md](artifacts/results/residual-dynamics/content-change-relative-to-attention-change/measure-fairness.md).
 
 ## The deadline
 

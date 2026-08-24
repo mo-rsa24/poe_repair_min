@@ -73,7 +73,7 @@ Navigation: ⬅️ [How it shows up in the data](#how-it-shows-up-in-the-data) |
 **A chimera is not the only failure the instance-count scorer catches, and "2 instances" is not
 proof of a real chimera-free success.** ✍️
 
-`evidence/f2-lambda1-audit/02-two-of-one/` holds one confirmed case of two instances of the *same*
+`artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/02-two-of-one/` holds one confirmed case of two instances of the *same*
 animal (two dogs, no cat) scored as a compose success, because the detector cannot tell which two
 animals it found, only how many. See
 [compose-rate.md § What people get wrong](compose-rate.md#what-people-get-wrong).
@@ -87,4 +87,4 @@ Navigation: ⬅️ [What people get wrong](#what-people-get-wrong) | 📋 [TOC](
 | The definition of a chimera | Read in `MASTER_PLAN.md`, Glossary | 2026-08-24 |
 | The chimera example image | Read directly, `data/pilot/seed_42/a_cat__x__a_dog/poe.png` | 2026-08-24 |
 | The causal claim linking chimera to the interaction term | Read in `paper/iclr/iclr2027_conference.tex`, abstract | 2026-08-24 |
-| The "two of the same animal" scorer miss | Read in `evidence/f2-lambda1-audit/README.md` | 2026-08-24 |
+| The "two of the same animal" scorer miss | Read in `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md` | 2026-08-24 |

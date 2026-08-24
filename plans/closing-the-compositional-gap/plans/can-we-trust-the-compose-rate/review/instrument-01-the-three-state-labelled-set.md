@@ -95,7 +95,7 @@ Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC
       On the pairs chosen because they blend, no detector and no person can say which two animals
       are present. That has to be stated as a limit of the instrument, not left for a reader to
       infer from the coverage number.
-- [ ] ⚠️ Does `evidence/f2-lambda1-audit/README.md` now give the band as 75% to 94%?
+- [ ] ⚠️ Does `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md` now give the band as 75% to 94%?
       It currently says 87% to 94%, which counts the 17 uncallable cells as successes. The
       corrected line must also say the band cannot be narrowed from those images.
 
@@ -121,7 +121,7 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
       memory. A rule written after seeing labels can be tuned until the rate comes out
       flattering, and no later check can detect that.
       *Did the labelling pass agree with the existing hand sort on at least 90% of the 32 audit
-      cells?* Scored against `evidence/f2-lambda1-audit/calls.json`, which the pass never sees.
+      cells?* Scored against `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/calls.json`, which the pass never sees.
       Reported as a fraction, not a pass flag. Below 90% the automated pass is discarded and the
       user labels the main set by hand. That bar lives in the labelling script.
 - [ ] ⚠️ **Did the run respect the environment?** The labelled images must come from the λ grid
@@ -137,7 +137,7 @@ Navigation: ⬅️ [Could the answer be an artefact](#could-the-answer-be-an-art
 | any printed compose rate, including the 94% | the band around it, and both false-compose rates with their denominators. The denominator is the scorer's own successes, not all images |
 | F2's shape | whether the slope is partly the detector becoming easier to please as the correction splits one blob into two. That is what the bar decides |
 | the coverage number | that on pairs chosen because they blend, no detector and no person can say which two animals are present. This is a limit of the instrument, not a gap in the data |
-| `evidence/f2-lambda1-audit/README.md` | the band as 75% to 94%, not the current 87% to 94%, which counts the 17 uncallable cells as successes. The corrected line must also say the band cannot be narrowed from those images |
+| `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md` | the band as 75% to 94%, not the current 87% to 94%, which counts the 17 uncallable cells as successes. The corrected line must also say the band cannot be narrowed from those images |
 
 ## Still open
 
@@ -146,7 +146,7 @@ Navigation: ⬅️ [What the write-up owes](#what-the-write-up-owes) | 📋 [TOC
 | What is unresolved | What would settle it | Who or what is blocked by it |
 |---|---|---|
 | everything in this file | the labelling pass over the λ grid | [gate-02](gate-02-promote-or-close.md), which needs the two false-compose rates, and [idea-01](idea-01-what-the-current-benchmarks-score.md), which needs the judgeable denominator |
-| the band printed in `evidence/f2-lambda1-audit/README.md` | correcting it to 75% to 94% | any reader who takes 87% as the floor, which counts 17 uncallable cells as successes |
+| the band printed in `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md` | correcting it to 75% to 94% | any reader who takes 87% as the floor, which counts 17 uncallable cells as successes |
 
 ## Next step
 

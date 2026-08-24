@@ -46,7 +46,7 @@ this as a pre-registered null rather than the hypothesis. 🔍
 
 **When PoE does render both concepts, the render still is not trustworthy on its own.** ✍️
 
-`evidence/f2-lambda1-audit/README.md` opened all 32 of the strongest-correction cells behind a
+`artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md` opened all 32 of the strongest-correction cells behind a
 94% headline compose rate by eye: 1 of 32 was a real scorer error (two of the same animal, called
 a success), and 5 more could not be called confidently either way, most because the pool
 deliberately contains look-alike pairs (leopard vs jaguar, cow vs buffalo). The card's own
@@ -88,6 +88,6 @@ Navigation: ⬅️ [What this project does about it](#what-this-project-does-abo
 | What | How it was established | When |
 |---|---|---|
 | PoE composition fails on 15 of 17 pool pairs at fail-rate 1.00 | Read in `artifacts/results/does-the-fix-reach-unseen-pairs/fail_rate.md` | 2026-08-24 |
-| The headline compose rate needs a stated bound, not a bare number | Read in `evidence/f2-lambda1-audit/README.md` | 2026-08-24 |
+| The headline compose rate needs a stated bound, not a bare number | Read in `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md` | 2026-08-24 |
 | The interaction term is the gap the fix targets | Read in `paper/iclr/iclr2027_conference.tex`, abstract | 2026-08-24 |
 | The reach question (one pair vs group vs whole taxonomy) is the open question | Read in `MASTER_PLAN.md`, Mission and Objectives | 2026-08-24 |
