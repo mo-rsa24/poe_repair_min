@@ -46,9 +46,10 @@ from scripts.rt_reuse_figure import FRAME_DIR  # noqa: E402
 STEPS = (2, 6, 10, 20)
 OUT_DIR = Path("paper/iclr/figures")
 FIG_NAME = "samples-per-step-with-the-correction-on-and-off"
-CROSS9_FRAMES = Path(
-    "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cross/pairs/"
-    "a_cat__x__a_dog/seed_9/call__rall/frames")
+CROSS9_FRAMES = (
+    paths.resolve(paths.SAMPLES_AS_THE_WINDOW_MOVES_ONE_STEP_AT_A_TIME)
+    / "pairs/a_cat__x__a_dog/seed_9/call__rall/frames"
+)
 DOSE = paths.resolve(paths.HOW_MUCH_CORRECTION_IS_NEEDED) / "pairs"
 
 ROWS = [("a_cat__x__a_dog", 9, "#1f77b4", "cat x dog, seed 9"),

@@ -32,8 +32,9 @@ from pathlib import Path
 import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from poe_repair import paths
 
-OUT_ROOT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term")
+OUT_ROOT = paths.resolve(paths.INTERACTION_TERM_ROOT)
 FRAME_PX = 512
 
 

@@ -39,9 +39,7 @@ OUT_DIR = paths.resolve(paths.WINDOW)
 # /datasets only. The home-filesystem copy holds an early 20-step smoke run, and
 # pooling runs of different step counts is exactly what pulled the fork-curve
 # median off before a guard was added there. Pass --root to score it deliberately.
-DEFAULT_ROOTS = (
-    Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/window/pairs"),
-)
+DEFAULT_ROOTS = (paths.resolve(paths.WINDOW) / "pairs",)
 SCORER_CONTRACT = paths.resolve(paths.COMPOSE_SCORER_VALIDATION) / "scorer_validated.json"
 WIN_RE = re.compile(r"_w(\d+)-(\d+)")
 

@@ -40,9 +40,9 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from poe_repair import paths
 
-CACHE = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/"
-             "cache_analyses")
+CACHE = paths.resolve(paths.CACHE_ANALYSES)
 OUT_DIR = Path("paper/iclr/figures")
 FIG_NAME = "F5-one-dial-three-instruments"
 

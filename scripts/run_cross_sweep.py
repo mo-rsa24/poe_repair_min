@@ -51,8 +51,9 @@ from poe_repair.experiments.interaction_term.cell import cell_from_slug
 from poe_repair.methods._sampling import write_decoded_image
 from poe_repair.methods._window_batch import run_window_batch, schedule_masks
 from poe_repair.run import make_ctx
+from poe_repair import paths
 
-OUT_ROOT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term")
+OUT_ROOT = paths.resolve(paths.INTERACTION_TERM_ROOT)
 DISK_LIMIT_PCT = 90
 
 

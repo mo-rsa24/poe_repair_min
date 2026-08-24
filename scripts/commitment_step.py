@@ -53,8 +53,7 @@ NULL_RANGE_STEPS = 2             # "does not vary": medians all inside this many
 MIN_STEPS = 40                   # skip short smoke runs, as the fork read had to
 
 OUT_DIR = Path(__file__).resolve().parent.parent / "docs/evidence/EXP01-commitment-step"
-FORK_REF = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cache_analyses"
-                "/fork_curve.json")
+FORK_REF = paths.resolve(paths.CACHE_ANALYSES) / "fork_curve.json"
 
 
 def commitment(cell, threshold: float) -> tuple[int, np.ndarray]:

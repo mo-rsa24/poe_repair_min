@@ -31,9 +31,9 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from poe_repair import paths
 
-SRC = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/window/"
-           "window_curves.json")
+SRC = paths.resolve(paths.WINDOW) / "window_curves.json"
 OUT_DIR = Path("paper/iclr/figures")
 FIG_NAME = "how-many-seeds-composed-as-the-window-moves"
 

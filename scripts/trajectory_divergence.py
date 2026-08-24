@@ -43,10 +43,7 @@ from poe_repair import paths
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 CROSS_ROOT = paths.resolve(paths.SAMPLES_AS_THE_WINDOW_MOVES_ONE_STEP_AT_A_TIME)
-OUT_DIR = Path(
-    "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cache_analyses"
-    "/trajectory_divergence"
-)
+OUT_DIR = paths.resolve(paths.CACHE_ANALYSES) / "trajectory_divergence"
 
 ARM_ON = "call__rall"    # correction on at every step; reproduces Mono
 ARM_OFF = "call__roff"   # correction off everywhere; pure PoE

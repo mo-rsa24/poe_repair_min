@@ -720,7 +720,7 @@ def _resolve_mono_path(manifest: dict, pair_slug: str) -> str | None:
     if pair_slug == "a_cat__x__a_dog":
         candidates.append(_MONO_FALLBACK_CAT_DOG)
     candidates.append(
-        f"outputs/conditioning_window/{pair_slug}/seed_42/schedules/prefix_k50/image.png"
+        f"{paths.CFG_WINDOW_WITHOUT_LORA}/{pair_slug}/seed_42/schedules/prefix_k50/image.png"
     )
     for c in candidates:
         if (REPO_ROOT / c).is_file():
@@ -2134,7 +2134,7 @@ def create_app(
         if cwm is None:
             return render_template_string(
                 _CW_MISSING_HTML,
-                path=f"outputs/conditioning_window/{pair}/seed_42/results/inspector_manifest.json",
+                path=f"{paths.CFG_WINDOW_WITHOUT_LORA}/{pair}/seed_42/results/inspector_manifest.json",
             ), 404
         sanity = cwm.get("sanity") or {}
         on_rec = sanity.get("all_on_vs_run_cfg") or {}

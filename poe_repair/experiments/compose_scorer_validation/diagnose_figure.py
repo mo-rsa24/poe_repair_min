@@ -17,6 +17,7 @@ Two panels:
 from __future__ import annotations
 
 import json
+from poe_repair import paths
 from pathlib import Path
 
 import matplotlib
@@ -64,8 +65,10 @@ def main() -> int:
 
     # ---- bottom: the wolf×husky blame case beside its anchors ----
     wh = ANCHOR_ROOT / "a_wolf__x__a_husky"
-    blame_out = REPO / ("artifacts/rung2-survive-noise/cross_seed/a_cat__x__a_dog/"
-                        "heldout_pair/a_wolf__x__a_husky/sample_seed_09.png")
+    blame_out = (
+        paths.resolve(paths.HELD_OUT_SEEDS)
+        / "a_cat__x__a_dog/heldout_pair/a_wolf__x__a_husky/sample_seed_09.png"
+    )
     panels = [
         (blame_out, "corrected output\n(truth: BLEND — one animal)"),
         (wh / "anchor_a_alone.png", "anchor: a wolf"),

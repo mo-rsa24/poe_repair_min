@@ -34,6 +34,8 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
+from poe_repair import paths
+
 from poe_repair.experiments.held_out_seeds.seed_pool import load_seed_pool
 from poe_repair.runtime import ensure_dir
 from poe_repair.training_cache import DEFAULT_CACHE_ROOT, CellPath
@@ -42,9 +44,9 @@ from poe_repair.training_cache import DEFAULT_CACHE_ROOT, CellPath
 log = logging.getLogger("render_seed_summary")
 
 
-DEFAULT_RUN_DIR = Path(
-    "/datasets/mmolefe/poe_repair_min/outputs/cross_seed_lora_pooling/"
-    "task_b_learning_curve/k04__ep2000_resumed"
+DEFAULT_RUN_DIR = (
+    paths.resolve(paths.HELD_OUT_SEEDS_INDEX)
+    / "task_b_learning_curve/k04__ep2000_resumed"
 )
 
 EPOCH_DIR_RE = re.compile(r"epoch_(\d+)_step_(\d+)")

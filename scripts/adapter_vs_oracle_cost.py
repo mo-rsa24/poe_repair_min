@@ -39,11 +39,13 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from poe_repair import paths
 
-DOSE = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/"
-            "dose_curves.json")
-LORA = Path("outputs/animals_compose_transfer/pooled_lora/phase1_r8_100k/"
-            "compose_rate.json")
+DOSE = paths.resolve(paths.HOW_MUCH_CORRECTION_IS_NEEDED) / "dose_curves.json"
+LORA = (
+    paths.resolve(paths.DOES_THE_FIX_REACH_UNSEEN_PAIRS)
+    / "pooled_lora/phase1_r8_100k/compose_rate.json"
+)
 OUT_DIR = Path("paper/iclr/figures")
 FIG_NAME = "compose-rate-by-pair-for-lora-against-the-joint-prompt-correction"
 STEP = "60000"

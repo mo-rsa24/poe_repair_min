@@ -36,10 +36,8 @@ from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-DEFAULT_ROOT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/"
-                    "window_seeds/pairs")
-OUT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/"
-           "window_seeds/seed_breadth.json")
+DEFAULT_ROOT = paths.resolve(paths.COMPOSE_RATE_IN_THE_FIRST_WINDOW_ACROSS_TWELVE_SEEDS) / "pairs"
+OUT = paths.resolve(paths.COMPOSE_RATE_IN_THE_FIRST_WINDOW_ACROSS_TWELVE_SEEDS) / "seed_breadth.json"
 SCORER_CONTRACT = paths.resolve(paths.COMPOSE_SCORER_VALIDATION) / "scorer_validated.json"
 SHARED_FACTOR_BAR = 0.30
 NO_FACTOR_BAR = 0.15

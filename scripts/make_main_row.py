@@ -46,8 +46,10 @@ SEEDS = (9, 10, 11, 12)
 STEP_DIR = "epoch_2000_step_100000"
 
 DOSE_ROOT = paths.resolve(paths.HOW_MUCH_CORRECTION_IS_NEEDED) / "pairs"
-LORA_ROOT = Path("/datasets/mmolefe/poe_repair_min/outputs/cross_seed_lora_pooling/"
-                 "task_b_learning_curve/k04__ep2000_resumed/samples/per_epoch")
+LORA_ROOT = (
+    paths.resolve(paths.HELD_OUT_SEEDS_INDEX)
+    / "task_b_learning_curve/k04__ep2000_resumed/samples/per_epoch"
+)
 OUT_DIR = Path("paper/iclr/figures/drafts")
 
 PAPER = "#ffffff"

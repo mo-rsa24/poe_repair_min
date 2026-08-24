@@ -46,19 +46,15 @@ import numpy as np
 import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from poe_repair import paths
 
-DOSE_ROOT = Path(
-    "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/outputs"
-    "/interaction_term/dose/pairs")
-DOSE_CURVES = Path(
-    "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose"
-    "/dose_curves.json")
-CROSS_VALIDATE_CELL = Path(
-    "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cross/pairs"
-    "/a_cat__x__a_dog/seed_9/call__rall")
-OUT_DIR = Path(
-    "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cache_analyses"
-    "/trajectory_divergence")
+DOSE_ROOT = paths.resolve(paths.HOW_MUCH_CORRECTION_IS_NEEDED) / "pairs"
+DOSE_CURVES = paths.resolve(paths.HOW_MUCH_CORRECTION_IS_NEEDED) / "dose_curves.json"
+CROSS_VALIDATE_CELL = (
+    paths.resolve(paths.SAMPLES_AS_THE_WINDOW_MOVES_ONE_STEP_AT_A_TIME)
+    / "pairs/a_cat__x__a_dog/seed_9/call__rall"
+)
+OUT_DIR = paths.resolve(paths.CACHE_ANALYSES) / "trajectory_divergence"
 
 ARM_OFF = "teacher_residual_const_lam000"   # pure PoE
 ARM_ON = "teacher_residual_const_lam100"    # reproduces Mono

@@ -37,13 +37,13 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from poe_repair import paths
 
-ANALYSIS_DIR = Path(
-    "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cache_analyses"
-    "/trajectory_divergence")
-CROSS_FRAMES = Path(
-    "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cross/pairs"
-    "/a_cat__x__a_dog/seed_9")
+ANALYSIS_DIR = paths.resolve(paths.CACHE_ANALYSES) / "trajectory_divergence"
+CROSS_FRAMES = (
+    paths.resolve(paths.SAMPLES_AS_THE_WINDOW_MOVES_ONE_STEP_AT_A_TIME)
+    / "pairs/a_cat__x__a_dog/seed_9"
+)
 OUT_DIR = Path("paper/iclr/figures")
 FIG_NAME = "how-far-the-corrected-run-separates-from-the-uncorrected-one"
 

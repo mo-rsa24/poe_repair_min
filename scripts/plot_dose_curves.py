@@ -34,10 +34,7 @@ from poe_repair import paths
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 OUT_DIR = paths.resolve(paths.HOW_MUCH_CORRECTION_IS_NEEDED)
-DEFAULT_ROOTS = (
-    Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/pairs"),
-    Path("outputs/interaction_term/dose/pairs"),
-)
+DEFAULT_ROOTS = (paths.resolve(paths.HOW_MUCH_CORRECTION_IS_NEEDED) / "pairs",)
 SCORER_CONTRACT = paths.resolve(paths.COMPOSE_SCORER_VALIDATION) / "scorer_validated.json"
 LAM_RE = re.compile(r"lam(\d{3})")
 # Fault one, fixed in the source rather than on a command line so a later change
