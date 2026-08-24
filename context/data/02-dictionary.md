@@ -135,7 +135,7 @@ experiments
 [window](../world/interaction-term.md#words-this-file-uses) of steps that run specifies
 
 **Watch out** `λ=0` must reproduce plain PoE to under 1e-5; this is the project's own canary check
-against contamination (`RESEARCH_GUIDELINES.md`: "the λ=0 check: injecting nothing must
+against contamination (`context/research-guidelines.md`: "the λ=0 check: injecting nothing must
 reproduce plain PoE to under 1e-5") ⚠️
 
 ### `step`
@@ -151,7 +151,7 @@ Which point in the 50-step denoising schedule a value belongs to. Step 0 is near
 
 **Type and shape** integer, `0` to `49`
 
-**Where it comes from** fixed by the sampler's schedule length, verified in `EXPERIMENTS.md`'s
+**Where it comes from** fixed by the sampler's schedule length, verified in `report/experiments-log.md`'s
 axes table: "step | 0 to 49 | the schedule is 50 steps everywhere in the cache"
 
 **Stands for** a property of one point in one render's trajectory

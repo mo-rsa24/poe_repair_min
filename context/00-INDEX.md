@@ -66,7 +66,7 @@ The things this pass could not settle by reading. Each names who or what would s
       confirm `ε̃_J` and `ε̃_Mono` name the same prediction. See
       [world/interaction-term.md § What people get wrong](world/interaction-term.md#what-people-get-wrong).
 - [ ] **The current animal-pair pool's size is not settled.** `artifacts/results/does-the-fix-reach-unseen-pairs/fail_rate.md`
-      lists 17 pairs; `EXPERIMENTS.md` also says 17 "in the current pool"; but
+      lists 17 pairs; `report/experiments-log.md` also says 17 "in the current pool"; but
       `plans/retrofit-poe-repair-min.md` (a later document) names "the 20 animal pairs" as the
       scope boundary. Would settle it: list the pair directories actually present under the
       current pool's output folder and recount. See

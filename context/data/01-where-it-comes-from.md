@@ -40,9 +40,9 @@ from `data/pilot/seed_42/a_cat__x__a_dog/summary.json`'s `model_id` field. ✅
 
 Because every step's latent state is needed to measure the interaction term and to decode
 intermediate estimates, the run caches enough to recompute the model's running estimate of the
-finished image at any step (the Tweedie-formula estimate `EXPERIMENTS.md`'s EXP-01 uses). This is
+finished image at any step (the Tweedie-formula estimate `report/experiments-log.md`'s EXP-01 uses). This is
 what lets several later measurements (commitment step, window sweeps) be re-derived from the cache
-alone, with no further GPU sampling, per `EXPERIMENTS.md`'s repeated "cache only" compute notes. 🔍
+alone, with no further GPU sampling, per `report/experiments-log.md`'s repeated "cache only" compute notes. 🔍
 
 **④ A cell's images and summary are written to disk.** ✅
 
@@ -92,4 +92,4 @@ Navigation: ⬅️ [The two filesystems](#the-two-filesystems) | 📋 [TOC](#tab
 | A cell's on-disk shape and its model id | Read directly, `data/pilot/seed_42/a_cat__x__a_dog/summary.json` | 2026-08-24 |
 | The scorer's compose/blend rule | Read in `artifacts/results/can-we-trust-the-compose-score/compose-scorer-validation/scorer_validated.json` | 2026-08-24 |
 | The two-filesystem split and its sync gaps | Read in `RETROFIT.md`, section 2 ("Moving") | 2026-08-24 |
-| The "cache only" measurement principle | Read in `EXPERIMENTS.md`, EXP-01 and EXP-04 compute notes | 2026-08-24 |
+| The "cache only" measurement principle | Read in `report/experiments-log.md`, EXP-01 and EXP-04 compute notes | 2026-08-24 |

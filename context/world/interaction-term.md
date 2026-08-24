@@ -57,7 +57,7 @@ step 0 near 0.0 rising to about 0.246 by the final step for `a_cat__x__a_dog` se
 
 **It grows through the run rather than being a fixed offset**, and how far into the run it needs
 to be added (the window) is a separate, measured question from how big it is (the strength, λ).
-`EXPERIMENTS.md`'s EXP-04 found the best window centred at steps 0-10 for every one of 8 tested
+`report/experiments-log.md`'s EXP-04 found the best window centred at steps 0-10 for every one of 8 tested
 pairs, regardless of how late that pair's own outcome settles (its "commitment step", which ranges
 from step 18 to step 36 across pairs). ✅
 
@@ -97,12 +97,12 @@ Navigation: ⬅️ [How it shows up in the data](#how-it-shows-up-in-the-data) |
 
 **The window that works is not the window where the run visibly commits.** ⚠️
 
-`EXPERIMENTS.md` EXP-01 and EXP-04 together found something the project itself calls
+`report/experiments-log.md` EXP-01 and EXP-04 together found something the project itself calls
 counter-intuitive: every studied pair's outcome settles (commitment step) well after the window
 where the correction actually works (steps 0-10 for all 8 tested pairs, while commitment ranges
 from step 18 to 36). The correction stops mattering 8 to 26 steps before the picture "looks
 decided" by the running-estimate measure. Either the decision happens earlier than that measure
-can see, or the measure tracks the wrong event; `EXPERIMENTS.md` records this as unresolved and
+can see, or the measure tracks the wrong event; `report/experiments-log.md` records this as unresolved and
 not the registered finding.
 
 **The sign convention is written both ways across the repo's own documents.** 🔍
@@ -121,5 +121,5 @@ Navigation: ⬅️ [What people get wrong](#what-people-get-wrong) | 📋 [TOC](
 |---|---|---|
 | The interaction term's definition | Read in `paper/iclr/iclr2027_conference.tex`, abstract | 2026-08-24 |
 | Its measured per-step and final values for one cell | Read directly, `data/pilot/seed_42/a_cat__x__a_dog/summary.json` | 2026-08-24 |
-| The window-vs-commitment-step finding | Read in `EXPERIMENTS.md`, EXP-01 and EXP-04 | 2026-08-24 |
+| The window-vs-commitment-step finding | Read in `report/experiments-log.md`, EXP-01 and EXP-04 | 2026-08-24 |
 | The struck word "oracle" and its replacement | Read in `plans/retrofit-poe-repair-min.md`, "Words this uses" | 2026-08-24 |

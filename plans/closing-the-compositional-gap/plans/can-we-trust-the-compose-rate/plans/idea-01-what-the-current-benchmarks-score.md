@@ -28,7 +28,7 @@ vision-language models used directly as judges). Then score each on the labelled
 
 ## Purpose
 Serves Objective 3 and Definition-of-Done item 7. Group 2, tries a new idea: it may change
-nothing. A winner earns a row in `PARKING_LOT.md` and the right to propose a group-1 run, never
+nothing. A winner earns a deferred task in this plan's own tree and the right to propose a group-1 run, never
 a direct change to a paper number.
 
 ## Goal
@@ -47,7 +47,7 @@ on CPU.
   `MIN_BOX_FRACTION`.
 
 ## Success/Failure Outcomes
-- **A candidate clears the bar.** It goes to `PARKING_LOT.md` with its agreement number, and
+- **A candidate clears the bar.** It becomes a deferred task in this plan's own tree, carrying its agreement number, and
   `gate-02` decides whether it re-certifies or replaces `scorer_validated.json`.
 - **Every candidate reproduces the same hole.** The expected outcome, written down before
   running: the benchmarks are built on presence questions, so a fusion answers yes to both. This
@@ -73,7 +73,7 @@ on CPU.
   bar held as constants in the script.
   - 💡 `/pair-figure` if the table is going anywhere near the paper. A table of agreement
     rates wants one example image per disagreement type beside it.
-- [ ] Any candidate clearing the bar goes to `PARKING_LOT.md` with its number and its source
+- [ ] Any candidate clearing the bar becomes a deferred task in this plan's own tree, carrying its number and its source
   paper, as a proposed group-1 run. Nothing here changes a paper number.
 
 ## Engagement Instructions

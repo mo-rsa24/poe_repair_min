@@ -19,9 +19,9 @@ each may do to the paper, the six-step diagnosis procedure when a result contrad
 attack the work before a reviewer does, and kill work that is bleeding rather than only work that
 failed. This pointer is the opt-in, same as the conventions pointer above.
 
-[RESEARCH_GUIDELINES.md](RESEARCH_GUIDELINES.md) is the local half: where each of those
-rules lands in this repo (paths, commands, the canary), and the specific mistakes this project has
-already made. It does not repeat the practice.
+[context/research-guidelines.md](context/research-guidelines.md) is the local half: where each of
+those rules lands in this repo (paths, commands, the canary), and the specific mistakes this
+project has already made. It does not repeat the practice.
 
 The mechanics are elsewhere and not repeated in either: `~/.claude/EXPERIMENT_CONVENTIONS.md` for
 what a run may change, and `~/.claude/skills/WORKFLOWS.md` for the eighteen end-to-end skill
@@ -97,8 +97,4 @@ extends it with:
 
 | File | What it is for |
 |---|---|
-| [EXPERIMENTS.md](EXPERIMENTS.md) | the numbered EXP-N log of ad hoc probes that never became a plan |
-| [PARKING_LOT.md](PARKING_LOT.md) | ideas tried or considered and not yet turned into a plan |
-| [DECISION_TIMELINE.md](DECISION_TIMELINE.md) | the linear gate-by-gate record of what ran, what it said, and the decision it forced |
-| [RESEARCH_GUIDELINES.md](RESEARCH_GUIDELINES.md) | the local half of `~/.claude/RESEARCH_PRACTICE.md`: where each practice rule lands in this repo |
 | `RENAMES.md` | the retrofit sweep's old-path-to-new-path table, owned by `retrofit-repo`/`tidy-repo` |

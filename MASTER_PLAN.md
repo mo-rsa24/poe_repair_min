@@ -61,8 +61,8 @@ Found with `/paper-scout`, read with `/unpack-paper` or `/drip --paper`, registe
 ## Experiments running in the background
 
 A pool. Every row is a run that tries an idea, so no row here may change a claim: a striking
-number earns the right to propose an experiment and nothing more. Results land in
-`PARKING_LOT.md`.
+number earns the right to propose an experiment and nothing more. Results land as a new row or
+task in the plan tree directly, never in a separate holding file.
 
 | Run | What it would earn | State |
 |---|---|---|
@@ -132,7 +132,7 @@ one cell, one pair, one difficulty class, or the whole studied taxonomy.
    per-group catalogue, established with evidence.
 
 ## Goals
-(Checkpoints — measurable. Status from DECISION_TIMELINE.md.)
+(Checkpoints — measurable. Status from report/decision-timeline.md.)
 1. Overfit: cat×dog seed 42 — λ=0 byte-identical to PoE, λ=1 two distinct animals
    by ~ep600 [✅ G04]; one representative pair per G1–G4+G6 closes the gap
    single-seed [◑ only G4+G6 trained; G1–G3 owed].
@@ -159,12 +159,12 @@ recorded in the decision timeline.
 ## Definition of Done
 1. ⚠️ Overfit read across G1–G4+G6 single-seed (gap closed by eyeball + MDS bend).
 2. ⚠️ Survive-Noise: per-group pooled LoRAs have held-out-seed verdicts.
-3. ➖ Cross-Pair (OPTIONAL smoke — downgraded 2026-07-22, not a publication gate): single-pair→sibling transfer is confounded; the reviewer-credible transfer test is DoD-4 (Group-Wise) with concept-disjoint pairs. See EXPERIMENTS.md EXP-03.
+3. ➖ Cross-Pair (OPTIONAL smoke — downgraded 2026-07-22, not a publication gate): single-pair→sibling transfer is confounded; the reviewer-credible transfer test is DoD-4 (Group-Wise) with concept-disjoint pairs. See report/experiments-log.md EXP-03.
 4. ⚠️ Group-Wise: within-group pooled LoRAs read for G1–G4+G6 (or the honest subset).
 5. ⚠️ Scale: four-quadrant crossbar evaluated; held-pair×held-seed classified;
    deployment unit chosen (single LoRA vs per-group catalogue).
 6. ✅ Negative controls (group-A, internal-force) reported; Mono-free property holds
-   at every λ; DECISION_TIMELINE.md reflects each landing.
+   at every λ; report/decision-timeline.md reflects each landing.
 7. ✅ G5 (entanglement) explicitly deferred with rationale.
 
 ## Sub-Scopes

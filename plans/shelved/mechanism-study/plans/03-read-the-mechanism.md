@@ -32,7 +32,7 @@ visual success).
   support if ≥3 visually-successful seeds show Δ_attn(LoRA) matching Δ_attn(AAE) in sign and
   within 2x magnitude; null if the majority diverge in sign or exceed 4x; inconclusive if
   fewer than 3 seeds visually succeed or the AAE baseline is noisy (→ triggers the parked
-  "Widen if Needed" item in `PARKING_LOT.md`, not a looser threshold on the same 12 seeds).
+  "Widen if Needed" item in the (retired) parking lot, not a looser threshold on the same 12 seeds).
 - [ ] ⚠️ **[publishable-bar]** Render the headline scatter figure + 2-3 representative
   per-seed three-trajectory plots (PoE/LoRA/AAE over timesteps), per EXP-06's figure list.
 

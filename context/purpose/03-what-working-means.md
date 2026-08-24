@@ -29,7 +29,7 @@ Navigation: ⬅️ [The test](#the-test) | 📋 [TOC](#table-of-contents) | [Nex
 **More correction, more composition, with the controls flat.** ✅
 
 `MASTER_PLAN.md` step 4 (`hypothesis-02-more-correction-more-composition`) names this the
-headline claim and marks it done. The falsification shape, from `EXPERIMENTS.md`'s design
+headline claim and marks it done. The falsification shape, from `report/experiments-log.md`'s design
 convention: a dose-response curve where compose rate rises as the interaction term's strength (λ)
 rises, while a control that injects a random vector of the same size stays flat. ✍️
 
@@ -54,7 +54,7 @@ this scorer without a tighter check.
 
 **Failing cells that fit none of the project's own failure modes.** ✍️
 
-`EXPERIMENTS.md` EXP-05 pre-registers two remaining explanations for adapter failure (aiming
+`report/experiments-log.md` EXP-05 pre-registers two remaining explanations for adapter failure (aiming
 wrong, delivering too little) and states its own null: fewer than 40% of failing cells landing in
 either mode would mean the two-mode decomposition is wrong, and a large group fitting neither
 would mean the corrector emits a fine correction and the run still fails for an unexplained reason.
@@ -91,7 +91,7 @@ Navigation: ⬅️ [What this cannot tell you](#what-this-cannot-tell-you) | �
 | What | How it was established | When |
 |---|---|---|
 | The mission statement and the five-rung ladder | Read in `MASTER_PLAN.md`, Mission and Objectives | 2026-08-24 |
-| The dose-response and held-out-seed bars | Read in `MASTER_PLAN.md`, Goals, and `EXPERIMENTS.md` | 2026-08-24 |
+| The dose-response and held-out-seed bars | Read in `MASTER_PLAN.md`, Goals, and `report/experiments-log.md` | 2026-08-24 |
 | The scorer's true-rate bound at λ=1 | Read in `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md` | 2026-08-24 |
-| The two-mode failure classification and its null | Read in `EXPERIMENTS.md`, EXP-05 | 2026-08-24 |
+| The two-mode failure classification and its null | Read in `report/experiments-log.md`, EXP-05 | 2026-08-24 |
 | The animal-pair scope boundary | Read in `plans/retrofit-poe-repair-min.md`, "Words this uses" | 2026-08-24 |

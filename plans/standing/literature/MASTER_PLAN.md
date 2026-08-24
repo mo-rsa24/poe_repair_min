@@ -17,7 +17,7 @@ here instead of being re-done inside each experiment scope.
 ## Goals
 1. A reading register with one entry per paper: what it claims, what it proves,
    what we borrow, and which of our plans it touches.
-2. Every "tries an idea" run in `PARKING_LOT.md` names the paper it came from.
+2. Every "tries an idea" run recorded in the plan tree names the paper it came from.
 3. A standing `/pressure-test` verdict on the paper's headline claim, re-run
    whenever the claim changes.
 

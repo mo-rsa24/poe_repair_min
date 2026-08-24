@@ -13,8 +13,8 @@ Two sentences the paper wants to print rest on the literature rather than on our
 nobody has causally measured the correction's timing, and that reweighting two experts cannot
 manufacture a correction outside their span. Each gets one `/pressure-test` verdict before the
 wording is allowed into the manuscript. One of them is also the recorded defence of the decision
-not to run baselines (Attend-and-Excite and SuperDiff are held in reserve in `PARKING_LOT.md`
-with their trigger written down).
+not to run baselines (Attend-and-Excite and SuperDiff are held in reserve as deferred tasks in
+this scope's own tree, with their trigger written down).
 
 ## Description
 The two literature checks that must pass before specific claims go into the

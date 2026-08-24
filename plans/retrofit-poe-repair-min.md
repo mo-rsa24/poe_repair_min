@@ -128,7 +128,7 @@ files are filed by name only and no folder says whether work is left.
 | 5. `dl-scene/` and `pressure-tests/` | `artifacts/scenes/` and `artifacts/notes/`; four documents given the source header they all lack |
 | 6. the code | `follow`: experiment packages take the new vocabulary in underscore form |
 | 7. the record folders | `inventory/` to its scope; `learning-captures/` and `todoist-staging/` archived |
-| 8. the loose root files | `EXPERIMENTS.md` and `PARKING_LOT.md` stay at the root on the extended list; `pairs.py` to the package |
+| 8. the loose root files | `EXPERIMENTS.md` and `DECISION_TIMELINE.md` absorbed into `report/`, `RESEARCH_GUIDELINES.md` into `context/`, `PARKING_LOT.md` dropped; `pairs.py` to the package |
 
 **Eight top-level folders disappear**: `docs/`, `evidence/`, `show-me/`, `recap/`, `captures/`,
 `diagrams/`, `flow-map-images/`, `results/`, plus `learning-captures/`, `todoist-staging/` and
@@ -142,7 +142,8 @@ The full old-to-new table, per figure and per family, is in
 | File | Verdict |
 |---|---|
 | `CLAUDE.md`, `README.md`, `MASTER_PLAN.md`, `RETROFIT.md`, `pyproject.toml`, `.gitignore` | stay, already on the list of root files no check reports |
-| `EXPERIMENTS.md`, `PARKING_LOT.md`, `DECISION_TIMELINE.md`, `RESEARCH_GUIDELINES.md` | stay, added to that list in this project's `CLAUDE.md` |
+| `EXPERIMENTS.md`, `DECISION_TIMELINE.md`, `RESEARCH_GUIDELINES.md` | absorbed into `report/experiments-log.md`, `report/decision-timeline.md`, `context/research-guidelines.md`, matching that folder's existing style; no longer a root-file exception |
+| `PARKING_LOT.md` | dropped; the routing practice it served (idea-runs land here) retires with it, striking results become a row or task in the plan tree directly |
 | `pairs.py` | to `poe_repair/pairs.py`; one importer, and its contents describe a one-pair-one-seed world the project outgrew |
 | `midrun_separation_example.png`, `text_orthogonality_probe.png` | to question folders, named for what they measure |
 

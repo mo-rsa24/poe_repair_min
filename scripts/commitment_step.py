@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """When does a run's outcome stop being changeable, and does that step move with the pair?
 
-EXP-01 of EXPERIMENTS.md. The framing under test says PoE fails by committing early to a blended
+EXP-01 of report/experiments-log.md. The framing under test says PoE fails by committing early to a blended
 animal while both outcomes still look available. If that is right, there is a step after which the
 outcome is locked, and the interesting question is whether that step is a property of the pair or a
 constant of the sampler. If it is a constant, one fixed correction schedule fits every pair and the
@@ -44,7 +44,7 @@ from poe_repair.experiments.interaction_term.cache import (  # noqa: E402
 )
 from poe_repair.experiments.interaction_term.pool import load_pool  # noqa: E402
 
-# Pre-registered in EXPERIMENTS.md before this ran.
+# Pre-registered in report/experiments-log.md before this ran.
 COMMIT_THRESHOLD = 0.90          # the estimate has settled once cosine stays above this
 SENSITIVITY = (0.80, 0.95)       # reported beside it, so no verdict rests on one threshold
 MIN_RANGE_STEPS = 5              # "varies": per-pair medians must span at least this many steps

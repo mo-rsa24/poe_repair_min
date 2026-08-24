@@ -18,7 +18,7 @@ rungs' single-task-with-Do-list pattern by using real subtasks per user request.
 | **📊 Read the Mechanism: LoRA vs Attend-and-Excite comparison** | `6h8fpj6g6fhmm99R` | `6h8fmJ325vgwqXj2` |
 
 Source: `plans/mechanism-study/todoist/{00-INDEX,01,02,03}.md`, translated from
-`plans/mechanism-study/plans/*.md` (themselves generated from EXPERIMENTS.md EXP-06).
+`plans/mechanism-study/plans/*.md` (themselves generated from report/experiments-log.md EXP-06).
 
 ## Re-run semantics
 Re-running `/todoist-publish plans/mechanism-study/todoist` re-reads this project/section,

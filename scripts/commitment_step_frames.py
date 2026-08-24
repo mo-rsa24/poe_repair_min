@@ -19,7 +19,7 @@ Seed choice, decided by nearest-to-median before decoding either one:
   a_dolphin__x__a_porpoise seed 4, individual step 20 (median is 18; seed 7 at
                           step 16 ties on distance and was not chosen)
 
-Designed by /pair-figure, spec in EXPERIMENTS.md under EXP-01.
+Designed by /pair-figure, spec in report/experiments-log.md under EXP-01.
 
     CUDA_VISIBLE_DEVICES=1 python scripts/commitment_step_frames.py
 """

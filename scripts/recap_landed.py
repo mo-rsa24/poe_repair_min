@@ -369,7 +369,7 @@ bash scripts/run_lora_inspector.sh        <span class="cmt"># serves 127.0.0.1:5
         "# Recap — LoRA-Fixes-PoE landed results\n\n"
         "Build: `python scripts/recap_landed.py`\n\n"
         "Scope: the two landed sub-results (Overfit beachhead G04, G6 survive-noise pool G07). "
-        "Rungs are incomplete by design — see DECISION_TIMELINE.md.\n\n"
+        "Rungs are incomplete by design — see report/decision-timeline.md.\n\n"
         f"G6 enactment: {'generated' if g6_ready else 'pending Slurm job recap_g6 (results/recap_landed/gen/)'}.\n\n"
         "Artifact URL: https://claude.ai/code/artifact/bddaaec6-bb17-4b67-bdc4-e0106d44cdb1\n")
     print(f"built recap/index.html  (g6_ready={g6_ready})")

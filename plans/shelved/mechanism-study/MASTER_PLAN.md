@@ -57,7 +57,7 @@ understands compositionality" cashes out to, paired with qualitative attention-m
 Two other mechanism checks came out of the same framing session but are deliberately out of
 this scope's DoD:
 - **Embedding-space direction consistency + LoRA-vs-Mono attention comparison** — parked in
-  `PARKING_LOT.md` with a `/frame-hypothesis` refinement prompt (needs its own falsification
+  the (retired) parking lot with a `/frame-hypothesis` refinement prompt (needs its own falsification
   rule before it's plan-ready).
 - **Denoising-timing overlay against the commitment window** — not a separate check, folded
   as a side-effect figure once DoD-4's per-timestep data exists; no new capture needed.

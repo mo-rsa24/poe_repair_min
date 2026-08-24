@@ -4,8 +4,8 @@
 
 ## Reference while you do it
 - 📄 Plan: plans/mechanism-study/plans/03-read-the-mechanism.md
-- 📄 Spec: EXPERIMENTS.md (EXP-06), artifacts/_quarantine/results-archive/residual-diagnostics.md (commitment window)
-- 📄 Parking lot (if inconclusive): PARKING_LOT.md ("Widen the mechanism study to a second pair")
+- 📄 Spec: report/experiments-log.md (EXP-06), artifacts/_quarantine/results-archive/residual-diagnostics.md (commitment window)
+- 📄 Parking lot (if inconclusive): the retired parking lot ("Widen the mechanism study to a second pair")
 
 ## Section context (paste into the Todoist section)
 **Description:** Depends on Plans 01 and 02 both being done — this task only computes and reads, it runs no new generation. Two-stage read: first the prerequisite check (does the LoRA's attention shift correlate with visual success at all), then the headline comparison (does the LoRA's shift match the Attend-and-Excite-equivalent's shift) — the pressure-test-upgraded, actually-novel claim. Metric is Δ_attn, commitment-window-restricted, using the AAE-canon aggregation already in `_CrossAttnRecorder`.
@@ -23,5 +23,5 @@ ls /datasets/mmolefe/poe_repair_min/outputs/attn_mechanism/figures/delta_attn_sc
 ## Tasks (one at a time)
 - [ ] Compute Δ_attn(method, seed) for both LoRA and AAE-equivalent, commitment-window-restricted (window from `G02`), against each seed's own λ=0 baseline.
 - [ ] Read the prerequisite check: does Δ_attn(LoRA) correlate with the visual composition label across the 12 seeds? Record support/null/inconclusive. If null, flag explicitly that the headline comparison below is moot rather than proceeding silently.
-- [ ] Read the headline comparison against the three-way rule: support if ≥3 visually-successful seeds show Δ_attn(LoRA) matching Δ_attn(AAE) in sign and within 2x magnitude; null if the majority diverge in sign or exceed 4x; inconclusive if fewer than 3 seeds visually succeed or the AAE baseline is noisy (→ triggers the parked "Widen if Needed" item in `PARKING_LOT.md`, not a looser threshold on the same 12 seeds).
+- [ ] Read the headline comparison against the three-way rule: support if ≥3 visually-successful seeds show Δ_attn(LoRA) matching Δ_attn(AAE) in sign and within 2x magnitude; null if the majority diverge in sign or exceed 4x; inconclusive if fewer than 3 seeds visually succeed or the AAE baseline is noisy (→ triggers the parked "Widen if Needed" item in the (retired) parking lot, not a looser threshold on the same 12 seeds).
 - [ ] Render the headline scatter figure + 2-3 representative per-seed three-trajectory plots (PoE/LoRA/AAE over timesteps), per EXP-06's figure list.

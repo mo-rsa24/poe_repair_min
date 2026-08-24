@@ -47,7 +47,7 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#run-kind) ➡️
 
 Navigation: ⬅️ [Words this file uses](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#runs) ➡️
 
-**Group 2, tries a new idea.** It may change nothing. A winner earns a row in `PARKING_LOT.md`
+**Group 2, tries a new idea.** It may change nothing. A winner earns a deferred task in this plan's own tree
 and the right to propose a group-1 run. It never changes a paper number directly, and a striking
 agreement score here does not rewrite any hypothesis.
 
@@ -65,7 +65,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 - [ ] ⚠️ Did any candidate agree with the human labels at 95% or better, on
       judgeable pairs, where the current scorer agreed at 85% or less?
-      Yes: that candidate goes to `PARKING_LOT.md` with its number and its source paper, and
+      Yes: that candidate becomes a deferred task in this plan's own tree, carrying its number and its source paper, and
       `gate-02` decides whether it re-certifies or replaces `scorer_validated.json`. No: nothing
       is swapped, and the table is evidence for the limitations paragraph. Both thresholds are
       constants in the bake-off script, so neither can be adjusted after the scores are in. This

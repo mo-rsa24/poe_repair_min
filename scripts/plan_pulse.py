@@ -184,7 +184,7 @@ def check_orphans(files):
         for path in members:
             name = os.path.basename(path)
             if name in ("MASTER_PLAN.md", "CLAUDE.md", "README.md", "CHANGELOG.md",
-                        "PARKING_LOT.md", "parked.md", "INDEX.md"):
+                        "parked.md", "INDEX.md"):
                 continue
             stem = name[:-3]
             named = any(
@@ -444,7 +444,7 @@ def check_slots():
     anything. When that file's pre-registered bar section carries an answer,
     the slot is fillable (✅) or broken (❌). Broken means the result does not
     fit the slot's claim: do not build the figure, run the diagnosis procedure
-    in RESEARCH_GUIDELINES.md.
+    in context/research-guidelines.md.
     """
     hits = []
     for fig, status, answered_by, file_cell in figure_slots():

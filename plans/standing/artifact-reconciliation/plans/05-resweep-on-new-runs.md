@@ -24,7 +24,7 @@ After each re-sweep: the `01`/`02` inventories match disk + W&B, every new check
 - [ ] ⚠️ Load-test new checkpoints + any new suspects; update `plans/standing/artifact-reconciliation/inventory/03-integrity-and-disposition.md`.
 - [ ] ⚠️ Extend `04_apply_layout.sh` with any new run dirs; dry-run, then `APPLY=1` to file them; confirm compat symlinks.
 - [ ] ⚠️ If new pairs appear, canonicalise their slug (retire any short form) the same way `cat_dog` → `a_cat__x__a_dog` was done.
-- [ ] ⚠️ Append a decision-timeline gate for each new landing to `DECISION_TIMELINE.md` (append-only; supersede with a banner, never rewrite) so the spine stays current.
+- [ ] ⚠️ Append a decision-timeline gate for each new landing to `report/decision-timeline.md` (append-only; supersede with a banner, never rewrite) so the spine stays current.
 
 ## Pending backlog (surfaced by sync 2026-07-22)
 
