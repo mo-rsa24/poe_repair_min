@@ -89,13 +89,13 @@ For the full picture, see the [repo MASTER_PLAN.md](../../../../../MASTER_PLAN.m
 ⬅️ [Previous](#quick-context-where-you-are) | 📋 [TOC](#table-of-contents) | [Next](#environment-facts-this-plan-depends-on) ➡️
 
 **Expected runtime:**  
-On one biggpu device (49GB Quadro RTX 8000 on mscluster106, or the Blackwell-class GPUs on mscluster110; see [docs/ENVIRONMENT.md](../../../../../docs/ENVIRONMENT.md#compute--runtime)), a 1-epoch smoke run is roughly **1 to 3 hours**: the training epoch itself is minutes, and nearly all the wall time is the inline eval pass (every train and held-out cell rendered at 25 DDIM steps). The measured wall time of each run is recorded in the [review file](../review/instrument-02-three-live-curves-while-training.md). The full 15-run sweep in step 10 takes approximately 6 hours per run.
+On one biggpu device (49GB Quadro RTX 8000 on mscluster106, or the Blackwell-class GPUs on mscluster110; see [environment/hpc/nodes.md](../../../../../environment/hpc/nodes.md#partitions)), a 1-epoch smoke run is roughly **1 to 3 hours**: the training epoch itself is minutes, and nearly all the wall time is the inline eval pass (every train and held-out cell rendered at 25 DDIM steps). The measured wall time of each run is recorded in the [review file](../review/instrument-02-three-live-curves-while-training.md). The full 15-run sweep in step 10 takes approximately 6 hours per run.
 
 **Prerequisites:**  
-The launcher `scripts/animals_compose_transfer/smoke_live_curves.sh` carries the setup: the `co3_bw` python, `POE_REPAIR_TRAINING_CACHE`, the device and disk guards, and the W&B flags. Nothing needs exporting by hand beyond `GPU=<free device index>` at launch. Cluster facts and absolute python paths are in [docs/ENVIRONMENT.md](../../../../../docs/ENVIRONMENT.md).
+The launcher `scripts/animals_compose_transfer/smoke_live_curves.sh` carries the setup: the `co3_bw` python, `POE_REPAIR_TRAINING_CACHE`, the device and disk guards, and the W&B flags. Nothing needs exporting by hand beyond `GPU=<free device index>` at launch. Cluster facts and absolute python paths are in [environment/00-INDEX.md](../../../../../environment/00-INDEX.md).
 
 **GPU allocation:**  
-Two launch paths, decided by [docs/ENVIRONMENT.md: Execution model](../../../../../docs/ENVIRONMENT.md#execution-model): an idle biggpu node gets a Slurm submit; when none is idle but an allocated node has a free device (Slurm here cannot see GPUs, so this is common), the run goes over SSH onto that device with `CUDA_VISIBLE_DEVICES` pinned and `nohup`, and `squeue` is blind to it, so monitoring is the nohup log plus `pgrep` on the node. Output goes to `/datasets` only; the launcher's disk guard checks that filesystem.
+Two launch paths, decided by [environment/hpc/execution-protocol.md](../../../../../environment/hpc/execution-protocol.md): an idle biggpu node gets a Slurm submit; when none is idle but an allocated node has a free device (Slurm here cannot see GPUs, so this is common), the run goes over SSH onto that device with `CUDA_VISIBLE_DEVICES` pinned and `nohup`, and `squeue` is blind to it, so monitoring is the nohup log plus `pgrep` on the node. Output goes to `/datasets` only; the launcher's disk guard checks that filesystem.
 
 **W&B project:**  
 All runs log to `prime_lab/poe-repair-animals-compose`. This is where you'll inspect the three live curves after the run finishes. Credentials are loaded from environment; verify with `echo $WANDB_API_KEY`.
@@ -109,7 +109,7 @@ This plan may encounter common errors when running. See the [Error Matrix](#erro
 
 ⬅️ [Previous](#considerations) | 📋 [TOC](#table-of-contents) | [Next](#the-claim) ➡️
 
-- biggpu nodes carry two GPU devices each; Slurm registers no GPUs (no GRES), so a free device on an allocated node is found only by SSH + `nvidia-smi`, and the shared-device launch path in [docs/ENVIRONMENT.md: Execution model](../../../../../docs/ENVIRONMENT.md#execution-model) is how this plan's run launches when no node is idle.
+- biggpu nodes carry two GPU devices each; Slurm registers no GPUs (no GRES), so a free device on an allocated node is found only by SSH + `nvidia-smi`, and the shared-device launch path in [environment/hpc/execution-protocol.md](../../../../../environment/hpc/execution-protocol.md) is how this plan's run launches when no node is idle.
 - Python is the `co3_bw` env at `/home-mscluster/mmolefe/miniforge3/envs/co3_bw/bin/python` (the launcher hard-codes it); never a bare `python`.
 - Large outputs go to `/datasets/mmolefe/poe_repair_min/` only; the launcher's disk guard checks `/datasets`, the filesystem it writes to.
 - W&B credentials load from `~/.netrc` / `WANDB_API_KEY` with no human step; the project is `prime_lab/poe-repair-animals-compose`.
@@ -270,7 +270,7 @@ Serves [Objective 4 (Diagnose) and Definition-of-Done item 2](../../../../../MAS
 ### 2. ⚙️ Run the 1-epoch smoke test
 
 - [x] **Launch the smoke run in the background.**
-  - Launcher: `scripts/animals_compose_transfer/smoke_live_curves.sh` (1 epoch on the 11 training pairs, then one inline-sampling eval pass over every train and held-out cell), started over SSH on a biggpu device per the shared-device path in [docs/ENVIRONMENT.md](../../../../../docs/ENVIRONMENT.md#execution-model).
+  - Launcher: `scripts/animals_compose_transfer/smoke_live_curves.sh` (1 epoch on the 11 training pairs, then one inline-sampling eval pass over every train and held-out cell), started over SSH on a biggpu device per the shared-device path in [environment/hpc/execution-protocol.md](../../../../../environment/hpc/execution-protocol.md).
   - Cost: roughly 1 to 3 hours wall time on one 49GB biggpu device.
   - W&B project: `prime_lab/poe-repair-animals-compose` (live logging).
   - Output root: `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/live_curves_smoke_run/`
@@ -278,7 +278,7 @@ Serves [Objective 4 (Diagnose) and Definition-of-Done item 2](../../../../../MAS
   - **Ask Claude:** "Run the step 9 smoke test for three live curves while training. Start it in the background and give me the W&B link when it begins logging."
 
 - [x] ~~**Teach the environment the shared-device launch path.**~~
-  - Done while launching: [docs/ENVIRONMENT.md](../../../../../docs/ENVIRONMENT.md#execution-model) gained the shared-device step (SSH into an allocated biggpu node, read per-device nvidia-smi, run on a free device with `CUDA_VISIBLE_DEVICES` pinned), the `/run-experiment` node picker gained `--probe-shared`, and the launch-failure pattern landed as `poe-launch-001` in [docs/EXPERIMENT_ERROR_CATALOG.md](../../../../../docs/EXPERIMENT_ERROR_CATALOG.md).
+  - Done while launching: [environment/hpc/execution-protocol.md](../../../../../environment/hpc/execution-protocol.md) gained the shared-device step (SSH into an allocated biggpu node, read per-device nvidia-smi, run on a free device with `CUDA_VISIBLE_DEVICES` pinned), the `/run-experiment` node picker gained `--probe-shared`, and the launch-failure pattern landed as `poe-launch-001` in [docs/EXPERIMENT_ERROR_CATALOG.md](../../../../../docs/EXPERIMENT_ERROR_CATALOG.md).
 
 ▶ **Next: instruction 3.1**, reading the curves in W&B while the run cooks.
 

@@ -152,7 +152,7 @@ The full old-to-new table, per figure and per family, is in
 |---|---|---|
 | 0 census | `retrofit-repo` | done 2026-08-23, in `RETROFIT.md` |
 | 1 context | `context-pulse --build` | yes: `context/` is absent |
-| 2 environment | `env-pulse` | yes: `docs/ENVIRONMENT.md` is the pre-folder shape, and `known-failures.md` arrives here |
+| 2 environment | `env-pulse` | done 2026-08-24: the old single-file environment doc (pre-folder shape) migrated into `environment/`, and `known-failures.md` populated |
 | 3 plans | `sync-plan-tree`, three passes | yes: no scope carries the three state folders |
 | 4 artifacts | `tidy-repo`, two halves | yes: this is the bulk of it, both filesystems |
 | 5 runbook | `runbook-pulse` | yes: `runbook/` is absent |

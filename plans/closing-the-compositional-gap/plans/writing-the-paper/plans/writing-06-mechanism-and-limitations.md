@@ -26,7 +26,7 @@ in the `.tex`, with both pressure-test verdicts reflected in the wording.
 
 ## Environment Facts This Plan Depends On
 - The section and caveats go in `paper/iclr/iclr2027_conference.tex`; build with
-  Ctrl+Shift+P → Build with recipe → `tectonic`. See `docs/ENVIRONMENT.md`,
+  Ctrl+Shift+P → Build with recipe → `tectonic`. See `environment/paper.md`,
   "Paper: where the LaTeX lives and how it is built".
 - Blocked on `does-the-correction-cause-composition/plans/hypothesis-01-what-the-fix-changes-inside-the-model.md`. Its verdict
   decides which version gets written: a full section if the value-channel

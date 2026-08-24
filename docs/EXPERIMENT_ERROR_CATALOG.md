@@ -33,7 +33,7 @@ Check normalization pipeline in `experiments/one_pair_one_seed/main.py::eval_hoo
 
 **Category:** 🔴 critical
 
-**Environment reference:** docs/ENVIRONMENT.md (needs section: Tensor dtype and normalization for scorer)
+**Environment reference:** environment/overview.md (needs a section: tensor dtype and normalization for the scorer; not yet written)
 
 ---
 
@@ -56,7 +56,7 @@ Check normalization pipeline in `experiments/one_pair_one_seed/main.py::eval_hoo
 
 **Category:** 🟡 warning
 
-**Environment reference:** docs/ENVIRONMENT.md (needs section: Scorer calibration and reference images)
+**Environment reference:** environment/overview.md (needs a section: scorer calibration and reference images; not yet written)
 
 ---
 
@@ -74,7 +74,7 @@ Check normalization pipeline in `experiments/one_pair_one_seed/main.py::eval_hoo
 - OR: Shard eval batch to 8-16 images per forward pass, loop and aggregate.
 - OR: Reduce eval frequency (eval every 5 steps instead of every step).
 
-Check `docs/ENVIRONMENT.md: Partition GPU models and constraints` for which partitions have A100 vs V100.
+Check `environment/hpc/nodes.md` for which partitions have A100 vs V100.
 
 **First discovered:** poe_repair_min, step-09, V100 runs
 
@@ -82,7 +82,7 @@ Check `docs/ENVIRONMENT.md: Partition GPU models and constraints` for which part
 
 **Category:** 🟡 warning
 
-**Environment reference:** [docs/ENVIRONMENT.md: GPU models by partition](../../docs/ENVIRONMENT.md#gpu-models-by-partition)
+**Environment reference:** [environment/hpc/nodes.md: Partitions](../environment/hpc/nodes.md#partitions)
 
 ---
 
@@ -106,7 +106,7 @@ Check `docs/ENVIRONMENT.md: Partition GPU models and constraints` for which part
 
 **Category:** 🟡 warning
 
-**Environment reference:** docs/ENVIRONMENT.md (needs section: LoRA rank selection by correction magnitude)
+**Environment reference:** environment/overview.md (needs a section: LoRA rank selection by correction magnitude; not yet written)
 
 ---
 
@@ -128,7 +128,7 @@ Check `docs/ENVIRONMENT.md: Partition GPU models and constraints` for which part
 
 **Category:** 🟡 warning
 
-**Environment reference:** docs/ENVIRONMENT.md (needs section: Pool-mean computation and cache invalidation)
+**Environment reference:** environment/overview.md (needs a section: pool-mean computation and cache invalidation; not yet written)
 
 ---
 
@@ -153,6 +153,6 @@ Verify the launch in the same SSH call: `sleep 5; pgrep -af "train"` plus `tail`
 
 **Category:** 🟡 warning
 
-**Environment reference:** docs/ENVIRONMENT.md (Execution model, shared-device path)
+**Environment reference:** environment/hpc/execution-protocol.md (shared-device path)
 
 ---

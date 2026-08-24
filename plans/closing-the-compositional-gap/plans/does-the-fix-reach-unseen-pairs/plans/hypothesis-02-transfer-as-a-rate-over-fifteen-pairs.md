@@ -90,7 +90,7 @@ This extracts error patterns from the run transcript, deduplicates against globa
 - Eval hook wired (compose-rate + direction-cosine + distance-reached logging live during training)
 
 **Environment facts this plan depends on**:
-- See [docs/ENVIRONMENT.md](../../../../docs/ENVIRONMENT.md) for cluster facts: partitions, walltime limits, Python paths, and disk guards.
+- See [environment/00-INDEX.md](../../../../../environment/00-INDEX.md) for cluster facts: partitions, walltime limits, Python paths, and disk guards.
 - `/home-mscluster` disk has sufficient space for 15 checkpoints (~50GB total).
 - Co3 cluster partition available for GPU allocation.
 - W&B project: `prime_lab/poe-repair-animals-compose` (verify with `echo $WANDB_PROJECT`).

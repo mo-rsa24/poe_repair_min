@@ -157,7 +157,7 @@ with the launch script doing its own `cd` internally. Recorded as
 [poe-launch-001](../../../../../docs/EXPERIMENT_ERROR_CATALOG.md#entry-id-poe-launch-001).
 
 **What the environment learned.** The shared-device path is now written down rather than improvised:
-[docs/ENVIRONMENT.md](../../../../../docs/ENVIRONMENT.md#execution-model) carries it as a step in
+[environment/hpc/execution-protocol.md](../../../../../environment/hpc/execution-protocol.md) carries it as a step in
 the launch decision, with the safety rules (never start on a device holding a foreign process,
 re-check the device inside the launch script, record node and device and PID, harvest by `pgrep`
 since `squeue` is blind to these runs). The `/run-experiment` node picker gained `--probe-shared`,

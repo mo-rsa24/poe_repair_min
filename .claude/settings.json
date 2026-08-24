@@ -11,7 +11,17 @@
       "Bash(python3 -c \"import ast; ast.parse\\(open\\('scripts/rt_direction_companions.py'\\).read\\(\\)\\)\")",
       "Bash(python3 -c \"import poe_repair; print\\(poe_repair.__file__\\)\")",
       "Bash(git -C /home-mscluster/mmolefe/Playground/PhD/poe_repair_min rev-parse --git-dir)",
-      "Bash(git -C /home-mscluster/mmolefe/Playground/PhD/poe_repair_min status --porcelain)"
+      "Bash(git -C /home-mscluster/mmolefe/Playground/PhD/poe_repair_min status --porcelain)",
+      "Edit(~/.claude/skills/unattended/**)",
+      "Bash(sed 's/<ABSOLUTE PROJECT PATH>/\\\\/tmp\\\\/testproj/g; s/<SKILL>/testskill/g; s/<ANY ARGUMENTS>/plans\\\\/test.md/g; s/<SENTINEL>/TEST DONE/g; s/<CEILING>/30/g')",
+      "Bash(bash -n /tmp/claude-328600100/-home-mscluster-mmolefe-Playground-PhD-poe-repair-min/f7f411eb-062f-44a1-aad4-13566bfad4b8/scratchpad/unattended_check.sh)",
+      "Bash(echo \"syntax check exit: $?\")",
+      "Bash(tmux list-sessions *)",
+      "Bash(command -v tmux)",
+      "Bash(awk '{print $1}')"
+    ],
+    "additionalDirectories": [
+      "/home-mscluster/mmolefe/.claude/skills/unattended"
     ]
   },
   "hooks": {

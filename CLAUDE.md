@@ -29,11 +29,29 @@ chains with their handoff files marked.
 
 ## The environment
 
-Read [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md) before drafting or checking any plan. It holds
-the live-verified cluster facts: partitions and walltime limits, the `co3` absolute python path,
-`/datasets` versus `/home-mscluster` and their sizes, the disk guard, the fp16 upcast rule, and
-the fact that no system LaTeX exists here. Every plan names the facts it actually depends on in
-its `## Environment Facts This Plan Depends On` field.
+This project's real environment and architecture facts live in `environment/`. Read
+`environment/overview.md` before drafting or checking any plan: partitions and walltime limits,
+the `co3` absolute python path, `/datasets` versus `/home-mscluster` and their sizes, the disk
+guard, the fp16 upcast rule, and the fact that no system LaTeX exists here. Then read the row in
+`environment/00-INDEX.md` matching what you are about to touch. Every plan names the facts it
+actually depends on in its `## Environment Facts This Plan Depends On` field.
+
+If a task depends on an environment fact that folder does not cover, stop and ask. Do not infer
+it, and do not proceed on a plausible assumption. An unanswered question costs one message; a
+wrong assumption costs a run, plus the time to work out why it failed. Saying "I don't know how
+this runs here" is a correct and useful answer.
+
+## Context
+
+What this project is about in the real world (why PoE composition on SDXL fails, what a chimera,
+an animal pair, the interaction term, and a compose rate are, where the pipeline's data comes
+from, and what every field in a `summary.json` or a scorer output means) lives in `context/`.
+Start at `context/00-INDEX.md`, which lists it as questions.
+
+Before answering a question about what something means (a column, a code, an ID, a symbol like
+`r_t` or `d_T`, a number in an output), read the file that owns that term. If the term is not
+there, say so and ask rather than inferring a meaning from its name. A plausible wrong meaning is
+worse than an admitted gap, because it gets built on.
 
 ## What the conventions look like in this repo
 

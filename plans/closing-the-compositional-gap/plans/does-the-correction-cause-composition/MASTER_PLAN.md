@@ -153,7 +153,7 @@ plan sits in the root's background-experiments pool and does not block the paper
 
 
 ## Environment Context
-See `docs/ENVIRONMENT.md` for this project's environment/architecture facts.
+See `environment/00-INDEX.md` for this project's environment/architecture facts.
 Read before drafting or checking any plan in this scope.
 
 ## Glossary

@@ -171,7 +171,7 @@ Grouped by the run group each answers to. Statuses live in the review/ files.
 
 
 ## Environment Context
-See `docs/ENVIRONMENT.md`. Read before drafting or checking any plan in this scope. What this
+See `environment/00-INDEX.md`. Read before drafting or checking any plan in this scope. What this
 scope leans on: the GPU is shared and often full, so every detector pass needs a working
 `--device cpu` route; large artifacts go to `/datasets` only; thresholds live as named constants
 in source, following `MIN_BOX_FRACTION` in

@@ -130,7 +130,7 @@ halted, not approximated.
 **Environment Facts This Plan Depends On**
 
 - The `co3` absolute python path, because the figure scripts run outside any activated shell. See
-  [docs/ENVIRONMENT.md](../../../../../docs/ENVIRONMENT.md).
+  [environment/hpc/nodes.md: Python environments](../../../../../environment/hpc/nodes.md#python-environments).
 - Figure outputs land in `paper/iclr/figures/` inside the repo, which is on `/home-mscluster`. This
   is the one exception to the `/datasets` rule and it is safe because a figure is kilobytes, not
   gigabytes. The run outputs these figures read stay on `/datasets`.

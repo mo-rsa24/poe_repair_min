@@ -156,7 +156,7 @@ image prompts, subject and process lanes. Process history lives in
 `diagrams/process-versions/`.
 
 ## Environment Context
-See `docs/ENVIRONMENT.md`. Read before drafting or checking any plan in this scope.
+See `environment/00-INDEX.md`. Read before drafting or checking any plan in this scope.
 
 In the tables above, `correction/` and `transfer/` are shorthand for the two claim folders'
 `plans/` directories.
