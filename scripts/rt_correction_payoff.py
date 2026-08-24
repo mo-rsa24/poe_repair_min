@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""D4: what the right correction buys on the very runs D1-D3 showed failing.
+"""What the right correction buys on the very runs D1-D3 showed failing.
 
 Three rows, one per run (cat x dog seed 9, cat x dog seed 13, eagle x hawk
 seed 9). Left block: the uncorrected PoE run's own estimate of where it is

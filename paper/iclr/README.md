@@ -36,9 +36,9 @@ sweeps, not about the figures those sweeps produce.
 default, so a figure is never edited by hand and never drifts from the numbers behind it.
 
 ```bash
-python scripts/make_f2.py --layout grid5 --seed 9    # compose-rate-as-correction-rises
-python scripts/make_f2.py --layout shared0 --seed 9  # compose-rate-as-correction-rises-with-a-random-control
-python scripts/make_f2.py --layout grid5 --pair an_elephant__x__a_penguin --seed 10 \
+python scripts/compose_rate_vs_correction.py --layout grid5 --seed 9    # compose-rate-as-correction-rises
+python scripts/compose_rate_vs_correction.py --layout shared0 --seed 9  # compose-rate-as-correction-rises-with-a-random-control
+python scripts/compose_rate_vs_correction.py --layout grid5 --pair an_elephant__x__a_penguin --seed 10 \
        --name compose-rate-as-correction-rises-for-a-dissimilar-pair
 ```
 

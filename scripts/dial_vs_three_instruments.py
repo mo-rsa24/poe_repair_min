@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Register slot F5: one dial, three instruments that share no machinery.
+"""One dial, three instruments that share no machinery.
 
 F2's whole result is read through one object detector, so a reviewer can
 reasonably ask whether lambda improves pictures or improves detectability.
@@ -28,7 +28,7 @@ the run:
     cache_analyses/caption_readback.json
     cache_analyses/plausibility_climb.json
 
-    python scripts/make_f5.py
+    python scripts/dial_vs_three_instruments.py
 """
 
 from __future__ import annotations

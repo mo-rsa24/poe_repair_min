@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Register slot F7, mechanism panel: the adapter changes what a word paints.
+"""The adapter changes what a word paints.
 
 For each attention map the probe measures two things: how much the adapter moved
 where the model looks (weight pattern) and how much it moved what gets painted
@@ -21,7 +21,7 @@ That cap is in the register and belongs in the caption.
 The pre-registered bar was computed over rows (median 1.52, 97% above one) and is
 cited as the bar, not as this figure's statistic.
 
-    python scripts/make_f7.py
+    python scripts/what_the_adapter_changes.py
 """
 
 from __future__ import annotations

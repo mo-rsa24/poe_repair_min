@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""D3b: what the correction depends on, one factor changed at a time.
+"""What the correction depends on, one factor changed at a time.
 
 D2 changes the starting noise and finds the correction shares nothing. D3
 changes the pair of animals and finds the same. Neither says which of the two
@@ -24,7 +24,7 @@ rerun from its own starting noise. It does not reach 1.0 because fp16
 nondeterminism compounds through the sampler (drift 0.24% at step 10, 17.1% at
 step 49), and every other row is read against it rather than against 1.0.
 
-    python scripts/make_d3b.py
+    python scripts/direction_agreement_by_shared_run_state.py
 """
 
 from __future__ import annotations

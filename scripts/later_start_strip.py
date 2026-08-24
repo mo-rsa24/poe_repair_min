@@ -1,20 +1,20 @@
 #!/usr/bin/env python
-"""F4h: one seed, one row per cutoff, a track showing exactly what ran where.
+"""One seed, one row per cutoff, a track showing exactly what ran where.
 
 The converse of F4g. Five rows, one growing uncorrected prefix each: row 1 is
 plain PoE for steps 0-10 then correction for 11-50, row 2 is plain PoE for
 0-20 then correction for 21-50, and so on to row 5, which never corrects at
 all. Each row pairs the real sampled image with a track of the 50 denoising
 steps: grey where it ran plain PoE, green where the correction was on. Same
-track drawing as scripts/make_f4g_strip.py and scripts/window_strip.py, so
+track drawing as scripts/longer_correction_strip.py and scripts/window_strip.py, so
 green always means the same thing across the three figures.
 
 Single seed by design; the pooled compose-rate curve across all 8 pairs is
 the population evidence, kept separate at
 outputs/interaction_term/window/growing_window_suffix_curve.png.
 
-    python scripts/make_f4h_strip.py
-    python scripts/make_f4h_strip.py --seed 9
+    python scripts/later_start_strip.py
+    python scripts/later_start_strip.py --seed 9
 """
 
 from __future__ import annotations

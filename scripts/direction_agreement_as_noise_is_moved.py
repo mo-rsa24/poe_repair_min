@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""D2b: the correction is smooth in the state early, chaotic late.
+"""The correction is smooth in the state early, chaotic late.
 
 D2 shows two runs from completely different starting noise sharing no
 correction at all. That is one point on a scale. This walks the scale: start
@@ -26,7 +26,7 @@ Numbers come from `scripts/rt_noise_interpolation.py`, which walks each
 interpolated start with run_teacher_residual at lambda 0 and saves the
 per-step correction. This script only draws them.
 
-    python scripts/make_d2b.py
+    python scripts/direction_agreement_as_noise_is_moved.py
 """
 
 from __future__ import annotations

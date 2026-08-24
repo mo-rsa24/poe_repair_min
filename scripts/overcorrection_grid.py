@@ -19,8 +19,8 @@ in the corner is checkable against the picture rather than asserted.
 
 Needs a GPU: every panel is scored live.
 
-    python scripts/make_overcorrection_grid.py
-    python scripts/make_overcorrection_grid.py --seed 12
+    python scripts/overcorrection_grid.py
+    python scripts/overcorrection_grid.py --seed 12
 """
 
 from __future__ import annotations

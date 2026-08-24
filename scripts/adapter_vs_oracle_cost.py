@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""F8b: what the learned adapter costs against the correction it imitates.
+"""What the learned adapter costs against the correction it imitates.
 
 The paper's other figures measure r_t, the correction computed from the joint
 prompt. That is an oracle: obtaining it needs the very prompt the method exists
@@ -26,7 +26,7 @@ rescored per seed and is not what this shows.
 
 Reads two already-scored files, samples nothing.
 
-    python scripts/make_f8b.py
+    python scripts/adapter_vs_oracle_cost.py
 """
 
 from __future__ import annotations

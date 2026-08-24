@@ -312,12 +312,12 @@ window positions with the scorer's verdict on each.
 - [x] **2.2** The matched run: rescale every one of the nine windows to deliver the same total,
       then re-score. `--mode matched`, artifact `dose_matched/matched_scores.json`.
 - [x] **2.3** The front-loaded and back-loaded sweeps: five prefix cutoffs with the correction on
-      then off, and five suffix cutoffs with it off then on. `scripts/make_f4g_grid.py`,
-      `make_f4h_grid.py`, `plot_growing_window_curves.py`, scored into
+      then off, and five suffix cutoffs with it off then on. `scripts/longer_correction_grid.py`,
+      `later_start_grid.py`, `plot_growing_window_curves.py`, scored into
       `growing_window_curves.json`.
 - [x] **2.4** Build the eight F4 figures from the scored files.
-      `make_f4_curves.py`, `make_f4_grid.py`, `make_f4_map.py`, `make_f4_swap.py`,
-      `make_f4_matched.py`, `make_f4g_grid.py`, `make_f4h_grid.py`, `caption_readback.py`.
+      `size_vs_timing.py`, `window_position_grid.py`, `window_map_all_pairs.py`, `timing_vs_dose.py`,
+      `timing_cliff_matched_dose.py`, `longer_correction_grid.py`, `later_start_grid.py`, `caption_readback.py`.
 - [x] **2.5** Build the manifest the inspector's timing tab reads.
       `scripts/build_window_manifest.py`, artifact `window/window_inspector_manifest.json`.
 
@@ -419,14 +419,14 @@ figure below exists on disk and is tracked in git.
 
 | Item | Lane | What it shows | Built by | Register status |
 |------|------|---------------|----------|-----------------|
-| F4a when it arrives | — | Every cat × dog cell in the window grid, 9 windows across, 4 seeds down, time reading left to right | `make_f4_grid.py` | **built** |
-| F4b size is not timing | — | Correction size per step against compose rate per window, on one step axis | `make_f4_curves.py` | **built** |
+| F4a when it arrives | — | Every cat × dog cell in the window grid, 9 windows across, 4 seeds down, time reading left to right | `window_position_grid.py` | **built** |
+| F4b size is not timing | — | Correction size per step against compose rate per window, on one step axis | `size_vs_timing.py` | **built** |
 | F4c the cliff in language | — | The same nine windows read by caption similarity instead of by counting animals | `caption_readback.py` | **built** |
-| F4d timing not dose | — | 2×2 of real samples: early and late windows crossed with each other's delivered total | `make_f4_swap.py` | **built** |
-| F4e cliff survives dose-matching | — | The nine-window rate at full strength and with every window rescaled to one total | `make_f4_matched.py` | **built** |
-| F4f the window map | — | The window grid itself | `make_f4_map.py` | ⚠️ no register row (instruction 4.1) |
-| F4g more start, same ceiling | — | Front-loaded sweep: five prefix cutoffs, correction on then off | `make_f4g_grid.py` | ⚠️ `reserved`, file exists (instruction 4.2) |
-| F4h too late to fix | — | Back-loaded sweep: five suffix cutoffs, correction off then on | `make_f4h_grid.py` | ⚠️ `reserved`, file exists (instruction 4.2) |
+| F4d timing not dose | — | 2×2 of real samples: early and late windows crossed with each other's delivered total | `timing_vs_dose.py` | **built** |
+| F4e cliff survives dose-matching | — | The nine-window rate at full strength and with every window rescaled to one total | `timing_cliff_matched_dose.py` | **built** |
+| F4f the window map | — | The window grid itself | `window_map_all_pairs.py` | ⚠️ no register row (instruction 4.1) |
+| F4g more start, same ceiling | — | Front-loaded sweep: five prefix cutoffs, correction on then off | `longer_correction_grid.py` | ⚠️ `reserved`, file exists (instruction 4.2) |
+| F4h too late to fix | — | Back-loaded sweep: five suffix cutoffs, correction off then on | `later_start_grid.py` | ⚠️ `reserved`, file exists (instruction 4.2) |
 
 Numbers live in each figure's sidecar `.json` and in its register row, never in this plan.
 

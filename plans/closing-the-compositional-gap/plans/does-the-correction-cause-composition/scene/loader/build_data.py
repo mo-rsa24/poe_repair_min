@@ -44,7 +44,7 @@ SWEEP_SH = REPO / "scripts/mechanism_study/run_dose_sweep.sh"
 CANARIES = REPO / "tests/test_interaction_term_canaries.py"
 PAIR_POOL = REPO / "outputs/animals_compose_transfer/pair_pool.yaml"
 PAPER_FIGS = REPO / "paper/iclr/figures"
-MAKE_F2 = REPO / "scripts/make_f2.py"
+MAKE_F2 = REPO / "scripts/compose_rate_vs_correction.py"
 
 ROW_DIRS = {"oracle": "", "random": "_random", "wrong_pair": "_wrong_pair"}
 ROW_LABELS = {

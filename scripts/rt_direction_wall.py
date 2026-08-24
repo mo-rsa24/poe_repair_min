@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """The zero wall: r_t's direction is shared nowhere except inside a single run.
 
-Candidate panel B for register slot F3. Panel A (make_f3.py) shows the
+Candidate panel B for register slot F3. Panel A (correction_size_vs_run_position.py) shows the
 correction's SIZE follows one schedule for every pair. This panel shows the
 complement that stops a reader over-reading it: the correction's DIRECTION is
 not shared at all. Same pair re-run from different noise: cosine 0. Different

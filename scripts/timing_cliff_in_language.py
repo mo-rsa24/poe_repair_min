@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Register slot F4.3: the timing cliff read in language instead of by counting.
+"""The timing cliff read in language instead of by counting.
 
 Experiment 5 of the F4 set. The object detector is the validated read, and it has
 been caught twice being wrong on these pictures: it missed a cat beside a dog on
@@ -21,7 +21,7 @@ evidence that the pictures did not change. Only a fall that tracks the counted
 one corroborates anything. The asymmetry is deliberate: this experiment can
 confirm the cliff and cannot refute it.
 
-    python scripts/make_f4_caption.py
+    python scripts/timing_cliff_in_language.py
 """
 
 from __future__ import annotations

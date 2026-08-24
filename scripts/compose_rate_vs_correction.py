@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Compose register slot F2: the 4x5 grid of real cells above the four dose curves.
+"""The 4x5 grid of real cells above the four dose curves.
 
 Rows: the pair's own r_t, then the three controls that each break exactly one
 thing: wrong pair (another pair's r_t), wrong seed (same pair, another run's
@@ -21,7 +21,7 @@ needs no GPU and cannot disagree with the curves it sits above.
 Column centres land exactly on the curve axis ticks: the curves axis spans
 lambda -0.125 to 1.125, half a column past each end, so column k sits over tick k.
 
-    python scripts/make_f2.py --layout grid5
+    python scripts/compose_rate_vs_correction.py --layout grid5
 """
 
 from __future__ import annotations

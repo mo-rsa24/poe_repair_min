@@ -276,14 +276,14 @@ evidence set. F1 belongs to the compose-scorer scope, not here.
 - [x] **1.1** F8a, one pooled adapter composes on pairs it never trained on: two panels on a
   training-step axis, the second unpooled per pair so the aggregate cannot be carried by one easy
   pair.
-  - Built by `python scripts/make_f8.py`, reads the pooled run's `compose_rate.json` and
+  - Built by `python scripts/adapter_transfers.py`, reads the pooled run's `compose_rate.json` and
     `pair_pool.json`
   - Outputs `paper/iclr/figures/compose-rate-as-the-lora-trains.{png,pdf,json}`
   - Which commit built it, and whether it has been judged: the
     [review file](../review/figure-01-the-transfer-figures.md)
 - [x] **1.2** F8b, the shippable adapter against the oracle correction it imitates: one horizontal
   dot row per pair, four markers per row.
-  - Built by `python scripts/make_f8b.py`, reads `dose_curves.json` and the pooled run's
+  - Built by `python scripts/adapter_vs_oracle_cost.py`, reads `dose_curves.json` and the pooled run's
     `compose_rate.json`, no new runs
   - Outputs `paper/iclr/figures/compose-rate-by-pair-for-lora-against-the-joint-prompt-correction.{png,pdf,json}`
   - Which commit built it, and whether it has been judged: the
@@ -401,8 +401,8 @@ guessed.
 
 | Item | Lane | What it shows | Built by | Output | Register row |
 |------|------|---------------|----------|--------|--------------|
-| F8a one adapter transfers | — | Compose rate over training steps, trained-on against held-out, with the uncorrected floor; second panel unpooled per pair | `python scripts/make_f8.py` | `paper/iclr/figures/compose-rate-as-the-lora-trains.{png,pdf,json}` | F8a, **built** |
-| F8b adapter against the oracle | — | One dot row per pair: no injection, oracle at two doses, adapter at step 60000 | `python scripts/make_f8b.py` | `paper/iclr/figures/compose-rate-by-pair-for-lora-against-the-joint-prompt-correction.{png,pdf,json}` | F8b, **built** |
+| F8a one adapter transfers | — | Compose rate over training steps, trained-on against held-out, with the uncorrected floor; second panel unpooled per pair | `python scripts/adapter_transfers.py` | `paper/iclr/figures/compose-rate-as-the-lora-trains.{png,pdf,json}` | F8a, **built** |
+| F8b adapter against the oracle | — | One dot row per pair: no injection, oracle at two doses, adapter at step 60000 | `python scripts/adapter_vs_oracle_cost.py` | `paper/iclr/figures/compose-rate-by-pair-for-lora-against-the-joint-prompt-correction.{png,pdf,json}` | F8b, **built** |
 
 Numbers for both live in their sidecar `.json` and in the register row, never in this plan.
 
@@ -453,7 +453,7 @@ what stops a caption drifting past its evidence.
 
 ⬅️ [Previous](#orchestration-keeping-catalogs-and-plan-files-in-sync) | 📋 [TOC](#table-of-contents) | [Next](#recommended-skill) ➡️
 
-**File:** [scripts/make_f8.py](../../../../../scripts/make_f8.py)
+**File:** [scripts/adapter_transfers.py](../../../../../scripts/adapter_transfers.py)
 **Function:** `main`
 **What it does:** reads the pooled run's `compose_rate.json` and `pair_pool.json`, draws the two
 panels, writes PNG, PDF and a sidecar JSON holding every number drawn plus its caption caps.
@@ -467,7 +467,7 @@ pool = RUN / "pair_pool.json"         # which pairs were trained on
 fig.savefig(OUT_DIR / f"{FIG_NAME}.{ext}", dpi=300)   # OUT_DIR = paper/iclr/figures
 ```
 
-**File:** [scripts/make_f8b.py](../../../../../scripts/make_f8b.py)
+**File:** [scripts/adapter_vs_oracle_cost.py](../../../../../scripts/adapter_vs_oracle_cost.py)
 **Function:** `main`
 **What it does:** reads `dose_curves.json` for the oracle arm and the pooled run's
 `compose_rate.json` for the adapter arm, draws one dot row per pair, writes the same three outputs.

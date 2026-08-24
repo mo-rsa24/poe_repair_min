@@ -85,7 +85,7 @@ def curve_for(slug: str, seed: int, *, normalize: str = "prereg",
               root: Path = CACHE_ROOT):
     """One cell's correction-size curve: (slug, seed, log_snr, scaled size).
 
-    The single definition of the measure. `make_f3.py` draws named pairs from
+    The single definition of the measure. `correction_size_vs_run_position.py` draws named pairs from
     outside the pool and imports this rather than repeating the arithmetic,
     because two copies of a measure drift and the drift is invisible in the
     figure.

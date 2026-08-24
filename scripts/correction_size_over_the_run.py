@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Compose register slot F1b: the same composition rule succeeding on one prompt pair
+"""The same composition rule succeeding on one prompt pair
 and failing on another, with the size of the correction it never applies plotted
 underneath each one.
 
@@ -20,9 +20,9 @@ paragraph 5.5 of the manuscript refuses to take. Two pairs also cannot support a
 claim that correction size predicts which pairs fail, and on these two it does not
 point that way.
 
-    python scripts/make_f1b.py                  # the two-row figure, seed 42 on top
-    python scripts/make_f1b.py --top-seed 4     # a different sample on top
-    python scripts/make_f1b.py --images-only    # all three seeds, images, no curves
+    python scripts/correction_size_over_the_run.py                  # the two-row figure, seed 42 on top
+    python scripts/correction_size_over_the_run.py --top-seed 4     # a different sample on top
+    python scripts/correction_size_over_the_run.py --images-only    # all three seeds, images, no curves
 """
 
 from __future__ import annotations
