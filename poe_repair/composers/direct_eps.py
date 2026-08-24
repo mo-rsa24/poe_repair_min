@@ -19,6 +19,7 @@ from pathlib import Path
 
 import torch
 
+from poe_repair import paths
 from poe_repair.composers._helpers import (
     cell_output_dir,
     encode_pair,
@@ -60,9 +61,8 @@ def _resolve_student_ckpt(student_ckpt: str | Path | None) -> Path:
     env = os.environ.get("POE_REPAIR_DIRECT_EPS_CKPT")
     if env:
         return Path(env)
-    repo_root = Path(__file__).resolve().parent.parent.parent
     return (
-        repo_root / "outputs" / "group_a_failure" / "checkpoints"
+        paths.resolve(paths.CORRECTION_OUTSIDE_THE_UNET) / "checkpoints"
         / "direct_eps" / "direct_eps_v1" / "best.pt"
     )
 

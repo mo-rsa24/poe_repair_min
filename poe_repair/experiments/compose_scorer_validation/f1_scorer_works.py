@@ -15,8 +15,10 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from PIL import Image
 
+from poe_repair import paths
+
 REPO = Path(__file__).resolve().parents[3]
-OUT_DIR = REPO / "outputs" / "compose_scorer"
+OUT_DIR = paths.resolve(paths.COMPOSE_SCORER_VALIDATION)
 GREEN, RED = "#2f855a", "#c53030"
 
 

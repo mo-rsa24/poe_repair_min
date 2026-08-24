@@ -24,7 +24,7 @@ from poe_repair import paths
 log = logging.getLogger("animals_compose_transfer.build_caches")
 
 REPO = Path(__file__).resolve().parents[3]
-SCOPE = REPO / "outputs" / "animals_compose_transfer"
+SCOPE = paths.resolve(paths.DOES_THE_FIX_REACH_UNSEEN_PAIRS)
 POOL = SCOPE / "pair_pool.yaml"
 PROMPTS = SCOPE / "pair_prompts.yaml"
 CACHE_ROOT = paths.resolve(paths.TRAINING_CACHE)

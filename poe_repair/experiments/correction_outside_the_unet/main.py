@@ -25,6 +25,7 @@ from typing import Any
 
 import torch
 
+from poe_repair import paths
 from poe_repair.experiments.correction_outside_the_unet import figures as ga_figures
 from poe_repair.experiments.correction_outside_the_unet import probe as ga_probe
 from poe_repair.experiments.correction_outside_the_unet import trainer as ga_trainer
@@ -49,7 +50,7 @@ log = logging.getLogger(__name__)
 
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
-DEFAULT_OUTPUT_ROOT = REPO_ROOT / "outputs"
+DEFAULT_OUTPUT_ROOT = paths.resolve(paths.CORRECTION_OUTSIDE_THE_UNET)
 
 
 # ---------------------------------------------------------------------------
@@ -170,11 +171,12 @@ def _discover_latest_checkpoint(
     pair_slug: str,
     seed: int,
 ) -> tuple[Path, Path] | None:
-    """Scan ``output_root/group_a_failure/<technique>/<pair>/seed_<N>/*/`` for runs
-    that contain a checkpoint. Returns ``(run_dir, ckpt_path)`` for the
-    most recent run, or None if nothing found.
+    """Scan ``output_root/<technique>/<pair>/seed_<N>/*/`` for runs
+    that contain a checkpoint (``output_root`` is the resolved
+    ``paths.CORRECTION_OUTSIDE_THE_UNET`` family root). Returns
+    ``(run_dir, ckpt_path)`` for the most recent run, or None if nothing found.
     """
-    base = output_root / "group_a_failure" / technique / pair_slug / f"seed_{seed}"
+    base = output_root / technique / pair_slug / f"seed_{seed}"
     if not base.exists():
         return None
     candidates: list[tuple[float, Path, Path]] = []

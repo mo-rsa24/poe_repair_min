@@ -26,7 +26,7 @@ from pathlib import Path
 
 import torch
 
-from poe_repair.config import RunConfig
+from poe_repair import paths
 from poe_repair.experiments._eval_common import HEADLINE_PAIR, slugify
 from poe_repair.experiments.residual_between_mono_and_poe.clip_window import analyse as A
 from poe_repair.experiments.residual_between_mono_and_poe.clip_window import figures as F
@@ -65,12 +65,12 @@ def _label_for_lambda(lam: float) -> str:
 
 
 def _veracity_run_dir(
-    *, output_root: Path, pair_slug: str, seed: int, lam: float,
+    *, pair_slug: str, seed: int, lam: float,
 ) -> Path:
     """Veracity uses the teacher-residual sweep at constant schedule."""
     name = f"teacher_residual_const_lam{int(round(lam * 100)):03d}"
     return (
-        output_root / "residual_diagnostics" / "existence" / "pairs" / pair_slug
+        paths.resolve(paths.RESIDUAL_BETWEEN_MONO_AND_POE) / "existence" / "pairs" / pair_slug
         / f"seed_{seed}" / name
     )
 
@@ -117,8 +117,7 @@ def main() -> None:
     steps = _parse_ints(args.steps, A.DEFAULT_SNAPSHOT_STEPS)
     targets = _parse_targets(args.targets, A.DEFAULT_TEXT_TARGETS)
 
-    cfg = RunConfig()
-    out_root = cfg.paths.output_root / EXP_NAME
+    out_root = paths.resolve(paths.RESIDUAL_BETWEEN_MONO_AND_POE) / "clip_window"
     metrics_dir = ensure_dir(out_root / "metrics")
     fig_dir = ensure_dir(out_root / "figures")
     snapshots_root = ensure_dir(out_root / "snapshots" / pair_slug / f"seed_{args.seed}")
@@ -137,7 +136,6 @@ def main() -> None:
 
         for lam in lambdas:
             run_dir = _veracity_run_dir(
-                output_root=cfg.paths.output_root,
                 pair_slug=pair_slug, seed=args.seed, lam=lam,
             )
             if not run_dir.exists():

@@ -20,6 +20,8 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from poe_repair import paths
+
 
 def _repo_root() -> Path:
     return Path(__file__).resolve().parents[3]
@@ -29,7 +31,7 @@ def _default_output_root() -> Path:
     env = os.environ.get("POE_REPAIR_OUTPUT_ROOT")
     if env:
         return Path(env).expanduser().resolve()
-    return _repo_root() / "outputs"
+    return paths.resolve(paths.CFG_WINDOW_WITH_LORA).parent
 
 
 def _default_lora_ckpt() -> Path:

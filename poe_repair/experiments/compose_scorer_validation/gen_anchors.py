@@ -39,7 +39,7 @@ log = logging.getLogger("compose_scorer.gen_anchors")
 
 REPO = Path(__file__).resolve().parents[3]
 CACHE_ROOT = paths.resolve(paths.TRAINING_CACHE)
-OUT_ROOT = REPO / "outputs" / "compose_scorer" / "anchors"
+OUT_ROOT = paths.resolve(paths.COMPOSE_SCORER_VALIDATION) / "anchors"
 
 MODEL_ID = "stabilityai/stable-diffusion-xl-base-1.0"
 GUIDANCE = 7.5

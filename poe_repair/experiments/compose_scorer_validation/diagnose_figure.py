@@ -27,7 +27,7 @@ import numpy as np
 from PIL import Image
 
 REPO = Path(__file__).resolve().parents[3]
-OUT_DIR = REPO / "outputs" / "compose_scorer"
+OUT_DIR = paths.resolve(paths.COMPOSE_SCORER_VALIDATION)
 ANCHOR_ROOT = OUT_DIR / "anchors"
 
 
