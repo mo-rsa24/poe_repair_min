@@ -50,6 +50,13 @@ go/no-go call for Phase-2 (the LOPO in plan 03).
   measures exist: either the fix never arrived (it was not delivered), or it arrived
   pointing the wrong way (it did not transfer).
 
+## Environment Facts This Plan Depends On
+- `co3` python at its absolute path. Scoring the step-70000-to-100000 checkpoints is a GPU scoring
+  pass over existing checkpoints (no training), fits the in-session GPU or a short biggpu request.
+- The checkpoint being scored:
+  `artifacts/results/does-the-fix-reach-unseen-pairs/pooled_lora/phase1_r8_100k/checkpoints/`,
+  steps up to 100000; scoring so far only covers up to 60000.
+
 ## Tasks
 - [x] Train one pooled adapter on the eleven training pairs.
 - [x] Score the held-out split for compose rate, in-distribution against held-out.

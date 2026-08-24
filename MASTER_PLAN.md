@@ -11,9 +11,9 @@ This block is a snapshot; the live version prints at session start, or on demand
 - **Do this next:** step 9's one-epoch smoke run,
   [instrument-02-three-live-curves-while-training](plans/closing-the-compositional-gap/plans/does-the-fix-reach-unseen-pairs/plans/instrument-02-three-live-curves-while-training.md),
   is cooking on a shared biggpu device; it gates the whole transfer chain (steps 10, 11, 12 and 14
-  wait behind it, and so does register slot F8). While it runs, do step 4, the chore needing no
-  compute: 6.3GB of dose cells sit on `/home-mscluster` and belong on `/datasets`. When the run
-  finishes, judge its three curves against the review file's bar.
+  wait behind it, and so does register slot F8). While it runs, write steps 16 or 18, which need
+  no GPU and no queue. When the run finishes, judge its three curves against the review file's
+  bar.
 
 ## The paper: what has to land
 
@@ -26,7 +26,7 @@ left in a queue that renumbers itself. A plan's own file carries this same numbe
 | 1 | ~~does-the-correction-cause-composition/instrument-01-build-the-measuring-scripts~~ | the thirteen measuring scripts, built and smoked | ✅ |  |
 | 2 | ~~does-the-correction-cause-composition/instrument-02-fix-the-size-measure-before-any-result~~ | how the correction's size is expressed, fixed before any result was read | ✅ |  |
 | 3 | ~~does-the-fix-reach-unseen-pairs/instrument-01-the-clean-pair-pool~~ | the pool of pairs that blend by default, confirmed by the scorer | ✅ |  |
-| 4 | does-the-correction-cause-composition/hypothesis-02-more-correction-more-composition | the headline: more correction, more composition, controls flat | ◑ 6.3GB owed off /home-mscluster |  |
+| 4 | ~~does-the-correction-cause-composition/hypothesis-02-more-correction-more-composition~~ | the headline: more correction, more composition, controls flat | ✅ |  |
 | 5 | ~~does-the-correction-cause-composition/hypothesis-04-what-the-cached-runs-already-show~~ | the analyses needing no GPU and no queue | ✅ | 1 |
 | 6 | does-the-correction-cause-composition/hypothesis-03-when-in-the-run-it-matters | when the correction matters: the cliff is at the start | ◑ driving the timing tab by hand | 4, 5 |
 | 7 | ~~does-the-correction-cause-composition/hypothesis-05-the-same-story-from-three-sides~~ | the independent checks: two image-side yes, two language-side null | ✅ | 4 |

@@ -141,7 +141,7 @@ print('seeds present:', seeds)
 ```
 
 Expect `32` cells for every row and seeds `[9, 10, 11, 12]`. Those are this sweep's own seeds,
-the first four of the held-out block defined in `outputs/animals_compose_transfer/seed_pool.yaml`.
+the first four of the held-out block defined in `artifacts/results/does-the-fix-reach-unseen-pairs/seed_pool.yaml`.
 If a seed 1 appears, the seed restriction in step 3 is not taking effect and nothing below is
 worth reading.
 
@@ -269,7 +269,7 @@ Two things in the figure are worth a sentence rather than smoothing over. At λ=
 changes character: it stops fusing and drops the penguin entirely. At λ=1 the panel holds three
 animals, not two, which is where the extra count comes from.
 
-**A control we no longer have.** `outputs/animals_compose_transfer/pair_pool.yaml` lists
+**A control we no longer have.** `artifacts/results/does-the-fix-reach-unseen-pairs/pair_pool.yaml` lists
 `an_elephant__x__a_penguin` as the compose-by-default control, the do-no-harm check. It is not
 one: it scores 0 of 4 at λ=0, and the four images are single fused creatures, so the scorer is
 right and the pool's assumption is wrong. The pool has no working do-no-harm control. That is a

@@ -275,12 +275,12 @@ Navigation: ⬅️ [What the write-up owes](#what-the-write-up-owes) | 📋 [TOC
 
 | What is unresolved | What would settle it | Who or what is blocked by it |
 |---|---|---|
-| 3.4GB of cells sitting on `/home-mscluster` rather than `/datasets`, because `run_dose_sweep.sh` sets `OUT=$REPO/outputs/...` while its disk guard reads `df /datasets/mmolefe` | moving them, and pointing the guard at the filesystem the script actually writes to | owned by the last task in the design plan. `/home-mscluster` has hit 100% once before and silently killed checkpointing |
+| `run_dose_sweep.sh` still sets `OUT=$REPO/outputs/...` while its disk guard reads `df /datasets/mmolefe`, so a future re-run of this sweep would refill `/home-mscluster` the same way. The one batch this plan produced was moved by hand to `/datasets` on 2026-08-18 (the design plan's last task), but the script itself is unfixed. | pointing the guard at the filesystem the script actually writes to, or changing `OUT` to write under `/datasets` directly | the next run of this sweep. `/home-mscluster` has hit 100% once before and silently killed checkpointing |
 | whether elephant × penguin composes by default | re-scoring that pair under both runs' conditions | the do-no-harm claim. The transfer scope lists it as a compose-by-default control and it scores 0 of 4 at strength 0 here. Recorded on both sides: [instrument-01 of the transfer claim](../../does-the-fix-reach-unseen-pairs/review/instrument-01-the-clean-pair-pool.md) |
 
 ## Next step
 
 Navigation: ⬅️ [Still open](#still-open) | 📋 [TOC](#table-of-contents)
 
-Move the 3.4GB off `/home-mscluster` and fix the disk guard to check the filesystem the script
-writes to.
+Fix `run_dose_sweep.sh`'s `OUT` path or its disk guard, so the next run of this sweep does not
+have to be moved off `/home-mscluster` by hand again.

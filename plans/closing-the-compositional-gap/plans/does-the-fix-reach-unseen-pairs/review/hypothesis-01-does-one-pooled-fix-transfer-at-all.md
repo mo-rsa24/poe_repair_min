@@ -61,7 +61,7 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
-| phase1_r8_100k, pooled rank-8 LoRA on 11 training pairs, 88 cells | Tests the claim | config `all_groups` | 100000 steps | `outputs/animals_compose_transfer/pooled_lora/phase1_r8_100k`, checkpoints to step 100000 | finished; read incomplete |
+| phase1_r8_100k, pooled rank-8 LoRA on 11 training pairs, 88 cells | Tests the claim | config `all_groups` | 100000 steps | `artifacts/results/does-the-fix-reach-unseen-pairs/pooled_lora/phase1_r8_100k`, checkpoints to step 100000 | finished; read incomplete |
 
 ## The pre-registered bar
 

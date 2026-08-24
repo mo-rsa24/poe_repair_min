@@ -62,7 +62,7 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
-| fail-rate scoring, 8 seeds per pair, instance-count scorer | Instrument | 2026-07-30 | 8 seeds × 19 pairs | `outputs/animals_compose_transfer/fail_rate.{json,md}` | done |
+| fail-rate scoring, 8 seeds per pair, instance-count scorer | Instrument | 2026-07-30 | 8 seeds × 19 pairs | `artifacts/results/does-the-fix-reach-unseen-pairs/fail_rate.{json,md}` | done |
 
 ## The pre-registered bar
 
@@ -110,7 +110,7 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
       fail rates are measured over eight seeds rather than eyeballed. What is not sound is the
       control-pair assumption: one of the three control pairs scores as a failure elsewhere.
 - [x] ✅ **Did the run respect the environment?** Output landed at
-      `outputs/animals_compose_transfer/fail_rate.{json,md}`, and the overlap assertion in
+      `artifacts/results/does-the-fix-reach-unseen-pairs/fail_rate.{json,md}`, and the overlap assertion in
       `pair_pool.py` ran and passed rather than being skipped on an empty pool.
 
 ## What the write-up owes
