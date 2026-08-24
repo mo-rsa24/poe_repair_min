@@ -35,6 +35,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
@@ -66,7 +67,7 @@ def floor_at_k(shape, norms: torch.Tensor | None) -> dict[int, float]:
 
 
 def cells_in_pool() -> list[tuple[str, int]]:
-    pool = load_pool("outputs/animals_compose_transfer/pair_pool.yaml")
+    pool = load_pool(str(paths.resolve(paths.DOES_THE_FIX_REACH_UNSEEN_PAIRS) / "pair_pool.yaml"))
     out = []
     for slug in pool.train:
         for split in ("train", "heldout"):

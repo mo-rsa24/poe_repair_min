@@ -67,6 +67,11 @@ MOUNT_ROOT = _mount_root()
 # A family whose name was already honest keeps it.
 # ---------------------------------------------------------------------------
 
+# The whole interaction_term tree, for code that wants to walk every sub-family at
+# once rather than name one. Most callers should use a specific constant below instead;
+# this exists because some already did, hardcoding the mount path to get it.
+INTERACTION_TERM_ROOT = "outputs/interaction_term"
+
 # How much correction, and when it arrives
 HOW_MUCH_CORRECTION_IS_NEEDED = "outputs/interaction_term/dose"
 SAME_TOTAL_CORRECTION_DIFFERENT_WINDOW = "outputs/interaction_term/dose_matched"

@@ -34,6 +34,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -41,7 +42,7 @@ from poe_repair.experiments.interaction_term.cache import CACHE_ROOT  # noqa: E4
 from poe_repair.experiments.interaction_term.pool import load_pool  # noqa: E402
 from scripts.snr_collapse import curve_for, iter_cells  # noqa: E402
 
-POOL = "outputs/animals_compose_transfer/pair_pool.yaml"
+POOL = paths.resolve(paths.DOES_THE_FIX_REACH_UNSEEN_PAIRS) / "pair_pool.yaml"
 # Adjacent steps differ by more than the shape does, so the raw curves read as
 # jitter and the shared shape is invisible. A rolling median over five steps is
 # applied to every drawn line INCLUDING the band, so nothing is smoothed

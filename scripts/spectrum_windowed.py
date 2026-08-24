@@ -49,6 +49,7 @@ from pathlib import Path
 import numpy as np
 import torch
 from scipy import stats
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -58,8 +59,8 @@ from poe_repair.experiments.interaction_term.cache import (  # noqa: E402
 )
 from poe_repair.experiments.interaction_term.pool import load_pool  # noqa: E402
 
-OUT_DIR = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cache_analyses")
-DOSE_SCORES = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/dose_curves.json")
+OUT_DIR = paths.resolve(paths.CACHE_ANALYSES)
+DOSE_SCORES = paths.resolve(paths.HOW_MUCH_CORRECTION_IS_NEEDED) / "dose_curves.json"
 KS = (1, 2, 4, 8, 16, 32, 64)
 R_DIRECTIONS = 64
 WINDOWS = {"early": (0, 20), "late": (20, 50)}
@@ -272,7 +273,7 @@ def run_window(
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--pool", default="outputs/animals_compose_transfer/pair_pool.yaml")
+    ap.add_argument("--pool", default=str(paths.resolve(paths.DOES_THE_FIX_REACH_UNSEEN_PAIRS) / "pair_pool.yaml"))
     ap.add_argument("--max-pairs", type=int, default=12)
     ap.add_argument("--max-train-seeds", type=int, default=8)
     ap.add_argument("--stride", type=int, default=2, help="step subsampling within a window")

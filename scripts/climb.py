@@ -31,6 +31,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -41,7 +42,7 @@ from poe_repair.experiments.interaction_term.cache import (  # noqa: E402
 from poe_repair.experiments.interaction_term.pool import load_pool  # noqa: E402
 from scripts.snr_collapse import iter_cells  # noqa: E402
 
-OUT_DIR = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cache_analyses")
+OUT_DIR = paths.resolve(paths.CACHE_ANALYSES)
 
 
 def main() -> int:
@@ -49,7 +50,7 @@ def main() -> int:
     ap.add_argument("--pair", action="append", dest="pairs")
     ap.add_argument("--all", action="store_true",
                     help="scan the cache dir; mixes experiments, prefer --pool")
-    ap.add_argument("--pool", nargs="?", const="outputs/animals_compose_transfer/pair_pool.yaml",
+    ap.add_argument("--pool", nargs="?", const=str(paths.resolve(paths.DOES_THE_FIX_REACH_UNSEEN_PAIRS) / "pair_pool.yaml"),
                     help="restrict to one experiment's declared pairs")
     ap.add_argument("--max-pairs", type=int)
     ap.add_argument("--max-seeds", type=int, default=2)

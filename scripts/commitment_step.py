@@ -33,6 +33,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -87,7 +88,7 @@ def fork_elbow() -> dict[tuple[str, int], int]:
 
 
 def main() -> int:
-    pool = load_pool("outputs/animals_compose_transfer/pair_pool.yaml")
+    pool = load_pool(str(paths.resolve(paths.DOES_THE_FIX_REACH_UNSEEN_PAIRS) / "pair_pool.yaml"))
     pairs = list(pool.train) + list(pool.heldout(roles=("transfer", "reference", "control")))
 
     per_cell: dict[str, list[tuple[int, int]]] = {}

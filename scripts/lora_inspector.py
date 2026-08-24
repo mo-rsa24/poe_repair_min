@@ -35,7 +35,7 @@ DEFAULT_OUTPUTS_ROOT = REPO_ROOT / "outputs"
 # The timing sweeps write to /datasets, not into the repo. The image route is
 # rooted at the whole interaction_term tree so one route serves the window
 # sweep, the crossed grid and the expert frames.
-DEFAULT_IT_ROOT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term")
+DEFAULT_IT_ROOT = paths.resolve(paths.INTERACTION_TERM_ROOT)
 DEFAULT_IW_ROOT = DEFAULT_IT_ROOT
 DEFAULT_IW_MANIFEST = DEFAULT_IT_ROOT / "window/window_inspector_manifest.json"
 DEFAULT_CROSS_MANIFEST = DEFAULT_IT_ROOT / "cross/cross_manifest.json"
@@ -644,8 +644,7 @@ def _with_tabs(template: str) -> str:
     return template.replace("<body>", "<body>\n" + _TAB_HEADER, 1)
 
 
-_MONO_FALLBACK_CAT_DOG = "outputs/cross_seed_lora_pooling/trajectory_diagram/seed_42/mono.png"
-
+_MONO_FALLBACK_CAT_DOG = paths.resolve(paths.HELD_OUT_SEEDS_INDEX) / "trajectory_diagram/seed_42/mono.png"
 # Default pair slug — preserves current behaviour for users who don't pass ?pair=.
 DEFAULT_PAIR = "a_cat__x__a_dog"
 
