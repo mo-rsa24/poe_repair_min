@@ -16,7 +16,7 @@
 #     is in this sweep.
 #   - the verdict compares the PATTERN change, not ||on-off||/||off||. The raw
 #     norm is dominated by a ~25% uniform dimming of the weight maps and gives
-#     the opposite answer. See docs/evidence/mechanism-reprobe/measure-fairness.md
+#     the opposite answer. See artifacts/results/residual-dynamics/content-change-relative-to-attention-change/measure-fairness.md
 #
 # Resumable: a cell whose manifest already exists is skipped, so a timeout or
 # preemption can be re-submitted without redoing finished work.

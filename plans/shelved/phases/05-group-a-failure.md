@@ -132,5 +132,5 @@ Runs one probe at epoch 0 against an untrained corrector, writes the
 | A3 frozen-feature MLP — 600-epoch training run + probes | ✅ | |
 | Cumulative grids (epoch × λ) per technique | ✅ | |
 | Combined 3-row comparison figure (A1 / A2 / A3 × λ at final epoch) | ✅ | |
-| Negative-result writeup in `docs/results-archive/group-a-failure.md` (root) | ✅ | |
+| Negative-result writeup in `artifacts/_quarantine/results-archive/group-a-failure.md` (root) | ✅ | |
 | Final verdict notes per technique in master writeup | | ⬜ (one paragraph each) |

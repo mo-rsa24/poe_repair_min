@@ -36,4 +36,4 @@ person nor a run this sitting.
 | Whether the new `.vscode/settings.json` makes plain "Build LaTeX project" work without picking a recipe | `paper.md` | **open** | deliberately not tested this sitting; testing means running a build, which writes outside this folder's scope |
 | VS Code keystroke build route (`Ctrl+Shift+P` -> Build with recipe -> tectonic) | `paper.md` | stated | user-stated 2026-08-05; the command palette cannot be driven from a shell, so this has never been machine-verified |
 | `*.pdf` gitignored at `.gitignore:31` | `paper.md` | inferred | read from the file on 2026-08-05; not re-read this sitting |
-| Fraction-of-distance-reached, direction-cosine, and scorer failure patterns (`poe-score-001/002`, `poe-lora-001/002`) | `known-failures.md` | stated | carried verbatim from `docs/EXPERIMENT_ERROR_CATALOG.md`, first discovered at step-09; not re-run this sitting |
+| Fraction-of-distance-reached, direction-cosine, and scorer failure patterns (`poe-score-001/002`, `poe-lora-001/002`) | `known-failures.md` | stated | carried verbatim from `environment/known-failures.md`, first discovered at step-09; not re-run this sitting |

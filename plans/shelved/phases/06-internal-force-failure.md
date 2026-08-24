@@ -116,5 +116,5 @@ available from the unaltered PoE forward.
 | `overlap` force run on cat × dog seed 42 at calibrated scale | ✅ | |
 | `alignment` force run on cat × dog seed 42 at calibrated scale | ✅ | |
 | Per-step `‖r̂_t‖` vs cached `‖r_t‖` comparison | ✅ | |
-| Negative-result writeup in `docs/results-archive/internal-force-failure.md` (root) | ✅ | |
+| Negative-result writeup in `artifacts/_quarantine/results-archive/internal-force-failure.md` (root) | ✅ | |
 | One-paragraph verdict added to master writeup | | ⬜ |

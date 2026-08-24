@@ -72,7 +72,7 @@ Two consequences, both binding:
   and latest pair, beside their two endpoints.
 - compute: in-session, no GPU, about 8 minutes over 162 cells.
 - status: ✅ done, with the perceptual check owed. `python scripts/commitment_step.py`, written up
-  in `docs/evidence/EXP01-commitment-step/QUERY.md`. **Varies**: per-pair medians span 18 steps
+  in `artifacts/results/when-the-correction-must-arrive/commitment-step/QUERY.md`. **Varies**: per-pair medians span 18 steps
   (dolphin × porpoise 18, cat × dog 36), between-over-within 1.90 against a bar of 1.5, and the
   verdict holds at both sensitivity thresholds. The unregistered reading matters more: every pair
   settles at step 18 or later while the correction only works over steps 0 to 10, so the
@@ -87,7 +87,7 @@ Two consequences, both binding:
   commitment-step frame already reads as the finished animal, close enough to the final frame that
   the remaining steps look like cleanup rather than a decision. Small decode speckle sits on the
   commitment frame near the dog's face and the dolphin's eye/snout, consistent with the estimate not
-  being fully denoised yet. `docs/evidence/EXP01-commitment-step/commitment-step-frames.png` (+ .pdf,
+  being fully denoised yet. `artifacts/results/when-the-correction-must-arrive/commitment-step/commitment-step-frames.png` (+ .pdf,
   sidecar `.json` with per-row provenance). Perceptual validation of the 0.90 threshold is still owed
   and is tagged on the figure itself, not just in prose.
 
@@ -165,7 +165,7 @@ Two consequences, both binding:
 - compute: none needed. The sweep already existed at 8 pairs x 9 windows x 4 seeds, 288 scored
   cells in `interaction_term/window/window_curves.json`, so this was a read rather than a run.
 - status: ✅ done. `python scripts/window_vs_commitment.py`, written up in
-  `docs/evidence/EXP04-window-vs-commitment/QUERY.md`. **Does not move.** All 8 pairs peak at
+  `artifacts/results/when-the-correction-must-arrive/window-vs-commitment/QUERY.md`. **Does not move.** All 8 pairs peak at
   window centre 5 (steps 0 to 10), a span of 0 steps against a bar of 5, while their settling steps
   span 13 (23 to 36). The registered correlation is undefined because the best window never varies,
   which is the finding. Secondary summaries are weak: rho +0.16 for the compose-weighted centre and

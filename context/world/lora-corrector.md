@@ -92,7 +92,7 @@ Navigation: ⬅️ [How it shows up in the data](#how-it-shows-up-in-the-data) |
 
 **A LoRA that composes on its training pair is not evidence it generalises.** ✍️
 
-`docs/RESEARCH_GUIDELINES.md` records this as a live worry, not a resolved one: whether a
+`RESEARCH_GUIDELINES.md` records this as a live worry, not a resolved one: whether a
 single-pair-trained LoRA's apparent transfer to a sibling pair is a real hit or "a memorised
 correction that happens to fit" is exactly why the project's own rung 3 (`does-the-fix-reach-unseen-pairs`)
 was downgraded from a publication gate to an optional smoke test, and rung 4 (group-wise pooling on
@@ -107,5 +107,5 @@ Navigation: ⬅️ [What people get wrong](#what-people-get-wrong) | 📋 [TOC](
 |---|---|---|
 | The LoRA's rank, attachment point and Mono-free property | Read in `MASTER_PLAN.md`, Mission | 2026-08-24 |
 | The deployable-artefact framing | Read in `MASTER_PLAN.md`, Expected Outcome | 2026-08-24 |
-| The single-pair-transfer confound and its downgrade | Read in `docs/RESEARCH_GUIDELINES.md` and `EXPERIMENTS.md` | 2026-08-24 |
+| The single-pair-transfer confound and its downgrade | Read in `RESEARCH_GUIDELINES.md` and `EXPERIMENTS.md` | 2026-08-24 |
 | `arm` value `lora_residual_inject` | Read in `README.md`'s repo layout, `poe_repair/methods/_sampling.py` listing | 2026-08-24 |

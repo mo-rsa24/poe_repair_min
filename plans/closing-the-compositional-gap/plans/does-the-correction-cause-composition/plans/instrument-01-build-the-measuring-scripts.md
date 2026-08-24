@@ -132,7 +132,7 @@ flowchart TD
       `plot_window_curves.py`, `language_probes.py`, `quality_control.py`,
       `manifold_slide.py`, `composition_scatter.py`.
 - [x] Smoke each instrument on one cached pair and record the actual output
-      in `docs/instrument_smoke.md`.
+      in `report/instrument_smoke.md`.
 
 ## Success/Failure Outcomes
 - **cache smoke**
@@ -189,5 +189,5 @@ $PY -c "from poe_repair.experiments.interaction_term import cache; \
 
 # the canaries, and proof they can fail
 $PY -m pytest tests/test_interaction_term_canaries.py -v   # expect: all pass
-cat docs/instrument_smoke.md             # one recorded output per instrument
+cat report/instrument_smoke.md             # one recorded output per instrument
 ```

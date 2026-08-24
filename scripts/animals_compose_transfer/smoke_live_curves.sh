@@ -8,7 +8,7 @@
 #
 # Runs DIRECTLY on a biggpu node over SSH (shared-node path in docs/ENVIRONMENT.md),
 # never via sbatch. All paths on the launch line must be ABSOLUTE (SSH starts in $HOME;
-# see docs/EXPERIMENT_ERROR_CATALOG.md poe-launch-001):
+# see environment/known-failures.md poe-launch-001):
 #   ssh <node> 'GPU=<free device> nohup bash /home-mscluster/mmolefe/Playground/PhD/poe_repair_min/scripts/animals_compose_transfer/smoke_live_curves.sh > /home-mscluster/mmolefe/Playground/PhD/poe_repair_min/logs/step-09-smoke-<node>.log 2>&1 &'
 set -uo pipefail
 

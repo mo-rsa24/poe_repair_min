@@ -444,7 +444,7 @@ def check_slots():
     anything. When that file's pre-registered bar section carries an answer,
     the slot is fillable (✅) or broken (❌). Broken means the result does not
     fit the slot's claim: do not build the figure, run the diagnosis procedure
-    in docs/RESEARCH_GUIDELINES.md.
+    in RESEARCH_GUIDELINES.md.
     """
     hits = []
     for fig, status, answered_by, file_cell in figure_slots():

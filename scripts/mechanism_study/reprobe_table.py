@@ -9,7 +9,7 @@ found on?
 The comparison is the PATTERN change, not ||on-off||/||off||. The raw norm is
 dominated by a ~25% uniform dimming of the attention weights and gives the
 opposite answer on the same data. See
-docs/evidence/mechanism-reprobe/measure-fairness.md.
+artifacts/results/residual-dynamics/content-change-relative-to-attention-change/measure-fairness.md.
 
 Writes verdict.json next to the cells. Cache-free, no GPU.
 

@@ -78,7 +78,7 @@ Before running that 15-run sweep, we need to know *while it's training* whether 
 - **Procedures:** (if any; add link here)
 - **Assets/outputs:** Saved to `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/live_curves_smoke_run/` (large artifacts live on `/datasets`, never under the repo)
   - **Figure organization:** Use [figure-coverage-prompt.md](diagrams/figure-coverage-prompt.md) to scan the repo, rename all related figures to the step-09 naming convention, and consolidate them into `outputs/interaction_term/live_curves_smoke_run/figures/`. This prompt will generate a FIGURE_CATALOG.md that maps each figure to axes, meaning, and original location.
-  - **Locations scanned:** `docs/evidence/`, `outputs/interaction_term/`, `paper/iclr/figures/`, `/show-me` artifacts, results/ folders
+  - **Locations scanned:** `artifacts/results/ (per-question) and report/paper-evidence-index.md`, `outputs/interaction_term/`, `paper/iclr/figures/`, `/show-me` artifacts, results/ folders
 
 For the full picture, see the [repo MASTER_PLAN.md](../../../../../MASTER_PLAN.md) and [hypothesis-01](../../does-the-correction-cause-composition/plans/hypothesis-01-what-the-fix-changes-inside-the-model.md).
 
@@ -278,7 +278,7 @@ Serves [Objective 4 (Diagnose) and Definition-of-Done item 2](../../../../../MAS
   - **Ask Claude:** "Run the step 9 smoke test for three live curves while training. Start it in the background and give me the W&B link when it begins logging."
 
 - [x] ~~**Teach the environment the shared-device launch path.**~~
-  - Done while launching: [environment/hpc/execution-protocol.md](../../../../../environment/hpc/execution-protocol.md) gained the shared-device step (SSH into an allocated biggpu node, read per-device nvidia-smi, run on a free device with `CUDA_VISIBLE_DEVICES` pinned), the `/run-experiment` node picker gained `--probe-shared`, and the launch-failure pattern landed as `poe-launch-001` in [docs/EXPERIMENT_ERROR_CATALOG.md](../../../../../docs/EXPERIMENT_ERROR_CATALOG.md).
+  - Done while launching: [environment/hpc/execution-protocol.md](../../../../../environment/hpc/execution-protocol.md) gained the shared-device step (SSH into an allocated biggpu node, read per-device nvidia-smi, run on a free device with `CUDA_VISIBLE_DEVICES` pinned), the `/run-experiment` node picker gained `--probe-shared`, and the launch-failure pattern landed as `poe-launch-001` in [environment/known-failures.md](../../../../../environment/known-failures.md).
 
 ▶ **Next: instruction 3.1**, reading the curves in W&B while the run cooks.
 
@@ -414,7 +414,7 @@ When this plan runs and produces output, three things need to stay in sync: the 
 
 1. **Ingest errors (automatic propagation):**
    - Run `/ingest-error-pattern --from-run-log` to extract patterns from the run transcript.
-   - The skill deduplicates against `~/.claude/GLOBAL_ERROR_CATALOG.md` and `docs/EXPERIMENT_ERROR_CATALOG.md`.
+   - The skill deduplicates against `~/.claude/GLOBAL_ERROR_CATALOG.md` and `environment/known-failures.md`.
    - New errors are appended to the appropriate catalog.
    - The skill automatically triggers `/sync-plan-tree --update-error-matrices` when done.
 
@@ -425,7 +425,7 @@ When this plan runs and produces output, three things need to stay in sync: the 
 
 3. **Organize figures (manual, but guided):**
    - After the smoke run finishes, W&B outputs three metric curves to your project.
-   - Use the [figure-coverage-prompt.md](diagrams/figure-coverage-prompt.md) to scan the repo for all related figures (existing docs/evidence/, outputs/, paper/ figures plus new W&B screenshots).
+   - Use the [figure-coverage-prompt.md](diagrams/figure-coverage-prompt.md) to scan the repo for all related figures (existing artifacts/results/ (per-question) and report/paper-evidence-index.md, outputs/, paper/ figures plus new W&B screenshots).
    - The prompt renames them to the step-09 naming convention and consolidates them into `outputs/interaction_term/live_curves_smoke_run/figures/`.
    - It generates a `FIGURE_CATALOG.md` that maps each figure to its axes, meaning, and original location.
 
@@ -583,7 +583,7 @@ Global patterns applicable across all projects. See [~/.claude/GLOBAL_ERROR_CATA
 
 ### From project catalog
 
-Patterns specific to poe_repair_min. See [docs/EXPERIMENT_ERROR_CATALOG.md](../../../../../docs/EXPERIMENT_ERROR_CATALOG.md) for the full catalog.
+Patterns specific to poe_repair_min. See [environment/known-failures.md](../../../../../environment/known-failures.md) for the full catalog.
 
 #### 🔴 poe-score-001: Scorer returns all zeros or NaNs despite valid inputs
 
@@ -600,7 +600,7 @@ assert eval_output.device.type == 'cuda', f"Expected GPU, got {eval_output.devic
 assert eval_output.min() >= -0.1 and eval_output.max() <= 1.1, f"Range error: [{eval_output.min()}, {eval_output.max()}]"
 ```
 
-**Reference:** [docs/EXPERIMENT_ERROR_CATALOG.md#entry-id-poe-score-001](../../../../../docs/EXPERIMENT_ERROR_CATALOG.md#entry-id-poe-score-001)
+**Reference:** [environment/known-failures.md#entry-id-poe-score-001](../../../../../environment/known-failures.md#entry-id-poe-score-001)
 
 ---
 
@@ -618,7 +618,7 @@ assert eval_output.min() >= -0.1 and eval_output.max() <= 1.1, f"Range error: [{
 3. If they look different (color space, brightness), recalibrate the scorer or adjust the correction target.
 4. If images look correct, the scorer may need retraining on this data distribution.
 
-**Reference:** [docs/EXPERIMENT_ERROR_CATALOG.md#entry-id-poe-score-002](../../../../../docs/EXPERIMENT_ERROR_CATALOG.md#entry-id-poe-score-002)
+**Reference:** [environment/known-failures.md#entry-id-poe-score-002](../../../../../environment/known-failures.md#entry-id-poe-score-002)
 
 ---
 
@@ -635,7 +635,7 @@ assert eval_output.min() >= -0.1 and eval_output.max() <= 1.1, f"Range error: [{
 - OR: Shard eval batch to 8-16 images per forward pass and loop to aggregate.
 - OR: Reduce eval frequency (eval every 5 steps instead of every step).
 
-**Reference:** [docs/EXPERIMENT_ERROR_CATALOG.md#entry-id-poe-mem-001](../../../../../docs/EXPERIMENT_ERROR_CATALOG.md#entry-id-poe-mem-001)
+**Reference:** [environment/known-failures.md#entry-id-poe-mem-001](../../../../../environment/known-failures.md#entry-id-poe-mem-001)
 
 ---
 
@@ -652,7 +652,7 @@ assert eval_output.min() >= -0.1 and eval_output.max() <= 1.1, f"Range error: [{
 2. If r < 16, increase to r=32 or r=64 and re-run.
 3. If r >= 16, the plateau is correct for this correction. Document in run notes.
 
-**Reference:** [docs/EXPERIMENT_ERROR_CATALOG.md#entry-id-poe-lora-001](../../../../../docs/EXPERIMENT_ERROR_CATALOG.md#entry-id-poe-lora-001)
+**Reference:** [environment/known-failures.md#entry-id-poe-lora-001](../../../../../environment/known-failures.md#entry-id-poe-lora-001)
 
 ---
 
@@ -669,7 +669,7 @@ assert eval_output.min() >= -0.1 and eval_output.max() <= 1.1, f"Range error: [{
 2. Verify loss function in `train_pooled.py` matches the loss used to compute pool-mean.
 3. If both are correct, the divergence is data, not an error. Document in run notes.
 
-**Reference:** [docs/EXPERIMENT_ERROR_CATALOG.md#entry-id-poe-lora-002](../../../../../docs/EXPERIMENT_ERROR_CATALOG.md#entry-id-poe-lora-002)
+**Reference:** [environment/known-failures.md#entry-id-poe-lora-002](../../../../../environment/known-failures.md#entry-id-poe-lora-002)
 
 ---
 
@@ -683,7 +683,7 @@ assert eval_output.min() >= -0.1 and eval_output.max() <= 1.1, f"Range error: [{
 
 **How to fix:** Make every path on the SSH launch line absolute (script and log redirect); the launch script does its own `cd "$REPO"` internally. Verify in the same call with `sleep 5; pgrep -af "train"` and a `tail` of the absolute log path.
 
-**Reference:** [docs/EXPERIMENT_ERROR_CATALOG.md#entry-id-poe-launch-001](../../../../../docs/EXPERIMENT_ERROR_CATALOG.md#entry-id-poe-launch-001)
+**Reference:** [environment/known-failures.md#entry-id-poe-launch-001](../../../../../environment/known-failures.md#entry-id-poe-launch-001)
 
 ---
 

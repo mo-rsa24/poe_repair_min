@@ -57,7 +57,7 @@ scope proves that account and produces the paper's figures.
         reads low regardless of transfer.
         First clause HOLDS: 63.0% vs a 16.4% Gaussian floor, 3.8x, from
         scripts/spectrum.py --pool --stride 10 --max-seeds 8 (440 rows).
-        Evidence: docs/evidence/F6-subspace-vs-transfer/QUERY.md
+        Evidence: artifacts/results/which-way-the-correction-points/does-the-subspace-test-predict-transfer/QUERY.md
         Rewording direction text is /integrate-plans or /refine-plan, not
         sync-plan-tree. -->
 4. Universality: ‖r_t‖ curves collapse in log-SNR across pairs; the window
@@ -80,7 +80,7 @@ broke. No landing is narrated without its instrument.
 
 ## Definition of Done
 1. ✅ Normalization pre-registered in writing before any cross-type plot exists.
-   (relative_norm, docs/normalization_preregistration.md, 2026-08-05)
+   (relative_norm, report/normalization_preregistration.md, 2026-08-05)
 2. ✅ Mechanism re-probe verdict recorded: REPLICATES (median 1.52x over
    64 cells, 2026-08-05). Caveat: the control pair shows the effect too.
 3. Dose-response figure with all three control rows.

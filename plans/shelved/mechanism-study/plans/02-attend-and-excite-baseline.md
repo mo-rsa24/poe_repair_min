@@ -4,7 +4,7 @@
 No test-time attention-optimization baseline exists in this repo yet. `_CrossAttnRecorder`
 already supports `keep_grad=True` (built for FOCUS's velocity correction, per its own
 docstring), so the gradient path is not new — only the intervention loop itself is. The
-minimal scope: at the commitment-window steps (from `G02`/`docs/results-archive/residual-diagnostics.md`), compute
+minimal scope: at the commitment-window steps (from `G02`/`artifacts/_quarantine/results-archive/residual-diagnostics.md`), compute
 `L = Σ_tokens max(0, 1 − max_spatial_attn(token))` on plain PoE's attention, backprop through
 the latent (not the UNet weights), take 1-2 gradient steps per intervention step. Fixed step
 count, not swept — this is a comparison baseline, not the paper's method.

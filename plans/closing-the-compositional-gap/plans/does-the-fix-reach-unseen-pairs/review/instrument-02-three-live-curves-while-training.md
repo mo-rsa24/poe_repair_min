@@ -154,7 +154,7 @@ the relative log path resolved there and the redirect failed before `nohup` ever
 Prefixing `cd <repo> &&` did not fix it, because the tooling's permission layer can strip `cd` from
 a compound command. The fix that worked is absolute paths for both the script and the log redirect,
 with the launch script doing its own `cd` internally. Recorded as
-[poe-launch-001](../../../../../docs/EXPERIMENT_ERROR_CATALOG.md#entry-id-poe-launch-001).
+[poe-launch-001](../../../../../environment/known-failures.md#entry-id-poe-launch-001).
 
 **What the environment learned.** The shared-device path is now written down rather than improvised:
 [environment/hpc/execution-protocol.md](../../../../../environment/hpc/execution-protocol.md) carries it as a step in

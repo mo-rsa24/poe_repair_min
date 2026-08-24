@@ -263,7 +263,7 @@ half of the run, and it is the running example, so a reader will look straight a
 Worth understanding before the caption is frozen.
 
 **Go deeper.** That axis decision is built as a scene you can operate:
-[scene-logsnr/](scene-logsnr/README.md), run with `cd docs/figures/scene-logsnr && npm
+[scene-logsnr/](scene-logsnr/README.md), run with `cd artifacts/scenes/logsnr-explainer && npm
 install && npm run dev`. It draws SDXL's own schedule, derives log-SNR from it, and
 computes both sides of the choice live. For the step axis: the cached run's steps are 20
 timesteps apart every time, but move 0.16 apart in log-SNR mid-run against 2.46 at the
@@ -473,7 +473,7 @@ the real norms the pooled stack is 1.4x at k=8, not 11x. Scaling rows to unit no
 leaves genuine direction structure (7.8x at k=8) but it sits inside single runs
 (4.8x) and not across them (1.2x), which is D1 and D3 restated rather than a new
 claim. Full argument and tables in
-`docs/evidence/F6-what-the-spectrum-measures/QUERY.md`.
+`artifacts/results/which-way-the-correction-points/what-the-spectrum-measures/QUERY.md`.
 
 **What still answers the question.** The adapter's behaviour, not the geometry of the
 cached vectors: rank 8, 11 training pairs, 96.9% compose on six unseen pairs where
@@ -492,7 +492,7 @@ plain PoE composes 0%. The `r_t` vectors are near-orthogonal to each other, abou
 0.00 cosine even between training pairs, so no fitted subspace can contain unseen
 pairs whether or not the correction transfers. Any sentence built on "shared
 subspace" wording gets rewritten to that bounded form. Full argument in
-`docs/evidence/F6-subspace-vs-transfer/QUERY.md`.
+`artifacts/results/which-way-the-correction-points/does-the-subspace-test-predict-transfer/QUERY.md`.
 
 **The numbers.** 440 rows from `scripts/spectrum.py --pool --stride 10 --max-seeds 8`.
 Against the equal-norm Gaussian floor: k=1 3.8% against 0.3% (14 times), k=8 22.6%

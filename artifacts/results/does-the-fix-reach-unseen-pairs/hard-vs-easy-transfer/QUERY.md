@@ -49,8 +49,8 @@ Without this check, a compose-rate near 1.0 would have been trusted at face valu
 
 ```
 Reproduce
-  python docs/evidence/F8-animals-hard-vs-easy/demo.py       # the terminal report above
-  python docs/evidence/F8-animals-hard-vs-easy/test_demo.py  # the checks can fail (6/6 passed)
-  figure: docs/evidence/F8-animals-hard-vs-easy/hard_vs_easy_transfer.png
-  record: docs/evidence/F8-animals-hard-vs-easy/QUERY.md
+  python artifacts/results/does-the-fix-reach-unseen-pairs/hard-vs-easy-transfer/demo.py       # the terminal report above
+  python artifacts/results/does-the-fix-reach-unseen-pairs/hard-vs-easy-transfer/test_demo.py  # the checks can fail (6/6 passed)
+  figure: artifacts/results/does-the-fix-reach-unseen-pairs/hard-vs-easy-transfer/hard_vs_easy_transfer.png
+  record: artifacts/results/does-the-fix-reach-unseen-pairs/hard-vs-easy-transfer/QUERY.md
 ```

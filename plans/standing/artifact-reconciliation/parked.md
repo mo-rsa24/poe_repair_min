@@ -40,7 +40,7 @@ Judgment tasks, in order:
 4. **Extend `04_apply_layout.sh`** with chosen destinations → dry-run → `APPLY=1` to file
    them with compat symlinks. (Destructive move: not run unattended.)
 5. **Canonicalise** any new short pair slug (none seen; the new dirs use canonical slugs).
-6. **Append** a `docs/DECISION_TIMELINE.md` entry for this landing.
+6. **Append** a `DECISION_TIMELINE.md` entry for this landing.
 
 Pre-existing backlog in `plans/05` (unchanged, still parked):
 

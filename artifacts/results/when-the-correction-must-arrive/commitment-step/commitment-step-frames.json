@@ -1,0 +1,37 @@
+{
+  "rows": [
+    {
+      "pair": "a_cat__x__a_dog",
+      "seed": 2,
+      "colour": "#1f77b4",
+      "commitment_step_individual": 36,
+      "commitment_step_pair_median": 36.0,
+      "n_steps": 50,
+      "frames": {
+        "start": "artifacts/results/when-the-correction-must-arrive/commitment-step/frames/a_cat__x__a_dog_seed2_start.png",
+        "commit": "artifacts/results/when-the-correction-must-arrive/commitment-step/frames/a_cat__x__a_dog_seed2_commit.png",
+        "final": "artifacts/results/when-the-correction-must-arrive/commitment-step/frames/a_cat__x__a_dog_seed2_final.png"
+      }
+    },
+    {
+      "pair": "a_dolphin__x__a_porpoise",
+      "seed": 4,
+      "colour": "#1f77b4",
+      "commitment_step_individual": 20,
+      "commitment_step_pair_median": 18.0,
+      "n_steps": 50,
+      "frames": {
+        "start": "artifacts/results/when-the-correction-must-arrive/commitment-step/frames/a_dolphin__x__a_porpoise_seed4_start.png",
+        "commit": "artifacts/results/when-the-correction-must-arrive/commitment-step/frames/a_dolphin__x__a_porpoise_seed4_commit.png",
+        "final": "artifacts/results/when-the-correction-must-arrive/commitment-step/frames/a_dolphin__x__a_porpoise_seed4_final.png"
+      }
+    }
+  ],
+  "columns": [
+    "start: x0 estimate at step 0",
+    "commitment: x0 estimate at that run's own commitment step",
+    "final: x0 estimate at the last step"
+  ],
+  "seed_choice": "nearest individual commitment step to the pair's registered median, ties broken by lower seed number",
+  "caveat": "all three columns are Tweedie estimates decoded through the VAE for display; the 0.90 cosine threshold that defines commitment was computed in latent space, not on these decoded pixels, and the perceptual check against it is still owed (artifacts/results/when-the-correction-must-arrive/commitment-step/QUERY.md)"
+}

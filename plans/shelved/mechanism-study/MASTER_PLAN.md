@@ -27,7 +27,7 @@ answer explain why some pairs fail and others don't?
 3. **Read the Mechanism** (three-way, pressure-test-upgraded rule):
    - *support* if ≥3 visually-successful seeds show Δ_attn(LoRA) matching Δ_attn(AAE) in sign
      and within 2x magnitude (commitment-window-restricted, window from `G02`/
-     `docs/results-archive/residual-diagnostics.md`)
+     `artifacts/_quarantine/results-archive/residual-diagnostics.md`)
    - *null* if the majority of visually-successful seeds show sign-mismatch or >4x magnitude
      divergence
    - *inconclusive* if fewer than 3 seeds visually succeed (known ~40% delivery ceiling from

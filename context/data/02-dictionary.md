@@ -135,7 +135,7 @@ experiments
 [window](../world/interaction-term.md#words-this-file-uses) of steps that run specifies
 
 **Watch out** `λ=0` must reproduce plain PoE to under 1e-5; this is the project's own canary check
-against contamination (`docs/RESEARCH_GUIDELINES.md`: "the λ=0 check: injecting nothing must
+against contamination (`RESEARCH_GUIDELINES.md`: "the λ=0 check: injecting nothing must
 reproduce plain PoE to under 1e-5") ⚠️
 
 ### `step`

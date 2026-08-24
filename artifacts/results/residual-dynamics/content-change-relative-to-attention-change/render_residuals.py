@@ -15,7 +15,7 @@ If the account is right, the third column carries more structure than the second
 
 Usage:
     PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
-    $PY docs/evidence/F7-mechanism-reprobe/render_residuals.py
+    $PY artifacts/results/residual-dynamics/content-change-relative-to-attention-change/render_residuals.py
 """
 
 from __future__ import annotations

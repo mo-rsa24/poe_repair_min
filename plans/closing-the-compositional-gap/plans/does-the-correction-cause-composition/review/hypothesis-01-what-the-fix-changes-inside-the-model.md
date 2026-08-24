@@ -65,7 +65,7 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
 | 64-cell probe sweep on mscluster109, 8 held-out pairs × seeds 9 to 16, adapter off against on at matched steps | Tests the claim | 2026-08-05 | 64 cells, 384 token-step rows | `/datasets/.../interaction_term/reprobe/`, 384 token-step rows, `verdict.json` | done, 0 failed |
-| one-cell smoke, an_eagle__x__a_hawk seed 9 (plus frog/toad, seal/walrus, cat/dog) | Tests the claim | before the sweep | 4 cells | `docs/evidence/F7-mechanism-reprobe/smoke_eagle_hawk.png` | done |
+| one-cell smoke, an_eagle__x__a_hawk seed 9 (plus frog/toad, seal/walrus, cat/dog) | Tests the claim | before the sweep | 4 cells | `artifacts/results/residual-dynamics/content-change-relative-to-attention-change/smoke_eagle_hawk.png` | done |
 
 Run directly on the node rather than as a queued job, because biggpu allows one job per user and
 an interactive session held the slot.

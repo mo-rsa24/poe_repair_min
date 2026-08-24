@@ -3,7 +3,7 @@
 > ⚠️ SUPERSEDED by [`/MASTER_PLAN.md`](../../MASTER_PLAN.md) (2026-07-21) — the
 > canonical program master now lives at the repo root, framed around the five
 > pyramid rungs (Overfit → Survive-Noise → Cross-Pair → Group-Wise → Scale)
-> with status backed by [`docs/DECISION_TIMELINE.md`](../../docs/DECISION_TIMELINE.md).
+> with status backed by [`DECISION_TIMELINE.md`](../../DECISION_TIMELINE.md).
 > (This file and its sibling phase plans were archived into `plans/shelved/phases/` on
 > 2026-07-21 when the rung-based plan files `plans/01-05` became canonical.)
 > This file is retained as the historical **phase map**: the original eight-phase
@@ -129,7 +129,7 @@ Phase 8 (cross-seed LoRA)
 - [02-residual-diagnostics.md](02-residual-diagnostics.md) — existence + CLIP-window characterisation.
 - [03-conditioning-window-baseline.md](03-conditioning-window-baseline.md) — no-LoRA CFG-mask sweep.
 - [04-lora-single-seed.md](04-lora-single-seed.md) — the deployed single-seed LoRA.
-- [05-`docs/results-archive/group-a-failure.md](05-`docs/results-archive/group-a-failure.md) — external corrector failures.
+- [05-`artifacts/_quarantine/results-archive/group-a-failure.md](05-`artifacts/_quarantine/results-archive/group-a-failure.md) — external corrector failures.
 - [06-internal-force-failure.md](06-internal-force-failure.md) — PoE-internal force failures.
 - [07-cross-seed-delta-structure.md](07-cross-seed-delta-structure.md) — is Δ_t a seed-invariant signal?
 - [08-cross-seed-lora-pooling.md](08-cross-seed-lora-pooling.md) — pooled LoRA across seeds.
@@ -141,11 +141,11 @@ sections is not in the sub-plan.
 
 ## Sources superseded by this folder
 
-- `docs/results-archive/lora-success.md` (root) — superseded by 04.
-- `docs/results-archive/residual-diagnostics.md` (root) — superseded by 02.
-- `docs/results-archive/group-a-failure.md` (root) — superseded by 05.
-- `docs/results-archive/internal-force-failure.md` (root) — superseded by 06.
-- `docs/results-archive/conditioning-window.md` (root) — superseded by 03.
+- `artifacts/_quarantine/results-archive/lora-success.md` (root) — superseded by 04.
+- `artifacts/_quarantine/results-archive/residual-diagnostics.md` (root) — superseded by 02.
+- `artifacts/_quarantine/results-archive/group-a-failure.md` (root) — superseded by 05.
+- `artifacts/_quarantine/results-archive/internal-force-failure.md` (root) — superseded by 06.
+- `artifacts/_quarantine/results-archive/conditioning-window.md` (root) — superseded by 03.
 - `.claude/plans/cross-seed-lora-pooling.md` — superseded by 08.
 - `.claude/plans/delta-t-structure-or-noise.md` — superseded by 07.
 - `claude/veracity-figure-plan.md` — superseded by 01.

@@ -138,7 +138,7 @@ MANIFOLD_CACHE = "artifacts/caches/manifold_cache"
 
 # Families whose code names an output directory that has never been written.
 # `internal_force_failure` has a full package under `poe_repair/experiments/` and a
-# writeup in `docs/results-archive/`, and `metrics.py:45` documents the layout it
+# writeup in `artifacts/_quarantine/results-archive/`, and `metrics.py:45` documents the layout it
 # writes; no run has produced it on either filesystem. That is a fact worth keeping
 # rather than a constant worth deleting, so it is stated here and the resolve check
 # permits it. Anything not in this set that stops resolving is drift, and fails.
