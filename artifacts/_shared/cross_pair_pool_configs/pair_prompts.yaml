@@ -1,0 +1,243 @@
+# Per-pair (prompt_a, prompt_b, joint_prompt) used by Plan 15 and Plan 16.
+# Slugs match on-disk training-cache directory names.
+# Joint-prompt connector by taxonomy group (matches existing cache metadata):
+#   G1 co-occurrence       — "<a> and <b>"
+#   G2 factorization       — "<a> in <b>"
+#   G3 object + scene      — "<a> in <b>"
+#   G4 dual-object         — "<a> and <b>"
+#   G6 concept collision   — "<a> and <b>"
+# Verified against /datasets/.../training_cache/heldout/<slug>/seed_*/meta.json
+# for the pairs that are already cached.
+
+# =====================================================================
+# G1 — co-occurrence (10 pairs from pilot_5seeds/seed_1/group1_cooccurrence/)
+# =====================================================================
+a_butterfly__x__a_flower_meadow:
+  prompt_a: "a butterfly"
+  prompt_b: "a flower meadow"
+  joint_prompt: "a butterfly and a flower meadow"
+a_camel__x__a_desert_landscape:
+  prompt_a: "a camel"
+  prompt_b: "a desert landscape"
+  joint_prompt: "a camel and a desert landscape"
+a_deer__x__a_forest_clearing:
+  prompt_a: "a deer"
+  prompt_b: "a forest clearing"
+  joint_prompt: "a deer and a forest clearing"
+a_dolphin__x__an_ocean_wave:
+  prompt_a: "a dolphin"
+  prompt_b: "an ocean wave"
+  joint_prompt: "a dolphin and an ocean wave"
+a_duck__x__a_pond:
+  prompt_a: "a duck"
+  prompt_b: "a pond"
+  joint_prompt: "a duck and a pond"
+a_flamingo__x__a_lagoon:
+  prompt_a: "a flamingo"
+  prompt_b: "a lagoon"
+  joint_prompt: "a flamingo and a lagoon"
+a_horse__x__a_grassy_field:
+  prompt_a: "a horse"
+  prompt_b: "a grassy field"
+  joint_prompt: "a horse and a grassy field"
+a_lighthouse__x__an_ocean_with_stormy_waves:
+  prompt_a: "a lighthouse"
+  prompt_b: "an ocean with stormy waves"
+  joint_prompt: "a lighthouse and an ocean with stormy waves"
+a_polar_bear__x__an_iceberg:
+  prompt_a: "a polar bear"
+  prompt_b: "an iceberg"
+  joint_prompt: "a polar bear and an iceberg"
+a_sailboat__x__a_harbor:
+  prompt_a: "a sailboat"
+  prompt_b: "a harbor"
+  joint_prompt: "a sailboat and a harbor"
+
+# =====================================================================
+# G2 — factorization, object × style (10 pairs from group2_factorization/)
+# =====================================================================
+a_barn__x__pencil_drawing_style:
+  prompt_a: "a barn"
+  prompt_b: "pencil drawing style"
+  joint_prompt: "a barn in pencil drawing style"
+a_bicycle__x__sketch_style:
+  prompt_a: "a bicycle"
+  prompt_b: "sketch style"
+  joint_prompt: "a bicycle in sketch style"
+a_cactus__x__mosaic_style:
+  prompt_a: "a cactus"
+  prompt_b: "mosaic style"
+  joint_prompt: "a cactus in mosaic style"
+a_camera__x__watercolor_style:
+  prompt_a: "a camera"
+  prompt_b: "watercolor style"
+  joint_prompt: "a camera in watercolor style"
+a_castle__x__stained_glass_style:
+  prompt_a: "a castle"
+  prompt_b: "stained glass style"
+  joint_prompt: "a castle in stained glass style"
+a_cat__x__charcoal_drawing_style:
+  prompt_a: "a cat"
+  prompt_b: "charcoal drawing style"
+  joint_prompt: "a cat in charcoal drawing style"
+a_dog__x__oil_painting_style:
+  prompt_a: "a dog"
+  prompt_b: "oil painting style"
+  joint_prompt: "a dog in oil painting style"
+a_lighthouse__x__watercolour_style:
+  prompt_a: "a lighthouse"
+  prompt_b: "watercolour style"
+  joint_prompt: "a lighthouse in watercolour style"
+a_teapot__x__claymation_style:
+  prompt_a: "a teapot"
+  prompt_b: "claymation style"
+  joint_prompt: "a teapot in claymation style"
+a_train__x__pixel_art_style:
+  prompt_a: "a train"
+  prompt_b: "pixel art style"
+  joint_prompt: "a train in pixel art style"
+
+# =====================================================================
+# G3 — role-separable object + scene (10 pairs from group3_role_separable_object_scene/)
+# =====================================================================
+a_bookcase__x__a_glacier:
+  prompt_a: "a bookcase"
+  prompt_b: "a glacier"
+  joint_prompt: "a bookcase in a glacier"
+a_candle__x__a_waterfall:
+  prompt_a: "a candle"
+  prompt_b: "a waterfall"
+  joint_prompt: "a candle in a waterfall"
+a_fire_hydrant__x__a_snowfield:
+  prompt_a: "a fire hydrant"
+  prompt_b: "a snowfield"
+  joint_prompt: "a fire hydrant in a snowfield"
+a_lamppost__x__a_desert_dune:
+  prompt_a: "a lamppost"
+  prompt_b: "a desert dune"
+  joint_prompt: "a lamppost in a desert dune"
+a_lighthouse__x__a_desert_dune:
+  prompt_a: "a lighthouse"
+  prompt_b: "a desert dune"
+  joint_prompt: "a lighthouse in a desert dune"
+a_mailbox__x__a_snowfield:
+  prompt_a: "a mailbox"
+  prompt_b: "a snowfield"
+  joint_prompt: "a mailbox in a snowfield"
+a_park_bench__x__a_sand_dune:
+  prompt_a: "a park bench"
+  prompt_b: "a sand dune"
+  joint_prompt: "a park bench in a sand dune"
+a_phone_booth__x__a_tropical_beach:
+  prompt_a: "a phone booth"
+  prompt_b: "a tropical beach"
+  joint_prompt: "a phone booth in a tropical beach"
+a_picnic_table__x__a_snowstorm:
+  prompt_a: "a picnic table"
+  prompt_b: "a snowstorm"
+  joint_prompt: "a picnic table in a snowstorm"
+a_rowboat__x__a_cactus_garden:
+  prompt_a: "a rowboat"
+  prompt_b: "a cactus garden"
+  joint_prompt: "a rowboat in a cactus garden"
+
+# =====================================================================
+# G4 — dual-object composition (10 pairs from group4_dual_object_composition/)
+# =====================================================================
+a_bathtub__x__a_streetlamp:
+  prompt_a: "a bathtub"
+  prompt_b: "a streetlamp"
+  joint_prompt: "a bathtub and a streetlamp"
+a_birdcage__x__a_watering_can:
+  prompt_a: "a birdcage"
+  prompt_b: "a watering can"
+  joint_prompt: "a birdcage and a watering can"
+a_briefcase__x__a_ceramic_bowl:
+  prompt_a: "a briefcase"
+  prompt_b: "a ceramic bowl"
+  joint_prompt: "a briefcase and a ceramic bowl"
+a_chessboard__x__a_lantern:
+  prompt_a: "a chessboard"
+  prompt_b: "a lantern"
+  joint_prompt: "a chessboard and a lantern"
+a_drum_set__x__a_snowman:
+  prompt_a: "a drum set"
+  prompt_b: "a snowman"
+  joint_prompt: "a drum set and a snowman"
+a_feather_pillow__x__a_cast_iron_pan:
+  prompt_a: "a feather pillow"
+  prompt_b: "a cast iron pan"
+  joint_prompt: "a feather pillow and a cast iron pan"
+a_lab_microscope__x__a_hay_bale:
+  prompt_a: "a lab microscope"
+  prompt_b: "a hay bale"
+  joint_prompt: "a lab microscope and a hay bale"
+a_microwave__x__a_potted_plant:
+  prompt_a: "a microwave"
+  prompt_b: "a potted plant"
+  joint_prompt: "a microwave and a potted plant"
+a_suitcase__x__a_desk_fan:
+  prompt_a: "a suitcase"
+  prompt_b: "a desk fan"
+  joint_prompt: "a suitcase and a desk fan"
+a_typewriter__x__a_cactus:
+  prompt_a: "a typewriter"
+  prompt_b: "a cactus"
+  joint_prompt: "a typewriter and a cactus"
+
+# =====================================================================
+# G6 — concept collision (10 pairs from group6_coherent_collision/)
+# =====================================================================
+a_cat__x__a_dog:
+  prompt_a: "a cat"
+  prompt_b: "a dog"
+  joint_prompt: "a cat and a dog"
+a_cat__x__a_horse:
+  prompt_a: "a cat"
+  prompt_b: "a horse"
+  joint_prompt: "a cat and a horse"
+a_cat__x__a_lion:
+  prompt_a: "a cat"
+  prompt_b: "a lion"
+  joint_prompt: "a cat and a lion"
+a_cow__x__a_horse:
+  prompt_a: "a cow"
+  prompt_b: "a horse"
+  joint_prompt: "a cow and a horse"
+a_dog__x__a_horse:
+  prompt_a: "a dog"
+  prompt_b: "a horse"
+  joint_prompt: "a dog and a horse"
+a_lion__x__a_dog:
+  prompt_a: "a lion"
+  prompt_b: "a dog"
+  joint_prompt: "a lion and a dog"
+a_lion__x__a_horse:
+  prompt_a: "a lion"
+  prompt_b: "a horse"
+  joint_prompt: "a lion and a horse"
+a_mug__x__a_wine_glass:
+  prompt_a: "a mug"
+  prompt_b: "a wine glass"
+  joint_prompt: "a mug and a wine glass"
+a_tiger__x__a_dog:
+  prompt_a: "a tiger"
+  prompt_b: "a dog"
+  joint_prompt: "a tiger and a dog"
+a_wolf__x__a_horse:
+  prompt_a: "a wolf"
+  prompt_b: "a horse"
+  joint_prompt: "a wolf and a horse"
+
+# =====================================================================
+# Legacy Plan-15 / Plan-10 slugs retained for cross-experiment lookups
+# (not used by Plan 16's pair pools).
+# =====================================================================
+a_wolf__x__a_husky:
+  prompt_a: "a wolf"
+  prompt_b: "a husky"
+  joint_prompt: "a wolf and a husky"
+a_fox__x__a_wolf:
+  prompt_a: "a fox"
+  prompt_b: "a wolf"
+  joint_prompt: "a fox and a wolf"

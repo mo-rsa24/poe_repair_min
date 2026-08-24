@@ -28,8 +28,15 @@ outputs/*
 !outputs/INDEX.md
 logs/
 
-# Generated run artifacts (regenerable; large; canonical copies live under /datasets/mmolefe)
-artifacts/
+# Generated run artifacts (regenerable; large; canonical copies live under /datasets/mmolefe).
+# Source content that lives under artifacts/ by the four-folder convention (drips, scenes,
+# notes, decks, videos, and their READMEs) is tracked; only the run-output kinds are ignored.
+artifacts/results/
+artifacts/caches/
+artifacts/rung2-survive-noise/
+artifacts/rung3-group-wise/
+artifacts/rung4-scale/
+artifacts/_quarantine/
 results/
 
 # Papers / reference PDFs (not source)
