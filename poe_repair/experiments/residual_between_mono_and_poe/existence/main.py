@@ -141,7 +141,7 @@ def _stage_figures(
     app_a_cells = []
     if cfg is not None:
         try:
-            from pairs import CONTROL_SEEDS as _SEEDS
+            from poe_repair.pairs import CONTROL_SEEDS as _SEEDS
         except ImportError:
             _SEEDS = [cell.seed]
         # Ensure the contested cell's actually-requested seed is in the list.
@@ -199,7 +199,7 @@ def _stage_figures(
     # Discover each control-seed's λ=0 image for the contested cell.
     if cfg is not None:
         try:
-            from pairs import CONTROL_SEEDS as _ABP_SEEDS
+            from poe_repair.pairs import CONTROL_SEEDS as _ABP_SEEDS
         except ImportError:
             _ABP_SEEDS = [cell.seed]
         ab_paths: dict[int, Path] = {}
