@@ -26,6 +26,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
@@ -33,9 +34,7 @@ from poe_repair.experiments.mechanism_study.value_probe import (  # noqa: E402
     gain_and_pattern,
 )
 
-DEFAULT_ROOT = Path(
-    "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/reprobe"
-)
+DEFAULT_ROOT = paths.resolve(paths.CONTENT_CHANGE_RELATIVE_TO_ATTENTION_CHANGE)
 # Pre-registered before the sweep ran, so the bar is not moved to fit the data.
 # Support needs the effect present in most cells AND a clear median, not one
 # strong pair carrying a weak average.
@@ -75,7 +74,7 @@ def read_cell(d: Path) -> list[dict]:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--root", type=Path, default=DEFAULT_ROOT)
-    ap.add_argument("--pool", default="outputs/animals_compose_transfer/pair_pool.yaml")
+    ap.add_argument("--pool", default=str(paths.resolve(paths.DOES_THE_FIX_REACH_UNSEEN_PAIRS) / "pair_pool.yaml"))
     args = ap.parse_args()
 
     if not args.root.is_dir():

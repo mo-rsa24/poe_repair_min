@@ -44,6 +44,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -54,7 +55,7 @@ from poe_repair.experiments.interaction_term.cache import (  # noqa: E402
 from poe_repair.experiments.interaction_term.pool import load_pool  # noqa: E402
 from scripts.snr_collapse import iter_cells  # noqa: E402
 
-OUT_DIR = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cache_analyses")
+OUT_DIR = paths.resolve(paths.CACHE_ANALYSES)
 
 
 def _cos(a, b):
@@ -103,7 +104,7 @@ def climb_for_cell(cell, *, seed: int = 0) -> dict:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--pool", nargs="?",
-                    const="outputs/animals_compose_transfer/pair_pool.yaml",
+                    const=str(paths.resolve(paths.DOES_THE_FIX_REACH_UNSEEN_PAIRS) / "pair_pool.yaml"),
                     help="restrict to one experiment's declared pairs")
     ap.add_argument("--pair", action="append", dest="pairs")
     ap.add_argument("--max-seeds", type=int, default=2)

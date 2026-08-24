@@ -25,6 +25,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
+from poe_repair import paths
 
 # Running as `python scripts/foo.py` puts scripts/ on sys.path, not the repo
 # root, so the package would not import. The plan's engagement instructions use
@@ -34,7 +35,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from poe_repair.experiments.interaction_term.cache import CACHE_ROOT, load_cell  # noqa: E402
 from poe_repair.experiments.interaction_term.pool import load_pool  # noqa: E402
 
-OUT_DIR = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cache_analyses")
+OUT_DIR = paths.resolve(paths.CACHE_ANALYSES)
 
 
 def iter_cells(root: Path, pairs: list[str] | None, max_seeds: int | None,
@@ -109,7 +110,7 @@ def main() -> int:
     ap.add_argument("--all", action="store_true",
                     help="every pair in the cache dir; mixes experiments, "
                          "prefer --pool")
-    ap.add_argument("--pool", nargs="?", const="outputs/animals_compose_transfer/pair_pool.yaml",
+    ap.add_argument("--pool", nargs="?", const=str(paths.resolve(paths.DOES_THE_FIX_REACH_UNSEEN_PAIRS) / "pair_pool.yaml"),
                     help="restrict to one experiment's declared pairs")
     ap.add_argument("--max-pairs", type=int, help="cap distinct pairs (smoke runs)")
     ap.add_argument("--max-seeds", type=int, default=2, help="seeds per pair")

@@ -89,7 +89,7 @@ def captured_fraction(x: torch.Tensor, basis: torch.Tensor, mean: torch.Tensor) 
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--pool", default="outputs/animals_compose_transfer/pair_pool.yaml")
+    ap.add_argument("--pool", default=str(paths.resolve(paths.DOES_THE_FIX_REACH_UNSEEN_PAIRS) / "pair_pool.yaml"))
     ap.add_argument("--cache-root", type=Path, default=CACHE_ROOT)
     ap.add_argument("--max-seeds", type=int, default=3)
     ap.add_argument("--stride", type=int, default=3)

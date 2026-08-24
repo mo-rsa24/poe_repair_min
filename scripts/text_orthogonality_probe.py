@@ -62,11 +62,10 @@ from poe_repair.experiments.interaction_term.pool import load_pool  # noqa: E402
 from scripts.snr_collapse import iter_cells  # noqa: E402
 
 CLIP_L_WIDTH = 768   # where the CLIP-L half ends inside the 2048-wide seq_both
-WHITEN_POOL = "outputs/animals_compose_transfer/pair_pool.yaml"
-
-DOSE_CURVES = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/dose_curves.json")
+WHITEN_POOL = paths.resolve(paths.DOES_THE_FIX_REACH_UNSEEN_PAIRS) / "pair_pool.yaml"
+DOSE_CURVES = paths.resolve(paths.HOW_MUCH_CORRECTION_IS_NEEDED) / "dose_curves.json"
 PAIRS_ROOT = paths.resolve(paths.HOW_MUCH_CORRECTION_IS_NEEDED) / "pairs"
-OUT_DIR = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cache_analyses")
+OUT_DIR = paths.resolve(paths.CACHE_ANALYSES)
 LAMS = (0.0, 0.25, 0.5, 0.75, 1.0)
 
 POOL_PAIRS = (

@@ -54,6 +54,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -71,7 +72,7 @@ from scripts.composition_scatter import (  # noqa: E402
 )
 from scripts.snr_collapse import iter_cells  # noqa: E402
 
-OUT_DIR = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cache_analyses")
+OUT_DIR = paths.resolve(paths.CACHE_ANALYSES)
 
 # Where the CLIP-L half of the 2048-wide sequence embedding ends. Fixed by the
 # concatenation in poe_repair/_sdxl/runtime.py, not a tunable.
@@ -143,7 +144,7 @@ def main() -> int:
     ap.add_argument("--probe", action="append", dest="probes",
                     choices=("l1", "l3"), help="repeatable; default both")
     ap.add_argument("--pair", action="append", dest="pairs")
-    ap.add_argument("--pool", nargs="?", const="outputs/animals_compose_transfer/pair_pool.yaml",
+    ap.add_argument("--pool", nargs="?", const=str(paths.resolve(paths.DOES_THE_FIX_REACH_UNSEEN_PAIRS) / "pair_pool.yaml"),
                     help="restrict to one experiment's declared pairs")
     ap.add_argument("--max-pairs", type=int, default=0,
                     help="0 means every cached pair")
