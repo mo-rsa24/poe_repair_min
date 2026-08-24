@@ -2,6 +2,71 @@
 
 One dated section per sitting. This is the one file in the sweep that carries history.
 
+## Sitting 2026-08-24 (resumed after a usage-limit interruption)
+
+**Where we are.** Resumed from a checkpoint (`9406934`) committed mid-stage-4 when the prior
+unattended sitting hit a usage limit. Reconciled that checkpoint against the filesystem first
+(a subagent census), found and fixed one correctness bug it introduced, then finished the bulk
+of stage 4's repo-side moves, ran stage 5 (built `runbook/`, absent before this sitting), and ran
+stage 7's proof (real test suite, grep verification). Stage 3 (`sync-plan-tree`) has not run this
+sitting; stage 6b (the paired journey link) does not apply, since no `--paired` path was given.
+
+Shape: `artifacts/<kind>/<grouping>/` per `~/.claude/ARTIFACT_TREE_FORMAT.md` v2, unchanged from
+2026-08-23. Git: clean at sitting start except two unrelated pre-existing uncommitted files
+(`.claude/settings.json`, `paper/iclr/DRAFT_MAP.md`), left untouched throughout. Mount: verified
+reachable (`df -h /datasets`, 348T free); **not written to this sitting** by design (see Still
+open). Paired: none.
+
+| Stage | State | Note |
+|---|---|---|
+| 0 census | verified | subagent reconciliation of the `9406934` checkpoint against disk, all 6 rename-table subsections |
+| 1 context-pulse | done in an earlier sitting | `context/` present, conforming; no repair needed this sitting |
+| 2 env-pulse | done in an earlier sitting | `environment/` present, conforming |
+| 3 sync-plan-tree | not started | see Still open |
+| 4 tidy-repo | applied | repo-side moves substantially complete; mount half and the `scripts/` code grouping held, see Still open |
+| 5 runbook-pulse | applied | `--build`, 2 themes, 4 recipes, autonomous first cut |
+| 6 context-pulse 2 | verified | zero definitions carried (stage 3 didn't run); no stale marks found in `context/` after the sweep's path fixes |
+| 6b link | skipped (not paired) | |
+| 7 proof | applied | real `pytest tests/` run: 229 passed, 1 skipped, 1 xfailed; grep verification clean after 2 rounds of fixes |
+
+### Correctness fix (not a rename)
+
+`9406934` accidentally committed ~5,500 files of build output (`scene/dist`, `scene/node_modules`,
+`dl-scene/app/dist`, `dl-scene/app/node_modules`) into git instead of leaving them untracked for
+Instruction 5's manual deletion. `git rm --cached` only; bytes still on disk, untracked.
+
+### Clusters (stage 4, this sitting)
+
+| Cluster | Verdict | Kind/grouping | State |
+|---|---|---|---|
+| `docs/` (8 files, 3 subfolders) | decommission into 12-kind mapping | `report/`, root, `artifacts/results/*`, `artifacts/scenes/`, `artifacts/_quarantine/`, `plans/standing/literature/` | applied; 1 file held (`IMMERSE_PoE_Foundations.md`, needs `--paired`) |
+| `evidence/`, `show-me/`, `captures/`, `diagrams/`, `flow-map-images/` | file each item by what it measures | `artifacts/results/*`, `artifacts/notes/*` | applied |
+| `inventory/`, `learning-captures/`, `todoist-staging/` | pile 7's verdict | scope-local, `artifacts/_quarantine/` | applied |
+| `dl-scene/`, `pressure-tests/` | scene/note homes, source headers | `artifacts/notes/interaction-term-as-pmi-gradient/` | applied; `dl-scene/`'s build output held |
+| two orphaned root PNGs | question folders named for what they measure | `artifacts/results/when-the-correction-must-arrive/commitment-step/`, `artifacts/results/does-text-alone-predict-composition/` | applied |
+| pre-existing staleness found along the way: `evidence/f2-lambda1-audit/` referrers, 8 cluster-launch scripts hardcoding `outputs/animals_compose_transfer/` | referrer repair | (no move; path-string fixes only) | applied |
+
+### Outstanding
+
+- Stage 3 (`sync-plan-tree`) has not run this sitting: no scope carries the three state folders,
+  215+ plan files filed by name only, and `plans/completed/compose-scorer/` is a finished scope in
+  a folder reserved for finished plan files.
+- The mount (`/datasets/mmolefe/poe_repair_min/`): none of "The mount's eleven families" renamed,
+  no merge of `outputs/interaction_term/` onto it. This sitting's safety floor forbade writing to
+  or moving anything on that filesystem.
+- `scripts/build_*.py` (9 files) and ~50 other flat `scripts/*.py` files: pile 6's code-grouping
+  verdict, not attempted.
+- Instructions 5, 6, 7 in `plans/retrofit-poe-repair-min.md` (the four irreversible deletions,
+  the seal/walrus re-judgment, the two figure redraws): explicitly held for a person, per this
+  sitting's own instructions and per the plan's own Tasks/Instructions split.
+- Task 3 ("Link the three journeys") and Task 4 ("The ten skills carrying stale paths") in
+  `plans/retrofit-poe-repair-min.md`: not attempted this sitting, out of this stage sequence's scope.
+- A bare `pytest -q` from the repo root fails to collect (module-name collision between two
+  `test_demo.py` files under `artifacts/results/`, pre-existing, not caused by this sitting's
+  moves). `pytest tests/`, the project's real suite, is green.
+
+Renames this sitting: `RENAMES.md`, section "Sitting 2026-08-24 (the retrofit sweep, stages 1-4)".
+
 ## Sitting 2026-08-23
 
 **Where we are.** The sweep stopped at its census because `artifacts/` meant two contradictory
