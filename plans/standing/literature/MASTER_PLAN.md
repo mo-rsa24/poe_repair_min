@@ -26,8 +26,7 @@ The related-work section writes itself from the register, and no experiment is
 designed against a question the field already settled.
 
 ## Definition of Done
-This scope is never done. It is a standing scope, the same recurring shape as
-`plans/standing/artifact-reconciliation/`. Its plan is re-entered, not closed.
+This scope is never done. It is a standing scope, re-entered rather than closed.
 
 ## Plans
 - ⚠️ 01-reading-register.md (standing / recurring)

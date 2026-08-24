@@ -54,5 +54,5 @@ same resolved root as its output root has not been re-audited this sitting.
 
 Neither filesystem is under version control and neither is snapshotted. Every `✓ verified (...)`
 evidence tag in the plan tree points at a path on one of them, so an artifact deleted or moved
-silently breaks the claim it backs. `plans/standing/artifact-reconciliation/plans/05-resweep-on-new-runs.md`
+silently breaks the claim it backs. `plans/shelved/artifact-reconciliation/plans/05-resweep-on-new-runs.md`
 exists to catch this, and is a standing recurring plan rather than a finished one.

@@ -36,7 +36,7 @@ ORPHAN: markdown no task names (5)
   plans/closing-the-compositional-gap/diagrams/process-versions/02-2026-08-19.md
 
 DEBRIS: narration a plan should not carry (6)
-  [six lines, in plans/standing/artifact-reconciliation/inventory/, superseded-decision narration]
+  [six lines, in plans/shelved/artifact-reconciliation/inventory/, superseded-decision narration]
 
 RUNSTATE: run state in a design plan, belongs in its review file (0)
 
