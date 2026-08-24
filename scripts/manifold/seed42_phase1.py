@@ -35,10 +35,13 @@ from pathlib import Path
 
 import numpy as np
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from poe_repair import paths as poe_paths
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 DEFAULT_RESULTS_ROOT = (
-    REPO_ROOT / "artifacts" / "rung1-overfit" / "lora" / "a_cat__x__a_dog" / "seed_42" / "run__local"
+    poe_paths.resolve(poe_paths.ONE_PAIR_ONE_SEED) / "a_cat__x__a_dog" / "seed_42" / "run__local"
 )
 DEFAULT_OUT = REPO_ROOT / "outputs" / "manifold_cache" / "seed_42_phase1"
 DEFAULT_EPOCH = 1600

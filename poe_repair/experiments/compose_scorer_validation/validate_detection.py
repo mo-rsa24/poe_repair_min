@@ -23,6 +23,7 @@ from pathlib import Path
 
 import torch
 
+from poe_repair import paths
 from poe_repair.experiments.compose_scorer_validation.detection_scorer import (
     score_output_instances, instance_score_to_dict,
 )
@@ -32,7 +33,7 @@ log = logging.getLogger("compose_scorer.validate_detection")
 REPO = Path(__file__).resolve().parents[3]
 OUT_DIR = REPO / "outputs" / "compose_scorer"
 ANCHORS = OUT_DIR / "anchors"
-ART = REPO / "artifacts" / "rung2-survive-noise" / "cross_seed" / "a_cat__x__a_dog"
+ART = paths.resolve(paths.HELD_OUT_SEEDS) / "a_cat__x__a_dog"
 CATDOG_COMPOSE_DIR = OUT_DIR / "validation_outputs" / "a_cat__x__a_dog_compose"
 CATDOG_POE = ART / "trajectory_diagram" / "seed_42" / "poe.png"
 WOLFHUSKY_DIR = ART / "heldout_pair" / "a_wolf__x__a_husky"
