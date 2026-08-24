@@ -27,8 +27,9 @@ import numpy as np
 import torch
 
 from poe_repair.experiments.residual_between_mono_and_poe.metrics import clip_image_embed
+from poe_repair import paths
 
-ATTN = Path("/datasets/mmolefe/poe_repair_min/outputs/attn_mechanism")
+ATTN = paths.resolve(paths.ATTENTION_MECHANISM)
 REF = ATTN / "manifold" / "references"
 SWEEP = ATTN / "lora_train_sweep" / "a_cat__x__a_dog"
 

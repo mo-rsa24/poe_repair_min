@@ -71,11 +71,12 @@ from poe_repair.runtime import (
     write_json,
 )
 from poe_repair.training_cache import DEFAULT_CACHE_ROOT, CellPath
+from poe_repair import paths
 
 log = logging.getLogger(__name__)
 
 # Same shared /datasets tree plan 01 pinned its captures to.
-DEFAULT_ATTN_ROOT = Path("/datasets/mmolefe/poe_repair_min/outputs/attn_mechanism")
+DEFAULT_ATTN_ROOT = paths.resolve(paths.ATTENTION_MECHANISM)
 
 # Commitment window (inclusive) from group-a-failure.md `probe.commit_window = (5, 25)`,
 # with anchors (7, 15, 22) inside it. The intervention only fires on these steps —

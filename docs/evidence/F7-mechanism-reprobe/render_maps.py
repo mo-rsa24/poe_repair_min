@@ -22,11 +22,12 @@ import json
 from pathlib import Path
 
 import matplotlib
+from poe_repair import paths
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import torch
 
-REPROBE = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/reprobe")
+REPROBE = paths.resolve(paths.CONTENT_CHANGE_RELATIVE_TO_ATTENTION_CHANGE)
 OUT = Path(__file__).resolve().parent / "follow-along"
 
 # The example cell, the strongest pair, and the weakest one, so the contrast in

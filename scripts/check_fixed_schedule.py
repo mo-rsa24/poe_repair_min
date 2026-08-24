@@ -28,6 +28,7 @@ from pathlib import Path
 import numpy as np
 import torch
 from PIL import Image
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -37,7 +38,7 @@ from poe_repair.experiments.interaction_term.cell import cell_from_slug  # noqa:
 from poe_repair.run import make_ctx  # noqa: E402
 from interaction_term_dose_matched import FixedSchedule, STEPS  # noqa: E402
 
-WINDOW_ROOT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/window")
+WINDOW_ROOT = paths.resolve(paths.WINDOW)
 PAIR = "a_cat__x__a_dog"
 
 

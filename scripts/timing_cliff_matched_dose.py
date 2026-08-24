@@ -29,11 +29,12 @@ import json
 from pathlib import Path
 
 import matplotlib
+from poe_repair import paths
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
-ROOT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose_matched")
+ROOT = paths.resolve(paths.SAME_TOTAL_CORRECTION_DIFFERENT_WINDOW)
 SCORES = ROOT / "matched_scores.json"
 WINDOW_CURVES = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/"
                      "window/window_curves.json")

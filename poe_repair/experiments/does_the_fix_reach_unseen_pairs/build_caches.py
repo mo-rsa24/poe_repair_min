@@ -19,6 +19,7 @@ import yaml
 
 from poe_repair.run import make_ctx
 from scripts.build_training_cache import build_cell
+from poe_repair import paths
 
 log = logging.getLogger("animals_compose_transfer.build_caches")
 
@@ -26,7 +27,7 @@ REPO = Path(__file__).resolve().parents[3]
 SCOPE = REPO / "outputs" / "animals_compose_transfer"
 POOL = SCOPE / "pair_pool.yaml"
 PROMPTS = SCOPE / "pair_prompts.yaml"
-CACHE_ROOT = Path("/datasets/mmolefe/poe_repair_min/artifacts/caches/training_cache")
+CACHE_ROOT = paths.resolve(paths.TRAINING_CACHE)
 # Seeds match seed_pool.yaml: train pairs at 1-8, held-out pairs at 9-16.
 SEEDS_TRAIN = list(range(1, 9))
 SEEDS_HELDOUT = list(range(9, 17))

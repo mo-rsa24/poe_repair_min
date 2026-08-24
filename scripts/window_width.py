@@ -42,6 +42,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -54,7 +55,7 @@ from poe_repair.experiments.interaction_term.cache import CACHE_ROOT, load_cell
 ENERGY_FRACTION = 0.5
 ROUND_TO = 5
 
-OUT_DIR = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cache_analyses")
+OUT_DIR = paths.resolve(paths.CACHE_ANALYSES)
 
 # The eight pairs the dose sweep used, so the width is chosen on the same pairs
 # the timing sweep will run on.

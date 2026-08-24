@@ -27,11 +27,12 @@ from poe_repair._sdxl.runtime import encode_prompt_sdxl
 from poe_repair.methods._sampling import run_cfg, write_decoded_image
 from poe_repair.training_cache import CellPath
 from poe_repair.experiments.one_pair_one_seed.probe import load_pinned_init_latents
+from poe_repair import paths
 
 log = logging.getLogger("compose_scorer.gen_validation_outputs")
 
 REPO = Path(__file__).resolve().parents[3]
-CACHE_ROOT = Path("/datasets/mmolefe/poe_repair_min/artifacts/caches/training_cache")
+CACHE_ROOT = paths.resolve(paths.TRAINING_CACHE)
 OUT_DIR = REPO / "outputs" / "compose_scorer" / "validation_outputs" / "a_cat__x__a_dog_compose"
 
 MODEL_ID = "stabilityai/stable-diffusion-xl-base-1.0"

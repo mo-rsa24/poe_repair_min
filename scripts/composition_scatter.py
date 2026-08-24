@@ -26,6 +26,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -34,11 +35,9 @@ from poe_repair.experiments.interaction_term.cache import (  # noqa: E402
     load_cell,
 )
 
-OUT_DIR = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cache_analyses")
+OUT_DIR = paths.resolve(paths.CACHE_ANALYSES)
 PREREG = Path("docs/normalization_preregistration.md")
-DOSE_SCORES = Path(
-    "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/dose_curves.json"
-)
+DOSE_SCORES = paths.resolve(paths.HOW_MUCH_CORRECTION_IS_NEEDED) / "dose_curves.json"
 # The committed choice is parsed from the memo, not guessed here.
 MEASURES = {
     "relative_norm": "||r_t|| / ||eps_PoE||",

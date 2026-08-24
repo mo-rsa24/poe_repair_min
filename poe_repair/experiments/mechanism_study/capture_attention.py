@@ -51,15 +51,14 @@ from poe_repair.runtime import (
     write_json,
 )
 from poe_repair.training_cache import DEFAULT_CACHE_ROOT, CellPath
+from poe_repair import paths
 
 
 log = logging.getLogger(__name__)
 
 # Plan 01 pins outputs to the shared /datasets tree (alongside the existing
 # veracity_attn cache), not the repo-local outputs/ dir.
-DEFAULT_ATTN_ROOT = Path(
-    "/datasets/mmolefe/poe_repair_min/outputs/attn_mechanism"
-)
+DEFAULT_ATTN_ROOT = paths.resolve(paths.ATTENTION_MECHANISM)
 
 # Token spec for cat×dog on the 3-branch (A, B, ∅) LoRA path. Reuses the
 # solo-subject token index (2) and the marginal branch semantics from the

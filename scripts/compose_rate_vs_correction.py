@@ -37,7 +37,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch, Rectangle
 import numpy as np
 
-DOSE = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose")
+DOSE = paths.resolve(paths.HOW_MUCH_CORRECTION_IS_NEEDED)
 CURVES = DOSE / "dose_curves.json"
 PAIRS_ROOT = paths.resolve(paths.HOW_MUCH_CORRECTION_IS_NEEDED) / "pairs"
 

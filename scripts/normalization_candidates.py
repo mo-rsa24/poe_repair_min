@@ -30,6 +30,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -38,7 +39,7 @@ from poe_repair.experiments.interaction_term.cache import (  # noqa: E402
     load_cell,
 )
 
-OUT_DIR = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cache_analyses")
+OUT_DIR = paths.resolve(paths.CACHE_ANALYSES)
 # One training pair, one unseen transfer pair, the known-failure reference.
 DEFAULT_PAIRS = (
     "a_wolf__x__a_husky",

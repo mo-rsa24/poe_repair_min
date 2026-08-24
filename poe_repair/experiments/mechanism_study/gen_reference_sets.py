@@ -23,10 +23,9 @@ from poe_repair.runtime import (
     ensure_dir, infer_device, infer_dtype, load_ddim_scheduler, load_sdxl_models,
 )
 from poe_repair.training_cache import DEFAULT_CACHE_ROOT, CellPath
+from poe_repair import paths
 
-DEFAULT_OUT = Path(
-    "/datasets/mmolefe/poe_repair_min/outputs/attn_mechanism/manifold/references"
-)
+DEFAULT_OUT = paths.resolve(paths.ATTENTION_MECHANISM) / "manifold/references"
 
 
 def _parse_seeds(a):

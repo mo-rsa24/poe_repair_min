@@ -57,6 +57,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -65,7 +66,7 @@ from poe_repair.experiments.interaction_term.cache import (  # noqa: E402
     cell_dir,
 )
 
-OUT_DIR = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cache_analyses")
+OUT_DIR = paths.resolve(paths.CACHE_ANALYSES)
 DEFAULT_ROOTS = (
     Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/pairs"),
     Path("outputs/interaction_term/dose/pairs"),

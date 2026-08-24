@@ -29,10 +29,11 @@ import json
 from pathlib import Path
 
 import matplotlib
+from poe_repair import paths
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-WINDOW_ROOT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/window")
+WINDOW_ROOT = paths.resolve(paths.WINDOW)
 CURVES = WINDOW_ROOT / "window_curves.json"
 FIG_DIR = Path("paper/iclr/figures")
 FIG_NAME = "samples-as-the-correction-window-moves"

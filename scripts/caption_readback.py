@@ -48,6 +48,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -62,7 +63,7 @@ from scripts.manifold_slide import (  # noqa: E402
     image_of,
 )
 
-OUT_DIR = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cache_analyses")
+OUT_DIR = paths.resolve(paths.CACHE_ANALYSES)
 
 TEMPLATES = {
     "two": ["a photo of {a} and {b}",

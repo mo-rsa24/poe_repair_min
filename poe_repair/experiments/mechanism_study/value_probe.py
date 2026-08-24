@@ -38,10 +38,9 @@ from poe_repair.runtime import (
     load_sdxl_models, write_json,
 )
 from poe_repair.training_cache import DEFAULT_CACHE_ROOT, CellPath
+from poe_repair import paths
 
-DEFAULT_OUT = Path(
-    "/datasets/mmolefe/poe_repair_min/outputs/attn_mechanism/value_probe"
-)
+DEFAULT_OUT = paths.resolve(paths.ATTENTION_MECHANISM) / "value_probe"
 # The token map is derived per pair from the tokenizer (see token_map.py).
 # It used to be hardcoded to index 2, which is the subject in "a cat"/"a dog"
 # but a fragment in "a walrus" (wal|rus) and "a chimpanzee" (chim|pan|zee).

@@ -32,6 +32,7 @@ import sys
 from pathlib import Path
 
 import matplotlib
+from poe_repair import paths
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
@@ -40,7 +41,7 @@ import torch
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from caption_readback import bank_for  # noqa: E402  the same caption templates
 
-WINDOW_ROOT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/window")
+WINDOW_ROOT = paths.resolve(paths.WINDOW)
 CURVES = WINDOW_ROOT / "window_curves.json"
 FIG_DIR = Path("paper/iclr/figures")
 FIG_NAME = "language-score-as-the-correction-window-moves"

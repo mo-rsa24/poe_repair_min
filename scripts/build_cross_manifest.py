@@ -17,12 +17,13 @@ import argparse
 import json
 import sys
 from pathlib import Path
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from poe_repair.experiments.interaction_term import cross_grid as cg
 
-ROOT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cross")
+ROOT = paths.resolve(paths.SAMPLES_AS_THE_WINDOW_MOVES_ONE_STEP_AT_A_TIME)
 DEFAULT_OUT = ROOT / "cross_manifest.json"
 
 

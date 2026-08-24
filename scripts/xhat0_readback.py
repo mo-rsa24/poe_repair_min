@@ -57,6 +57,7 @@ from pathlib import Path
 
 import torch
 from PIL import Image
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -73,9 +74,7 @@ from poe_repair.experiments.residual_between_mono_and_poe.metrics import (  # no
     clip_image_text_similarities,
 )
 
-OUT_ROOT = Path(
-    "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/xhat0_readback"
-)
+OUT_ROOT = paths.resolve(paths.PREDICTED_CLEAN_IMAGE_PER_STEP)
 
 BRANCHES = ("a", "b", "j", "poe")
 

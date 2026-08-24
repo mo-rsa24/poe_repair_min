@@ -26,10 +26,9 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from poe_repair import paths
 
-DEFAULT_ROOT = Path(
-    "/datasets/mmolefe/poe_repair_min/outputs/attn_mechanism/lora_train_sweep"
-)
+DEFAULT_ROOT = paths.resolve(paths.ATTENTION_MECHANISM) / "lora_train_sweep"
 _STEP_RE = re.compile(r"step_(\d+)_token_(.+)\.pt$")
 TOKEN_MAP = {"cat_branch_poe": "cat", "dog_branch_poe": "dog"}
 

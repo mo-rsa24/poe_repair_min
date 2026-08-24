@@ -39,7 +39,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from poe_repair.experiments.interaction_term import window_grid as wg  # noqa: E402
 from scripts.plot_dose_curves import require_validated_scorer  # noqa: E402
 
-OUT_DIR = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/window")
+OUT_DIR = paths.resolve(paths.WINDOW)
 DEFAULT_ROOTS = (
     Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/window/pairs"),
 )

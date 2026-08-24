@@ -34,6 +34,7 @@ import time
 from pathlib import Path
 
 import torch
+from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -41,7 +42,7 @@ from poe_repair._sdxl.metrics import guided_eps, poe_eps, tweedie_mean
 from poe_repair.experiments.interaction_term import cross_grid as cg
 from poe_repair.experiments.interaction_term.cache import _alphas_cumprod, load_cell
 
-OUT_ROOT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/experts")
+OUT_ROOT = paths.resolve(paths.DECODED_PREDICTIONS_PER_STEP_FOR_EACH_EXPERT)
 VIEWS = ("uncond", "a", "b", "poe", "joint")
 FRAME_PX = 512
 
