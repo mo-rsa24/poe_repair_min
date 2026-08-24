@@ -11,7 +11,7 @@ parked the rest.
 
 - ✅ Detection half of `05-resweep-on-new-runs` (commit `888a520`)
   Read-only: `01_inventory.py` + `04_apply_layout.sh` dry-run + set-diff.
-  Wrote `inventory/sweeps/2026-08-04-resweep-detection.md`. No dispositions, no moves.
+  Wrote `plans/standing/artifact-reconciliation/inventory/sweeps/2026-08-04-resweep-detection.md`. No dispositions, no moves.
 
 Result: the layout script reports **0 unfiled actions for the runs it tracks**, but
 **8 experiment top-dirs sit outside the canonical `artifacts/` scheme**. DoD-4 ("no
@@ -33,9 +33,9 @@ Judgment tasks, in order:
    (`residual_diagnostics`, `group_a_failure`, `conditioning_window{,_lora}`) belong in
    the rung1-4 scheme or in a separate bucket / scope. This gates tasks 2-4.
 2. **Load-test + disposition** (`/data-integrity-check` on the new checkpoints, then
-   keep/re-run/discard rows in `inventory/03-integrity-and-disposition.md`). The headline
+   keep/re-run/discard rows in `plans/standing/artifact-reconciliation/inventory/03-integrity-and-disposition.md`). The headline
    to test is `animals_compose_transfer/pooled_lora/phase1_r8_100k/checkpoints/lora_step_100000.pt`.
-3. **Author inventory rows** for the Gap-2 dirs in `inventory/01` + `02`; reconcile W&B
+3. **Author inventory rows** for the Gap-2 dirs in `plans/standing/artifact-reconciliation/inventory/01` + `02`; reconcile W&B
    (`training-analyst` for the `poe-repair-animals-compose` run).
 4. **Extend `04_apply_layout.sh`** with chosen destinations → dry-run → `APPLY=1` to file
    them with compat symlinks. (Destructive move: not run unattended.)
@@ -50,6 +50,6 @@ Pre-existing backlog in `plans/05` (unchanged, still parked):
 
 ## Re-entry
 
-Read `inventory/sweeps/2026-08-04-resweep-detection.md`, make the scope call in task 1,
+Read `plans/standing/artifact-reconciliation/inventory/sweeps/2026-08-04-resweep-detection.md`, make the scope call in task 1,
 then work tasks 2-6. Re-running `/execute-plan-tree` resumes from Task-marker state; the
 detection commit is on the branch above for review or `git revert`.

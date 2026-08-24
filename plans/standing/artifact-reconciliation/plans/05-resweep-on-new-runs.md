@@ -21,7 +21,7 @@ After each re-sweep: the `01`/`02` inventories match disk + W&B, every new check
 
 - [ ] ⚠️ Detect new runs since last sweep (new W&B run dirs, new `lora_step_*.pt`, new `training_cache` cells).
 - [ ] ⚠️ Re-run `01_inventory.py`; diff `01`/`02` against the previous version; note additions.
-- [ ] ⚠️ Load-test new checkpoints + any new suspects; update `inventory/03-integrity-and-disposition.md`.
+- [ ] ⚠️ Load-test new checkpoints + any new suspects; update `plans/standing/artifact-reconciliation/inventory/03-integrity-and-disposition.md`.
 - [ ] ⚠️ Extend `04_apply_layout.sh` with any new run dirs; dry-run, then `APPLY=1` to file them; confirm compat symlinks.
 - [ ] ⚠️ If new pairs appear, canonicalise their slug (retire any short form) the same way `cat_dog` → `a_cat__x__a_dog` was done.
 - [ ] ⚠️ Append a decision-timeline gate for each new landing to `DECISION_TIMELINE.md` (append-only; supersede with a banner, never rewrite) so the spine stays current.
@@ -39,11 +39,11 @@ Standing prompt (run each sweep):
 
 ```
 Re-sweep the artifact roots for runs that landed since the last reconciliation.
-Re-run inventory/scripts/01_inventory.py and diff 01/02 against the prior version.
+Re-run plans/standing/artifact-reconciliation/inventory/scripts/01_inventory.py and diff 01/02 against the prior version.
 Load-test every new lora_step_*.pt / best.pt (torch weights-only, LoRA keys +
 shapes) and any run W&B marks unfinished; append rows to
-inventory/03-integrity-and-disposition.md with keep / re-run / discard. Add any
-new run dirs to inventory/scripts/04_apply_layout.sh, dry-run (expect the existing
+plans/standing/artifact-reconciliation/inventory/03-integrity-and-disposition.md with keep / re-run / discard. Add any
+new run dirs to plans/standing/artifact-reconciliation/inventory/scripts/04_apply_layout.sh, dry-run (expect the existing
 entries to REFUSE as already-filed), then APPLY=1 to file the new ones under
 artifacts/ with compat symlinks. Canonicalise any new short pair slug. Read-only
 on source data except the reversible quarantine/symlink moves. Report what changed.
@@ -58,8 +58,8 @@ on source data except the reversible quarantine/symlink moves. Report what chang
 Adherence is read from run history, not a done-box. A healthy sweep leaves:
 
 ```
-$ CUDA_VISIBLE_DEVICES="" python inventory/scripts/01_inventory.py   # inventory regenerated
-$ bash inventory/scripts/04_apply_layout.sh 2>&1 | grep -cE "^(MOVE\+LINK|QUARANTINE)"
+$ CUDA_VISIBLE_DEVICES="" python plans/standing/artifact-reconciliation/inventory/scripts/01_inventory.py   # inventory regenerated
+$ bash plans/standing/artifact-reconciliation/inventory/scripts/04_apply_layout.sh 2>&1 | grep -cE "^(MOVE\+LINK|QUARANTINE)"
 # Expect: 0 when everything new has already been filed this sweep (non-zero => unfiled artifacts remain).
-$ git -C . status --porcelain inventory/   # inventory/0{1,2,3}.md updated when runs were added since last sweep
+$ git -C . status --porcelain plans/standing/artifact-reconciliation/inventory/   # plans/standing/artifact-reconciliation/inventory/0{1,2,3}.md updated when runs were added since last sweep
 ```

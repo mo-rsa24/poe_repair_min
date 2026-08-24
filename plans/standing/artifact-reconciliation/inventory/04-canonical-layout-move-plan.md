@@ -2,7 +2,7 @@
 
 **Generated**: 2026-07-21
 **Scope**: the surviving (keep) artifacts of `lora`, `cross_seed_lora_pooling`, `cross_pair_lora_pooling` + shared `training_cache`, across `R:` repo and `D:` `/datasets/mmolefe/poe_repair_min`. Disposition inherited from `03-integrity-and-disposition.md`.
-**Status**: APPLIED 2026-07-21 (within-root moves + compat symlinks done; see `plans/standing/artifact-reconciliation/plans/04-canonical-layout-reorg.md`). Re-runnable idempotently with `inventory/scripts/04_apply_layout.sh` (dry-run by default; `APPLY=1`).
+**Status**: APPLIED 2026-07-21 (within-root moves + compat symlinks done; see `plans/standing/artifact-reconciliation/plans/04-canonical-layout-reorg.md`). Re-runnable idempotently with `plans/standing/artifact-reconciliation/inventory/scripts/04_apply_layout.sh` (dry-run by default; `APPLY=1`).
 
 ## Design
 
@@ -115,9 +115,9 @@ Moving artifact dirs breaks path references unless compat symlinks are kept. Eve
 
 ```bash
 # dry-run (prints every planned mv / ln / rmdir, changes nothing):
-bash inventory/scripts/04_apply_layout.sh
+bash plans/standing/artifact-reconciliation/inventory/scripts/04_apply_layout.sh
 # execute on the cluster after approval:
-APPLY=1 bash inventory/scripts/04_apply_layout.sh
+APPLY=1 bash plans/standing/artifact-reconciliation/inventory/scripts/04_apply_layout.sh
 ```
 
 The script: makes within-root moves only, leaves a compat symlink at each old path, routes discards to `_quarantine/`, and `rmdir`s only verified-empty 0-byte dirs. It refuses to overwrite an existing destination.
