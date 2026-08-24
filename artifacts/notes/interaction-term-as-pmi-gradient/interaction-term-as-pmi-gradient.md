@@ -1,11 +1,23 @@
 # Pressure test: the dropped term, in density form and in score form
 
+**ran under** the `/pressure-test` skill, no GPU, cache-only reasoning against known literature.
+
+**built from** three claims drafted for section 5 of the ICLR submission and the novelty
+question behind them, checked against prior work.
+
+**why** section 5 argues the PoE assumption drops a specific interaction term; before that
+argument ships, this checks whether the term-in-density-form / term-in-score-form claims
+are actually right and actually new.
+
+**depends on** nothing outside this folder; rendered to HTML via `build.sh` + local `katex/`
+if pandoc is installed, otherwise the markdown is the artifact.
+
 A `/pressure-test` run on three claims drafted for section 5 of the ICLR submission
-([`paper/iclr/iclr2027_conference.tex`](../paper/iclr/iclr2027_conference.tex)), plus the
+([`paper/iclr/iclr2027_conference.tex`](../../../paper/iclr/iclr2027_conference.tex)), plus the
 novelty question behind them.
 
 It answers, ahead of time, the question piece 5 of the
-[Product-of-Experts factorization thread](../drips/poe-two-concept-factorization/00-INDEX.md)
+[Product-of-Experts factorization thread](../../../drips/poe-two-concept-factorization/00-INDEX.md)
 was going to ask: what exactly is the term dropped when the two concepts are not conditionally
 independent, written both as a density gap and as a score correction.
 
