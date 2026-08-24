@@ -80,7 +80,7 @@ def _build_argparser() -> argparse.ArgumentParser:
     ap.add_argument(
         "--lora-run-dir", default=None,
         help='LoRA run dir containing config.json. Default = '
-             'outputs/lora/a_cat__x__a_dog/seed_42/results.',
+             'artifacts/results/can-lora-learn-a-residual-that-corrects-poe/results-by-pair/a_cat__x__a_dog/seed_42/results.',
     )
     ap.add_argument("--modes", default=",".join(COMPOSITION_MODES),
                     help=f'Comma-separated subset of {COMPOSITION_MODES}.')

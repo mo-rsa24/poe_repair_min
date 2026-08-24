@@ -82,8 +82,8 @@ def scan_mode(mode_dir: Path) -> tuple[dict[int, dict[str, dict]], set[int], set
             if not schedules:
                 continue
             ckpt_guess = (
-                REPO_ROOT
-                / f"outputs/lora/a_cat__x__a_dog/seed_42/results/checkpoints/lora_step_{epoch:06d}.pt"
+                paths.resolve(paths.ONE_PAIR_ONE_SEED)
+                / f"a_cat__x__a_dog/seed_42/run__local/checkpoints/lora_step_{epoch:06d}.pt"
             )
             cells.setdefault(epoch, {})[lam_tag] = {
                 "ckpt_path": (

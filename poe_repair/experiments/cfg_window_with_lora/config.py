@@ -36,13 +36,13 @@ def _default_output_root() -> Path:
 
 def _default_lora_ckpt() -> Path:
     return (
-        _repo_root() / "outputs/lora/a_cat__x__a_dog/seed_42/results/"
-        "checkpoints/lora_step_062500.pt"
+        paths.resolve(paths.ONE_PAIR_ONE_SEED)
+        / "a_cat__x__a_dog/seed_42/run__local/checkpoints/lora_step_062500.pt"
     )
 
 
 def _default_lora_run_dir() -> Path:
-    return _repo_root() / "outputs/lora/a_cat__x__a_dog/seed_42/results"
+    return paths.resolve(paths.ONE_PAIR_ONE_SEED) / "a_cat__x__a_dog/seed_42/run__local"
 
 
 COMPOSITION_MODES = ("with_prompt", "always")

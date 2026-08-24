@@ -27,11 +27,12 @@ from cross_tab import CROSS_INDEX_HTML  # noqa: E402
 from window_tab import WINDOW_INDEX_HTML  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_MANIFEST = REPO_ROOT / "outputs/lora/a_cat__x__a_dog/seed_42/results/inspector_manifest.json"
+DEFAULT_MANIFEST = paths.resolve(paths.RESULTS_BY_PAIR) / "a_cat__x__a_dog/seed_42/results/inspector_manifest.json"
 DEFAULT_CW_MANIFEST = paths.resolve(paths.CFG_WINDOW_WITHOUT_LORA) / "a_cat__x__a_dog/seed_42/results/inspector_manifest.json"
 DEFAULT_CWL_WP_MANIFEST = paths.resolve(paths.CFG_WINDOW_WITH_LORA) / "a_cat__x__a_dog/seed_42/with_prompt/results/inspector_manifest.json"
 DEFAULT_CWL_ALWAYS_MANIFEST = paths.resolve(paths.CFG_WINDOW_WITH_LORA) / "a_cat__x__a_dog/seed_42/always/results/inspector_manifest.json"
-DEFAULT_OUTPUTS_ROOT = REPO_ROOT / "outputs"
+DEFAULT_RESIDUAL_ROOT = paths.resolve(paths.RESULTS_BY_PAIR)
+DEFAULT_CW_ROOT = paths.resolve(paths.CFG_WINDOW_WITHOUT_LORA)
 # The timing sweeps write to /datasets, not into the repo. The image route is
 # rooted at the whole interaction_term tree so one route serves the window
 # sweep, the crossed grid and the expert frames.
@@ -278,7 +279,7 @@ INDEX_HTML = r"""
   <summary>diagnostics</summary>
   <div class="body">
     Source: <code>{{ results_root }}</code><br>
-    Manifest: <code>outputs/lora/a_cat__x__a_dog/seed_42/results/inspector_manifest.json</code> &middot;
+    Manifest: <code>artifacts/results/can-lora-learn-a-residual-that-corrects-poe/results-by-pair/a_cat__x__a_dog/seed_42/results/inspector_manifest.json</code> &middot;
     {{ epochs|length }} epochs &times; {{ lambdas|length }} &lambda; values rendered.
   </div>
 </details>
@@ -689,10 +690,17 @@ def _pair_options_for(active: str, pairs: dict[str, dict]) -> list[tuple[str, st
     return out
 
 
-def _joint_prompt_for(pair_slug: str, outputs_root: Path) -> str:
+def _joint_prompt_for(pair_slug: str, residual_root: Path) -> str:
     """Read joint_prompt from the pair's results config; fall back to the
-    display name."""
-    cfg_path = outputs_root / "lora" / pair_slug / "seed_42" / "results" / "config.json"
+    display name.
+
+    ``residual_root`` is the alias-farm root: each pair's ``seed_42/results``
+    is a symlink to that pair's real run directory, whatever it is actually
+    named (``run__local``, ``run__wandb-<id>``, ...). The farm exists because
+    those names are not uniform across pairs; this function does not need to
+    know any of them.
+    """
+    cfg_path = residual_root / pair_slug / "seed_42" / "results" / "config.json"
     if cfg_path.is_file():
         try:
             cfg = json.loads(cfg_path.read_text())
@@ -743,13 +751,11 @@ def _display_name(slug: str) -> str:
     return slug
 
 
-def _discover_pairs(outputs_root: Path) -> dict[str, dict]:
-    """Scan ``outputs/lora/*/seed_42/results/inspector_manifest.json`` and
-    ``outputs/conditioning_window/*/seed_42/results/inspector_manifest.json``,
+def _discover_pairs(residual_root: Path, cw_root: Path) -> dict[str, dict]:
+    """Scan the results-by-pair alias farm and the cfg-window-without-lora family,
     returning ``{pair_slug: {"residual": manifest|None, "cw": manifest|None}}``.
     A pair is included iff it has at least one manifest."""
     pairs: dict[str, dict] = {}
-    residual_root = outputs_root / "lora"
     if residual_root.is_dir():
         for pair_dir in sorted(residual_root.iterdir()):
             if pair_dir.is_symlink() or not pair_dir.is_dir():
@@ -757,7 +763,6 @@ def _discover_pairs(outputs_root: Path) -> dict[str, dict]:
             mpath = pair_dir / "seed_42" / "results" / "inspector_manifest.json"
             if mpath.is_file():
                 pairs.setdefault(pair_dir.name, {})["residual"] = json.loads(mpath.read_text())
-    cw_root = outputs_root / "conditioning_window"
     if cw_root.is_dir():
         for pair_dir in sorted(cw_root.iterdir()):
             if pair_dir.is_symlink() or not pair_dir.is_dir():
@@ -2017,7 +2022,8 @@ code{background:#161a22;padding:2px 6px;border-radius:4px;color:#7ab7ff;}</style
 
 def create_app(
     manifest_path: Path,
-    outputs_root: Path,
+    residual_root: Path,
+    cw_root: Path,
     cw_manifest_path: Path | None = None,
     cwl_wp_manifest_path: Path | None = None,
     cwl_always_manifest_path: Path | None = None,
@@ -2026,7 +2032,8 @@ def create_app(
     ix_manifest_path: Path | None = None,
 ) -> Flask:
     manifest = json.loads(manifest_path.read_text())
-    outputs_root_abs = outputs_root.resolve()
+    residual_root_abs = residual_root.resolve()
+    cw_root_abs = cw_root.resolve()
 
     # Both timing tabs render with an empty manifest too, saying what to run.
     iw_manifest: dict = {}
@@ -2050,7 +2057,7 @@ def create_app(
     # Discover all pairs with at least one manifest on disk. Cat_dog is
     # always seeded from the CLI-supplied manifests above so the default
     # behaviour for users who never pass --manifest is identical to before.
-    pairs = _discover_pairs(outputs_root_abs)
+    pairs = _discover_pairs(residual_root_abs, cw_root_abs)
     pairs.setdefault(DEFAULT_PAIR, {})
     pairs[DEFAULT_PAIR]["residual"] = manifest
     pairs[DEFAULT_PAIR]["cw"] = cw_manifest if cw_manifest is not None \
@@ -2080,7 +2087,7 @@ def create_app(
         if m is None:
             return render_template_string(
                 _CW_MISSING_HTML,
-                path=f"outputs/lora/{pair}/seed_42/results/inspector_manifest.json",
+                path=f"{paths.RESULTS_BY_PAIR}/{pair}/seed_42/results/inspector_manifest.json",
             ), 404
         return render_template_string(
             _with_tabs(INDEX_HTML),
@@ -2090,7 +2097,7 @@ def create_app(
             lambdas=m["lambdas"],
             manifest_json=json.dumps(m),
             mono_path=_resolve_mono_path(m, pair),
-            joint_prompt=_joint_prompt_for(pair, outputs_root_abs),
+            joint_prompt=_joint_prompt_for(pair, residual_root_abs),
         )
 
     @app.route("/manifest.json")
@@ -2109,7 +2116,7 @@ def create_app(
         if m is None:
             return render_template_string(
                 _CW_MISSING_HTML,
-                path=f"outputs/lora/{pair}/seed_42/results/inspector_manifest.json",
+                path=f"{paths.RESULTS_BY_PAIR}/{pair}/seed_42/results/inspector_manifest.json",
             ), 404
         mds_large_cells = m.get("mds_cells_large") or {}
         mds_large_cells_sem = m.get("mds_cells_large_semantic") or {}
@@ -2331,7 +2338,9 @@ def main() -> int:
         help="crossed-grid manifest (scripts/build_cross_manifest.py). If "
              "missing, /interaction_cross renders the commands that make it.",
     )
-    ap.add_argument("--outputs-root", default=str(DEFAULT_OUTPUTS_ROOT))
+    ap.add_argument("--residual-root", default=str(DEFAULT_RESIDUAL_ROOT),
+                    help="the results-by-pair alias farm (was --outputs-root)")
+    ap.add_argument("--cw-root", default=str(DEFAULT_CW_ROOT))
     ap.add_argument("--host", default="127.0.0.1")
     ap.add_argument("--port", type=int, default=5050)
     ap.add_argument("--debug", action="store_true")
@@ -2363,7 +2372,7 @@ def main() -> int:
             f"/interaction_window will render a hint page."
         )
     app = create_app(
-        manifest_path, Path(args.outputs_root),
+        manifest_path, Path(args.residual_root), Path(args.cw_root),
         cw_manifest_path=cw_path,
         cwl_wp_manifest_path=cwl_wp_path,
         cwl_always_manifest_path=cwl_al_path,

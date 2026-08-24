@@ -1,6 +1,6 @@
 """Single source of truth for the cross-pair pool split.
 
-Loads ``outputs/cross_pair_lora_pooling/pair_pool.yaml`` and asserts no
+Loads ``artifacts/_shared/cross_pair_pool_configs/pair_pool.yaml`` and asserts no
 overlap between train and held-out pairs at load time. Mirrors the
 seed-pool loader's contract for the pair axis.
 """
@@ -14,11 +14,11 @@ from pathlib import Path
 
 import yaml
 
+from poe_repair import paths
+
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
-DEFAULT_POOL_PATH = (
-    REPO_ROOT / "outputs" / "cross_pair_lora_pooling" / "pair_pool.yaml"
-)
+DEFAULT_POOL_PATH = paths.resolve(paths.GROUP_POOL_CONFIGS) / "pair_pool.yaml"
 
 
 @dataclass(frozen=True)

@@ -11,7 +11,7 @@ Usage::
 
     python -m poe_repair.experiments.held_out_seeds.train_pooled \
         --k 4 --total-epochs 200 \
-        --output-root outputs/cross_seed_lora_pooling/task_b_learning_curve
+        --output-root artifacts/results/can-lora-learn-a-residual-that-corrects-poe/held-out-seeds-index/task_b_learning_curve
 
 For the k=1 case, pass ``--single-seed-pick 5`` to override which one
 train-pool seed is used (defaults to the first).
@@ -47,6 +47,7 @@ from poe_repair.runtime import (
     write_json,
 )
 from poe_repair.training_cache import DEFAULT_CACHE_ROOT, resolve_cells
+from poe_repair import paths
 
 
 log = logging.getLogger(__name__)
@@ -92,13 +93,13 @@ def build_argparser() -> argparse.ArgumentParser:
                     choices=("online", "offline", "disabled"))
     ap.add_argument("--wandb-project", default="poe-repair-cross-seed")
     ap.add_argument("--output-root",
-                    default=str(REPO_ROOT / "outputs" / "cross_seed_lora_pooling"
+                    default=str(paths.resolve(paths.HELD_OUT_SEEDS_INDEX)
                                 / "task_b_learning_curve"))
     ap.add_argument("--run-id", default="auto")
     ap.add_argument("--cache-root", default=None)
     ap.add_argument("--seed-pool-path", default=None,
                     help="override path to seed_pool.yaml (default: "
-                         "outputs/cross_seed_lora_pooling/seed_pool.yaml)")
+                         f"{paths.HELD_OUT_SEEDS_INDEX}/seed_pool.yaml)")
     ap.add_argument("--torch-seed", type=int, default=42,
                     help="seed for the trainer's RNG (sampling order). "
                          "Not the cell seed.")

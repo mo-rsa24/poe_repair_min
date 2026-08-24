@@ -31,12 +31,13 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 from poe_repair.experiments.held_out_seeds.seed_pool import load_seed_pool
+from poe_repair import paths
 
 
 log = logging.getLogger(__name__)
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
-DEFAULT_OUT_ROOT = REPO_ROOT / "outputs" / "cross_seed_lora_pooling"
+DEFAULT_OUT_ROOT = paths.resolve(paths.HELD_OUT_SEEDS_INDEX)
 
 
 def _placeholder(text: str, *, size: tuple[int, int] = (512, 512)) -> Image.Image:

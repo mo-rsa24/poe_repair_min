@@ -24,9 +24,9 @@ than re-deriving them.
 Usage::
 
     python -m poe_repair.experiments.cross_pair_lora_pooling.task_d_bridge \\
-        --pooled-run outputs/cross_pair_lora_pooling/all_groups/main \\
-        --pair-pool outputs/cross_pair_lora_pooling/pair_pool.yaml \\
-        --seed-pool-path outputs/cross_pair_lora_pooling/seed_pool.yaml
+        --pooled-run artifacts/rung4-scale/cross_pair/all_groups/main \\
+        --pair-pool artifacts/_shared/cross_pair_pool_configs/pair_pool.yaml \\
+        --seed-pool-path artifacts/_shared/cross_pair_pool_configs/seed_pool.yaml
 """
 
 from __future__ import annotations

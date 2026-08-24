@@ -146,7 +146,7 @@ def _eps_candidates(seed: int, condition: str, lam: float | None) -> list[Path]:
         out.append(MANIFOLD_CACHE / "solo_b" / "eps_t" / f"seed_{seed:03d}.npy")
 
     # 2) The cross-seed sample_heldout pipeline emits eps records when run
-    #    with --record-eps, at outputs/cross_seed_lora_pooling/.../eps_records/
+    #    with --record-eps, at artifacts/results/can-lora-learn-a-residual-that-corrects-poe/held-out-seeds-index/.../eps_records/
     if condition == "poe_plus_lora" and lam is not None:
         out.append(CROSS_SEED_ROOT / "heldout_pair" / "a_wolf__x__a_husky"
                    / "eps_records" / f"eps_seed_{seed:02d}.pt")

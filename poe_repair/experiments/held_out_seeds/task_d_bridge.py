@@ -22,7 +22,7 @@ Inputs
 ------
 Expects pooled-LoRA samples with ``--record-eps`` already produced; the
 default discovers the largest-k run under
-``outputs/cross_seed_lora_pooling/task_b_learning_curve``.
+``artifacts/results/can-lora-learn-a-residual-that-corrects-poe/held-out-seeds-index/task_b_learning_curve``.
 
 Usage::
 
@@ -348,7 +348,7 @@ def main(argv: list[str] | None = None) -> int:
                     help="path to a task_b_learning_curve/kNN__epEE run dir; "
                          "auto-discovers the largest-k run if omitted")
     ap.add_argument("--out-dir", default=None,
-                    help="default: outputs/cross_seed_lora_pooling/task_d_bridge")
+                    help="default: artifacts/results/can-lora-learn-a-residual-that-corrects-poe/held-out-seeds-index/task_d_bridge")
     ap.add_argument("--spatial-seed", type=int, default=None,
                     help="held-out seed to use for the residual-of-residual "
                          "heatmap (default: first held-out)")
@@ -360,7 +360,7 @@ def main(argv: list[str] | None = None) -> int:
     pool = load_seed_pool(args.seed_pool_path)
     cache_root = Path(args.cache_root) if args.cache_root else DEFAULT_CACHE_ROOT
     out_root = Path(args.out_dir) if args.out_dir else (
-        REPO_ROOT / "outputs" / "cross_seed_lora_pooling" / "task_d_bridge"
+        paths.resolve(paths.HELD_OUT_SEEDS_INDEX) / "task_d_bridge"
     )
     out_root.mkdir(parents=True, exist_ok=True)
     curves_dir = out_root / "curves"; curves_dir.mkdir(exist_ok=True)
@@ -370,13 +370,12 @@ def main(argv: list[str] | None = None) -> int:
         pooled_run = Path(args.pooled_run)
     else:
         pooled_run = _autodiscover_pooled_run(
-            REPO_ROOT / "outputs" / "cross_seed_lora_pooling"
-            / "task_b_learning_curve"
+            paths.resolve(paths.HELD_OUT_SEEDS_INDEX) / "task_b_learning_curve"
         )
         if pooled_run is None:
             raise FileNotFoundError(
                 "no pooled run with --record-eps found under "
-                "outputs/cross_seed_lora_pooling/task_b_learning_curve. "
+                f"{paths.HELD_OUT_SEEDS_INDEX}/task_b_learning_curve. "
                 "Pass --pooled-run explicitly."
             )
     eps_dir = pooled_run / "samples" / "heldout" / "eps_records"

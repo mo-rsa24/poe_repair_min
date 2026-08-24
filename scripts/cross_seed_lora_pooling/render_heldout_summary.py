@@ -13,7 +13,7 @@ Inputs are discovered by scanning for ``manifest.json`` files under
 directories. Both layouts are supported:
 
     <run-dir>/samples/heldout_pair/<eval_pair>/final/manifest.json
-    outputs/cross_seed_lora_pooling/<train_pair>/heldout_pair/<eval_pair>/manifest.json
+    artifacts/results/can-lora-learn-a-residual-that-corrects-poe/held-out-seeds-index/<train_pair>/heldout_pair/<eval_pair>/manifest.json
 
 For each manifest:
   - PoE and Mono pulled from

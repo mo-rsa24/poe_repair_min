@@ -19,9 +19,9 @@ Also writes ``quadrant_table.csv`` with the n_cells skeleton; the
 Usage::
 
     python -m poe_repair.experiments.cross_pair_lora_pooling.contact_sheet \\
-        --pooled-run outputs/cross_pair_lora_pooling/all_groups/main \\
-        --pair-pool outputs/cross_pair_lora_pooling/pair_pool.yaml \\
-        --seed-pool-path outputs/cross_pair_lora_pooling/seed_pool.yaml
+        --pooled-run artifacts/rung4-scale/cross_pair/all_groups/main \\
+        --pair-pool artifacts/_shared/cross_pair_pool_configs/pair_pool.yaml \\
+        --seed-pool-path artifacts/_shared/cross_pair_pool_configs/seed_pool.yaml
 """
 
 from __future__ import annotations
@@ -43,6 +43,7 @@ from poe_repair.experiments.cross_pair_lora_pooling.seed_pool import (
     load_seed_pool,
 )
 from poe_repair.training_cache import DEFAULT_CACHE_ROOT, CellPath
+from poe_repair import paths
 
 
 log = logging.getLogger(__name__)
@@ -75,7 +76,7 @@ def _ref_paths(pair: str, seed: int, cache_root: Path) -> dict[str, Path | None]
 
 def _plan10_path(pair: str, seed: int) -> Path | None:
     """Best-effort discovery of Plan 10's per-group LoRA PNG for this cell."""
-    base = REPO_ROOT / "outputs" / "cross_seed_lora_pooling" / pair
+    base = paths.resolve(paths.HELD_OUT_SEEDS_INDEX) / pair
     if not base.exists():
         return None
     # Plan 10 typically names samples sample_seed_NN.png under a heldout-pair
@@ -94,7 +95,7 @@ def _plan10_path(pair: str, seed: int) -> Path | None:
 
 def _plan09_path(pair: str, seed: int) -> Path | None:
     """Best-effort discovery of Plan 09's per-pair LoRA PNG for this cell."""
-    base = REPO_ROOT / "outputs" / "lora"
+    base = paths.resolve(paths.RESULTS_BY_PAIR)
     candidates = [
         base / pair / f"seed_{seed}" / "lora.png",
         base / pair / f"seed_{seed:02d}" / "lora.png",

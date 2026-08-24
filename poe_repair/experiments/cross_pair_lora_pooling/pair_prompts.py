@@ -1,6 +1,6 @@
 """Per-pair prompt registry for the cross-pair LoRA pooling experiment.
 
-Loads ``outputs/cross_pair_lora_pooling/pair_prompts.yaml``, which maps
+Loads ``artifacts/_shared/cross_pair_pool_configs/pair_prompts.yaml``, which maps
 each pair slug to its (prompt_a, prompt_b, joint_prompt). Verifies
 every slug in a given ``PairPool`` has an entry.
 """
@@ -16,12 +16,11 @@ import yaml
 from poe_repair.experiments.cross_pair_lora_pooling.pair_pool import (
     load_pair_pool,
 )
+from poe_repair import paths
 
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
-DEFAULT_PROMPTS_PATH = (
-    REPO_ROOT / "outputs" / "cross_pair_lora_pooling" / "pair_prompts.yaml"
-)
+DEFAULT_PROMPTS_PATH = paths.resolve(paths.GROUP_POOL_CONFIGS) / "pair_prompts.yaml"
 
 
 @dataclass(frozen=True)

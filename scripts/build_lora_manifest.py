@@ -4,7 +4,7 @@ Scans a single ``results/`` directory and emits a flat JSON manifest
 mapping (epoch, lambda) -> decoded.png path. Expects the layout produced
 by the cleanup commit C6::
 
-    outputs/lora/<pair>/seed_<n>/results/
+    artifacts/results/can-lora-learn-a-residual-that-corrects-poe/results-by-pair/<pair>/seed_<n>/results/
         checkpoints/lora_step_*.pt
         thumbnails/thumbnails_epoch_*.png
         probes/epoch_*/lambda_*/decoded.png
