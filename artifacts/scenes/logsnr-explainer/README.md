@@ -1,6 +1,19 @@
 # Scene: the denoising step and log-SNR, as two names for one clock
 
-The interactive companion to F3 in [../what-each-figure-argues.md](../what-each-figure-argues.md).
+**ran under** Node/Vite, `npm run dev`, on a cluster node (moved here from `docs/figures/
+scene-logsnr/` in this sweep; port and exact launch command stated, not independently
+re-verified this move).
+
+**built from** static computation in `src/`: the denoising-step-to-log-SNR conversion for
+SDXL's noise schedule, no GPU and no external data.
+
+**why** the interactive companion to F3 in
+[../../../paper/iclr/what-each-figure-argues.md](../../../paper/iclr/what-each-figure-argues.md);
+lets a reader check the axis choice (step vs. log-SNR) rather than take it on trust.
+
+**depends on** nothing outside this folder; `npm install` from `package-lock.json` before
+`npm run dev`.
+
 F3 is drawn on the denoising step. This scene shows what that axis buys, what the log-SNR axis
 would have bought instead, and computes the measurement that decides between them, so the choice is
 something you can check rather than take on trust.

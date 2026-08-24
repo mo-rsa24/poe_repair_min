@@ -1,5 +1,17 @@
 # CoInD: enabling logical compositions in diffusion models
 
+**ran under** no run; a paper-reading capture, no code executed.
+
+**built from** the arXiv PDF and the paper's own repository listing, read directly.
+
+**why** CoInD trains for the conditional-independence property PoE composition assumes at
+inference without training for it; the accompanying `rung-01-conditional-independence.png`
+diagrams that assumption. Read together while scoping whether this project's failure mode
+is the same one CoInD's loss targets.
+
+**depends on** nothing; a standalone note. Rendered to HTML via `build.sh` + `tufte.css` if
+pandoc is installed, otherwise the markdown is the artifact.
+
 Gaudi, Sreekumar, Boddeti (Michigan State). ICLR 2025. arXiv 2503.01145.
 Code: [github.com/sachit3022/compositional-generation](https://github.com/sachit3022/compositional-generation/).
 
