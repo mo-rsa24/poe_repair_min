@@ -67,6 +67,18 @@ Instruction 5's manual deletion. `git rm --cached` only; bytes still on disk, un
 
 Renames this sitting: `RENAMES.md`, section "Sitting 2026-08-24 (the retrofit sweep, stages 1-4)".
 
+### Addendum: the `plans/completed/compose-scorer/` finding, investigated
+
+Ran a scoped `sync-plan-tree` invocation against the one structural finding flagged above.
+Its own convention (not `PLAN_TREE_FORMAT.md`'s per-scope state folders) says a fully-`✅` scope
+belongs in `completed/` or `archived/`, chosen by whether anything live still references it.
+`compose-scorer` has live referrers, so `completed/` was already the right place; the original
+finding was a false positive. What was actually stale: the scope's Definition of Done still read
+`⚠️` on all four items despite its own Status line declaring it validated since 2026-07-29 and
+all three of its plan files carrying zero open tasks. Verified `scorer_validated.json` exists on
+disk at its retrofit-renamed path and flipped the four DoD items to `✅`, each with its evidence.
+No move performed. Stage 3 otherwise remains not started; this was one scoped finding, not a walk.
+
 ## Sitting 2026-08-23
 
 **Where we are.** The sweep stopped at its census because `artifacts/` meant two contradictory
