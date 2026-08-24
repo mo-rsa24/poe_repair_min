@@ -7,7 +7,7 @@ frames, no named pairs: the reader looks at the band, the caption draws the
 conclusion.
 
 Three choices in here are not cosmetic, and the reasons are in
-docs/figures/what-each-figure-argues.md:
+paper/iclr/what-each-figure-argues.md:
 
 - **The axis is the step, not log-SNR.** Only DDIM is used, so the sampler-
   independent axis buys a reader the paper does not have. Every cell runs the

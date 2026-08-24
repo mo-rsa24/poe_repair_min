@@ -58,7 +58,7 @@ Everything that changes state, because each step needs the output read:
    `inventory/03-integrity-and-disposition.md`.
 3. Author `inventory/01` + `02` rows for the Gap-2 dirs and reconcile against W&B.
 4. Extend `04_apply_layout.sh` with the chosen destinations, dry-run, then `APPLY=1`.
-5. Append a `docs/DECISION_TIMELINE.md` entry for this landing.
+5. Append a `DECISION_TIMELINE.md` entry for this landing.
 
 The pre-existing backlog in `plans/05` (G1-G4 pool disposition rows, the `koy9gjis`
 failure row, the cross-root symlink convention) is unchanged by this detection and

@@ -9,7 +9,7 @@ the project layer of the error matrix (the global, environment-independent layer
 fact; where the solution is a procedure someone drives by hand, it belongs in a `runbook/`
 recipe once that folder exists (it does not yet, this sitting).
 
-**Migrated from `docs/EXPERIMENT_ERROR_CATALOG.md` this sitting**, with every `Environment
+**Migrated from `environment/known-failures.md` this sitting**, with every `Environment
 reference` repointed from `docs/ENVIRONMENT.md` to this folder. Nothing in the six migrated
 entries was reworded beyond that repointing; `poe-disk-001` is new, added this sitting from a
 failure already documented in the project's own `CLAUDE.md` but not previously catalogued here.

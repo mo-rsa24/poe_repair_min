@@ -54,6 +54,6 @@ The money scatter with regime coloring plus the per-regime exemplar strip at
 ## Engagement Instructions
 ```bash
 PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
-$PY scripts/composition_scatter.py   # requires docs/normalization_preregistration.md
+$PY scripts/composition_scatter.py   # requires report/normalization_preregistration.md
 # expect: scatter written + Spearman rho printed per regime ordering
 ```

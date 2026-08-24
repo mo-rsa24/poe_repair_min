@@ -3,7 +3,7 @@
 ## Description
 Turn the current program state into a short briefing a supervisor gets in one sitting: one slide per
 pyramid rung showing where that rung actually is (status pulled from `MASTER_PLAN.md` goals and
-`docs/DECISION_TIMELINE.md`, backed by a real generated picture, not a claim), then a short
+`DECISION_TIMELINE.md`, backed by a real generated picture, not a claim), then a short
 new-directions section that promotes the two ripe deferred ideas from `PARKING_LOT.md` into candidate
 next steps. The whole thing ends with a `/plain-speak` pass so it reads for a tired supervisor, not a
 reviewer fluent in our jargon. This is a communication deliverable, not a research rung: it consumes
@@ -28,7 +28,7 @@ uses a term the glossary would have to translate.
 ### Group 1 — State of things (one card per rung)
 
 - [ ] ⚠️ Pull the current status for all five rungs from the two sources of truth into a single table.
-  Prompt: `/progress-brief read MASTER_PLAN.md Goals (lines 28-44) and docs/DECISION_TIMELINE.md, and produce a 5-row table: rung → one-line status → the single most convincing artifact path for it → what is still owed. Overfit=G04 landed cat×dog + G4/G6 trained, G1-G3 owed; Survive-Noise=G6 pool verdict ok, held-out-seed enactment pending; Cross-Pair=code ready (Plan 12), not run; Group-Wise=g6 smoke only; Scale=trained to step 30k, crossbar never evaluated.`
+  Prompt: `/progress-brief read MASTER_PLAN.md Goals (lines 28-44) and DECISION_TIMELINE.md, and produce a 5-row table: rung → one-line status → the single most convincing artifact path for it → what is still owed. Overfit=G04 landed cat×dog + G4/G6 trained, G1-G3 owed; Survive-Noise=G6 pool verdict ok, held-out-seed enactment pending; Cross-Pair=code ready (Plan 12), not run; Group-Wise=g6 smoke only; Scale=trained to step 30k, crossbar never evaluated.`
 
 - [ ] ⚠️ Make sure every rung has ONE real picture to show. Overfit already has `recap/figs/beachhead_strip.png`; find or render the one image that best enacts each other rung.
   Prompt (`/run-experiment`): `for each rung lacking a figure, render the single most legible artifact from its owning experiment — Survive-Noise: the G6 held-out-seed contact sheet from artifacts/rung2-survive-noise/; Scale: the crossbar quadrant grid if any cells exist. Write them to recap/figs/<rung>.png. If a rung has no runnable artifact yet, say so explicitly on its card rather than faking one.`

@@ -93,7 +93,7 @@ Navigation: ⬅️ [How it shows up in the data](#how-it-shows-up-in-the-data) |
 **Mono is not a candidate fix.** ✍️ It is only ever the reference the correction is scored
 against. A result that quietly lets the sampler fall back to the Mono prediction at full
 correction strength would make every method look equally good for the wrong reason; this is
-recorded as a real risk the project checked for (`docs/RESEARCH_GUIDELINES.md`: "a full-strength
+recorded as a real risk the project checked for (`RESEARCH_GUIDELINES.md`: "a full-strength
 shortcut would have made every control row reproduce the real one... switching it off during
 control runs is a decision recorded in the design plan").
 
@@ -106,4 +106,4 @@ Navigation: ⬅️ [What people get wrong](#what-people-get-wrong) | 📋 [TOC](
 | PoE combines one expert prediction per concept per step | Read in `paper/iclr/iclr2027_conference.tex`, abstract | 2026-08-24 |
 | Mono is the joint-prompt cheat, used only as the target | Read in `MASTER_PLAN.md`, Glossary | 2026-08-24 |
 | The two example images | Read directly, `data/pilot/seed_42/a_cat__x__a_dog/{poe,monolithic}.png` | 2026-08-24 |
-| The full-strength shortcut risk and its fix | Read in `docs/RESEARCH_GUIDELINES.md` | 2026-08-24 |
+| The full-strength shortcut risk and its fix | Read in `RESEARCH_GUIDELINES.md` | 2026-08-24 |

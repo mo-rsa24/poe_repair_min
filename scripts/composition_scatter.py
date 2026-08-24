@@ -10,7 +10,7 @@ correction are the ones PoE fails on.
 This script will not choose the normalisation for you. Comparing correction
 size across prompt types is exactly the slicing choice that produced one
 retraction in this result family, so the measure has to be committed in writing
-first (plan 01, docs/normalization_preregistration.md) and this script reads it
+first (plan 01, report/normalization_preregistration.md) and this script reads it
 from there. No memo, no plot.
 
 Usage:
@@ -36,7 +36,7 @@ from poe_repair.experiments.interaction_term.cache import (  # noqa: E402
 )
 
 OUT_DIR = paths.resolve(paths.CACHE_ANALYSES)
-PREREG = Path("docs/normalization_preregistration.md")
+PREREG = Path("report/normalization_preregistration.md")
 DOSE_SCORES = paths.resolve(paths.HOW_MUCH_CORRECTION_IS_NEEDED) / "dose_curves.json"
 # The committed choice is parsed from the memo, not guessed here.
 MEASURES = {

@@ -78,7 +78,7 @@ One experiment currently has up to four names: one on `/home-mscluster`, one on 
 ## Why this plan exists
 
 A name that states a claim becomes a lie when the claim dies, and one already has: `F6`'s
-shared-structure argument is recorded as dead in `docs/evidence/INDEX.md` while four files still
+shared-structure argument is recorded as dead in `report/paper-evidence-index.md` while four files still
 carry its slot letter. A name that states a private label costs a lookup every time: nothing on disk
 says what `rung2` or `group A` or `idea5a` was. And a name that exists twice sends a reader to
 whichever copy their filesystem happens to hold, which `paper/iclr/figures.md` line 30 already does:
@@ -354,7 +354,7 @@ Each is untracked, so there is no undo. Confirm one path at a time.
       under one caption. Decide whether it becomes three.
 - [ ] `F6-spectrum-windowed` is four panels answering two questions, and no register row names any
       of it. Decide whether it becomes two, and whether the slot survives at all given
-      `docs/evidence/INDEX.md` records its argument as dead.
+      `report/paper-evidence-index.md` records its argument as dead.
 
 ## Outputs
 
@@ -399,7 +399,7 @@ files.
 - `RETROFIT.md` — the census and the sitting ledger
 - `~/.claude/ARTIFACT_TREE_FORMAT.md` v3 — the shape and the naming forms
 - `~/.claude/ERROR_MATRIX_SYSTEM.md` — the failure catalog's new home
-- `docs/evidence/INDEX.md` — the second conforming card, and where F6's claim is recorded as dead
+- `report/paper-evidence-index.md` — the second conforming card, and where F6's claim is recorded as dead
 - `evidence/f2-lambda1-audit/README.md` — the first conforming card, and the model for the rest
 
 ## Next step

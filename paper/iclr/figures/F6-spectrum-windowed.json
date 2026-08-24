@@ -16,7 +16,7 @@
       "held_out_pairs": 8,
       "early": 0.121,
       "late": 0.008,
-      "reading": "the train-fitted subspace explains far less of a held-out pair's energy than of a training pair's own, and that gap widens late in the trajectory; consistent with the prior F6 finding that r_t vectors are mutually near-orthogonal even train-to-train (docs/evidence/F6-subspace-vs-transfer/QUERY.md)"
+      "reading": "the train-fitted subspace explains far less of a held-out pair's energy than of a training pair's own, and that gap widens late in the trajectory; consistent with the prior F6 finding that r_t vectors are mutually near-orthogonal even train-to-train (artifacts/results/which-way-the-correction-points/does-the-subspace-test-predict-transfer/QUERY.md)"
     }
   },
   "bottom_row_direction_vs_outcome": {

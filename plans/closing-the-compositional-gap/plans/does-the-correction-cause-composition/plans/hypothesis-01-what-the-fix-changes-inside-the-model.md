@@ -48,7 +48,7 @@ what gets compared. `gain_and_pattern()` in `value_probe.py` computes this per c
 capture, so the scoring step reads it rather than re-deriving it.
 
 The full argument, with its guards (a shuffled-map control, a denominator check, the raw sums),
-is in `docs/evidence/F7-mechanism-reprobe/measure-fairness.md`.
+is in `artifacts/results/residual-dynamics/content-change-relative-to-attention-change/measure-fairness.md`.
 
 ## Environment Facts This Plan Depends On
 - `co3` python at its absolute path. Probe inference fits the in-session 3090; the full sweep

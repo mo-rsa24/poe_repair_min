@@ -608,7 +608,7 @@ export default function App() {
 
       <footer>
         <p>
-          F3 of <code>docs/figures/what-each-figure-argues.md</code>. Curve from{' '}
+          F3 of <code>paper/iclr/what-each-figure-argues.md</code>. Curve from{' '}
           <code>scripts/snr_collapse.py</code>. Full notes in the README.
         </p>
       </footer>

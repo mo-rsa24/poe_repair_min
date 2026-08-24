@@ -132,7 +132,7 @@ one cell, one pair, one difficulty class, or the whole studied taxonomy.
    per-group catalogue, established with evidence.
 
 ## Goals
-(Checkpoints — measurable. Status from docs/DECISION_TIMELINE.md.)
+(Checkpoints — measurable. Status from DECISION_TIMELINE.md.)
 1. Overfit: cat×dog seed 42 — λ=0 byte-identical to PoE, λ=1 two distinct animals
    by ~ep600 [✅ G04]; one representative pair per G1–G4+G6 closes the gap
    single-seed [◑ only G4+G6 trained; G1–G3 owed].
@@ -164,7 +164,7 @@ recorded in the decision timeline.
 5. ⚠️ Scale: four-quadrant crossbar evaluated; held-pair×held-seed classified;
    deployment unit chosen (single LoRA vs per-group catalogue).
 6. ✅ Negative controls (group-A, internal-force) reported; Mono-free property holds
-   at every λ; docs/DECISION_TIMELINE.md reflects each landing.
+   at every λ; DECISION_TIMELINE.md reflects each landing.
 7. ✅ G5 (entanglement) explicitly deferred with rationale.
 
 ## Sub-Scopes

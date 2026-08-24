@@ -11,7 +11,7 @@ Scan the entire repository for all image files (PNG, JPG, etc.) that are relevan
 ## Search scope
 
 Search recursively in:
-- `docs/evidence/`
+- `artifacts/results/ (per-question) and report/paper-evidence-index.md`
 - `outputs/interaction_term/`
 - `paper/iclr/figures/`
 - Any `/show-me` artifacts or results directories
@@ -51,7 +51,7 @@ The catalog must be a table with columns:
 | Step | Figure (file path + title) | What it shows | Axes | Original location |
 |------|----------------------------|---------------|------|-------------------|
 | 9 | `step-09_metric-compose-rate_climb.png` <br> "Compose-rate climb over epoch 1" | Shows whether the PoE-blend scorer outputs increase over training. Flat line = fix didn't arrive. Climb = fix is working. | X: epoch step or training iteration. Y: compose-rate (0–1, fraction classified as PoE-blend). | `outputs/interaction_term/dose/pairs/` |
-| 9 | `step-09_metric-direction-cosine_alignment.png` <br> "Direction alignment to pool-mean" | Shows whether the correction moves in the ensemble direction. High value = aligned and transferable. Low/zero = diverged. | X: epoch step. Y: cosine similarity (-1 to +1). | `docs/evidence/` |
+| 9 | `step-09_metric-direction-cosine_alignment.png` <br> "Direction alignment to pool-mean" | Shows whether the correction moves in the ensemble direction. High value = aligned and transferable. Low/zero = diverged. | X: epoch step. Y: cosine similarity (-1 to +1). | `artifacts/results/ (per-question) and report/paper-evidence-index.md` |
 | ... | ... | ... | ... | ... |
 
 ## Instructions for you

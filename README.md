@@ -6,24 +6,24 @@ of code, outputs, and checkpoints:
 1. **LoRA (success).** Per-arm rank-8 LoRA on SDXL UNet cross-attention.
    Training timeline and inference probes for cat × dog, seed 42 are
    preserved at `outputs/lora/a_cat__x__a_dog/seed_42/results/`. See
-   [`docs/results-archive/lora-success.md`](docs/results-archive/lora-success.md).
+   [`artifacts/_quarantine/results-archive/lora-success.md`](artifacts/_quarantine/results-archive/lora-success.md).
 2. **Residual diagnostics (Mono ceiling).** Two sub-experiments characterising
    the guided PoE→Mono residual r_t:
    `residual_diagnostics/existence/` (residual is well-defined + structured)
    and `residual_diagnostics/clip_window/` (commitment window). Code-only —
-   outputs are regenerable. See [`docs/results-archive/residual-diagnostics.md`](docs/results-archive/residual-diagnostics.md).
+   outputs are regenerable. See [`artifacts/_quarantine/results-archive/residual-diagnostics.md`](artifacts/_quarantine/results-archive/residual-diagnostics.md).
 3. **Group-A (failure cases).** Latent-CNN, latent-UNet, frozen-feature-MLP
    external correctors that demonstrably *don't* fix PoE. Outputs and
    checkpoints kept under `outputs/group_a_failure/`. See
-   [`docs/results-archive/group-a-failure.md`](`docs/results-archive/group-a-failure.md).
+   [`artifacts/_quarantine/results-archive/group-a-failure.md`](`artifacts/_quarantine/results-archive/group-a-failure.md).
 4. **Internal-force failure case.** Mono-free PoE-internal corrective
    forces (attention-overlap + score-alignment). Another repair attempt
-   that fails alongside group-A. See [`docs/results-archive/internal-force-failure.md`](docs/results-archive/internal-force-failure.md).
+   that fails alongside group-A. See [`artifacts/_quarantine/results-archive/internal-force-failure.md`](artifacts/_quarantine/results-archive/internal-force-failure.md).
 5. **CFG conditioning-window ablation (no-LoRA baseline).** Per-step CFG
    on/off mask sweep on a clean SDXL base. Identifies the minimum
    conditioning window that still produces a recognisable cat+dog;
    serves as the no-residual baseline against which thread 1 measures
-   LoRA's marginal effect. See [`docs/results-archive/conditioning-window.md`](docs/results-archive/conditioning-window.md).
+   LoRA's marginal effect. See [`artifacts/_quarantine/results-archive/conditioning-window.md`](artifacts/_quarantine/results-archive/conditioning-window.md).
 
 Published-paper reference codebases (AAE, CO3, FOCUS, P2P,
 reduce-reuse-recycle) live untouched in `composition/`.
@@ -126,7 +126,7 @@ $PY -m poe_repair.experiments.one_pair_one_seed \
 
 ### Thread 2 — Residual diagnostics
 
-See [`docs/results-archive/residual-diagnostics.md`](docs/results-archive/residual-diagnostics.md). Summary:
+See [`artifacts/_quarantine/results-archive/residual-diagnostics.md`](artifacts/_quarantine/results-archive/residual-diagnostics.md). Summary:
 
 ``bash
 $PY -m poe_repair.experiments.residual_between_mono_and_poe \
@@ -142,7 +142,7 @@ $PY -m poe_repair.experiments.residual_between_mono_and_poe.clip_window  --pair 
 
 ### Thread 3 — Group-A failure cases
 
-See [`docs/results-archive/group-a-failure.md`](`docs/results-archive/group-a-failure.md):
+See [`artifacts/_quarantine/results-archive/group-a-failure.md`](`artifacts/_quarantine/results-archive/group-a-failure.md):
 
 ``bash
 $PY -m poe_repair.experiments.correction_outside_the_unet --technique latent_unet
@@ -152,7 +152,7 @@ $PY -m poe_repair.experiments.correction_outside_the_unet --technique frozen_fea
 
 ### Thread 4 — Internal-force failure case
 
-See [`docs/results-archive/internal-force-failure.md`](docs/results-archive/internal-force-failure.md). Depends on
+See [`artifacts/_quarantine/results-archive/internal-force-failure.md`](artifacts/_quarantine/results-archive/internal-force-failure.md). Depends on
 the residual-existence diagnostic for basin-barrier calibration:
 
 ``bash
@@ -162,7 +162,7 @@ $PY -m poe_repair.experiments.internal_force_failure         --pair "a cat|a dog
 
 ### Thread 5 — CFG conditioning-window ablation (no-LoRA baseline)
 
-See [`docs/results-archive/conditioning-window.md`](docs/results-archive/conditioning-window.md). Per-step CFG mask
+See [`artifacts/_quarantine/results-archive/conditioning-window.md`](artifacts/_quarantine/results-archive/conditioning-window.md). Per-step CFG mask
 sweep on clean SDXL; no LoRA, no Mono. Reuses the same x_T as the LoRA
 experiment so the marginal-effect comparison is valid.
 

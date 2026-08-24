@@ -72,7 +72,7 @@ This extracts error patterns from the run transcript, deduplicates against globa
 - **Procedures**: (none yet; recommend creating [procedures/hypothesis-02-run-lopo-sweep.md](procedures/hypothesis-02-run-lopo-sweep.md) if manual steps emerge)
 - **Assets/outputs**: Will be saved to `outputs/interaction_term/transfer_rate/`
   - **Figure organization**: Use [figure-coverage-prompt.md](diagrams/figure-coverage-prompt.md) to scan the repo, rename all related figures to the step-11 naming convention, and consolidate them into `outputs/interaction_term/transfer_rate/figures/`. This prompt generates a FIGURE_CATALOG.md that maps each figure to axes, meaning, and original location.
-  - **Locations scanned**: `docs/evidence/`, `outputs/interaction_term/`, `paper/iclr/figures/`, `/show-me` artifacts, results/ folders.
+  - **Locations scanned**: `artifacts/results/ (per-question) and report/paper-evidence-index.md`, `outputs/interaction_term/`, `paper/iclr/figures/`, `/show-me` artifacts, results/ folders.
 
 **For the full picture**: This plan serves Objective 2 (Transfer A) and Definition-of-Done item 3 of the scope. See [../MASTER_PLAN.md](../MASTER_PLAN.md) for the full experimental context.
 
@@ -323,11 +323,11 @@ Run each `.prompt.md` file through Claude (or `/prompt-storyboard`) and save out
 
 **After the run completes**:
 
-1. **Ingest errors** (automatic propagation): Run `/ingest-error-pattern --from-run-log` to extract patterns from the run transcript. Deduplicates against `~/.claude/GLOBAL_ERROR_CATALOG.md` and `docs/EXPERIMENT_ERROR_CATALOG.md`. New errors are appended to the appropriate catalog. The skill automatically triggers `/sync-plan-tree --update-error-matrices` when done.
+1. **Ingest errors** (automatic propagation): Run `/ingest-error-pattern --from-run-log` to extract patterns from the run transcript. Deduplicates against `~/.claude/GLOBAL_ERROR_CATALOG.md` and `environment/known-failures.md`. New errors are appended to the appropriate catalog. The skill automatically triggers `/sync-plan-tree --update-error-matrices` when done.
 
 2. **Update the Error Matrix section** (automatic): `/sync-plan-tree` reads both catalogs and regenerates the Error Matrix section of this plan file. New errors from this run are now visible in the section below.
 
-3. **Organize figures** (manual, but guided): After the 15-run sweep finishes, W&B outputs metrics to your project. Use the [figure-coverage-prompt.md](diagrams/figure-coverage-prompt.md) to scan the repo for all related figures (existing docs/evidence/, outputs/, paper/ figures plus new W&B plots). The prompt renames them to the step-11 naming convention and consolidates them into `outputs/interaction_term/transfer_rate/figures/`. It generates a `FIGURE_CATALOG.md` that maps each figure to its axes, meaning, and original location.
+3. **Organize figures** (manual, but guided): After the 15-run sweep finishes, W&B outputs metrics to your project. Use the [figure-coverage-prompt.md](diagrams/figure-coverage-prompt.md) to scan the repo for all related figures (existing artifacts/results/ (per-question) and report/paper-evidence-index.md, outputs/, paper/ figures plus new W&B plots). The prompt renames them to the step-11 naming convention and consolidates them into `outputs/interaction_term/transfer_rate/figures/`. It generates a `FIGURE_CATALOG.md` that maps each figure to its axes, meaning, and original location.
 
 **Why this matters**: Without orchestration, the Error Matrix section becomes stale after a run completes, and figures scatter across the repo. With it, you run two commands post-run (`/ingest-error-pattern` and the figure-coverage prompt) and everything stays current. The next time you visit this plan file, you see what actually happened, not what was planned.
 
@@ -383,7 +383,7 @@ Global patterns applicable across all projects. See [~/.claude/GLOBAL_ERROR_CATA
 
 ### From project catalog
 
-Patterns specific to poe_repair_min. See [docs/EXPERIMENT_ERROR_CATALOG.md](../../../../docs/EXPERIMENT_ERROR_CATALOG.md) for the full catalog.
+Patterns specific to poe_repair_min. See [environment/known-failures.md](../../../../environment/known-failures.md) for the full catalog.
 
 (none recorded yet)
 

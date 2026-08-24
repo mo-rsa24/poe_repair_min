@@ -2,7 +2,7 @@
 """EXP-01's qualitative half: what the commitment step actually looks like.
 
 Two rows, the fastest-committing pair and the slowest-committing pair from
-`docs/evidence/EXP01-commitment-step/result.json`. Three columns per row, all
+`artifacts/results/when-the-correction-must-arrive/commitment-step/result.json`. Three columns per row, all
 the model's own running estimate x0(t) at three steps of the SAME run:
 
     step 0            the model's first full-image guess, before any denoising
@@ -40,7 +40,7 @@ from poe_repair.experiments.interaction_term.cache import (  # noqa: E402
     load_cell,
 )
 
-OUT_DIR = Path("docs/evidence/EXP01-commitment-step")
+OUT_DIR = Path("artifacts/results/when-the-correction-must-arrive/commitment-step")
 FIG_NAME = "commitment-step-frames"
 FRAME_CACHE = OUT_DIR / "frames"
 
@@ -162,7 +162,7 @@ def main() -> int:
                   "VAE for display; the 0.90 cosine threshold that defines "
                   "commitment was computed in latent space, not on these "
                   "decoded pixels, and the perceptual check against it is "
-                  "still owed (docs/evidence/EXP01-commitment-step/QUERY.md)",
+                  "still owed (artifacts/results/when-the-correction-must-arrive/commitment-step/QUERY.md)",
     }, indent=2))
     print(f"\nwrote {OUT_DIR / FIG_NAME}.png and .pdf")
     return 0

@@ -350,7 +350,7 @@ interpolation.
 Exits with an explanation rather than a plot:
 
 ```
-no normalization memo at docs/normalization_preregistration.md.
+no normalization memo at report/normalization_preregistration.md.
 Correction size is not comparable across prompt types without a committed
 measure, and choosing one after seeing the plot is how the 95% delta-field
 number had to be retracted. Write the memo first: plan 01.
@@ -475,7 +475,7 @@ overwritten.
 
 # The subspace test does not predict transfer (2026-08-05)
 
-Full write-up: `docs/evidence/F6-subspace-vs-transfer/QUERY.md`.
+Full write-up: `artifacts/results/which-way-the-correction-points/does-the-subspace-test-predict-transfer/QUERY.md`.
 
 The corrected 6.0% held-out projection above was about to be read as evidence
 against the shared-correction claim. It is not, and the check that shows why is

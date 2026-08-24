@@ -1,7 +1,7 @@
 # dl-scene: the v4 pipeline's VAE, level by level
 
 **ran under** Node/Vite, `npm run dev` on a cluster node, port 5173 (this README notes a
-collision with the other scene on the same node, at `docs/figures/scene-logsnr/README.md:16`,
+collision with the other scene on the same node, at `artifacts/scenes/logsnr-explainer/README.md:16`,
 which uses 5175 instead); last run under this README's own instructions below (stated, not
 independently re-verified this move).
 

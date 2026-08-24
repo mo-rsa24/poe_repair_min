@@ -40,8 +40,8 @@ MIN_RHO = 0.5             # "moves with the pair": and correlate with the commit
 NULL_SPAN_STEPS = 2       # "does not move": all best centres inside this many steps
 
 WINDOWS = paths.resolve(paths.WINDOW) / "window_curves.json"
-COMMIT = Path(__file__).resolve().parent.parent / "docs/evidence/EXP01-commitment-step/result.json"
-OUT_DIR = Path(__file__).resolve().parent.parent / "docs/evidence/EXP04-window-vs-commitment"
+COMMIT = Path(__file__).resolve().parent.parent / "artifacts/results/when-the-correction-must-arrive/commitment-step/result.json"
+OUT_DIR = Path(__file__).resolve().parent.parent / "artifacts/results/when-the-correction-must-arrive/window-vs-commitment"
 
 
 def spearman(x: np.ndarray, y: np.ndarray) -> float:

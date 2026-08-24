@@ -4,7 +4,7 @@
 
 ## Reference while you do it
 - 📄 Plan: plans/mechanism-study/plans/03-read-the-mechanism.md
-- 📄 Spec: EXPERIMENTS.md (EXP-06), docs/results-archive/residual-diagnostics.md (commitment window)
+- 📄 Spec: EXPERIMENTS.md (EXP-06), artifacts/_quarantine/results-archive/residual-diagnostics.md (commitment window)
 - 📄 Parking lot (if inconclusive): PARKING_LOT.md ("Widen the mechanism study to a second pair")
 
 ## Section context (paste into the Todoist section)

@@ -22,7 +22,7 @@ Committing the measure first makes the composition-type scatter readable and
 unarguable. Serves DoD 1.
 
 ## Goal
-docs/normalization_preregistration.md: both candidates computed on three cached
+report/normalization_preregistration.md: both candidates computed on three cached
 pairs, the committed choice, dated, written before any cross-type plot is
 generated.
 
@@ -55,10 +55,10 @@ flowchart LR
       third candidate (vs latent step size) was measured and rejected: its
       denominator moves with the sampler schedule, which plan 08 varies.
 - [x] write the memo with the committed choice and date
-      (docs/normalization_preregistration.md, relative_norm, 2026-08-05)
+      (report/normalization_preregistration.md, relative_norm, 2026-08-05)
 - [x] bulk-load smoke over the full cache: 70/70 ok, 790 cells, 38324 step
       files, zero NaN. Note 70 distinct pairs, not 76: six slugs are cached
-      under both splits (see docs/instrument_smoke.md).
+      under both splits (see report/instrument_smoke.md).
 
 ## Success/Failure Outcomes
 - **bulk-load smoke**
@@ -74,7 +74,7 @@ flowchart LR
 
 ## Engagement Instructions
 ```bash
-cat docs/normalization_preregistration.md    # expect a dated committed choice
+cat report/normalization_preregistration.md    # expect a dated committed choice
 PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
 $PY scripts/cache_smoke.py --all             # expect "70/70 ok"
 $PY scripts/normalization_candidates.py      # reproduces the memo's numbers

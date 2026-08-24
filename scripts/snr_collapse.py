@@ -95,7 +95,7 @@ def curve_for(slug: str, seed: int, *, normalize: str = "prereg",
     n = c.r_t_norm().numpy()
     if normalize == "prereg":
         # The plan-01 committed measure: correction size relative to the
-        # prediction being corrected. docs/normalization_preregistration.md
+        # prediction being corrected. report/normalization_preregistration.md
         n = n / c.eps_poe().flatten(1).norm(dim=1).numpy()
     # Then scale each curve to its own median. The claim is about SHAPE over the
     # run, not about every pair needing the same correction size, so a per-curve

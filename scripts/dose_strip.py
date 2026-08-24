@@ -164,7 +164,7 @@ def main() -> int:
                 # Label by the validated RULE (>=2), not by the raw count.
                 # The count over-reports: a limb can clear the 0.30 confidence
                 # floor as its own instance. See
-                # docs/evidence/dose-response/scorer-count-caveat.md
+                # artifacts/results/can-we-trust-the-compose-score/the-scorers-instance-count-is-not-a-count.md
                 ax.set_xlabel(("compose" if composed else "blend")
                               + (f"  (n={n})" if args.annotate_boxes else ""),
                               fontsize=8,

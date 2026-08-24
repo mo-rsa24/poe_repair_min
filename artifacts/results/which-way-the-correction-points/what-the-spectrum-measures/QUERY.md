@@ -52,7 +52,7 @@ Within one run the correction turns smoothly through its steps, which is what D1
 already says and what the +0.81 cosine between adjacent steps already measures. Across
 runs and pairs there is nothing: 1.2x at k=8 is a random stack. That agrees with D3
 (different pairs share no direction at any step) and with the near-orthogonality
-measured in `docs/evidence/F6-subspace-vs-transfer/QUERY.md` (cosine about 0.00 even
+measured in `artifacts/results/which-way-the-correction-points/does-the-subspace-test-predict-transfer/QUERY.md` (cosine about 0.00 even
 train-to-train).
 
 ## What this costs the paper

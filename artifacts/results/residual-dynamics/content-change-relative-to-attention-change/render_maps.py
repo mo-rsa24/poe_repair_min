@@ -11,8 +11,8 @@ each row are the ones the verdict is computed from, not re-derived here.
 
 Usage:
     PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
-    $PY docs/evidence/F7-mechanism-reprobe/render_maps.py
-    $PY docs/evidence/F7-mechanism-reprobe/render_maps.py --cells a_frog__x__a_toad/seed_9
+    $PY artifacts/results/residual-dynamics/content-change-relative-to-attention-change/render_maps.py
+    $PY artifacts/results/residual-dynamics/content-change-relative-to-attention-change/render_maps.py --cells a_frog__x__a_toad/seed_9
 """
 
 from __future__ import annotations

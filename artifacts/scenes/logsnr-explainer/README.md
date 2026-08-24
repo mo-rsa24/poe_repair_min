@@ -8,7 +8,7 @@ something you can check rather than take on trust.
 ## Run it
 
 ```bash
-cd docs/figures/scene-logsnr
+cd artifacts/scenes/logsnr-explainer
 npm install
 npm run dev --  --port 5175        # http://localhost:5175
 ```
@@ -72,7 +72,7 @@ M = '/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_cat__x__a_l
 f3, meta = json.load(open(P)), json.load(open(M))
 keep = ('collapse_spread_pct','normalize','n_pairs','n_curves','verdict',
         'peak_log_snr','peak_at_edge','log_snr_grid','median_curve','iqr')
-pathlib.Path('docs/figures/scene-logsnr/src/data.json').write_text(json.dumps({
+pathlib.Path('artifacts/scenes/logsnr-explainer/src/data.json').write_text(json.dumps({
     'alphasCumprodSource': 'SDXL DDIMScheduler.alphas_cumprod, read from the model repo by poe_repair.experiments.interaction_term.cache',
     'alphasCumprod': [round(float(x), 9) for x in _alphas_cumprod().numpy()],
     'cachedTimesteps': meta['timesteps'], 'cachedTimestepsSource': M,

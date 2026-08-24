@@ -19,7 +19,7 @@ each may do to the paper, the six-step diagnosis procedure when a result contrad
 attack the work before a reviewer does, and kill work that is bleeding rather than only work that
 failed. This pointer is the opt-in, same as the conventions pointer above.
 
-[docs/RESEARCH_GUIDELINES.md](docs/RESEARCH_GUIDELINES.md) is the local half: where each of those
+[RESEARCH_GUIDELINES.md](RESEARCH_GUIDELINES.md) is the local half: where each of those
 rules lands in this repo (paths, commands, the canary), and the specific mistakes this project has
 already made. It does not repeat the practice.
 
@@ -79,3 +79,16 @@ bar it was judged against.
 
 The root [MASTER_PLAN.md](MASTER_PLAN.md) carries `## Do this next` above a flat `## Running order`
 table covering every plan in every scope. No scope keeps an order of its own.
+
+## Root files this repo adds to the list no check reports
+
+`~/.claude/CLAUDE.md`'s "Files at the root that no check reports" table is the base list. This repo
+extends it with:
+
+| File | What it is for |
+|---|---|
+| [EXPERIMENTS.md](EXPERIMENTS.md) | the numbered EXP-N log of ad hoc probes that never became a plan |
+| [PARKING_LOT.md](PARKING_LOT.md) | ideas tried or considered and not yet turned into a plan |
+| [DECISION_TIMELINE.md](DECISION_TIMELINE.md) | the linear gate-by-gate record of what ran, what it said, and the decision it forced |
+| [RESEARCH_GUIDELINES.md](RESEARCH_GUIDELINES.md) | the local half of `~/.claude/RESEARCH_PRACTICE.md`: where each practice rule lands in this repo |
+| `RENAMES.md` | the retrofit sweep's old-path-to-new-path table, owned by `retrofit-repo`/`tidy-repo` |

@@ -108,7 +108,7 @@ Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC
       direction structure (23x at k=1, 7.8x at k=8), but it lives inside single runs, not across
       them: 50 steps of one cell beat the floor 4.8x at k=8, while one step from each of 50
       different cells beats it 1.2x. Full argument and tables:
-      `docs/evidence/F6-what-the-spectrum-measures/QUERY.md`. Two claims follow. F6 may not argue
+      `artifacts/results/which-way-the-correction-points/what-the-spectrum-measures/QUERY.md`. Two claims follow. F6 may not argue
       that a shared low-dimensional structure is what makes the correction learnable, and the
       learnability claim rests on the adapter's measured behaviour instead. Within-run smoothness
       is D1's result and cross-pair orthogonality is D3's, so what the spectrum adds beyond those
@@ -119,7 +119,7 @@ Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC
       those pairs where plain PoE composes 0%. The r_t vectors are mutually near-orthogonal
       (cosine about 0.00 even train-to-train), so no fitted subspace can contain unseen pairs
       whether or not the correction transfers. Full argument:
-      `docs/evidence/F6-subspace-vs-transfer/QUERY.md`, whose per-pair table is measured at 3
+      `artifacts/results/which-way-the-correction-points/does-the-subspace-test-predict-transfer/QUERY.md`, whose per-pair table is measured at 3
       seeds and every 3rd step, where the same projection reads 6.0%. The sampling moves the
       percentage and not the gap, which is what carries. Any paper sentence built on "shared
       subspace" wording must be rewritten to this bounded form.

@@ -14,7 +14,7 @@ each making one claim with its control visible in the figure, each drawn from re
 scored runs rather than from a memory of how the result looked.
 
 ## Read this first
-[docs/figures/what-each-figure-argues.md](../../../../../docs/figures/what-each-figure-argues.md)
+[paper/iclr/what-each-figure-argues.md](../../../../../paper/iclr/what-each-figure-argues.md)
 says what each figure is for: the question it answers, what would change if the
 answer came out the other way, what is plotted on which axes, what the caption may
 not claim, and a paste-ready prompt for going deeper on the maths behind it. Read
@@ -104,7 +104,7 @@ points at it.
       caption may not say the collapse holds uniformly. The divergence is drawn
       as the bands at their widest on the left.
 - [ ] Rewrite the F3 section of
-      [docs/figures/what-each-figure-argues.md](../../../../../docs/figures/what-each-figure-argues.md)
+      [paper/iclr/what-each-figure-argues.md](../../../../../paper/iclr/what-each-figure-argues.md)
       to the built minimal layout. It still describes decoded frames along the
       top and two named pairs in colour, neither of which the figure carries
       any more, so the doc and the file disagree until this is done.

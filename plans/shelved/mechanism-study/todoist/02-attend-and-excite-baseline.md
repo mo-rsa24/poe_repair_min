@@ -5,7 +5,7 @@
 ## Reference while you do it
 - 💻 Code artifacts: poe_repair/methods/_sampling.py (`_CrossAttnRecorder` with `keep_grad=True`)
 - 📄 Plan: plans/mechanism-study/plans/02-attend-and-excite-baseline.md
-- 📄 Spec: EXPERIMENTS.md (EXP-06), docs/results-archive/residual-diagnostics.md (commitment window)
+- 📄 Spec: EXPERIMENTS.md (EXP-06), artifacts/_quarantine/results-archive/residual-diagnostics.md (commitment window)
 
 ## Section context (paste into the Todoist section)
 **Description:** No test-time attention-optimization baseline exists in this repo yet. `_CrossAttnRecorder` already supports `keep_grad=True` (built for FOCUS's velocity correction), so the gradient path is not new — only the intervention loop is. At the commitment-window steps, compute `L = Σ_tokens max(0, 1 − max_spatial_attn(token))` on plain PoE's attention, backprop through the latent, take 1-2 gradient steps per intervention step. Fixed step count, not swept — this is a comparison baseline, not the paper's method.

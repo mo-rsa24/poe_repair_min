@@ -45,7 +45,7 @@ loader reads.
 | C3 | where the two paths separate | `refresh_20260810/fork_curve.json` |
 | C5 | does the correction push along the motion | `plausibility_climb.json` |
 | C6 | low-rank against a matched random floor | `spectrum.json` |
-| C7 | does the fitted subspace carry to unseen pairs | `docs/evidence/F6-subspace-vs-transfer/result.json` |
+| C7 | does the fitted subspace carry to unseen pairs | `artifacts/results/which-way-the-correction-points/does-the-subspace-test-predict-transfer/result.json` |
 
 C4 has no file. It is drawn as an empty slot carrying the run that fills it.
 
