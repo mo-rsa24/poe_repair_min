@@ -42,14 +42,20 @@ them better. Concretely: a scorer module, a saved evidence set, and
 `scorer_validated.json` written only when the validation gate passes.
 
 ## Definition of Done
-1. ⚠️ Scorer module built: 3-anchor read, both spaces (DINOv2, MDS/latent).
-2. ⚠️ Validated on cat×dog + wolf×husky, both spaces, evidence saved.
-3. ⚠️ `scorer_validated.json` emitted, written ONLY when the gate passes
+1. ✅ Scorer module built: 3-anchor read, both spaces (DINOv2, MDS/latent).
+   ✓ verified: `plans/01-anchors.md` and `plans/02-build-scorer.md`, every task ticked.
+2. ✅ Validated on cat×dog + wolf×husky, both spaces, evidence saved.
+   ✓ verified: `plans/03-validate-emit-contract.md`, every task ticked.
+3. ✅ `scorer_validated.json` emitted, written ONLY when the gate passes
    (cat×dog → compose AND wolf×husky → blend). This file is the cross-scope
    contract the sibling `does-the-fix-reach-unseen-pairs` scope reads as its
    precondition. If the gate fails, the file is NOT written and the scope halts.
-4. ⚠️ F1 "scorer-works" figure produced (outputs pinned beside their three
+   ✓ verified: `artifacts/results/can-we-trust-the-compose-score/compose-scorer-validation/scorer_validated.json`
+   exists on disk (retrofit sweep, 2026-08-24; path renamed from `outputs/compose_scorer/` in
+   this sweep, content untouched).
+4. ✅ F1 "scorer-works" figure produced (outputs pinned beside their three
    anchors as thumbnails, compose/blend as the point colour), via /design-figure.
+   ✓ verified: `plans/03-validate-emit-contract.md`, every task ticked.
 
 ## Sub-Scopes
 (none)
