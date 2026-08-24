@@ -1,0 +1,5 @@
+# Cross-pair seed pool: shared across all pairs in pair_pool.yaml.
+# Held-out seeds {9..12} match Plan 10's sibling-pair eval cells so the
+# caches are reusable.
+train_pool: [1, 2, 3, 4, 5, 6, 7, 8]
+held_out:   [9, 10, 11, 12]

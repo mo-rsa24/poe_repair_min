@@ -1,0 +1,14 @@
+# Cross-pair pool: 5 train pairs (one per studied group), 5 held-out
+# sibling pairs. G5 deliberately deferred — see Plan 09 + LORA_TAXONOMY_PLAN.
+train:
+  - a_dolphin__x__an_ocean_wave           # G1 representative
+  - a_dog__x__oil_painting_style          # G2 representative
+  - a_mailbox__x__a_snowfield             # G3 representative
+  - a_typewriter__x__a_cactus             # G4 representative
+  - a_cat__x__a_dog                       # G6 representative
+heldout:
+  - a_polar_bear__x__an_iceberg           # G1 sibling
+  - a_cat__x__charcoal_drawing_style      # G2 sibling
+  - a_fire_hydrant__x__a_snowfield        # G3 sibling
+  - a_drum_set__x__a_snowman              # G4 sibling
+  - a_wolf__x__a_husky                    # G6 sibling
