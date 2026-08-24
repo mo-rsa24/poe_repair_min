@@ -87,7 +87,7 @@ exact and meaningful.
 ```bash
 cd /home-mscluster/mmolefe/Playground/PhD/poe_repair_min
 PYTHONPATH=. /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python \
-  show-me/batch-shape-nondeterminism/measure.py
+  artifacts/notes/batch-shape-nondeterminism/measure.py
 ```
 
 Needs a GPU. About three minutes.

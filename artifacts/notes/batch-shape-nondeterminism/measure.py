@@ -35,7 +35,7 @@ from poe_repair.methods._sampling import (
 )
 from poe_repair.run import make_ctx
 
-OUT = Path("show-me/batch-shape-nondeterminism")
+OUT = Path("artifacts/notes/batch-shape-nondeterminism")
 PAIR, SEED, STEPS = "a_cat__x__a_dog", 9, 50
 
 
