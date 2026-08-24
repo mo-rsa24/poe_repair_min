@@ -41,7 +41,7 @@ validated instance-count scorer (see
 table fail on 8 of 8 seeds (fail-rate 1.00), including the reference pair `a_cat__x__a_dog`. Two
 pairs fail less often: `a_donkey__x__a_pony` at 6 of 8 and `a_crocodile__x__an_alligator` at 5 of
 8. A dissimilar control pair, `an_elephant__x__a_penguin`, also fails 8 of 8, so "the two concepts
-are visually different" does not predict success on its own; `EXPERIMENTS.md`'s EXP-03 registers
+are visually different" does not predict success on its own; `report/experiments-log.md`'s EXP-03 registers
 this as a pre-registered null rather than the hypothesis. 🔍
 
 **When PoE does render both concepts, the render still is not trustworthy on its own.** ✍️

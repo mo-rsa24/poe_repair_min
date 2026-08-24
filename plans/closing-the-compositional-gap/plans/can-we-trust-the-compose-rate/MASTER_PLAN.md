@@ -31,7 +31,7 @@ easier to please.
 
 ## Run kind
 Group 2, tries a new idea. It may propose experiments and may not change any claim in the
-paper. Anything it finds goes to `PARKING_LOT.md`, or becomes a proposed group-1 run (the kind
+paper. Anything it finds becomes a deferred task in this scope's own tree, or a proposed group-1 run (the kind
 that is allowed to change a claim) in a sibling scope, until the promotion criterion below is
 met.
 
@@ -157,7 +157,7 @@ Grouped by the run group each answers to. Statuses live in the review/ files.
 |---|---|---|
 | instrument-01-the-three-state-labelled-set | judgeable-pair rule, labels, coverage, the band (DoD 2-6, 8) | ⚠️ |
 
-**Idea runs: may change nothing, land in PARKING_LOT.md**
+**Idea runs: may change nothing, land as a deferred task in this scope's own tree**
 
 | Plan | What it does | Status |
 |---|---|---|

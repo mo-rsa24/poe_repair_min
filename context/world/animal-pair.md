@@ -39,7 +39,7 @@ Navigation: ⬅️ [Words this file uses](#words-this-file-uses) | 📋 [TOC](#t
 **Two animal names, joined into one prompt pair, chosen so that PoE composition reliably fails on
 them.** ✅
 
-`EXPERIMENTS.md`'s selection warning states this plainly: pairs entered the current pool "by
+`report/experiments-log.md`'s selection warning states this plainly: pairs entered the current pool "by
 failing" under plain PoE (8 seeds each, instance-count scorer). 15 of 17 pairs in
 `artifacts/results/does-the-fix-reach-unseen-pairs/fail_rate.md` fail on all 8 seeds; the two least-reliable
 failures are `a_donkey__x__a_pony` (6/8) and `a_crocodile__x__an_alligator` (5/8). ✅
@@ -47,7 +47,7 @@ failures are `a_donkey__x__a_pony` (6/8) and `a_crocodile__x__an_alligator` (5/8
 **The pool is deliberately biased toward failure, which the project's own documents flag as a
 scoping limit, not an oversight.** ✅
 
-`EXPERIMENTS.md`: "No analysis inside this pool can say what predicts PoE failure, because the
+`report/experiments-log.md`: "No analysis inside this pool can say what predicts PoE failure, because the
 pool has no successes to contrast against. Any such analysis is conditioned on the outcome." A
 follow-on experiment (EXP-02, status pending as of this build) is designed to build a second pool
 spanning both successes and failures. ✅
@@ -95,7 +95,7 @@ Navigation: ⬅️ [How it shows up in the data](#how-it-shows-up-in-the-data) |
 
 **The pair count is not settled across the repo's own documents.** ⚠️
 
-`EXPERIMENTS.md` (its axes table) says "17 in the current pool, plus a new spread set built in
+`report/experiments-log.md` (its axes table) says "17 in the current pool, plus a new spread set built in
 EXP-02" (EXP-02 status: pending). `artifacts/results/does-the-fix-reach-unseen-pairs/fail_rate.md` lists exactly 17
 pairs (1 dissimilar control, 1 reference, 15 train). `plans/retrofit-poe-repair-min.md`'s "Words
 this uses" instead names "the 20 animal pairs" as the current scope boundary, plus 7 non-animal
@@ -117,7 +117,7 @@ Navigation: ⬅️ [What people get wrong](#what-people-get-wrong) | 📋 [TOC](
 
 | What | How it was established | When |
 |---|---|---|
-| The pool is biased toward failure by construction | Read in `EXPERIMENTS.md`, "The selection warning" | 2026-08-24 |
+| The pool is biased toward failure by construction | Read in `report/experiments-log.md`, "The selection warning" | 2026-08-24 |
 | The 17-row fail-rate table | Read in `artifacts/results/does-the-fix-reach-unseen-pairs/fail_rate.md` | 2026-08-24 |
 | The butterfly control pair and the animal-pair boundary | Read in `plans/retrofit-poe-repair-min.md`, "Words this uses" | 2026-08-24 |
 | The six-group taxonomy and its representative pairs | Read in `plans/shelved/phases/09-lora-taxonomy-single-seed.md` | 2026-08-24 |

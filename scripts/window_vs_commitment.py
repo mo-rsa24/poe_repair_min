@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Does the window where the correction works move with the pair, or sit in the same place?
 
-EXP-04 of EXPERIMENTS.md, and the experiment EXP-01 promoted to decisive.
+EXP-04 of report/experiments-log.md, and the experiment EXP-01 promoted to decisive.
 
 EXP-01 measured the step where each pair's picture stops changing and found it varies from 18 to 36
 across pairs. It also found something it could not explain: every pair settles at step 18 or later,
@@ -17,7 +17,7 @@ measure is tracking the wrong event.
 No sampling. The window sweep already exists: 8 pairs x 9 windows x 4 seeds, scored by the
 instance-count scorer into window_curves.json. This reads it.
 
-The bars were written in EXPERIMENTS.md before this ran and are repeated here as constants.
+The bars were written in report/experiments-log.md before this ran and are repeated here as constants.
 
     python scripts/window_vs_commitment.py
 """
@@ -34,7 +34,7 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from poe_repair import paths
 
-# Pre-registered in EXPERIMENTS.md.
+# Pre-registered in report/experiments-log.md.
 MIN_SPAN_STEPS = 5        # "moves with the pair": best window centres must span at least this
 MIN_RHO = 0.5             # "moves with the pair": and correlate with the commitment step
 NULL_SPAN_STEPS = 2       # "does not move": all best centres inside this many steps

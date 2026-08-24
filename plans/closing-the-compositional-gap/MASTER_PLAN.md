@@ -56,7 +56,7 @@ filename's first word:
 | `hypothesis-NN-` | tests the core claim | seen to the end unless the science is wrong; a pre-registered bar in its review file |
 | `baseline-NN-` | a competitor to beat | frozen the moment it lands |
 | `figure-NN-` | draws a settled result for the paper | the caption may claim no more than its register slot's sentence |
-| `idea-NN-` | tries a new technique | names the paper it came from; result to `PARKING_LOT.md`, never to a claim |
+| `idea-NN-` | tries a new technique | names the paper it came from; result becomes a deferred task in this plan tree directly, never a claim |
 | `generalization-NN-` | other models, datasets, samplers | instances chosen before any runs; a failure bounds the claim's scope |
 | `instrument-NN-` | not a run: a tool or a choice fixed before results | judged by whether it can fail, not by what it found |
 | `gate-NN-` | not a run: a literature check before print | a `/pressure-test` verdict |
@@ -82,12 +82,12 @@ is wrong. Careful design is critical; they answer to benchmarks and faithfulness
 | `transfer/hypothesis-02-transfer-as-a-rate-over-fifteen-pairs.md` | transfer as a rate: 15 held-out points | ⚠️ |
 
 **Idea runs (`idea-*`): try new techniques to improve results.** Each one names the paper it came from.
-Results to `PARKING_LOT.md`; a striking number proposes a hypothesis run, never rewrites one.
+Results become deferred tasks in the plan tree directly; a striking number proposes a hypothesis run, never rewrites one.
 
 | Plan | Would earn | Status |
 |---|---|---|
 | `correction/idea-01-does-it-hold-for-attribute-pairs.md` | the claim widened to attribute pairs | background, not started |
-| (candidates parked with their sources) | see `PARKING_LOT.md` | |
+| (candidates parked with their sources) | see each scope's own deferred-tasks section | |
 
 **Figure runs (`figure-*`): generate paper figures from settled results only.** The caption can claim no
 more than the figure slot's sentence. The register (`paper/iclr/figures.md`) is the scoreboard.
@@ -105,7 +105,7 @@ seed.** No standing plans; a rerun lands on the existing claim's evidence tag.
 | Plan | Competitor | Status |
 |---|---|---|
 | `transfer/baseline-01-the-size-matched-control-pool.md` | the size-matched mixed pool | ⚠️ |
-| (held in reserve, trigger written down) | Attend-and-Excite; SuperDiff AND | `PARKING_LOT.md` |
+| (held in reserve, trigger written down) | Attend-and-Excite; SuperDiff AND | this plan's own deferred-tasks section |
 
 **Robustness and generalization** (groups 8 and 9): the seed spread lives inside each sweep and
 is reported in its review answers; other models and samplers are

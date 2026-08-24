@@ -5,7 +5,7 @@
 ## Reference while you do it
 - 💻 Code artifacts: poe_repair/methods/_sampling.py (`_CrossAttnRecorder`, `run_lora_residual_inject`)
 - 📄 Plan: plans/mechanism-study/plans/01-instrument-attention-capture.md
-- 📄 Spec: EXPERIMENTS.md (EXP-06)
+- 📄 Spec: report/experiments-log.md (EXP-06)
 
 ## Section context (paste into the Todoist section)
 **Description:** `_CrossAttnRecorder` already exists and already works — it captured attention for the `teacher_residual` (oracle Mono−PoE) composer. It has never been wired to `run_lora_residual_inject`, the actual LoRA deployment path. This plan adds that wiring and runs capture across cat×dog's full seed set at both λ=0 (plain PoE) and λ=1 (LoRA-corrected).

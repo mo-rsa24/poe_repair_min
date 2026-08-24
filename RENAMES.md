@@ -136,3 +136,14 @@ sitting.
 
 `scripts/build_*.py` (9 files) into `scripts/build/`, and the ~50 remaining flat `scripts/*.py`
 into experiment-named groupings: listed in the plan's rename table, not attempted this sitting.
+
+### Root files absorbed into their natural homes, this sitting
+
+| Old | New |
+|---|---|
+| `DECISION_TIMELINE.md` (repo root) | `report/decision-timeline.md` |
+| `EXPERIMENTS.md` (repo root) | `report/experiments-log.md` |
+| `RESEARCH_GUIDELINES.md` (repo root) | `context/research-guidelines.md` |
+| `PARKING_LOT.md` (repo root) | dropped: the routing practice it served (idea-runs land here) is
+  retired, not relocated — a striking result from an idea-run now becomes a row or task in the
+  plan tree directly, and the ~10 plans that pointed at it were edited to say so |

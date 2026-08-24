@@ -3,7 +3,7 @@
 > ⚠️ SUPERSEDED by [`/MASTER_PLAN.md`](../../MASTER_PLAN.md) (2026-07-21) — the
 > canonical program master now lives at the repo root, framed around the five
 > pyramid rungs (Overfit → Survive-Noise → Cross-Pair → Group-Wise → Scale)
-> with status backed by [`DECISION_TIMELINE.md`](../../DECISION_TIMELINE.md).
+> with status backed by [`report/decision-timeline.md`](../../report/decision-timeline.md).
 > (This file and its sibling phase plans were archived into `plans/shelved/phases/` on
 > 2026-07-21 when the rung-based plan files `plans/01-05` became canonical.)
 > This file is retained as the historical **phase map**: the original eight-phase
