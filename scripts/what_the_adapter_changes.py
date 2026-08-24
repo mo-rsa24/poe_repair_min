@@ -37,8 +37,9 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
-VERDICT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/"
-               "reprobe/verdict.json")
+from poe_repair import paths
+
+VERDICT = paths.resolve(paths.CONTENT_CHANGE_RELATIVE_TO_ATTENTION_CHANGE) / "verdict.json"
 FIG_DIR = Path("paper/iclr/figures")
 FIG_NAME = "content-change-relative-to-attention-change-under-lora"
 

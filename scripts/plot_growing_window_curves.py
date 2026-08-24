@@ -40,9 +40,7 @@ from poe_repair.experiments.interaction_term import window_grid as wg  # noqa: E
 from scripts.plot_dose_curves import require_validated_scorer  # noqa: E402
 
 OUT_DIR = paths.resolve(paths.WINDOW)
-DEFAULT_ROOTS = (
-    Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/window/pairs"),
-)
+DEFAULT_ROOTS = (paths.resolve(paths.WINDOW) / "pairs",)
 SCORER_CONTRACT = paths.resolve(paths.COMPOSE_SCORER_VALIDATION) / "scorer_validated.json"
 WIN_RE = re.compile(r"_w(\d+)-(\d+)")
 

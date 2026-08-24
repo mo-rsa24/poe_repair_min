@@ -86,6 +86,7 @@ CONTENT_CHANGE_RELATIVE_TO_ATTENTION_CHANGE = "outputs/interaction_term/reprobe"
 PREDICTED_CLEAN_IMAGE_PER_STEP = "outputs/interaction_term/xhat0_readback"
 DIRECTION_WALL = "outputs/interaction_term/direction_wall"
 NOISE_SLICE = "outputs/interaction_term/noise_slice"
+SEED_SIGNATURE = "outputs/interaction_term/seed_signature"
 
 # Analyses over cached trajectories. Dissolving into the question folders its sixteen
 # figures answer; the constant stays until the move so nothing dangles meanwhile.

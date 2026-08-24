@@ -82,10 +82,7 @@ from scripts.plot_dose_curves import require_validated_scorer  # noqa: E402
 from scripts.snr_collapse import iter_cells  # noqa: E402
 
 OUT_DIR = paths.resolve(paths.CACHE_ANALYSES)
-DOSE_ROOTS = (
-    Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/pairs"),
-    Path("outputs/interaction_term/dose/pairs"),
-)
+DOSE_ROOTS = (paths.resolve(paths.HOW_MUCH_CORRECTION_IS_NEEDED) / "pairs",)
 SCORER_CONTRACT = paths.resolve(paths.COMPOSE_SCORER_VALIDATION) / "scorer_validated.json"
 LAM_RE = re.compile(r"lam(\d{3})")
 

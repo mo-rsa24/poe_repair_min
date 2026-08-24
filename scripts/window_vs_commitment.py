@@ -32,14 +32,14 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from poe_repair import paths
 
 # Pre-registered in EXPERIMENTS.md.
 MIN_SPAN_STEPS = 5        # "moves with the pair": best window centres must span at least this
 MIN_RHO = 0.5             # "moves with the pair": and correlate with the commitment step
 NULL_SPAN_STEPS = 2       # "does not move": all best centres inside this many steps
 
-WINDOWS = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/window"
-               "/window_curves.json")
+WINDOWS = paths.resolve(paths.WINDOW) / "window_curves.json"
 COMMIT = Path(__file__).resolve().parent.parent / "docs/evidence/EXP01-commitment-step/result.json"
 OUT_DIR = Path(__file__).resolve().parent.parent / "docs/evidence/EXP04-window-vs-commitment"
 

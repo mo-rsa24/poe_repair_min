@@ -36,10 +36,8 @@ from poe_repair import paths
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-LABELS = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/"
-              "window_seeds/seed_breadth.json")
-IMAGE_ROOT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/"
-                  "window_seeds/pairs")
+LABELS = paths.resolve(paths.COMPOSE_RATE_IN_THE_FIRST_WINDOW_ACROSS_TWELVE_SEEDS) / "seed_breadth.json"
+IMAGE_ROOT = paths.resolve(paths.COMPOSE_RATE_IN_THE_FIRST_WINDOW_ACROSS_TWELVE_SEEDS) / "pairs"
 IMAGE_TAG = "teacher_residual_const_lam100_w0-10"
 OUT_DIR = paths.resolve(paths.CACHE_ANALYSES)
 CLIP_MODEL_ID = "openai/clip-vit-base-patch32"   # same checkpoint used elsewhere in this project

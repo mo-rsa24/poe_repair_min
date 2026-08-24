@@ -39,8 +39,7 @@ PAIR = "a_cat__x__a_dog"
 WINDOWS = ((0, 10), (10, 20), (20, 30), (30, 40), (40, 50))
 LAMBDAS = (0.5, 1.0, 1.5, 2.0)
 
-IMAGE_ROOT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/"
-                  "overcorrection_grid/pairs")
+IMAGE_ROOT = paths.resolve(paths.SAMPLES_AS_THE_WINDOW_MOVES_AND_STRENGTH_GOES_PAST_ONE) / "pairs"
 SCORER_CONTRACT = paths.resolve(paths.COMPOSE_SCORER_VALIDATION) / "scorer_validated.json"
 OUT_DIR = Path("paper/iclr/figures")
 

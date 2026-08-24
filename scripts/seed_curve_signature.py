@@ -46,10 +46,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from poe_repair.experiments.interaction_term.cache import load_cell  # noqa: E402
 from scripts.snr_collapse import curve_for  # noqa: E402
+from poe_repair import paths
 
-LABELS = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/"
-              "window_seeds/seed_breadth.json")
-OUT_DIR = Path("outputs/interaction_term/seed_signature")
+LABELS = paths.resolve(paths.COMPOSE_RATE_IN_THE_FIRST_WINDOW_ACROSS_TWELVE_SEEDS) / "seed_breadth.json"
+OUT_DIR = paths.resolve(paths.SEED_SIGNATURE)
 
 
 def features(pair: str, seed: int) -> dict[str, np.ndarray]:

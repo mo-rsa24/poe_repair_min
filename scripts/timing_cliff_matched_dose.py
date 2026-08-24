@@ -36,8 +36,7 @@ import numpy as np
 
 ROOT = paths.resolve(paths.SAME_TOTAL_CORRECTION_DIFFERENT_WINDOW)
 SCORES = ROOT / "matched_scores.json"
-WINDOW_CURVES = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/"
-                     "window/window_curves.json")
+WINDOW_CURVES = paths.resolve(paths.WINDOW) / "window_curves.json"
 FIG_DIR = Path("paper/iclr/figures")
 FIG_NAME = "compose-rate-as-the-window-moves-at-matched-total"
 

@@ -32,8 +32,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 OUT_DIR = paths.resolve(paths.CACHE_ANALYSES)
 DEFAULT_ROOTS = (
-    Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/pairs"),
-    Path("outputs/residual_diagnostics/existence/pairs"),
+    paths.resolve(paths.HOW_MUCH_CORRECTION_IS_NEEDED) / "pairs",
+    paths.resolve(paths.RESIDUAL_BETWEEN_MONO_AND_POE) / "existence" / "pairs",
+    # artifacts/diagnostics/residual_diagnostics/existence/pairs never existed on
+    # either filesystem (checked 2026-08-24); kept as a literal since no family
+    # constant maps to it and it is a defensive extra candidate, not load-bearing.
     Path("artifacts/diagnostics/residual_diagnostics/existence/pairs"),
 )
 POE_DIR = "teacher_residual_const_lam000"

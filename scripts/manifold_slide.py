@@ -67,10 +67,7 @@ from poe_repair.experiments.interaction_term.cache import (  # noqa: E402
 )
 
 OUT_DIR = paths.resolve(paths.CACHE_ANALYSES)
-DEFAULT_ROOTS = (
-    Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/pairs"),
-    Path("outputs/interaction_term/dose/pairs"),
-)
+DEFAULT_ROOTS = (paths.resolve(paths.HOW_MUCH_CORRECTION_IS_NEEDED) / "pairs",)
 RUN_RE = re.compile(r"^teacher_residual_const_lam(\d{3})(?:_(\w+))?$")
 ORACLE = "oracle"
 

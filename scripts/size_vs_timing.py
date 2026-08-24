@@ -44,9 +44,9 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from snr_collapse import curve_for  # noqa: E402  the single definition of the measure
 from correction_size_vs_run_position import smooth          # noqa: E402  the same smoothing F3 draws with
+from poe_repair import paths
 
-WINDOW_CURVES = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/"
-                     "window/window_curves.json")
+WINDOW_CURVES = paths.resolve(paths.WINDOW) / "window_curves.json"
 FIG_DIR = Path("paper/iclr/figures")
 FIG_NAME = "correction-size-per-step-beside-outcome-per-window"
 
