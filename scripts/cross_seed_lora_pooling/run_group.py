@@ -15,8 +15,8 @@ Defaults to running everything except Task C (per-seed ceiling), which
 is its own multi-GPU run.
 
 All artefacts land under
-``outputs/cross_seed_lora_pooling/<pair_slug>/`` so pairs don't
-collide.
+``artifacts/results/can-lora-learn-a-residual-that-corrects-poe/held-out-seeds-index/<pair_slug>/``
+so pairs don't collide.
 
 Examples
 --------
@@ -42,12 +42,13 @@ from pathlib import Path
 from typing import Sequence
 
 from scripts.build_group_cache import DEFERRED_GROUPS, GROUP_REGISTRY, GroupSpec
+from poe_repair import paths
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PY = os.environ.get("PY", sys.executable)
 
 KSET_DEFAULT = ["1a", "1b", "4", "8"]
-DEFAULT_OUTPUT_BASE = REPO_ROOT / "outputs" / "cross_seed_lora_pooling"
+DEFAULT_OUTPUT_BASE = paths.resolve(paths.HELD_OUT_SEEDS_INDEX)
 
 
 def _pair_slug(spec: GroupSpec) -> str:

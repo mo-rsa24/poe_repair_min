@@ -102,7 +102,7 @@ def build_argparser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(prog="eval_crossbar_wandb")
     ap.add_argument("--run-dir", required=True,
                     help="root of the trained pooled-LoRA run "
-                         "(e.g. outputs/cross_pair_lora_pooling/within_group/g6/main)")
+                         "(e.g. artifacts/rung3-group-wise/cross_pair/within_group/g6/main)")
     ap.add_argument("--pair-pool", required=True)
     ap.add_argument("--seed-pool-path", required=True)
     ap.add_argument("--pair-prompts", required=True)

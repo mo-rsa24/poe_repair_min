@@ -1,6 +1,6 @@
 """Single source of truth for the cross-seed pool split.
 
-Loads ``outputs/cross_seed_lora_pooling/seed_pool.yaml`` and asserts no
+Loads ``artifacts/results/can-lora-learn-a-residual-that-corrects-poe/held-out-seeds-index/seed_pool.yaml`` and asserts no
 overlap between train and held-out at load time. Every script that
 trains or evaluates a pooled LoRA must go through ``load_seed_pool``
 so the same split is enforced uniformly.
@@ -14,11 +14,11 @@ from pathlib import Path
 
 import yaml
 
+from poe_repair import paths
+
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
-DEFAULT_POOL_PATH = (
-    REPO_ROOT / "outputs" / "cross_seed_lora_pooling" / "seed_pool.yaml"
-)
+DEFAULT_POOL_PATH = paths.resolve(paths.HELD_OUT_SEEDS_INDEX) / "seed_pool.yaml"
 
 
 @dataclass(frozen=True)

@@ -114,6 +114,15 @@ COMPOSE_SCORER_VALIDATION = "artifacts/results/can-we-trust-the-compose-score/co
 # carried the axis, and the number carried nothing.
 ONE_PAIR_ONE_SEED = "artifacts/results/can-lora-learn-a-residual-that-corrects-poe/one-pair-one-seed"
 
+# An alias farm, not data of its own: <pair>/seed_42/results symlinks to wherever
+# that pair's real run directory actually is, since the name of that directory is
+# not uniform (run__local for the one pair sampled on this machine, run__wandb-<id>
+# for the ones trained under wandb tracking). Code that scans across pairs reads
+# through here so it never needs to know which shape a given pair used. Was
+# outputs/lora/ before 2026-08-24; moved because outputs/ no longer exists at the
+# repo root, not because what it does changed.
+RESULTS_BY_PAIR = "artifacts/results/can-lora-learn-a-residual-that-corrects-poe/results-by-pair"
+
 # Not renamed on 2026-08-24 despite the walk's verdict: the mount holds a second,
 # disjoint copy of this family (a four-seed pooled-run set the repository's copy does
 # not have) under the *old* name, and the safety floor for that sitting forbade
@@ -124,12 +133,19 @@ ONE_PAIR_ONE_SEED = "artifacts/results/can-lora-learn-a-residual-that-corrects-p
 # rung2-survive-noise` to match, then this becomes
 # "artifacts/results/can-lora-learn-a-residual-that-corrects-poe/held-out-seeds".
 HELD_OUT_SEEDS = "artifacts/rung2-survive-noise/cross_seed"
-HELD_OUT_SEEDS_INDEX = "outputs/cross_seed_lora_pooling"
+# Moved 2026-08-24 out of outputs/cross_seed_lora_pooling/, which no longer exists.
+# Its symlinks are absolute and point into HELD_OUT_SEEDS above, so the move did not
+# touch what it indexes.
+HELD_OUT_SEEDS_INDEX = "artifacts/results/can-lora-learn-a-residual-that-corrects-poe/held-out-seeds-index"
 
 # Cut by group, so out of scope for the animal-pair work and left where they are.
 WITHIN_GROUP = "artifacts/rung3-group-wise/cross_pair/within_group"
 ALL_GROUPS = "artifacts/rung4-scale/cross_pair/all_groups"
-GROUP_POOL_CONFIGS = "outputs/cross_pair_lora_pooling"
+# The three pool configs (pair_pool.yaml, seed_pool.yaml, pair_prompts.yaml) that
+# select which pairs and seeds a group-cut run trains on. Moved 2026-08-24 out of
+# outputs/cross_pair_lora_pooling/, which no longer exists; the training runs
+# themselves stay at WITHIN_GROUP and ALL_GROUPS, cut by group, untouched.
+GROUP_POOL_CONFIGS = "artifacts/_shared/cross_pair_pool_configs"
 
 # Caches
 TRAINING_CACHE = "artifacts/caches/training_cache"

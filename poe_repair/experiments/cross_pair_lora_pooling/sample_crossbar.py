@@ -16,11 +16,11 @@ Quadrant policy (matches Plan 15 §C1):
 Usage::
 
     python -m poe_repair.experiments.cross_pair_lora_pooling.sample_crossbar \\
-        --checkpoint outputs/cross_pair_lora_pooling/all_groups/main/checkpoints/lora_step_<final>.pt \\
-        --pair-pool outputs/cross_pair_lora_pooling/pair_pool.yaml \\
-        --seed-pool-path outputs/cross_pair_lora_pooling/seed_pool.yaml \\
-        --pair-prompts outputs/cross_pair_lora_pooling/pair_prompts.yaml \\
-        --out-dir outputs/cross_pair_lora_pooling/all_groups/main/samples
+        --checkpoint artifacts/rung4-scale/cross_pair/all_groups/main/checkpoints/lora_step_<final>.pt \\
+        --pair-pool artifacts/_shared/cross_pair_pool_configs/pair_pool.yaml \\
+        --seed-pool-path artifacts/_shared/cross_pair_pool_configs/seed_pool.yaml \\
+        --pair-prompts artifacts/_shared/cross_pair_pool_configs/pair_prompts.yaml \\
+        --out-dir artifacts/rung4-scale/cross_pair/all_groups/main/samples
 """
 
 from __future__ import annotations

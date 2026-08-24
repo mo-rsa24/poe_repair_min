@@ -36,7 +36,7 @@ Usage (single process — models load once):
         --seeds 1,2,3,4,5,6,7,8,9,10,11,12 \
         --conditions mono,poe_no_lora,poe_plus_lora \
         --lambdas 0.00,0.50,1.00 \
-        --lora-checkpoint outputs/cross_seed_lora_pooling/task_b_learning_curve/k01_pick1__ep1600/checkpoints/lora_step_080000.pt
+        --lora-checkpoint artifacts/results/can-lora-learn-a-residual-that-corrects-poe/held-out-seeds-index/task_b_learning_curve/k01_pick1__ep1600/checkpoints/lora_step_080000.pt
 
 Add ``--conditions solo_a,solo_b`` if those bands are wanted (not
 required by plan-15 Claim A).

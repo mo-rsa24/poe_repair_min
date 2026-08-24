@@ -11,8 +11,8 @@ Optionally records per-step guided ε in the LoRA-on path (Task D's
 Usage::
 
     python -m poe_repair.experiments.held_out_seeds.sample_heldout \
-        --checkpoint outputs/cross_seed_lora_pooling/.../lora_step_010000.pt \
-        --out-dir   outputs/cross_seed_lora_pooling/.../samples/heldout \
+        --checkpoint artifacts/results/can-lora-learn-a-residual-that-corrects-poe/held-out-seeds-index/.../lora_step_010000.pt \
+        --out-dir   artifacts/results/can-lora-learn-a-residual-that-corrects-poe/held-out-seeds-index/.../samples/heldout \
         [--seeds 9,10,11,12] [--record-eps] [--lambda 1.0]
 """
 

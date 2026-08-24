@@ -18,7 +18,7 @@ and per-seed metadata.
 Usage::
 
     python -m poe_repair.experiments.held_out_seeds.step0_prescreen \
-        --out-dir outputs/cross_seed_lora_pooling/step0_prescreen
+        --out-dir artifacts/results/can-lora-learn-a-residual-that-corrects-poe/held-out-seeds-index/step0_prescreen
 """
 
 from __future__ import annotations
@@ -63,7 +63,7 @@ log = logging.getLogger(__name__)
 def build_argparser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(prog="step0_prescreen")
     ap.add_argument("--out-dir", default=None,
-                    help="default: outputs/cross_seed_lora_pooling/step0_prescreen")
+                    help="default: artifacts/results/can-lora-learn-a-residual-that-corrects-poe/held-out-seeds-index/step0_prescreen")
     ap.add_argument("--prompt-a", default="a cat")
     ap.add_argument("--prompt-b", default="a dog")
     ap.add_argument("--joint-prompt", default="a cat and a dog")

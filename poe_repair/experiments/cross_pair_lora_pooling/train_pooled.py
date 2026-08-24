@@ -12,11 +12,11 @@ sizing). See plan-15 §B2 for the differences spelled out.
 Usage::
 
     python -m poe_repair.experiments.cross_pair_lora_pooling.train_pooled \\
-        --pair-pool outputs/cross_pair_lora_pooling/pair_pool.yaml \\
-        --seed-pool-path outputs/cross_pair_lora_pooling/seed_pool.yaml \\
-        --pair-prompts outputs/cross_pair_lora_pooling/pair_prompts.yaml \\
+        --pair-pool artifacts/_shared/cross_pair_pool_configs/pair_pool.yaml \\
+        --seed-pool-path artifacts/_shared/cross_pair_pool_configs/seed_pool.yaml \\
+        --pair-prompts artifacts/_shared/cross_pair_pool_configs/pair_prompts.yaml \\
         --total-epochs 2400 --epoch-size 50 \\
-        --output-root outputs/cross_pair_lora_pooling/all_groups \\
+        --output-root artifacts/rung4-scale/cross_pair/all_groups \\
         --run-id main
 """
 
@@ -109,11 +109,11 @@ def _load_anchors_by_pair(
 def build_argparser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(prog="train_pooled_cross_pair")
     ap.add_argument("--pair-pool", required=True,
-                    help="path to outputs/cross_pair_lora_pooling/pair_pool.yaml")
+                    help="path to artifacts/_shared/cross_pair_pool_configs/pair_pool.yaml")
     ap.add_argument("--seed-pool-path", required=True,
-                    help="path to outputs/cross_pair_lora_pooling/seed_pool.yaml")
+                    help="path to artifacts/_shared/cross_pair_pool_configs/seed_pool.yaml")
     ap.add_argument("--pair-prompts", required=True,
-                    help="path to outputs/cross_pair_lora_pooling/pair_prompts.yaml")
+                    help="path to artifacts/_shared/cross_pair_pool_configs/pair_prompts.yaml")
     ap.add_argument("--lora-rank", type=int, default=8)
     ap.add_argument("--lora-alpha", type=int, default=8)
     ap.add_argument("--lr", type=float, default=1e-4)
