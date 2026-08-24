@@ -38,6 +38,6 @@ This scope keeps no order of its own. The single flat order across every scope
 and level is the `## Running order` table in the repo root `MASTER_PLAN.md`.
 
 ## Environment Context
-See `docs/ENVIRONMENT.md` for this project's environment/architecture facts.
+See `environment/00-INDEX.md` for this project's environment/architecture facts.
 Reading needs no GPU and no queue, so nothing in this scope is submitted as a
 job. Network access is needed for paper fetches, which the compute nodes have.

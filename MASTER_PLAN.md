@@ -186,10 +186,15 @@ files are archived under `plans/shelved/phases/` and referenced from each rung p
 - ⚠️ rungs/06-supervisor-briefing.md — communicate current state + name next moves, plain-speak'd (delivery, not a rung)
 
 ## Environment Context
-See `docs/ENVIRONMENT.md` for this project's environment/architecture facts.
+See `environment/00-INDEX.md` for this project's environment/architecture facts.
 Read before drafting or checking any plan in any scope. `CLAUDE.md` at the repo
 root holds the rules for how runs are classified, recorded, and allowed to move
 a plan.
+
+## Context
+What this project is about in the real world lives in `context/`. Start at
+`context/00-INDEX.md`. A plan that names a column, a code, an ID or a real-world object (`r_t`,
+`arm`, `pair_slug`, a chimera, an animal pair) links its entry there rather than explaining it.
 
 ## 🖥️ Viewing results (web apps)
 

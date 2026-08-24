@@ -27,7 +27,7 @@ and the Cranberry-Lemon authors are gone; the figure-path rule is written into
 `paper/iclr/README.md`.
 
 ## Environment Facts This Plan Depends On
-See `docs/ENVIRONMENT.md`, "Paper: where the LaTeX lives and how it is built",
+See `environment/paper.md`, "Paper: where the LaTeX lives and how it is built",
 for the full picture. What this plan depends on specifically:
 - No system LaTeX: every recipe except `tectonic` fails, including LaTeX
   Workshop's default (`latexmk`). This plan's tasks assume the tectonic path.

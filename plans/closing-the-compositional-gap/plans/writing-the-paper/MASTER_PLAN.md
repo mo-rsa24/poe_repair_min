@@ -111,7 +111,7 @@ a narrower claim, decided at the phase-3 boundary rather than at the deadline.
 
 
 ## Environment Context
-See `docs/ENVIRONMENT.md` for this project's environment/architecture facts.
+See `environment/00-INDEX.md` for this project's environment/architecture facts.
 Read before drafting or checking any plan in this scope.
 
 Scope-specific: no system LaTeX exists on the cluster nodes (`pdflatex`,

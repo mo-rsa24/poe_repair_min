@@ -27,7 +27,7 @@ a named placeholder that says which run closes it.
 
 ## Environment Facts This Plan Depends On
 - Sections go in `paper/iclr/iclr2027_conference.tex`; build with
-  Ctrl+Shift+P → Build with recipe → `tectonic`. See `docs/ENVIRONMENT.md`,
+  Ctrl+Shift+P → Build with recipe → `tectonic`. See `environment/paper.md`,
   "Paper: where the LaTeX lives and how it is built".
 - What exists: the pooled held-out read (out_out 0.96 at step 60k) from
   `does-the-fix-reach-unseen-pairs` plan 03a, and the negative controls already

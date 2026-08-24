@@ -288,7 +288,7 @@ slides, no pairs). The two `window` copies (16M against 6.0G, same name). `scene
 deletion is blocked on reading the loader.
 
 **Three absent documents** the sweep will build once the walk compiles: `context/`, `runbook/`, and
-`environment/` as a folder rather than the single `docs/ENVIRONMENT.md`.
+`environment/` as a folder rather than the single environment file that preceded it.
 
 ---
 

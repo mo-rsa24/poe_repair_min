@@ -43,5 +43,5 @@ figure explorable by hand, at zero additional generation cost.
 (to be populated)
 
 ## Environment Context
-See `docs/ENVIRONMENT.md` for this project's environment/architecture facts.
+See `environment/00-INDEX.md` for this project's environment/architecture facts.
 Read before drafting or checking any plan in this scope.

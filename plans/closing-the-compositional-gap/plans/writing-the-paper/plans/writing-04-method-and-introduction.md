@@ -28,7 +28,7 @@ Both sections present in the `.tex` as real prose, building to a PDF.
 - All prose goes in `paper/iclr/iclr2027_conference.tex`. The `.sty`, `.bst`,
   and `natbib`/`fancyhdr` files are the ICLR distribution and are not edited.
   Check `math_commands.tex` before defining a macro; it likely exists already.
-  See `docs/ENVIRONMENT.md`, "Paper: where the LaTeX lives and how it is built".
+  See `environment/paper.md`, "Paper: where the LaTeX lives and how it is built".
 - Build to check the prose renders: Ctrl+Shift+P → Build with recipe →
   `tectonic` (the default recipe fails, no `latexmk` here), or run tectonic in
   the terminal.

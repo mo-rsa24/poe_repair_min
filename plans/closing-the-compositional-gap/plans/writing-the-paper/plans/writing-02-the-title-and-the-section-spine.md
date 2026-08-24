@@ -28,7 +28,7 @@ the single claim it carries, in reading order.
 - The title is the `\title{...}` line in `paper/iclr/iclr2027_conference.tex`
   (currently the stock "Formatting Instructions for ICLR 2027"). SPINE.md is a
   new file in `paper/iclr/`, prose only, not part of the build. See
-  `docs/ENVIRONMENT.md`, "Paper: where the LaTeX lives and how it is built".
+  `environment/paper.md`, "Paper: where the LaTeX lives and how it is built".
 
 ## Tasks
 - [ ] write the one-sentence claim of the paper, the sentence a reader should
