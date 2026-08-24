@@ -29,6 +29,7 @@ from pathlib import Path
 import numpy as np
 import torch
 
+from poe_repair import paths
 from poe_repair.experiments.compose_scorer_validation.scorer import (
     _Embedders, score_output, SPACES, space_score_to_dict,
 )
@@ -39,7 +40,7 @@ REPO = Path(__file__).resolve().parents[3]
 ANCHOR_ROOT = REPO / "outputs" / "compose_scorer" / "anchors"
 OUT_DIR = REPO / "outputs" / "compose_scorer"
 
-ART = REPO / "artifacts" / "rung2-survive-noise" / "cross_seed" / "a_cat__x__a_dog"
+ART = paths.resolve(paths.HELD_OUT_SEEDS) / "a_cat__x__a_dog"
 CATDOG_COMPOSE_DIR = OUT_DIR / "validation_outputs" / "a_cat__x__a_dog_compose"
 CATDOG_POE = ART / "trajectory_diagram" / "seed_42" / "poe.png"
 WOLFHUSKY_DIR = ART / "heldout_pair" / "a_wolf__x__a_husky"

@@ -33,6 +33,9 @@ from dataclasses import dataclass, asdict
 from pathlib import Path
 from typing import Iterable
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from poe_repair import paths as poe_paths
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 # ---------------------------------------------------------------------------
@@ -48,7 +51,7 @@ DEFAULT_CONDITIONS = ("mono", "solo_a", "solo_b", "poe_no_lora", "poe_plus_lora"
 # Expected cache locations. These are *candidate* paths — the script
 # checks all of them and reports which (if any) exist.
 CROSS_SEED_ROOT = REPO_ROOT / "outputs" / "cross_seed_lora_pooling" / DEFAULT_PAIR_SLUG
-SEED42_LORA_ROOT = REPO_ROOT / "artifacts" / "rung1-overfit" / "lora" / "a_cat__x__a_dog" / "seed_42" / "run__local"
+SEED42_LORA_ROOT = poe_paths.resolve(poe_paths.ONE_PAIR_ONE_SEED) / "a_cat__x__a_dog" / "seed_42" / "run__local"
 
 # The seed-42 single-seed LoRA cached mds bank — informational only.
 SEED42_MDS_STATIC = SEED42_LORA_ROOT / "mds_cache" / "static"
