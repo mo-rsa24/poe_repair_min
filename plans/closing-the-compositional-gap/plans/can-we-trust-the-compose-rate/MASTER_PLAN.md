@@ -175,7 +175,7 @@ See `docs/ENVIRONMENT.md`. Read before drafting or checking any plan in this sco
 scope leans on: the GPU is shared and often full, so every detector pass needs a working
 `--device cpu` route; large artifacts go to `/datasets` only; thresholds live as named constants
 in source, following `MIN_BOX_FRACTION` in
-`poe_repair/experiments/compose_scorer/detection_scorer.py`.
+`poe_repair/experiments/compose_scorer_validation/detection_scorer.py`.
 
 ## Glossary
 Terms only this scope uses. Shared vocabulary is in the root `MASTER_PLAN.md`.

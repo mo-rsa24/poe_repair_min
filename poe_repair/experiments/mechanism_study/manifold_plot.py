@@ -26,7 +26,7 @@ from pathlib import Path
 import numpy as np
 import torch
 
-from poe_repair.experiments.residual_diagnostics.metrics import clip_image_embed
+from poe_repair.experiments.residual_between_mono_and_poe.metrics import clip_image_embed
 
 ATTN = Path("/datasets/mmolefe/poe_repair_min/outputs/attn_mechanism")
 REF = ATTN / "manifold" / "references"

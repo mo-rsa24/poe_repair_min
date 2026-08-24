@@ -15,11 +15,11 @@ from pathlib import Path
 import torch
 from PIL import Image, ImageDraw, ImageFont
 
-from poe_repair.experiments.cross_seed_lora_pooling.task_d_bridge import (
+from poe_repair.experiments.held_out_seeds.task_d_bridge import (
     _alpha_fit,
     _cos,
 )
-from poe_repair.experiments.lora.probe import load_pinned_init_latents
+from poe_repair.experiments.one_pair_one_seed.probe import load_pinned_init_latents
 from poe_repair.methods._sampling import (
     run_lora_residual_inject,
     write_decoded_image,

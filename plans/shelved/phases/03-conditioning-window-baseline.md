@@ -34,8 +34,8 @@ the LoRA is closing a 40% gap or a 4% gap. Concretely we want:
 - Sampler: `poe_repair/methods/_sampling.py::run_cfg_masked` (length-N
   mask; on-steps run the standard 2-branch CFG forward, off-steps run
   a single `ε_∅` forward, sharing scheduler state).
-- Schedule grammar: `poe_repair/experiments/conditioning_window/schedules.py::STANDARD_SUITE`.
-- Driver: `poe_repair/experiments/conditioning_window/__main__.py`.
+- Schedule grammar: `poe_repair/experiments/cfg_window_without_lora/schedules.py::STANDARD_SUITE`.
+- Driver: `poe_repair/experiments/cfg_window_without_lora/__main__.py`.
 - Inspector route: `scripts/lora_inspector.py:/conditioning_window`
   (dual-handle slider + 50-cell mask strip).
 
@@ -49,7 +49,7 @@ export CUDA_VISIBLE_DEVICES=1
 ### 1. Sanity (~30 s)
 
 ```bash
-$PY -m poe_repair.experiments.conditioning_window --sanity-only
+$PY -m poe_repair.experiments.cfg_window_without_lora --sanity-only
 ```
 
 Two checks at `≤ 1e-5` max-abs latent delta:
@@ -63,7 +63,7 @@ Non-zero exit if either fails. Writes
 ### 2. Smoke (~90 s, two schedules)
 
 ```bash
-$PY -m poe_repair.experiments.conditioning_window --smoke
+$PY -m poe_repair.experiments.cfg_window_without_lora --smoke
 ```
 
 Renders `prefix_k10` and `window_10_20` — confirms sampling and figure
@@ -72,7 +72,7 @@ writing both work.
 ### 3. Full sweep (~10–15 min, 59 schedules + sanity)
 
 ```bash
-$PY -m poe_repair.experiments.conditioning_window
+$PY -m poe_repair.experiments.cfg_window_without_lora
 ```
 
 Renders `STANDARD_SUITE`, runs the sanity checks, builds the inspector

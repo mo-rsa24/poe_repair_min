@@ -179,14 +179,14 @@ of hiding in someone's shell history.
 collection code, so it takes only this sweep's cells. `--all-seeds` gives the old behaviour back,
 and the run prints which seeds it used either way.
 
-**Fault two:** `poe_repair/experiments/compose_scorer/detection_scorer.py` carries
+**Fault two:** `poe_repair/experiments/compose_scorer_validation/detection_scorer.py` carries
 `MIN_BOX_FRACTION = 0.25`. A detection must span at least a quarter of the image's longer side to
 count as an animal, which is the same line `dose_strip.py` already draws when it colours a box
 yellow or magenta, so the diagnostic picture and the scorer agree by construction. `conf` stays at
 0.30, because the picture in step 2 shows confidence is not the lever.
 
 ```bash
-grep -n "MIN_BOX_FRACTION\|conf\|nms_iou" poe_repair/experiments/compose_scorer/detection_scorer.py
+grep -n "MIN_BOX_FRACTION\|conf\|nms_iou" poe_repair/experiments/compose_scorer_validation/detection_scorer.py
 grep -n "SWEEP_SEEDS" scripts/plot_dose_curves.py
 ```
 
@@ -197,7 +197,7 @@ manufacture the result the paper claims. Check it on known cells before spending
 $PY - <<'EOF'
 import torch
 from pathlib import Path
-from poe_repair.experiments.compose_scorer.detection_scorer import count_instances
+from poe_repair.experiments.compose_scorer_validation.detection_scorer import count_instances
 R = Path('outputs/interaction_term/dose/pairs/an_elephant__x__a_penguin/seed_10')
 for name, p in [("random lam1.00", R/'teacher_residual_const_lam100_random/teacher_residual_const_lam100_random.png'),
                 ("oracle lam1.00", R/'teacher_residual_const_lam100/teacher_residual_const_lam100.png')]:

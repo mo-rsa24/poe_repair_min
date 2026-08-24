@@ -117,7 +117,7 @@ def main() -> int:
         if not contract.get("pass"):
             print("scorer not validated; refusing to annotate", file=sys.stderr)
             return 2
-        from poe_repair.experiments.compose_scorer.detection_scorer import (
+        from poe_repair.experiments.compose_scorer_validation.detection_scorer import (
             count_instances,
         )
         import torch

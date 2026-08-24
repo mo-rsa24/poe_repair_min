@@ -55,7 +55,7 @@ export CUDA_VISIBLE_DEVICES=1
 ### Prerequisite — residual-existence cache (from Phase 2)
 
 ``bash
-$PY -m poe_repair.experiments.residual_diagnostics.existence \
+$PY -m poe_repair.experiments.residual_between_mono_and_poe.existence \
     --pair "a cat|a dog" --seed 42
 ``
 

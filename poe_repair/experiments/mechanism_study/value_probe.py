@@ -22,8 +22,8 @@ from pathlib import Path
 
 import torch
 
-from poe_repair.experiments.lora.main import encode_all_prompts
-from poe_repair.experiments.lora.probe import load_pinned_init_latents
+from poe_repair.experiments.one_pair_one_seed.main import encode_all_prompts
+from poe_repair.experiments.one_pair_one_seed.probe import load_pinned_init_latents
 from poe_repair.experiments.mechanism_study.capture_attention import _maybe_attach_lora
 from poe_repair.experiments.mechanism_study.token_map import (
     token_map_for_pair, verify_token_map,

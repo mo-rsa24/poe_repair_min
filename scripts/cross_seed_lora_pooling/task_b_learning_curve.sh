@@ -32,7 +32,7 @@ train_and_sample () {
     local xflag=""
     [ "$XFORMERS" = "1" ] && xflag="--xformers"
     CUDA_VISIBLE_DEVICES=$CUDA "$PY" -m \
-        poe_repair.experiments.cross_seed_lora_pooling.train_pooled \
+        poe_repair.experiments.held_out_seeds.train_pooled \
         --k "$k" --total-epochs "$EPOCHS" \
         --output-root "$OUT_ROOT" \
         --run-id "k${label}__ep${EPOCHS}" \
@@ -47,7 +47,7 @@ train_and_sample () {
     ckpt=$(jq -r .path "$run_dir/checkpoints/latest.json")
     echo "==> sampling held-out seeds with $ckpt"
     CUDA_VISIBLE_DEVICES=$CUDA "$PY" -m \
-        poe_repair.experiments.cross_seed_lora_pooling.sample_heldout \
+        poe_repair.experiments.held_out_seeds.sample_heldout \
         --checkpoint "$ckpt" \
         --out-dir "$run_dir/samples/heldout" \
         --record-eps
@@ -65,4 +65,4 @@ for tag in $KSET; do
 done
 
 echo "==> Task B complete. Build contact sheet:"
-echo "   $PY -m poe_repair.experiments.cross_seed_lora_pooling.contact_sheet --task B"
+echo "   $PY -m poe_repair.experiments.held_out_seeds.contact_sheet --task B"

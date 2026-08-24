@@ -27,9 +27,9 @@ What "works" means here is specific:
 
 ## Code
 
-- LoRA attachment: `poe_repair/experiments/lora/trainer.py::attach_lora`.
+- LoRA attachment: `poe_repair/experiments/one_pair_one_seed/trainer.py::attach_lora`.
   Targets `attn2.{to_q, to_k, to_v}` on the UNet.
-- Training loop: `poe_repair/experiments/lora/trainer.py::train_epoch`.
+- Training loop: `poe_repair/experiments/one_pair_one_seed/trainer.py::train_epoch`.
   Target per step is `r_t = guided(ε_J) − guided(ε_PoE)` from cache;
   loss is MSE between LoRA-corrected `ε̃_PoE_lora` and `ε̃_J_cached`.
 - Inference sampler:
@@ -41,8 +41,8 @@ What "works" means here is specific:
 - Masked variant (for the CFG-window × LoRA inspector):
   `run_lora_residual_inject_masked` in the same file, with a
   `cfg_mask` and a `composition_mode` of `with_prompt` or `always`.
-- Probe + figures: `poe_repair/experiments/lora/probe.py`,
-  `poe_repair/experiments/lora/figures.py`.
+- Probe + figures: `poe_repair/experiments/one_pair_one_seed/probe.py`,
+  `poe_repair/experiments/one_pair_one_seed/figures.py`.
 - Inspector: `scripts/lora_inspector.py` (routes `/`,
   `/conditioning_window`, `/conditioning_window_lora`). The residual
   tab `/` carries the image row (PoE / PoE+λ·r / Mono) and, directly
@@ -71,7 +71,7 @@ Consolidated artefact on disk:
 `checkpoints/lora_step_062500.pt`.
 
 The companion CFG-window-with-LoRA experiment lives at
-`poe_repair/experiments/conditioning_window_lora/` and writes to
+`poe_repair/experiments/cfg_window_with_lora/` and writes to
 `outputs/conditioning_window_lora/a_cat__x__a_dog/seed_42/`. See
 [conditioning-window-lora.md](../../../.claude/plans/conditioning-window-lora.md) for the
 detailed sampler grammar and inspector wiring — this plan only enumerates
@@ -122,7 +122,7 @@ trajectories and panels unless `--overwrite` is passed.
 Or a programmatic startup probe with no training:
 
 ```bash
-$PY -m poe_repair.experiments.lora \
+$PY -m poe_repair.experiments.one_pair_one_seed \
     --resume-from outputs/lora/a_cat__x__a_dog/seed_42/results/checkpoints/lora_step_062500.pt \
     --total-epochs 0
 ```
@@ -130,7 +130,7 @@ $PY -m poe_repair.experiments.lora \
 ### Re-train from scratch
 
 ```bash
-$PY -m poe_repair.experiments.lora \
+$PY -m poe_repair.experiments.one_pair_one_seed \
     --pair a_cat__x__a_dog --seed 42 --split heldout \
     --total-epochs 200 --probe-every-epochs 50 \
     --lr 1e-4 --lora-rank 8
@@ -142,7 +142,7 @@ with decoded PNGs and `delta_overlays/step_NN.pt` for the inspector.
 ### CFG-mask × LoRA companion sweep
 
 ```bash
-$PY -m poe_repair.experiments.conditioning_window_lora \
+$PY -m poe_repair.experiments.cfg_window_with_lora \
     --lora-ckpts outputs/lora/a_cat__x__a_dog/seed_42/results/checkpoints/lora_step_062500.pt \
     --lambda-values 0.0,0.5,1.0 \
     --modes with_prompt,always

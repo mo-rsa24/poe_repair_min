@@ -1,6 +1,6 @@
 """Stage 2 — distance tables, force stats, method comparison.
 
-Reuses ``poe_repair.experiments.residual_diagnostics.metrics`` for image / latent
+Reuses ``poe_repair.experiments.residual_between_mono_and_poe.metrics`` for image / latent
 distances; adds idea1-specific helpers for force capacity, force-norm
 stats, and a cross-method comparison table that overlays this
 experiment's ``d_Mono`` curves with veracity's residual-Δ curves.
@@ -16,7 +16,7 @@ import torch
 
 from poe_repair.composers.poe_internal import method_name_for
 from poe_repair.experiments.internal_force_failure.sweep import ALPHA_GRID, BARRIER_TARGET
-from poe_repair.experiments.residual_diagnostics import metrics as VM
+from poe_repair.experiments.residual_between_mono_and_poe import metrics as VM
 
 
 # ---------------------------------------------------------------------------

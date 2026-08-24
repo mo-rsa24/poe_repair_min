@@ -441,7 +441,7 @@ correction, and would say whether the prompt and the correction are needed at
 the same moment. It corroborates but F4 can carry its claim on W2 alone, so it
 is not run here and the caption says the conditioning-window comparison is
 future work. Running it means adding sliding fixed-width schedules to
-`poe_repair/experiments/conditioning_window` and scoring old and new outputs
+`poe_repair/experiments/cfg_window_without_lora` and scoring old and new outputs
 with the compose scorer.
 
 ---

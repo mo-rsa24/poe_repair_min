@@ -50,7 +50,7 @@ from poe_repair.experiments.cross_pair_lora_pooling.sample_crossbar import (
 from poe_repair.experiments.cross_pair_lora_pooling.seed_pool import (
     load_seed_pool,
 )
-from poe_repair.experiments.lora.main import encode_all_prompts
+from poe_repair.experiments.one_pair_one_seed.main import encode_all_prompts
 from poe_repair.runtime import (
     ensure_dir,
     infer_device,

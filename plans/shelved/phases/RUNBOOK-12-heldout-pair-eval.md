@@ -28,7 +28,7 @@ layout (PoE | per-epoch grid | Mono).
 | File | Status | Why we need it |
 |---|---|---|
 | [scripts/build_eval_cache.py](../scripts/build_eval_cache.py) | new | Writes minimal `(meta.json + embeddings.pt + residuals/step_000.pt + poe.png + mono.png)` per `(pair, seed)`. The sampler only needs init latents; PoE/Mono PNGs feed the figure's left panel. |
-| [poe_repair/experiments/cross_seed_lora_pooling/sample_heldout.py](../poe_repair/experiments/cross_seed_lora_pooling/sample_heldout.py) | patched | New `--heldout-pair` flag: load checkpoint trained on pair P_train, sample on pair P_eval's cache cells. Prompts overridable via `--prompt-a/-b/--joint-prompt`. |
+| [poe_repair/experiments/held_out_seeds/sample_heldout.py](../poe_repair/experiments/held_out_seeds/sample_heldout.py) | patched | New `--heldout-pair` flag: load checkpoint trained on pair P_train, sample on pair P_eval's cache cells. Prompts overridable via `--prompt-a/-b/--joint-prompt`. |
 | [scripts/cross_seed_lora_pooling/render_per_epoch.py](../scripts/cross_seed_lora_pooling/render_per_epoch.py) | patched | New `--pair-slug-override` flag: per-epoch sweep reads init latents + PoE/Mono refs from the override pair's cache. |
 | [scripts/cross_seed_lora_pooling/render_seed_summary.py](../scripts/cross_seed_lora_pooling/render_seed_summary.py) | unchanged | Already accepts `--pair-slug` + `--per-epoch-subdir`. |
 
@@ -105,7 +105,7 @@ early and re-examine assumptions instead of burning 3 GPU-hours.
 
 ```bash
 # wolf x husky
-$PY -m poe_repair.experiments.cross_seed_lora_pooling.sample_heldout \
+$PY -m poe_repair.experiments.held_out_seeds.sample_heldout \
     --checkpoint $CKPT \
     --heldout-pair a_wolf__x__a_husky \
     --prompt-a "a wolf" --prompt-b "a husky" --joint-prompt "a wolf and a husky" \
@@ -113,7 +113,7 @@ $PY -m poe_repair.experiments.cross_seed_lora_pooling.sample_heldout \
     --out-dir $RUN/samples/heldout_pair/a_wolf__x__a_husky/final
 
 # lion x dog
-$PY -m poe_repair.experiments.cross_seed_lora_pooling.sample_heldout \
+$PY -m poe_repair.experiments.held_out_seeds.sample_heldout \
     --checkpoint $CKPT \
     --heldout-pair a_lion__x__a_dog \
     --prompt-a "a lion" --prompt-b "a dog" --joint-prompt "a lion and a dog" \
@@ -226,7 +226,7 @@ for SEED in 9 10 11 12 1 2; do
 done
 
 # B
-$PY -m poe_repair.experiments.cross_seed_lora_pooling.sample_heldout \
+$PY -m poe_repair.experiments.held_out_seeds.sample_heldout \
     --checkpoint $CKPT --heldout-pair a_fox__x__a_rabbit \
     --prompt-a "a fox" --prompt-b "a rabbit" --joint-prompt "a fox and a rabbit" \
     --seeds 9,10,11,12 \

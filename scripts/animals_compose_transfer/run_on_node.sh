@@ -25,13 +25,13 @@ if ! $PY -c "import torch; x=torch.randn(2048,2048,device='cuda'); print('CUDA O
 fi
 
 echo "=== A) fail-rate: 19 pairs x 8 seeds vanilla PoE + instance-count scorer ==="
-$PY -m poe_repair.experiments.animals_compose_transfer.fail_rate
+$PY -m poe_repair.experiments.does_the_fix_reach_unseen_pairs.fail_rate
 
 echo "=== B) training caches: 11 train pairs x 8 seeds ==="
-$PY -m poe_repair.experiments.animals_compose_transfer.build_caches --which train
+$PY -m poe_repair.experiments.does_the_fix_reach_unseen_pairs.build_caches --which train
 
 echo "=== C) held-out-eval caches: 5 pairs x 8 seeds ==="
-$PY -m poe_repair.experiments.animals_compose_transfer.build_caches --which heldout_eval
+$PY -m poe_repair.experiments.does_the_fix_reach_unseen_pairs.build_caches --which heldout_eval
 
 echo "=== DONE. fail-rate table: ==="
 cat outputs/animals_compose_transfer/fail_rate.md

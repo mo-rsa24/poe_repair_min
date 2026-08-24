@@ -60,8 +60,8 @@ def _pick_steps(available: list[int], k: int) -> list[int]:
 def _decode_sample(seed: int, pair_slug: str, prompts: tuple[str, str, str],
                    euler_sigma: float) -> "object":
     """Decode the plain-PoE sample from the pinned init latent (deterministic)."""
-    from poe_repair.experiments.lora.main import encode_all_prompts
-    from poe_repair.experiments.lora.probe import load_pinned_init_latents
+    from poe_repair.experiments.one_pair_one_seed.main import encode_all_prompts
+    from poe_repair.experiments.one_pair_one_seed.probe import load_pinned_init_latents
     from poe_repair.methods._sampling import run_lora_residual_inject
     from poe_repair.runtime import (
         infer_device, infer_dtype, load_ddim_scheduler, load_sdxl_models,

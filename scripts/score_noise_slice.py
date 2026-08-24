@@ -78,7 +78,7 @@ def main() -> int:
     print(f"slice: {man['pair']} corners {man['corners']} "
           f"grid {man['grid']}x{man['grid']} lambda {man['lambda']}\n")
 
-    from poe_repair.experiments.compose_scorer.detection_scorer import (
+    from poe_repair.experiments.compose_scorer_validation.detection_scorer import (
         count_instances,
     )
     device = None

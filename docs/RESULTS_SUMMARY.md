@@ -70,7 +70,7 @@ $PY scripts/cross_seed_lora_pooling/render_seed_summary.py --pooled-run "$DATA/r
 
 **Walk it (forward-looking, produces the evidence)**
 ```bash
-$PY -m poe_repair.experiments.cross_seed_lora_pooling.sample_heldout \
+$PY -m poe_repair.experiments.held_out_seeds.sample_heldout \
   --checkpoint "$DATA/rung2-survive-noise/cross_seed/a_cat__x__a_dog/taskB__k04_ep2000_resumed__wandb-pueuo7bl/checkpoints/lora_step_100000.pt" \
   --pair a_cat__x__a_dog --heldout-pair a_wolf__x__a_husky \
   --out-dir "$DATA/rung2-survive-noise/cross_seed/a_cat__x__a_dog/heldout_pair/a_wolf__x__a_husky"

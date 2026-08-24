@@ -46,7 +46,7 @@ EOF
     xflag=""
     [ "$XFORMERS" = "1" ] && xflag="--xformers"
     CUDA_VISIBLE_DEVICES=$CUDA "$PY" -m \
-        poe_repair.experiments.cross_seed_lora_pooling.train_pooled \
+        poe_repair.experiments.held_out_seeds.train_pooled \
         --k 1 --single-seed-pick "$s" \
         --total-epochs "$EPOCHS" \
         --output-root "$OUT_ROOT" \
@@ -63,7 +63,7 @@ EOF
     # Sample only on the seed we trained on — that's what "ceiling" means.
     echo "==> sampling per-seed ceiling on its own seed $s"
     CUDA_VISIBLE_DEVICES=$CUDA "$PY" -m \
-        poe_repair.experiments.cross_seed_lora_pooling.sample_heldout \
+        poe_repair.experiments.held_out_seeds.sample_heldout \
         --checkpoint "$ckpt" \
         --out-dir "$run_dir/samples/ceiling" \
         --seeds "$s"

@@ -51,7 +51,7 @@ from poe_repair.experiments.cross_pair_lora_pooling.pair_pool import (
 from poe_repair.experiments.cross_pair_lora_pooling.seed_pool import (
     load_seed_pool,
 )
-from poe_repair.experiments.cross_seed_lora_pooling.task_d_bridge import (
+from poe_repair.experiments.held_out_seeds.task_d_bridge import (
     _cos,
     _flat,
     _norm,

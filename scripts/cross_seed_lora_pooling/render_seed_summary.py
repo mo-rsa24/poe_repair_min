@@ -34,7 +34,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
-from poe_repair.experiments.cross_seed_lora_pooling.seed_pool import load_seed_pool
+from poe_repair.experiments.held_out_seeds.seed_pool import load_seed_pool
 from poe_repair.runtime import ensure_dir
 from poe_repair.training_cache import DEFAULT_CACHE_ROOT, CellPath
 

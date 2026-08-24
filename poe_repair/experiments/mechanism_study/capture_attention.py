@@ -36,8 +36,8 @@ from pathlib import Path
 
 import torch
 
-from poe_repair.experiments.lora.main import encode_all_prompts
-from poe_repair.experiments.lora.probe import load_pinned_init_latents
+from poe_repair.experiments.one_pair_one_seed.main import encode_all_prompts
+from poe_repair.experiments.one_pair_one_seed.probe import load_pinned_init_latents
 from poe_repair.methods._sampling import (
     run_lora_residual_inject,
     write_decoded_image,
@@ -131,7 +131,7 @@ def _maybe_attach_lora(unet, checkpoint: str):
     """Attach the trained LoRA and load its weights. Only needed for --capture lora."""
     from peft import LoraConfig
 
-    from poe_repair.experiments.lora import trainer as lora_trainer
+    from poe_repair.experiments.one_pair_one_seed import trainer as lora_trainer
 
     ckpt = torch.load(checkpoint, map_location="cpu", weights_only=False)
     cfg_dict = ckpt.get("config", {})

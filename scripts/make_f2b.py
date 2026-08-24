@@ -92,7 +92,7 @@ def main() -> int:
                          "refusing to draw boxes from an uncertified instrument.")
 
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-    from poe_repair.experiments.compose_scorer.detection_scorer import count_instances
+    from poe_repair.experiments.compose_scorer_validation.detection_scorer import count_instances
     device = None
     if args.device:
         import torch

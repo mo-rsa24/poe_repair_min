@@ -44,7 +44,7 @@ the three-way bar. In the repo: `evidence/f2-lambda1-audit/README.md` giving the
 - Large artifacts go to `/datasets` only. The labelled set and any cached crops land there,
   never on `/home-mscluster`.
 - Thresholds live as named constants in source, following `MIN_BOX_FRACTION` in
-  `poe_repair/experiments/compose_scorer/detection_scorer.py`. The 10% calibration bar and the
+  `poe_repair/experiments/compose_scorer_validation/detection_scorer.py`. The 10% calibration bar and the
   10-point and 5-point λ bars are constants in the labelling and scoring scripts.
 - Source images stay where they are. `scripts/plot_dose_curves.py` scores from
   `outputs/interaction_term/dose/pairs/`, so this plan copies and never moves.

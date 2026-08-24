@@ -32,7 +32,7 @@ extension), or whether cross-seed generalisation needs new machinery
 ## Code
 
 All cross-seed pooling code lives under
-`poe_repair/experiments/cross_seed_lora_pooling/` with thin shell
+`poe_repair/experiments/held_out_seeds/` with thin shell
 runners under `scripts/cross_seed_lora_pooling/`. The trainer never
 touches the single-seed Phase-4 reference artefact under
 `outputs/lora/a_cat__x__a_dog/seed_42/results/`.
@@ -114,7 +114,7 @@ export POE_REPAIR_TRAINING_CACHE=$PWD/outputs/training_cache    # if not the clu
 ### Step 0 — inference-time mono-average pre-screen (no training)
 
 ```bash
-$PY -m poe_repair.experiments.cross_seed_lora_pooling.step0_prescreen
+$PY -m poe_repair.experiments.held_out_seeds.step0_prescreen
 ```
 
 Per held-out seed reads the cached Δ_t for the train pool, builds
@@ -132,7 +132,7 @@ be present on every host before any pooled run). Verify the leak guard:
 
 ```bash
 # Make a deliberately-broken pool YAML, point the trainer at it, expect abort.
-$PY -m poe_repair.experiments.cross_seed_lora_pooling.train_pooled \
+$PY -m poe_repair.experiments.held_out_seeds.train_pooled \
     --k 1 --total-epochs 1 \
     --seed-pool-path /tmp/leak.yaml --dry-run
 ```
@@ -164,12 +164,12 @@ held-outs (records ε_PoE_lora,t for Task D).
 Direct invocation if you don't want the runner:
 
 ```bash
-$PY -m poe_repair.experiments.cross_seed_lora_pooling.train_pooled \
+$PY -m poe_repair.experiments.held_out_seeds.train_pooled \
     --k 4 --total-epochs 1600 \
     --output-root outputs/cross_seed_lora_pooling/task_b_learning_curve \
     --run-id k04__ep1600
 
-$PY -m poe_repair.experiments.cross_seed_lora_pooling.sample_heldout \
+$PY -m poe_repair.experiments.held_out_seeds.sample_heldout \
     --checkpoint outputs/cross_seed_lora_pooling/task_b_learning_curve/k04__ep1600/checkpoints/lora_step_<...>.pt \
     --out-dir   outputs/cross_seed_lora_pooling/task_b_learning_curve/k04__ep1600/samples/heldout \
     --record-eps
@@ -195,7 +195,7 @@ Requires Task B's sample step to have been run with `--record-eps`
 (the shell runner does this by default).
 
 ```bash
-$PY -m poe_repair.experiments.cross_seed_lora_pooling.task_d_bridge \
+$PY -m poe_repair.experiments.held_out_seeds.task_d_bridge \
     --pooled-run outputs/cross_seed_lora_pooling/task_b_learning_curve/k08__ep1600
 ```
 
@@ -205,8 +205,8 @@ seed and a spatial heatmap for one seed in the commit window.
 ### Contact sheets (final read)
 
 ```bash
-$PY -m poe_repair.experiments.cross_seed_lora_pooling.contact_sheet --task B
-$PY -m poe_repair.experiments.cross_seed_lora_pooling.contact_sheet --task C
+$PY -m poe_repair.experiments.held_out_seeds.contact_sheet --task B
+$PY -m poe_repair.experiments.held_out_seeds.contact_sheet --task C
 ```
 
 ### Optional sweep S1 — rank at k=8

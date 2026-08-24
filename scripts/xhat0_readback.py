@@ -69,7 +69,7 @@ from poe_repair.experiments.interaction_term.cache import (  # noqa: E402
     cell_dir,
     load_cell,
 )
-from poe_repair.experiments.residual_diagnostics.metrics import (  # noqa: E402
+from poe_repair.experiments.residual_between_mono_and_poe.metrics import (  # noqa: E402
     clip_image_text_similarities,
 )
 

@@ -111,7 +111,7 @@ def find_runs(roots) -> dict[str, dict[tuple[str, int], dict[float, Path]]]:
 
 
 def clip_embed(paths: list[Path]) -> torch.Tensor:
-    from poe_repair.experiments.residual_diagnostics.metrics import clip_image_embed
+    from poe_repair.experiments.residual_between_mono_and_poe.metrics import clip_image_embed
 
     chunks = [clip_image_embed(paths[i:i + 32]) for i in range(0, len(paths), 32)]
     return torch.cat(chunks)

@@ -32,9 +32,9 @@ only as "it works"; with it, we can say *why* it works.
 
 ## Code
 
-- Sub-experiment 2a: `poe_repair/experiments/residual_diagnostics/existence/`.
-- Sub-experiment 2b: `poe_repair/experiments/residual_diagnostics/clip_window/`.
-- Top-level driver: `poe_repair/experiments/residual_diagnostics/__main__.py`.
+- Sub-experiment 2a: `poe_repair/experiments/residual_between_mono_and_poe/existence/`.
+- Sub-experiment 2b: `poe_repair/experiments/residual_between_mono_and_poe/clip_window/`.
+- Top-level driver: `poe_repair/experiments/residual_between_mono_and_poe/__main__.py`.
 - The figures (`Fig 1`, `Fig 4`, `App A`, `App B'`) live in the
   veracity experiment package — diagnostic figures are rendered from
   caches both experiments produce.
@@ -54,7 +54,7 @@ export CUDA_VISIBLE_DEVICES=1
 ### Both back to back
 
 ```bash
-$PY -m poe_repair.experiments.residual_diagnostics \
+$PY -m poe_repair.experiments.residual_between_mono_and_poe \
     --pair "a cat|a dog" --seed 42
 ```
 
@@ -64,10 +64,10 @@ then `clip_window` reads those caches and produces its own figures.
 ### Or individually
 
 ```bash
-$PY -m poe_repair.experiments.residual_diagnostics.existence \
+$PY -m poe_repair.experiments.residual_between_mono_and_poe.existence \
     --pair "a cat|a dog" --seed 42
 
-$PY -m poe_repair.experiments.residual_diagnostics.clip_window \
+$PY -m poe_repair.experiments.residual_between_mono_and_poe.clip_window \
     --pair "a cat|a dog" --seed 42
 ```
 

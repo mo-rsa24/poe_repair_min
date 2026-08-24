@@ -42,7 +42,7 @@ which is r_t injection at dose λ. Specifically, already present:
 | the definition of r_t | `delta = eps_j - eps_poe` (`_sampling.py:507`), one place |
 | the ‖r_t‖ curve (plan 05) | `extras["delta_norm_per_step"]`, recorded every run |
 | r_t is the interaction term | `extras["pmi_identity_residual_per_step"]`: per-step relative error of `Δ_t == w·(ε_J + ε_∅ − ε_A − ε_B)`, already computed |
-| a λ grid | `experiments/residual_diagnostics/sweep.py`, eleven points 0.0 … 1.0 |
+| a λ grid | `experiments/residual_between_mono_and_poe/sweep.py`, eleven points 0.0 … 1.0 |
 | cached r_t on disk | `artifacts/diagnostics/residual_diagnostics/delta_structure_unguided/tensors.pt` |
 
 Two facts that decide how the canaries must be written:

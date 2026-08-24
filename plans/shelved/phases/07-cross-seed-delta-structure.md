@@ -42,7 +42,7 @@ Phase 8 compares the pooled LoRA's output against.
 - Diagnostic functions: `poe_repair/diagnostics/delta_structure.py`
   (one function per prong).
 - Experiment driver:
-  `poe_repair/experiments/residual_diagnostics/delta_structure/__main__.py`.
+  `poe_repair/experiments/residual_between_mono_and_poe/delta_structure/__main__.py`.
 - Outputs land under
   `outputs/residual_diagnostics/delta_structure/`:
   `meta.json`, `tensors.pt`, `results.json`, `figures/fig_main.png`.
@@ -57,7 +57,7 @@ export CUDA_VISIBLE_DEVICES=1
 ### 1. Collect Δ_t for N seeds (~1–2 h for N=4; ~2–3 h for N=8)
 
 ```bash
-$PY -m poe_repair.experiments.residual_diagnostics.delta_structure \
+$PY -m poe_repair.experiments.residual_between_mono_and_poe.delta_structure \
     --seeds 42,43,44,45                       # N=4 first pass
 ```
 
@@ -82,7 +82,7 @@ spatial heatmap, matched-vs-null distribution).
 ### 3. Push to N=8 if cross-seed verdict is ambiguous
 
 ```bash
-$PY -m poe_repair.experiments.residual_diagnostics.delta_structure \
+$PY -m poe_repair.experiments.residual_between_mono_and_poe.delta_structure \
     --seeds 42,43,44,45,46,47,48,49
 ```
 

@@ -19,7 +19,7 @@ cd "$REPO_ROOT"
 for r in $RANKS; do
     run_id="k08_r${r}__ep${EPOCHS}"
     CUDA_VISIBLE_DEVICES=$CUDA "$PY" -m \
-        poe_repair.experiments.cross_seed_lora_pooling.train_pooled \
+        poe_repair.experiments.held_out_seeds.train_pooled \
         --k 8 --total-epochs "$EPOCHS" \
         --lora-rank "$r" --lora-alpha "$r" \
         --output-root "$OUT_ROOT" \
@@ -29,7 +29,7 @@ for r in $RANKS; do
     ckpt=$(jq -r .path "$run_dir/checkpoints/latest.json")
 
     CUDA_VISIBLE_DEVICES=$CUDA "$PY" -m \
-        poe_repair.experiments.cross_seed_lora_pooling.sample_heldout \
+        poe_repair.experiments.held_out_seeds.sample_heldout \
         --checkpoint "$ckpt" \
         --out-dir "$run_dir/samples/heldout"
 done

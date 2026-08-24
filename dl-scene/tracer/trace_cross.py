@@ -39,7 +39,7 @@ OUT = Path(sys.argv[1] if len(sys.argv) > 1 else "cross_trace.json")
 PROMPTS = ["a cat", "a dog", ""]
 BRANCH_NAMES = ["A (a cat)", "B (a dog)", "empty (unconditional)"]
 
-# From poe_repair/experiments/lora/config.py:LoRAConfig.
+# From poe_repair/experiments/one_pair_one_seed/config.py:LoRAConfig.
 LORA_RANK = 8
 LORA_ALPHA = 8
 LORA_TARGETS = ["attn2.to_q", "attn2.to_k", "attn2.to_v"]

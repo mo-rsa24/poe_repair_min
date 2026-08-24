@@ -97,7 +97,7 @@ def _run(cmd: Sequence[str], *, cwd: Path = REPO_ROOT) -> None:
 
 def task_a_leak_guard(pool_path: Path) -> None:
     _run([
-        PY, "-m", "poe_repair.experiments.cross_seed_lora_pooling.seed_pool",
+        PY, "-m", "poe_repair.experiments.held_out_seeds.seed_pool",
         "--seed-pool", str(pool_path),
     ])
 
@@ -110,7 +110,7 @@ def step0_prescreen(
     cache_root: Path | None,
 ) -> None:
     cmd = [
-        PY, "-m", "poe_repair.experiments.cross_seed_lora_pooling.step0_prescreen",
+        PY, "-m", "poe_repair.experiments.held_out_seeds.step0_prescreen",
         "--prompt-a", spec.prompt_a,
         "--prompt-b", spec.prompt_b,
         "--joint-prompt", spec.joint_prompt,
@@ -167,7 +167,7 @@ def train_pooled(
         raise ValueError(f"unknown k tag {k_tag!r}")
 
     cmd = [
-        PY, "-m", "poe_repair.experiments.cross_seed_lora_pooling.train_pooled",
+        PY, "-m", "poe_repair.experiments.held_out_seeds.train_pooled",
         "--k", str(k),
         "--total-epochs", str(epochs),
         "--seed-pool-path", str(pool_path),
@@ -192,7 +192,7 @@ def train_pooled(
     ckpt = _resolve_ckpt(run_dir)
     sample_dir = run_dir / "samples" / "heldout"
     sample_cmd = [
-        PY, "-m", "poe_repair.experiments.cross_seed_lora_pooling.sample_heldout",
+        PY, "-m", "poe_repair.experiments.held_out_seeds.sample_heldout",
         "--checkpoint", str(ckpt),
         "--out-dir", str(sample_dir),
         "--prompt-a", spec.prompt_a,
@@ -217,7 +217,7 @@ def task_d_bridge(
         print(f"[skip] task D: no k=8 run dir at {k8_run_dir}")
         return
     cmd = [
-        PY, "-m", "poe_repair.experiments.cross_seed_lora_pooling.task_d_bridge",
+        PY, "-m", "poe_repair.experiments.held_out_seeds.task_d_bridge",
         "--pooled-run", str(k8_run_dir),
         "--seed-pool-path", str(pool_path),
     ]
@@ -228,7 +228,7 @@ def task_d_bridge(
 
 def contact_sheet_task_b(out_root: Path) -> None:
     _run([
-        PY, "-m", "poe_repair.experiments.cross_seed_lora_pooling.contact_sheet",
+        PY, "-m", "poe_repair.experiments.held_out_seeds.contact_sheet",
         "--task", "B",
         "--out-root", str(out_root / "task_b_learning_curve"),
     ])
