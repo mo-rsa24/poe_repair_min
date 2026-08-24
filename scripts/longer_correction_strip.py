@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""F4g: one seed, one row per cutoff, a track showing exactly what ran where.
+"""One seed, one row per cutoff, a track showing exactly what ran where.
 
 Five rows, one growing corrected prefix each: row 1 corrects steps 0-10 then
 plain PoE for 11-50, row 2 corrects 0-20 then plain PoE for 21-50, and so on
@@ -19,8 +19,8 @@ as a population claim; the pooled compose-rate curve across all 8 pairs is
 the population evidence, kept separate at
 outputs/interaction_term/window/growing_window_prefix_curve.png.
 
-    python scripts/make_f4g_strip.py
-    python scripts/make_f4g_strip.py --seed 9
+    python scripts/longer_correction_strip.py
+    python scripts/longer_correction_strip.py --seed 9
 """
 
 from __future__ import annotations

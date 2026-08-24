@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Compose register slot F1: what a product of two densities asks for, beside what
+"""What a product of two densities asks for, beside what
 plain PoE actually produced.
 
 Left panel is drawn here and contains no animals. Right panel is one real sampler
@@ -16,7 +16,7 @@ Gaussian at their midpoint, so the blue region is drawn where the maths puts it,
 where a lens-shaped intersection would look tidier. The midpoint of "a cat" and "a dog"
 is the whole argument.
 
-    python scripts/make_f1.py
+    python scripts/what_the_product_misses.py
 """
 
 from __future__ import annotations

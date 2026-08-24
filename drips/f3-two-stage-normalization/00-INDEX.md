@@ -1,6 +1,6 @@
 # F3: the two-stage normalization behind size follows noise
 
-Captured from `/drip --math` on the F3 explanation (`paper/iclr/figures/correction-size-over-the-denoising-run-across-17-pairs.png`, built by `scripts/make_f3.py`), ongoing.
+Captured from `/drip --math` on the F3 explanation (`paper/iclr/figures/correction-size-over-the-denoising-run-across-17-pairs.png`, built by `scripts/correction_size_vs_run_position.py`), ongoing.
 
 Each rung carries its chain status: taught (in chat by /drip), filed (captured here), scene built (by /math-scene). No mark means not taught yet.
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Register slot F4e: the timing cliff survives holding the dose constant.
+"""The timing cliff survives holding the dose constant.
 
 The nine-window sweep applied the correction at full strength in every window,
 so the early window that composes also delivered less correction than the late
@@ -18,7 +18,7 @@ does nothing late at comparable strength.
 Four cells per window, cat x dog only, so this is a rate over four runs and not a
 population estimate. The eight-pair sweep is the population, drawn behind it.
 
-    python scripts/make_f4_matched.py
+    python scripts/timing_cliff_matched_dose.py
 """
 
 from __future__ import annotations

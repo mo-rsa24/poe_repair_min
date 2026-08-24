@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""F4f: when the correction works, for every pair at once.
+"""When the correction works, for every pair at once.
 
 F4a and F4b read the window sweep pooled over pairs, which answers "when" but
 hides that the answer is not the same for every pair. The grid already holds
@@ -18,7 +18,7 @@ rather than averaged away.
 
 Reads the scored grid only; it does not sample.
 
-    python scripts/make_f4_map.py
+    python scripts/window_map_all_pairs.py
 """
 
 from __future__ import annotations

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Register slot F4.1: when the correction arrives decides whether it works.
+"""When the correction arrives decides whether it works.
 
 Every cat x dog cell in the window experiment, 9 windows by 4 seeds, drawn as a
 grid of real images. Nothing is selected: 36 cells exist and 36 are shown, so the
@@ -19,7 +19,7 @@ and the rate curve carries the counting, with its own caveat.
 Restoring the chips is `--counts`, and the disagreement is why it is off by
 default rather than deleted.
 
-    python scripts/make_f4_grid.py
+    python scripts/window_position_grid.py
 """
 
 from __future__ import annotations

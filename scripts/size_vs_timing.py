@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Register slot F4.2: where the correction is large is not where it matters.
+"""Where the correction is large is not where it matters.
 
 Two panels stacked on one denoising-step axis, for the pair the paper follows.
 Read together they dissociate size from effect, which is the point: the
@@ -26,7 +26,7 @@ noise.
     window to (40,50). That disagreement is why F4a suppresses its count chips
     by default; here the wrong reading is drawn, not hidden, and flagged instead.
 
-    python scripts/make_f4_curves.py
+    python scripts/size_vs_timing.py
 """
 
 from __future__ import annotations
@@ -43,7 +43,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from snr_collapse import curve_for  # noqa: E402  the single definition of the measure
-from make_f3 import smooth          # noqa: E402  the same smoothing F3 draws with
+from correction_size_vs_run_position import smooth          # noqa: E402  the same smoothing F3 draws with
 
 WINDOW_CURVES = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/"
                      "window/window_curves.json")

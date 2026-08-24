@@ -1,7 +1,7 @@
 # A worked example: the two-stage normalization behind F3
 
 > [!aside]
-> Every number on this page is invented. None of it is real experimental output. It exists to make the arithmetic in `scripts/make_f3.py` concrete before piece 2 of the F3 explanation continues. The real figure is at [`paper/iclr/figures/correction-size-over-the-denoising-run-across-17-pairs.png`](../../paper/iclr/figures/correction-size-over-the-denoising-run-across-17-pairs.png).
+> Every number on this page is invented. None of it is real experimental output. It exists to make the arithmetic in `scripts/correction_size_vs_run_position.py` concrete before piece 2 of the F3 explanation continues. The real figure is at [`paper/iclr/figures/correction-size-over-the-denoising-run-across-17-pairs.png`](../../paper/iclr/figures/correction-size-over-the-denoising-run-across-17-pairs.png).
 
 Piece 1 of the F3 explanation ("the two axes") stated the rule in words: F3's real quantity is the relative correction size, the norm of the correction vector $r_t$ divided by the norm of the product-of-experts prediction $\varepsilon_{\mathrm{PoE}}$, computed at every denoising step. Before that number gets pooled across pairs into the figure's population bands, each pair's own curve is divided a second time, by its own median across steps. This page runs that arithmetic on four toy pairs so the two divisions are visible as numbers, not just as a rule.
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Register slot F5b: the correction steers the image's meaning from the
+"""The correction steers the image's meaning from the
 start, and the fork step is the midpoint of that drift, not its onset.
 
 One panel plus a frame strip. The curve is the two arms' separation along each
@@ -25,7 +25,7 @@ Cache-only, no GPU. Reads the two JSONs written by
 scripts/trajectory_divergence.py and scripts/dose_trajectory_divergence.py.
 
 Usage:
-    python scripts/make_f5b.py
+    python scripts/run_separation_over_time.py
 """
 
 from __future__ import annotations

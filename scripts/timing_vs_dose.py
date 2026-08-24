@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Register slot F4d: timing decides, not dose.
+"""Timing decides, not dose.
 
 The nine-window sweep confounded two things, because the correction's own size
 grows through the run: the early window that composes also delivers less
@@ -25,7 +25,7 @@ similar to it.
 No count is printed. The detector disagrees with the pictures on this pair, so
 the grid argues from what is in the frame and the caption says so.
 
-    python scripts/make_f4_swap.py --seed 12
+    python scripts/timing_vs_dose.py --seed 12
 """
 
 from __future__ import annotations

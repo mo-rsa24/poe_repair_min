@@ -12,7 +12,7 @@ scripts/dose_trajectory_divergence.py already validated against F4a's own
 saved ground truth (median relative error under 5%, see that script's
 ``validate_recovery``): two consecutive noisy latents plus the alpha_bar
 schedule determine x̂₀ exactly, no eps needed. Then decodes just the five
-frames make_f4g_grid.py / make_f4h_grid.py actually use (steps 10, 20, 30,
+frames longer_correction_grid.py / later_start_grid.py actually use (steps 10, 20, 30,
 40, 50) rather than the whole run, and writes them into each cell's
 ``frames/`` folder under the same ``step_XXX.png`` naming
 decode_trajectory_frames.py uses, so both code paths produce

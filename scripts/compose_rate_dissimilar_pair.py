@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""compose-rate-as-correction-rises-with-detector-boxes: F2's qualitative grid, with the detector's own boxes drawn on.
+"""Compose-rate-as-correction-rises-with-detector-boxes: F2's qualitative grid, with the detector's own boxes drawn on.
 
 F2 (paper/iclr/figures/compose-rate-as-correction-rises.png) puts a number in the corner of
 every panel: 1 or 2, filled if composed. This figure answers where that
@@ -19,7 +19,7 @@ qualitative grid alone.
 Needs a GPU: every panel is scored fresh to get its kept boxes, which
 dose_curves.json does not carry (only the resulting count and label do).
 
-    python scripts/make_f2b.py
+    python scripts/compose_rate_dissimilar_pair.py
 """
 
 from __future__ import annotations

@@ -1,25 +1,28 @@
 #!/usr/bin/env python
-"""Register slot F4h: does correction after an uncorrected start still fix it?
+"""Does more of the corrected start raise the ceiling?
 
-The converse of F4g, same 5x5 triangular matrix. Rows are the five cutoffs
-(10-50, 20-50, 30-50, 40-50, off); columns are the run's five ten-step
-chunks (0-10, 10-20, ..., 40-50). Each cell is that row's own running x̂₀
-estimate right after that column's chunk of steps (the last column reads the
-real scored image instead, since a chunk ending at step 50 is the finished
-picture, not an estimate of it). A green border marks the chunks that were
-actually corrected for that row: row 10-50 borders four chunks, row off
-borders none, so the border pattern is the mirror image of F4g's, shrinking
-rather than growing.
+One seed, drawn as a 5x5 triangular matrix. Rows are the five cutoffs
+(0-10, 0-20, 0-30, 0-40, 0-50); columns are the run's five ten-step chunks
+(0-10, 10-20, ..., 40-50). Unlike F4a's grid, a cell is not that row's
+finished picture: it is what the model's own running estimate of the
+finished picture looked like right after that column's chunk of steps, for
+that row's run (x̂₀, decoded from the saved trajectory; the last column uses
+the real scored image, since a chunk ending at step 50 is the finished
+picture, not an estimate of it). A green border marks the chunks that fell
+inside the corrected prefix for that row: row 0-10 borders one chunk, row
+0-50 borders all five, so the border pattern grows into a triangle while the
+pictures show the run's own progress column by column.
 
-Frames come from scripts/decode_trajectory_frames.py (the cell this grid
-shares with F4a) and scripts/recover_growing_window_frames.py (the rest,
-recovered in closed form from the saved noisy latents); this script decodes
+Frames come from scripts/decode_trajectory_frames.py (the two cells this
+grid shares with F4a) and scripts/recover_growing_window_frames.py (the new
+cells, whose x̂₀ is recovered in closed form from the saved noisy latents,
+since the current composer no longer saves it directly); this script decodes
 nothing itself. The compose-rate curve that backs the quantitative claim
-across all 8 pairs is a separate, diagnostic-only plot, same location as
-F4g's.
+across all 8 pairs is a separate, diagnostic-only plot: see
+scripts/plot_growing_window_curves.py and growing_window_curves.json.
 
-    python scripts/make_f4h_grid.py
-    python scripts/make_f4h_grid.py --seed 9
+    python scripts/longer_correction_grid.py
+    python scripts/longer_correction_grid.py --seed 9
 """
 
 from __future__ import annotations
@@ -37,7 +40,7 @@ from poe_repair.experiments.interaction_term import window_grid as wg  # noqa: E
 
 WINDOW_ROOT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/window")
 FIG_DIR = Path("paper/iclr/figures")
-FIG_NAME = "samples-as-the-correction-starts-later"
+FIG_NAME = "samples-as-the-correction-runs-longer"
 
 PAIR = "a_cat__x__a_dog"
 SEED = 12
@@ -99,7 +102,7 @@ def main() -> int:
     ap.add_argument("--seed", type=int, default=SEED)
     args = ap.parse_args()
 
-    rows = wg.suffix_windows()
+    rows = wg.prefix_windows()
     seed = args.seed
 
     missing = [w for w in rows if not cell_dir(seed, *w).is_dir()]
@@ -112,7 +115,6 @@ def main() -> int:
     fig = plt.figure(figsize=(fig_w, fig_h))
 
     for i, row_win in enumerate(rows):
-        row_label = "off" if row_win[0] >= wg.NUM_STEPS else f"{row_win[0]}–50"
         for j, chunk in enumerate(CHUNKS):
             ax = fig.add_axes([
                 (LEFT_GUTTER + j * CELL) / fig_w,
@@ -129,7 +131,7 @@ def main() -> int:
         ax_lab = fig.add_axes([0.24 / fig_w, (BOTTOM_PAD + (nrow - 1 - i) * CELL) / fig_h,
                                (LEFT_GUTTER - 0.24) / fig_w, CELL / fig_h])
         ax_lab.axis("off")
-        ax_lab.text(0.92, 0.5, row_label, ha="right",
+        ax_lab.text(0.92, 0.5, f"{row_win[0]}–{row_win[1]}", ha="right",
                     va="center", fontsize=8, family="serif", color=INK)
 
     fig.text(0.10 / fig_w, BOTTOM_PAD / fig_h + (nrow * CELL / fig_h) / 2,

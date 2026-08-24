@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""F6: is the correction low rank, split by timestep window, and do the
+"""Is the correction low rank, split by timestep window, and do the
 directions that carry the energy also carry the outcome.
 
 Three questions, one script, run separately per timestep window because the

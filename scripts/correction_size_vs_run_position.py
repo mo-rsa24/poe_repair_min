@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Register slot F3: the correction's size follows how far through the run you are.
+"""The correction's size follows how far through the run you are.
 
 One panel, one thing to look at: the seventeen pool pairs collapse onto one
 shape. The median line and two grey bands against the denoising step. No
@@ -24,7 +24,7 @@ figure cannot drift from the numbers in the appendix table.
 Cache-only, no GPU.
 
 Usage:
-    python scripts/make_f3.py
+    python scripts/correction_size_vs_run_position.py
 """
 
 from __future__ import annotations

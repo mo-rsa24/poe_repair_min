@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""F8a: one trained adapter composes on pairs it never saw.
+"""One trained adapter composes on pairs it never saw.
 
 Everything else in the figure set measures the oracle correction, which is
 computed from the joint prompt and therefore cannot be shipped: needing the
@@ -22,7 +22,7 @@ carries its step and none of them is the final word.
 
 Reads the scored run only; it does not sample or train.
 
-    python scripts/make_f8.py
+    python scripts/adapter_transfers.py
 """
 
 from __future__ import annotations
