@@ -17,7 +17,7 @@ plain product-of-experts. Everything below is one of these.
 
 **`mcmc/`** will hold the same layouts with a Langevin corrector in place of the injected `r_t`,
 built by
-[the sampler-against-model scope](../../../../plans/is-the-gap-the-samplers-or-the-models/MASTER_PLAN.md).
+[the sampler-against-model scope](../../../../plans/06-is-the-gap-the-samplers-or-the-models/MASTER_PLAN.md).
 Empty until that scope's gate at step 26 has fired and its window sweep at step 27 has run.
 
 **`superdiff/`** will hold the SuperDiff arm from the same scope. Empty until step 28 wires the

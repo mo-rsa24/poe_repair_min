@@ -24,16 +24,16 @@ python3 scripts/plan_pulse.py
 plan pulse: 180 plan files under plans
 
 STALE: task lines claiming a run is in flight with nothing in flight (1)
-  plans/closing-the-compositional-gap/plans/does-the-fix-reach-unseen-pairs/plans/instrument-02-three-live-curves-while-training.md:20
+  plans/04-does-the-fix-reach-unseen-pairs/plans/instrument-02-three-live-curves-while-training.md:20
 
 UNHARVESTED: output newer than the plan that owns it (0)
 
 ORPHAN: markdown no task names (5)
   plans/retrofit-poe-repair-min.md
-  plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/assets/F1-schematic-prompt.md
-  plans/closing-the-compositional-gap/plans/can-we-trust-the-compose-rate/claim-under-test.md
-  plans/closing-the-compositional-gap/diagrams/process-versions/01-2026-08-18.md
-  plans/closing-the-compositional-gap/diagrams/process-versions/02-2026-08-19.md
+  plans/03-does-the-correction-cause-composition/assets/F1-schematic-prompt.md
+  plans/02-can-we-trust-the-compose-rate/claim-under-test.md
+  plans/diagrams/process-versions/01-2026-08-18.md
+  plans/diagrams/process-versions/02-2026-08-19.md
 
 DEBRIS: narration a plan should not carry (6)
   [six lines, in plans/shelved/artifact-reconciliation/inventory/, superseded-decision narration]
@@ -41,7 +41,7 @@ DEBRIS: narration a plan should not carry (6)
 RUNSTATE: run state in a design plan, belongs in its review file (0)
 
 UNJUDGED: a finished run with review questions still unanswered (3)
-  [three review files, closing-the-compositional-gap scope, listed with their open question lines]
+  [three review files, scopes 03 and 04, listed with their open question lines]
 
 JARGON: design plans that will not read cold (4)
   [four plan files, missing a plain opener or carrying over-long sentences]

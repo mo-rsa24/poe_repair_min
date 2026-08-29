@@ -3,7 +3,7 @@
 Navigation: 📋 [Index](00-INDEX.md) | [Overview](overview.md#paper-latex-build)
 
 The manuscript is `paper/iclr/`, owned by the
-`plans/closing-the-compositional-gap/plans/writing-the-paper/` scope. Editing and building it
+`plans/07-writing-the-paper/` scope. Editing and building it
 is a different loop from running experiments: no GPU, no queue, no job.
 
 ## Where to make changes
@@ -13,8 +13,8 @@ files in that folder are the ICLR distribution and are not edited: `iclr2027_con
 (layout), `.bst` (bibliography style), `natbib.sty`, `fancyhdr.sty`, and `math_commands.tex`
 (macro definitions, worth reading before defining a new macro since it likely already exists).
 References go in `iclr2027_conference.bib`. Figures are referenced, never copied in: they are
-produced by `plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/`
-and `plans/closing-the-compositional-gap/plans/does-the-fix-reach-unseen-pairs/`, and
+produced by `plans/03-does-the-correction-cause-composition/`
+and `plans/04-does-the-fix-reach-unseen-pairs/`, and
 `paper/iclr/README.md` holds the path rule.
 
 ## No system LaTeX exists on this cluster

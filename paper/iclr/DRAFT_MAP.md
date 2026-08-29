@@ -1539,7 +1539,7 @@ floor and appears in F8a as a dotted line. The correction computed from the join
 ceiling and appears in F8b at lambda 0.75 and at lambda 1, the latter true by construction. The
 control that answers the real objection, that any pool of the same size would have worked, is the
 size-matched mixed pool in
-[baseline-01](../../plans/closing-the-compositional-gap/plans/does-the-fix-reach-unseen-pairs/review/baseline-01-the-size-matched-control-pool.md).
+[baseline-01](../../plans/04-does-the-fix-reach-unseen-pairs/review/baseline-01-the-size-matched-control-pool.md).
 **It is designed and has not run.** ¶5.5 may state it as the design's intended control and ¶5.6
 may not report a result for it. The reserved leave-one-pair-out sweep behind F8 has not run
 either.
@@ -1683,7 +1683,7 @@ One session owns a piece at a time.
 
 | Route | Serves | Where the result lands | State |
 |---|---|---|---|
-| diagram, subject lane, "the joined prompt is only a target" | ¶5.2, the architectural figure | Prompt 4a in [the scope's illustrated map](../../plans/closing-the-compositional-gap/diagram-prompts.md), rendered by hand in ChatGPT and saved back beside the manuscript | emitted, awaiting the rendered image |
+| diagram, subject lane, "the joined prompt is only a target" | ¶5.2, the architectural figure | Prompt 4a in [the scope's illustrated map](../../plans/diagram-prompts.md), rendered by hand in ChatGPT and saved back beside the manuscript | emitted, awaiting the rendered image |
 | candidate-abstract-1 | sibling | abstract candidate 1 | open, sketched, walking c1.1 | `abstract_candidate_01.tex`, compiled |
 | candidate-abstract-2 | sibling | abstract candidate 2 | closed, compiled, build passed | `abstract_candidate_02.tex` |
 | candidate-abstract-3 | sibling | abstract candidate 3 | done, compiled, build passed | `abstract_candidate_03.tex` |

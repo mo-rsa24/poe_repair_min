@@ -8,20 +8,20 @@
     "bytes": 75824
    },
    "review": {
-    "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
-    "abs": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
+    "path": "plans/03-does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
+    "abs": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/plans/03-does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
     "mtime": "2026-08-10T19:14:11+00:00",
     "bytes": 13276
    },
    "plan": {
-    "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/plans/hypothesis-02-more-correction-more-composition.md",
-    "abs": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/plans/hypothesis-02-more-correction-more-composition.md",
+    "path": "plans/03-does-the-correction-cause-composition/plans/hypothesis-02-more-correction-more-composition.md",
+    "abs": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/plans/03-does-the-correction-cause-composition/plans/hypothesis-02-more-correction-more-composition.md",
     "mtime": "2026-08-10T18:37:11+00:00",
     "bytes": 12484
    },
    "procedure": {
-    "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/procedures/hypothesis-02-recheck-the-headline-numbers.md",
-    "abs": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/procedures/hypothesis-02-recheck-the-headline-numbers.md",
+    "path": "plans/03-does-the-correction-cause-composition/procedures/hypothesis-02-recheck-the-headline-numbers.md",
+    "abs": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/plans/03-does-the-correction-cause-composition/procedures/hypothesis-02-recheck-the-headline-numbers.md",
     "mtime": "2026-08-10T18:10:59+00:00",
     "bytes": 12626
    },
@@ -81,7 +81,7 @@
   }
  },
  "verdict": {
-  "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
+  "path": "plans/03-does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
   "lines": [
    7,
    10
@@ -94,7 +94,7 @@
   ]
  },
  "runKind": {
-  "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
+  "path": "plans/03-does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
   "line": 28,
   "text": "**Tests the claim.** So a failure of the pre-registered bar closes the plan and opens one"
  },
@@ -6431,7 +6431,7 @@
     "`detection_scorer.py`)"
    ],
    "source": {
-    "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
+    "path": "plans/03-does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
     "lines": [
      56,
      62
@@ -6452,7 +6452,7 @@
     "comparison is gone."
    ],
    "source": {
-    "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
+    "path": "plans/03-does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
     "lines": [
      131,
      135
@@ -6482,7 +6482,7 @@
     "\u2713 verified (control \u03bb=1 goes 2 boxes to 1; oracle \u03bb=1 goes 3 to 2 and stays `compose`)"
    ],
    "source": {
-    "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
+    "path": "plans/03-does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
     "lines": [
      82,
      95
@@ -6509,7 +6509,7 @@
     "steps. 8 tests, each shown to fail against a deliberately mutated sampler."
    ],
    "source": {
-    "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
+    "path": "plans/03-does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
     "lines": [
      66,
      70
@@ -6535,7 +6535,7 @@
     "three. So the rows differ in direction and not in magnitude, which is what the control is for."
    ],
    "source": {
-    "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
+    "path": "plans/03-does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
     "lines": [
      71,
      74
@@ -6561,7 +6561,7 @@
     "separate animals. The controls are real, not cosmetic."
    ],
    "source": {
-    "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
+    "path": "plans/03-does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
     "lines": [
      75,
      78
@@ -6594,7 +6594,7 @@
     "elephant and a penguin share nothing, and PoE still fuses them into one creature at \u03bb=0, so"
    ],
    "source": {
-    "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
+    "path": "plans/03-does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
     "lines": [
      176,
      192
@@ -6616,7 +6616,7 @@
     "is a limitations sentence, owed by writing-06."
    ],
    "source": {
-    "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
+    "path": "plans/03-does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
     "lines": [
      197,
      201
@@ -6637,7 +6637,7 @@
     "Owned by the last task in the design plan."
    ],
    "source": {
-    "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
+    "path": "plans/03-does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
     "lines": [
      121,
      125
@@ -6647,7 +6647,7 @@
   }
  ],
  "supersededTable": {
-  "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
+  "path": "plans/03-does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md",
   "lines": [
    137,
    141
@@ -6716,7 +6716,7 @@
   },
   "guardFilesystem": "/datasets",
   "planTask": {
-   "path": "plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/plans/hypothesis-02-more-correction-more-composition.md",
+   "path": "plans/03-does-the-correction-cause-composition/plans/hypothesis-02-more-correction-more-composition.md",
    "line": 130,
    "text": "- [ ] Move the output off /home-mscluster and repoint `run_dose_sweep.sh`. Its"
   }

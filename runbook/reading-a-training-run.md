@@ -5,7 +5,7 @@ it. The recorded things come in two kinds: **per-step curves** (logged to W&B on
 optimizer step) and the **tracking set**, the fixed list of images and curves saved at every
 10k-step checkpoint. The tracking set is frozen before a run launches so that every
 checkpoint of every run is comparable; its contents are decided in
-[the showcase scope's decision ledger](../plans/closing-the-compositional-gap/plans/showcase-the-trained-lora/decisions-taken-here.md).
+[the showcase scope's decision ledger](../plans/01-showcase-the-trained-lora/decisions-taken-here.md).
 
 W&B project: [prime_lab/poe-repair-animals-compose](https://wandb.ai/prime_lab/poe-repair-animals-compose).
 Run folders: `artifacts/results/does-the-fix-reach-unseen-pairs/pooled_lora/<run_id>/`

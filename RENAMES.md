@@ -165,3 +165,31 @@ into experiment-named groupings: listed in the plan's rename table, not attempte
 | plans/closing-the-compositional-gap/plans/showcase-the-trained-adapter/decisions-taken-here.md | plans/closing-the-compositional-gap/plans/showcase-the-trained-lora/decisions-taken-here.md | absorbed into the merged scope ledger; original kept at artifacts/drips/showcase-the-trained-adapter/reconciled-ledger-now-absorbed.md |
 | plans/closing-the-compositional-gap/plans/showcase-the-trained-lora/ | plans/closing-the-compositional-gap/plans/showcase-the-trained-adapter/ | the two parallel showcase scopes merged under the adapter name by the user's call; the five plan files, four review files, diagrams and ledger moved intact; the residual frame (old MASTER_PLAN.md) is at artifacts/plans/archived/showcase-the-trained-lora/ |
 | plans/closing-the-compositional-gap/plans/showcase-the-trained-adapter/ | plans/closing-the-compositional-gap/plans/showcase-the-trained-lora/ | renamed back per the arbitration in DRIFT_LOG.md once the authoring session went quiet; contents moved intact |
+
+## 2026-08-29: the paper's sub-scopes promoted to numbered top-level scopes
+
+The parent scope `closing-the-compositional-gap/` held six sub-scopes one hop down, while a
+seventh peer sat at the top level, so `ls plans/` showed neither the whole set nor any order.
+Every scope is now standalone directly under `plans/`, numbered in the order a reader meets them.
+The number is a reading order, not the step order, which stays in the root `## Running order`.
+
+| Old path | New path | Why |
+|---|---|---|
+| `plans/closing-the-compositional-gap/plans/showcase-the-trained-lora/` | `plans/01-showcase-the-trained-lora/` | the trained adapter is the artifact the paper ships and the other scopes measure against |
+| `plans/closing-the-compositional-gap/plans/can-we-trust-the-compose-rate/` | `plans/02-can-we-trust-the-compose-rate/` | the instrument every number in 03 and 04 leans on |
+| `plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/` | `plans/03-does-the-correction-cause-composition/` | the causal claim |
+| `plans/closing-the-compositional-gap/plans/does-the-fix-reach-unseen-pairs/` | `plans/04-does-the-fix-reach-unseen-pairs/` | the transfer claim, which the causal claim precedes |
+| `plans/closing-the-compositional-gap/plans/when-does-the-outcome-lock-in/` | `plans/05-when-does-the-outcome-lock-in/` | the mechanism question the two claims raise |
+| `plans/is-the-gap-the-samplers-or-the-models/` | `plans/06-is-the-gap-the-samplers-or-the-models/` | already top-level; numbered into the same order |
+| `plans/closing-the-compositional-gap/plans/writing-the-paper/` | `plans/07-writing-the-paper/` | consumes everything above it, so it reads last |
+| `plans/closing-the-compositional-gap/diagram-prompts.md` | `plans/diagram-prompts.md` | the parent's illustrated map becomes the project map |
+| `plans/closing-the-compositional-gap/diagrams/` | `plans/diagrams/` | its renders and process history travel with it |
+| `plans/closing-the-compositional-gap/plans/diagrams/why-this-plan-exists.prompt.md` | `plans/04-does-the-fix-reach-unseen-pairs/diagrams/` | it illustrates the transfer scope's sweep, so it sits beside that plan |
+| `plans/closing-the-compositional-gap/plans/diagrams/figure-coverage-prompt.md` | `plans/diagrams/figure-coverage-prompt.md` | generic across scopes; belongs with the project map |
+| `plans/closing-the-compositional-gap/MASTER_PLAN.md` | `artifacts/plans/archived/closing-the-compositional-gap/MASTER_PLAN.md` | its mission, running-order pointer and scope table were absorbed into the root `MASTER_PLAN.md`; keeping a pointer-only scope would have preserved the hop the promotion removes |
+
+290 link edits across 109 files, resolved against each file's old location and re-emitted from its
+new one rather than string-swapped, so depth changes inside the promoted scopes were corrected too.
+Four references in the learning journeys (`sampler-correctors-for-composition`,
+`trajectory-manifold-by-hand`) were repointed in the same pass. Dangling-link count measured
+before and after: no reference that resolved before the move fails after it.

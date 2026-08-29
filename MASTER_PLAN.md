@@ -9,7 +9,7 @@ This block is a snapshot; the live version prints at session start, or on demand
 - **The last thing we did:** taught the environment the shared-device launch path (an allocated
   biggpu node with an idle second GPU, reached over SSH) and launched step 9's smoke run with it.
 - **Do this next:** step 9's one-epoch smoke run,
-  [instrument-02-three-live-curves-while-training](plans/closing-the-compositional-gap/plans/does-the-fix-reach-unseen-pairs/plans/instrument-02-three-live-curves-while-training.md),
+  [instrument-02-three-live-curves-while-training](plans/04-does-the-fix-reach-unseen-pairs/plans/instrument-02-three-live-curves-while-training.md),
   is cooking on a shared biggpu device; it gates the whole transfer chain (steps 10, 11, 12 and 14
   wait behind it, and so does register slot F8). While it runs, write steps 16 or 18, which need
   no GPU and no queue. When the run finishes, judge its three curves against the review file's
@@ -23,54 +23,54 @@ left in a queue that renumbers itself. A plan's own file carries this same numbe
 
 | Step | Plan | What it does | Status | Waits on |
 |---|---|---|---|---|
-| 1 | ~~does-the-correction-cause-composition/instrument-01-build-the-measuring-scripts~~ | the thirteen measuring scripts, built and smoked | ✅ |  |
-| 2 | ~~does-the-correction-cause-composition/instrument-02-fix-the-size-measure-before-any-result~~ | how the correction's size is expressed, fixed before any result was read | ✅ |  |
-| 3 | ~~does-the-fix-reach-unseen-pairs/instrument-01-the-clean-pair-pool~~ | the pool of pairs that blend by default, confirmed by the scorer | ✅ |  |
-| 4 | ~~does-the-correction-cause-composition/hypothesis-02-more-correction-more-composition~~ | the headline: more correction, more composition, controls flat | ✅ |  |
-| 5 | ~~does-the-correction-cause-composition/hypothesis-04-what-the-cached-runs-already-show~~ | the analyses needing no GPU and no queue | ✅ | 1 |
-| 6 | does-the-correction-cause-composition/hypothesis-03-when-in-the-run-it-matters | when the correction matters: the cliff is at the start | ◑ driving the timing tab by hand | 4, 5 |
-| 7 | ~~does-the-correction-cause-composition/hypothesis-05-the-same-story-from-three-sides~~ | the independent checks: two image-side yes, two language-side null | ✅ | 4 |
-| 8 | ~~does-the-correction-cause-composition/hypothesis-01-what-the-fix-changes-inside-the-model~~ | the fix changes what a word paints, not where it looks | ✅ | 3 |
-| 9 | does-the-fix-reach-unseen-pairs/instrument-02-three-live-curves-while-training | the one-epoch smoke confirming three live curves | ◑ run in flight; verdict lands in the review file |  |
-| 10 | does-the-fix-reach-unseen-pairs/hypothesis-01-does-one-pooled-fix-transfer-at-all | finish the read: steps 70k to 100k unscored, go/no-go note owed | ◑ run done, read incomplete | 9 |
-| 11 | does-the-fix-reach-unseen-pairs/hypothesis-02-transfer-as-a-rate-over-fifteen-pairs | fifteen adapters, leaderboard, degradation curve | ⚠️ | 10 |
-| 12 | does-the-fix-reach-unseen-pairs/baseline-01-the-size-matched-control-pool | the size-matched mixed pool against animals-only | ⚠️ | 11 |
-| 13 | does-the-correction-cause-composition/figure-01-the-seven-paper-figures | the figures this scope owes the paper | ◑ F1 to F5b, F7a, D1 to D4 built; F6 needs a decision | 6, 7, 8 |
-| 14 | does-the-fix-reach-unseen-pairs/figure-01-the-transfer-figures | the transfer evidence figures | ◑ F8a and F8b built; F8 waits on the sweep | 11, 12 |
-| 15 | does-the-correction-cause-composition/gate-01-two-literature-checks-before-print | the two `/pressure-test` passes before anything is written | ⚠️ | 13 |
-| 16 | writing-the-paper/writing-01-make-the-template-build | tectonic build, de-stub, the figure-path rule | ◑ figure-path rule written; the title is still a stub |  |
-| 17 | writing-the-paper/writing-02-the-title-and-the-section-spine | the claim in one line, section order | ⚠️ | 16 |
-| 18 | writing-the-paper/writing-05-the-results-skeleton | placeholders, not prose: empty tables and XX numbers, one per register slot | ⚠️ |  |
-| 19 | writing-the-paper/writing-03-where-each-figure-goes | which figure goes where, and the run order that implies | ⚠️ | 13, 14 |
-| 20 | writing-the-paper/writing-04-method-and-introduction | method and intro prose | ⚠️ | 17 |
-| 21 | writing-the-paper/writing-06-mechanism-and-limitations | the mechanism section, honest about what did not replicate | ⚠️ | 15, 26 |
-| 22 | writing-the-paper/writing-07-the-abstract-written-last | written last, from the spine and the method | ⚠️ | 20, 21 |
-| 23 | [is-the-gap-the-samplers-or-the-models](plans/is-the-gap-the-samplers-or-the-models/MASTER_PLAN.md) | how much of the correction is the sampler's and how much the model's, plus three composition rules on one dose axis. Grew into a scope of its own; its seven plans are steps 24 to 30 | ⚠️ its own scope | see 24 to 30 |
-| 24 | is-the-gap-the-samplers-or-the-models/hypothesis-01-the-free-bound-on-the-models-share | the correction's size as the run reaches zero noise, read off cached files. A floor under the model's share for no GPU | ⚠️ |  |
-| 25 | is-the-gap-the-samplers-or-the-models/instrument-01-the-corrector-and-the-step-size-it-runs-at | the Langevin corrector composer, both leak checks, and the step size fixed before any curve is read | ⚠️ |  |
-| 26 | is-the-gap-the-samplers-or-the-models/hypothesis-02-what-is-left-once-the-chain-settles | the gate: the correction's size per step against corrector count k, with the three-way bar in source | ⚠️ | 24, 25 |
-| 27 | is-the-gap-the-samplers-or-the-models/hypothesis-03-does-the-corrector-compose-in-the-same-window | the nine-position window sweep rerun with the corrector in place of the injected correction | ⚠️ | 26 |
-| 28 | is-the-gap-the-samplers-or-the-models/baseline-01-superdiff-at-this-repos-fifty-steps | SuperDiff wired and matched to 50 steps at guidance 7.5, with its own 200-against-50 check | ⚠️ | 26 |
-| 29 | is-the-gap-the-samplers-or-the-models/baseline-02-three-rules-on-one-dose-axis | the two dose grids putting product-of-experts, SuperDiff and the corrector on one axis | ⚠️ | 25, 28 |
-| 30 | is-the-gap-the-samplers-or-the-models/idea-01-feynman-kac-correctors-gated | the full read of arXiv 2503.02819 and a built-or-cited decision. Closes unrun if the gate came back null | ⚠️ | 26, 29 |
-| 31 | showcase-the-trained-lora/01-read-the-plateau-curves | the free curve-read that re-scopes how A and B read; informs, does not gate | ⚠️ |  |
-| 32 | showcase-the-trained-lora/02-the-dog-x-dog-null-probe | the null-input control with its baseline identity preflight | ⚠️ |  |
-| 33 | showcase-the-trained-lora/03-the-lora-dose-sweep | the causal dose curve for the shipped LoRA, four control rows | ⚠️ | 32 |
-| 34 | showcase-the-trained-lora/04-the-transfer-matrix-figure | group-pooled LoRAs on audited concept-disjoint pairs | ⚠️ |  |
-| 35 | showcase-the-trained-lora/05-assemble-the-showcase-figures | the figure set into paper/iclr/figures under the ledger's standard | ⚠️ | 32, 33, 34 |
-| 36 | showcase-the-trained-lora/06-extend-the-tracking-set | the four adopted curves wired into instrument-02's live logging, smoke-proven | ⚠️ | 31 |
-| 37 | showcase-the-trained-lora/07-experiment-c-lambda-window | lambda-times-window sweep on existing checkpoints; builds the shared injection harness | ⚠️ | 36 |
-| 38 | showcase-the-trained-lora/08-experiment-a-resume-to-200k | length axis: rank 8 resumed from 100k to 200k, sbatch on biggpu | ⚠️ | 36 |
-| 39 | showcase-the-trained-lora/09-experiment-b-rank-16-32 | rank axis at 100k: two fresh runs over the SSH idle-node path | ⚠️ | 36 |
-| 40 | showcase-the-trained-lora/10-the-mechanism-follower | h-space and Jacobian reads per broad checkpoint during A and B, ending in interventions | ⚠️ | 38, 39 started |
-| 41 | showcase-the-trained-lora/11-the-counted-joint-prompt-figure | score the joint-prompt renders; three bars per pair plus the repair strip | ⚠️ |  |
-| 42 | showcase-the-trained-lora/12-close-f8a-and-the-oracle-panel | score the 70k-100k samples; the oracle-ceiling panel that keys experiment B | ⚠️ |  |
-| 43 | showcase-the-trained-lora/13-revalidate-the-scorer-off-animals | the label-pass validation that opens tier-three captions | ⚠️ |  |
-| 44 | when-does-the-outcome-lock-in/01-basins-by-hand | one cell, three probed steps, nine endings: proves basins and a ridge exist for the composed flow, or stops the scope for one afternoon's cost | ⚠️ |  |
-| 45 | when-does-the-outcome-lock-in/02-the-free-probe | posterior-mean drift per cell from the cache alone, judged against the pre-registered ordering (settling at or before divergence) | ⚠️ |  |
-| 46 | when-does-the-outcome-lock-in/03-wire-the-oracle | LCM-SDXL downloaded to /datasets, the adapter with its three asserts, one smoke against a teacher ending | ⚠️ | 44 |
-| 47 | when-does-the-outcome-lock-in/04-calibrate-the-instrument | 240 states, oracle against teacher per family, two bars in code, verdict: adopt, shrink, or fall back | ⚠️ | 46 |
-| 48 | when-does-the-outcome-lock-in/05-the-grid-and-the-figures | both sweeps with stability copies, the speciation table, the three-timestamp figure and the compose-rate curves | ⚠️ | 45, 47 |
+| 1 | ~~03-does-the-correction-cause-composition/instrument-01-build-the-measuring-scripts~~ | the thirteen measuring scripts, built and smoked | ✅ |  |
+| 2 | ~~03-does-the-correction-cause-composition/instrument-02-fix-the-size-measure-before-any-result~~ | how the correction's size is expressed, fixed before any result was read | ✅ |  |
+| 3 | ~~04-does-the-fix-reach-unseen-pairs/instrument-01-the-clean-pair-pool~~ | the pool of pairs that blend by default, confirmed by the scorer | ✅ |  |
+| 4 | ~~03-does-the-correction-cause-composition/hypothesis-02-more-correction-more-composition~~ | the headline: more correction, more composition, controls flat | ✅ |  |
+| 5 | ~~03-does-the-correction-cause-composition/hypothesis-04-what-the-cached-runs-already-show~~ | the analyses needing no GPU and no queue | ✅ | 1 |
+| 6 | 03-does-the-correction-cause-composition/hypothesis-03-when-in-the-run-it-matters | when the correction matters: the cliff is at the start | ◑ driving the timing tab by hand | 4, 5 |
+| 7 | ~~03-does-the-correction-cause-composition/hypothesis-05-the-same-story-from-three-sides~~ | the independent checks: two image-side yes, two language-side null | ✅ | 4 |
+| 8 | ~~03-does-the-correction-cause-composition/hypothesis-01-what-the-fix-changes-inside-the-model~~ | the fix changes what a word paints, not where it looks | ✅ | 3 |
+| 9 | 04-does-the-fix-reach-unseen-pairs/instrument-02-three-live-curves-while-training | the one-epoch smoke confirming three live curves | ◑ run in flight; verdict lands in the review file |  |
+| 10 | 04-does-the-fix-reach-unseen-pairs/hypothesis-01-does-one-pooled-fix-transfer-at-all | finish the read: steps 70k to 100k unscored, go/no-go note owed | ◑ run done, read incomplete | 9 |
+| 11 | 04-does-the-fix-reach-unseen-pairs/hypothesis-02-transfer-as-a-rate-over-fifteen-pairs | fifteen adapters, leaderboard, degradation curve | ⚠️ | 10 |
+| 12 | 04-does-the-fix-reach-unseen-pairs/baseline-01-the-size-matched-control-pool | the size-matched mixed pool against animals-only | ⚠️ | 11 |
+| 13 | 03-does-the-correction-cause-composition/figure-01-the-seven-paper-figures | the figures this scope owes the paper | ◑ F1 to F5b, F7a, D1 to D4 built; F6 needs a decision | 6, 7, 8 |
+| 14 | 04-does-the-fix-reach-unseen-pairs/figure-01-the-transfer-figures | the transfer evidence figures | ◑ F8a and F8b built; F8 waits on the sweep | 11, 12 |
+| 15 | 03-does-the-correction-cause-composition/gate-01-two-literature-checks-before-print | the two `/pressure-test` passes before anything is written | ⚠️ | 13 |
+| 16 | 07-writing-the-paper/writing-01-make-the-template-build | tectonic build, de-stub, the figure-path rule | ◑ figure-path rule written; the title is still a stub |  |
+| 17 | 07-writing-the-paper/writing-02-the-title-and-the-section-spine | the claim in one line, section order | ⚠️ | 16 |
+| 18 | 07-writing-the-paper/writing-05-the-results-skeleton | placeholders, not prose: empty tables and XX numbers, one per register slot | ⚠️ |  |
+| 19 | 07-writing-the-paper/writing-03-where-each-figure-goes | which figure goes where, and the run order that implies | ⚠️ | 13, 14 |
+| 20 | 07-writing-the-paper/writing-04-method-and-introduction | method and intro prose | ⚠️ | 17 |
+| 21 | 07-writing-the-paper/writing-06-mechanism-and-limitations | the mechanism section, honest about what did not replicate | ⚠️ | 15, 26 |
+| 22 | 07-writing-the-paper/writing-07-the-abstract-written-last | written last, from the spine and the method | ⚠️ | 20, 21 |
+| 23 | [is-the-gap-the-samplers-or-the-models](plans/06-is-the-gap-the-samplers-or-the-models/MASTER_PLAN.md) | how much of the correction is the sampler's and how much the model's, plus three composition rules on one dose axis. Grew into a scope of its own; its seven plans are steps 24 to 30 | ⚠️ its own scope | see 24 to 30 |
+| 24 | 06-is-the-gap-the-samplers-or-the-models/hypothesis-01-the-free-bound-on-the-models-share | the correction's size as the run reaches zero noise, read off cached files. A floor under the model's share for no GPU | ⚠️ |  |
+| 25 | 06-is-the-gap-the-samplers-or-the-models/instrument-01-the-corrector-and-the-step-size-it-runs-at | the Langevin corrector composer, both leak checks, and the step size fixed before any curve is read | ⚠️ |  |
+| 26 | 06-is-the-gap-the-samplers-or-the-models/hypothesis-02-what-is-left-once-the-chain-settles | the gate: the correction's size per step against corrector count k, with the three-way bar in source | ⚠️ | 24, 25 |
+| 27 | 06-is-the-gap-the-samplers-or-the-models/hypothesis-03-does-the-corrector-compose-in-the-same-window | the nine-position window sweep rerun with the corrector in place of the injected correction | ⚠️ | 26 |
+| 28 | 06-is-the-gap-the-samplers-or-the-models/baseline-01-superdiff-at-this-repos-fifty-steps | SuperDiff wired and matched to 50 steps at guidance 7.5, with its own 200-against-50 check | ⚠️ | 26 |
+| 29 | 06-is-the-gap-the-samplers-or-the-models/baseline-02-three-rules-on-one-dose-axis | the two dose grids putting product-of-experts, SuperDiff and the corrector on one axis | ⚠️ | 25, 28 |
+| 30 | 06-is-the-gap-the-samplers-or-the-models/idea-01-feynman-kac-correctors-gated | the full read of arXiv 2503.02819 and a built-or-cited decision. Closes unrun if the gate came back null | ⚠️ | 26, 29 |
+| 31 | 01-showcase-the-trained-lora/01-read-the-plateau-curves | the free curve-read that re-scopes how A and B read; informs, does not gate | ⚠️ |  |
+| 32 | 01-showcase-the-trained-lora/02-the-dog-x-dog-null-probe | the null-input control with its baseline identity preflight | ⚠️ |  |
+| 33 | 01-showcase-the-trained-lora/03-the-lora-dose-sweep | the causal dose curve for the shipped LoRA, four control rows | ⚠️ | 32 |
+| 34 | 01-showcase-the-trained-lora/04-the-transfer-matrix-figure | group-pooled LoRAs on audited concept-disjoint pairs | ⚠️ |  |
+| 35 | 01-showcase-the-trained-lora/05-assemble-the-showcase-figures | the figure set into paper/iclr/figures under the ledger's standard | ⚠️ | 32, 33, 34 |
+| 36 | 01-showcase-the-trained-lora/06-extend-the-tracking-set | the four adopted curves wired into instrument-02's live logging, smoke-proven | ⚠️ | 31 |
+| 37 | 01-showcase-the-trained-lora/07-experiment-c-lambda-window | lambda-times-window sweep on existing checkpoints; builds the shared injection harness | ⚠️ | 36 |
+| 38 | 01-showcase-the-trained-lora/08-experiment-a-resume-to-200k | length axis: rank 8 resumed from 100k to 200k, sbatch on biggpu | ⚠️ | 36 |
+| 39 | 01-showcase-the-trained-lora/09-experiment-b-rank-16-32 | rank axis at 100k: two fresh runs over the SSH idle-node path | ⚠️ | 36 |
+| 40 | 01-showcase-the-trained-lora/10-the-mechanism-follower | h-space and Jacobian reads per broad checkpoint during A and B, ending in interventions | ⚠️ | 38, 39 started |
+| 41 | 01-showcase-the-trained-lora/11-the-counted-joint-prompt-figure | score the joint-prompt renders; three bars per pair plus the repair strip | ⚠️ |  |
+| 42 | 01-showcase-the-trained-lora/12-close-f8a-and-the-oracle-panel | score the 70k-100k samples; the oracle-ceiling panel that keys experiment B | ⚠️ |  |
+| 43 | 01-showcase-the-trained-lora/13-revalidate-the-scorer-off-animals | the label-pass validation that opens tier-three captions | ⚠️ |  |
+| 44 | 05-when-does-the-outcome-lock-in/01-basins-by-hand | one cell, three probed steps, nine endings: proves basins and a ridge exist for the composed flow, or stops the scope for one afternoon's cost | ⚠️ |  |
+| 45 | 05-when-does-the-outcome-lock-in/02-the-free-probe | posterior-mean drift per cell from the cache alone, judged against the pre-registered ordering (settling at or before divergence) | ⚠️ |  |
+| 46 | 05-when-does-the-outcome-lock-in/03-wire-the-oracle | LCM-SDXL downloaded to /datasets, the adapter with its three asserts, one smoke against a teacher ending | ⚠️ | 44 |
+| 47 | 05-when-does-the-outcome-lock-in/04-calibrate-the-instrument | 240 states, oracle against teacher per family, two bars in code, verdict: adopt, shrink, or fall back | ⚠️ | 46 |
+| 48 | 05-when-does-the-outcome-lock-in/05-the-grid-and-the-figures | both sweeps with stability copies, the speciation table, the three-timestamp figure and the compose-rate curves | ⚠️ | 45, 47 |
 
 Steps 16 and 18 wait on nothing and need no GPU, so they are what to write while a run cooks.
 Steps 24 and 25 wait on nothing either: 24 needs no GPU at all, and 25 is a build.
@@ -79,7 +79,7 @@ Steps 24 and 25 wait on nothing either: 24 needs no GPU at all, and 25 is a buil
 
 A pool, not an order. Pull from it when a claim needs backing or a method needs a source.
 Found with `/paper-scout`, read with `/unpack-paper` or `/drip --paper`, registered in
-[plans/standing/literature/](plans/standing/literature/). No row here blocks a row above.
+[plans/standing/literature/](plans/standing/literature). No row here blocks a row above.
 
 | Paper | Why it matters to us | Which claim it touches | Read |
 |---|---|---|---|
@@ -93,12 +93,12 @@ task in the plan tree directly, never in a separate holding file.
 
 | Run | What it would earn | State |
 |---|---|---|
-| does-the-correction-cause-composition/idea-01-does-it-hold-for-attribute-pairs | whether the correction behaves the same for attribute pairs as for object pairs, which would widen the claim's reach | ⚠️ not started |
-| does-the-correction-cause-composition/generalization-01-other-models-and-samplers | the same result on a second model and sampler, which is a likely reviewer ask but not a claim we make | ⚠️ not started |
-| can-we-trust-the-compose-rate/gate-01-is-this-hole-already-known | whether "presence metrics miss fusion, count metrics miss a repeat" is already published. Already-known cancels the two rows below and leaves a methods paragraph | ⚠️ not started |
-| can-we-trust-the-compose-rate/instrument-01-the-three-state-labelled-set | the band on every compose rate the paper prints, and whether the scorer's error grows with λ. A 10-point growth caps F2's caption | ⚠️ not started, runs whatever gate-01 says |
-| can-we-trust-the-compose-rate/idea-01-what-the-current-benchmarks-score | whether any published metric agrees with people where ours does not, at 95% against our 85% | ⚠️ not started, blocked by gate-01 |
-| can-we-trust-the-compose-rate/gate-02-promote-or-close | the decision that moves this scope into the paper table with a step number, or closes it | ⚠️ not started, blocked by all three |
+| 03-does-the-correction-cause-composition/idea-01-does-it-hold-for-attribute-pairs | whether the correction behaves the same for attribute pairs as for object pairs, which would widen the claim's reach | ⚠️ not started |
+| 03-does-the-correction-cause-composition/generalization-01-other-models-and-samplers | the same result on a second model and sampler, which is a likely reviewer ask but not a claim we make | ⚠️ not started |
+| 02-can-we-trust-the-compose-rate/gate-01-is-this-hole-already-known | whether "presence metrics miss fusion, count metrics miss a repeat" is already published. Already-known cancels the two rows below and leaves a methods paragraph | ⚠️ not started |
+| 02-can-we-trust-the-compose-rate/instrument-01-the-three-state-labelled-set | the band on every compose rate the paper prints, and whether the scorer's error grows with λ. A 10-point growth caps F2's caption | ⚠️ not started, runs whatever gate-01 says |
+| 02-can-we-trust-the-compose-rate/idea-01-what-the-current-benchmarks-score | whether any published metric agrees with people where ours does not, at 95% against our 85% | ⚠️ not started, blocked by gate-01 |
+| 02-can-we-trust-the-compose-rate/gate-02-promote-or-close | the decision that moves this scope into the paper table with a step number, or closes it | ⚠️ not started, blocked by all three |
 
 ## Standing jobs
 
@@ -118,17 +118,50 @@ above. Standing means it is re-entered, never finished. Done means its output ex
 use. Nothing here is ambiguous on purpose: a scope that cannot say its state in one line gets
 shelved until it can.
 
-The listing itself now says the state: a bare folder is live, and everything else sits in a
-container named for its state.
+The listing itself says the state: a numbered folder is live and its number is its place in the
+reading order below, and everything else sits in a container named for its state. The numbers
+order the scopes for a reader arriving cold; they are not the step order, which stays in the one
+`## Running order` table above and interleaves across scopes.
 
 | Folder | State | One line |
 |---|---|---|
-| `closing-the-compositional-gap/` | live, the paper | one parent scope for the manuscript and its two result claims: `does-the-correction-cause-composition` (causal), `does-the-fix-reach-unseen-pairs` (transfer), `writing-the-paper` (the draft), `can-we-trust-the-compose-rate` (tries an idea: can the printed rates be trusted), `when-does-the-outcome-lock-in` (the commitment probe: at which step the final image is decided) |
-| `is-the-gap-the-samplers-or-the-models/` | live, nothing started | the one threat to the paper's framing: how much of the correction a Langevin corrector removes, and how much no corrector touches. Then three composition rules on one dose axis. Its own scope rather than a step inside the causal one, because none of it has run and its seven plans build two composers before they measure anything |
-| `standing/literature/` | standing | the reading register |
-| `shelved/artifact-reconciliation/` | shelved | artifacts catalogued and integrity-checked; retired 2026-08-24, not worth the overhead |
-| `completed/compose-scorer/` | done | delivered `scorer_validated.json`, in use by both result scopes |
-| `shelved/` | the shelf | `rungs`, `mechanism-study`, `phases`; one line at the top of each says what would bring it back |
+| `01-showcase-the-trained-lora/` | live | the trained adapter `phase1_r8_100k` and the paper figures measured from its own output, under the decision ledger the two design walks settled. First because the adapter is the artifact the paper ships and the other scopes measure against it |
+| `02-can-we-trust-the-compose-rate/` | live | the instrument: whether the printed compose rates can be trusted at all. Second because every number in scopes 03 and 04 leans on the scorer this scope audits |
+| `03-does-the-correction-cause-composition/` | live | the causal claim: the correction exists, causes composition, has a timing window, and is learnable |
+| `04-does-the-fix-reach-unseen-pairs/` | live | the transfer claim: one pooled LoRA composes pairs it never trained on. Depends on `compose-scorer`'s `scorer_validated.json` |
+| `05-when-does-the-outcome-lock-in/` | live, nothing started | the commitment probe: at which step the final image is decided, which is what explains the gap between the injection window and the divergence step. Adopted the basin-oracle walk's decision ledger |
+| `06-is-the-gap-the-samplers-or-the-models/` | live, nothing started | the one threat to the paper's framing: how much of the correction a Langevin corrector removes, and how much no corrector touches. Then three composition rules on one dose axis |
+| `07-writing-the-paper/` | live | the ICLR manuscript in `paper/iclr/`. No GPU, no queue. Runs nothing and consumes everything the six scopes above produce |
+| `standing/literature/` | standing | the reading register: what the field already knows, and the source behind every idea-trying run |
+| `completed/compose-scorer/` | done | delivered `scorer_validated.json`, the cross-scope contract, in use by scopes 03 and 04 |
+| `shelved/` | the shelf | `artifact-reconciliation`, `composition-type-cells`, `cross-model-replication`, `inspector-interaction-term`, `mechanism-study`, `phases`, `rungs`; one line at the top of each says what would bring it back |
+
+### Every filename says its run kind
+
+Inside any scope, `ls plans/` sorts the work by run kind, because the kind is the filename's first
+word. The rule attached to each kind is what that plan answers to.
+
+| Prefix | Run kind | Its rule |
+|---|---|---|
+| `hypothesis-NN-` | tests the core claim | seen to the end unless the science is wrong; a pre-registered bar in its review file |
+| `baseline-NN-` | a competitor to beat | frozen the moment it lands |
+| `figure-NN-` | draws a settled result for the paper | the caption may claim no more than its register slot's sentence |
+| `idea-NN-` | tries a new technique | names the paper it came from; a result becomes a deferred task, never a claim |
+| `generalization-NN-` | other models, datasets, samplers | instances chosen before any runs; a failure bounds the claim's scope |
+| `instrument-NN-` | not a run: a tool or a choice fixed before results | judged by whether it can fail, not by what it found |
+| `gate-NN-` | not a run: a literature check before print | a `/pressure-test` verdict |
+| `writing-NN-` | not a run: manuscript prose | consumes the register and the review files |
+
+### Figures first, then the writing
+
+The figure register, [the eight slots and the claim each will make](paper/iclr/figures.md), is the
+scoreboard, and a reserved slot is not idle: it carries the claim its caption will make, written
+before the experiment runs. Work in these scopes means resolving slots.
+
+The trigger to start writing in earnest is 5 to 10 slots resolved (built, fillable, or honestly
+downgraded with the boundary stated). The skeleton plus five real figures is a draft; eight perfect
+figures with no prose is not. A background result that earns a slot moves into the paper table and
+gets a step number, which is how a promotion becomes visible instead of being a quiet field change.
 
 ## One plan, one table
 
@@ -200,12 +233,19 @@ recorded in the decision timeline.
 7. ✅ G5 (entanglement) explicitly deferred with rationale.
 
 ## Sub-Scopes
-- ⚠️ plans/shelved/artifact-reconciliation/ — "keep run artifacts catalogued, integrity-checked, canonically organised" (shelved 2026-08-24, not worth the overhead)
-- ⚠️ plans/completed/compose-scorer/ — reusable instrument: a 3-anchor scorer that tells a two-animal composition from a chimera blend; emits scorer_validated.json (the cross-scope contract)
-- ⚠️ plans/closing-the-compositional-gap/plans/does-the-fix-reach-unseen-pairs/ — animals-only hard-pair LoRA transfer (leave-one-pair-out + size-matched-mixed contrast); DEPENDS ON compose-scorer's scorer_validated.json
-- ⚠️ plans/standing/literature/ — standing: what the field already knows, and the source behind every idea-trying run
-- ⚠️ plans/closing-the-compositional-gap/plans/writing-the-paper/ — the ICLR manuscript in `paper/iclr/`; no GPU, no queue
-- ⚠️ plans/is-the-gap-the-samplers-or-the-models/ — sizes the sampler's share of the correction against the model's, and compares three composition rules on one dose axis; nothing started; step 21 waits on its gate for the number
+
+Seven live scopes, in the reading order their numbers fix. Each is standalone: it links to the
+others where it depends on them, and no scope holds an order of its own.
+
+- ⚠️ [01-showcase-the-trained-lora](plans/01-showcase-the-trained-lora/MASTER_PLAN.md) — the trained adapter's own measured output as the paper's results figures, under the scope's decision ledger. Root running-order steps 31 to 35
+- ⚠️ [02-can-we-trust-the-compose-rate](plans/02-can-we-trust-the-compose-rate/MASTER_PLAN.md) — whether the printed compose rates survive an audit; earns numbered steps only on the promotion condition its own master plan sets
+- ⚠️ [03-does-the-correction-cause-composition](plans/03-does-the-correction-cause-composition/MASTER_PLAN.md) — the causal claim. Steps 1, 2, 3, 8, 9, 10, 19
+- ⚠️ [04-does-the-fix-reach-unseen-pairs](plans/04-does-the-fix-reach-unseen-pairs/MASTER_PLAN.md) — the transfer claim. Steps 4 to 7 and 11. Depends on `compose-scorer`'s `scorer_validated.json`
+- ⚠️ [05-when-does-the-outcome-lock-in](plans/05-when-does-the-outcome-lock-in/MASTER_PLAN.md) — the commitment probe, adopting the basin-oracle walk's ledger. Not yet in the running order
+- ⚠️ [06-is-the-gap-the-samplers-or-the-models](plans/06-is-the-gap-the-samplers-or-the-models/MASTER_PLAN.md) — the sampler's share of the correction against the model's, then three composition rules on one dose axis. Nothing started
+- ⚠️ [07-writing-the-paper](plans/07-writing-the-paper/MASTER_PLAN.md) — the manuscript. Steps 12 to 18
+- ⚠️ [standing/literature](plans/standing/literature/MASTER_PLAN.md) — standing: what the field already knows, and the source behind every idea-trying run
+- ✅ [completed/compose-scorer](plans/completed/compose-scorer/MASTER_PLAN.md) — the reusable instrument that tells a two-animal composition from a chimera blend; emits `scorer_validated.json`
 
 ## Plans
 (One plan file per pyramid rung, grouped under `plans/rungs/`. Detailed phase

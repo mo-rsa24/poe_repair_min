@@ -203,7 +203,7 @@ a_dog__x__oil_painting_style:
 verifies every slug in `pair_pool.train ∪ pair_pool.heldout` has an
 entry.
 
-**A6.** Write the three YAMLs under [outputs/cross_pair_lora_pooling/](../outputs/cross_pair_lora_pooling/).
+**A6.** Write the three YAMLs under [outputs/cross_pair_lora_pooling/](../outputs/cross_pair_lora_pooling).
 
 **A7.** Negative tests inline (no pytest needed):
 

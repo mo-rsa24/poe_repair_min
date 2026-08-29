@@ -123,5 +123,5 @@ embed-on-pass, plus a render-diagrams row in Who writes what).
 
 ## Next step
 
-Run the skill's first drain on plans/closing-the-compositional-gap/diagram-prompts.md (slice 1's
+Run the skill's first drain on plans/diagram-prompts.md (slice 1's
 proof target), then build slice 3 (the sync sweep line) and slice 4 (the documentation producer).

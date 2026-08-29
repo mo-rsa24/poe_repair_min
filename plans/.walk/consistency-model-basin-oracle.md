@@ -9,7 +9,7 @@ the layer that owns it; `compile` collects them into the decision ledger.
 ## Position
 
 Compiled, and the scope is built. The ledger lives as
-[the scope's decision file](../closing-the-compositional-gap/plans/when-does-the-outcome-lock-in/decisions-taken-here.md). The vocabulary table
+[the scope's decision file](../05-when-does-the-outcome-lock-in/decisions-taken-here.md). The vocabulary table
 below is the walk's record of what needed defining; where such tables should durably live is
 still an open family question, so until then it lives here. Layer 1 is
 walked after the pieces, or on `skip`.

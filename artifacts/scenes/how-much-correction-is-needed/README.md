@@ -7,14 +7,14 @@ under this README's own instructions below (stated, not independently re-verifie
 `poe_repair/paths.py`'s `HOW_MUCH_CORRECTION_IS_NEEDED` root (still on `/home-mscluster` and
 `/datasets`, verified by `loader/build_data.py`'s own `paths.resolve(...)` calls), the compose
 scorer's size floor read live from `detection_scorer.py`, and the nine claims in
-`plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md`.
+`plans/03-does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md`.
 
 **why** to make the correction-strength result operable rather than only readable: scrub the
 strength slider and the curve, the three rates, and the pictures move together, each one
 recomputed in the browser and checked against the file it came from.
 
 **depends on** stated as of this move (2026-08-24), moved here from
-`plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/scene/` as part
+`plans/03-does-the-correction-cause-composition/scene/` as part
 of the retrofit sweep's pile 1c:
 - `node_modules/` and `dist/` were **not** moved; they still sit at the old path above, now
   orphaned from the source that built them (a loose end for a later pass, not fixed here).

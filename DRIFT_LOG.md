@@ -2,6 +2,26 @@
 
 Where the tree was found to disagree with reality, and when.
 
+## 2026-08-29: the plan tree had a parent layer that carried no order
+
+`plans/` showed two live folders, and one of them hid six scopes a level down. The root
+`MASTER_PLAN.md` already owned the mission, the one running order and the scope-state table, so
+the parent `closing-the-compositional-gap/` carried no order of its own and cost every reader a
+hop. A seventh scope of equal standing, `is-the-gap-the-samplers-or-the-models/`, sat at the top
+level, so the listing showed neither the whole set nor any sequence.
+
+- All seven scopes now sit directly under `plans/`, numbered `01` to `07` in the order a reader
+  meets them: the shipped adapter, the instrument, the causal claim, the transfer claim, the
+  commitment probe, the framing threat, the manuscript. The rename table is in `RENAMES.md`.
+- The number is a reading order and nothing else. Step order stays interleaved in the root
+  `## Running order`, where a plan's step number is permanent.
+- The parent's unique prose (the run-kind filename vocabulary, the figures-first rule) moved into
+  the root `MASTER_PLAN.md`; the emptied shell is at
+  `artifacts/plans/archived/closing-the-compositional-gap/`.
+- Links were resolved against each file's old location and re-emitted from its new one, because a
+  string swap would have left every escaping relative link inside a promoted scope two levels too
+  deep. Dangling links were counted at the checkpoint commit and again after: the move added none.
+
 ## 2026-08-29: two sessions authored the showcase scope concurrently
 
 Two live sessions populated the same scope in parallel. One (this log's author) merged the

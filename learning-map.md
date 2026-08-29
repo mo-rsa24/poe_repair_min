@@ -19,7 +19,7 @@ order says is coming. Maintained by `learning-pulse`; rendered by `/render-diagr
 
 Navigation: 📋 [TOC](#table-of-contents) | [Meaning palette](#meaning-palette) ➡️
 
-**Vivid circuit**, inherited from the closing-the-compositional-gap scope's map so the two read as
+**Vivid circuit**, inherited from the project map at `plans/diagram-prompts.md` so the two read as
 one system. The style paragraph is embedded verbatim at the head of every prompt below.
 
 ## Meaning palette

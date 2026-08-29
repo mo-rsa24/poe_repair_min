@@ -1,6 +1,6 @@
 # Instrument smoke: does-the-correction-cause-composition scope
 
-Recorded outputs from plan `plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/plans/instrument-01-build-the-measuring-scripts.md`.
+Recorded outputs from plan `plans/03-does-the-correction-cause-composition/plans/instrument-01-build-the-measuring-scripts.md`.
 Every number below was produced by running the command shown, on
 `a_cat__x__a_dog` seed 9 unless stated. Node mscluster85, RTX 3090, co3 env.
 

@@ -97,4 +97,4 @@ No skips: all six layers have content for this target.
 
 ## Next step
 
-Compiled with --write on 2026-08-29. The ledger is the scope's decisions-taken-here.md; the scope is built at plans/closing-the-compositional-gap/plans/showcase-the-trained-lora/ (now thirteen plans, twelve review files, illustrated map, root running-order steps 31-43) and verified. This walk is complete.
+Compiled with --write on 2026-08-29. The ledger is the scope's decisions-taken-here.md; the scope is built at plans/01-showcase-the-trained-lora/ (now thirteen plans, twelve review files, illustrated map, root running-order steps 31-43) and verified. This walk is complete.

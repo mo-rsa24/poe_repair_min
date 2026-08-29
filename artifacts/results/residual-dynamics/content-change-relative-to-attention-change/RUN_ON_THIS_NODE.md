@@ -180,9 +180,9 @@ scancel 26881              # only if this node's run has finished the cells
 
 ## After the verdict
 
-Mark plan 02 in `plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/plans/hypothesis-01-what-the-fix-changes-inside-the-model.md`, record
+Mark plan 02 in `plans/03-does-the-correction-cause-composition/plans/hypothesis-01-what-the-fix-changes-inside-the-model.md`, record
 the verdict either way, and update the Plans list in
-`plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/MASTER_PLAN.md`.
+`plans/03-does-the-correction-cause-composition/MASTER_PLAN.md`.
 
 Plans still open in that scope: 03 (dose-response, the causal headline), 04
 (window timing), 05 (cache analyses, task 1 done, five tasks left and all

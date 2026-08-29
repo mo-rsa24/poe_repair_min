@@ -370,7 +370,7 @@ lives as an exploratory thread under artifacts/ideas/. No video route, because i
   each pair's commitment step marked, assembled from the existing 288 cells. (c) is not owed
   unless the spine later claims a door location. Caveat owed: early-timing is also what a sampler
   artifact looks like; the sampler-vs-model split is owned by
-  plans/is-the-gap-the-samplers-or-the-models/ and its falsification criterion is already
+  plans/06-is-the-gap-the-samplers-or-the-models/ and its falsification criterion is already
   written there. Constraint exported to layer 5: any residual-free steering must inject before
   ~step 10 to have a chance.
 
@@ -487,7 +487,7 @@ lives as an exploratory thread under artifacts/ideas/. No video route, because i
 ## Compile (2026-08-29)
 
 Ledger written to
-plans/closing-the-compositional-gap/plans/showcase-the-trained-lora/decisions-taken-here.md.
+plans/01-showcase-the-trained-lora/decisions-taken-here.md.
 Layers 3 and 6 compiled as open; layer 2's space decision stays with the other thread.
 
 ## Routes emitted
@@ -502,5 +502,5 @@ Layers 3 and 6 compiled as open; layer 2's space decision stays with the other t
 
 ## Next step
 
-Walk complete. The ledger at plans/closing-the-compositional-gap/plans/showcase-the-trained-lora/decisions-taken-here.md carries all six layers; the route out (init-master-plan, populate-plans, verify-plan) was emitted 2026-08-29 and is with the user. The vocabulary table lives here until a durable home exists. Other thread: layer 2 round 1 delivered: measure in guided-epsilon space vs show in predicted-x0/pixels,
+Walk complete. The ledger at plans/01-showcase-the-trained-lora/decisions-taken-here.md carries all six layers; the route out (init-master-plan, populate-plans, verify-plan) was emitted 2026-08-29 and is with the user. The vocabulary table lives here until a durable home exists. Other thread: layer 2 round 1 delivered: measure in guided-epsilon space vs show in predicted-x0/pixels,
 per figure family. Settle or expand (teacher-forced vs closed-loop comparison is the child).

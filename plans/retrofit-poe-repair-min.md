@@ -104,7 +104,7 @@ plan belongs to the `/rename` task and happens before the sweep runs.
 
 ## The scope tree
 
-13 `MASTER_PLAN.md` files. One live parent at `plans/closing-the-compositional-gap/` with four
+13 `MASTER_PLAN.md` files. Seven live scopes numbered `01` to `07` directly under `plans/`, plus four
 sub-scopes; three relocated-scope folders at the plan root (`completed/`, `shelved/`, `standing/`).
 
 **One finding stays open**: `plans/completed/compose-scorer/` is a finished *scope* inside a folder

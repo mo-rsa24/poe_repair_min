@@ -23,7 +23,7 @@ to touch.
 
 | Folder | What you operate there | Leaves |
 |---|---|---|
-| [hpc/](hpc/) | the cluster: partitions, nodes, GPUs, the launch protocol | 2 |
+| [hpc/](hpc) | the cluster: partitions, nodes, GPUs, the launch protocol | 2 |
 | [storage.md](storage.md) | the two filesystems, sizes, and the disk-guard rule | 1 (flat, no second leaf yet) |
 | [paper.md](paper.md) | the LaTeX build for `paper/iclr/` | 1 (flat, no second leaf yet) |
 

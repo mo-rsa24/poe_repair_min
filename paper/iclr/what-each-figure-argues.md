@@ -1,7 +1,7 @@
 # What each of the seven figures argues, and why we bothered
 
 Read this before designing or building any paper figure. The plan file
-[figure-01-the-seven-paper-figures.md](../../plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/plans/figure-01-the-seven-paper-figures.md)
+[figure-01-the-seven-paper-figures.md](../../plans/03-does-the-correction-cause-composition/plans/figure-01-the-seven-paper-figures.md)
 holds the checkboxes. This holds the reasons. Neither repeats the other.
 
 Every figure below answers the same eight questions in the same order, so you can

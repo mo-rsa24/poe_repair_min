@@ -42,9 +42,9 @@ Navigation: ⬅️ [I want to know...](#i-want-to-know) | 📋 [TOC](#table-of-c
 
 | Folder | What it answers | Files |
 |---|---|---|
-| [purpose/](purpose/) | Why this exists, what it produces, what working looks like | 3 |
-| [world/](world/) | The real things behind the data: PoE composition, chimera, the interaction term, the LoRA corrector, the animal pair, compose rate | 6 |
-| [data/](data/) | Where the data comes from, and what every field means | 2 |
+| [purpose/](purpose) | Why this exists, what it produces, what working looks like | 3 |
+| [world/](world) | The real things behind the data: PoE composition, chimera, the interaction term, the LoRA corrector, the animal pair, compose rate | 6 |
+| [data/](data) | Where the data comes from, and what every field means | 2 |
 
 Picture prompts are in [diagram-prompts.md](diagram-prompts.md) (8 prompts, 0 rendered); rendered
 images sit in `diagrams/`. Existing pipeline images already copied in sit in `images/world/`.

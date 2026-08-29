@@ -618,6 +618,6 @@ If A1 passes, A2 and A3 are ablation rather than necessity. If A1 fails and the 
 
 - Active MVP plan: [poe-correction-mvp.md](poe-correction-mvp.md).
 - Full design space (where Group A sits): [poe-correction-design-space.md](poe-correction-design-space.md).
-- Reference experiment (M5 LoRA, the layout we mirror): [poe_repair/experiments/m5_lora_sdxl/](poe_repair/experiments/m5_lora_sdxl/).
-- Training cache root: [outputs/training_cache/heldout/a_cat__x__a_dog/seed_42/](outputs/training_cache/heldout/a_cat__x__a_dog/seed_42/).
-- Stage 1 λ-walk grids on disk: [outputs/veracity/pairs/a_cat__x__a_dog/seed_42/](outputs/veracity/pairs/a_cat__x__a_dog/seed_42/).
+- Reference experiment (M5 LoRA, the layout we mirror): [poe_repair/experiments/m5_lora_sdxl/](poe_repair/experiments/m5_lora_sdxl).
+- Training cache root: [outputs/training_cache/heldout/a_cat__x__a_dog/seed_42/](outputs/training_cache/heldout/a_cat__x__a_dog/seed_42).
+- Stage 1 λ-walk grids on disk: [outputs/veracity/pairs/a_cat__x__a_dog/seed_42/](outputs/veracity/pairs/a_cat__x__a_dog/seed_42).

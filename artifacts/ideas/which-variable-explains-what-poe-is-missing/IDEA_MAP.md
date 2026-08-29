@@ -5,7 +5,7 @@
 | Claim | Mark | Settled by |
 |---|---|---|
 | 1. some pairs blend under PoE and some compose, and which is which is measured | needs a check | whether the scene pairs blend or compose under PoE, scored on `poe.png` already sitting in the training cache |
-| 2. the four directions are four candidate causes, so isolating one is well-posed | ✅ **settled: wrong as stated** | the repair stands and now has a run behind it. The cause is `r_t` as a function of state and step; the trajectory is one of its arguments, not a consequence. The sampler-against-model split it produced is designed and ordered in [its own scope](../../../plans/is-the-gap-the-samplers-or-the-models/MASTER_PLAN.md), steps 24 to 30 |
+| 2. the four directions are four candidate causes, so isolating one is well-posed | ✅ **settled: wrong as stated** | the repair stands and now has a run behind it. The cause is `r_t` as a function of state and step; the trajectory is one of its arguments, not a consequence. The sampler-against-model split it produced is designed and ordered in [its own scope](../../../plans/06-is-the-gap-the-samplers-or-the-models/MASTER_PLAN.md), steps 24 to 30 |
 | **7 (current)** | **needs a check** | **two named checks below: a matched random push applied early only, and the parked prompt-window experiment** |
 | 3. linear score addition has a signature over the run that separates a blending pair from a composing pair | open | |
 | 4. a 2D projection of the run shows what the 1D manifold slide throws away | open | |
@@ -239,7 +239,7 @@ once the result is folded back in.
 | Routed to | Which claim it serves | Where the result lands | State |
 |---|---|---|---|
 | `/reconstruct-prompt --skill submerge` on MCMC, the non-commutation fact, predictor-corrector, Langevin, Hamiltonian correctors, annealed marginals and Feynman-Kac | claim 2, so the sampler-side story can be judged rather than quoted | a submerge journey under the learning root, registered in `JOURNEYS.md` | out |
-| `/frame-hypothesis` on claim 7: sampler-side correction with no oracle, three figures and a gate run | claim 7, and claim 2's A-against-B split | [is-the-gap-the-samplers-or-the-models](../../../plans/is-the-gap-the-samplers-or-the-models/MASTER_PLAN.md), a scope of seven plans at steps 24 to 30, each carrying its own pre-registered review file; step 21 of the paper waits on its gate at step 26. Its `source/` holds the design and the pre-registered questions. **Its `plans/` and `review/` folders are empty**: the seven plans are named in the master plan and not yet written | **landed, half done.** `/populate-plans` has to write the seven plan files before anything can execute. Delete this row once the measured size is folded back in |
+| `/frame-hypothesis` on claim 7: sampler-side correction with no oracle, three figures and a gate run | claim 7, and claim 2's A-against-B split | [is-the-gap-the-samplers-or-the-models](../../../plans/06-is-the-gap-the-samplers-or-the-models/MASTER_PLAN.md), a scope of seven plans at steps 24 to 30, each carrying its own pre-registered review file; step 21 of the paper waits on its gate at step 26. Its `source/` holds the design and the pre-registered questions. **Its `plans/` and `review/` folders are empty**: the seven plans are named in the master plan and not yet written | **landed, half done.** `/populate-plans` has to write the seven plan files before anything can execute. Delete this row once the measured size is folded back in |
 
 ## Runs
 

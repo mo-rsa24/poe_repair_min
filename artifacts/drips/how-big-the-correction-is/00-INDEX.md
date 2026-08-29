@@ -1,7 +1,7 @@
 # F3: the two-stage normalization behind size follows noise
 
 ```
-ran under:  plans/closing-the-compositional-gap/plans/does-the-correction-cause-composition/
+ran under:  plans/03-does-the-correction-cause-composition/
 built from: /drip --math on the F3 explanation
 why:        to explain the two-stage normalization behind `correction-size-over-the-denoising-run-across-17-pairs`,
             so a reader knows what the pooled band is actually dividing by before trusting the shape

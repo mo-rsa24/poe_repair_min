@@ -78,7 +78,7 @@ commitment sits at steps 18 to 36. The settled figure is the per-pair overlay: c
 window centre, one curve per pair, each pair's commitment step marked, showing the door's
 position is shared while commitment varies. Captions may say "acts before the picture
 decides"; they may not say "because of commitment", and sampler-vs-model attribution stays in
-`plans/is-the-gap-the-samplers-or-the-models/`. A sharp-edge width-1 sweep is owed only if the
+`plans/06-is-the-gap-the-samplers-or-the-models/`. A sharp-edge width-1 sweep is owed only if the
 paper ever claims a door location rather than a door. Optional descriptive extra: the repair
 cell's appearance strip (decoded predicted-x0 thumbnails at fixed steps, adapter run beside
 frozen PoE run, closed-loop, labelled descriptive). Constraint exported to the steering work:

@@ -46,7 +46,7 @@ live via `ls -la` on 2026-08-24). Every job script must use this absolute path, 
 `python`, because nothing in the execution model activates an environment implicitly.
 
 **`co3_bw` also appears in at least one launcher** (`scripts/animals_compose_transfer/smoke_live_curves.sh`,
-per `plans/closing-the-compositional-gap/plans/does-the-fix-reach-unseen-pairs/plans/instrument-02-three-live-curves-while-training.md`).
+per `plans/04-does-the-fix-reach-unseen-pairs/plans/instrument-02-three-live-curves-while-training.md`).
 Confirmed to exist via the `ls` above; what specifically differs from `co3` has not been
 probed this sitting, so treat `co3_bw` as a second real environment whose exact purpose is
 still open (see `known-failures.md` if a run against it behaves unexpectedly).

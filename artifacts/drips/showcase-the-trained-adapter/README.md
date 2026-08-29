@@ -7,7 +7,7 @@ the diffusion-researcher role. The walk's live state is `plans/.walk/showcase-th
 
 This walk's compiled six-decision ledger plus the eight-line figure standard. Its content now
 lives, merged with two parallel sessions' ledgers, in the adopted scope's
-`plans/closing-the-compositional-gap/plans/showcase-the-trained-lora/decisions-taken-here.md`,
+`plans/01-showcase-the-trained-lora/decisions-taken-here.md`,
 which is the authoritative copy; this file is the walk's own record.
 
 ## reconciled-ledger-now-absorbed.md
