@@ -70,6 +70,8 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 | A3 transfer | Figure run | | | | blocked on step 11 |
 | A4 delivery against transfer | Figure run | | | | blocked on step 11 |
 | A5 pool contrast | Figure run | | | | blocked on step 12 |
+| F8a full-run extension (task 5.1) | Figure run | | GPU session for the instance-count scorer over epochs 1400 to 2000 | | not started |
+| Ceiling panel (task 5.2) | Figure run | | at most four oracle re-renders at F9 sampler settings | | not started |
 
 ## The pre-registered bar
 
@@ -126,6 +128,18 @@ last question makes that gap explicit rather than hiding it.
       note to show for it? F8a and F8b were built before this plan carried the requirement, so the
       honest answer for those two may be no; record it either way rather than backfilling a note.
 
+- [ ] ⚠️ **F8a tail (task 5.1)**: once epochs 1400 to 2000 are scored, does the compose-rate curve
+      stay flat near 0.96 over steps 70000 to 100000? Flat confirms saturation and discharges the
+      step-60000 caption cap on F8a. A late move in either direction reopens the train-longer
+      question, and the reopening is recorded here rather than smoothed over.
+
+- [ ] ⚠️ **Ceiling panel (task 5.2)**: read side by side at matched sampler settings, is the
+      oracle-corrected render visibly crisper than the adapter-corrected one on the four F9
+      held-out cells? A crisper oracle says the softness is the adapter's fit, and more data or a
+      higher rank could close it. An equally soft oracle says the ceiling belongs to the
+      correction, and is accepted rather than chased. The read is qualitative, because no
+      crispness instrument exists.
+
 ## Asked after the result
 
 Navigation: ⬅️ [Written before the run](#written-before-the-run-answered-after) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
@@ -171,6 +185,8 @@ Navigation: ⬅️ [What the write-up owes](#what-the-write-up-owes) | 📋 [TOC
 | A3 and A4 | step 11 landing | the delivery-against-transfer argument |
 | A5 | step 12 landing | the pool-contrast argument, which is what [baseline-01](baseline-01-the-size-matched-control-pool.md) supplies |
 | A2 | nothing external; it has not been started | the delivery-live figure |
+| the unscored tail, steps 70000 to 100000 | task 5.1 scoring it and F8a rebuilt over the full run | the step-60000 caption cap on F8a and the step-mismatch cap on F9 |
+| whether F9's softness is the adapter's fit or the correction's ceiling | task 5.2's side-by-side read at matched sampler settings | the choice between adding data or rank and accepting the ceiling |
 
 ## Next step
 

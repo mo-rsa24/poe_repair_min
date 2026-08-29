@@ -147,3 +147,21 @@ into experiment-named groupings: listed in the plan's rename table, not attempte
 | `PARKING_LOT.md` (repo root) | dropped: the routing practice it served (idea-runs land here) is
   retired, not relocated — a striking result from an idea-run now becomes a row or task in the
   plan tree directly, and the ~10 plans that pointed at it were edited to say so |
+
+## 2026-08-27: idea walks moved off the root (drip-idea run, tidy-repo census walk)
+
+| Old path | New path | Why |
+|---|---|---|
+| ideas/text-embedding-of-the-residual/ | artifacts/ideas/text-embedding-of-the-residual/ | idea walks live under artifacts/ideas/, never at the root |
+| ideas/merge-supervisor-structure/ | artifacts/ideas/merge-supervisor-structure/ | same rule; 5 inbound references rewritten |
+| tmp/ | removed (was empty) | empty untracked directory |
+
+## 2026-08-27: tidy-repo pass after the sync commit (two deletions, no moves)
+
+| Old path | New path | Why |
+|---|---|---|
+| cat and dog.jpg (repo root) | deleted | untracked, no referrer; had served as a one-off style reference in a codex render test (noted in artifacts/ideas/codex-diagram-render-queue/IDEA_MAP.md:103) |
+| temp/a_frog__x__a_toad/ | deleted (754M) | byte-identical duplicate of /datasets/mmolefe/poe_repair_min/outputs/interaction_term/window/pairs/a_frog__x__a_toad/, which stays; verified by per-seed file counts and sampled md5s including latents |
+| plans/closing-the-compositional-gap/plans/showcase-the-trained-adapter/decisions-taken-here.md | plans/closing-the-compositional-gap/plans/showcase-the-trained-lora/decisions-taken-here.md | absorbed into the merged scope ledger; original kept at artifacts/drips/showcase-the-trained-adapter/reconciled-ledger-now-absorbed.md |
+| plans/closing-the-compositional-gap/plans/showcase-the-trained-lora/ | plans/closing-the-compositional-gap/plans/showcase-the-trained-adapter/ | the two parallel showcase scopes merged under the adapter name by the user's call; the five plan files, four review files, diagrams and ledger moved intact; the residual frame (old MASTER_PLAN.md) is at artifacts/plans/archived/showcase-the-trained-lora/ |
+| plans/closing-the-compositional-gap/plans/showcase-the-trained-adapter/ | plans/closing-the-compositional-gap/plans/showcase-the-trained-lora/ | renamed back per the arbitration in DRIFT_LOG.md once the authoring session went quiet; contents moved intact |

@@ -71,6 +71,10 @@ noise-prediction space, not a rendered image. The two images in
 the PoE render it is measured against); a rendered picture of the term's own trajectory is the
 diagram slot above.
 
+Why a seed's radius carries nothing and only its direction matters, with the window and
+commitment numbers on a step ruler, is drawn in
+[the noise-shell scene](../../artifacts/scenes/noise-shell-and-basins/index.html).
+
 ## Why the project cares
 
 Navigation: ⬅️ [What it looks like](#what-it-looks-like) | 📋 [TOC](#table-of-contents) | [Next](#how-it-shows-up-in-the-data) ➡️

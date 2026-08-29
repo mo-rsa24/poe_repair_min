@@ -42,6 +42,13 @@ action and is actually a several-step decision.
    - These runs are invisible to `squeue` (Slurm does not know about them), so harvesting a
      shared-device run means `pgrep -af 'sweep|train'` on the node, not `squeue`.
 
+   **The admin node cap trips this path too.** `biggpu` carries an administrator cap on how
+   many nodes a user may hold at once, separate from the one-job rule. When `sbatch` is denied
+   by that cap even though idle nodes exist, do not wait for the queue: take the shared-device
+   path onto an idle node instead. Device 1 has been the free device in practice (provenance
+   below), so prefer it, but still verify with `nvidia-smi` before pinning
+   `CUDA_VISIBLE_DEVICES`; the guard rules below stay mandatory.
+
 4. **Every job script carries a preflight block:** a `df` disk guard on the checkpoint target
    (abort at 90% full; must check the filesystem the script actually writes to, see
    `storage.md`), a `co3` python path check, and an `nvidia-smi` guard that aborts in seconds if

@@ -1,0 +1,16 @@
+\documentclass{article}
+\usepackage{iclr2027_conference,times}
+\usepackage{hyperref}
+\usepackage{url}
+
+\title{Abstract Candidate 1 of 3}
+\author{Anonymous Authors}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+A text-to-image diffusion model given a single prompt that names several concepts can render each one as a distinct object, so ``a cat and a dog'' yields a cat sitting beside a dog in one coherent scene. The concepts are arranged naturally rather than strangely, interacting as they would in the real world. The scene can also be built a different way, by combining several pretrained diffusion models at inference time, one expert per concept. Composing a camel expert with a forest expert, for instance, produces a high-fidelity image of a camel in a forest. The appeal is generality, since the space of possible scenes grows combinatorially with each new concept, and composing specialists sidesteps training any single model over it while reaching pairs never seen together in training. But for some pairs, such as ``a cat and a dog,'' composition fails, the two concepts compete for the same pixel regions and the model produces a single blended, hybrid object instead of two distinct objects sharing the scene. This lost information is measurable, at every denoising step it appears as the residual between the prediction of a model given the joint prompt and the prediction of the composed experts. In our setting, where competing concepts are expressed as a plain conjunction, the residual is narrowed to a single aspect of compositionality, and we choose to call this aspect plurality. We train a low-rank adapter on the cross-attention layers of Stable Diffusion XL to predict this residual at every denoising step, without ever being conditioned on the joint prompt. Adding this predicted correction back into the composed sampler restores distinct objects on concept pairs the adapter was never trained on, without requiring the joint prompt at inference.
+\end{abstract}
+
+\end{document}

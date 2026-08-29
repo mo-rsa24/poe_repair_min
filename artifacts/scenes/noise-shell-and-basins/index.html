@@ -1,0 +1,692 @@
+<meta charset="utf-8">
+<title>The noise shell and its basins</title>
+<style>
+  :root{
+    color-scheme: light;
+    --bg:#eef1f6; --surface:#ffffff; --surface-2:#f5f7fb; --line:#dbe1ec;
+    --ink:#0f1626; --muted:#5b6577; --faint:#939dae;
+    --accent:#2a78d6; --accent-soft:#dce9f9;
+    --basinA:#1baf7a; --basinA-soft:#d9f2e8;
+    --basinB:#eb6834; --basinB-soft:#fbe4d9;
+    --measured:#008300; --measured-soft:#e0efdc;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --bg:#0c1118; --surface:#141b26; --surface-2:#1a2331; --line:#283444;
+    --ink:#e9eff8; --muted:#93a0b2; --faint:#5e6c7e;
+    --accent:#3987e5; --accent-soft:#1c2c44;
+    --basinA:#199e70; --basinA-soft:#11291f;
+    --basinB:#d95926; --basinB-soft:#332014;
+    --measured:#3fae6e; --measured-soft:#12291a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased;display:flex;justify-content:center;padding:32px 18px 72px}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
+  .stage{width:100%;max-width:1400px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:6px}
+  .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  h1{font-size:23px;margin:2px 0 0;letter-spacing:-.015em;text-wrap:balance}
+  .themebtn{flex:none;border:1px solid var(--line);background:var(--surface);color:var(--muted);
+    border-radius:9px;padding:7px 11px;font-size:12px;cursor:pointer}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:18px;
+    padding:26px 26px 22px;margin-top:18px;box-shadow:0 1px 0 rgba(0,0,0,.02)}
+  .seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:11px;padding:3px;gap:3px}
+  .seg button{border:0;background:transparent;color:var(--muted);font:inherit;font-size:13px;
+    padding:6px 14px;border-radius:8px;cursor:pointer}
+  .seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);
+    box-shadow:0 1px 3px rgba(0,0,0,.08);font-weight:600}
+  .frametitle{display:flex;align-items:baseline;gap:10px;margin:20px 2px 4px}
+  .frametitle .n{font-size:13px;color:var(--faint)}
+  .frametitle h2{font-size:17px;margin:0;letter-spacing:-.01em}
+  .canvaswrap{overflow-x:auto;overflow-y:hidden;margin-top:10px}
+  canvas{display:block}
+  .mathline{margin:12px 2px 0;font-size:18px;min-height:26px}
+  .mathline math{font-size:19px}
+  .m-acc{color:var(--accent)} .m-mut{color:var(--muted)}
+  .badges{display:flex;gap:8px;flex-wrap:wrap;margin:12px 2px 0;min-height:24px}
+  .badge{font-size:11px;border-radius:999px;padding:3px 10px;border:1px solid;letter-spacing:.02em}
+  .badge.meas{color:var(--measured);border-color:var(--measured);background:var(--measured-soft)}
+  .badge.math{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
+  .badge.illus{color:var(--muted);border-color:var(--faint);border-style:dashed;background:transparent}
+  .cap{background:var(--surface-2);border:1px solid var(--line);border-left:3px solid var(--accent);
+    border-radius:0 10px 10px 0;padding:13px 16px;margin:14px 2px 0;font-size:15px;min-height:62px}
+  .cap.meas{border-left-color:var(--measured)}
+  .prov{margin:14px 2px 0;font-size:13px;color:var(--muted)}
+  .prov summary{cursor:pointer;color:var(--faint)}
+  .prov ul{margin:8px 0 0;padding-left:20px}
+  .prov li{margin:5px 0}
+  .nav{display:flex;align-items:center;gap:12px;margin:18px 2px 0}
+  .nav button{border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;
+    font-size:14px;padding:8px 16px;border-radius:10px;cursor:pointer}
+  .nav button:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+  .nav button:disabled{opacity:.4;cursor:default}
+  .dots{display:flex;gap:7px;margin-left:auto}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--line);cursor:pointer;border:0;padding:0}
+  .dot[aria-current="true"]{background:var(--accent);transform:scale(1.25)}
+  .explore{margin-top:8px}
+  .row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:12px}
+  .row label{font-size:13px;color:var(--muted);min-width:130px}
+  input[type=range]{flex:1;min-width:200px;accent-color:var(--accent)}
+  .val{font-size:14px;font-weight:700;min-width:70px}
+  .chip{font-size:13px;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:4px 10px}
+  .chip b{font-weight:700}
+  .hidden{display:none}
+  footer{margin:20px 2px 0;font-size:12px;color:var(--faint)}
+  button:focus-visible,.dot:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="stage">
+  <header>
+    <div>
+      <div class="eyebrow">poe_repair_min: frame-walk</div>
+      <h1>The noise shell and its basins</h1>
+    </div>
+    <button class="themebtn" id="theme">&#9681; theme</button>
+  </header>
+
+  <div class="card">
+    <div class="seg" role="tablist">
+      <button id="mGuided" aria-pressed="true">Guided walk</button>
+      <button id="mExplore" aria-pressed="false">Explore</button>
+    </div>
+
+    <div class="frametitle" id="ftitle">
+      <span class="n mono" id="fnum">1 / 6</span>
+      <h2 id="fh"></h2>
+    </div>
+
+    <div class="explore hidden" id="explorePanel">
+      <div class="row">
+        <label for="dexp">dimensions (d)</label>
+        <input type="range" id="dexp" min="1" max="16" step="1" value="1">
+        <span class="chip mono" id="dval"></span>
+        <span class="chip mono" id="meanval"></span>
+        <span class="chip mono" id="spreadval"></span>
+      </div>
+      <div class="row">
+        <label>view</label>
+        <div class="seg">
+          <button id="vCartoon" aria-pressed="false">the contour cartoon</button>
+          <button id="vShell" aria-pressed="true">where seeds are</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="canvaswrap"><canvas id="cv" height="470"></canvas></div>
+
+    <div class="mathline" id="mathline"></div>
+    <div class="badges" id="badges"></div>
+    <div class="cap" id="cap"></div>
+
+    <details class="prov">
+      <summary>where these numbers come from, and what is drawn</summary>
+      <ul>
+        <li><b>The shell.</b> &#8741;z&#8741;&#178; is a sum of d = 65,536 squared standard normals, a &#967;&#178;<sub>d</sub> draw. E&#8741;z&#8741; = &#8730;2&middot;&Gamma;((d+1)/2)/&Gamma;(d/2) &asymp; 255.999 and sd(&#8741;z&#8741;) &asymp; 1/&#8730;2 &asymp; 0.707, so the band is 0.707/256 &asymp; 0.28% of the radius. Exact math, not a measurement.</li>
+        <li><b>The empty center.</b> P(&#8741;z&#8741; &lt; 250) is bounded by the &#967;&#178; Chernoff bound exp(&minus;(d/2)(t &minus; 1 &minus; ln t)) with t = 250&#178;/d, about 10&#8315;&#185;&#8310;. "Below 10&#8315;&#185;&#8309;" is a safe statement of it.</li>
+        <li><b>Pipeline settings.</b> 50 DDIM steps and guidance 7.5 are the generation settings used throughout poe_repair_min.</li>
+        <li><b>Measured in poe_repair_min.</b> A nudge at steps 0 to 10 changed the final image in all 8 tested pairs; the commit point landed between steps 18 and 36. Steps are DDIM indices out of 50.</li>
+        <li><b>Drawn, not computed.</b> The 2D disc (a slice of 65,536 dimensions), the trajectories, the two modes, the basin arcs, and the boundary positions are illustrative.</li>
+        <li><b>Explore sampling.</b> 380 seeds per dimension setting; exact &#967; sampling for d &le; 1,024, the normal approximation &#8741;z&#8741;&#178; &asymp; d + &#8730;(2d)&middot;g above that. The radius is scaled by 1/&#8730;d so the shell stays at the same screen radius at every d. Seeds with r &gt; 1.8&#8730;d fall off the drawn disc.</li>
+      </ul>
+    </details>
+
+    <div class="nav" id="nav">
+      <button id="prev">&#8249; Prev</button>
+      <button id="next">Next &#8250;</button>
+      <div class="dots" id="dots"></div>
+    </div>
+  </div>
+
+  <footer>A 2D slice of a 65,536-dimensional space: positions are illustrative, the numbers on them are not. Measured claims come from poe_repair_min.</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var el = function(id){ return document.getElementById(id); };
+  var cv = el("cv"), ctx = cv.getContext("2d");
+  var mode = "guided", idx = 0;
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var animT = 1, animRAF = null, flowRAF = null, flowPhase = 0;
+  var hoverStep = null, pinnedStep = null;
+
+  /* ---------- theme ---------- */
+  el("theme").onclick = function(){
+    var r = document.documentElement;
+    r.setAttribute("data-theme", r.getAttribute("data-theme") === "dark" ? "light" : "dark");
+  };
+  new MutationObserver(function(){ render(); }).observe(document.documentElement, {attributes:true, attributeFilter:["data-theme"]});
+
+  function C(){
+    var s = getComputedStyle(document.documentElement);
+    var g = function(n){ return s.getPropertyValue(n).trim(); };
+    return { bg:g("--bg"), surface:g("--surface"), s2:g("--surface-2"), line:g("--line"),
+      ink:g("--ink"), muted:g("--muted"), faint:g("--faint"),
+      acc:g("--accent"), accSoft:g("--accent-soft"),
+      bA:g("--basinA"), bASoft:g("--basinA-soft"),
+      bB:g("--basinB"), bBSoft:g("--basinB-soft"),
+      meas:g("--measured"), measSoft:g("--measured-soft") };
+  }
+
+  /* ---------- math ---------- */
+  function mulberry32(a){ return function(){ a|=0; a=(a+0x6D2B79F5)|0; var t=Math.imul(a^(a>>>15),1|a); t=(t+Math.imul(t^(t>>>7),61|t))^t; return ((t^(t>>>14))>>>0)/4294967296; }; }
+  var rand = mulberry32(42), spare = null;
+  function gauss(){
+    if(spare !== null){ var v = spare; spare = null; return v; }
+    var u1 = Math.max(rand(), 1e-12), u2 = rand();
+    var m = Math.sqrt(-2*Math.log(u1));
+    spare = m*Math.sin(2*Math.PI*u2);
+    return m*Math.cos(2*Math.PI*u2);
+  }
+  function lgamma(x){ /* Lanczos g=7 */
+    var p=[676.5203681218851,-1259.1392167224028,771.32342877765313,-176.61502916214059,
+      12.507343278686905,-0.13857109526572012,9.9843695780195716e-6,1.5056327351493116e-7];
+    if(x < 0.5) return Math.log(Math.PI/Math.sin(Math.PI*x)) - lgamma(1-x);
+    x -= 1;
+    var a = 0.99999999999980993, t = x + 7.5;
+    for(var i=0;i<8;i++) a += p[i]/(x+i+1);
+    return 0.5*Math.log(2*Math.PI) + (x+0.5)*Math.log(t) - t + Math.log(a);
+  }
+  function normStats(d){ /* exact mean and sd of the chi_d norm */
+    var m = Math.sqrt(2)*Math.exp(lgamma((d+1)/2) - lgamma(d/2));
+    return { mean:m, sd:Math.sqrt(Math.max(d - m*m, 0)) };
+  }
+
+  var NDOTS = 380, dotCache = {};
+  function dots(exp){ /* normalized radii u = r/sqrt(d), plus angles */
+    if(dotCache[exp]) return dotCache[exp];
+    var d = Math.pow(2, exp), us = new Float64Array(NDOTS), th = new Float64Array(NDOTS);
+    var rr = mulberry32(1000+exp); var sp = null;
+    function g2(){ if(sp!==null){var v=sp;sp=null;return v;}
+      var a=Math.max(rr(),1e-12), b=rr(), m=Math.sqrt(-2*Math.log(a));
+      sp=m*Math.sin(2*Math.PI*b); return m*Math.cos(2*Math.PI*b); }
+    for(var i=0;i<NDOTS;i++){
+      var q;
+      if(d <= 1024){ q = 0; for(var k=0;k<d;k++){ var z=g2(); q += z*z; } }
+      else { q = Math.max(d + Math.sqrt(2*d)*g2(), 0); }
+      us[i] = Math.sqrt(q)/Math.sqrt(d);
+      th[i] = rr()*2*Math.PI;
+    }
+    dotCache[exp] = {u:us, th:th};
+    return dotCache[exp];
+  }
+  function radialCurve(d, uMax, n){ /* relative radial mass vs u=r/sqrt(d), peak = 1 */
+    var pts = new Float64Array(n), uPk = Math.sqrt(Math.max(d-1,1e-9)/d);
+    var lpPk = (d-1)*Math.log(Math.max(uPk,1e-9)) - d*uPk*uPk/2;
+    for(var i=0;i<n;i++){
+      var u = uMax*i/(n-1);
+      var lp = (d-1)*Math.log(Math.max(u,1e-12)) - d*u*u/2;
+      pts[i] = Math.exp(Math.min(lp - lpPk, 0));
+    }
+    return pts;
+  }
+
+  /* ---------- canvas plumbing ---------- */
+  var W = 1200, H = 470, DPR = window.devicePixelRatio || 1;
+  function sizeCanvas(){
+    var avail = cv.parentElement.clientWidth || 1200;
+    W = Math.max(760, avail);
+    cv.style.width = W+"px"; cv.style.height = H+"px";
+    cv.width = Math.round(W*DPR); cv.height = Math.round(H*DPR);
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+  }
+  window.addEventListener("resize", function(){ sizeCanvas(); render(); });
+
+  function clear(c){ ctx.clearRect(0,0,W,H); }
+  function label(t, x, y, o){
+    o = o||{};
+    ctx.font = (o.bold?"600 ":"")+(o.size||12.5)+"px system-ui, sans-serif";
+    ctx.fillStyle = o.color; ctx.textAlign = o.align||"center"; ctx.textBaseline = o.base||"middle";
+    ctx.fillText(t, x, y);
+  }
+  function arrow(x1,y1,x2,y2,color,w){
+    var a = Math.atan2(y2-y1,x2-x1), hl = 8+ (w||1.5)*1.5;
+    ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = w||1.5;
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x2,y2);
+    ctx.lineTo(x2-hl*Math.cos(a-0.42), y2-hl*Math.sin(a-0.42));
+    ctx.lineTo(x2-hl*Math.cos(a+0.42), y2-hl*Math.sin(a+0.42));
+    ctx.closePath(); ctx.fill();
+  }
+  function ring(cx,cy,R,color,w,dash){
+    ctx.strokeStyle = color; ctx.lineWidth = w;
+    ctx.setLineDash(dash||[]);
+    ctx.beginPath(); ctx.arc(cx,cy,R,0,2*Math.PI); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+  function bez(p0,p1,p2,p3,t){
+    var mt = 1-t;
+    return {
+      x: mt*mt*mt*p0.x + 3*mt*mt*t*p1.x + 3*mt*t*t*p2.x + t*t*t*p3.x,
+      y: mt*mt*mt*p0.y + 3*mt*mt*t*p1.y + 3*mt*t*t*p2.y + t*t*t*p3.y };
+  }
+  function hexA(hex, a){
+    var h = hex.replace("#",""); if(h.length===3) h = h.replace(/./g, function(c){return c+c;});
+    var n = parseInt(h,16);
+    return "rgba("+((n>>16)&255)+","+((n>>8)&255)+","+(n&255)+","+a+")";
+  }
+
+  /* ---------- frame drawings ---------- */
+  function drawShellDots(c, cx, cy, R, alpha){
+    var dd = dots(16);
+    ctx.fillStyle = hexA(c.ink, 0.5*alpha);
+    for(var i=0;i<220;i++){
+      var x = cx + dd.u[i]*R*Math.cos(dd.th[i]), y = cy + dd.u[i]*R*Math.sin(dd.th[i]);
+      ctx.beginPath(); ctx.arc(x,y,2.1,0,2*Math.PI); ctx.fill();
+    }
+  }
+
+  function f1(c){ /* every seed lands 256 from center */
+    var cx = W*0.27, cy = H*0.52, R = H*0.335;
+    ring(cx,cy,R,c.acc,2);
+    drawShellDots(c,cx,cy,R,animT);
+    ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(cx,cy,3,0,2*Math.PI); ctx.fill();
+    arrow(cx,cy, cx+R*Math.cos(-0.6), cy+R*Math.sin(-0.6), c.acc, 1.6);
+    label("√d = 256", cx+R*0.56*Math.cos(-0.72), cy+R*0.56*Math.sin(-0.72)-12, {color:c.acc, bold:true, size:14});
+    label("origin", cx, cy+16, {color:c.faint});
+    label("one dot = one seed", cx, cy+R+22, {color:c.muted});
+    /* right pane: distribution of seed length */
+    var x0 = W*0.56, x1 = W*0.95, y0 = H*0.72, hgt = H*0.42;
+    var mu = 256, sd = 0.707, lo = 253, hi = 259;
+    var X = function(v){ return x0 + (v-lo)/(hi-lo)*(x1-x0); };
+    ctx.strokeStyle = c.line; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y0); ctx.stroke();
+    [253,256,259].forEach(function(v){
+      ctx.strokeStyle = c.line;
+      ctx.beginPath(); ctx.moveTo(X(v),y0); ctx.lineTo(X(v),y0+5); ctx.stroke();
+      label(String(v), X(v), y0+16, {color: v===256 ? c.acc : c.faint, bold: v===256});
+    });
+    /* shaded plus-minus band, then the curve */
+    ctx.fillStyle = hexA(c.acc, 0.16);
+    ctx.fillRect(X(mu-sd), y0-hgt, X(mu+sd)-X(mu-sd), hgt);
+    ctx.strokeStyle = c.acc; ctx.lineWidth = 2; ctx.beginPath();
+    for(var i=0;i<=240;i++){
+      var v = lo + (hi-lo)*i/240;
+      var y = y0 - hgt*Math.exp(-(v-mu)*(v-mu)/(2*sd*sd))*animT;
+      if(i===0) ctx.moveTo(X(v),y); else ctx.lineTo(X(v),y);
+    }
+    ctx.stroke();
+    label("length of a seed", (x0+x1)/2, y0-hgt-18, {color:c.muted, bold:true});
+    label("±0.7, a 0.3% band", X(mu), y0-hgt*0.45, {color:c.acc, size:12});
+  }
+
+  function f2(c){ /* the dense center holds no mass */
+    var cx = W*0.24, cy = H*0.52, R = H*0.335;
+    var gr = ctx.createRadialGradient(cx,cy,0,cx,cy,R*0.85);
+    gr.addColorStop(0, hexA(c.acc, 0.28)); gr.addColorStop(1, hexA(c.acc, 0));
+    ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(cx,cy,R*0.85,0,2*Math.PI); ctx.fill();
+    [0.22,0.44,0.66].forEach(function(f){ ring(cx,cy,R*f,hexA(c.acc,0.4),1,[4,4]); });
+    ring(cx,cy,R,c.acc,2);
+    drawShellDots(c,cx,cy,R,animT);
+    label("density peaks here", cx, cy, {color:c.muted});
+    label("every seed is out here", cx, cy+R+22, {color:c.muted});
+    /* right pane: radial mass, a needle at 256 */
+    var x0 = W*0.52, x1 = W*0.95, y0 = H*0.72, hgt = H*0.44;
+    var rMax = 300, X = function(r){ return x0 + r/rMax*(x1-x0); };
+    ctx.strokeStyle = c.line; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y0); ctx.stroke();
+    [0,100,200,256].forEach(function(v){
+      ctx.beginPath(); ctx.strokeStyle=c.line; ctx.moveTo(X(v),y0); ctx.lineTo(X(v),y0+5); ctx.stroke();
+      label(String(v), X(v), y0+16, {color: v===256 ? c.acc : c.faint, bold: v===256});
+    });
+    var d = 65536, n = 500, sq = Math.sqrt(d);
+    var curve = radialCurve(d, rMax/sq, n);
+    ctx.strokeStyle = c.acc; ctx.lineWidth = 2; ctx.beginPath();
+    for(var i=0;i<n;i++){
+      var x = x0 + (x1-x0)*i/(n-1), y = y0 - hgt*curve[i]*animT;
+      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+    label("share of seeds at radius r", (x0+x1)/2, y0-hgt-18, {color:c.muted, bold:true});
+    label("flat at zero all the way", X(110), y0-14, {color:c.faint});
+    label("P(r < 250) below 10⁻¹⁵", X(110), y0-30, {color:c.ink, size:12.5});
+    label("the needle at 256", X(256), y0-hgt-2, {color:c.acc, size:12});
+  }
+
+  function f3(c){ /* a seed is only a direction */
+    var cx = W*0.5, cy = H*0.52, R = H*0.35;
+    ring(cx,cy,R,c.acc,2);
+    ctx.fillStyle = hexA(c.ink, 0.18);
+    var dd = dots(16);
+    for(var i=0;i<160;i++){
+      var x = cx + dd.u[i]*R*Math.cos(dd.th[i]), y = cy + dd.u[i]*R*Math.sin(dd.th[i]);
+      ctx.beginPath(); ctx.arc(x,y,1.8,0,2*Math.PI); ctx.fill();
+    }
+    var a1 = -0.9, a2 = 2.75;
+    arrow(cx,cy, cx+(R-6)*Math.cos(a1)*animT, cy+(R-6)*Math.sin(a1)*animT, c.acc, 2.2);
+    arrow(cx,cy, cx+(R-6)*Math.cos(a2)*animT, cy+(R-6)*Math.sin(a2)*animT, c.ink, 2.2);
+    ctx.strokeStyle = c.muted; ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.arc(cx,cy,46,a1,a2); ctx.stroke();
+    label("the angle: the seed's only choice", cx+8, cy-64, {color:c.muted, bold:true});
+    label("seed 1", cx+(R+22)*Math.cos(a1), cy+(R+22)*Math.sin(a1), {color:c.acc, bold:true});
+    label("seed 2", cx+(R+24)*Math.cos(a2), cy+(R+24)*Math.sin(a2), {color:c.ink, bold:true});
+    label("same length, 256", cx, cy+R+24, {color:c.faint});
+  }
+
+  var MODES = function(){ return [
+    {x:W*0.80, y:H*0.28, name:"mode 1"},
+    {x:W*0.80, y:H*0.74, name:"mode 2"} ]; };
+  var PATHS = function(c){
+    var cx = W*0.22, cy = H*0.52, R = H*0.29, m = MODES();
+    var angles = [-1.22,-0.84,-0.45,-0.10,0.24,0.60,0.95,1.19];
+    return angles.map(function(a,i){
+      var dest = a <= 0.24 ? 0 : 1;
+      var p0 = {x:cx+R*Math.cos(a), y:cy+R*Math.sin(a)};
+      var p3 = m[dest];
+      var p1 = {x:p0.x + 120*Math.cos(a), y:p0.y + 120*Math.sin(a)};
+      var p2 = {x:p3.x - 150, y:p3.y + (dest===0 ? 40 : -40)};
+      return {p0:p0,p1:p1,p2:p2,p3:p3,dest:dest,i:i};
+    });
+  };
+  function drawModes(c, small){
+    MODES().forEach(function(m,j){
+      var col = j===0 ? c.bA : c.bB;
+      ctx.fillStyle = hexA(col, 0.18);
+      ctx.beginPath(); ctx.arc(m.x, m.y, small?16:22, 0, 2*Math.PI); ctx.fill();
+      ctx.fillStyle = col;
+      ctx.save(); ctx.translate(m.x, m.y); ctx.rotate(Math.PI/4);
+      ctx.fillRect(-6,-6,12,12); ctx.restore();
+      label(m.name, m.x, m.y + (small?30:36), {color:col, bold:true, size:13});
+    });
+  }
+  function f4(c){ /* the flow sends directions to modes */
+    var cx = W*0.22, cy = H*0.52, R = H*0.29;
+    ring(cx,cy,R,c.acc,2);
+    label("the shell of seeds", cx, cy+R+22, {color:c.muted});
+    drawModes(c,false);
+    var ps = PATHS(c);
+    ps.forEach(function(p){
+      var col = p.dest===0 ? c.bA : c.bB;
+      ctx.strokeStyle = hexA(col, 0.55); ctx.lineWidth = 1.6;
+      ctx.beginPath(); ctx.moveTo(p.p0.x,p.p0.y);
+      ctx.bezierCurveTo(p.p1.x,p.p1.y,p.p2.x,p.p2.y,p.p3.x,p.p3.y); ctx.stroke();
+      ctx.fillStyle = col;
+      ctx.beginPath(); ctx.arc(p.p0.x,p.p0.y,3,0,2*Math.PI); ctx.fill();
+      var t = reduced ? 0.55 : (flowPhase + p.i*0.12) % 1;
+      var q = bez(p.p0,p.p1,p.p2,p.p3,t);
+      ctx.beginPath(); ctx.arc(q.x,q.y,4,0,2*Math.PI); ctx.fill();
+    });
+    label("50 DDIM steps, guidance 7.5", W*0.5, H-14, {color:c.muted, bold:true, size:13});
+  }
+
+  function f5(c){ /* basins tile the shell */
+    var cx = W*0.32, cy = H*0.52, R = H*0.33;
+    var b1 = 0.35, b2 = 3.49; /* boundary angles */
+    ctx.lineWidth = 7;
+    ctx.strokeStyle = c.bA;
+    ctx.beginPath(); ctx.arc(cx,cy,R,b2,b1+2*Math.PI); ctx.stroke();
+    ctx.strokeStyle = c.bB;
+    ctx.beginPath(); ctx.arc(cx,cy,R,b1,b2); ctx.stroke();
+    var m = MODES();
+    [ {a:-1.2, dest:0}, {a:1.9, dest:1} ].forEach(function(s){
+      var p0 = {x:cx+R*Math.cos(s.a), y:cy+R*Math.sin(s.a)};
+      ctx.strokeStyle = hexA(s.dest===0 ? c.bA : c.bB, 0.4); ctx.lineWidth = 1.4;
+      ctx.setLineDash([5,5]);
+      ctx.beginPath(); ctx.moveTo(p0.x,p0.y); ctx.lineTo(m[s.dest].x, m[s.dest].y); ctx.stroke();
+      ctx.setLineDash([]);
+    });
+    drawModes(c,true);
+    label("basin of mode 1", cx+(R+34)*Math.cos(-1.35), cy+(R+30)*Math.sin(-1.35), {color:c.bA, bold:true, size:13});
+    label("basin of mode 2", cx+(R+40)*Math.cos(2.0), cy+(R+34)*Math.sin(2.0), {color:c.bB, bold:true, size:13});
+    [b1,b2].forEach(function(a){
+      var x = cx+R*Math.cos(a), y = cy+R*Math.sin(a);
+      ctx.fillStyle = c.ink;
+      ctx.beginPath(); ctx.arc(x,y,4.5,0,2*Math.PI); ctx.fill();
+    });
+    var bx = cx+R*Math.cos(b1), by = cy+R*Math.sin(b1);
+    ctx.strokeStyle = c.ink; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(bx+10,by+4); ctx.lineTo(bx+64,by+34); ctx.stroke();
+    label("the boundary: a projection caustic", bx+70, by+42, {color:c.ink, bold:true, align:"left", size:13});
+  }
+
+  function f6(c){ /* measured: open at 10, sealed by 36 */
+    var x0 = W*0.08, x1 = W*0.92, y = H*0.52, bh = 56;
+    var X = function(s){ return x0 + s/50*(x1-x0); };
+    ctx.strokeStyle = c.line; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x0, y+bh/2+14); ctx.lineTo(x1, y+bh/2+14); ctx.stroke();
+    for(var s=0;s<=50;s+=10){
+      ctx.strokeStyle = c.line;
+      ctx.beginPath(); ctx.moveTo(X(s), y+bh/2+14); ctx.lineTo(X(s), y+bh/2+19); ctx.stroke();
+      label(String(s), X(s), y+bh/2+32, {color:c.faint});
+    }
+    label("DDIM step (of 50)", (x0+x1)/2, y+bh/2+52, {color:c.muted});
+    /* bands */
+    ctx.fillStyle = hexA(c.bA, 0.22); ctx.fillRect(X(0), y-bh/2, X(10)-X(0), bh);
+    ctx.strokeStyle = c.bA; ctx.lineWidth = 1.5; ctx.strokeRect(X(0), y-bh/2, X(10)-X(0), bh);
+    ctx.fillStyle = hexA(c.bB, 0.22); ctx.fillRect(X(18), y-bh/2, X(36)-X(18), bh);
+    ctx.strokeStyle = c.bB; ctx.strokeRect(X(18), y-bh/2, X(36)-X(18), bh);
+    ctx.fillStyle = hexA(c.faint, 0.15); ctx.fillRect(X(36), y-bh/2, X(50)-X(36), bh);
+    label("a nudge still flips the outcome", X(5), y-bh/2-30, {color:c.bA, bold:true, size:13});
+    label("8 of 8 pairs", X(5), y-bh/2-13, {color:c.bA, size:12});
+    label("the sample commits in here", X(27), y+bh/2*0+0, {color:c.bB, bold:true, size:13});
+    label("locked", X(43), y, {color:c.faint, size:12.5});
+    label("steps 0 to 10", X(5), y, {color:c.bA, size:12.5});
+    /* hover / pinned cursor */
+    var s2 = (pinnedStep !== null) ? pinnedStep : hoverStep;
+    if(s2 !== null){
+      var hx = X(s2);
+      ctx.strokeStyle = c.ink; ctx.lineWidth = 1; ctx.setLineDash([3,3]);
+      ctx.beginPath(); ctx.moveTo(hx, y-bh/2-46); ctx.lineTo(hx, y+bh/2+14); ctx.stroke();
+      ctx.setLineDash([]);
+      var zone = s2 <= 10 ? "a nudge still changes the image" :
+                 s2 < 18 ? "between the measured bands" :
+                 s2 <= 36 ? "the commit window" : "locked";
+      label("step "+s2+": "+zone + (pinnedStep!==null ? "  (pinned, click to release)" : ""),
+        Math.min(Math.max(hx, x0+150), x1-170), y-bh/2-56, {color:c.ink, bold:true, size:13});
+    }
+  }
+
+  /* ---------- explore drawing ---------- */
+  function fx(c){
+    var exp = +el("dexp").value, d = Math.pow(2, exp);
+    var cartoon = el("vCartoon").getAttribute("aria-pressed") === "true";
+    var cx = W*0.27, cy = H*0.52, R1 = H*0.26; /* screen radius of u = 1 */
+    var sq = Math.sqrt(d);
+    if(cartoon){
+      var rc = Math.min(3/sq, 2.05)*R1;
+      var gr = ctx.createRadialGradient(cx,cy,0,cx,cy,Math.max(rc,2));
+      gr.addColorStop(0, hexA(c.acc, 0.30)); gr.addColorStop(1, hexA(c.acc, 0));
+      ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(cx,cy,Math.max(rc,2),0,2*Math.PI); ctx.fill();
+      [1,2,3].forEach(function(k){
+        ring(cx,cy,Math.max(k/sq*R1, 1), hexA(c.acc,0.45), 1, [4,4]);
+      });
+      label("density contours, r = 1, 2, 3", cx, cy - Math.max(3/sq*R1, 2) - 12, {color:c.acc, size:12});
+    }
+    ring(cx,cy,R1,c.muted,1.4,[6,5]);
+    label("r = √d", cx + R1*0.71 + 8, cy - R1*0.71 - 8, {color:c.muted, align:"left", size:12});
+    var dd = dots(exp);
+    ctx.fillStyle = hexA(c.ink, 0.55);
+    for(var i=0;i<NDOTS;i++){
+      if(dd.u[i] > 1.8) continue;
+      var x = cx + dd.u[i]*R1*Math.cos(dd.th[i]), y = cy + dd.u[i]*R1*Math.sin(dd.th[i]);
+      ctx.beginPath(); ctx.arc(x,y,2.0,0,2*Math.PI); ctx.fill();
+    }
+    label("380 seeds, radius scaled by 1/√d", cx, Math.min(cy+R1*1.8+16, H-10), {color:c.faint});
+    /* right pane: radial mass vs u */
+    var x0 = W*0.55, x1 = W*0.95, y0 = H*0.74, hgt = H*0.48, uMax = 2;
+    ctx.strokeStyle = c.line; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y0); ctx.stroke();
+    [[0,"0"],[0.5,""],[1,"√d"],[1.5,""],[2,"2√d"]].forEach(function(t){
+      var x = x0 + t[0]/uMax*(x1-x0);
+      ctx.strokeStyle = c.line;
+      ctx.beginPath(); ctx.moveTo(x,y0); ctx.lineTo(x,y0+5); ctx.stroke();
+      if(t[1]) label(t[1], x, y0+16, {color: t[0]===1 ? c.acc : c.faint, bold: t[0]===1});
+    });
+    var n = 400, curve = radialCurve(d, uMax, n);
+    ctx.fillStyle = hexA(c.acc, 0.15);
+    ctx.beginPath(); ctx.moveTo(x0,y0);
+    for(var j=0;j<n;j++) ctx.lineTo(x0 + (x1-x0)*j/(n-1), y0 - hgt*curve[j]);
+    ctx.lineTo(x1,y0); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = c.acc; ctx.lineWidth = 2;
+    ctx.beginPath();
+    for(j=0;j<n;j++){
+      var x = x0 + (x1-x0)*j/(n-1), yv = y0 - hgt*curve[j];
+      if(j===0) ctx.moveTo(x,yv); else ctx.lineTo(x,yv);
+    }
+    ctx.stroke();
+    label("share of seeds at radius r", (x0+x1)/2, y0-hgt-16, {color:c.muted, bold:true});
+  }
+
+  /* ---------- frames ---------- */
+  var CHI_MATH = '<math xmlns="http://www.w3.org/1998/Math/MathML"><mrow>'
+    +'<msup><mrow><mo class="m-acc">‖</mo><mi class="m-acc">z</mi><mo class="m-acc">‖</mo></mrow><mn>2</mn></msup>'
+    +'<mo>∼</mo><msubsup><mi>χ</mi><mi class="m-mut">d</mi><mn>2</mn></msubsup>'
+    +'<mo separator="true">,</mo><mspace width="1em"></mspace>'
+    +'<mi>𝔼</mi><mo class="m-acc">‖</mo><mi class="m-acc">z</mi><mo class="m-acc">‖</mo>'
+    +'<mo>≈</mo><msqrt><mi>d</mi></msqrt><mo>=</mo><mn class="m-acc">256</mn>'
+    +'</mrow></math>';
+  var MASS_MATH = '<math xmlns="http://www.w3.org/1998/Math/MathML"><mrow>'
+    +'<mi>p</mi><mo>(</mo><mi>r</mi><mo>)</mo><mo>∝</mo>'
+    +'<msup><mi class="m-acc">r</mi><mrow class="m-acc"><mi>d</mi><mo>−</mo><mn>1</mn></mrow></msup>'
+    +'<mo>⋅</mo>'
+    +'<msup><mi class="m-mut">e</mi><mrow class="m-mut"><mo>−</mo><msup><mi>r</mi><mn>2</mn></msup><mo>/</mo><mn>2</mn></mrow></msup>'
+    +'</mrow></math>';
+
+  var B_MATH = '<span class="badge math">exact math</span>';
+  var B_ILL = '<span class="badge illus">illustrative drawing</span>';
+  var B_SET = '<span class="badge math">real settings: 50 steps, guidance 7.5</span>';
+  var B_MEAS = '<span class="badge meas">measured in poe_repair_min</span>';
+
+  var FRAMES = [
+    {h:"Every seed lands 256 from center", draw:f1, math:CHI_MATH, badges:[B_MATH,B_ILL],
+     cap:'One seed is z drawn from N(0, I) in d = 65,536 dimensions. Chance pins its length at <b>256 ± 0.7</b>, a 0.3% band thinner than the drawn stroke.'},
+    {h:"The dense center holds no mass", draw:f2, math:MASS_MATH, badges:[B_MATH,B_ILL],
+     cap:'Density does peak at the center, but a shell at radius r carries volume like r<sup>d−1</sup>. The chance of landing nearer than 250 is <b>below 10⁻¹⁵</b>; no seed is inside.'},
+    {h:"A seed is only a direction", draw:f3, math:null, badges:[B_ILL],
+     cap:'The radius carries no information: chance fixes it. What a seed contributes is <b>only its direction</b>, the point where it touches the shell.'},
+    {h:"The flow sends directions to modes", draw:f4, math:null, badges:[B_SET,B_ILL],
+     cap:'The 50-step DDIM flow at guidance 7.5 carries each direction to <b>one image mode</b>. These paths are drawn for the eye; the step count and guidance are the real settings.'},
+    {h:"Basins tile the shell", draw:f5, math:null, badges:[B_ILL],
+     cap:'A basin is the set of directions that share a destination. Its boundary is a <b>projection caustic</b>: cross it and the outcome jumps to the other mode.'},
+    {h:"Open at 10, sealed by 36", draw:f6, math:null, badges:[B_MEAS], meas:true,
+     cap:'A nudge at steps 0 to 10 still changed the final image in all 8 tested pairs. The sample commits <b>between steps 18 and 36</b>. Hover the axis to read a step.'}
+  ];
+
+  /* ---------- render ---------- */
+  function render(){
+    clear();
+    var c = C();
+    if(mode === "guided"){
+      var f = FRAMES[idx];
+      el("fnum").textContent = (idx+1)+" / "+FRAMES.length;
+      el("fh").textContent = f.h;
+      el("mathline").innerHTML = f.math || "";
+      el("badges").innerHTML = f.badges.join("");
+      el("cap").className = "cap" + (f.meas ? " meas" : "");
+      el("cap").innerHTML = f.cap;
+      f.draw(c);
+      el("prev").disabled = idx===0; el("next").disabled = idx===FRAMES.length-1;
+      var ds = el("dots").children;
+      for(var i=0;i<ds.length;i++) ds[i].setAttribute("aria-current", i===idx ? "true" : "false");
+      if(idx === 3 && !reduced) startFlow(); else stopFlow();
+    } else {
+      stopFlow();
+      var exp = +el("dexp").value, d = Math.pow(2, exp);
+      var st = normStats(d);
+      var spreadPct = st.sd/st.mean*100;
+      el("dval").innerHTML = "d = <b>"+d.toLocaleString("en-US")+"</b>";
+      el("meanval").innerHTML = "mean length √d ≈ <b>"+st.mean.toFixed(1)+"</b>";
+      el("spreadval").innerHTML = "spread <b>"+(spreadPct >= 10 ? spreadPct.toFixed(0) : spreadPct.toFixed(1))+"%</b>";
+      el("mathline").innerHTML = MASS_MATH;
+      var cartoon = el("vCartoon").getAttribute("aria-pressed") === "true";
+      el("badges").innerHTML = B_MATH + B_ILL;
+      el("cap").className = "cap";
+      var t;
+      if(cartoon){
+        t = (exp <= 2)
+          ? 'At d = '+d+' the cartoon and the seeds agree: the mass really is inside the contours.'
+          : 'The cartoon shades density at r ≤ 3, which on this disc is a radius of 3/√d. At d = '+d.toLocaleString("en-US")+' the seeds have left it.';
+      } else {
+        t = (exp <= 2)
+          ? 'At d = '+d+' the picture is a blob: lengths spread '+spreadPct.toFixed(0)+'% and seeds do sit near the center. The contour cartoon is still honest here.'
+          : (exp <= 10)
+          ? 'The mass is migrating outward: the volume factor r<sup>d−1</sup> is beating the density peak. The band is down to '+ (spreadPct >= 10 ? spreadPct.toFixed(0) : spreadPct.toFixed(1)) +'%.'
+          : 'The center is empty. Every seed sits in a '+spreadPct.toFixed(1)+'% band at r = √d ≈ '+st.mean.toFixed(0)+'; the blob cartoon is dead.';
+      }
+      el("cap").innerHTML = t;
+      fx(c);
+    }
+  }
+
+  /* ---------- animation ---------- */
+  function tween(){
+    if(reduced){ animT = 1; render(); return; }
+    animT = 0;
+    var t0 = performance.now();
+    if(animRAF) cancelAnimationFrame(animRAF);
+    (function step(now){
+      var p = Math.min((now-t0)/280, 1);
+      animT = 1 - Math.pow(1-p, 3);
+      render();
+      if(p < 1) animRAF = requestAnimationFrame(step);
+    })(t0);
+  }
+  function startFlow(){
+    if(flowRAF) return;
+    (function loop(now){
+      flowPhase = (now/2600) % 1;
+      render();
+      flowRAF = (mode==="guided" && idx===3) ? requestAnimationFrame(loop) : null;
+    })(performance.now());
+  }
+  function stopFlow(){ if(flowRAF){ cancelAnimationFrame(flowRAF); flowRAF = null; } }
+
+  /* ---------- wiring ---------- */
+  el("dots").innerHTML = FRAMES.map(function(_,i){
+    return '<button class="dot" data-i="'+i+'" aria-label="frame '+(i+1)+'" aria-current="'+(i===0)+'"></button>';
+  }).join("");
+  el("dots").addEventListener("click", function(e){
+    var b = e.target.closest(".dot"); if(b){ idx = +b.dataset.i; pinnedStep = null; tween(); }
+  });
+  el("prev").onclick = function(){ if(idx>0){ idx--; pinnedStep = null; tween(); } };
+  el("next").onclick = function(){ if(idx<FRAMES.length-1){ idx++; pinnedStep = null; tween(); } };
+  document.addEventListener("keydown", function(e){
+    if(mode!=="guided") return;
+    if(e.key==="ArrowRight") el("next").click();
+    if(e.key==="ArrowLeft") el("prev").click();
+  });
+
+  function setMode(m){
+    mode = m;
+    var g = m==="guided";
+    el("mGuided").setAttribute("aria-pressed", g);
+    el("mExplore").setAttribute("aria-pressed", !g);
+    el("ftitle").classList.toggle("hidden", !g);
+    el("nav").classList.toggle("hidden", !g);
+    el("explorePanel").classList.toggle("hidden", g);
+    render();
+  }
+  el("mGuided").onclick = function(){ setMode("guided"); };
+  el("mExplore").onclick = function(){ setMode("explore"); };
+
+  el("dexp").addEventListener("input", render);
+  el("vCartoon").onclick = function(){
+    el("vCartoon").setAttribute("aria-pressed","true"); el("vShell").setAttribute("aria-pressed","false"); render();
+  };
+  el("vShell").onclick = function(){
+    el("vCartoon").setAttribute("aria-pressed","false"); el("vShell").setAttribute("aria-pressed","true"); render();
+  };
+
+  /* frame 6 hover + pin */
+  cv.addEventListener("mousemove", function(e){
+    if(mode!=="guided" || idx!==5) return;
+    var r = cv.getBoundingClientRect();
+    var x = e.clientX - r.left, x0 = W*0.08, x1 = W*0.92;
+    hoverStep = (x >= x0-6 && x <= x1+6) ? Math.max(0, Math.min(50, Math.round((x-x0)/(x1-x0)*50))) : null;
+    render();
+  });
+  cv.addEventListener("mouseleave", function(){ if(hoverStep!==null){ hoverStep = null; render(); } });
+  cv.addEventListener("click", function(){
+    if(mode!=="guided" || idx!==5) return;
+    pinnedStep = (pinnedStep === null) ? hoverStep : null;
+    render();
+  });
+
+  sizeCanvas();
+  render();
+})();
+</script>

@@ -131,7 +131,7 @@ Navigation: ⬅️ [Written before the run](#written-before-the-run-answered-aft
 Questions the results themselves raised. **Nothing here may ever become a bar**, because it was
 written with the answers already visible.
 
-- [ ] ⚠️ What does the spectrum add beyond within-run smoothness (D1's result) and cross-pair
+- [ ] ⚠️ What does the [spectrum](/home-mscluster/mmolefe/goal-setting/learning/spectral-structure-of-the-correction/plans/09-energy-at-k-and-the-floors.md) add beyond within-run smoothness (D1's result) and cross-pair
       orthogonality (D3's result)? Raised by the low-rank answer collapsing against the right
       floor. Until it is answered, F6's slot has no claim of its own.
 - [x] ✅ Should trajectories under 40 steps be pooled into the fork read? No. A 20-step smoke run

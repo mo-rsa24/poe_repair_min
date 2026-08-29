@@ -105,7 +105,8 @@ Faithfulness note: the four substitutes must be drawn the same size as the real 
 
 ### Prompt 2a (Subject): One thing changes, which is when the correction acts
 
-[planned] Zoom into prompt 2's window bracket, for
+[built] `diagrams/closing-the-compositional-gap-02a-when-the-correction-acts.png`. Zoom into
+prompt 2's window bracket, for
 `plans/does-the-correction-cause-composition/plans/hypothesis-03-when-in-the-run-it-matters.md`.
 
 ```
@@ -163,6 +164,28 @@ Exclusions: no product logos, no components other than those listed, no numbered
 ```
 
 Faithfulness note: the lower fan of fifteen must be visibly hedged and carry no flow line, because that sweep has not run. The chip must be drawn smaller than the block it sits in, and no arrow may run from the joined prompt into the chip, since the whole claim is that the adapter works without ever seeing the joined prompt.
+
+### Prompt 4a (Subject): The joined prompt is a stored target, never an input
+
+[planned] Zoom into prompt 4's adapter chip, for paragraph 5.2 of
+[the manuscript](../../paper/iclr/iclr2027_conference.tex), walked in
+[the draft map](../../paper/iclr/DRAFT_MAP.md).
+
+```
+Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded dashed arrow lines, each color meaning exactly one kind of flow, with a small legend inside the image. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Official product logos only on components that ARE that product; every other component gets a clean generic glyph. Small cartoon figures or vehicles for external actors (users, clients). Clean sans-serif labels under every icon, short and lowercase-friendly. Generous spacing, no clutter, no watermark.
+
+Scene: two stacked horizontal bands of equal width, each inside its own rounded soft-tinted panel with a short title at its top left, separated by clear white space. Both bands read left to right and share the same glyph language. In the upper band: on the left a small square state token, then three small prompt cards stacked vertically, all four feeding one wide transparent block that has a small rectangular chip seated inside it, the chip clearly smaller than the block and drawn glossy and lit. Three prediction glyphs leave the block and meet at a multiply node, whose output is an amber prediction glyph. Above and to the right, a cylinder drum glyph sits with a single flat artifact card beside it, and the card carries a thin solid gray line down to a compare node on the far right. The amber prediction also enters that compare node. In the lower band: the same square state token on the left feeds two separate transparent blocks stacked vertically, the upper block holding the same chip drawn flat, gray and unlit, the lower block holding the same chip drawn glossy and lit. The same three prompt cards sit between the state token and the two blocks, with lines fanning to both. Each block's three predictions meet their own multiply node inside the block's rounded panel. The upper path leaves as a blue prediction glyph, the lower as an amber prediction glyph. Both enter a subtract node in the middle right, from which a single thick amber coil glyph leaves and passes through a circular dial glyph with a pointer, then into an add node. The blue prediction also enters the add node by a second line routed beneath the coil. From the add node, one outcome tile on the far right, bordered amber, showing a cat and a dog as two separate animals. There is no prompt card anywhere in the lower band other than the three already named.
+
+Cast: the state token (the same noisy image both passes read), three prompt cards (the first concept, the second concept, and no prompt), the cross-attention block (the frozen network's cross-attention), the adapter chip (rank-8, lit when active and gray when switched off), prediction glyphs, multiply nodes (the fixed combination rule), the cache drum (per-step predictions saved earlier), the stored target card (the joined-prompt prediction, read from the drum), the compare node (squared error), the subtract node, the correction coil (the predicted correction), the dose dial (lambda), the add node, one outcome tile.
+
+Flows: amber dashed lines for anything carrying or learning the correction, which is the adapted pass in both bands, the coil leaving the subtract node, and the line into the outcome tile. Blue dashed lines for the uncorrected path, which is the unlit block's output in the lower band and its line into the add node. One thin solid gray line from the stored target card into the compare node, meaning saved, not computed. The three prompt cards connect to the blocks with plain thin lines carrying no colour. Legend inside the image, lower left.
+
+Text in the image: title banner "the joined prompt is only a target". Panel titles: "training", "inference". Labels: "same noisy state", "a cat", "a dog", "no prompt", "cross-attention block", "rank-8 adapter", "adapter off", "adapter on", "combine", "stored target", "squared error", "subtract", "predicted correction", "dose dial", "add", "two separate animals". Legend: "blue: uncorrected path", "amber: the correction", "gray: saved, not computed".
+
+Exclusions: no prompt card reading "a cat and a dog" anywhere in the image, no line of any colour running from the cache drum or the stored target card into either band's blocks, no numbered step badges, no status pills, no arrows between the two bands, no components other than those listed, no product logos, no placeholder gibberish text, no watermark.
+```
+
+Faithfulness note: the joined prompt must appear once, as the flat stored target card on a gray line into the compare node in the upper band, and nowhere else. Any card or arrow putting it into a block would draw the opposite of the section's claim. The two blocks in the lower band must share one state token and differ only in whether the chip is lit, since that difference is the entire predicted correction. The coil must leave the subtract node and nowhere else, matching prompt 1's rule for `r_t`. The blue line must reach the add node, because the corrected prediction is the uncorrected one plus a scaled correction, not the adapted pass used on its own.
 
 ### Prompt 5 (Subject): Where the evidence is kept
 

@@ -78,31 +78,31 @@ Panel A & Panel B & Panel C
 \maketitle
 
 \begin{abstract}
-A natural image typically depicts several distinct concepts arranged so that they form a single coherent scene, and text-to-image models generate compositional scenes from a description of their parts. Recent methods compose pretrained diffusion models at inference time by sampling from a product of experts, one expert per concept. Product-of-experts composition can fail catastrophically, producing a single blended chimera instead of a scene containing both concepts, and we trace this failure to a specific, correctable gap. This gap is the interaction term: the per-step residual between the model's joint-prompt prediction and its product-of-experts prediction, which makes explicit the signal omitted by linear score composition. We train a low-rank adapter on the cross-attention layers of Stable Diffusion XL to predict this interaction term at every denoising step without ever seeing the joint prompt and add its prediction back in as a correction. We show the correction transfers to concept pairs it was never trained on and restores scenes containing both concepts.
+Text-to-image diffusion models generate high-fidelity scenes in which many concepts appear together, each rendered faithfully and consistently with the physical world. Given a single prompt such as ``a cat and a dog'', these models render both concepts in the same scene as distinct objects that interact naturally. Yet composing concepts correctly remains challenging. Models often struggle with object count, attribute binding, and fail to preserve the intended spatial relationships. Scaling models and data becomes increasingly expensive as the prompt space grows to include more concepts and their combinations. Rather than asking the model for ``a cat and a dog'' in a single prompt, recent methods evaluate the model separately on ``a cat'' and ``a dog,'' then combine the two predictions during inference, reusing the pretrained model rather than retraining it. In this paper we introduce the term plurality for one aspect of compositionality, the property that every concept a prompt names appears in the scene as its own distinct object. However, composing conflicting concepts can collapse the scene into a single hybrid object rather than rendering both. We show that this failure reflects a loss of plurality when two concepts contend for the same image region. This loss is measurable, as the per-step residual between the model's prediction under the joint prompt and its combined prediction from the separate prompts. A small fraction of this residual, added back at the right stage of generation, is enough to restore plurality, returning both objects to the scene. To make this correction available without the joint prompt, we train a low-rank adapter on the cross-attention layers of Stable Diffusion XL to predict the residual at every denoising step. We show that the adapter learns a general correction for plurality rather than the appearance of any specific concept, which allows it to transfer to unseen pairs.
 \end{abstract}
 
 \section{Introduction}
 
 Natural images usually depict several objects that appear together and interact as part of a coherent scene. A cat may sit beside a dog, or a cup may rest on a table. Thus, generating such scenes requires more than producing each object correctly. The model must also capture how the objects are arranged and how they relate to one another. A cup described as resting on a table should sit naturally on the tabletop rather than float above it, appear underneath it, or merge into its surface.
 
-Recently, text-to-image diffusion models (Saharia et al., 2022; Podell et al., 2023) have demonstrated a remarkable ability to generate complex scenes with high visual fidelity. Much of this progress has been driven by scaling model capacity and training data, enabling these models to represent a broad range of objects and their interactions within a scene. Recent work has shown that these models can also capture aspects of the physical structure and dynamics of visual scenes (Author et al., YYYY). Despite this progress, they remain unreliable on several forms of compositional reasoning, including counting (Author et al., YYYY), negation (Author et al., YYYY), and attribute binding (Author et al., YYYY). Many specific concept compositions also remain rare or unseen during training, which has motivated methods that compose pretrained diffusion models directly at inference time, without additional training (Liu et al., 2022).
+Recently, text-to-image diffusion models \citep{saharia2022photorealistic, podell2023sdxl} have demonstrated a remarkable ability to generate complex scenes with high visual fidelity. Much of this progress has been driven by scaling model capacity and training data, enabling these models to represent a broad range of objects and their interactions within a scene. Recent work has shown that these models can also capture aspects of the physical structure of visual scenes \citep{chen2023beyond, du2024generative}. Despite this progress, they remain unreliable on several forms of compositional reasoning, including counting \citep{huang2025t2icompbench}, negation \citep{conwell2024relations}, and attribute binding \citep{huang2025t2icompbench}. Many specific concept compositions also remain rare or unseen during training \citep{du2024compositional}, which has motivated methods that compose pretrained diffusion models directly at inference time, without additional training \citep{liu2022compositional}.
 
-In text-to-image diffusion models, the conditioning signal $(c)$ is typically derived from a text prompt and used to guide the reverse process. Models such as Stable Diffusion (cite) condition the denoising network on these text representations and can generate scenes containing multiple objects and interactions from a single prompt. In this paper, we refer to this setting as \textbf{joint prompting} or \textbf{Mono}. For example, a single model conditioned on \textit{``a cat and a dog''} is asked to generate both concepts jointly within the same scene.
+In text-to-image diffusion models, the conditioning signal $(c)$ is typically derived from a text prompt and used to guide the reverse process. Models such as Stable Diffusion \citep{rombach2022high} condition the denoising network on these text representations and can generate scenes containing multiple objects and interactions from a single prompt. In this paper, we refer to this setting as \textbf{joint prompting} or \textbf{Mono}. For example, a single model conditioned on \textit{``a cat and a dog''} is asked to generate both concepts jointly within the same scene.
 
-We contrast this with \textbf{inference-time composition}, where the concepts are represented by separate pretrained conditional models. For example, one model may be conditioned on \textit{``a cat''} and another on \textit{``a dog''}. Their predictions are then combined during the reverse process using a product-of-experts (PoE) formulation to generate a sample that satisfies both conditions. Unlike joint prompting, the composed model has not been trained directly on the joint condition. In practice, this setting often fails to preserve the constituent concepts as distinct objects. Instead, the composition can collapse into a single entangled or hybrid object. We study this gap between joint generation and inference-time composition and investigate why PoE composition fails even when the individual models represent each concept well.
+We contrast this with \textbf{inference-time composition}, where the concepts are represented by separate pretrained conditional models. For example, one model may be conditioned on \textit{``a cat''} and another on \textit{``a dog''}. Their predictions are then combined during the reverse process using a product-of-experts (PoE) formulation \citep{liu2022compositional, zhang2025product} to generate a sample that satisfies both conditions. Unlike joint prompting, the composed model has not been trained directly on the joint condition. In practice, this setting often fails to preserve the constituent concepts as distinct objects. Instead, the composition can collapse into a single entangled or hybrid object. The property lost in this collapse is what we call \textbf{plurality}, the property that every concept a prompt names appears in the scene as its own distinct object. We study this gap between joint generation and inference-time composition and investigate why PoE composition fails even when the individual models represent each concept well.
 
-Product-of-experts composition assumes the two concepts are conditionally independent given the image. Section~\ref{sec:interaction} derives what follows from that assumption, and what it leaves out.
+Product-of-experts composition assumes the two concepts are conditionally independent given the image \citep{bradley2025mechanisms}. Section~\ref{sec:interaction} derives what follows from that assumption, and what it leaves out.
 
-In diffusion models, the noise prediction $\epsilon_\theta$ relates to the score via $\epsilon_\theta(x_t, t \mid c) = -\sigma_t \nabla_{x_t} \log p(x_t \mid c)$, where $\sigma_t$ is the noise standard deviation at step $t$. The assumption then gives the product-of-experts composition rule:
+In diffusion models, the noise prediction is a scaled negative score: $\epsilon_\theta(x_t, t \mid c) = -\sigma_t \nabla_{x_t} \log p(x_t \mid c)$ \citep{dhariwal2021diffusion}, where $\sigma_t$ is the noise standard deviation at step $t$. The assumption then gives the product-of-experts composition rule:
 
 \begin{equation}
 \hat\epsilon_{\mathrm{PoE}}(x_t,t) = \epsilon_\theta(x_t,t\mid c_1) + \epsilon_\theta(x_t,t\mid c_2) - \epsilon_\theta(x_t,t),
 \label{eq:poe-composition}
 \end{equation}
 
-This linear composition is exact only when the two concepts are truly conditionally independent given the image. Natural concepts, however, interact through appearance, geometry, and spatial arrangement. The gap between what the true joint model would predict and what PoE predicts is what we call the interaction residual $r_t$, and it is this missing term that we measure, understand, and learn to correct.
+This linear composition is exact only when the two concepts are truly conditionally independent given the image. Natural concepts, however, interact through appearance, geometry, and spatial arrangement. The gap between what the true joint model would predict and what PoE predicts is an interaction term, the quantity a product of independent experts drops. In our setting it is narrowed to plurality, so we call it the plurality term $r_t$, and it is this missing term that we measure, understand, and learn to correct.
 
-To make this concrete, consider two visually similar concepts: a cat and a dog. When prompted jointly, a single model trained on both concepts generates two distinct animals in one scene. When the same two concepts are composed using product-of-experts, the result is a single blended animal that combines features of both, as shown in Figure 1. This failure is not incidental; it reflects a systematic gap in how PoE composition works, one we make explicit and study throughout this paper.
+To make this concrete, consider two visually similar concepts: a cat and a dog. When prompted jointly, a single model trained on both concepts generates two distinct animals in one scene. When the same two concepts are composed using product-of-experts, the result is a single blended animal that combines features of both, as shown in Figure~\ref{fig:poe-failure}. This failure is not incidental; it reflects a systematic gap in how PoE composition works, one we make explicit and study throughout this paper.
 
 \begin{figure}[t]
 \centering
@@ -111,35 +111,30 @@ To make this concrete, consider two visually similar concepts: a cat and a dog. 
 \label{fig:poe-failure}
 \end{figure}
 
-Understanding and fixing this gap matters because inference-time composition is the practical path forward for generative models. As the space of possible concept combinations grows, retraining on every combination becomes infeasible. Composition methods that work reliably, even for concept pairs unseen during training, unlock a new mode of model reuse: combine pretrained models without additional training, and get reliable compositional generation. This paper traces a specific failure in one composition method and shows that the failure is correctable.
+Understanding and fixing this gap matters because inference-time composition is the practical path forward for generative models. As the space of possible concept combinations grows, retraining on every combination becomes infeasible \citep{du2024compositional}. Composition methods that work reliably, even for concept pairs unseen during training, unlock a new mode of model reuse: combine pretrained models without additional training, and get reliable compositional generation. This paper traces a specific failure in one composition method and shows that the failure is correctable.
 
 \begin{samepage}
 \textbf{Contributions.} This paper makes three contributions:
 \begin{itemize}
-    \item \textbf{We define the missing interaction.} We write $r_t$ as the step-by-step difference between the model's joint-prompt prediction and its PoE prediction, turning the missing compositional signal into a quantity we can measure and correct.
-    \item \textbf{We show the residual is the signal that restores composition.} Adding the correct residual turns PoE failures into two-object scenes; mismatched residuals of comparable size do not have this effect.
+    \item \textbf{We define the plurality term.} We write $r_t$ as the step-by-step difference between the model's joint-prompt prediction and its PoE prediction, turning the missing compositional signal into a quantity we can measure and correct.
+    \item \textbf{We show the plurality term is the signal that restores composition.} Adding the correct residual turns PoE failures into two-object scenes; mismatched residuals of comparable size do not have this effect.
     \item \textbf{We learn a lightweight correction that transfers.} A low-rank adapter on SDXL's cross-attention layers predicts $r_t$ without access to the joint prompt and composes concept pairs excluded from its training set.
 \end{itemize}
 \end{samepage}
 
 \section{Background and Related Work}
 \label{sec:background}
-\section{The Interaction Term}
+
+Recent methods compose pretrained diffusion models at inference by sampling from the product of the individual concept distributions. Conditioning a pretrained model on a single concept prompt concentrates its distribution on images showing that concept, and this conditional distribution is each expert's contribution to the product. This multiplication is the product-of-experts construction \citep{liu2022compositional, zhang2025product}, in which the product stays large only on images to which every expert assigns high probability, so a sample must satisfy both concepts at once. A prompt such as ``a cat and a dog'' asks for plurality, each concept appearing in the scene as its own distinct object, the way the two animals co-occur in captioned training images. Assigning high probability under both experts and appearing as two distinct objects in one scene are different demands, and the product enforces only the first. In this paper we focus on conflicting concept pairs, where composition loses plurality, and show that the loss is measurable as a per-step residual that can be learned.
+
+Existing methods keep the product as the target and improve how it is composed and sampled \citep{dutta2026steer, huang2026factordiff, wang2026testtime}. \citet{liu2022compositional} treat a prompt naming two concepts as a conjunction, one expert per concept, and add the experts' predictions directly at each denoising step. \citet{du2023reduce} show that reverse diffusion on the added predictions does not sample the product the addition aims at, and correct the mismatch with Markov chain sampling. Later methods sharpen the correction, with annealed importance sampling \citep{zhang2025product} and sequential Monte Carlo correctors \citep{skreta2024superdiff, skreta2025feynman}. The rest of this section lays out how the predictions these methods combine are produced, and where the assumption of independence between the composed concepts enters.
+
+\section{Missing Implications: The Plurality Term}
 \label{sec:interaction}
 
 At each denoising step, product-of-experts composition evaluates the pretrained network on the same noisy latent under three conditions: the first prompt, the second prompt, and the unconditional condition. These three predictions are then combined to form the PoE noise estimate given in \eqref{eq:poe-composition}, by adding the two conditional predictions and subtracting the unconditional one. Each conditional prediction contains the unconditional prediction plus a term carrying its own prompt. Three properties of this construction carry into the rest of the section: nothing is trained, the network is never shown both prompts at once, and the composed prediction is a fixed linear combination of three of its own outputs.
 
-The rule follows from that assumption and from nothing else.
-
-\begin{align}
-p(x \mid c_1, c_2)
-  &\propto p(x)\, p(c_1 \mid x)\, p(c_2 \mid x) \label{eq:independence}\\
-  &= p(x) \cdot \frac{p(x \mid c_1)\, p(c_1)}{p(x)} \cdot \frac{p(x \mid c_2)\, p(c_2)}{p(x)} \\
-  &= p(c_1)\, p(c_2) \cdot \frac{p(x \mid c_1)\, p(x \mid c_2)}{p(x)} \\
-  &\propto \frac{p(x \mid c_1)\, p(x \mid c_2)}{p(x)}
-\end{align}
-
-The unconditional density is in the denominator because it is already contained in both conditional experts, so their product carries it twice and one copy has to be removed.
+When the two concepts are independent given the image, the joint density factorises as $p(x \mid c_1, c_2) \propto p(x \mid c_1)\, p(x \mid c_2)\,/\,p(x)$ \citep{liu2022compositional}. The unconditional density is in the denominator because it is already contained in both conditional experts, so their product carries it twice and one copy has to be removed. Taking logarithms and passing to noise predictions gives the estimate the sampler uses, writing $p_{\mathrm{PoE}}$ for the product above.
 
 \begin{align}
 \log p_{\mathrm{PoE}}
@@ -152,26 +147,9 @@ The unconditional density is in the denominator because it is already contained 
      \big[ \epsilon_\theta(x_t, t \mid c_i) - \epsilon_\theta(x_t, t) \big]
 \end{align}
 
-Attaching a weight $w_i$ to each push gives $\hat\epsilon = \epsilon_\theta(x_t,t) + \sum_i w_i[\epsilon_\theta(x_t,t \mid c_i) - \epsilon_\theta(x_t,t)]$, which is the form used in practice and which recovers the derivation exactly at $w_i = 1$.
+Attaching a weight $w_i$ to each push gives $\hat\epsilon = \epsilon_\theta(x_t,t) + \sum_i w_i[\epsilon_\theta(x_t,t \mid c_i) - \epsilon_\theta(x_t,t)]$, which is the form used in practice \citep[equation 11]{liu2022compositional} and which recovers the derivation exactly at $w_i = 1$.
 
-So far $r_t$ has been defined through one network's behaviour. The quantity it stands in for can be written exactly, in terms of the two concepts themselves.
-
-\begin{align}
-R_t &\;\equiv\; \frac{p(c_1, c_2 \mid x_t)}{p(c_1 \mid x_t)\, p(c_2 \mid x_t)}\\
-p(c_1, c_2 \mid x_t) &= p(c_1 \mid x_t)\, p(c_2 \mid x_t)\, R_t
-\end{align}
-
-$R_t$ equals one exactly when the two concepts are independent given the state.
-
-\begin{align}
-p(x_t \mid c_1, c_2)
-  &\propto p(x_t)\, p(c_1, c_2 \mid x_t) \\
-  &= p(x_t)\, p(c_1 \mid x_t)\, p(c_2 \mid x_t)\, R_t \\
-  &\propto p(x_t)\, \frac{p(x_t \mid c_1)}{p(x_t)}\, \frac{p(x_t \mid c_2)}{p(x_t)}\, R_t
-  &&\text{(Bayes on each factor, as in \eqref{eq:independence})}\\
-  &\propto \frac{p(x_t \mid c_1)\, p(x_t \mid c_2)}{p(x_t)}\, R_t \\
-  &\propto p_{\mathrm{PoE}}(x_t \mid c_1, c_2)\, R_t
-\end{align}
+The gap between the joint conditional and the product form is the ratio $R_t \equiv p(c_1, c_2 \mid x_t)\,/\,\big(p(c_1 \mid x_t)\, p(c_2 \mid x_t)\big)$. $R_t$ equals one exactly when the two concepts are independent given the state. Keeping this ratio instead of setting it to one turns the product form back into the joint, $p(x_t \mid c_1, c_2) \propto p_{\mathrm{PoE}}(x_t \mid c_1, c_2)\, R_t$.
 
 At every step the sampler combines the two experts as though this factor were one, whether or not it is. Writing $\epsilon_{\text{true}}$ for the noise prediction of the true joint score, which no model gives us,
 
@@ -193,7 +171,7 @@ Figure~\ref{fig:two-regimes} shows one sample from each of two prompt pairs, wit
 \label{fig:two-regimes}
 \end{figure}
 
-We define the interaction term $r_t$ as the difference between the model's prediction under the joint prompt and its product-of-experts prediction, both evaluated on the same noisy latent at the same step.
+We define the plurality term $r_t$ as the difference between the model's prediction under the joint prompt, written $\epsilon_{\mathrm{Mono}}$, and its product-of-experts prediction, both evaluated on the same noisy latent at the same step.
 
 \begin{equation}
 r_t \;=\; \epsilon_{\mathrm{Mono}}(x_t, t) \;-\; \hat\epsilon_{\mathrm{PoE}}(x_t, t)
@@ -209,189 +187,272 @@ The identity $\epsilon_{\mathrm{Mono}} = \hat\epsilon_{\mathrm{PoE}} + r_t$ hold
 
 Product-of-experts sampling never sees the joint prompt. The difference $r_t$ therefore serves as a signal we can measure, one that establishes what the missing correction is, when in the denoising trajectory it matters, and why composition fails without it. $r_t$ is a full noise-prediction vector at every step, so it has a direction as well as a magnitude.
 
-The independence assumption in \eqref{eq:independence} fails once the two concepts have to share one image, since a patch of pixels that reads strongly as one animal cannot read equally strongly as the other. Sampling from that product therefore steers toward whatever image satisfies both experts at once, and for two animals competing for the same region that is a single blended animal rather than two. In every pair we study both concepts are foreground subjects, rather than a subject and a setting that could occupy different parts of the image. The same network produces two distinct animals when it is given the joint prompt, so the failure belongs to the composition rule and not to the model.
+The independence assumption behind the product form fails once the two concepts have to share one image, since a patch of pixels that reads strongly as one animal cannot read equally strongly as the other. Sampling from that product therefore steers toward whatever image satisfies both experts at once, and for two animals competing for the same region that is a single blended animal rather than two \citep{bradley2025mechanisms, dutta2026steer}. In every pair we study both concepts are foreground subjects, rather than a subject and a setting that could occupy different parts of the image. The same network produces two distinct animals when it is given the joint prompt, so the failure belongs to the composition rule and not to the model.
 
-In practice both predictions come from one pass of the network per denoising step, evaluated on the first concept, the second concept, the joint prompt, and no prompt. Both are read at the same noisy latent, the one the corrected sampler is currently visiting, so $r_t$ is measured along the trajectory it is applied to rather than imported from a separate run. The true joint score $\nabla_x \log p(x \mid c_1, c_2)$ is a property of the world, whereas $\epsilon_{\mathrm{Mono}}$ is what this network outputs when its text encoder is handed one prompt naming both concepts. So $r_t$ measures a gap between two behaviours of one model, not a gap to the correct distribution. At $\lambda = 1$ the corrected sampler reproduces the joint-prompt prediction exactly, so the most this correction can do is bring composition up to what joint prompting already achieves. Joint prompting is the behaviour inference-time composition is trying to reproduce, so matching it is what this correction is for.
+In practice both predictions come from one pass of the network per denoising step, evaluated on the first concept, the second concept, the joint prompt, and no prompt. Both are read at the same noisy latent, the one the corrected sampler is currently visiting, so $r_t$ is measured along the trajectory it is applied to rather than imported from a separate run. The true joint score $\nabla_x \log p(x \mid c_1, c_2)$ is a property of the world, whereas $\epsilon_{\mathrm{Mono}}$ is what this network outputs when its text encoder is handed one prompt naming both concepts. So $r_t$ measures a gap between two behaviours of one model, not a gap to the correct distribution. Joint prompting is the behaviour inference-time composition is trying to reproduce, so matching it is what this correction is for.
 
-\section{Analysing and Correcting Product-of-Experts with the Scaled Residual}
+\section{Restoring the Plurality Term Restores Composition}
 \label{sec:analysis}
 
-\section{Learning the Residual}
+A small fraction of the measured plurality term, applied in the first steps of the denoising run, is enough to restore composition. Adding $\lambda\, r_t$ at each step interpolates between plain composition at $\lambda = 0$ and the joint-prompt prediction at $\lambda = 1$. The corrected sampler can therefore do no more than reproduce joint prompting, which it equals exactly at $\lambda = 1$.
+
+Two views of one pair show what the sweep that follows measures across every pair. Figure~\ref{fig:window-extends} corrects a cat-and-dog run from the start and stops at five different points. Correcting the first ten steps already yields two animals, and correcting twenty, thirty, forty, or all fifty steps changes nothing the final image shows. Figure~\ref{fig:window-starts-later} runs the windows the other way, leaving the start uncorrected. A correction that begins at step ten still composes. One that begins at step twenty or later never does, however long it runs, and no late-start row shows two animals at any decode point. Both figures are one pair at one seed, so they illustrate the timing rather than measure it.
+
+\begin{figure}[ht]
+\centering
+\begin{minipage}[t]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{when-the-correction-arrives/poe/samples-as-the-window-extends-from-the-start.png}
+\caption{\textbf{Ten corrected steps already reach the outcome.} A cat and a dog at seed 12. Each row corrects the run from step 0 to the row's endpoint and leaves the rest plain. Columns decode the latent after 10 to 50 steps, and the green frame marks decodes taken while the correction was active, not a detector verdict. Every row ends with two animals, so coverage past the first ten steps adds nothing the final image shows.}
+\label{fig:window-extends}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{when-the-correction-arrives/poe/samples-as-the-window-starts-later.png}
+\caption{\textbf{No late start recovers what the first steps lose.} Same pair, seed, and layout, with each row uncorrected until its start step and corrected from there to step 50. The last row never corrects. Starting at step ten still yields two animals. Starting at step twenty or later never does, whatever the coverage.}
+\label{fig:window-starts-later}
+\end{minipage}
+\end{figure}
+
+The sweep across all eight pairs and four seeds draws the same boundary. A generated image counts as composed when an object detector finds two distinct animals in it, and all counts were manually verified. We restrict the correction to a ten-step window, leave the remaining forty steps uncorrected, and slide the window across the run in strides of five. Windows starting within the first five steps restore composition for every pair we tried, and windows starting at step 20 or later restore it for none (Figure~\ref{fig:window-map}). In every pair we measured, the correction is at its smallest, relative to that pair's typical per-step size, in the steps where it matters, so size does not explain the timing. Why the earliest steps are decisive is open, and what we can show is that the correction they need is learnable.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.62\textwidth]{when-the-correction-arrives/poe/samples-over-the-window-map.pdf}
+\caption{Top: the final image for a cat and a dog at seeds 9 to 12 as the ten-step correction window slides across the run, with a green frame marking images the detector scored as composed. Bottom: the number of seeds out of four scored as composed, for all eight pairs, at each window start. The window is kept narrow so the sweep can distinguish timing from coverage, since a window spanning most of the run would contain the early steps at every position. The two daggered cells are detector error, a single animal boxed twice.}
+\label{fig:window-map}
+\end{figure}
+
+Every result above used the joint prompt, which composition is not allowed to have. The next section removes that need.
+
+\section{Learning the Plurality Term}
 \label{sec:method}
-\section{Experiments and Results}
-\label{sec:experiments}
+
+In the previous section we measured the plurality term along composed runs and showed that adding a small amount of it back, early in the run, restores composition. In this section we learn it. We train a model that produces the correction at each step, from the current state and the two concept prompts, so a corrected run no longer needs the joint prompt. The joint prompt is barred only at inference, so the term can still be measured in advance, and those measurements are what the model trains on.
+
+The model learns its correction from the residuals themselves. For each training pair we therefore store the residual at every denoising step, over several runs, so the training data covers whole trajectories rather than isolated steps. We train a single adapter on every pair together to learn the correction rule that restores the plurality lost during composition.
+
+The adapter is a low-rank adaptation (LoRA) of rank 8 on the query, key and value projections of every cross-attention layer, with the base model frozen. At each step of the run the UNet takes two inputs, the current latent $x_t$ and the prompt. They meet in the cross-attention layers, where the layer projects the image to queries and the prompt's token embeddings to keys and values, so each region of the image can draw on the tokens it matches. The adapter leaves these three projection matrices untouched and adds a small trainable update beside each one, the product of two rank-8 matrices whose output is summed with the original projection's. Training moves only these added matrices, so what the adapter can change is how image regions query the prompt and what the prompt's tokens give back.
+
+We split a pool of nineteen animal pairs into eleven for training and eight for evaluation. To prevent a held-out gain from coming from an animal the adapter has already seen, and to attribute it to the correction rule instead, no animal appears in more than one pair anywhere in the pool. For each training pair we then run the composed sampler from eight starting noises and, at every step, evaluate the model under the joint prompt and under the two concept prompts at the state the run has reached. The difference between the joint-prompt and composed predictions is stored as that step's residual, giving 4,400 residuals across the 88 runs. The adapter is trained so that its composed prediction matches the stored joint-prompt prediction at each state, which is the same as supplying the residual without being given the joint prompt. Collection runs use guidance scale 7.5 and 50 DDIM steps at $1024\times1024$ in fp16. Training runs for 2,000 epochs of 50 optimizer steps, 100,000 in all, with AdamW at learning rate 1e-4 and gradient clipping at 1.0. On a single NVIDIA RTX PRO 6000 this takes about seven hours and peaks at 23\,GB of memory.
+
+At inference the correction is not injected at all. We simply run plain product-of-experts sampling through the adapted model, with the two concept prompts and the null token as the only conditions, so the corrected sampler costs no more than the composition it repairs. Training placed the correction inside the adapter's weights, so the composition of the adapted predictions lands where the frozen model's joint-prompt prediction would have landed. For the experiments we also run each step through the frozen model, and the difference between the two composed predictions makes the learned correction explicit. Scaling that difference by $\lambda$ before stepping gives a dial on the correction, with $\lambda = 0$ recovering plain composition as a baseline and $\lambda = 1$ identical to the adapted pass alone.
+
+Figure~\ref{fig:adapter-samples} shows what the compose rate counts. Under plain composition each pair in the middle column collapses into a single animal carrying features of both concepts. The adapter-corrected sampler on the right returns each pair to two distinct animals, on pairs it never trained on.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.5\linewidth]{joint-prompt-poe-and-adapter-samples-for-four-held-out-pairs.pdf}
+\caption{Samples for four animal pairs held out of the adapter's training, under the joint prompt (left), plain product-of-experts composition (middle), and the adapter-corrected sampler (right). The three images of a row start from the same noise, and the adapter column is the pooled checkpoint at training step 100000 with $\lambda=1$. The joint-prompt column is the target the correction was defined from, not a competing method. Four pairs illustrate the effect and do not carry the rate.}
+\label{fig:adapter-samples}
+\end{figure}
+
 \section{Discussion}
 \label{sec:discussion}
 \section{Conclusion}
-\section*{Ethics Statement}
+% \section*{Ethics Statement}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer tincidunt. Cras dapibus; vivamus elementum semper nisi. This placeholder should eventually discuss possible misuse, sensitive data, evaluation harms, environmental cost, or deployment constraints.
+% Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer tincidunt. Cras dapibus; vivamus elementum semper nisi. This placeholder should eventually discuss possible misuse, sensitive data, evaluation harms, environmental cost, or deployment constraints.
 
-\section*{Reproducibility Statement}
+% \section*{Reproducibility Statement}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent congue erat at massa. Sed cursus turpis vitae tortor. This placeholder should eventually list code release status, random seeds, hardware, dataset provenance, hyperparameters, and any withheld artifacts.
+% Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent congue erat at massa. Sed cursus turpis vitae tortor. This placeholder should eventually list code release status, random seeds, hardware, dataset provenance, hyperparameters, and any withheld artifacts.
 
-\section*{Acknowledgments}
+% \section*{Acknowledgments}
 
-This anonymous placeholder contains no acknowledgments for submission. Replace this paragraph or remove the section for the initial blind review version if needed.
+% This anonymous placeholder contains no acknowledgments for submission. Replace this paragraph or remove the section for the initial blind review version if needed.
 
-% Citations are currently written as literal author-year text so this draft can
-% compile without BibTeX. Restore these commands when citation keys are finalized.
-% \bibliography{iclr2027_conference}
-% \bibliographystyle{iclr2027_conference}
+\bibliography{iclr2027_conference}
+\bibliographystyle{iclr2027_conference}
 
-\appendix
+% \appendix
 
-\section{Extended Related Work}
-\label{app:related}
+% \section{Extended Related Work}
+% \label{app:related}
 
-\subsection{Additional adaptation literature}
+% \subsection{Additional adaptation literature}
 
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. This appendix slot is for adjacent methods that matter but would slow the main narrative.
+% Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. This appendix slot is for adjacent methods that matter but would slow the main narrative.
 
-\subsection{Additional benchmarking literature}
+% \subsection{Additional benchmarking literature}
 
-Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. This paragraph can become a longer comparison of benchmarks, threat models, and evaluation protocols.
+% Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. This paragraph can become a longer comparison of benchmarks, threat models, and evaluation protocols.
 
-\subsection{Additional generation or exploration literature}
+% \subsection{Additional generation or exploration literature}
 
-Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus; vivamus elementum semper nisi. Aenean vulputate eleifend tellus. This paragraph can become a longer bridge to diffusion models, search procedures, exploration policies, or sample generators.
+% Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus; vivamus elementum semper nisi. Aenean vulputate eleifend tellus. This paragraph can become a longer bridge to diffusion models, search procedures, exploration policies, or sample generators.
 
-\section{Additional Method Details}
-\label{app:method-details}
+% \section{Additional Method Details}
+% \label{app:method-details}
 
-\subsection{Derivation of the placeholder objective}
+% \subsection{Derivation of the product form and the plurality factor}
+% \label{app:poe-derivation}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Let $\theta^{\star}$ denote the best adapted parameter under the placeholder score:
-\begin{equation}
-    \theta^{\star}
-    =
-    \argmin_{\theta'}
-    \left[
-    \mathcal{L}(\theta')
-    +
-    \eta
-    \left\|
-    \nabla_{\theta'} \mathcal{L}(\theta')
-    \right\|_{2}^{2}
-    \right].
-    \label{eq:appendix-objective}
-\end{equation}
-Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium. Replace this derivation with the real loss, estimator, theorem, or convergence argument.
+% Product-of-experts composition is obtained as follows \citep{liu2022compositional}.
 
-\subsection{Placeholder proposition}
+% \begin{align}
+% p(x \mid c_1, c_2)
+%   &\propto p(x)\, p(c_1 \mid x)\, p(c_2 \mid x) \label{eq:independence}\\
+%   &= p(x) \cdot \frac{p(x \mid c_1)\, p(c_1)}{p(x)} \cdot \frac{p(x \mid c_2)\, p(c_2)}{p(x)} \\
+%   &= p(c_1)\, p(c_2) \cdot \frac{p(x \mid c_1)\, p(x \mid c_2)}{p(x)} \\
+%   &\propto \frac{p(x \mid c_1)\, p(x \mid c_2)}{p(x)}
+% \end{align}
 
-\newtheorem{proposition}{Proposition}
-\begin{proposition}[Placeholder stability]
-Assume the score in Eq.~\ref{eq:score} is $L$-Lipschitz in $\theta'$ and that the adaptation operator in Eq.~\ref{eq:adaptation} changes by at most $\epsilon$ under a single-regime perturbation. Then the reported score changes by at most $L\epsilon$.
-\end{proposition}
+% The unconditional density is in the denominator because it is already contained in both conditional experts, so their product carries it twice and one copy has to be removed.
 
-\paragraph{Proof sketch.}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. By the Lipschitz assumption,
-\begin{equation}
-    \left|S(\theta'_{a},\mathcal{D}_{2}) - S(\theta'_{b},\mathcal{D}_{2})\right|
-    \leq
-    L\left\|\theta'_{a}-\theta'_{b}\right\|_{2}
-    \leq
-    L\epsilon.
-\end{equation}
-Quisque rutrum aenean imperdiet. Etiam ultricies nisi vel augue. Replace this proof sketch with the real theorem or delete it if the paper is purely empirical.
+% The gap between the joint conditional and the product form can be written as
 
-\subsection{Implementation notes}
+% \begin{align}
+% R_t &\;\equiv\; \frac{p(c_1, c_2 \mid x_t)}{p(c_1 \mid x_t)\, p(c_2 \mid x_t)}\\
+% p(c_1, c_2 \mid x_t) &= p(c_1 \mid x_t)\, p(c_2 \mid x_t)\, R_t
+% \end{align}
 
-Suspendisse potenti. Sed lectus. Integer euismod lacus luctus magna. Quisque cursus, metus vitae pharetra auctor, sem massa mattis sem, at interdum magna augue eget diam. Use this subsection for architecture details, preprocessing choices, batching, optimizer settings, and implementation deviations from prior work.
+% $R_t$ equals one exactly when the two concepts are independent given the state. Carrying it through the same Bayes steps recovers the joint conditional from the product form.
 
-\section{Additional Experimental Results}
-\label{app:additional-results}
+% \begin{align}
+% p(x_t \mid c_1, c_2)
+%   &\propto p(x_t)\, p(c_1, c_2 \mid x_t) \\
+%   &= p(x_t)\, p(c_1 \mid x_t)\, p(c_2 \mid x_t)\, R_t \\
+%   &\propto p(x_t)\, \frac{p(x_t \mid c_1)}{p(x_t)}\, \frac{p(x_t \mid c_2)}{p(x_t)}\, R_t
+%   &&\text{(Bayes on each factor, as in \eqref{eq:independence})}\\
+%   &\propto \frac{p(x_t \mid c_1)\, p(x_t \mid c_2)}{p(x_t)}\, R_t \\
+%   &\propto p_{\mathrm{PoE}}(x_t \mid c_1, c_2)\, R_t
+% \end{align}
 
-\subsection{Full metric matrix}
+% Taking the gradient of the logarithm of both sides, and converting scores to noise predictions, gives the relation between the true joint prediction and the product-of-experts prediction stated in Section~\ref{sec:interaction}.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus viverra nulla ut metus varius laoreet. Table~\ref{tab:full-matrix} is a fake expanded result table for all regimes and metrics.
+% \subsection{Derivation of the placeholder objective}
 
-\begin{table}[h]
-\caption{Placeholder full metric matrix}
-\label{tab:full-matrix}
-\begin{center}
-\begin{tabular}{lcccccc}
-\hline
-\textbf{Method} & \textbf{U1} & \textbf{U2} & \textbf{R1} & \textbf{R2} & \textbf{C1} & \textbf{C2} \\
-\hline
-Baseline A & 71.2 & 68.9 & 22.4 & 19.5 & 1.00 & 0.82 \\
-Baseline B & 73.5 & 69.4 & 20.1 & 18.7 & 1.18 & 0.79 \\
-\methodname & 78.9 & 75.6 & 16.3 & 14.2 & 1.09 & 0.76 \\
-Oracle & 82.0 & 78.2 & 12.0 & 10.5 & 2.40 & 0.64 \\
-\hline
-\end{tabular}
-\end{center}
-\end{table}
+% Lorem ipsum dolor sit amet, consectetur adipiscing elit. Let $\theta^{\star}$ denote the best adapted parameter under the placeholder score:
+% \begin{equation}
+%     \theta^{\star}
+%     =
+%     \argmin_{\theta'}
+%     \left[
+%     \mathcal{L}(\theta')
+%     +
+%     \eta
+%     \left\|
+%     \nabla_{\theta'} \mathcal{L}(\theta')
+%     \right\|_{2}^{2}
+%     \right].
+%     \label{eq:appendix-objective}
+% \end{equation}
+% Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium. Replace this derivation with the real loss, estimator, theorem, or convergence argument.
 
-\subsection{Additional curves}
+% \subsection{Placeholder proposition}
 
-Morbi nec metus. Phasellus blandit leo ut odio. Maecenas ullamcorper, dui et placerat feugiat, eros pede varius nisi, condimentum viverra felis nunc et lorem. Figure~\ref{fig:appendix-curves} is reserved for secondary sweeps or per-domain curves.
+% \newtheorem{proposition}{Proposition}
+% \begin{proposition}[Placeholder stability]
+% Assume the score in Eq.~\ref{eq:score} is $L$-Lipschitz in $\theta'$ and that the adaptation operator in Eq.~\ref{eq:adaptation} changes by at most $\epsilon$ under a single-regime perturbation. Then the reported score changes by at most $L\epsilon$.
+% \end{proposition}
 
-\begin{figure}[h]
-\placeholderfigure{1.75in}{Appendix curves}
-\caption{Placeholder appendix curves. Replace with per-domain plots, seed-level traces, or confidence intervals.}
-\label{fig:appendix-curves}
-\end{figure}
+% \paragraph{Proof sketch.}
+% Lorem ipsum dolor sit amet, consectetur adipiscing elit. By the Lipschitz assumption,
+% \begin{equation}
+%     \left|S(\theta'_{a},\mathcal{D}_{2}) - S(\theta'_{b},\mathcal{D}_{2})\right|
+%     \leq
+%     L\left\|\theta'_{a}-\theta'_{b}\right\|_{2}
+%     \leq
+%     L\epsilon.
+% \end{equation}
+% Quisque rutrum aenean imperdiet. Etiam ultricies nisi vel augue. Replace this proof sketch with the real theorem or delete it if the paper is purely empirical.
 
-\subsection{Qualitative examples}
+% \subsection{Implementation notes}
 
-Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. This subsection can hold generated samples, rollouts, extracted examples, failure cases, or visual inspection panels.
+% Suspendisse potenti. Sed lectus. Integer euismod lacus luctus magna. Quisque cursus, metus vitae pharetra auctor, sem massa mattis sem, at interdum magna augue eget diam. Use this subsection for architecture details, preprocessing choices, batching, optimizer settings, and implementation deviations from prior work.
 
-\begin{figure}[h]
-\placeholderfigure{1.85in}{Qualitative examples}
-\caption{Placeholder qualitative examples. Replace with representative successes and failures, not only favorable cases.}
-\label{fig:qualitative}
-\end{figure}
+% \section{Additional Experimental Results}
+% \label{app:additional-results}
 
-\section{Experimental Details}
-\label{app:experimental-details}
+% \subsection{Full metric matrix}
 
-\subsection{Datasets, domains, and splits}
+% Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus viverra nulla ut metus varius laoreet. Table~\ref{tab:full-matrix} is a fake expanded result table for all regimes and metrics.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ullamcorper mauris at ligula. Fusce fermentum odio nec arcu. Table~\ref{tab:hyperparameters} is a placeholder for reproducibility-critical settings.
+% \begin{table}[h]
+% \caption{Placeholder full metric matrix}
+% \label{tab:full-matrix}
+% \begin{center}
+% \begin{tabular}{lcccccc}
+% \hline
+% \textbf{Method} & \textbf{U1} & \textbf{U2} & \textbf{R1} & \textbf{R2} & \textbf{C1} & \textbf{C2} \\
+% \hline
+% Baseline A & 71.2 & 68.9 & 22.4 & 19.5 & 1.00 & 0.82 \\
+% Baseline B & 73.5 & 69.4 & 20.1 & 18.7 & 1.18 & 0.79 \\
+% \methodname & 78.9 & 75.6 & 16.3 & 14.2 & 1.09 & 0.76 \\
+% Oracle & 82.0 & 78.2 & 12.0 & 10.5 & 2.40 & 0.64 \\
+% \hline
+% \end{tabular}
+% \end{center}
+% \end{table}
 
-\begin{table}[h]
-\caption{Placeholder hyperparameters}
-\label{tab:hyperparameters}
-\begin{center}
-\begin{tabular}{ll}
-\hline
-\textbf{Setting} & \textbf{Value} \\
-\hline
-Batch size & 128 \\
-Learning rate & $3 \times 10^{-4}$ \\
-Training steps & 100,000 \\
-Evaluation seeds & 10 \\
-Selection metric & Validation score \\
-Hardware & Placeholder accelerator \\
-\hline
-\end{tabular}
-\end{center}
-\end{table}
+% \subsection{Additional curves}
 
-\subsection{Baselines and implementations}
+% Morbi nec metus. Phasellus blandit leo ut odio. Maecenas ullamcorper, dui et placerat feugiat, eros pede varius nisi, condimentum viverra felis nunc et lorem. Figure~\ref{fig:appendix-curves} is reserved for secondary sweeps or per-domain curves.
 
-Pellentesque auctor neque nec urna. Proin sapien ipsum, porta a, auctor quis, euismod ut, mi. Aenean viverra rhoncus pede. Replace this with exact baseline names, official repositories, commit hashes, and any local modifications.
+% \begin{figure}[h]
+% \placeholderfigure{1.75in}{Appendix curves}
+% \caption{Placeholder appendix curves. Replace with per-domain plots, seed-level traces, or confidence intervals.}
+% \label{fig:appendix-curves}
+% \end{figure}
 
-\subsection{Compute resources}
+% \subsection{Qualitative examples}
 
-Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Replace this with accelerator type, wall-clock cost, memory footprint, and total experiment budget.
+% Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. This subsection can hold generated samples, rollouts, extracted examples, failure cases, or visual inspection panels.
 
-\section{Limitations, Broader Impact, and LLM Use}
-\label{app:limitations}
+% \begin{figure}[h]
+% \placeholderfigure{1.85in}{Qualitative examples}
+% \caption{Placeholder qualitative examples. Replace with representative successes and failures, not only favorable cases.}
+% \label{fig:qualitative}
+% \end{figure}
 
-\subsection{Limitations}
+% \section{Experimental Details}
+% \label{app:experimental-details}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse enim turpis, dictum sed, iaculis a, condimentum nec, nisi. Praesent nec nisl a purus blandit viverra. Replace this with the strongest known caveats, including assumptions that future reviewers are likely to probe.
+% \subsection{Datasets, domains, and splits}
 
-\subsection{Broader impact}
+% Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ullamcorper mauris at ligula. Fusce fermentum odio nec arcu. Table~\ref{tab:hyperparameters} is a placeholder for reproducibility-critical settings.
 
-Nullam vel sem. Nam ipsum risus, rutrum vitae, vestibulum eu, molestie vel, lacus. Sed magna purus, fermentum eu, tincidunt eu, varius ut, felis. Replace this with a domain-specific risk and benefit analysis.
+% \begin{table}[h]
+% \caption{Placeholder hyperparameters}
+% \label{tab:hyperparameters}
+% \begin{center}
+% \begin{tabular}{ll}
+% \hline
+% \textbf{Setting} & \textbf{Value} \\
+% \hline
+% Batch size & 128 \\
+% Learning rate & $3 \times 10^{-4}$ \\
+% Training steps & 100,000 \\
+% Evaluation seeds & 10 \\
+% Selection metric & Validation score \\
+% Hardware & Placeholder accelerator \\
+% \hline
+% \end{tabular}
+% \end{center}
+% \end{table}
 
-\subsection{Use of large language models}
+% \subsection{Baselines and implementations}
 
-In the preparation of this placeholder manuscript, language models may be used for drafting filler, refactoring prose, and checking consistency. Replace this statement with the final, accurate disclosure for the submitted paper.
+% Pellentesque auctor neque nec urna. Proin sapien ipsum, porta a, auctor quis, euismod ut, mi. Aenean viverra rhoncus pede. Replace this with exact baseline names, official repositories, commit hashes, and any local modifications.
+
+% \subsection{Compute resources}
+
+% Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Replace this with accelerator type, wall-clock cost, memory footprint, and total experiment budget.
+
+% \section{Limitations, Broader Impact, and LLM Use}
+% \label{app:limitations}
+
+% \subsection{Limitations}
+
+% Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse enim turpis, dictum sed, iaculis a, condimentum nec, nisi. Praesent nec nisl a purus blandit viverra. Replace this with the strongest known caveats, including assumptions that future reviewers are likely to probe.
+
+% \subsection{Broader impact}
+
+% Nullam vel sem. Nam ipsum risus, rutrum vitae, vestibulum eu, molestie vel, lacus. Sed magna purus, fermentum eu, tincidunt eu, varius ut, felis. Replace this with a domain-specific risk and benefit analysis.
+
+% \subsection{Use of large language models}
+
+% In the preparation of this placeholder manuscript, language models may be used for drafting filler, refactoring prose, and checking consistency. Replace this statement with the final, accurate disclosure for the submitted paper.
 
 \end{document}

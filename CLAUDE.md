@@ -90,6 +90,14 @@ than answering around it.
 The root [MASTER_PLAN.md](MASTER_PLAN.md) carries `## Do this next` above a flat `## Running order`
 table covering every plan in every scope. No scope keeps an order of its own.
 
+## Folders this repo adds to the top level
+
+Beyond the global four (`plans/`, `artifacts/`, `runbook/`, `environment/`) and `data/`, this
+repo keeps two more at the root: `context/` for what the project means in the real world (found
+through `context/00-INDEX.md`), and `report/` for pre-registrations, instrument provenance and
+results summaries per `~/.claude/EXPERIMENT_CONVENTIONS.md`. Both are staples here; neither is a
+filing mistake.
+
 ## Root files this repo adds to the list no check reports
 
 `~/.claude/CLAUDE.md`'s "Files at the root that no check reports" table is the base list. This repo
@@ -98,3 +106,15 @@ extends it with:
 | File | What it is for |
 |---|---|
 | `RENAMES.md` | the retrofit sweep's old-path-to-new-path table, owned by `retrofit-repo`/`tidy-repo` |
+| `learning-map.md` | the learning weave's illustrated map; renders and process snapshots in `learning-diagrams/`, owned by `learning-pulse` |
+
+## Learning journeys about this repo
+
+One learning journey tours this codebase from outside it, under `~/goal-setting/learning/`. It
+reads this repo and never writes to it.
+
+**`sampler-correctors-for-composition/`** builds the sampling theory behind why product-of-experts
+composition fails, and ends by measuring how much of `r_t` a Markov-chain corrector removes per
+step on the cached trajectories. Before arguing in the paper about whether the compose-rate cliff
+at steps 0 to 10 is a sampler artefact or a model artefact, read its master plan: the question is
+posed there with the falsification criterion already written.

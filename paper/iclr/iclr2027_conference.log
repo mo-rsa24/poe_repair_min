@@ -373,50 +373,57 @@ LaTeX Font Warning: Font shape `TU/ptm/m/it' undefined
 [1
 
 ]
-File: figures//F1-two-meanings.png Graphic file (type bmp)
-<figures//F1-two-meanings.png>
+File: figures//what-the-product-misses-explainer.png Graphic file (type bmp)
+<figures//what-the-product-misses-explainer.png>
 
-Underfull \vbox (badness 5970) has occurred while \output is active []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [2]
 [3]
-File: figures//F1b-two-regimes.pdf Graphic file (type pdf)
-<use figures//F1b-two-regimes.pdf>
- [4]
-Underfull \vbox (badness 10000) has occurred while \output is active []
+File: figures//correction-size-over-the-denoising-run.pdf Graphic file (type pd
+f)
+<use figures//correction-size-over-the-denoising-run.pdf>
+ [4] [5]
+File: figures//when-the-correction-arrives/poe/samples-as-the-window-extends-fr
+om-the-start.png Graphic file (type bmp)
+<figures//when-the-correction-arrives/poe/samples-as-the-window-extends-from-th
+e-start.png>
+File: figures//when-the-correction-arrives/poe/samples-as-the-window-starts-lat
+er.png Graphic file (type bmp)
+<figures//when-the-correction-arrives/poe/samples-as-the-window-starts-later.pn
+g>
+ [6]
+File: figures//when-the-correction-arrives/poe/samples-over-the-window-map.pdf 
+Graphic file (type pdf)
+<use figures//when-the-correction-arrives/poe/samples-over-the-window-map.pdf>
+ [7]
+File: figures//joint-prompt-poe-and-adapter-samples-for-four-held-out-pairs.pdf
+ Graphic file (type pdf)
+<use figures//joint-prompt-poe-and-adapter-samples-for-four-held-out-pairs.pdf>
 
- [5]
-[6]
-\c@proposition=\count294
+ (iclr2027_conference.bbl
+Underfull \hbox (badness 1052) in paragraph at lines 26--30
+[]\TU/ptm/m/it/10 Colin Conwell, Rupert Tawiah-Quashie, and Tomer Ullman.  Rela
+tions, negations,
+ []
+
+[8]
+Underfull \hbox (badness 1571) in paragraph at lines 67--73
+\TU/ptm/m/it/10 fusion models.  In International Conference on Learning Represe
+ntations, 2026.
+ []
 
 
-LaTeX Warning: Reference `eq:score' on page 7 undefined on input line 282.
+Underfull \hbox (badness 1852) in paragraph at lines 76--80
+\TU/ptm/m/it/10 to factor-wise expert composition in discrete diffusion models.
+  arXiv preprint
+ []
 
-
-LaTeX Warning: Reference `eq:adaptation' on page 7 undefined on input line 282.
-
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-[7]
-Underfull \vbox (badness 6658) has occurred while \output is active []
-
- [8]
-[9] (iclr2027_conference.aux)
+[9]) [10] (iclr2027_conference.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-
-LaTeX Warning: There were undefined references.
-
 Package rerunfilecheck Info: File `iclr2027_conference.out' has not changed.
-(rerunfilecheck)             Checksum: A0CF530239A4107DD580E63C2E6DB0B7;4660.
+(rerunfilecheck)             Checksum: 854BBD0110A426EB967B973576BA4FCC;1221.
  )
-Output written on iclr2027_conference.xdv (9 pages, 210600 bytes).
+Output written on iclr2027_conference.xdv (10 pages, 300920 bytes).

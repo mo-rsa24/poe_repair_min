@@ -1,0 +1,16 @@
+\documentclass{article}
+\usepackage{iclr2027_conference,times}
+\usepackage{hyperref}
+\usepackage{url}
+
+\title{Abstract Candidate 3 of 3}
+\author{Anonymous Authors}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Text-to-image diffusion models generate high-fidelity scenes in which many concepts appear together, each rendered faithfully and consistently with the physical world. Given a single prompt such as ``a cat and a dog'', these models render both concepts in the same scene as distinct objects that interact naturally. Yet composing concepts correctly remains challenging. Models often struggle with object count, attribute binding, and fail to preserve the intended spatial relationships. Scaling models and data becomes increasingly expensive as the prompt space grows to include more concepts and their combinations. Rather than asking the model for ``a cat and a dog'' in a single prompt, recent methods evaluate the model separately on ``a cat'' and ``a dog,'' then combine the two predictions during inference, reusing the pretrained model rather than retraining it. In this paper we introduce the term plurality for one aspect of compositionality, the property that every concept a prompt names appears in the scene as its own distinct object. However, composing conflicting concepts can collapse the scene into a single hybrid object rather than rendering both. We show that this failure reflects a loss of plurality when two concepts contend for the same image region. This loss is measurable, as the per-step residual between the model's prediction under the joint prompt and its combined prediction from the separate prompts. A small fraction of this residual, added back at the right stage of generation, is enough to restore plurality, returning both objects to the scene. To make this correction available without the joint prompt, we train a low-rank adapter on the cross-attention layers of Stable Diffusion XL to predict the residual at every denoising step. We show that the adapter learns a general correction for plurality rather than the appearance of any specific concept, which allows it to transfer to unseen pairs.
+\end{abstract}
+
+\end{document}

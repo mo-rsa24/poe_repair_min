@@ -117,9 +117,10 @@ sweep from step 11 and the mixed pool from step 12.
 
 **Expected effort**
 
-No GPU and no queue. Each figure is a plotting script over a JSON file that already exists, so a
-figure is minutes of compute and the time goes into the design decision before it. Budget one
-`/design-figure` round per figure.
+Almost entirely GPU-free: each figure is a plotting script over a JSON file that already exists,
+so a figure is minutes of compute and the time goes into the design decision before it. The two
+exceptions are task 5.1, one GPU session for the instance-count scorer over the unscored tail, and
+task 5.2, at most four oracle re-renders. Budget one `/design-figure` round per figure.
 
 **Prerequisites**
 
@@ -266,9 +267,11 @@ evidence set. F1 belongs to the compose-scorer scope, not here.
 ---
 
 ## Environment Facts This Plan Depends On
-- No GPU needed: every figure here reads existing JSON (`compose_rate.json`, `pair_pool.json`,
-  `dose_curves.json`) rather than running anything new. `co3`'s absolute path is only needed if a
-  script under `scripts/` is invoked to regenerate one of those source files first.
+- Figure builds need no GPU: they read existing JSON (`compose_rate.json`, `pair_pool.json`,
+  `dose_curves.json`). Two exceptions: task 5.1 runs the instance-count scorer (GroundingDINO,
+  cuda) over the unscored per-epoch tail, and task 5.2 may re-render four oracle cells; both need
+  a GPU session. `co3`'s absolute python path runs the scorer module and any script under
+  `scripts/` invoked to regenerate a source file.
 - Figures 2.1 to 2.4 read `artifacts/results/does-the-fix-reach-unseen-pairs/`, which may span
   both `/home-mscluster` and `/datasets`; check `environment/storage.md` before assuming a path
   resolves on this filesystem alone.
@@ -313,6 +316,43 @@ evidence set. F1 belongs to the compose-scorer scope, not here.
   held-out animal pair, same-pair pairing explicit.
 
 ▶ **Next: instruction 3.1** for each figure as it lands, then the engagement gate.
+
+### 5. 📊 Two additions that need nothing from steps 11 or 12
+
+◀ **Needs: nothing that is not already on disk.** Task 5.1 needs a GPU session for the detector;
+task 5.2 renders at most four images.
+
+- [ ] **5.1** Close F8a's unscored tail: score epochs 1400 to 2000 (steps 70000 to 100000) and
+  extend F8a, compose-rate-as-the-lora-trains, to the full run.
+  - The samples already exist:
+    `artifacts/results/does-the-fix-reach-unseen-pairs/pooled_lora/phase1_r8_100k/samples/per_epoch/`,
+    `epoch_1400_step_070000` through `epoch_2000_step_100000`, ~305 images each. F8a's sidecar
+    `scored_steps` stops at 60000.
+  - Score the tail with the validated instance-count scorer, which is idempotent over what is
+    already scored:
+    `$PY -m poe_repair.experiments.does_the_fix_reach_unseen_pairs.compose_rate --run-dir artifacts/results/does-the-fix-reach-unseen-pairs/pooled_lora/phase1_r8_100k --wandb`
+  - Rebuild the figure: `python scripts/adapter_transfers.py`
+  - Expected: the curve stays flat near 0.96, confirming saturation. If it moves late in either
+    direction, the train-longer question reopens; record the outcome in the
+    [review file](../review/figure-01-the-transfer-figures.md) either way.
+  - Discharges F8a's "only checkpoints to 60000 were scored" caption cap and narrows F9's
+    step-mismatch cap; update both rows in `paper/iclr/figures.md` per instruction 3.3.
+- [ ] **5.2** **[needs /design-figure]** The qualitative ceiling panel: adapter-corrected beside
+  oracle-corrected (the true correction at λ=1) on the same four held-out cells as the F9 rows.
+  - The four cells, from F9's sidecar: `a_cat__x__a_dog`, `an_eagle__x__a_hawk`,
+    `a_frog__x__a_toad`, `a_goose__x__a_swan`, all seed 9.
+  - Oracle renders exist for all four in the dose sweep, at
+    `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/pairs/<pair>/seed_9/teacher_residual_const_lam100/`,
+    but were sampled at 20 inference steps where the F9 adapter samples used ddim at 50. A
+    crispness comparison at mismatched step counts is biased, so re-render the four oracle cells
+    at the F9 sampler settings; reusing the dose renders is acceptable only if the caption states
+    the step-count mismatch.
+  - Caption states the comparison is qualitative, because no crispness instrument exists.
+  - What it decides: whether F9's softness is the adapter's fit or the correction's own ceiling.
+    A crisper oracle says more data or rank could close the gap; an equally soft oracle says the
+    ceiling belongs to the correction, and is accepted rather than chased.
+
+▶ **Next: instruction 3.1** for each as it lands, then the engagement gate.
 
 ---
 
@@ -423,6 +463,8 @@ Numbers for both live in their sidecar `.json` and in the register row, never in
 | A4 delivery against transfer | — | Compose-rate and direction-cosine as twin panels on one x-axis | Step 11 leaderboard | ⏳ blocked on step 11 |
 | A5 pool contrast | — | Paired bars, animals against size-matched mixed, per held-out pair | Step 12 contrast | ⏳ blocked on step 12 |
 | F8 (the register slot) | — | Leaderboard plus degradation curve, assembled from A3 and A5 | A3 and A5 | ⏳ reserved |
+| F8a full-run extension | — | Compose rate over training with the step 70000 to 100000 tail scored, closing the step-60000 cap | Existing per-epoch samples, re-scored by task 5.1 | ⏳ not started |
+| Ceiling panel | — | Adapter-corrected beside oracle-corrected (true correction, λ=1) on the four F9 held-out cells; qualitative, no crispness instrument | F9 sidecar cells plus dose-sweep λ=1 renders, oracle cells re-rendered at F9 sampler settings | ⏳ not started |
 
 #### Organization workflow
 

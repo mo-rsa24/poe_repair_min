@@ -141,6 +141,11 @@ a rank-8 LoRA learns it Mono-free and transfers to pairs it never trained on.
 - ⚠️ plans/does-the-correction-cause-composition/ — the causal claim. Paper steps 1, 2, 3, 8, 9, 10, 19.
 - ⚠️ plans/does-the-fix-reach-unseen-pairs/ — the transfer claim. Paper steps 4 to 7 and 11.
 - ⚠️ plans/writing-the-paper/ — the manuscript. Paper steps 12 to 18.
+- ⚠️ plans/showcase-the-trained-lora/ — the LoRA-measured results figures under the scope's
+  decision ledger. Root running-order steps 31 to 35; plans 06 to 09 are not yet numbered there.
+- ⚠️ plans/when-does-the-outcome-lock-in/ — the commitment probe: at which step the final image
+  is decided, so the window-versus-divergence gap gets explained. No plans yet; not yet in the
+  root running order.
 
 ## Expected Outcome
 A submitted rough draft whose every number traces to an answered review question, every figure

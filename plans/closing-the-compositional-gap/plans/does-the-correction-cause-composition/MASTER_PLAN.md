@@ -2,7 +2,7 @@
 
 ## Where this scope sits in the order
 
-This scope owns **9 of the 22 steps**, 5 of them done. The steps interleave with the other scopes', so the list below is a filter on the one `## Running order` table in the [repo root MASTER_PLAN.md](../../../../MASTER_PLAN.md), never an order of its own.
+This scope owns **9 of the 30 steps**, 5 of them done. The steps interleave with the other scopes', so the list below is a filter on the one `## Running order` table in the [repo root MASTER_PLAN.md](../../../../MASTER_PLAN.md), never an order of its own.
 
 **Next in this scope: step 6**, [hypothesis-03-when-in-the-run-it-matters](plans/hypothesis-03-when-in-the-run-it-matters.md), driving the timing tab by hand.
 
@@ -17,6 +17,13 @@ This scope owns **9 of the 22 steps**, 5 of them done. The steps interleave with
 | 8 | ~~[hypothesis-01-what-the-fix-changes-inside-the-model](plans/hypothesis-01-what-the-fix-changes-inside-the-model.md)~~ | what the fix changes inside | ✅ |
 | 13 | [figure-01-the-seven-paper-figures](plans/figure-01-the-seven-paper-figures.md) | the figures this scope owes | ◑ F6 needs a decision |
 | 15 | [gate-01-two-literature-checks-before-print](plans/gate-01-two-literature-checks-before-print.md) | the two print gates | ⚠️ |
+
+**The corrector question is no longer in this scope.** Whether the correction is the sampler's
+error or the model's grew into
+[a scope of its own](../../../is-the-gap-the-samplers-or-the-models/MASTER_PLAN.md), steps 24 to 30,
+because it builds two new composers before it measures anything and none of it has run. It still
+puts this scope's timing result under threat, and step 21 of the paper waits on its gate for the
+number.
 
 ## Mission
 PoE fails at "a cat and a dog" because multiplying two predictions asks for an

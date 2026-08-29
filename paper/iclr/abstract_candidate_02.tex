@@ -1,0 +1,16 @@
+\documentclass{article}
+\usepackage{iclr2027_conference,times}
+\usepackage{hyperref}
+\usepackage{url}
+
+\title{Abstract Candidate 2 of 3}
+\author{Anonymous Authors}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Text-to-image diffusion models render complex scenes with high visual fidelity. Prompted with ``a cat and a dog'', a single model returns one coherent scene with both animals in it, each rendered whole. This capability has largely come from scale, and models that miss compositional cases such as counting, attribute binding, and spatial relations are answered with larger models and more data. Recent work has shown that pretrained diffusion models can be composed during inference, one expert per concept, to generate complex scenes from concept combinations rarely seen together in training. The standard tool is product of experts, which multiplies the distributions the experts place over images, so that a sample from the product satisfies both concepts at once. However, whether composition yields a coherent scene holding both concepts depends on the pair: the same rule that renders a butterfly over a flower meadow returns a blended hybrid on a cat and a dog. Composition can fail along several of these axes at once, but we study one ability in particular: rendering each named concept as its own object in the scene, which we call plurality. Plurality is lost on conflicting pairs, in which the concepts contend for the same region of the image. Since the same text-to-image model renders both animals coherently from the joint prompt, the failure lies in what the combination leaves out. The omitted signal is carried by the joint prompt alone. At every denoising step, the residual between the model's prediction under the joint prompt and its prediction under the product of experts isolates this missing signal. We train a low-rank adapter on the cross-attention layers of Stable Diffusion XL to predict this residual, conditioned only on the two concept prompts. Adding the prediction back restores plurality to the composition, and the same adapter carries to concept pairs it never trained on. We thus obtain a diffusion model specialised to an abstract property of a scene rather than to any concept in it, keeping the generalisation of inference-time composition without its loss of global coherence.
+\end{abstract}
+
+\end{document}

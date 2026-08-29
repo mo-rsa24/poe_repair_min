@@ -24,3 +24,4 @@ Each rung carries its chain status: taught (in chat by /drip), filed (captured h
 Documents that support the ladder without being one of its six numbered pieces.
 
 - [A worked example: the two-stage normalization behind F3](worked-example-toy-numbers.md) (filed): four invented toy pairs, three toy steps, the norm-ratio-median-normalize arithmetic run by hand, tied back to piece 1's rule.
+- [What the size measure means, and the four probes that would go past it](what-the-size-measure-means-and-what-it-misses.md) (parked mid-walk): why the denominator is the PoE prediction, what the magnitude can and cannot claim, and four cache-only probes (step-by-step alignment matrix, images-over-curves grid, rank read, size against blendedness) each with the pattern it would have to show. Carries the two pasteable prompts the walk produced and the interactive artifact link.

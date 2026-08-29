@@ -1,0 +1,904 @@
+Id: 01KZW6VY321PPBVJT7KP0YJPZ1
+DateString: 2026-08-20T11:00:00.000Z
+Privacy: link
+Speakers: Devon Jarvis, Molefe Molefe, Richard Klein
+Sentences: [00:00 - 00:01] Devon Jarvis: How you doing?
+[00:02 - 00:03] Molefe Molefe: Feeling better?
+[00:03 - 00:08] Molefe Molefe: Feeling better, Yeah.
+[00:10 - 00:14] Molefe Molefe: I took a few days off, started working really late.
+[00:14 - 00:16] Molefe Molefe: Monday, Tuesday I was really ill.
+[00:16 - 00:18] Molefe Molefe: I still have some remnants.
+[00:18 - 00:21] Molefe Molefe: I was suffering with sinus attacks last night.
+[00:21 - 00:22] Molefe Molefe: Sinuses just.
+[00:23 - 00:23] Devon Jarvis: Yes.
+[00:24 - 00:27] Devon Jarvis: I mean it's debilitating because your head just feels so bad, right?
+[00:28 - 00:28] Richard Klein: Yeah.
+[00:28 - 00:29] Molefe Molefe: I've got to get a diffuse.
+[00:29 - 00:30] Molefe Molefe: What is that thing called?
+[00:30 - 00:31] Molefe Molefe: Is it a diffuser?
+[00:31 - 00:33] Molefe Molefe: Yeah, thinking of something else.
+[00:33 - 00:34] Devon Jarvis: Humidifier.
+[00:35 - 00:35] Molefe Molefe: Humidifier.
+[00:35 - 00:36] Molefe Molefe: Yeah.
+[00:36 - 00:37] Molefe Molefe: I've got to get on it.
+[00:37 - 00:39] Molefe Molefe: Like, like I. I took so many antihistamines.
+[00:39 - 00:41] Molefe Molefe: I took like non drowsy allergies.
+[00:41 - 00:42] Molefe Molefe: I took like allergens.
+[00:42 - 00:50] Molefe Molefe: I took my cocktail of medication but still managed to get some work done nonetheless.
+[00:51 - 00:53] Molefe Molefe: Most of the work has been on the paper.
+[00:54 - 01:01] Molefe Molefe: So what two things I got done is just the introduction and the other section, subsequent section.
+[01:01 - 01:04] Molefe Molefe: What's remaining is the other sections I'm thinking of.
+[01:04 - 01:06] Molefe Molefe: I'll be curious to know what you think.
+[01:07 - 01:09] Molefe Molefe: So what we have at the moment is the abstract.
+[01:11 - 01:13] Molefe Molefe: So this is like a second version.
+[01:13 - 01:15] Molefe Molefe: I'm kind of like writing in VS code.
+[01:18 - 01:22] Molefe Molefe: So I'm not like writing things on an overleaf.
+[01:22 - 01:27] Molefe Molefe: So I'm going to take sort of like your abstract and part of the work that we do today and then like work over that.
+[01:27 - 01:30] Molefe Molefe: And then I'll keep doing this recursive update.
+[01:31 - 01:32] Molefe Molefe: So we have the introduction.
+[01:32 - 01:32] Devon Jarvis: I'll.
+[01:32 - 01:34] Molefe Molefe: I'll scroll back to it and I.
+[01:34 - 01:36] Molefe Molefe: And I will fix this image as well.
+[01:36 - 01:38] Molefe Molefe: So I'll just added an introduction.
+[01:38 - 01:39] Molefe Molefe: I don't think you saw this.
+[01:39 - 01:42] Molefe Molefe: And then at the end I added the contributions over there.
+[01:43 - 01:43] Molefe Molefe: Right.
+[01:44 - 01:46] Molefe Molefe: Then I have background and related work.
+[01:46 - 01:51] Molefe Molefe: Well, basically talk about diffusion, poe, super diff and all that stuff.
+[01:51 - 01:58] Molefe Molefe: And then the section that I spent a great deal of time like Tuesday and yesterday is the interaction term.
+[01:59 - 02:10] Molefe Molefe: And the idea here is to like introduce this idea of what this interaction term is and hopefully it makes sense to the reader mathematically.
+[02:10 - 02:14] Molefe Molefe: Like it's because it's the difference between mono and poe.
+[02:14 - 02:17] Molefe Molefe: And then I basically make an argument as to why it's important to.
+[02:18 - 02:19] Molefe Molefe: To analyze this thing.
+[02:19 - 02:20] Molefe Molefe: Right.
+[02:20 - 02:22] Molefe Molefe: So I basically spent a great deal of time trying.
+[02:22 - 02:31] Molefe Molefe: I mean I'm happy to like, you know, cut this, cut this down significantly, but it's just basically an argument that I'm making.
+[02:31 - 02:37] Molefe Molefe: And then I talk about analyzing and correcting product of experts with the scaled residual.
+[02:37 - 02:43] Molefe Molefe: So I have a lot of these experiments where you know, I like have this lambda term and it's multiplied by the residual.
+[02:44 - 02:48] Molefe Molefe: And it kind of shows you what happens if you were to add Back this residual.
+[02:49 - 02:57] Molefe Molefe: And then there's a lot of analysis I do with the time windows where I say, if you add this correction in this time steps, this is what the result looks like.
+[02:58 - 03:05] Molefe Molefe: And basically the result that I got there is that between 0 and 15, you only need very little amount of correction.
+[03:05 - 03:09] Molefe Molefe: And that's like a big result that I walked away with.
+[03:09 - 03:11] Molefe Molefe: And so I have a lot of different figures here.
+[03:11 - 03:23] Molefe Molefe: I have where I did this big grid where I sort of show you like 0 to 0 to 10, and then, you know, 10 to 50s off pure, each just normal conditioning.
+[03:23 - 03:25] Molefe Molefe: And I do that two steps 50.
+[03:25 - 03:27] Molefe Molefe: So I can show you a lot of those diagrams that I have.
+[03:27 - 03:29] Molefe Molefe: But that's sort of section four.
+[03:29 - 03:31] Molefe Molefe: Section four is just about.
+[03:31 - 03:32] Molefe Molefe: There's no LORA here.
+[03:32 - 03:36] Molefe Molefe: It's just about understanding this correction that we are trying to learn.
+[03:36 - 03:39] Molefe Molefe: And then section five is learning this residual using Lora.
+[03:39 - 03:43] Molefe Molefe: And this is where we get to the actual network that I trained where I.
+[03:43 - 03:47] Molefe Molefe: The big result there is that it can transfer to unseen pairs.
+[03:47 - 03:51] Molefe Molefe: And then experiments, results, where I basically explain how I, you know, the data.
+[03:52 - 03:57] Molefe Molefe: The data set design and the experimental design as well.
+[03:58 - 04:01] Molefe Molefe: And then, you know, talk about the results and then a discussion.
+[04:01 - 04:04] Molefe Molefe: I think there's a lot to say about, you know, I do say it in the.
+[04:04 - 04:13] Molefe Molefe: In this section about composition just as a concept, mathematically, and then language being something else differently.
+[04:13 - 04:16] Molefe Molefe: And then, you know, so I think there's a lot to discuss.
+[04:16 - 04:17] Molefe Molefe: And then the conclusion.
+[04:17 - 04:22] Molefe Molefe: So this is like, sort of like how I'm thinking the people should go.
+[04:22 - 04:24] Molefe Molefe: You know, obviously happy to take suggestions.
+[04:25 - 04:25] Devon Jarvis: Right.
+[04:25 - 04:26] Devon Jarvis: Hey, Richard,.
+[04:29 - 04:30] Richard Klein: Everyone.
+[04:30 - 04:30] Richard Klein: How's it going?
+[04:31 - 04:32] Molefe Molefe: Good, good.
+[04:32 - 04:32] Molefe Molefe: How are you, Richard?
+[04:33 - 04:34] Richard Klein: Yeah, doing all right, thanks.
+[04:37 - 04:39] Devon Jarvis: Okay, let's.
+[04:39 - 04:42] Devon Jarvis: Okay, let's work through this slowly.
+[04:42 - 04:45] Devon Jarvis: So it all sounds like we've made great progress.
+[04:45 - 04:48] Devon Jarvis: What I will say, what is the page limit for IPER?
+[04:48 - 04:48] Devon Jarvis: It's 9.
+[04:48 - 04:48] Devon Jarvis: Right?
+[04:51 - 04:52] Molefe Molefe: I'll have to go check.
+[04:52 - 04:53] Molefe Molefe: I'll have to go check.
+[04:53 - 04:54] Devon Jarvis: Let's do that now.
+[04:55 - 04:55] Richard Klein: Cool.
+[05:21 - 05:24] Devon Jarvis: At the time of submission, the main text should be nine pages or fewer.
+[05:25 - 05:26] Devon Jarvis: So you're already.
+[05:27 - 05:30] Devon Jarvis: Can you transfer ownership of this to me so we can add Richard to this?
+[05:31 - 05:31] Molefe Molefe: Sure.
+[05:31 - 05:33] Molefe Molefe: How do I do that?
+[05:35 - 05:36] Devon Jarvis: Oh, you already have.
+[05:36 - 05:39] Devon Jarvis: Richard's already been added.
+[05:39 - 05:40] Devon Jarvis: Oh, no, it's fine.
+[05:40 - 05:43] Devon Jarvis: Okay, just drop down menu on the editor.
+[05:45 - 05:46] Devon Jarvis: There you go.
+[05:47 - 05:48] Devon Jarvis: Make owner.
+[05:50 - 05:53] Devon Jarvis: So that just then means Richard will become an editor as well.
+[05:53 - 05:54] Devon Jarvis: It's just me.
+[05:57 - 05:57] Devon Jarvis: Okay.
+[05:57 - 06:01] Devon Jarvis: So I think what this is really looking like it's tending towards is being too much.
+[06:03 - 06:04] Devon Jarvis: Like it's A lot there.
+[06:04 - 06:06] Devon Jarvis: So even just like having a.
+[06:06 - 06:11] Devon Jarvis: Discussions and a conclusions and all that sort of thing, it's a lot of content.
+[06:12 - 06:21] Devon Jarvis: I think a lot of what you have here already seems more appendixy, you know, like you're probably not going to have section three with all of the maths.
+[06:21 - 06:33] Devon Jarvis: You're going to maybe formalize that into more of like a statement or a theorem, something like that, which will then be what you put in the paper and then the derivation of it goes in the appendix.
+[06:34 - 06:35] Devon Jarvis: So I don't want to say it's.
+[06:35 - 06:36] Devon Jarvis: It's looking too much.
+[06:36 - 06:41] Devon Jarvis: Well, you know, I think things gonna have to move around and organize a bit.
+[06:41 - 06:49] Devon Jarvis: But we should simplify that story to a degree and then just make it really kind of clean.
+[06:49 - 06:56] Devon Jarvis: And there's one big point to this and we don't do anything excess beyond that, including speculating too wildly about the like, meaning of what they've done.
+[06:56 - 06:58] Devon Jarvis: Like, this isn't the paper for that.
+[07:00 - 07:01] Molefe Molefe: Cool, will do.
+[07:04 - 07:04] Devon Jarvis: Cool.
+[07:04 - 07:06] Devon Jarvis: And then I just want to read the abstract again.
+[07:08 - 07:11] Molefe Molefe: Can I go over to the one V read together?
+[07:12 - 07:14] Molefe Molefe: Because this one is sort of like the old one, so.
+[07:14 - 07:15] Devon Jarvis: Oh, yeah, yeah, yeah.
+[07:15 - 07:16] Molefe Molefe: Let's.
+[07:16 - 07:17] Devon Jarvis: Let's see it as it stands.
+[07:19 - 07:25] Molefe Molefe: Yeah, I'm just going to switch over to the old one.
+[07:34 - 07:34] Molefe Molefe: Hang on.
+[07:35 - 07:37] Molefe Molefe: Why is it not showing me?
+[07:42 - 07:43] Molefe Molefe: I'll just do that.
+[07:44 - 07:45] Molefe Molefe: So I'm here.
+[07:45 - 07:47] Molefe Molefe: So this is what you commented out.
+[07:51 - 07:53] Molefe Molefe: Oh, that should be this one.
+[07:53 - 07:54] Molefe Molefe: Because I see plurality there.
+[07:54 - 07:55] Devon Jarvis: Okay, cool.
+[07:55 - 07:56] Devon Jarvis: Yeah.
+[07:56 - 07:56] Devon Jarvis: Have you.
+[07:56 - 07:57] Devon Jarvis: But is this one.
+[07:59 - 08:00] Devon Jarvis: You haven't touched it since.
+[08:00 - 08:02] Devon Jarvis: Is this like the most upset version?
+[08:02 - 08:06] Devon Jarvis: Okay, Richard, what's probably a good idea?
+[08:07 - 08:12] Devon Jarvis: Why does this look different on mine and yeah, why is the one I'm looking at social?
+[08:15 - 08:15] Molefe Molefe: Oh, because.
+[08:15 - 08:18] Molefe Molefe: Does it have like a bracket one?
+[08:18 - 08:21] Molefe Molefe: Because that's probably the second version there.
+[08:21 - 08:23] Molefe Molefe: I had to go back to the last week's link.
+[08:26 - 08:27] Devon Jarvis: It does have bracket one.
+[08:28 - 08:31] Molefe Molefe: Yeah, that's the new one from today, so it doesn't have you all.
+[08:33 - 08:37] Devon Jarvis: Okay, will you just copy this across quickly so we can look at the current version?
+[08:37 - 08:38] Molefe Molefe: All right, cool.
+[08:39 - 08:44] Molefe Molefe: And I will sort of make your life easier in the future so that you don't have to.
+[08:45 - 08:46] Devon Jarvis: No worries.
+[08:47 - 08:47] Molefe Molefe: See?
+[08:48 - 08:49] Molefe Molefe: Is this what I'm looking for?
+[08:49 - 08:51] Devon Jarvis: No, let's.
+[08:51 - 08:52] Devon Jarvis: Come here.
+[08:56 - 08:57] Molefe Molefe: Comment.
+[09:00 - 09:01] Molefe Molefe: There we go.
+[09:09 - 09:19] Devon Jarvis: Okay, Rich, I think what would make sense is if you read the abstracts kind of before we talk too much about it and then comment on it as like almost the reviewer.
+[09:19 - 09:26] Devon Jarvis: Would this be the kind of abstract that would make you feel positive to begin with rather than already thinking that.
+[09:30 - 09:30] Molefe Molefe: Cool.
+[09:32 - 09:36] Richard Klein: Just so I'm just checking the one.
+[09:39 - 09:41] Richard Klein: Which version are we supposed to have at the moment?
+[09:41 - 09:43] Richard Klein: The five page or the 12 page?
+[09:45 - 09:45] Devon Jarvis: I mean, Molefe.
+[09:45 - 09:47] Devon Jarvis: I'm just going to rename the one.
+[09:47 - 09:52] Richard Klein: That we're in because I see Molefe is one now or the one on the screen at least is now shifted to a five page.
+[09:54 - 09:55] Richard Klein: Is that the correct.
+[09:55 - 09:59] Devon Jarvis: Yeah, yeah, the five page one is the one that's correct.
+[10:02 - 10:02] Richard Klein: Okay.
+[10:02 - 10:04] Richard Klein: I've got the five page one on my side as well.
+[10:09 - 10:09] Devon Jarvis: Yeah.
+[10:09 - 10:13] Devon Jarvis: I've renamed the documents for, you know, ICLs327.
+[10:13 - 10:13] Devon Jarvis: Laura,.
+[11:08 - 11:11] Richard Klein: Can you change me from a viewer to a.
+[11:16 - 11:17] Devon Jarvis: Yep, done.
+[11:18 - 11:19] Richard Klein: Cool.
+[11:19 - 11:19] Devon Jarvis: Thanks.
+[12:04 - 12:05] Richard Klein: I would maybe on the.
+[12:15 - 12:16] Devon Jarvis: Object.
+[12:47 - 12:53] Richard Klein: I don't quite like the way that I wrote that sentence in, but something along those lines maybe.
+[12:55 - 12:57] Richard Klein: So I'm putting them in as a review just so that it.
+[13:04 - 13:05] Richard Klein: Just that point on we.
+[13:06 - 13:11] Richard Klein: We trace this gap to a missing notion of plurality which is implicit in the text prompts describing the full scene.
+[13:11 - 13:13] Richard Klein: And then I think it's something about like.
+[13:13 - 13:16] Richard Klein: But missing from the other one.
+[13:19 - 13:19] Devon Jarvis: Okay, I see.
+[13:19 - 13:20] Devon Jarvis: Yeah.
+[13:23 - 13:28] Richard Klein: Like again, I don't think that wording quite gets there, but just something along that line.
+[13:30 - 13:30] Devon Jarvis: Yeah.
+[13:30 - 13:31] Devon Jarvis: Well, I think.
+[13:31 - 13:34] Devon Jarvis: I think the problem is also the first half of the sentence isn't great.
+[13:34 - 13:37] Devon Jarvis: So we trace this gap to a. I'm going to take up missing.
+[13:37 - 13:37] Devon Jarvis: Sorry.
+[13:37 - 13:39] Devon Jarvis: Let me also do this in review so we can take it back.
+[13:41 - 13:51] Devon Jarvis: Trace this gap to a notion of plurality which is implicit in the text prompt describing the full seed but missing from the separate individual textbooks.
+[13:52 - 13:53] Devon Jarvis: I think that's right.
+[13:59 - 14:05] Richard Klein: Like, the one thing that I'm not sure of up to that point is whether it comes across fully.
+[14:07 - 14:22] Richard Klein: Like, I mean, it is said in the idea that rather than training a single large diffusion model on the input space, recent methods have aimed to compose specialist diffusion models at inference time to extrapolate to unseen image configurations.
+[14:22 - 14:26] Richard Klein: Like, that kind of touches on it, but it's not.
+[14:27 - 14:36] Richard Klein: It's not like really in your face that like each of the specialist diffusion models have their own prompt.
+[14:38 - 14:39] Devon Jarvis: Yeah, I get you.
+[14:39 - 14:39] Devon Jarvis: Okay.
+[14:39 - 14:45] Devon Jarvis: And then also, then what you're then saying here is that the mathematical composition cannot add information.
+[14:46 - 14:49] Devon Jarvis: And since each of them individually thought there was one object in the scene.
+[14:49 - 14:49] Richard Klein: Yeah.
+[14:49 - 14:51] Devon Jarvis: Now can't do anything else.
+[14:51 - 14:53] Richard Klein: Yeah, yeah.
+[14:53 - 14:53] Richard Klein: Do you.
+[14:54 - 14:58] Richard Klein: I think that's the, like, that's the overall message of what we're trying to say.
+[14:58 - 14:58] Devon Jarvis: Right.
+[14:58 - 14:59] Richard Klein: And so I think.
+[14:59 - 15:08] Richard Klein: I think that needs to come across much more clearly because I feel like if I didn't know Already that this is what we'd done.
+[15:09 - 15:12] Richard Klein: I'm not sure that this would make me know that.
+[15:13 - 15:14] Molefe Molefe: Yeah, makes sense.
+[15:15 - 15:18] Molefe Molefe: I spent a great deal of time in the interaction term trying to make.
+[15:18 - 15:22] Molefe Molefe: Because I talk about the POE and it has two different problems.
+[15:22 - 15:26] Molefe Molefe: I talk about, you know, the interaction terms, so I know what you mean.
+[15:26 - 15:41] Molefe Molefe: But I'm just curious, so when you say but missing from, separate, from the separate individual text prompts, what do you think about from the combination or interaction of the separate individual prompt?
+[15:41 - 15:50] Molefe Molefe: The reason I'm saying that is because the, the statement before it says a gap and then it says explicit in the text prompt describing the full scene.
+[15:50 - 15:52] Molefe Molefe: So that would be mono.
+[15:53 - 16:05] Molefe Molefe: So when you say gap, you're saying gap between, you know, the combination of POE or the combination of separate prompts rather than, you know, but missing from separate individual text prompts.
+[16:06 - 16:08] Richard Klein: So I, I think we should go.
+[16:08 - 16:13] Richard Klein: Like, I, I still think it's, it's not, it's too subtle.
+[16:13 - 16:14] Richard Klein: Like, I would go as far as.
+[16:14 - 16:21] Richard Klein: Because why, why wouldn't we say productive experts in that abstract?
+[16:21 - 16:22] Richard Klein: Like, why wouldn't we want to say it?
+[16:25 - 16:27] Devon Jarvis: Well, let's do super depth.
+[16:27 - 16:28] Devon Jarvis: Right.
+[16:28 - 16:28] Devon Jarvis: So there's.
+[16:28 - 16:33] Devon Jarvis: We're more general than one, but, okay,.
+[16:33 - 16:36] Molefe Molefe: Conjunction is still a very, very logical.
+[16:36 - 16:40] Molefe Molefe: Conjunction is still a very general, encompassing term for this.
+[16:41 - 16:42] Molefe Molefe: You know,.
+[16:44 - 16:52] Devon Jarvis: I do agree that it feels like we're trying to skirt around a bit and it's because we're trying to be too general, I think, on the methods.
+[16:53 - 16:56] Devon Jarvis: Because we don't want to say like, oh, we, you know, specialized to com.
+[16:56 - 16:58] Devon Jarvis: You know, POE does this, like.
+[16:58 - 16:58] Devon Jarvis: No, it's.
+[16:58 - 17:04] Devon Jarvis: It's any mathematical composition of these distributions.
+[17:04 - 17:04] Devon Jarvis: Right.
+[17:04 - 17:10] Devon Jarvis: Because individually they will not encode for two subjects because of course, they weren't prompted to.
+[17:13 - 17:17] Devon Jarvis: But yeah, there's definitely a way to communicate that more explicitly.
+[17:18 - 17:21] Richard Klein: Yeah, what we could do is.
+[17:21 - 17:35] Richard Klein: So I think it's important to somehow make it clear that, you know, we've now got the composition of experts that each think there's one object in the scene.
+[17:36 - 17:37] Devon Jarvis: Yes, yes.
+[17:37 - 17:37] Richard Klein: Right.
+[17:37 - 17:38] Molefe Molefe: Yes, yes.
+[17:38 - 17:39] Richard Klein: And, and like that.
+[17:39 - 17:40] Richard Klein: That must be very clear.
+[17:40 - 17:45] Richard Klein: I think it's fine for us to say something like productive experts as a.
+[17:45 - 17:48] Richard Klein: For example, productive experts does X.
+[17:50 - 17:50] Richard Klein: And.
+[17:51 - 17:55] Richard Klein: And, you know, like, I think, I think grounding it in something like that makes sense.
+[17:55 - 18:25] Richard Klein: But then if we mentioned that maybe then we'd also want to mention, you know, later on in the abstract, we could then say, you know, in this work we look at product of experts, super dif, and whatever else so that then like, you Know the abstract doesn't imply that we only look at one composition but that it's so intuitive that.
+[18:27 - 18:30] Richard Klein: Yeah, I think it makes it easy for someone reading the abstract.
+[18:33 - 18:34] Devon Jarvis: Cool.
+[18:34 - 18:34] Molefe Molefe: Makes sense,.
+[18:41 - 18:41] Devon Jarvis: Right?
+[18:41 - 18:47] Devon Jarvis: I've written all that down as comments in the, in the left.
+[18:48 - 18:50] Richard Klein: Well, should be here.
+[18:50 - 19:09] Richard Klein: Yeah, I think, you know, like the thing, the thing to bear in mind for an abstract that I think can be useful is, you know, the, the I don't think you want to write the abstract for the three people in the world who already know what we're going to be talking about.
+[19:09 - 19:09] Richard Klein: Right.
+[19:09 - 19:13] Richard Klein: You want to write the abstract for people who kind of, they know what diffusion is.
+[19:13 - 19:19] Richard Klein: You know that if we say productive experts, they, they'll kind of be able to, to follow what we're talking about.
+[19:19 - 19:22] Richard Klein: But like that's the person you want to write the abstract for.
+[19:22 - 19:22] Devon Jarvis: Right?
+[19:24 - 19:25] Richard Klein: Like you want.
+[19:25 - 19:27] Richard Klein: Because that must make it accessible.
+[19:27 - 19:29] Richard Klein: Obviously we must still be clear in what we did.
+[19:31 - 19:35] Richard Klein: But I think more accessible, the more accessible the abstract, the better.
+[19:41 - 19:42] Molefe Molefe: Yeah, definitely.
+[19:42 - 19:43] Molefe Molefe: Agree.
+[19:43 - 19:44] Devon Jarvis: Cool.
+[19:46 - 20:01] Molefe Molefe: And Dev, if you sort of like have any time between now and next week, I'll just look at overleaf, like every day and I'll look at whatever comments you have at the sections that are already here and then I'll just, you know.
+[20:03 - 20:06] Devon Jarvis: Yeah, so let's, I mean, let's chat about what's going in where.
+[20:06 - 20:11] Devon Jarvis: Because I'm seeing you've got equations and introduction and stuff like that.
+[20:11 - 20:15] Devon Jarvis: So is the introduction readable yet?
+[20:15 - 20:17] Devon Jarvis: Like, can I do a pass on that?
+[20:17 - 20:17] Richard Klein: Yeah.
+[20:19 - 20:19] Molefe Molefe: Yes.
+[20:19 - 20:23] Richard Klein: What citations on that one sentence?
+[20:23 - 20:38] Richard Klein: Sorry, I'm, I don't want to get hooked on it, but if we say implicit in the text prompt describing the full scene but missing from the individual text prompts supplied to each.
+[20:40 - 20:42] Richard Klein: Was it an expert or what was the word.
+[20:44 - 20:45] Devon Jarvis: Yeah.
+[20:46 - 20:48] Devon Jarvis: Used to prompt each input.
+[20:49 - 20:50] Devon Jarvis: Sorry, each expert.
+[20:50 - 20:51] Devon Jarvis: Yeah, each.
+[20:53 - 20:55] Devon Jarvis: So used to guide each expert.
+[20:59 - 21:02] Devon Jarvis: But I think the expert needs to rewrite, given what you've said.
+[21:02 - 21:03] Devon Jarvis: So we'll.
+[21:04 - 21:06] Devon Jarvis: And it's more important that we understand what's missing.
+[21:08 - 21:10] Richard Klein: Yeah, but.
+[21:10 - 21:11] Richard Klein: Yeah, that's fine.
+[21:12 - 21:13] Richard Klein: Yeah, agreed.
+[21:13 - 21:15] Richard Klein: I mean, I think, I think a rewrite across.
+[21:16 - 21:30] Richard Klein: Across it is fine, but that, that point I think makes, I think that kind of phrasing at least makes it a little clearer that like each expert is getting its own prompt that implicitly encodes non.
+[21:30 - 21:31] Richard Klein: Plurality.
+[21:32 - 21:35] Devon Jarvis: Yeah, nice.
+[21:37 - 21:40] Devon Jarvis: Melissa, do you think you could get those done by this afternoon?
+[21:40 - 21:43] Devon Jarvis: Let's cook up like two or three maybe candidate abstracts that try to do that.
+[21:43 - 21:48] Devon Jarvis: And we will, we'll just like Vote on them between the three of us and see what.
+[21:50 - 21:54] Devon Jarvis: Yeah, happy we can do that, I guess.
+[21:54 - 21:56] Devon Jarvis: Richard, are you on discord yet or should we do this on.
+[21:56 - 21:56] Devon Jarvis: You know,.
+[22:00 - 22:02] Richard Klein: I'm not on discord at the moment.
+[22:02 - 22:03] Richard Klein: I'm afraid.
+[22:06 - 22:08] Devon Jarvis: That would be a step too far.
+[22:08 - 22:09] Molefe Molefe: Sorry.
+[22:10 - 22:11] Devon Jarvis: I imagine that would be a step too far.
+[22:11 - 22:13] Devon Jarvis: I can imagine your discord possible.
+[22:14 - 22:14] Richard Klein: Yeah.
+[22:14 - 22:15] Molefe Molefe: How about teams?
+[22:17 - 22:18] Richard Klein: Teams is even worse.
+[22:20 - 22:22] Richard Klein: I would do this all over teams.
+[22:24 - 22:25] Richard Klein: Yeah, maybe.
+[22:25 - 22:26] Richard Klein: Maybe email is.
+[22:26 - 22:28] Richard Klein: Is the best for now.
+[22:29 - 22:35] Richard Klein: I'll try pull out another, like, category of email for research.
+[22:37 - 22:38] Richard Klein: That might be a good,.
+[22:41 - 22:41] Molefe Molefe: You know.
+[22:42 - 22:47] Molefe Molefe: All right, so I'll just send an email then after those three candidate ones, I'll just send them through.
+[22:47 - 22:47] Richard Klein: Yeah.
+[22:48 - 22:49] Devon Jarvis: Yeah.
+[22:49 - 22:49] Molefe Molefe: Cool.
+[22:49 - 22:49] Richard Klein: Cool.
+[22:50 - 22:54] Devon Jarvis: And what I would recommend how you do that isn't to have mine.
+[22:54 - 23:04] Devon Jarvis: Well, the one you and I did last week, open when you do it, read it and load it roughly to, like, working memory, but then put it away, you know, like.
+[23:04 - 23:07] Devon Jarvis: And you're not allowed to look at it again after that, or else it will seep in.
+[23:08 - 23:15] Devon Jarvis: What you want to do is, like, load it in enough to influence you and the things you say, like, the cadence of it, like we spoke about last week.
+[23:15 - 23:18] Devon Jarvis: But then, you know, it shouldn't.
+[23:18 - 23:23] Devon Jarvis: You shouldn't be kind of copying sentences or phrasing, or else it will, like, limit you a bit.
+[23:24 - 23:33] Molefe Molefe: Okay, so you're saying, like, I'm developing a rhythm to write just from memory, where I'm not correcting or applying your comments, but I'm like.
+[23:34 - 23:37] Molefe Molefe: I'm, like, reading it, understanding it.
+[23:37 - 23:40] Molefe Molefe: And then, like, in the new session, I'm not looking at it, I'm writing it.
+[23:40 - 23:42] Molefe Molefe: Like, the abstracts from top to bottom.
+[23:42 - 23:42] Molefe Molefe: Is that what you mean?
+[23:44 - 23:52] Devon Jarvis: I mean, you and I had already said last week that this abstract wasn't finished, but we felt that, like, the cadence of it followed the whole, like, you know, we said it's like a mini paper.
+[23:52 - 23:59] Devon Jarvis: Like the first few sentences, intro, give a bit of background, describe your main method and contribution, talk about your results, conclude kind of thing.
+[23:59 - 24:05] Devon Jarvis: But, like, in the abstracts flow, you want to have that sort of thing still, obviously.
+[24:05 - 24:08] Devon Jarvis: But, like, with the stuff that Richard just added, you know what I mean?
+[24:08 - 24:13] Devon Jarvis: Where, like, we say we do it across POE and super Diff.
+[24:13 - 24:21] Devon Jarvis: And our results show that this is a missing concept that we can reintroduce at composition time, you know, those kind of things.
+[24:22 - 24:25] Devon Jarvis: But you don't want to be having the phrasing instance.
+[24:32 - 24:33] Molefe Molefe: All right, I'll do that.
+[24:34 - 24:36] Devon Jarvis: That's how I've done these before.
+[24:36 - 24:39] Devon Jarvis: And then in the intro, what's going on with missing citations?
+[24:40 - 24:41] Molefe Molefe: Oh yeah.
+[24:41 - 24:52] Molefe Molefe: So the intro is meant to make it to sort of like get my thoughts out there about how I think it should be written and then I'll sort of come back and do a password of the citation.
+[24:52 - 25:04] Molefe Molefe: So I sort of like read wrote it semi formally and then if I know like what to change and what to what you're happy with, then I keep sort of the, you know, final version.
+[25:04 - 25:07] Molefe Molefe: I just do one more pass or two more passes over it.
+[25:07 - 25:09] Molefe Molefe: It's more like a rough draft.
+[25:10 - 25:10] Devon Jarvis: Yeah.
+[25:11 - 25:14] Devon Jarvis: Is there a reason you're doing the citations manually?
+[25:15 - 25:20] Molefe Molefe: Yes, because as I'm writing I kind of took this from the proposal.
+[25:20 - 25:30] Molefe Molefe: When you're commenting on my proposal, sometimes I'll write, I'll write something and I know it's from a paper and then like to like put the site and then copy the bib text and put it.
+[25:30 - 25:37] Molefe Molefe: There's a lot of work, it takes me out of flow so I'd rather just say okay, this is where I need to like cite somebody if I'm mentioning something.
+[25:38 - 25:41] Molefe Molefe: And so it's something that's easy for me to come back to when I read it again.
+[25:41 - 25:44] Molefe Molefe: And I'm being like, oh, you know, counting.
+[25:44 - 25:47] Molefe Molefe: Okay, I remember there was a paper that talked about counting.
+[25:47 - 25:49] Molefe Molefe: So let me go read it one more time and then put it back in.
+[25:49 - 25:58] Richard Klein: So but why not, why not just put your entire proposals BibTech into this?
+[25:59 - 26:03] Richard Klein: Yeah, like there's no reason to not use the.
+[26:03 - 26:05] Richard Klein: Because the, the.
+[26:05 - 26:07] Richard Klein: I mean obviously you, you want to check it at the end.
+[26:07 - 26:13] Richard Klein: But like bibtech will only include the citations you use unless you have like the no site.
+[26:13 - 26:29] Richard Klein: But like that's kind of the point that you just have one gigantic references file that has all of your things and then you know, you're like again, you're not having to think about it as you go because it's all already there.
+[26:31 - 26:32] Molefe Molefe: Yeah, I can do that.
+[26:32 - 26:35] Molefe Molefe: I was just doing it just for rhythm and cadence of writing.
+[26:35 - 26:38] Molefe Molefe: I just wanted a rough draft, getting ideas out there.
+[26:39 - 26:40] Molefe Molefe: But yeah, I could do that.
+[26:45 - 26:55] Richard Klein: I mean it doesn't really matter what the process is as long as by the end every single citation is a proper BibTech sites command.
+[26:57 - 26:59] Richard Klein: Like that, that will matter.
+[26:59 - 27:00] Molefe Molefe: Yeah.
+[27:06 - 27:11] Devon Jarvis: One thing just to mention on your writing, and I say this because I have this, I still have this problem.
+[27:12 - 27:17] Devon Jarvis: Don't communicate things through adjectives or at least minimize that.
+[27:17 - 27:27] Devon Jarvis: So for example, where you're saying the pre trained network on the same noisy latency like noisy in that sentence is acting like, you know, like an adjective on latent.
+[27:28 - 27:35] Devon Jarvis: You run the risk of people just not knowing what you mean or having to infer it from, like, your context there.
+[27:36 - 27:44] Devon Jarvis: If you want to say something like that's a key property of the latent being noisy there, then say it explicitly.
+[27:44 - 27:45] Devon Jarvis: You know what I mean?
+[27:45 - 27:54] Devon Jarvis: Like, because I don't know if what you mean here is that, like, this is a part of the noise latent, as in, like, in the back of the fusion, there's still noise being added.
+[27:54 - 27:56] Devon Jarvis: Like, you haven't completely removed the noise.
+[27:56 - 28:07] Devon Jarvis: Or if it's a noisy latent, as in, like, you know, your sampling steps are now stochastic enough that you're not going to actually go to the same place every time or something, or it's like, depending on your seating and that sort of thing.
+[28:07 - 28:09] Devon Jarvis: Like that is.
+[28:10 - 28:12] Devon Jarvis: I now have to think about what you mean by that.
+[28:12 - 28:18] Devon Jarvis: And it usually happens when you try and, like, use an adjective to communicate something, in my experience.
+[28:20 - 28:24] Molefe Molefe: Okay, so adjective being the word noisy, I guess.
+[28:25 - 28:26] Devon Jarvis: Yeah.
+[28:26 - 28:28] Devon Jarvis: Rather than saying latent with the added noise.
+[28:28 - 28:29] Devon Jarvis: You know what I mean?
+[28:29 - 28:34] Devon Jarvis: Because now it's like noise then becomes the noun in the sentence rather than the adjective in the sentence.
+[28:36 - 28:37] Molefe Molefe: All right, cool.
+[28:38 - 28:44] Devon Jarvis: Just, again, not a rule, a thing that I've done and noticed that people don't like.
+[28:44 - 28:58] Devon Jarvis: So, okay, then the last thing that, Richard, we really, really need your help with is the framing of what on earth to call this damn thing that we've done.
+[28:58 - 29:01] Devon Jarvis: And it matters because I think it's the thing that communicates the concept.
+[29:01 - 29:03] Devon Jarvis: It's actually the same thing you're pointing out.
+[29:03 - 29:09] Devon Jarvis: The abstract now is we don't know how to vocalize or, like, you know, communicate what we've done.
+[29:10 - 29:15] Devon Jarvis: So I call it plurality because I'm a little bit concerned about extrapolating it.
+[29:15 - 29:21] Devon Jarvis: What we've done too far Molefe at the interaction term, which has its own, you know, kind of pros and cons to it.
+[29:22 - 29:38] Devon Jarvis: I, I, you know, I, I think it matters what we call this because that's going to really be the thing that either puts a review in their mindset of, oh, this is fantastic and fundamentally cool, or I think these guys are, like, speaking about a nonsense.
+[29:45 - 29:57] Richard Klein: There is a, there is a subtlety in the, in, like, the difference there that would require, like, if we say plurality.
+[29:58 - 29:59] Richard Klein: So I like plurality.
+[29:59 - 30:01] Richard Klein: I like the idea of in.
+[30:01 - 30:06] Richard Klein: In fact, if it is true, I would call it prompt plurality.
+[30:08 - 30:16] Richard Klein: But the, the one thing we must confirm is that it actually is the concept of plurality.
+[30:17 - 30:23] Richard Klein: And so I would, I would almost say, like, if you train a.
+[30:25 - 30:32] Richard Klein: So if we train it with like dog and cat, and it's doing the steps to.
+[30:33 - 30:38] Richard Klein: So that like dog times cat times plurality gives us two different animals.
+[30:38 - 30:49] Richard Klein: Like, if that works, what happens if we then say dog times plurality or dog times dog times plurality?
+[30:51 - 30:51] Devon Jarvis: Right.
+[30:51 - 30:53] Richard Klein: Does that give us two dogs?
+[30:54 - 30:59] Richard Klein: And if it does, then I think there's a strong enough argument to call it plurality.
+[31:01 - 31:06] Richard Klein: And then that would be my preference because then it's very specific.
+[31:06 - 31:15] Richard Klein: We can show that, like, you know, if you have a single object, a single item in your prompt, you get one of them.
+[31:15 - 31:21] Richard Klein: And if you have a single item in your prompt and you like, you know, use this thing, you get more than one of them.
+[31:22 - 31:31] Richard Klein: And so to me, to me, that's the most compelling thing because it's very specific about nailing down what this thing does.
+[31:32 - 31:35] Richard Klein: If it doesn't give us.
+[31:39 - 31:51] Richard Klein: If, if applying it to dog doesn't give us more than one dog, then I think we need to be a little bit careful about claiming that plurality in itself.
+[31:53 - 32:03] Richard Klein: And while it then perhaps encompasses plurality, a more generic kind of interaction style claim might be necessary.
+[32:03 - 32:10] Richard Klein: But my preference is always for a more specific claim on something like that.
+[32:10 - 32:17] Richard Klein: Because as a reviewer, if I were to see plurality, I'd be like, okay, prove to me that it's plurality.
+[32:18 - 32:22] Richard Klein: I agree it includes plurality, but prove it.
+[32:22 - 32:23] Richard Klein: If that's what you're calling it.
+[32:25 - 32:28] Molefe Molefe: Yeah, I can't exactly prove an interaction.
+[32:30 - 32:36] Richard Klein: Well, I mean, interaction is, you know, the more generic, like there is some interaction between these prompts that wasn't being encoded.
+[32:36 - 32:38] Richard Klein: And this thing is learning that.
+[32:39 - 32:39] Molefe Molefe: Yeah.
+[32:41 - 32:42] Devon Jarvis: So I think this is.
+[32:44 - 32:45] Richard Klein: But I was just gonna say.
+[32:45 - 32:51] Richard Klein: Well, I, I think what I, what I like less about interaction is that it doesn't really say anything.
+[32:53 - 32:53] Richard Klein: Right.
+[32:54 - 32:54] Richard Klein: It's.
+[32:54 - 33:01] Richard Klein: It's a very, very broad, like, we're just saying, like, the things affect each other and it's capturing that.
+[33:01 - 33:01] Richard Klein: Right.
+[33:02 - 33:02] Richard Klein: And.
+[33:02 - 33:06] Richard Klein: And if that's all we can say, then, you know, that's what we should say.
+[33:06 - 33:12] Richard Klein: But if we can say something better, then, you know, I think saying something better is the way to go.
+[33:16 - 33:27] Devon Jarvis: I think, you know, the stuff we spoke about last week is almost a contra positive to that point where you're saying that, like butterfly on the flower, you know, that works with theory directly.
+[33:27 - 33:28] Devon Jarvis: Right.
+[33:28 - 33:33] Devon Jarvis: Because there's no, you know, your concern was that that's not, there's no notion of plurality there.
+[33:33 - 33:45] Devon Jarvis: But I think that that's also the other Side of it is when, when there is no plurality to be added, it doesn't do anything like, then it's in the null space.
+[33:45 - 33:47] Devon Jarvis: Because now plurality is like already fine.
+[33:48 - 33:51] Devon Jarvis: They're not two entities in the same level of abstraction kind of thing.
+[33:52 - 33:54] Devon Jarvis: Which to me, again, it's a similar thing.
+[33:54 - 34:02] Devon Jarvis: Like if dog plurality gives you multiple dogs and butterfly and flower does nothing, because that paralytic really just works by.
+[34:02 - 34:02] Devon Jarvis: In its own right.
+[34:03 - 34:04] Devon Jarvis: I think, again, it's.
+[34:04 - 34:11] Devon Jarvis: You're building that argument that this is actually capturing something quite important and precise in its intervention.
+[34:12 - 34:13] Molefe Molefe: That makes sense.
+[34:13 - 34:14] Molefe Molefe: Yeah, a lot.
+[34:14 - 34:15] Molefe Molefe: A lot more sense.
+[34:15 - 34:16] Molefe Molefe: There's no plurality to be added.
+[34:17 - 34:31] Richard Klein: Yeah, it feels, it feels like in the singular case of butterfly, it would be perfectly reasonable for that expert alone to have generated a butterfly on a plot.
+[34:32 - 34:33] Richard Klein: Right.
+[34:34 - 34:34] Richard Klein: And.
+[34:34 - 34:43] Richard Klein: And in my mind, you know that that's kind of where that null space sits of where like one of the experts could have done it anyway.
+[34:44 - 34:48] Richard Klein: Then we probably want that interaction term to do less.
+[34:50 - 34:53] Richard Klein: But where, like, you know, dog.
+[34:53 - 34:57] Richard Klein: Like, I would be very surprised if a diffusion model gave us multiple dogs.
+[35:03 - 35:03] Molefe Molefe: This one.
+[35:05 - 35:06] Devon Jarvis: Yeah.
+[35:11 - 35:13] Devon Jarvis: So what, what does it mean that.
+[35:23 - 35:50] Devon Jarvis: So if we're following this line of reasoning that like the monolithic fonts of the big joint prompt implies something that the individuals do not, and then this works with Poe, then it means that whatever was implied by the joint prompts must have also been somehow implied by these individuals, because our whole concept here is that the individuals cannot.
+[35:50 - 35:52] Devon Jarvis: The clearly, you cannot add new information.
+[35:54 - 36:05] Devon Jarvis: And so, you know, a cat and a dog, as Richard said, kind of, it would imply or would lean towards one of those two things, which means when we join prompts, plurality is missing.
+[36:07 - 36:13] Devon Jarvis: What does it mean that butterfly, when you prompt for a butterfly, it immediately gives you multiple.
+[36:14 - 36:17] Devon Jarvis: And a flower meadow already gives you multiple flowers rather than just one flower.
+[36:19 - 36:25] Devon Jarvis: And so then when you try to combine those two things, the plurality is still coherent.
+[36:27 - 36:29] Molefe Molefe: With counting this time, do you think?
+[36:32 - 36:34] Devon Jarvis: What do you mean by counting?
+[36:34 - 36:38] Molefe Molefe: Like you said a butterfly and then you said a flower, for example.
+[36:38 - 36:41] Molefe Molefe: But then when you compose them, it adds more than one butterfly.
+[36:44 - 36:47] Devon Jarvis: Individual bumps probably produce multiple butterflies, right?
+[36:48 - 36:49] Molefe Molefe: Yeah, it gives you multiple.
+[36:49 - 36:50] Molefe Molefe: Multiple butterflies.
+[36:54 - 36:57] Richard Klein: If you say a butterfly, what does the image give you?
+[36:59 - 37:00] Molefe Molefe: So I.
+[37:00 - 37:01] Molefe Molefe: Hang on, let me just try and remember.
+[37:02 - 37:08] Molefe Molefe: So this seed specifically has a butterfly that has no garden or flower.
+[37:08 - 37:10] Molefe Molefe: It's just a butterfly.
+[37:10 - 37:13] Molefe Molefe: It's a big butterfly in the back for this seed.
+[37:13 - 37:26] Molefe Molefe: Hang on, I've got, I've got an image of the seeds, but I do not have Maybe you can see the different seeds, but I do not have an image of like, of like the butterfly by itself at my disposal.
+[37:26 - 37:31] Molefe Molefe: But so for 42, which is the one in the middle, it's just a big butterfly in the center of the frame.
+[37:32 - 37:33] Molefe Molefe: No flowers.
+[37:33 - 37:34] Molefe Molefe: And then flower.
+[37:34 - 37:36] Molefe Molefe: It's almost the same image as this one.
+[37:37 - 37:40] Molefe Molefe: It looks a little bit like a, like an oil painting type thing.
+[37:41 - 37:44] Molefe Molefe: And then when you compose them, there's like more than one butterfly.
+[37:45 - 37:45] Molefe Molefe: Right.
+[37:45 - 37:58] Molefe Molefe: So and then I think seed 123, the butterfly, just a butterfly, is already in flowers and in a garden, if that makes sense.
+[37:59 - 38:02] Molefe Molefe: So it's not like a butterfly by itself.
+[38:03 - 38:09] Molefe Molefe: But I'll have to, I'd have to send you a lot of examples so that you can, you know, check it out for yourself.
+[38:12 - 38:17] Devon Jarvis: This to me feels like a result for the discussion because it's.
+[38:17 - 38:22] Devon Jarvis: I don't think it contradicts our point, but it certainly complicates.
+[38:30 - 38:31] Devon Jarvis: Yeah.
+[38:31 - 38:38] Devon Jarvis: Because what happens now when we have a concept like butterfly where plurality is already far more palatable and imply.
+[38:38 - 38:38] Devon Jarvis: You know what I mean?
+[38:38 - 38:46] Devon Jarvis: Like, it's great then that our LORA probably does nothing but.
+[38:48 - 38:48] Devon Jarvis: Yeah.
+[38:54 - 39:00] Molefe Molefe: Would a reviewer have like a problem with this being ambiguous in our paper?
+[39:01 - 39:07] Devon Jarvis: Yeah, being like Richard says, I think if we're going to call it plurality, these are the things.
+[39:07 - 39:09] Devon Jarvis: If you're going to put a name on it, it's going to be times.
+[39:13 - 39:23] Richard Klein: And if we like, you know, like there's a spectrum of like, the more specific our claim is, the more like, interesting it becomes as a paper.
+[39:24 - 39:25] Richard Klein: Right.
+[39:25 - 39:31] Richard Klein: And so as a reviewer, I prefer, I, I would much prefer seeing something like plurality.
+[39:31 - 39:36] Richard Klein: That tells me, okay, we understand what this mechanism is doing specifically.
+[39:37 - 39:37] Richard Klein: Right.
+[39:38 - 39:39] Richard Klein: Versus there.
+[39:40 - 39:42] Richard Klein: The mechanism does something and we don't know what it is.
+[39:43 - 39:44] Richard Klein: Right.
+[39:46 - 39:49] Richard Klein: But then the burden of proof is higher.
+[39:49 - 39:52] Richard Klein: And so we do need to be able to explain these things.
+[39:53 - 39:56] Devon Jarvis: Yeah, it would be fun.
+[39:57 - 39:59] Devon Jarvis: I don't know if it'll be in the paper or not.
+[39:59 - 40:05] Devon Jarvis: Take siege 42 there and subtract the LORA and see if it removes.
+[40:05 - 40:07] Devon Jarvis: You get back to a single point of life.
+[40:07 - 40:09] Devon Jarvis: Do LORA work that way?
+[40:09 - 40:09] Devon Jarvis: Richard?
+[40:09 - 40:13] Devon Jarvis: Can you negative a LORA and you put stuff back in or you undo the LORA?
+[40:17 - 40:18] Richard Klein: Probably not.
+[40:19 - 40:20] Richard Klein: I don't think it would.
+[40:23 - 40:26] Richard Klein: But the, the difference is the.
+[40:32 - 40:34] Richard Klein: Trying to think of what version would we.
+[40:35 - 40:37] Devon Jarvis: I mean, you could just train the inverse.
+[40:37 - 40:38] Devon Jarvis: Right.
+[40:38 - 40:41] Devon Jarvis: Like every time you train anymore or one way you train it to go backwards as well.
+[40:42 - 40:44] Devon Jarvis: And then you have the remove plurality mode.
+[40:45 - 40:47] Richard Klein: That would be very Compelling, actually.
+[40:48 - 40:50] Richard Klein: Like, I know it was a.
+[40:50 - 40:59] Richard Klein: It was a side comment, but, like, if it did do that, that's a bit of a silver bullet, right?
+[41:00 - 41:00] Devon Jarvis: Yeah.
+[41:00 - 41:08] Devon Jarvis: Because then you could just prompt it with like a group of dogs and then take away the plurality and see it collapse onto one of them.
+[41:08 - 41:09] Richard Klein: If it gives you one dog.
+[41:10 - 41:16] Devon Jarvis: Yeah, I agree.
+[41:16 - 41:17] Devon Jarvis: That would be more compelling.
+[41:18 - 41:23] Devon Jarvis: Especially then if we are taking a stance of like, there are already some entities that in cloud plurality.
+[41:23 - 41:24] Devon Jarvis: Like a butterfly.
+[41:32 - 41:35] Richard Klein: Because it's interesting to like looking at these images.
+[41:35 - 41:35] Richard Klein: Right.
+[41:36 - 41:39] Richard Klein: Like, the top one feels like.
+[41:39 - 41:39] Richard Klein: I get it.
+[41:39 - 41:41] Richard Klein: Like a butterfly there makes sense.
+[41:41 - 41:43] Richard Klein: The bottom one, I also get it.
+[41:43 - 41:45] Richard Klein: It feels like a butterfly makes sense.
+[41:45 - 41:48] Richard Klein: But in that bottom one, you know, there's somewhat.
+[41:48 - 41:53] Richard Klein: Are other butterflies in the scene, but there's like a butterfly.
+[41:54 - 41:55] Devon Jarvis: Yeah.
+[41:55 - 41:57] Devon Jarvis: Butterflies also upside down.
+[41:58 - 41:59] Richard Klein: Yeah, that's okay.
+[41:59 - 42:00] Richard Klein: Maybe he's.
+[42:00 - 42:01] Richard Klein: He's drunk.
+[42:02 - 42:03] Richard Klein: He's had a good night.
+[42:04 - 42:06] Devon Jarvis: The one at the top is hiding.
+[42:06 - 42:09] Richard Klein: Yeah, hiding from the other one.
+[42:10 - 42:12] Richard Klein: Like, you know, that.
+[42:12 - 42:15] Richard Klein: That middle one for me is like.
+[42:16 - 42:21] Richard Klein: It feels like it's the least described by a butterfly.
+[42:21 - 42:28] Richard Klein: Like, you know, it's multiple blood butterflies, but it's also like there isn't a central butterfly.
+[42:28 - 42:33] Richard Klein: There isn't like an obvious foreground butterfly that kind of jumps out.
+[42:33 - 42:33] Richard Klein: Right.
+[42:33 - 42:36] Richard Klein: The way you would forgive it for having more than one.
+[42:49 - 42:49] Devon Jarvis: Yeah.
+[42:49 - 42:50] Devon Jarvis: So Molefe.
+[42:50 - 42:51] Devon Jarvis: I think there is a.
+[42:51 - 42:53] Devon Jarvis: Certainly a concept here that's emerging.
+[42:54 - 42:55] Devon Jarvis: And again, I think it's.
+[42:56 - 42:58] Devon Jarvis: Yeah, Richard was right earlier.
+[42:58 - 43:06] Devon Jarvis: I think that the idea here that we need to really communicate well is that productive experts can only work with everything that a single expert implies.
+[43:08 - 43:16] Devon Jarvis: And what we focus on in this work is the fact that plurality is one of those things that it very seldom implies, especially with cat and dog.
+[43:16 - 43:22] Devon Jarvis: It implies a single subject, whereas a monolithic prompt of cat and dog implies plurality.
+[43:24 - 43:30] Devon Jarvis: But again, I think that's then the takeaway that makes it also more citable.
+[43:30 - 43:32] Devon Jarvis: You know, I mean, so it's like that's where.
+[43:32 - 43:45] Devon Jarvis: That's where you say in like a paper, like, we, you know, our primary notion of this work is the fact that a Poe can only work with anything that is implied with the individual expert prompts.
+[43:45 - 43:50] Devon Jarvis: We focus in this case and showing how this affects plurality in this work.
+[43:50 - 43:53] Devon Jarvis: And so it's kind of like what you're doing with the interaction term.
+[43:53 - 43:55] Devon Jarvis: But that's what the mathematics says.
+[43:55 - 44:04] Devon Jarvis: The mathematics, the interaction term, the concept we focus on and that we study with this thing you've now introduced, is then plurality.
+[44:06 - 44:07] Devon Jarvis: Richard, does that make sense?
+[44:07 - 44:11] Devon Jarvis: And Then I would do things like, you know, just call it plurality and it's happening and so on.
+[44:12 - 44:22] Richard Klein: Yeah, I like, I like that framing because I, I think that also gives us an out with reviewer.
+[44:22 - 44:26] Richard Klein: With a reviewer who doesn't buy that the only thing it could possibly do is plurality.
+[44:26 - 44:27] Richard Klein: Right.
+[44:27 - 44:45] Richard Klein: Because in principle, like I, I, it does feel like it should be able to encode other things, you know, like, like, for example, I think like preposition, you know, feels like something that, that could matter.
+[44:45 - 44:46] Richard Klein: Right?
+[44:46 - 44:54] Richard Klein: Where you're saying, you know, you've got a dog on a bench and now you've got dog and bench.
+[44:54 - 44:58] Richard Klein: But how do you tell it that this is a relationship between the five.
+[44:59 - 44:59] Molefe Molefe: Yeah.
+[45:00 - 45:12] Richard Klein: And so that's something inherently that, you know, maybe the interaction term could capture, but that the poe, you know, by itself wouldn't.
+[45:14 - 45:17] Richard Klein: And so maybe, maybe then phrase.
+[45:17 - 45:23] Richard Klein: And, and perhaps that's, there's an example there that we could use, like if it's, if it's possible to run one.
+[45:24 - 45:50] Richard Klein: But then, you know, this, this idea that we then kind of say we use this interaction term or this concept of prompt interaction to, To, yeah, to study, you know, various things, one of which perhaps is plurality and one of which might be something else that, you know, just helps us bulk up this idea that it could be multiple things.
+[45:51 - 45:58] Richard Klein: Like, I think the flip side there is that if we say it could be multiple things, then as a reviewer, I'd want to see at least one other thing.
+[45:59 - 46:04] Devon Jarvis: Yeah, yeah, yeah, yeah, there's, there's a, yeah, we need to throw that very carefully.
+[46:05 - 46:15] Richard Klein: But I do think, I wouldn't, I wouldn't want, I wouldn't be like crazy about needing to see everything done over 10 different interactions.
+[46:16 - 46:25] Richard Klein: Like, I'd be okay with one interaction and then like, you know, one or two side ones that just show that, you know, this is a more general concept than just plurality.
+[46:25 - 46:28] Richard Klein: If we claim it's a more general concept than just plurality.
+[46:30 - 46:34] Richard Klein: Like, I don't think I would challenge the notion that, you know, you could have other interactions.
+[46:39 - 46:46] Molefe Molefe: What do you think of a plot much like this one where on the left hand side it's just said C42 and mono.
+[46:46 - 46:50] Molefe Molefe: But like the first rule is like cat and, and the second one is like cat with.
+[46:50 - 46:55] Molefe Molefe: And the third one is like, you know, kitten, cat next to a dog.
+[46:55 - 46:56] Molefe Molefe: And the right is just Poe, right?
+[46:56 - 46:57] Molefe Molefe: Because POE has no.
+[46:58 - 47:12] Molefe Molefe: And then you just basically see what happens and Poe, you know, probably be the same thing all around, but then mono will have all things that make sense, you know, But I don't know if that's like an obvious thing to point out, like, or if it's, you know.
+[47:12 - 47:16] Richard Klein: Well, the question I think is less about like.
+[47:16 - 47:17] Richard Klein: So I like that table.
+[47:17 - 47:18] Richard Klein: I think that table is really effective.
+[47:19 - 47:24] Richard Klein: But that table would immediately make me ask the question, like, cool.
+[47:24 - 47:28] Richard Klein: How well does this technique work on each of those different types of interaction?
+[47:28 - 47:29] Molefe Molefe: Yeah, I see.
+[47:29 - 47:31] Molefe Molefe: It's a trap for us, so then.
+[47:31 - 47:34] Richard Klein: We immediately trap ourselves into having to run all those experiments.
+[47:35 - 47:48] Devon Jarvis: Well, I mean, I do think Molefe that is on the right track, though, in the sense that I think that Section 3 should be exposing or like controlling for this problem, you know, so, like that idea of running POE on cat and fe.
+[47:49 - 47:52] Devon Jarvis: Poe with dog does poa.
+[47:52 - 47:59] Devon Jarvis: Does then that individual cat and thing give you a picture of a cat plurality, another thing, and it just shoves crap in there.
+[47:59 - 48:01] Devon Jarvis: Whatever this fusion thinks it should go there.
+[48:01 - 48:07] Devon Jarvis: And then when you do poe, does that collapse the end thing down to be the dog populating that thing?
+[48:07 - 48:24] Devon Jarvis: Now, you know, that's if by adding and thing to the CAT prompt makes POE fundamentally different, I think that's a sufficient level of control to make our point that joint prompting and POE have different levels, implied information.
+[48:25 - 48:25] Devon Jarvis: Right.
+[48:25 - 48:31] Devon Jarvis: And that the POE just needs plurality somewhere in it to then leverage it.
+[48:33 - 48:33] Devon Jarvis: Yeah.
+[48:38 - 48:44] Richard Klein: Well, there's an interesting question is, does it need to be somewhere or does it need to be in both?
+[48:47 - 48:50] Devon Jarvis: Yeah, I mean, sure, because it might.
+[48:50 - 48:54] Richard Klein: Be cat and thing, dog and thing, and maybe that works.
+[48:55 - 49:04] Richard Klein: But yeah, cat and thing and dog might not work because the dog expert might not want to be with the cat.
+[49:07 - 49:09] Richard Klein: So there's a question of dominance.
+[49:09 - 49:15] Richard Klein: Like does plurality dominate singularity or vice versa?
+[49:16 - 49:18] Devon Jarvis: So does it need to be.
+[49:20 - 49:22] Devon Jarvis: Does it need to be an intersection of the two?
+[49:22 - 49:26] Devon Jarvis: Like, does it need to be implied in both so that it intersects their distributions?
+[49:27 - 49:28] Devon Jarvis: Yeah, Crazy cool.
+[49:28 - 49:31] Richard Klein: Okay, that would be such a cool experiment.
+[49:32 - 49:33] Richard Klein: Like if it's.
+[49:33 - 49:34] Richard Klein: If it's easy to run.
+[49:38 - 49:39] Devon Jarvis: Molefe.
+[49:39 - 49:42] Devon Jarvis: Can you refresh the overleaf and just scroll up to under your abstract.
+[49:49 - 49:51] Molefe Molefe: This is the law of plurality.
+[49:51 - 49:51] Molefe Molefe: You renamed it?
+[49:52 - 49:53] Devon Jarvis: Yeah, yeah.
+[49:53 - 49:53] Devon Jarvis: This one.
+[50:02 - 50:04] Devon Jarvis: Under your abstract.
+[50:05 - 50:05] Molefe Molefe: Oh, under.
+[50:05 - 50:06] Molefe Molefe: Under the.
+[50:06 - 50:09] Devon Jarvis: Yeah, I'm just writing the bullet point list there.
+[50:09 - 50:11] Devon Jarvis: You can look at on the PDF or on the later.
+[50:12 - 50:14] Devon Jarvis: I'm just trying to like, structure.
+[50:14 - 50:16] Devon Jarvis: Then the discussion we're having now into the paper.
+[50:16 - 50:20] Devon Jarvis: Right, Because I think these experiments that we were just saying that should be section three.
+[50:20 - 50:21] Devon Jarvis: Right.
+[50:21 - 50:27] Devon Jarvis: Like your first section is the demonstrating the phenomenon.
+[50:28 - 50:29] Devon Jarvis: And I think that's a big part of it.
+[50:29 - 50:29] Devon Jarvis: Right.
+[50:29 - 50:35] Devon Jarvis: Like We've done a lot of cool work just establishing what we've been looking at, and it's not trivial.
+[50:35 - 50:45] Devon Jarvis: And I think taking the time to express this to a reviewer or a reader what we're actually seeing mathematically and what we are meaning when we say plurality, that would help us.
+[50:46 - 51:02] Devon Jarvis: So I think then it is like section three is these experiments where we have P, cats, product with P, dog versus P, that and thing.
+[51:12 - 51:13] Devon Jarvis: What else can we do here?
+[51:16 - 51:21] Devon Jarvis: If we're going to say this is a fundamental thing, we do need to maybe be a little bit more general.
+[51:38 - 51:43] Richard Klein: So I think narratively we need to.
+[51:47 - 51:48] Richard Klein: I think we.
+[51:48 - 51:51] Richard Klein: We need to establish that this is a thing.
+[51:51 - 51:52] Richard Klein: Right, which is.
+[51:52 - 51:54] Richard Klein: Which is what you're saying here.
+[51:55 - 51:58] Richard Klein: And I think this example shows it.
+[51:58 - 51:59] Richard Klein: This kind of example shows it.
+[51:59 - 52:00] Molefe Molefe: Well, for.
+[52:01 - 52:12] Richard Klein: For this, I am feeling more and more like maybe we need to show, like, some, like, other type of interaction.
+[52:13 - 52:15] Devon Jarvis: Yeah, it would.
+[52:15 - 52:15] Devon Jarvis: It would help.
+[52:15 - 52:19] Devon Jarvis: Even if it doesn't, you know, it doesn't become the thing.
+[52:20 - 52:21] Devon Jarvis: It would be cool if we can find something.
+[52:25 - 52:25] Molefe Molefe: Like.
+[52:31 - 52:32] Richard Klein: And.
+[52:32 - 52:39] Richard Klein: And for example, if we find that, like, with or on or.
+[52:39 - 52:41] Richard Klein: Or something like that.
+[52:42 - 52:47] Richard Klein: See, in a sense, on already encodes plurality, right?
+[52:48 - 52:49] Devon Jarvis: Yeah, yeah.
+[52:50 - 52:50] Richard Klein: And.
+[52:50 - 52:55] Richard Klein: But so it includes plurality and some spatial relationship.
+[52:58 - 53:00] Richard Klein: But so if we.
+[53:04 - 53:08] Devon Jarvis: Well, I mean, in that case, when we add the LORA back, right?
+[53:08 - 53:11] Devon Jarvis: And this will be a trivial thing to show when we say coffee.
+[53:11 - 53:17] Devon Jarvis: And this might not be a good one, but like, let's say coffee, cup and table, right?
+[53:18 - 53:19] Devon Jarvis: It's gonna.
+[53:20 - 53:25] Devon Jarvis: That's too much butterfly, meadow, cat on dock.
+[53:26 - 53:27] Devon Jarvis: You know, cats.
+[53:27 - 53:30] Devon Jarvis: And so cat, dog would give you a chimera.
+[53:30 - 53:33] Devon Jarvis: Then you put our Lora on it, and you get the cat and the dog next to each other.
+[53:33 - 53:35] Devon Jarvis: But it doesn't imply the positioning.
+[53:35 - 53:35] Devon Jarvis: Right.
+[53:35 - 53:39] Devon Jarvis: So it's going to just stick them probably next to each other because that's where most of those images they see are.
+[53:40 - 53:43] Devon Jarvis: If you want a cat on dog, then you have to then do another round of Lora.
+[53:44 - 53:49] Devon Jarvis: So we could potentially LORA off the top of our loras to add more concepts.
+[53:50 - 53:59] Devon Jarvis: And it would be interesting to see if an on LORA or a plurality, then on LORA would do different things.
+[54:05 - 54:08] Richard Klein: Yeah, yeah.
+[54:08 - 54:09] Richard Klein: As a.
+[54:09 - 54:14] Richard Klein: As an interesting thing that, that, that this now brings up.
+[54:15 - 54:21] Richard Klein: How do you do, like, ordering?
+[54:22 - 54:24] Richard Klein: Because I don't think our maths even allows for it.
+[54:26 - 54:27] Richard Klein: Right.
+[54:27 - 54:31] Richard Klein: Like a product of experts is a summation of the log probabilities.
+[54:31 - 54:32] Richard Klein: Right.
+[54:32 - 54:33] Richard Klein: Or the log scores.
+[54:33 - 54:33] Devon Jarvis: Right.
+[54:33 - 54:38] Richard Klein: And so, like, is it.
+[54:39 - 54:45] Richard Klein: Is it even possible to represent cat on dog Versus dog on cat.
+[54:47 - 54:55] Richard Klein: Like if our LORA can capture on, it will still never be able to capture which way around?
+[54:57 - 54:59] Richard Klein: What's the word I'm looking for?
+[54:59 - 55:00] Richard Klein: Commutatability.
+[55:01 - 55:05] Molefe Molefe: Like, yeah, it's a commutative kind of thing.
+[55:05 - 55:06] Molefe Molefe: Yeah.
+[55:11 - 55:12] Richard Klein: I could run.
+[55:13 - 55:16] Molefe Molefe: I could try run those experiments whenever I find time in my own writing.
+[55:16 - 55:18] Molefe Molefe: But I think that's also interesting.
+[55:18 - 55:21] Molefe Molefe: I'll just need to control for that to have enough mono examples.
+[55:23 - 55:25] Richard Klein: So maybe, maybe we must be careful not to.
+[55:26 - 55:30] Richard Klein: What I think we should do is write this down and do it for paper.
+[55:30 - 55:31] Molefe Molefe: 2.
+[55:32 - 55:39] Richard Klein: I don't think that the directionality part needs to be part of this one.
+[55:39 - 55:41] Richard Klein: And it perhaps makes the story.
+[55:42 - 55:44] Richard Klein: You know, there's too much detail in the story.
+[55:46 - 55:47] Richard Klein: I do think it's something we should do.
+[55:47 - 55:57] Richard Klein: I think that would be really interesting because maybe, maybe it boils down to like, you have to condition, you know, almost like cat and thing.
+[55:58 - 55:58] Devon Jarvis: You.
+[55:58 - 56:03] Richard Klein: You maybe have to condition it somewhere like that where it's cat behind thing.
+[56:06 - 56:08] Devon Jarvis: Yeah, well, because, I mean, in language it's.
+[56:08 - 56:12] Devon Jarvis: You have two nouns, but spatially, you know that one is the subject, one is the object.
+[56:13 - 56:13] Richard Klein: Yeah.
+[56:13 - 56:14] Devon Jarvis: You know, like that.
+[56:14 - 56:15] Devon Jarvis: That's an implied.
+[56:15 - 56:17] Devon Jarvis: That that's implied by the language again.
+[56:18 - 56:18] Richard Klein: Yeah.
+[56:19 - 56:20] Devon Jarvis: Whereas poe.
+[56:20 - 56:26] Devon Jarvis: It misses the temporality of the language, which means that we can't subject object bind anymore.
+[56:27 - 56:31] Richard Klein: But the problem is the LORA even can't do that.
+[56:31 - 56:35] Richard Klein: The LORA can't decide to bind to one object and not the other.
+[56:35 - 56:37] Devon Jarvis: It's going to have to be hierarchical.
+[56:37 - 56:39] Devon Jarvis: You're going to have to form something like a syntax tree.
+[56:39 - 56:42] Devon Jarvis: And then your edges on the syntax tree are the LORA.
+[56:44 - 56:49] Richard Klein: How incredibly cool would it be if that's it.
+[56:49 - 56:57] Richard Klein: Maybe if that's the answer is that the syntax tree that you would have had for language is the syntax tree you need to have for your POE.
+[56:59 - 57:00] Devon Jarvis: Would be great.
+[57:00 - 57:01] Devon Jarvis: Yeah, that would be awesome.
+[57:02 - 57:03] Devon Jarvis: I agree with you.
+[57:03 - 57:03] Devon Jarvis: That's.
+[57:03 - 57:04] Devon Jarvis: That's not this paper though.
+[57:04 - 57:05] Devon Jarvis: But that would be amazing.
+[57:05 - 57:07] Richard Klein: Yeah, that might be paper.
+[57:07 - 57:07] Richard Klein: Three.
+[57:08 - 57:12] Richard Klein: Yeah, my word, that would be such a cool result.
+[57:14 - 57:19] Devon Jarvis: This does make me feel more confident in the fact that we should focus in on plurality.
+[57:19 - 57:23] Devon Jarvis: And then I think we just outright state that, like in the discussion, in the limitations, whatever.
+[57:23 - 57:27] Devon Jarvis: Like we have a very solid punch that there are many more of these things.
+[57:27 - 57:33] Devon Jarvis: We didn't have capacity or time or, you know, we wanted this to just be a very clear study of an important one.
+[57:34 - 57:39] Devon Jarvis: You know, future work may yield other implications.
+[57:42 - 57:42] Richard Klein: Agreed.
+[57:44 - 57:45] Richard Klein: Yeah, I think that's fine.
+[57:47 - 57:49] Devon Jarvis: Mo, will you just Write these ideas down.
+[57:49 - 57:49] Devon Jarvis: Mo.
+[57:50 - 57:52] Devon Jarvis: Like, I wrote this down, but it's.
+[57:52 - 57:53] Molefe Molefe: It's messy.
+[57:54 - 57:57] Molefe Molefe: So I. I do have Richard's Fireflies on.
+[57:57 - 57:59] Molefe Molefe: So I'm going to ask Richard for.
+[57:59 - 58:02] Molefe Molefe: For his Fireflies and then I'll summarize it.
+[58:02 - 58:03] Molefe Molefe: But I wrote them down.
+[58:03 - 58:04] Molefe Molefe: Very patchy.
+[58:05 - 58:09] Devon Jarvis: Is there a Fireflies command that we can use to make this easier?
+[58:09 - 58:15] Devon Jarvis: I know we can sometimes speak to the damn thing, so it does to.
+[58:15 - 58:16] Richard Klein: The real time notes.
+[58:19 - 58:20] Devon Jarvis: Hey, Fireflies.
+[58:28 - 58:32] Devon Jarvis: Please summarize the last 10 minutes of our conversation.
+[58:37 - 58:37] Molefe Molefe: What?
+[58:38 - 58:39] Molefe Molefe: That's so cool.
+[58:42 - 58:52] Richard Klein: We discussed whether to focus on plurality versus interaction term as your main concept, debated experiments showing how plurality behaves in different compositions.
+[58:52 - 59:00] Richard Klein: Cat and dog with prepositions agreed to focus on plurality for this paper while noting other potential interactions for future work.
+[59:04 - 59:05] Devon Jarvis: Not quite, but that'll do.
+[59:07 - 59:07] Richard Klein: Right.
+[59:09 - 59:12] Devon Jarvis: I need to jump off to another meeting, but this was super productive.
+[59:12 - 59:12] Devon Jarvis: Thank you, guys.
+[59:13 - 59:14] Richard Klein: Yeah, thanks.
+[59:14 - 59:15] Richard Klein: I put.
+[59:16 - 59:18] Richard Klein: I copied the link from it.
+[59:18 - 59:19] Richard Klein: See if that link works.
+[59:19 - 59:21] Richard Klein: I'm not sure it's the same link.
+[59:21 - 59:24] Richard Klein: I'm not sure if it changes once the meeting's not live.
+[59:24 - 59:24] Molefe Molefe: But.
+[59:25 - 59:26] Molefe Molefe: No, it doesn't change.
+[59:27 - 59:28] Molefe Molefe: It's just an access thing.
+[59:28 - 59:29] Molefe Molefe: But I'll request it.
+[59:29 - 59:30] Molefe Molefe: It should pop up.
+[59:31 - 59:33] Molefe Molefe: But as a student, I actually.
+[59:33 - 59:35] Molefe Molefe: I ran out of things.
+[59:35 - 59:36] Molefe Molefe: It has a limit.
+[59:36 - 59:38] Molefe Molefe: And you're a student, so.
+[59:39 - 59:42] Molefe Molefe: But I'll let you know if it's a problem.
+[59:43 - 59:44] Molefe Molefe: Like, you get a.
+[59:44 - 59:46] Molefe Molefe: You get so on Fireflies.
+[59:46 - 59:49] Molefe Molefe: On my student account, you just.
+[59:50 - 59:50] Molefe Molefe: You.
+[59:50 - 59:54] Molefe Molefe: You get a. Yeah, you get limited on the amount of things you can summarize.
+[59:56 - 59:57] Richard Klein: Yeah, that makes sense.
+[59:57 - 59:58] Richard Klein: But I mean, if you.
+[59:58 - 59:59] Richard Klein: But my.
+[59:59 - 1:00:05] Richard Klein: My default is like, dude, what big LLM do you use?
+[1:00:06 - 1:00:07] Molefe Molefe: What LLM do I use?
+[1:00:08 - 1:00:11] Molefe Molefe: Yeah, I use Claude most of the time.
+[1:00:11 - 1:00:11] Molefe Molefe: I am not.
+[1:00:12 - 1:00:13] Molefe Molefe: And.
+[1:00:13 - 1:00:13] Molefe Molefe: And soul.
+[1:00:13 - 1:00:15] Richard Klein: Claude has a WI FI connector.
+[1:00:16 - 1:00:17] Molefe Molefe: There's an MCP for that.
+[1:00:17 - 1:00:18] Molefe Molefe: Oh, nice.
+[1:00:18 - 1:00:20] Richard Klein: Yeah, there's an MCP connector between Claude and.
+[1:00:20 - 1:00:25] Richard Klein: Well, I guess Fireflies is an MP MCP connector that Claude can talk to.
+[1:00:25 - 1:00:27] Molefe Molefe: I didn't know that Claude has like an MCP to everything.
+[1:00:28 - 1:00:28] Richard Klein: Yeah.
+[1:00:28 - 1:00:29] Molefe Molefe: So.
+[1:00:29 - 1:00:29] Richard Klein: So basically.
+[1:00:29 - 1:00:33] Richard Klein: Well, I mean, like, MCP is just like the Claude can speak to anything protocol.
+[1:00:34 - 1:00:35] Richard Klein: But.
+[1:00:35 - 1:00:35] Richard Klein: So.
+[1:00:35 - 1:00:43] Richard Klein: So if you connect your Claude to Fireflies, then you never have to ask Fireflies to do the summary error.
+[1:00:43 - 1:00:46] Richard Klein: You always like, I. I live in Claude.
+[1:00:46 - 1:00:52] Richard Klein: And then you have Fireflies is the transcription for me.
+[1:00:53 - 1:00:54] Molefe Molefe: That's really decent.
+[1:00:55 - 1:00:55] Richard Klein: Yeah.
+[1:00:55 - 1:01:00] Molefe Molefe: You know, so I opened up the link that you sent me.
+[1:01:00 - 1:01:01] Molefe Molefe: It said, still recording.
+[1:01:01 - 1:01:06] Molefe Molefe: So that's a good thing because that means as soon as this meeting is done, I'll get a summary and I'll.
+[1:01:06 - 1:01:07] Richard Klein: Get working on it.
+[1:01:07 - 1:01:08] Molefe Molefe: So I've still got a lot of work.
+[1:01:08 - 1:01:11] Molefe Molefe: I mean, the paper is due on the.
+[1:01:11 - 1:01:13] Molefe Molefe: The abstract is due on the 18th of September.
+[1:01:15 - 1:01:15] Richard Klein: Okay.
+[1:01:15 - 1:01:17] Molefe Molefe: And the paper is due on the 25th of September.
+[1:01:17 - 1:01:18] Molefe Molefe: Yeah.
+[1:01:18 - 1:01:21] Molefe Molefe: Devon wanted us to sort of like, be comfortable ahead of time.
+[1:01:22 - 1:01:26] Molefe Molefe: Yeah, no, hence I'm sort of pushing as much as I can.
+[1:01:26 - 1:01:36] Richard Klein: So my, my feeling is, is actually that, like, you know, for these papers, they should be done like a week or two before the deadline, actually.
+[1:01:37 - 1:01:41] Richard Klein: Yeah, like, a lot of, A lot of the cases, you know, people woke up until midnight on the day.
+[1:01:41 - 1:01:50] Richard Klein: But, you know, I think that the, the best case is when, like, the paper's ready and then we give it to someone else to read.
+[1:01:51 - 1:02:05] Richard Klein: Like, you know, and we can't do that if we finish it on the day, but, you know, if it's ready a week or two before, we can go to, you know, a Steve, a Benji, you know, whoever, and say, like, give it a read.
+[1:02:05 - 1:02:06] Richard Klein: And what do you think?
+[1:02:06 - 1:02:10] Richard Klein: Like, what are the weak spots that you would pick on as a reviewer?
+[1:02:10 - 1:02:11] Richard Klein: Right.
+[1:02:13 - 1:02:18] Richard Klein: And that can make an enormous difference in terms of, like, getting papers accepted at these big places.
+[1:02:21 - 1:02:27] Richard Klein: So, so it is worth, like, imagine like, you know, your deadline is not the 18th of September.
+[1:02:27 - 1:02:30] Richard Klein: Your deadline is a week or two before that.
+[1:02:31 - 1:02:42] Molefe Molefe: Well, right now my deadline is the 30th of August, the 31st of August, because I've sort of written the first two sections, so I'm gonna probably, I mean, finish the next two over the weekend.
+[1:02:42 - 1:02:49] Molefe Molefe: And so by next week I should have like a full paper that I'm just reiterating results, experiments on top of.
+[1:02:49 - 1:02:58] Richard Klein: So, yeah, I mean, yeah, that sounds good, but definitely, you know, take, take the, this discussion from here.
+[1:03:00 - 1:03:09] Richard Klein: If there is an easy version of one of the other interactions, like, you know, it must be fundamentally free to get the image.
+[1:03:11 - 1:03:13] Richard Klein: That would be nice enough.
+[1:03:13 - 1:03:16] Richard Klein: Just to show there are other types we focus on us.
+[1:03:18 - 1:03:32] Molefe Molefe: But if it's the group thing, I was doing much earlier in the year, remember I had like the six different groups, taxonomy type thing, and then the group one was like the easy ones, and the easy ones were like, so,.
+[1:03:32 - 1:03:38] Richard Klein: So what I, what I mean, rather is like the interaction of like the preposition or the, you know, whatever.
+[1:03:38 - 1:03:53] Richard Klein: Like, like where it's not like, like that just allows us to say like, you know, there are these general ones because, you know, I think Devin's, Devon's thing of saying at the end you know, we, we assure that there are other interactions that exist.
+[1:03:53 - 1:03:59] Richard Klein: And in this one, you know, we just prove its existence of, you know, with respect to plurality.
+[1:03:59 - 1:04:00] Richard Klein: Like, I think that's perfectly fine.
+[1:04:01 - 1:04:02] Richard Klein: Yeah, we can do that.
+[1:04:02 - 1:04:05] Richard Klein: So if it's a, if it's a problem, we, we don't need to do anything else.
+[1:04:06 - 1:04:11] Richard Klein: But if it's easy, if it doesn't hurt, then we should do it.
+[1:04:11 - 1:04:12] Richard Klein: If it does hurt, we shouldn't.
+[1:04:13 - 1:04:14] Molefe Molefe: Okay.
+[1:04:14 - 1:04:21] Molefe Molefe: Yeah, I'll look into them and I'll use this chat to sort of help me in the writing and the experiment parts.
+[1:04:21 - 1:04:23] Richard Klein: Yeah, yeah, cool.
+[1:04:24 - 1:04:24] Richard Klein: Great.
+[1:04:24 - 1:04:25] Richard Klein: That sounds good.
+[1:04:25 - 1:04:26] Richard Klein: I'm going to have to run.
+[1:04:26 - 1:04:27] Richard Klein: I've got a.
+[1:04:27 - 1:04:33] Richard Klein: There's an IDSA test, but, but yeah, very, very cool on that.
+[1:04:33 - 1:04:36] Molefe Molefe: Sorry, now that you're here, I haven't chatted to Brandon about it.
+[1:04:36 - 1:04:43] Molefe Molefe: I've been getting one student for like the last four weeks now and I have a test on the 17th of September somewhere there.
+[1:04:44 - 1:04:50] Molefe Molefe: Is it something that I should be in person for and that's going to be in the evening or Brandon can help me with.
+[1:04:50 - 1:04:52] Molefe Molefe: I can pretty much chat to Brandon about that.
+[1:04:52 - 1:04:57] Richard Klein: Yeah, I think just chat to Brandon about it and he can, he can kind of guide you in whatever way.
+[1:05:00 - 1:05:00] Molefe Molefe: Thanks for your time.
+[1:05:00 - 1:05:01] Molefe Molefe: Appreciate it.
+[1:05:01 - 1:05:02] Richard Klein: Cool, great.
+[1:05:02 - 1:05:02] Richard Klein: Perfect.
+[1:05:02 - 1:05:03] Richard Klein: Have a good one.
+[1:05:03 - 1:05:04] Molefe Molefe: You too.
+[1:05:05 - 1:05:05] Richard Klein: Bye.
+Title: PhD: Molefe
+Host Email: kleinric@gmail.com
+Organizer Email: kleinric@gmail.com
+Calendar Id: e9im6r31d5miqs35e9pmurj1dgmn6ubecct6qsr6egs3ac3ddljm2or3ego6mcj7c4ojgd9gddjmqob871k34r9iecpm8e3cd1l38rrae0s3acbe69jm2cpldgp6opbge1jjgdb3dkq66sbd74on2cpoekp7ce3be0r6ep3i75j3ae9kdli62dj3e1o6spb7c4rm2eb9ddomkohkc4qj0qpibsp30chm60s34c2k64oj0c1g61d3ke0
+Fireflies Users: kleinric@gmail.com
+Participants: kleinric@gmail.com
+Date: 1787223600000
+Transcript Url: https://app.fireflies.ai/view/01KZW6VY321PPBVJT7KP0YJPZ1
+Audio Url: No audio url
+Video Url: No video url
+Duration: 66.16000366210938
+Meeting Attendees: kleinric@gmail.com
+Cal Id: e9im6r31d5miqs35e9pmurj1dgmn6ubecct6qsr6egs3ac3ddljm2or3ego6mcj7c4ojgd9gddjmqob871k34r9iecpm8e3cd1l38rrae0s3acbe69jm2cpldgp6opbge1jjgdb3dkq66sbd74on2cpoekp7ce3be0r6ep3i75j3ae9kdli62dj3e1o6spb7c4rm2eb9ddomkohkc4qj0qpibsp30chm60s34c2k64oj0c1g61d3ke0
+Calendar Type: google
+Meeting Link: https://teams.microsoft.com/l/meetup-join/19:meeting_MDNkZThmMjAtNDAxZS00YTUyLWFiYWUtNjA2MDJjZDNjNjI5@thread.v2/0?context={"Tid":"4b1b908c-5582-4377-ba07-a36d65e34934","Oid":"4e17d061-1182-4757-9785-596ac8f46ec8"}
+Is Live: false
+
+⚠️ Partial results: some fields may be missing due to 2 error(s)
