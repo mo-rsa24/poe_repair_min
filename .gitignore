@@ -46,3 +46,10 @@ results/
 .DS_Store
 *.tmp
 paper/*-overleaf*.zip
+
+# Built scene apps: dist bundles and dependencies are regenerable from the source
+# beside them (npm install && npm run build). The source is tracked; these are not.
+artifacts/scenes/*/dist/
+artifacts/scenes/*/node_modules/
+artifacts/scenes/*/app/dist/
+artifacts/scenes/*/app/node_modules/

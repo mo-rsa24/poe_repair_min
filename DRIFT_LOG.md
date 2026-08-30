@@ -2,6 +2,22 @@
 
 Where the tree was found to disagree with reality, and when.
 
+## 2026-08-30: a plan scope was carrying 7 GB of build output
+
+`find plans -name "*.png"` returned 1388 images, which is what surfaced it. Scope 03 held two Vite
+scene apps: `scene-h04/`, a live app whose source is 316 KB beside a 3.5 GB `dist/` and 92 MB of
+`node_modules/`, and `scene/`, whose source a previous tidy pass had already moved to
+`artifacts/scenes/how-much-correction-is-needed/` while leaving 3.5 GB of build residue behind with
+3377 files still tracked in git.
+
+- Both moved to `artifacts/scenes/`, which is the kind that owns them. Nothing was deleted, because
+  the ask was to archive rather than remove.
+- `.gitignore` had no entry for `dist` or `node_modules` anywhere, which is how a build bundle came
+  to be committed at all. It has one now, and the 1309 tracked build files were dropped from the
+  index while staying on disk.
+- Six images remain under `plans/`, all of them real diagrams: the project map's render, one each
+  for scopes 01, 03 and 06, and two beside a scope 04 plan.
+
 ## 2026-08-30: work that had finished was still sitting in the live tree
 
 `plans/` is defined as holding only work still to do, and `plans/.walk/` as holding unfinished

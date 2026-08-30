@@ -227,3 +227,20 @@ its guided-epsilon-view against predicted-x0-view thread waits on a settle-or-ex
 
 `artifacts/_shared/` and `artifacts/_quarantine/` were examined and deliberately left in place;
 both are now declared in this repo's `CLAUDE.md`, which is where the reason lives.
+
+## 2026-08-30: two built scene apps moved out of the plan scope
+
+Scope 03 held 7 GB of web-app build output, which is why `find plans -name "*.png"` returned 1388
+images: 1382 of them were a Vite `dist/` bundle, including 495 per-pair, per-seed expert frames the
+build copies from `public/`. Six real diagrams remain under `plans/`.
+
+| Old path | New path | Why |
+|---|---|---|
+| `plans/03-does-the-correction-cause-composition/scene-h04/` | `artifacts/scenes/what-the-cached-runs-already-show/` | a driveable page for the seven claims of `hypothesis-04`; scenes are an artifact kind and never live inside a plan scope. Named for what it shows, not for the plan id it was built against |
+| `plans/03-does-the-correction-cause-composition/scene/dist/` | `artifacts/scenes/how-much-correction-is-needed/dist/` | build residue rejoining the source a previous pass had already moved, which left `dist/` and `node_modules/` behind in the plan scope with 3377 files still tracked |
+| `plans/03-does-the-correction-cause-composition/scene/node_modules/` | `artifacts/scenes/how-much-correction-is-needed/node_modules/` | same |
+
+Nothing was deleted. `dist/` and `node_modules/` under `artifacts/scenes/` are now in `.gitignore`
+and were dropped from the index with `git rm --cached`, so 1309 regenerable build files stopped
+being tracked while every byte stayed on disk. Both apps rebuild with `npm install && npm run build`
+from the source beside them.
