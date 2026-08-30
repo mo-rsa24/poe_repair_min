@@ -56,6 +56,10 @@
 
 **The null threshold, fixed before launch:** held-out compose rate at 200k within the seed-noise band (spread over the 8 held-out seeds) of 100k, with no crispness change in the frozen tracking set, means length is not the knob.
 
+> A null threshold is the number the result has to stay under to count as no effect: a 200k
+> compose rate inside that band means the numbers with the extra training look the same as the
+> numbers without it.
+
 **Associated materials:**
 - **Review questions:** [../review/08-experiment-a-resume-to-200k.md](../review/08-experiment-a-resume-to-200k.md)
 - **Ledger entry:** [experiment A](../decisions-taken-here.md#the-longer-training-question-runs-as-three-experiments-re-scoped-by-evidence)

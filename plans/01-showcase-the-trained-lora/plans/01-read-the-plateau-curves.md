@@ -61,6 +61,9 @@ Is the trained LoRA (`phase1_r8_100k`) at a ceiling, or was it still improving w
 
 **If flat across epochs and checkpoints:** ceiling. A's null result is expected and B's result is read as a capacity finding or a dead lever depending on the panel showing what the cached true correction can reach at best.
 
+> A null result here means the numbers after 200k steps look the same as the numbers at 100k, so
+> the extra training bought nothing that this measure can see.
+
 **If still rising:** waypoint. A is expected to move the tracking set, and a flat A becomes a finding.
 
 **Associated materials:**

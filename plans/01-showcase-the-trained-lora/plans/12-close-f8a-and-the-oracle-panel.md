@@ -154,6 +154,9 @@ Serves goal 9. Checkable outcomes:
 
 2.2 **Read the best-case panel.** ✅ the cached true correction visibly crisper than the LoRA: capacity stays a live lever for B's reading; ❌ it is equally soft: no training buys crispness, and B's null becomes the expected end of the story.
 
+> B's null means rank 16 and rank 32 read the same as rank 8, so extra capacity changed nothing
+> the measure can see.
+
 2.3 **Write both verdicts** into the [review file](../review/12-close-f8a-and-the-oracle-panel.md).
 
 ▶ **Next: what has to pass before this runs.**

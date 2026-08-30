@@ -90,6 +90,9 @@
 
 **The cheapest of the three experiments, run first: if softness tracks λ, the blur is the injection, and A's and B's null results are read in that light.** It is also the intervention that lets any discovered direction use causal language (ledger).
 
+> A null result from A or B means the numbers after more training, or at a bigger rank, look the
+> same as the numbers before, so that knob moved nothing the measure can see.
+
 ---
 
 ## Why this plan exists

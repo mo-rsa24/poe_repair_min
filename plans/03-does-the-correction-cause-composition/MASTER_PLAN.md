@@ -29,10 +29,10 @@ scope's own check has produced the number.
 PoE fails at "a cat and a dog" because multiplying two predictions asks for an
 image that is both things at once, while the sentence means two things side by
 side. The gap between those readings is a concrete cached quantity, r_t.
-Injected back in the right amount and at the right time it turns the blend into two animals.
-It is small, shared across pairs, and concentrated in a narrow noise band,
-which is why a rank-8 LoRA can learn it once and fix pairs it never saw. This
-scope proves that account and produces the paper's figures.
+Injected back in the right amount and at the right time it turns the blend into
+two animals. It is small, shared across pairs, and concentrated in a narrow
+noise band, which is why a rank-8 LoRA can learn it once and fix pairs it never
+saw. This scope proves that account and produces the paper's figures.
 
 ## Objectives
 1. Check the ground this scope inherits. Score phase1_r8_100k at step 100000,

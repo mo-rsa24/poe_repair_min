@@ -56,6 +56,9 @@
 
 **The interpretation key (ledger):** the panel from plan 12 showing what the cached true correction reaches at best. If that correction gives crisp images while the adapter gives soft ones, capacity is the right lever to pull; if the cached correction is soft too, a null here is the expected and final answer.
 
+> A null here means rank 16 and rank 32 read the same as rank 8, so extra capacity bought
+> nothing the measure can see.
+
 **Associated materials:**
 - **Review questions:** [../review/09-experiment-b-rank-16-32.md](../review/09-experiment-b-rank-16-32.md)
 - **Ledger entry:** [experiment B](../decisions-taken-here.md#the-longer-training-question-runs-as-three-experiments-re-scoped-by-evidence)

@@ -3,6 +3,10 @@
 Nothing has run yet. This file judges [the design](../plans/08-experiment-a-resume-to-200k.md).
 Run kind: hypothesis (an experiment on the length axis with a null threshold fixed in advance).
 
+> A null threshold is the number the result has to stay under to count as no effect: a held-out
+> compose rate at 200k inside the seed-noise band means the numbers with the extra training look
+> the same as the numbers without it.
+
 ## Recommended prompt (when the run lands)
 
 ```

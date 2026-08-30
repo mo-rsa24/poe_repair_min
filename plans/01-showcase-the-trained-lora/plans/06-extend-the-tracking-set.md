@@ -102,6 +102,9 @@
 
 **Key insight.** Freezing before launch is what makes "no crispness change in the frozen tracking set" (experiment A's null threshold) a meaningful sentence.
 
+> A null threshold is the number the result has to stay under to count as no effect: if the
+> tracking-set renders at 200k look the same as the ones at 100k, the extra training did nothing.
+
 ---
 
 ## Description: what to build

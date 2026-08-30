@@ -34,6 +34,9 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#runs) ➡️
 - **The best-case panel**: plan 12's side-by-side of the adapter against the cached true
   correction; the key that says whether a capacity null is a dead end or the answer.
 
+> A capacity null means rank 16 and rank 32 read the same as rank 8, so the numbers with more
+> capacity look the same as the numbers without it.
+
 > Held-out means the pairs were never shown during training, so the number says how well the
 > adapter does on animals it has not seen.
 
