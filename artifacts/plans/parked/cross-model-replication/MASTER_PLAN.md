@@ -1,5 +1,19 @@
 # Cross-Model-Replication
 
+## Parked
+
+**Last done**
+
+Nothing. The scope is an empty scaffold: a master plan and zero plan files.
+
+**Why parked**
+
+Replicating on a second model only earns its cost once the claim holds on SDXL, and that is what scopes 03 and 04 are still establishing.
+
+**On return**
+
+Bring it back when the causal and transfer claims are both settled and a reviewer would ask whether the result is SDXL-specific. Scope 06's generalization work may absorb it instead, in which case retire this one.
+
 > Shelved: an empty scaffold for background work (zero plan files). Comes back when its parent
 > plan is promoted out of the background pool into the paper table; /populate-plans it then.
 

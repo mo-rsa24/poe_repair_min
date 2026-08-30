@@ -1,5 +1,19 @@
 # Artifact Reconciliation
 
+## Parked
+
+**Last done**
+
+Plans 01 to 04 are done; plan 05's read-only detection half ran on 2026-08-04 (commit `888a520`) and wrote a re-sweep detection report. Everything left in plan 05 is a disposition decision or a file move.
+
+**Why parked**
+
+The two-filesystem catalogue-and-integrity-check job costs more upkeep than the disorder it prevents, judged 2026-08-24. Nothing downstream is blocked by it.
+
+**On return**
+
+Bring it back when lost or untrustworthy artifacts become a real problem again. Start at plan 05's parked dispositions in `parked.md`, which names every file awaiting a keep, re-run, or discard call.
+
 ## Mission
 
 Keep every saved file this project produces (LoRA checkpoints, training and eval caches, saved results and figures) easy to find, trustworthy, and organised one consistent way, across the two storage roots: the repo (`/home-mscluster/mmolefe/Playground/PhD/poe_repair_min`) and `/datasets/mmolefe/poe_repair_min/outputs`. Any file we keep should be findable by experiment/rung/pair/seed, should load, and should carry a clear keep / re-run / discard label.

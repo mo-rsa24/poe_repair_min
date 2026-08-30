@@ -107,7 +107,7 @@ broke. No landing is narrated without its instrument.
 
 ## Sub-Scopes
 None live. The three background scaffolds (composition-type cells, cross-model replication,
-the inspector) are shelved whole at `plans/shelved/`, each carrying its return trigger:
+the inspector) are parked whole at `artifacts/plans/parked/`, each carrying its return trigger:
 promotion of its parent plan out of the background pool.
 
 ## Plans
@@ -147,8 +147,8 @@ plan sits in the root's background-experiments pool and does not block the paper
 
 | Plan | What it does | Paper step | Status | Owes |
 |---|---|---|---|---|
-| idea-01-does-it-hold-for-attribute-pairs | whether attribute pairs behave like object pairs | bg | ⚠️ | its cells; the scaffold waits at plans/shelved/composition-type-cells |
-| generalization-01-other-models-and-samplers | the same result on another model and sampler | bg | ⚠️ | its runs; the scaffold waits at plans/shelved/cross-model-replication |
+| idea-01-does-it-hold-for-attribute-pairs | whether attribute pairs behave like object pairs | bg | ⚠️ | its cells; the scaffold waits at artifacts/plans/parked/composition-type-cells |
+| generalization-01-other-models-and-samplers | the same result on another model and sampler | bg | ⚠️ | its runs; the scaffold waits at artifacts/plans/parked/cross-model-replication |
 | 11-inspector | shelved with its sub-scope: tooling, not paper work; returns after submission or on promotion | | shelved | |
 
 **What reaches the paper** (figure runs, plus the print gates)

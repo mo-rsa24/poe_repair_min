@@ -78,7 +78,7 @@ the six names.
 in the human-readable label
 
 **Where it comes from** assigned when a pair is added to the taxonomy; see
-`plans/shelved/phases/09-lora-taxonomy-single-seed.md` for the representative pair per group
+`artifacts/plans/archived/phases/09-lora-taxonomy-single-seed.md` for the representative pair per group
 
 **Stands for** a property of a [pair](../world/animal-pair.md#what-an-animal-pair-is), fixed at
 assignment, not derived from any run's outcome

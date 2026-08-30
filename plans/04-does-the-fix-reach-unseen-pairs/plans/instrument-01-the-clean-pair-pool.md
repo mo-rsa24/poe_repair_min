@@ -59,7 +59,7 @@ controls), 38 distinct animals, no word repeated.
   earlier retrofit pass.
 
 ## Tasks
-- [x] Precondition check: assert `scorer_validated.json` (from plans/completed/compose-scorer)
+- [x] Precondition check: assert `scorer_validated.json` (from artifacts/plans/completed/compose-scorer)
   exists and its pass flag is true.
 - [x] Curate the first-draft pair list: 15 blend-prone animal×animal pairs,
   token-disjoint. Candidate list + blend rationale recorded in pair_pool.yaml comments.

@@ -106,7 +106,7 @@ No order and no end. Re-entered rather than closed.
 
 - [plans/standing/literature/plans/01-reading-register.md](plans/standing/literature/plans/01-reading-register.md): keep the reading table above current, and make sure every idea-trying run names the paper it came from.
 
-Artifact reconciliation (`plans/shelved/artifact-reconciliation/`) is shelved, not standing: the
+Artifact reconciliation (`artifacts/plans/parked/artifact-reconciliation/`) is shelved, not standing: the
 two-filesystem catalogue-and-integrity-check job it did is not currently worth the overhead it
 costs to keep current. Revive by moving it back to `plans/standing/` if lost or untrustworthy
 artifacts become a real problem again.
@@ -133,8 +133,16 @@ order the scopes for a reader arriving cold; they are not the step order, which 
 | `06-is-the-gap-the-samplers-or-the-models/` | live, nothing started | the one threat to the paper's framing: how much of the correction a Langevin corrector removes, and how much no corrector touches. Then three composition rules on one dose axis |
 | `07-writing-the-paper/` | live | the ICLR manuscript in `paper/iclr/`. No GPU, no queue. Runs nothing and consumes everything the six scopes above produce |
 | `standing/literature/` | standing | the reading register: what the field already knows, and the source behind every idea-trying run |
-| `completed/compose-scorer/` | done | delivered `scorer_validated.json`, the cross-scope contract, in use by scopes 03 and 04 |
-| `shelved/` | the shelf | `artifact-reconciliation`, `composition-type-cells`, `cross-model-replication`, `inspector-interaction-term`, `mechanism-study`, `phases`, `rungs`; one line at the top of each says what would bring it back |
+| `retrofit-poe-repair-min.md` | standing | the one-name-per-thing sweep across the repo, executed by `/retrofit-repo`; sits beside the tree because it touches every scope |
+
+Everything finished, parked or cold has left `plans/` for `artifacts/plans/`, which is where to
+look for it:
+
+| Where it went | What is there |
+|---|---|
+| `artifacts/plans/completed/compose-scorer/` | the reusable instrument: delivered `scorer_validated.json`, the cross-scope contract scopes 03 and 04 both read |
+| `artifacts/plans/parked/` | `artifact-reconciliation`, `composition-type-cells`, `cross-model-replication`, `inspector-interaction-term`, `mechanism-study`; each opens with a `## Parked` block saying what was last done, why it stopped, and what to read on return |
+| `artifacts/plans/archived/` | `phases` and `rungs`, the two superseded work breakdowns; `closing-the-compositional-gap` and `showcase-the-trained-lora`, the emptied shells of scopes whose contents were absorbed |
 
 ### Every filename says its run kind
 
@@ -245,12 +253,12 @@ others where it depends on them, and no scope holds an order of its own.
 - ⚠️ [06-is-the-gap-the-samplers-or-the-models](plans/06-is-the-gap-the-samplers-or-the-models/MASTER_PLAN.md) — the sampler's share of the correction against the model's, then three composition rules on one dose axis. Nothing started
 - ⚠️ [07-writing-the-paper](plans/07-writing-the-paper/MASTER_PLAN.md) — the manuscript. Steps 12 to 18
 - ⚠️ [standing/literature](plans/standing/literature/MASTER_PLAN.md) — standing: what the field already knows, and the source behind every idea-trying run
-- ✅ [completed/compose-scorer](plans/completed/compose-scorer/MASTER_PLAN.md) — the reusable instrument that tells a two-animal composition from a chimera blend; emits `scorer_validated.json`
+- ✅ [compose-scorer, now completed and out of the live tree](artifacts/plans/completed/compose-scorer/MASTER_PLAN.md) — the reusable instrument that tells a two-animal composition from a chimera blend; emits `scorer_validated.json`
 
 ## Plans
 (One plan file per pyramid rung, grouped under `plans/rungs/`. Detailed phase
-files are archived under `plans/shelved/phases/` and referenced from each rung plan;
-`plans/shelved/phases/PHASE_MAP.md` is the retired 8-phase orchestrator.)
+files are archived under `artifacts/plans/archived/phases/` and referenced from each rung plan;
+`artifacts/plans/archived/phases/PHASE_MAP.md` is the retired 8-phase orchestrator.)
 - ⚠️ rungs/01-overfit.md — beachhead + taxonomy breadth + negative controls (DoD 1, 6)
 - ⚠️ rungs/02-survive-noise.md — seed-pooled LoRA, held-out seeds, per group (DoD 2)
 - ⚠️ rungs/03-cross-pair.md — held-out-pair transfer probe (DoD 3)

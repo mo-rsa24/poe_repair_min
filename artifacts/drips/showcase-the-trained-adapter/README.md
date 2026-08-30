@@ -1,7 +1,9 @@
 # Showcase the trained adapter: the walk's working files
 
 Working folder for the drip-walkthrough that designed the adapter-showcase figure set under
-the diffusion-researcher role. The walk's live state is `plans/.walk/showcase-the-trained-adapter.md`.
+the diffusion-researcher role. The walk's live state is `plans/.walk/showcase-the-trained-adapter.md`, which is still open: one
+thread (whether to measure in guided-epsilon view or show in predicted-x0 view, per figure family)
+is waiting on a settle-or-expand, and the walk's vocabulary table has no durable home yet.
 
 ## decisions-taken-here.md
 
@@ -48,3 +50,15 @@ step-points. Moved here from the walk session's scratchpad, which does not survi
 coordinates and asserts against the values recorded here. One definition trap it records: the
 walk's 7.3 is the mean distance of a seed's eight ends to their centroid; the matched pairwise
 statistic is 11.2 averaged over seeds, 11.7 for seed 9.
+
+## the-parallel-walk.md
+
+The second design walk that ran against the same subject in a parallel session, retired here when
+it finished. It asked for a decision on training longer, the dog-times-dog null probe, the
+generalization demonstrations, and one figure standard all the resulting figures obey. It compiled
+with `--write` on 2026-08-29.
+
+**Where its output went.** Into the scope it built,
+[the adapter showcase scope](../../../plans/01-showcase-the-trained-lora/MASTER_PLAN.md), whose
+`decisions-taken-here.md` merges this walk's ledger with the other two sessions'. That merged
+ledger is the authoritative copy; this file is the walk's own record of how it got there.

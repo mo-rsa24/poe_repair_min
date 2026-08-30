@@ -1,5 +1,19 @@
 # LoRA-Mechanism-Study
 
+## Parked
+
+**Last done**
+
+The scope carries its master plan, notes and plan files; no run in it has been executed.
+
+**Why parked**
+
+Its question, whether the Mono-free correction works through the same channel test-time attention optimization would, sits behind the causal and transfer claims and would not change either verdict.
+
+**On return**
+
+Bring it back when the paper needs a mechanism section that goes past what scope 03's hypothesis-01 already shows about what the fix changes inside the model. Read that plan's review answers first, since they may have settled part of this question already.
+
 ## Mission
 When Mono-free LoRA correction visibly fixes a PoE composition failure, does it work through
 the same channel test-time attention optimization would, or a different one, and does that

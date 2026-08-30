@@ -1,6 +1,6 @@
 # 🗺️ The composition-type scatter
 
-**No step number: nothing waits on this.** Background, listed in the background-experiments pool of the [repo root MASTER_PLAN.md](../../../MASTER_PLAN.md), which also holds the one `## Running order` table. This plan asks whether attribute pairs behave like object pairs. Its scaffold waits at `plans/shelved/composition-type-cells`.
+**No step number: nothing waits on this.** Background, listed in the background-experiments pool of the [repo root MASTER_PLAN.md](../../../MASTER_PLAN.md), which also holds the one `## Running order` table. This plan asks whether attribute pairs behave like object pairs. Its scaffold waits at `artifacts/plans/parked/composition-type-cells`.
 
 ## What this asks, in one line
 Does the correction behave the same when the two concepts are an object and an attribute rather than two animals? Background: widens the claim's reach, blocks nothing.
@@ -35,7 +35,7 @@ The money scatter with regime coloring plus the per-regime exemplar strip at
 - [ ] λ=0 compose-rate per cached pair over its seeds (scorer on cached or
       cheaply regenerated λ=0 outputs)
 - [ ] build the attribute×object cells and their separate success
-      instrument  → decomposed: see `plans/shelved/composition-type-cells/MASTER_PLAN.md`
+      instrument  → decomposed: see `artifacts/plans/parked/composition-type-cells/MASTER_PLAN.md`
 - [ ] the scatter with regime coloring; report the ordering result against
       Goal 5's rule
 - [ ] per-regime exemplar strip at λ=0

@@ -1,5 +1,19 @@
 # Composition-Type-Cells
 
+## Parked
+
+**Last done**
+
+Nothing. The scope is an empty scaffold: a master plan and zero plan files.
+
+**Why parked**
+
+It is background work behind the animal-pair result, and its parent question has not unblocked it.
+
+**On return**
+
+Bring it back once the animal-pair claim is settled and the paper needs composition beyond animal pairs. Populate it from the master plan's objectives before any run.
+
 > Shelved: an empty scaffold for background work (zero plan files). Comes back when its parent
 > plan is promoted out of the background pool into the paper table; /populate-plans it then.
 

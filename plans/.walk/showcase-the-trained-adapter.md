@@ -50,7 +50,7 @@ by itself.
 - Run identity: the paper's adapter is phase1_r8_100k, W&B project
   prime_lab/poe-repair-animals-compose. The run the user cites (pueuo7bl) is in
   poe-repair-cross-seed, the shelved cross-seed pooling phase
-  (plans/shelved/phases/08-cross-seed-lora-pooling.md). Two different adapters; the
+  (artifacts/plans/archived/phases/08-cross-seed-lora-pooling.md). Two different adapters; the
   seed-1 cat-and-dog repair story currently belongs to the shelved one.
 
 ## Standing figure constraints (repo conventions, carried into every layer)

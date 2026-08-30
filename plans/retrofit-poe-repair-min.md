@@ -107,7 +107,7 @@ plan belongs to the `/rename` task and happens before the sweep runs.
 13 `MASTER_PLAN.md` files. Seven live scopes numbered `01` to `07` directly under `plans/`, plus four
 sub-scopes; three relocated-scope folders at the plan root (`completed/`, `shelved/`, `standing/`).
 
-**One finding stays open**: `plans/completed/compose-scorer/` is a finished *scope* inside a folder
+**That finding is now closed**: the finished scope moved to `artifacts/plans/completed/compose-scorer/`, out of the live tree. It was a finished *scope* inside a folder
 `PLAN_TREE_FORMAT.md` reserves for finished plan *files*. `sync-plan-tree` owns the fix.
 
 **No scope carries the three state folders** (`in-progress/`, `staging/`, `completed/`), so 215 plan
@@ -392,7 +392,7 @@ the author against their own figures each time.
 
 **`pairs.py` is stale.** One pair, one seed, in a project running twenty pairs across seeds 9 to 12.
 
-**`plans/completed/compose-scorer/`** is a finished scope inside a folder reserved for finished plan
+**`artifacts/plans/completed/compose-scorer/`** was a finished scope inside a folder reserved for finished plan
 files.
 
 ## References

@@ -193,3 +193,25 @@ new one rather than string-swapped, so depth changes inside the promoted scopes 
 Four references in the learning journeys (`sampler-correctors-for-composition`,
 `trajectory-manifold-by-hand`) were repointed in the same pass. Dangling-link count measured
 before and after: no reference that resolved before the move fails after it.
+
+## 2026-08-30: the lifecycle relocations, and two finished walks retired
+
+`plans/` holds only work still to do, so everything finished, parked or cold left it. The parked
+scopes each gained the `## Parked` resume block the format requires (last done, why parked, what
+to read on return), which none of them carried while they sat in `plans/shelved/`.
+
+| Old path | New path | Why |
+|---|---|---|
+| `plans/completed/compose-scorer/` | `artifacts/plans/completed/compose-scorer/` | done, and still read by scopes 03 and 04 through `scorer_validated.json`, so completed rather than archived |
+| `plans/shelved/artifact-reconciliation/` | `artifacts/plans/parked/artifact-reconciliation/` | plans 01 to 04 done, plan 05's remaining work is all disposition calls; revives if artifacts become untrustworthy again |
+| `plans/shelved/composition-type-cells/` | `artifacts/plans/parked/composition-type-cells/` | empty scaffold; revives once the animal-pair claim settles |
+| `plans/shelved/cross-model-replication/` | `artifacts/plans/parked/cross-model-replication/` | empty scaffold; revives once the claim holds on SDXL and a reviewer would ask about a second model |
+| `plans/shelved/inspector-interaction-term/` | `artifacts/plans/parked/inspector-interaction-term/` | empty scaffold; revives only if a figure needs the correction explored interactively |
+| `plans/shelved/mechanism-study/` | `artifacts/plans/parked/mechanism-study/` | real plans, nothing run; its channel question sits behind both claims and changes neither verdict |
+| `plans/shelved/phases/` | `artifacts/plans/archived/phases/` | superseded by the rung breakdown on 2026-07-21, which was itself superseded; cold |
+| `plans/shelved/rungs/` | `artifacts/plans/archived/rungs/` | superseded by the seven numbered scopes; cold |
+| `plans/.walk/consistency-model-basin-oracle.md` | `artifacts/drips/consistency-model-basin-oracle/the-walk.md` | the walk compiled and its ledger was adopted by scope 05; `.walk/` holds unfinished walks only |
+| `plans/.walk/showcasing-the-trained-lora.md` | `artifacts/drips/showcase-the-trained-adapter/the-parallel-walk.md` | compiled with `--write`; its ledger is merged into scope 01's, and it joins the sibling walk's working folder |
+
+`plans/.walk/` keeps one file, `showcase-the-trained-adapter.md`, because that walk is still open:
+its guided-epsilon-view against predicted-x0-view thread waits on a settle-or-expand.

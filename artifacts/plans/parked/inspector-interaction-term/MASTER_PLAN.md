@@ -1,5 +1,19 @@
 # Inspector-Interaction-Term
 
+## Parked
+
+**Last done**
+
+Nothing. The scope is an empty scaffold: a master plan and zero plan files.
+
+**Why parked**
+
+It proposed an interactive inspector for the correction term, and no plan or paper section currently needs one.
+
+**On return**
+
+Bring it back if a figure or a supervisor conversation needs the correction explored interactively rather than plotted. Check first whether an existing scene under `artifacts/scenes/` already answers it.
+
 > Shelved: an empty scaffold for background work (zero plan files). Comes back when its parent
 > plan is promoted out of the background pool into the paper table; /populate-plans it then.
 

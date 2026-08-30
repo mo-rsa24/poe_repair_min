@@ -4,7 +4,7 @@
 > canonical program master now lives at the repo root, framed around the five
 > pyramid rungs (Overfit → Survive-Noise → Cross-Pair → Group-Wise → Scale)
 > with status backed by [`report/decision-timeline.md`](../../report/decision-timeline.md).
-> (This file and its sibling phase plans were archived into `plans/shelved/phases/` on
+> (This file and its sibling phase plans were archived into `artifacts/plans/archived/phases/` on
 > 2026-07-21 when the rung-based plan files `plans/01-05` became canonical.)
 > This file is retained as the historical **phase map**: the original eight-phase
 > ordering and per-phase reasoning. It is no longer the source of truth for
@@ -116,11 +116,11 @@ Phase 8 (cross-seed LoRA)
 
 ## Operations
 
-- [ ] ⚠️ Reconcile, integrity-check, and canonically organise all run artifacts  → decomposed: see `plans/shelved/artifact-reconciliation/MASTER_PLAN.md`
+- [ ] ⚠️ Reconcile, integrity-check, and canonically organise all run artifacts  → decomposed: see `artifacts/plans/parked/artifact-reconciliation/MASTER_PLAN.md`
 
 ## Sub-Scopes
 
-- ⚠️ plans/shelved/artifact-reconciliation/ — "keep run artifacts catalogued, integrity-checked, canonically organised"
+- ⚠️ artifacts/plans/parked/artifact-reconciliation/ — "keep run artifacts catalogued, integrity-checked, canonically organised"
 
 ## How to read this folder
 

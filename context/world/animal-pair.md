@@ -105,7 +105,7 @@ directory today; listed under [Still open](../00-INDEX.md#still-open). 🔍
 
 **A pair from the older six-group taxonomy is not automatically part of the current pool.** ✍️
 
-`plans/shelved/phases/09-lora-taxonomy-single-seed.md` (a shelved plan) describes representative
+`artifacts/plans/archived/phases/09-lora-taxonomy-single-seed.md` (a shelved plan) describes representative
 pairs for Groups 1-5 (dolphin×ocean-wave, dog×oil-painting-style, mailbox×snowfield,
 typewriter×cactus, and a deferred, unresolved Group 5) that are not animal-vs-animal pairs and sit
 outside the current animal-only scope, per the retrofit plan's animal-pair boundary. Group 6
@@ -120,5 +120,5 @@ Navigation: ⬅️ [What people get wrong](#what-people-get-wrong) | 📋 [TOC](
 | The pool is biased toward failure by construction | Read in `report/experiments-log.md`, "The selection warning" | 2026-08-24 |
 | The 17-row fail-rate table | Read in `artifacts/results/does-the-fix-reach-unseen-pairs/fail_rate.md` | 2026-08-24 |
 | The butterfly control pair and the animal-pair boundary | Read in `plans/retrofit-poe-repair-min.md`, "Words this uses" | 2026-08-24 |
-| The six-group taxonomy and its representative pairs | Read in `plans/shelved/phases/09-lora-taxonomy-single-seed.md` | 2026-08-24 |
+| The six-group taxonomy and its representative pairs | Read in `artifacts/plans/archived/phases/09-lora-taxonomy-single-seed.md` | 2026-08-24 |
 | Pair vs seed, which is the harder test | Read in `MASTER_PLAN.md`, Glossary | 2026-08-24 |

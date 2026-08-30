@@ -2,6 +2,19 @@
 
 Where the tree was found to disagree with reality, and when.
 
+## 2026-08-30: work that had finished was still sitting in the live tree
+
+`plans/` is defined as holding only work still to do, and `plans/.walk/` as holding unfinished
+walks. Both had drifted: a completed scope and seven shelved ones sat in the live tree, and two
+walks that had compiled and handed off their ledgers were still in `.walk/`.
+
+- The relocations and the walk retirements are listed in `RENAMES.md`. Nothing was deleted.
+- The five parked scopes had no resume block. Each now opens with one, so a reader arriving in six
+  months learns what was last done and what to read before restarting, rather than guessing from
+  ticked boxes.
+- `plan_pulse.py` reports the same nine checks with the same counts before and after, so the moves
+  changed location and nothing else.
+
 ## 2026-08-29: the plan tree had a parent layer that carried no order
 
 `plans/` showed two live folders, and one of them hid six scopes a level down. The root
