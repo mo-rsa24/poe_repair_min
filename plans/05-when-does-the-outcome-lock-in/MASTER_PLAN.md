@@ -10,11 +10,11 @@ readout of cached states, adopted only if a calibration pass against the base mo
 set in code.
 
 ## Why this plan exists
-The correction's effective window is steps 0 to 10 (EXP-04) and trajectories visibly diverge at
+The correction's effective window is steps 0 to 10 (EXP-04) and trajectories visibly [diverge](/home-mscluster/mmolefe/goal-setting/learning/diffusion-speciation-dynamics/plans/03-manifold-and-the-later-transition/MASTER_PLAN.md) at
 steps 18 to 36, so the correction stops mattering 8 to 26 steps before anything shows. No
 current instrument reads commitment per step: Tweedie estimates blur at high noise, and
 divergence needs a pair of paths and reports the separation late. If commitment (the field's
-speciation step) lands near step 10, the gap is explained as decide-then-descend; if it lands
+[speciation step](/home-mscluster/mmolefe/goal-setting/learning/speciation-before-divergence/MASTER_PLAN.md)) lands near step 10, the gap is explained as [decide-then-descend](/home-mscluster/mmolefe/goal-setting/learning/speciation-before-divergence/plans/06-decide-then-descend-overlay.md); if it lands
 with divergence, that story dies. The reasoning, the five verdicts on the proposal, and every
 choice that could have gone the other way live in [the decision ledger](decisions-taken-here.md);
 this file does not repeat them.

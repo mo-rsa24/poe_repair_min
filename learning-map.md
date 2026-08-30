@@ -6,6 +6,29 @@ order says is coming. Maintained by `learning-pulse`; rendered by `/render-diagr
 
 7 prompts · 0 rendered · 7 waiting
 
+**The prompts below are stale and must be regenerated before rendering.** They draw four journeys
+and a `plans/` folder holding one tile with two stage chips. Six journeys are in scope and `plans/`
+now holds seven numbered scopes. Rendering them as they stand would produce accurate pictures of a
+tree that no longer exists.
+
+**Coverage, read from disk on 2026-08-30.** Every in-scope journey is now reachable from at least
+one working document, which was not true before this pass: three of them had none.
+
+| Journey | Reached from | Where the link sits |
+|---|---|---|
+| sampler-correctors-for-composition | 5 documents | scope 06's master plan and four of its plans |
+| spectral-structure-of-the-correction | 4 documents | a scope 03 review file, the runbook, the report, the draft map |
+| speciation-before-divergence | 2 documents | scope 05's master plan (the speciation step, decide-then-descend) and its decision ledger (the caustic set, the endpoint map) |
+| poe-composition-diffusion | 1 document | `context/world/poe-composition.md`, on the words that describe combining two single-concept predictions |
+| diffusion-speciation-dynamics | 1 document | scope 05's master plan, on where trajectories visibly diverge |
+| trajectory-manifold-by-hand | 1 document | scope 01's figure-assembly plan, on the shared plane |
+| poe-derivation-foundations | 1 document | out of ledger scope (its Project cell says concept journey), but the repo reaches it anyway |
+
+19 links in total, and every one resolves to a file on disk.
+
+`t2i-compositional-failure/` and `t2i-diffusion-scene-structure/` are excluded: the ledger records
+them as scouting piles holding only a `paper-scout/` output folder, not journeys.
+
 ## Table of contents
 
 - [Art direction](#art-direction)

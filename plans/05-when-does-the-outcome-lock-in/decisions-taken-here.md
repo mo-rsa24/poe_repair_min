@@ -11,8 +11,8 @@ rounds and vocabulary included.
 **(a) Is the endpoint from an off-manifold PoE state well-defined enough for "basin oracle" to
 mean something?** Yes. The learned field is defined on the whole latent space, so a
 deterministic flow assigns every state exactly one endpoint, and endpoints cluster into modes.
-Near the caustic set the label is unstable, and that instability is itself the commitment
-signal. The map is the base guided flow's endpoint map, so the read is a counterfactual finish:
+Near the [caustic set](/home-mscluster/mmolefe/goal-setting/learning/speciation-before-divergence/plans/08-caustic-as-fold.md) the label is unstable, and that instability is itself the commitment
+signal. The map is the base guided flow's [endpoint map](/home-mscluster/mmolefe/goal-setting/learning/speciation-before-divergence/plans/09-endpoint-map-and-consistency-condition.md), so the read is a counterfactual finish:
 the image the plain guided model would land on if composing stopped at this step. Trust off
 distribution is measurable against the teacher, never assumable.
 

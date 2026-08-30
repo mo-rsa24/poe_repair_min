@@ -2,6 +2,25 @@
 
 Where the tree was found to disagree with reality, and when.
 
+## 2026-08-30: three journeys built for this repo were unreachable from it
+
+The curriculum was not lost, it was unfindable from the place the work happens, which is the same
+thing. `speciation-before-divergence` holds 12 plans and exists to answer the gap between the
+correction's window and measured divergence, and scope 05, which asks exactly that question, did
+not point at it. `trajectory-manifold-by-hand` holds 15 plans and exists to defend the manifold
+figure's caption, and scope 01, which owns that figure, did not point at it.
+`poe-composition-diffusion`, the parent journey with 57 leaves, was reached from nothing. All five
+links that did exist pointed at just two journeys.
+
+- Six links added, on words already in the sentences, so no prose was rewritten. Every in-scope
+  journey is now reachable from at least one working document. 19 links in total, all resolving.
+- The `learning-map.md` prompts are stale in a way rendering would hide: they draw four journeys
+  and a single `plans/` tile. They are marked as needing regeneration before `/render-diagrams`
+  touches them.
+- The coarse route is still missing: this repo's `CLAUDE.md` journeys section names one journey of
+  the six. That section is owned by `JOURNEY_FORMAT.md`, not by the weave, so it is reported here
+  rather than drafted.
+
 ## 2026-08-30: a plan scope was carrying 7 GB of build output
 
 `find plans -name "*.png"` returned 1388 images, which is what surfaced it. Scope 03 held two Vite
