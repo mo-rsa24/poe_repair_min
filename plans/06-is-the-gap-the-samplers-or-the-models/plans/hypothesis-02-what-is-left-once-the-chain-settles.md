@@ -117,9 +117,9 @@ strengthens, and the sampler comparison becomes a two-sentence related-work note
 comparison stops being optional and becomes a baseline the paper must beat.
 
 **Rationale.** The project has a causal result and a timing result. Injecting `r_t` raises the
-[compose rate](../../../context/world/compose-rate.md) with dose while a norm-matched random control
-stays at chance level. Injecting it only into steps 0 to 10 composes 0.656 of 32 pair-and-seed runs,
-while steps 20 to 30 onward compose 0.000. Both are in
+[compose rate](../../../context/world/compose-rate.md) as more of it is added, while a
+norm-matched random control stays at what you would get by luck. Injecting it only into steps 0 to
+10 composes 0.656 of 32 pair-and-seed runs, while steps 20 to 30 onward compose 0.000. Both are in
 [the timing verdict](../../03-does-the-correction-cause-composition/review/hypothesis-03-when-in-the-run-it-matters.md).
 The threat is that the same picture is what a sampler artifact looks like: the sampler's share is
 worst at high noise, and high noise is the early steps, which is exactly the window that decides
@@ -166,6 +166,9 @@ reads identically when the step size is so small the chain never left where it s
 carries the median relative displacement `‖x_t^(k) - x_t^(0)‖/‖x_t^(0)‖` beside it. A flat curve
 whose displacement sits below `MIN_CHAIN_DISPLACEMENT` means the measurement failed, and it is not
 a null.
+
+> A null here means the correction's size over the last five steps came out the same at 200
+> corrector steps as at none.
 
 **The trend is the result, and only once it stops falling.**
 

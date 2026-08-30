@@ -131,7 +131,7 @@ Navigation: ⬅️ [What the write-up owes](#what-the-write-up-owes) | 📋 [TOC
 
 | What is unresolved | What would settle it | Who or what is blocked by it |
 |---|---|---|
-| whether Feynman-Kac correctors are built or cited | a full read of arXiv 2503.02819, waiting on step 26 and on the dose grids at step 29 | nothing. The default is cited |
+| whether Feynman-Kac correctors are built or cited | a full read of arXiv 2503.02819, waiting on step 26 and on the amount grids at step 29 | nothing. The default is cited |
 
 ## Next step
 

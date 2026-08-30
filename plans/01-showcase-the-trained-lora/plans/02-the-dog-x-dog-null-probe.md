@@ -1,4 +1,4 @@
-# 🧪 The dog × dog null test
+# 🧪 The dog × dog same-prompt check
 
 **This plan asks one question: when both experts are given the same animal, does the LoRA leave
 the picture alone, or does it add a second dog anyway?**
@@ -18,8 +18,8 @@ the picture alone, or does it add a second dog anyway?**
 | Step | Plan | What it does |
 |------|------|-------------|
 | 31 (previous) | [01-read-the-plateau-curves](01-read-the-plateau-curves.md) | The free curve-read framing A and B |
-| **32 (current)** | **02: the-dog-x-dog-null-probe** | The null-input control on the trained LoRA |
-| 33 (next) | [03-the-lora-dose-sweep](03-the-lora-dose-sweep.md) | The causal dose curve; this test is its zero-interaction run |
+| **32 (current)** | **02: the-dog-x-dog-null-probe** | The same-prompt check on the trained LoRA |
+| 33 (next) | [03-the-lora-dose-sweep](03-the-lora-dose-sweep.md) | Compose rate against the amount of correction; this test is its zero-interaction run |
 
 ---
 
@@ -96,7 +96,7 @@ the picture alone, or does it add a second dog anyway?**
 
 ⬅️ [Previous](#environment-facts-this-plan-depends-on) | 📋 [TOC](#table-of-contents) | [Next](#why-this-plan-exists) ➡️
 
-**A judged null-input control: the LoRA on an agreeing pair either leaves the image alone (rule) or invents plurality (prior), decided against the pre-registered outcomes.** It matters now because "the LoRA learned a rule, not a stored vector" is the showcase's central sentence and this is the cheapest way to try to break it.
+**A judged same-prompt check: the LoRA on an agreeing pair either leaves the image alone (rule) or invents plurality (prior), decided against the pre-registered outcomes.** It matters now because "the LoRA learned a rule, not a stored vector" is the showcase's central sentence and this is the cheapest way to try to break it.
 
 ---
 
@@ -111,7 +111,7 @@ the picture alone, or does it add a second dog anyway?**
 
 **The solution.** Feed it a pair whose true correction is near zero and watch what it adds.
 
-**Key insight.** This doubles as the zero-interaction control in the dose series next door; the two share one runner (ledger).
+**Key insight.** This doubles as the zero-interaction control in the run across correction amounts next door; the two share one runner (ledger).
 
 ---
 
@@ -256,7 +256,7 @@ Serves master-plan objective 2 and goal 2. Checkable outcomes:
 
 ⬅️ [Previous](#recommended-skill) | 📋 [TOC](#table-of-contents) | [Next](#error-matrix) ➡️
 
-[03-the-lora-dose-sweep](03-the-lora-dose-sweep.md): the causal dose curve on r̂, with this test as its zero-interaction run.
+[03-the-lora-dose-sweep](03-the-lora-dose-sweep.md): compose rate against the amount of correction on r̂, with this test as its zero-interaction run.
 
 ---
 

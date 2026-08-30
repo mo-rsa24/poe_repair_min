@@ -36,7 +36,7 @@ flowchart LR
     Z[00 build the measuring tools] --> A[01 pre-register]
     Z --> B
     Z --> C
-    A --> C[03 dose test]
+    A --> C[03 more correction, more composition]
     B[02 re-test before print] --> I[09 checks before print]
     C --> D[04 window pair]
     C --> F[06 corroborations]

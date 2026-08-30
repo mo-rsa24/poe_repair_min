@@ -1,4 +1,4 @@
-# 📊 Three rules on one dose axis
+# 📊 Three rules on one amount axis
 
 What happens to four composition rules when they are all driven along the same dial, from the rule
 running alone to the joint prediction exactly?
@@ -14,7 +14,7 @@ running alone to the joint prediction exactly?
 ▶ `/design-figure` ✅ two grids on a shared axis, with rows that deliver different absolute amounts
    and pictures that cannot reach `λ=1`, is a layout decision that has to be made before the render,
    not fixed in a caption after it.
-   alt: `/analyze-figure` on the existing dose grid `strength-grid-with-three-controls-and-compose-curve.png`,
+   alt: `/analyze-figure` on the existing amount grid `strength-grid-with-three-controls-and-compose-curve.png`,
    so this one inherits a layout the paper already reads.
 
 ## Position in the plan tree
@@ -26,7 +26,7 @@ running alone to the joint prediction exactly?
 |------|------|-------------|
 | 25 | [instrument-01: the-corrector-and-the-step-size-it-runs-at](instrument-01-the-corrector-and-the-step-size-it-runs-at.md) ⚠️ | supplies the composer behind the two corrector rows |
 | 28 | [baseline-01: superdiff-at-this-repos-fifty-steps](baseline-01-superdiff-at-this-repos-fifty-steps.md) ⚠️ | supplies the per-step prediction behind the SuperDiff row |
-| **29 (current)** | **baseline-02: three-rules-on-one-dose-axis** ⚠️ | **puts product-of-experts, SuperDiff and the corrector on one generalised dose axis, in two grids** |
+| **29 (current)** | **baseline-02: three-rules-on-one-amount-axis** ⚠️ | **puts product-of-experts, SuperDiff and the corrector on one generalised amount axis, in two grids** |
 | 30 | [idea-01: feynman-kac-correctors-gated](idea-01-feynman-kac-correctors-gated.md) ⚠️ | runs only if this plan and the answer at step 26 give it a reason to |
 
 Design only. Verdicts and run state live in
@@ -67,7 +67,7 @@ against each other instead of as four unrelated pictures.
 
 ⬅️ [Previous](#what-this-asks-in-one-line) | 📋 [TOC](#table-of-contents) | [Next](#quick-context-where-you-are) ➡️
 
-**The generalised dose axis.** For any composition rule `M` with a per-step prediction `eps_M`,
+**The generalised amount axis.** For any composition rule `M` with a per-step prediction `eps_M`,
 define `r_t^M = eps_J - eps_M` and inject `eps_M + λ·r_t^M`. At `λ=0` the rule runs alone. At `λ=1`
 the prediction is `eps_J` exactly. Every rule then travels the same axis, so a `λ` column is a
 matched comparison across rules.
@@ -118,11 +118,14 @@ Under a split at [step 26](hypothesis-02-what-is-left-once-the-chain-settles.md)
 illustrate a diagnosis. Under a null they are a baselines table. Same renders, different sentences,
 and the difference is settled before the captions are written rather than after.
 
-**These are dose figures and they do not go in the timing folder.**
+> A null at step 26 means the correction's size at the end of the run came out the same whether the
+> chain ran or not.
+
+**These figures are about how much is added, so they do not go in the timing folder.**
 
 They file under `paper/iclr/figures/how-much-is-added/across-composition-rules/`. The folder
-`when-the-correction-arrives/` asks a question about timing, and a dose grid filed there would be
-answering the wrong question by its own path.
+`when-the-correction-arrives/` asks a question about timing, and one of these grids filed there
+would be answering the wrong question by its own path.
 
 **Two traps are known in advance.** See
 [the section below](#the-two-traps-this-grid-is-known-to-hit).
@@ -135,7 +138,7 @@ answering the wrong question by its own path.
 
 ⬅️ [Previous](#considerations) | 📋 [TOC](#table-of-contents) | [Next](#why-this-plan-exists) ➡️
 
-**Four composition rules travel one dose axis, and the `λ=1` column separates rules that combine
+**Four composition rules travel one amount axis, and the `λ=1` column separates rules that combine
 scores from rules that do something else.**
 
 **Independent variables.** The composition rule (four rows), and `λ` (five values in grid two). In
@@ -162,7 +165,7 @@ not step 26 came back with a split.
 pictures nobody can read against each other. The differences that show up are differences in
 everything at once.
 
-**The approach.** Generalise the dose axis this project already uses. `r_t` was always
+**The approach.** Generalise the amount axis this project already uses. `r_t` was always
 `eps_J - eps_PoE`; the same definition against any rule's own prediction gives every rule the same
 journey from itself to the joint prediction.
 
@@ -177,7 +180,7 @@ journey from itself to the joint prediction.
 ⬅️ [Previous](#why-this-plan-exists) | 📋 [TOC](#table-of-contents) | [Next](#the-two-traps-this-grid-is-known-to-hit) ➡️
 
 ```
-  grid two: the dose rises left to right, at seed 9
+  grid two: the amount rises left to right, at seed 9
 
   λ =                0      0.25    0.5     0.75    1
   plain PoE        [ ]     [ ]     [ ]     [ ]     [=joint]     <- reaches it
@@ -237,7 +240,7 @@ Both figures land in `paper/iclr/figures/how-much-is-added/across-composition-ru
 **Purpose**
 
 Serves objectives 5 and 7 of [the scope's direction](../MASTER_PLAN.md): compare three composition
-rules along one dose axis. The delivered absolute amount per row is made visible or matched, and
+rules along one amount axis. The delivered absolute amount per row is made visible or matched, and
 the pictures no rule can reach at `λ=1` are labelled rather than left looking like failures.
 
 **Goals**
@@ -337,10 +340,11 @@ because it changes what every picture is.
   - Each carries a `.json` sidecar recording rows, seeds, `λ` values, the `k` and `c` of the
     corrector rows, the delivered absolute amount per row, and the border rule.
   - Add a `README.md` entry per figure saying which rule produced which row.
-  - **Done when:** both PNGs, both sidecars and the README entries exist. These are dose figures
-    and the timing folder's name is a question about timing, which is why they do not go there.
+  - **Done when:** both PNGs, both sidecars and the README entries exist. These figures are about
+    how much is added, and the timing folder's name is a question about timing, which is why they
+    do not go there.
 
-▶ **Next: [instruction 3.1](#3--judge-the-two-dose-grids-by-eye)**, the read the detector cannot
+▶ **Next: [instruction 3.1](#3--judge-the-two-grids-by-eye)**, the read the detector cannot
 do on this pair.
 
 ### Close out. 🔄 Record what this plan taught
@@ -363,7 +367,7 @@ do on this pair.
 **For you to follow manually.** Do these yourself, interleaved with the Tasks rather than after
 them.
 
-### 3. 🖱️ Judge the two dose grids by eye
+### 3. 🖱️ Judge the two grids by eye
 
 ◀ **Needs: [tasks 2.1 and 2.2](#2--render-the-two-grids)**, both grids.
 
@@ -421,7 +425,7 @@ ls -l paper/iclr/figures/how-much-is-added/across-composition-rules/
 - A row is not byte-identical to its rule alone at `λ=0`. The injection is leaking and the whole
   axis is meaningless.
 - The figures landed in `when-the-correction-arrives/`. Move them: that folder's name is a question
-  about timing and these answer a question about dose.
+  about timing and these answer a question about how much is added.
 
 **Partial pass guidance**
 
@@ -516,7 +520,7 @@ Auto-updated after runs via `/ingest-error-pattern` and `/sync-plan-tree`.
 
 #### 🔴 rows compared at the same `λ` received different absolute amounts
 
-**When it happens:** any multi-rule dose grid, because `λ` is a fraction of each row's own
+**When it happens:** any grid comparing rules across correction amounts, because `λ` is a fraction of each row's own
 correction and `‖r_t^M‖` differs per row.
 **What you see:** a row that composes earlier than another, read as the rule being better.
 **Why:** the axis is matched in fraction and unmatched in absolute size.
@@ -531,10 +535,10 @@ run the matched condition, `--mode matched`.
 **How to fix:** put the label on the picture itself, per task 2.3, and say in the caption that it is
 expected and what it classifies.
 
-#### 🟡 dose figures filed in the timing folder
+#### 🟡 figures about how much is added, filed in the timing folder
 
 **When it happens:** filing by "which scope made it" rather than by what the figure asks.
-**What you see:** a dose grid under `when-the-correction-arrives/`.
+**What you see:** one of these grids under `when-the-correction-arrives/`.
 **Why:** both folders hold this scope's output, so the wrong one is one keystroke away.
 **How to fix:** `across-composition-rules/` under `how-much-is-added/`. The timing folder's name is
 a question about timing.

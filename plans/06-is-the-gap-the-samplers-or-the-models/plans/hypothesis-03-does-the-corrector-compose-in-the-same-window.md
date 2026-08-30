@@ -28,7 +28,7 @@ works in.
 | 6 | [hypothesis-03: when-in-the-run-it-matters](../../03-does-the-correction-cause-composition/plans/hypothesis-03-when-in-the-run-it-matters.md) ◑ | generated the injected-correction renders at all nine window positions, which this plan is matched against render for render |
 | 26 | [hypothesis-02: what-is-left-once-the-chain-settles](hypothesis-02-what-is-left-once-the-chain-settles.md) ⚠️ | the measurement this plan waits on, though not strictly |
 | **27 (current)** | **hypothesis-03: does-the-corrector-compose-in-the-same-window** ⚠️ | **generates the nine window positions again with the corrector in place of the injected correction, and asks whether the [compose rate](context/world/compose-rate.md) peaks at the same moment** |
-| 29 | [baseline-02: three-rules-on-one-dose-axis](baseline-02-three-rules-on-one-dose-axis.md) ⚠️ | the other half of the comparison, on dose rather than timing |
+| 29 | [baseline-02: three-rules-on-one-amount-axis](baseline-02-three-rules-on-one-dose-axis.md) ⚠️ | the other half of the comparison, on how much is added rather than timing |
 
 Design only. Verdicts and run state live in
 [the paired review file](../review/hypothesis-03-does-the-corrector-compose-in-the-same-window.md).
@@ -446,7 +446,7 @@ which disagrees with the eye on this pair often enough that the eye count is quo
 ⬅️ [Previous](#code-references) | 📋 [TOC](#table-of-contents) | [Next](#error-matrix) ➡️
 
 [Step 28, SuperDiff at this repo's fifty steps](baseline-01-superdiff-at-this-repos-fifty-steps.md).
-It starts the comparison half, which asks about dose rather than timing.
+It starts the comparison half, which asks how much is added rather than when.
 
 ## Error Matrix
 
@@ -465,7 +465,7 @@ Auto-updated after runs via `/ingest-error-pattern` and `/sync-plan-tree`.
 
 #### 🟡 the detector and the eye disagree on cat and dog
 
-**When it happens:** scoring this pair, at any dose or window.
+**When it happens:** scoring this pair, at any amount of correction or any window.
 **What you see:** green borders on renders that do not look composed, or no border on renders that
 do.
 **Why:** the instance-count scorer is validated but not perfect on this pair, and

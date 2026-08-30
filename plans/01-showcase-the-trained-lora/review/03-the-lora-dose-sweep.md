@@ -1,7 +1,7 @@
-# 🧪 Review: does the LoRA's own output cause composition, dose for dose?
+# 🧪 Review: does more of the LoRA's own output give more composition?
 
 Nothing has run yet. This file judges [the design](../plans/03-the-lora-dose-sweep.md). Run
-kind: hypothesis (a dose-response with matched controls). Its figure is what the showcase's
+kind: hypothesis (more correction, more composition, with matched controls). Its figure is what the showcase's
 causal claim rests on.
 
 ## Recommended prompt (when the run lands)
@@ -57,7 +57,8 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
   spread implied by the run counts per condition (binomial), and no control's curve rises
   monotonically. The AUCs and counts per condition go here.
 
-> Chance level is what compose rate reads when nothing real is being injected.
+> Chance level in that question means what you would get by luck: what compose rate reads when
+> nothing real is being injected.
 
 ## Written before the run, answered after
 

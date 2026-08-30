@@ -28,7 +28,7 @@ of them, then delete it once every task group has landed in a plan file.
 |------|------|-------------|
 | 6 | [hypothesis-03: when-in-the-run-it-matters](../../03-does-the-correction-cause-composition/plans/hypothesis-03-when-in-the-run-it-matters.md) ◑ | Found the cliff at steps 0 to 10, which is also where a sampler artifact would live |
 | 15 | [two literature checks before print](../../03-does-the-correction-cause-composition/plans/gate-01-two-literature-checks-before-print.md) ⚠️ | Already cites Soiffer et al. as the reason to train a fix rather than trust a sampler. This scope is the measurement behind that sentence |
-| **24 to 30** | **this scope's seven plans** ⚠️ | **Size the sampler's share against the model's share, and compare three composition rules on one dose axis** |
+| **24 to 30** | **this scope's seven plans** ⚠️ | **Size the sampler's share against the model's share, and compare three composition rules on one axis of correction amount** |
 | 21 | [writing-06: mechanism-and-limitations](../../07-writing-the-paper/plans/writing-06-mechanism-and-limitations.md) ⚠️ | Cannot be written honestly until step 26 returns a size |
 
 Design only. The questions it is judged against are in
@@ -104,7 +104,7 @@ levels before the reverse step is taken. `k=0` is plain product-of-experts.
 **The settled point, `x_t^(k)`.** The latent after those `k` Langevin steps at noise level `t`.
 Both networks are evaluated there, so `r_t^(k) = eps_J(x_t^(k)) - eps_PoE(x_t^(k))`.
 
-**The generalised dose axis.** For any composition rule `M` with a per-step prediction `eps_M`,
+**The generalised amount axis.** For any composition rule `M` with a per-step prediction `eps_M`,
 define `r_t^M = eps_J - eps_M` and inject `eps_M + λ·r_t^M`. At `λ=0` the rule runs alone, at
 `λ=1` the prediction is `eps_J` exactly. Every rule then travels the same axis, so a `λ` column is
 a matched comparison across rules rather than four unrelated pictures.
@@ -116,12 +116,12 @@ a matched comparison across rules rather than four unrelated pictures.
 ⬅️ [Previous](#words-this-plan-uses) | 📋 [TOC](#table-of-contents) | [Next](#considerations) ➡️
 
 The scope has a causal result and a timing result. Injecting `r_t` raises the
-[compose rate](context/world/compose-rate.md) with dose while a norm-matched random control stays
-at chance level, and injecting it only into steps 0 to 10 composes 0.656 of 32 runs while steps 20
+[compose rate](context/world/compose-rate.md) as more correction is added, while a norm-matched random
+control stays at what you would get by luck, and injecting it only into steps 0 to 10 composes 0.656 of 32 runs while steps 20
 to 30 onward compose 0.000. Both are in
 [the timing verdict](../../03-does-the-correction-cause-composition/review/hypothesis-03-when-in-the-run-it-matters.md), which also records
 that the correction is about 2.7 times larger late than early, so it works where it is smallest,
-and that tripling the late dose changes almost nothing.
+and that tripling the amount added late changes almost nothing.
 
 The threat is that the same picture is what a sampler artifact looks like. Error A is worst at
 high noise, and high noise is the early steps, which is exactly the window that decides the
@@ -346,7 +346,7 @@ step-size search, and a curve that sizes error A against error B. Then, only if 
 rerun of the sliding-window grid with the corrector in place of the injected `r_t`.
 
 **The comparison half, tasks 6 to 8.** SuperDiff wired at this repo's 50 steps, and two grids
-putting product-of-experts, SuperDiff and the corrector on one generalised dose axis. Then a full
+putting product-of-experts, SuperDiff and the corrector on one generalised amount axis. Then a full
 read of the Feynman-Kac paper, which happens only if the first two justify it.
 
 The two halves ask different questions. The first sizes an error, the second compares methods. They
@@ -380,7 +380,7 @@ baseline row for two published composition rules on the same axis as its own.
 A number with a stated limit: the share of `r_t` still present at the low-noise end of the run once
 the Markov chain has equilibrated. Measured on one failing pair and one composing pair, with the
 whole `k` grid shown so the trend is visible rather than asserted. Plus, if the check at task 4
-passes, two grids comparing three composition rules along one dose axis.
+passes, two grids comparing three composition rules along one amount axis.
 
 ---
 
@@ -592,11 +592,11 @@ diagnosis, and the framing of every caption changes with it.
       method, the comparison is between a working rule and a crippled one, and that has to be said
       rather than discovered in the grid.
 - [ ] **6.3** Expose `eps_M` per step so `r_t^SD = eps_J - eps_M` can be formed, which is what the
-      generalised dose axis needs.
+      generalised amount axis needs.
 
 ▶ **Next: task 7.1**.
 
-### 7. 🎛️ Three rules on one dose axis
+### 7. 🎛️ Three rules on one amount axis
 
 Run group: **baseline**.
 
@@ -619,8 +619,8 @@ Run group: **baseline**.
       to converge at `λ=1` is doing something beyond combining scores, which makes the `λ=1` column
       a free classifier of what each rule is.
 - [ ] **7.5** Figures to `paper/iclr/figures/how-much-is-added/across-composition-rules/`, not to
-      the timing folder. These are dose figures and the timing folder's name is a question about
-      timing. Add a `README.md` entry per figure saying which rule produced it.
+      the timing folder. These figures answer how much correction is added, and the timing folder's
+      name is a question about timing. Add a `README.md` entry per figure saying which rule produced it.
 
 ▶ **Next: task 8.1**, which runs only under some outcomes of task 4.
 
@@ -690,7 +690,7 @@ them.
 
 ▶ **Next: instruction 11.1** if task 4 passed, otherwise stop and write the null.
 
-### 11. 🖱️ Judge the two dose grids by eye
+### 11. 🖱️ Judge the two amount grids by eye
 
 ◀ **Needs: tasks 7.2 and 7.3**.
 

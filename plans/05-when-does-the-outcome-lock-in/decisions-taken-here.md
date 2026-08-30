@@ -102,7 +102,8 @@ is paired with an outcome-side curve, because the project's central claim is tha
 difference flips the outcome.
 
 **The commitment tests are reads, never causal claims.** The causal side of the correction is
-owned by the existing dose-response experiments, and the new figures do not re-claim it.
+owned by the existing experiments showing that more correction gives more composition, and the
+new figures do not re-claim it.
 
 ## Build order, thin end-to-end slices
 

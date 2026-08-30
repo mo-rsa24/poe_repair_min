@@ -174,7 +174,7 @@ sampling and no new code.
   |            \_______
   |                    \________________
   |  - - - - - - - - - - - - - - - - - -  <- if it lands here, above zero,
-  |                                          that height is a floor under
+  |                                          that height is a lower limit on
   +--------------------------------------    the MODEL's share
      step 0                        step 49
      high noise                    low noise

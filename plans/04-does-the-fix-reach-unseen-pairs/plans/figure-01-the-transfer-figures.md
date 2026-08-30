@@ -215,7 +215,7 @@ step 9   three live curves            ──────────────
 step 10  pooled adapter run           ──┬───────────►  F8a one adapter          (BUILT)
          compose_rate.json             │
                                        └──┐
-step  8  dose series                      ├────────►  F8b adapter vs oracle    (BUILT)
+step  8  run across correction amounts    ├────────►  F8b adapter vs oracle    (BUILT)
          dose_curves.json             ────┘
 
 step 11  the fifteen runs             ──┬───────────►  A3  transfer            (owed)
@@ -354,11 +354,11 @@ task 5.2 renders at most four images.
   pair-and-seed cases as the F9 rows.
   - The four cases, from F9's sidecar: `a_cat__x__a_dog`, `an_eagle__x__a_hawk`,
     `a_frog__x__a_toad`, `a_goose__x__a_swan`, all seed 9.
-  - Joint-prompt renders exist for all four in the dose series, at
+  - Joint-prompt renders exist for all four in the run across correction amounts, at
     `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/pairs/<pair>/seed_9/teacher_residual_const_lam100/`,
     but were sampled at 20 inference steps where the F9 adapter samples used ddim at 50. A
     crispness comparison at mismatched step counts is biased, so re-render the four joint-prompt
-    images at the F9 sampler settings; reusing the dose renders is acceptable only if the caption
+    images at the F9 sampler settings; reusing those renders is acceptable only if the caption
     states the step-count mismatch.
   - Caption states the comparison is qualitative, because nothing here measures crispness.
   - What it decides: whether F9's softness is the adapter's fit or the correction's own ceiling.
@@ -477,7 +477,7 @@ Numbers for both live in their sidecar `.json` and in the register row, never in
 | A5 pool contrast | — | Paired bars, animals against size-matched mixed, per held-out pair | Step 12 contrast | ⏳ blocked on step 12 |
 | F8 (the row the register reserves) | — | Leaderboard plus degradation curve, assembled from A3 and A5 | A3 and A5 | ⏳ reserved |
 | F8a full-run extension | — | Compose rate over training with the step 70000 to 100000 tail scored, closing the step-60000 cap | Existing per-epoch samples, re-scored by task 5.1 | ⏳ not started |
-| Ceiling panel | — | Adapter-corrected beside the same image corrected by the joint-prompt correction at λ=1, on the four F9 held-out pair-and-seed cases; qualitative, since nothing here measures crispness | The four cases in F9's sidecar plus the λ=1 renders from the dose series, re-rendered at F9 sampler settings | ⏳ not started |
+| Ceiling panel | — | Adapter-corrected beside the same image corrected by the joint-prompt correction at λ=1, on the four F9 held-out pair-and-seed cases; qualitative, since nothing here measures crispness | The four cases in F9's sidecar plus the λ=1 renders from the run across correction amounts, re-rendered at F9 sampler settings | ⏳ not started |
 
 #### Organization workflow
 
@@ -578,6 +578,9 @@ failures of a training run, and a plotting script over an existing JSON file can
   figure here plots compose-rate straight out of a scored run's JSON. A figure drawn over a
   degenerate scoring pass looks like a null result. Check the sidecar's counts before believing a
   flat curve.
+
+  > A null result here means the corrected runs composed no more often than the uncorrected ones.
+
 - **poe-score-002**, compose-rate stuck at 0.0 even though the fix is active. Same reason: it is
   the failure that most looks like a real finding when plotted.
 - **poe-lora-001**, fraction-of-distance-reached levels off at 20% instead of the expected 40%.

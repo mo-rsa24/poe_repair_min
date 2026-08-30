@@ -36,7 +36,7 @@ Two passes per figure. `/design-figure` decides the layout on paper, then
 | F4a | the correction only works if it arrives in the first few steps | built |
 | F4b | where the correction is large is not where it matters | built |
 | F4c | the timing cliff shows up in a measuring tool that never counts animals | built |
-| F4d, F4e | timing decides rather than dose, and the cliff survives dose-matching | built |
+| F4d, F4e | timing decides rather than amount, and the cliff survives matching for amount | built |
 | F5 | the same λ dial moves three independent measurements together | built |
 | F5b | the meaning is steered from the first steps, the fork is its midpoint | built |
 | F6 | the correction is low-rank, so a small adapter can learn it | the argument does not stand, and this figure needs a decision |
@@ -75,7 +75,7 @@ points at it.
       pair's correction cached from the run at seed+4), own r_t with the step
       order deranged. The norm-matched random vector does not get a row of its
       own, and its number (AUC 0.023, flat) is owed to the appendix. Every
-      control sits at chance level: AUC 0.387 for the pair's own real
+      control sits at what you would get by luck: AUC 0.387 for the pair's own real
       correction against 0.039, 0.047 and 0.027, with that real correction
       taking the [compose rate](../../../context/world/compose-rate.md) from 3%
       to 94%.
@@ -92,9 +92,10 @@ points at it.
       runs), scored by `scripts/plot_dose_curves.py`, which reads five rows and
       keeps the causal verdict on random + wrong_pair only. Both readings were
       written into the script's header before it ran, and both came out. The
-      other seed's correction sits at chance level, so the correction is
+      other seed's correction sits at what you would get by luck, so the correction is
       state-specific and has to be computed for the run it is used on rather
-      than stored. Shuffling the step order also drops it to chance level, so
+      than stored. Shuffling the step order also drops it to what luck would give,
+      so
       the content has to arrive on time, which corroborates F4 from the
       injection side.
 - [x] `/design-figure` F3: designed, then simplified in a reader pass to one
@@ -163,7 +164,7 @@ points at it.
       on the page rather than in prose. D1b is cat × dog seed 9, whose
       consecutive-step agreement swings from −0.85 to +0.9 (median −0.317,
       −0.581 over steps 16 to 32) while its own correction still composes at
-      full dose in F2: temporal smoothness is not a precondition for the
+      the full amount in F2: temporal smoothness is not a precondition for the
       injected correction to work. D1c runs the same computation on random
       norm-matched vectors and lands flat on zero (median +0.0006), which is
       what would falsify D1 wholesale; 14 of the 16 measured runs sit at +0.8
@@ -213,12 +214,15 @@ points at it.
       correction and a control band of 0.023 to 0.047. It is the highest
       control, and the margin is not real, because its peak is 3 runs of 32
       against the wrong-seed row's 2 of 32. The readings were written down
-      before the run, and the result came out at chance level. A shared
+      before the run, and the result came out at what you would get by luck. A shared
       component exists and does not compose on its own, so composition needs
       the state-specific part. This closes the cheapest
       alternative to the method (ship one averaged correction, skip the
       network) by measurement rather than by argument, and it is owed a
       sentence in the results section beside F2's control numbers.
+
+      > Null here means the averaged correction moved the compose rate no more
+      > than a fake one did: 6% at its peak against the controls' 3% to 6%.
 - [ ] Does temporal smoothness predict where the trained adapter works? The
       x-axis is already frozen on disk: per-pair consecutive-step agreement in
       `outputs/interaction_term/direction_wall/direction_wall.json`, measured
@@ -269,8 +273,8 @@ points at it.
       and does not depend on λ, so drawing it against λ would imply a
       relationship never measured. The caption carries three caps: the wrong
       pair travels 44.0% of the right one's distance against a 50% threshold; λ=1
-      reproduces the joint prediction by construction so every dose comparison
-      is read at λ=0.75; and panel (c) is the push at the states PoE visits,
+      reproduces the joint prediction by construction so every comparison across
+      amounts is read at λ=0.75; and panel (c) is the push at the states PoE visits,
       not the climb along a corrected path.
 - [x] The register reconciled against the directory. F2b, F4c and F5b existed
       as files with no row, which by the register's own rule made them

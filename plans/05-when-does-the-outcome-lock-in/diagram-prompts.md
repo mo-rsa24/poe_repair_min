@@ -32,6 +32,8 @@ Inherited unchanged. Blue the uncorrected path, amber the correction and anythin
 green measured-and-passed, red measured-and-failed or a null. A control is a hollow amber
 outline, never a fifth colour.
 
+> A null here means the read came back the same with the correction as without it.
+
 ## Glyph vocabulary
 Reused from the parent: cache stack, denoising track, window bracket, scorer lens, outcome tile,
 researcher persona. Two new glyphs join the family:
@@ -68,11 +70,12 @@ Piece-to-plan mapping: prompt 1 belongs to [plan 01](plans/01-basins-by-hand.md)
 Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded dashed arrow lines, each color meaning exactly one kind of flow, with a small legend inside the image. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Official product logos only on components that ARE that product; every other component gets a clean generic glyph. Small cartoon figures or vehicles for external actors (users, clients). Clean sans-serif labels under every icon, short and lowercase-friendly. Generous spacing, no clutter, no watermark.
 
 Scene: a single wide landscape cross-section drawn as two soft valleys separated by a narrow
-ridge, all platforms and outlines dashed to mean planned. In the left valley floor an outcome
-tile of one blended animal bordered blue; in the right valley floor an outcome tile of two
-separate animals bordered amber. On the ridge crest a small glowing state marker with a blue
-dashed arrow pulling it left and an amber dashed arrow pulling it right. Two thin gray test
-arrows nudge the marker either side, each continuing as a faint line into a different valley.
+ridge, all platforms and outlines dashed to mean planned. At the bottom of the left valley an
+outcome tile of one blended animal bordered blue; at the bottom of the right valley an outcome
+tile of two separate animals bordered amber. On the ridge crest a small glowing state marker
+with a blue dashed arrow pulling it left and an amber dashed arrow pulling it right. Two thin
+gray test arrows nudge the marker either side, each continuing as a faint line into a different
+valley.
 
 Cast: two basins (the endings a trajectory can commit to), the ridge (where the nearest ending
 stops being unique), the state marker (one cached mid-run latent), the two outcome tiles.

@@ -255,6 +255,9 @@ If the fix is pair-general, the curve declines smoothly. If it's pair-specific o
 - [ ] Each run uses wired eval hook: compose-rate, direction-cosine, distance-reached logged to W&B per step.
 - [ ] Monitor runs via W&B dashboard and `squeue`; mark delivery-null runs (see the pass and fail
   criteria below) and skip the full budget for them.
+
+  > A delivery-null run is one whose correction never travelled far enough to change the picture,
+  > so it is stopped early instead of being read as a failure to transfer.
 - [ ] Collect W&B run IDs and checkpoint paths after all complete.
 
 ### 3. 📊 Eval held-out pairs

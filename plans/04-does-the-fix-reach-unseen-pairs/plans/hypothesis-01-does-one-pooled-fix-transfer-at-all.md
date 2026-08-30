@@ -25,6 +25,9 @@ ambiguous Phase-1 result justifies Phase-2, the full leave-one-pair-out set. A f
 saves the 15-run cost. The pool file (`pair_pool.yaml`) already documents this two-phase
 split, and this plan carries it in the tree.
 
+> A flat null here means the unseen pairs composed as rarely with the pooled fix as with no fix at
+> all.
+
 ## Description
 Train ONE rank-8 cross-attention LoRA on the 11 blend-prone training pairs, then evaluate
 it on the held-out split: unseen blend pairs (the transfer test), cat×dog (known-failure

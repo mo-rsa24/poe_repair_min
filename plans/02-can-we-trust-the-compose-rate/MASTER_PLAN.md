@@ -192,7 +192,7 @@ Terms only this scope uses. Shared vocabulary is in the root `MASTER_PLAN.md`.
 - **False-compose rate:** among images the scorer calls compose, how often a person says the two
   requested animals are not both there as separate animals. How this changes across λ is what
   decides whether F2's shape is safe.
-- **`wrong_pair` and `random`:** the two control rows in the dose grid. `wrong_pair` injects a
+- **`wrong_pair` and `random`:** the two control rows in the grid of correction amounts. `wrong_pair` injects a
   correction computed for a different animal pair, `random` injects a size-matched random
   vector. Both are the same size as the real correction and neither should compose, so they say
   whether the effect comes from this correction or from pushing the model at all.

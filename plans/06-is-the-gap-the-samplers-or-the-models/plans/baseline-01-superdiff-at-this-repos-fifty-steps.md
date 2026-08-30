@@ -26,7 +26,7 @@ use?
 |------|------|-------------|
 | 26 | [hypothesis-02: what-is-left-once-the-chain-settles](hypothesis-02-what-is-left-once-the-chain-settles.md) ⚠️ | the answer that decides how this half is framed. A null there turns it into a baselines table rather than a diagnosis, and the framing of every caption changes with it |
 | **28 (current)** | **baseline-01: superdiff-at-this-repos-fifty-steps** ⚠️ | **wires a published composition rule into this repo, matched to 50 steps at guidance 7.5, and checks whether matching broke it** |
-| 29 | [baseline-02: three-rules-on-one-dose-axis](baseline-02-three-rules-on-one-dose-axis.md) ⚠️ | needs the per-step prediction this plan exposes |
+| 29 | [baseline-02: three-rules-on-one-amount-axis](baseline-02-three-rules-on-one-dose-axis.md) ⚠️ | needs the per-step prediction this plan exposes |
 
 Design only. Verdicts and run state live in
 [the paired review file](../review/baseline-01-superdiff-at-this-repos-fifty-steps.md).
@@ -136,7 +136,8 @@ is a separate question this plan does not judge.
 - **Fail.** The 50-step render does not compose while the 200-step one does. This does not stop the
   plan: it puts a sentence in every caption that compares against SuperDiff, saying the comparison
   is between a working rule and one run outside its intended settings. What is not acceptable is
-  discovering this inside the dose grid, where it would read as SuperDiff being weak.
+  discovering this inside the grid across correction amounts, where it would read as SuperDiff
+  being weak.
 - **Inconclusive.** Neither render composes on the tested pair. Then the pair is wrong for this
   check, not the method. Try one more pair before recording anything.
 
@@ -158,7 +159,7 @@ the settings cost before any comparison is drawn.
 1. Matching the step count is what makes the comparison fair on the axis that matters, and it is
    also the thing most likely to break the method. Both facts are handled by measuring rather than
    choosing.
-2. Exposing `eps_M` per step is what turns a picture into a row on a dose axis. Without it,
+2. Exposing `eps_M` per step is what turns a picture into a row on the amount axis. Without it,
    SuperDiff can be shown but not compared.
 
 ## What happens (visual)
@@ -194,7 +195,7 @@ the settings cost before any comparison is drawn.
 2. **The step-count match.** SDXL base, DDIM, 50 steps, guidance 7.5, and the parity render at 200
    steps beside it.
 3. **The per-step prediction hook.** `eps_M` exposed at each step so `r_t^SD = eps_J - eps_M` can be
-   formed, which is what the generalised dose axis at
+   formed, which is what the generalised amount axis at
    [step 29](baseline-02-three-rules-on-one-dose-axis.md) needs.
 
 Renders write under
@@ -207,7 +208,7 @@ Renders write under
 **Purpose**
 
 Serves objective 5 of [the scope's direction](../MASTER_PLAN.md): wire SuperDiff at this repo's
-settings and check it still works there, before three rules are compared along one dose axis.
+settings and check it still works there, before three rules are compared along one amount axis.
 
 **Goals**
 
@@ -250,6 +251,10 @@ settings and check it still works there, before three rules are compared along o
   - A null there turns this half of the scope into a baselines table rather than a diagnosis, which
     changes the framing of every caption this plan and step 29 produce. The runs are the same
     either way; the sentences around them are not.
+
+    > A null means the correction's size at the end of the run came out the same with the chain
+    > running as without it.
+
   - **Done when:** the branch is quoted in the review file.
 
 ▶ **Next: [task 1.1](#1--wire-the-pipeline)**.
@@ -364,7 +369,7 @@ $PY -c "import json;d=json.load(open('$SD/parity/eps_m_norms.json'));print(len(d
 
 **Fail criteria (STOP)**
 
-- `eps_M` cannot be exposed per step. Step 29 cannot form the generalised dose axis for this row,
+- `eps_M` cannot be exposed per step. Step 29 cannot form the generalised amount axis for this row,
   and the plan is re-scoped to a picture-only comparison rather than proceeding as if the axis
   existed.
 
@@ -433,7 +438,7 @@ None. This scope carries no `diagram-prompts.md`, so there is no illustrated map
 
 ⬅️ [Previous](#code-references) | 📋 [TOC](#table-of-contents) | [Next](#error-matrix) ➡️
 
-[Step 29, three rules on one dose axis](baseline-02-three-rules-on-one-dose-axis.md). It needs the
+[Step 29, three rules on one amount axis](baseline-02-three-rules-on-one-dose-axis.md). It needs the
 per-step prediction this plan exposes, and it is where the comparison is actually drawn.
 
 ## Error Matrix
@@ -456,7 +461,7 @@ Auto-updated after runs via `/ingest-error-pattern` and `/sync-plan-tree`.
 **When it happens:** wrapping a published pipeline by its top-level call rather than its denoising
 loop.
 **What you see:** SuperDiff renders fine, and step 29 cannot form `r_t^SD` for its row.
-**Why:** the generalised dose axis needs `eps_M` at every step, which a top-level wrapper discards.
+**Why:** the generalised amount axis needs `eps_M` at every step, which a top-level wrapper discards.
 **How to fix:** task 1.2 verifies the hook by printing 50 norms before anything else is built on it.
 
 #### 🟡 the checkpoint downloads to `/home-mscluster`

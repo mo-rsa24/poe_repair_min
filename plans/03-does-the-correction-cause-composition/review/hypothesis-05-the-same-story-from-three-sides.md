@@ -11,6 +11,9 @@ The two language-side checks come back null: nothing in the prompt's embedding p
 pairs are hard, and the direction left over after subtracting the two solo prompts is the prompt
 template rather than anything about binding.
 
+> Null here means the language-side numbers looked the same whether a pair was easy or hard, so
+> the prompt on its own tells you nothing about which pairs need a big correction.
+
 ## Recommended prompt (to write the figure)
 
 ```
@@ -68,7 +71,7 @@ All outputs sit in `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/ca
 |---|---|---|---|---|---|
 | L1 additivity gap + L3 binding direction, 75 pairs, four views of the prompt | Tests the claim | 2026-08-11, in-session | text encoders only, no generation | `language_probes.json`, `language_probe_l1_additivity.png`, `language_probe_l3_binding.png` | done, both null |
 | quality check, 749 paired `poe.png`/`mono.png` | Tests the claim | 2026-08-11, in-session | scoring cached images, no generation | `quality_control_cache.json`, `quality_control_cache.png` | done, objection removed |
-| manifold slide, 32 runs × 5 doses × 3 rows, CLIP image space | Tests the claim | 2026-08-11, in-session | 480 CLIP embeddings over cached images | `manifold_slide_clip.json`, `manifold_slide_clip.png` | done, slides |
+| manifold slide, 32 runs × 5 correction amounts × 3 rows, CLIP image space | Tests the claim | 2026-08-11, in-session | 480 CLIP embeddings over cached images | `manifold_slide_clip.json`, `manifold_slide_clip.png` | done, slides |
 | caption readback, same 32 runs, four-way caption bank | Tests the claim | 2026-08-11, in-session | CLIP image-text over the same 32 runs | `caption_readback.json`, `caption_readback.png` | done, crosses over |
 
 ## The question written before the run
@@ -133,21 +136,22 @@ Navigation: ⬅️ [The question written before the run](#the-question-written-b
       allowed to decide.
 - [x] ✅ Do the pictures slide out of the blend region as the strength rises, while a same-sized
       random push does not? **Yes.** Feeds **F5**.
-      Averaged over the interior doses, the real correction reaches +0.413 along the PoE→Mono
-      axis against a 0.30 threshold, and rises monotonically at every dose. The same-sized random
+      Averaged over the interior amounts, the real correction reaches +0.413 along the PoE→Mono
+      axis against a 0.30 threshold, and rises monotonically at every amount. The same-sized random
       push travels 5% of that. Another pair's correction travels 44%.
       Three things the figure has to say out loud. The λ=0 and λ=1 endpoints are arithmetic, not
-      evidence: at full dose the injection adds all of r_t back onto ε_PoE, which is ε_J exactly,
-      and the λ=1 picture is the cached mono render to within 1.9 grey levels of 255. Whole-image
+      evidence: at the full amount the injection adds all of r_t back onto ε_PoE, which is ε_J
+      exactly, and the λ=1 picture is the cached mono render to within 1.9 grey levels of 255.
+      Whole-image
       CLIP was already nulled in this repo as a way to tell a blend from a composition, so a
       position on this axis is not a compose score and only the row-to-row comparison carries
-      weight. And at interior doses 66-91% of the motion is off the axis, so the axis is a
+      weight. And at interior amounts 66-91% of the motion is off the axis, so the axis is a
       summary of where the picture goes, not a description of it.
       The 44% for a mis-aimed correction is the weakest number in this plan. It clears the 50%
       threshold but not by much.
 - [x] ✅ Does the caption readback cross over from a blend description to a two-animal
       description as the strength rises? **Yes, and the controls stay flat.**
-      Read at λ=0.75, the largest interior dose, the two-animal description goes from winning 3%
+      Read at λ=0.75, the largest interior amount, the two-animal description goes from winning 3%
       of runs to 56% (threshold: ≥50% and a ≥20-point gain), while the blend description falls
       59% → 25%. The two-animal description overtakes the blend description at λ=0.75. The random
       push gains −3% and another pair's correction gains 6%, against a threshold set at 50% of
@@ -204,7 +208,7 @@ Each row's reasoning is in the answered question above; the table is the index a
 | the difficulty of a pair is not written in its prompt embedding | that one of four views of the prompt did squeak past the |ρ| ≥ 0.30 threshold (+0.32 for the concatenation) while CLIP-L saw nothing at all. A predictor that depends on which view you pick is not a predictor, and saying so is the finding |
 | no language-space twin of the low-rank claim survives | the numbers against the right baseline, which are 1.19 to 1.57× against a 2.0× threshold rather than the 10 to 12× the isotropic baseline suggested |
 | a blend is wrong content, not a poor-quality picture | that colourfulness lands on the ±0.20 sd threshold (+0.20) rather than comfortably inside it |
-| F5, the manifold slide | three things on the figure itself: the λ=0 and λ=1 endpoints are arithmetic and not evidence; a position on this axis is not a compose score, so only the row-to-row comparison carries weight; and at interior doses 66 to 91% of the motion is off the axis |
+| F5, the manifold slide | three things on the figure itself: the λ=0 and λ=1 endpoints are arithmetic and not evidence; a position on this axis is not a compose score, so only the row-to-row comparison carries weight; and at interior amounts 66 to 91% of the motion is off the axis |
 | the mis-aimed correction travels 44% | that this is the weakest number in the plan. It clears the 50% threshold but not by much |
 | the caption readback crosses over | the λ=0.75 read (56% against 25%), not the λ=1 read. At λ=1 the image is the joint render itself, so 81% against 16% says only that the joint render reads as two animals, which was never in question |
 

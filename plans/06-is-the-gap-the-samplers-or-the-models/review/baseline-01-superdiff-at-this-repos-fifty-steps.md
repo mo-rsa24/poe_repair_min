@@ -42,7 +42,7 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#run-kind) ➡️
 - **The step count**: how many denoising steps a render takes. SuperDiff's pipeline defaults to
   200; everything measured in this project runs at 50.
 - **The per-step prediction, `eps_M`**: what a composition rule predicts at each step. Exposing it
-  is what lets `r_t^SD = eps_J - eps_M` be formed, which the shared dose axis needs.
+  is what lets `r_t^SD = eps_J - eps_M` be formed, which the shared amount axis needs.
 - **The parity check**: the same pair and seed rendered at 200 steps and at 50, changing nothing
   else, to measure what matching this repo's setting cost.
 
@@ -80,7 +80,7 @@ Navigation: ⬅️ [The question written before the run](#the-question-written-b
 
 - [ ] ⚠️ Is `eps_M` available at every one of the 50 steps, verified by forming `r_t^SD` and
       printing its per-step norm? A wrapper that returns only a finished image cannot supply the
-      shared dose axis, and finding that out inside the grid is expensive.
+      shared amount axis, and finding that out inside the grid is expensive.
 - [ ] ⚠️ Does the 200-step render compose at all on the tested pair? If neither step count composes,
       the pair is wrong for this check rather than the method being at fault, and one more pair is
       tried before anything is recorded.

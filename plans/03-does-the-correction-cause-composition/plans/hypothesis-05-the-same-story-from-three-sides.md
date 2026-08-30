@@ -47,15 +47,15 @@ table.
   (first 768 channels of the cached 2048), the bigG sequence (last 1280), and
   the concatenation cross-attention actually consumes. Concatenation order is
   fixed by `poe_repair/_sdxl/runtime.py`.
-- The manifold slide and L2 consume plan 03's dose images, which are on disk:
-  440 renders under `outputs/interaction_term/dose/pairs`, λ ∈ {0, .25, .5,
+- The manifold slide and L2 consume plan 03's images across correction amounts, which are on
+  disk: 440 renders under `outputs/interaction_term/dose/pairs`, λ ∈ {0, .25, .5,
   .75, 1}, with 32 runs carrying the `_random` and `_wrong_pair` control rows.
 - The quality check reads `poe.png` and `mono.png` from the training cache:
   749 paired runs.
 - CLIP embedding and GroundingDINO run in-session on the 3090 (light).
-- λ=1 reproduces ε_J exactly, so the full-dose picture is the joint render
-  (measured at 1.9 grey levels of 255). Every dose reading is therefore taken at the
-  largest interior dose, λ=0.75.
+- λ=1 reproduces ε_J exactly, so the picture at the full amount is the joint render
+  (measured at 1.9 grey levels of 255). Every reading is therefore taken at the
+  largest interior amount, λ=0.75.
 
 ## Tasks
 - [x] L1 additivity gap per pair (both encoders, pooled and sequence);
@@ -74,6 +74,9 @@ table.
   - Success: gap computed for all pairs; correlation with ‖r_t‖ reported
     either way (a null is a finding: binding info lives in joint processing,
     not the embedding).
+
+    > A null here means the additivity gap of a pair tells you nothing about how
+    > big that pair's correction is: the scatter has no slope.
   - Failure: testing the pooled form only (the sequence form is the one cross-attention
     consumes; both must be reported).
 
@@ -104,7 +107,7 @@ $PY scripts/language_probes.py --probe l1 --probe l3
 # control. Expect flat quality and a large content gap.
 $PY scripts/quality_control.py
 
-# 32 runs x 5 doses x 3 rows in CLIP image space, ~3 min. Checks the lambda=1
+# 32 runs x 5 correction amounts x 3 rows in CLIP image space, ~3 min. Checks the lambda=1
 # endpoint really is the mono render before reading anything off the curves.
 $PY scripts/manifold_slide.py
 

@@ -83,7 +83,7 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 | The `k` grid, 2 pairs × 6 `k` × 50 steps | Tests the claim | not launched | ~670 plain-render equivalents | `corrector/residual_curves.json`, 600 rows | ⚠️ not run |
 | Sliding the corrector window, 4 seeds × 10 columns | Tests the claim | not launched | 40 runs | `mcmc/samples-as-a-ten-step-corrector-window-slides.png` | ⚠️ waiting on the threshold |
 | SuperDiff at 50 against 200 steps | Baseline | not launched | 2 runs | step-count parity check | ⚠️ not run |
-| The two rule-by-dose grids | Baseline | not launched | 16 + 20 runs | `how-much-is-added/across-composition-rules/` | ⚠️ not run |
+| The two grids of rules against correction amount | Baseline | not launched | 16 + 20 runs | `how-much-is-added/across-composition-rules/` | ⚠️ not run |
 
 ## The question written before the run
 

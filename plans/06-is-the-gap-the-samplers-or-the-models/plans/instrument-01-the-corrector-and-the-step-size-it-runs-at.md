@@ -25,7 +25,7 @@ follow it.
 | 24 | [hypothesis-01: the-free-bound-on-the-models-share](hypothesis-01-the-free-bound-on-the-models-share.md) ⚠️ | the free read that caps what this corrector is worth. Does not block this build |
 | **25 (current)** | **instrument-01: the-corrector-and-the-step-size-it-runs-at** ⚠️ | **builds the Langevin corrector composer, proves it inert when switched off, and fixes the one free parameter before any curve is read** |
 | 26 | [hypothesis-02: what-is-left-once-the-chain-settles](hypothesis-02-what-is-left-once-the-chain-settles.md) ⚠️ | the measurement everything downstream waits on, which cannot be believed unless this plan passed |
-| 29 | [baseline-02: three-rules-on-one-dose-axis](baseline-02-three-rules-on-one-dose-axis.md) ⚠️ | needs the composer built here to produce its two corrector rows |
+| 29 | [baseline-02: three-rules-on-one-amount-axis](baseline-02-three-rules-on-one-dose-axis.md) ⚠️ | needs the composer built here to produce its two corrector rows |
 
 Design only. Verdicts and run state live in
 [the paired review file](../review/instrument-01-the-corrector-and-the-step-size-it-runs-at.md).
@@ -195,6 +195,10 @@ whose table is recorded whether or not it is flattering.
    the first check cannot see because at `k=0` there is nothing to ignore.
 2. The step size is the one place a null result can be manufactured by accident, so it is fixed
    before any curve exists rather than tuned after one disappoints.
+
+   > A null result means the correction's size came out the same with the chain running as without
+   > it, which is also what a chain too small to move anywhere would report.
+
 3. The search table says how the corrector behaves rather than how composition behaves, which is
    why it lives in the review file and never in a paper figure.
 
@@ -217,7 +221,7 @@ whose table is recorded whether or not it is flattering.
 
   k = 0                  ──▶  must be byte-identical to plain PoE
   k = 200, window off    ──▶  must ALSO be byte-identical
-  c too small            ──▶  displacement under the floor: chain never moved
+  c too small            ──▶  displacement under `MIN_CHAIN_DISPLACEMENT`: chain never moved
   c too large            ──▶  latent norm past 1.5x: chain diverged
 ```
 
@@ -499,7 +503,7 @@ The search table stays in the review file. Nothing from this plan is filed under
 
 | What changes | Where it has to be reflected |
 |---|---|
-| the picked `c` | [what is left once the chain settles](hypothesis-02-what-is-left-once-the-chain-settles.md) and [three rules on one dose axis](baseline-02-three-rules-on-one-dose-axis.md), both of which run the composer at this value |
+| the picked `c` | [what is left once the chain settles](hypothesis-02-what-is-left-once-the-chain-settles.md) and [three rules on one amount axis](baseline-02-three-rules-on-one-dose-axis.md), both of which run the composer at this value |
 | a leak check fails | the whole scope stops; the scope [MASTER_PLAN.md](../MASTER_PLAN.md) records it and no downstream plan starts |
 | the plan's status | the scope [MASTER_PLAN.md](../MASTER_PLAN.md) and the root running order, both by `sync-plan-tree` rather than by hand |
 

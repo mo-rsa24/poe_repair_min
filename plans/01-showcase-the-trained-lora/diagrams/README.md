@@ -6,7 +6,7 @@
 empty prompt into a cross-attention block carrying the rank-8 adapter, the three predictions
 combine, and the result is scored by squared error against the stored target from the cache.
 Inference: the same three prompts run twice through the same block, once with the adapter off and
-once on, the two combined predictions subtract to give the predicted correction, a dose dial
+once on, the two combined predictions subtract to give the predicted correction, a multiplier dial
 scales it, and adding it back yields two separate animals.
 
 **What it is for.** The one picture that shows why the adapter is Mono-free at inference: the

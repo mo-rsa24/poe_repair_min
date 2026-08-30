@@ -44,14 +44,16 @@ restating it:
    PoE→Mono target. Corrections tend to stall near ~40% of that distance, where the
    curve stops rising, so this axis is watched live.
 
-Keeping these two axes separate is the whole point. A compose-rate sitting at chance level
-splits two ways:
+Keeping these two axes separate is the whole point. A compose-rate that is only what you would
+get by luck splits two ways:
 - **delivery-null**: direction is right but the correction under-delivered, stalling where
   the curve stops rising. The operator may be fine; the run just didn't push far enough.
 - **no-transfer**: direction is wrong. No general operator was learned.
 
-Calling a chance-level result "no transfer" without checking direction hides this difference.
-So a null is diagnosed, not narrated.
+> A null here means the held-out pairs composed about as often with the fix as without it.
+
+Calling a result that is only what you would get by luck "no transfer" without checking direction
+hides this difference. So a null is diagnosed, not narrated.
 
 ## Objectives
 1. **Pool**: curate a token-disjoint pool of ~15 blend-prone animal pairs (no
@@ -64,15 +66,16 @@ So a null is diagnosed, not narrated.
    compose-rate and a degradation curve (rate vs fraction held out).
 3. **Contrast (B)**: an animals-only pool beats a size-matched mixed pool on the
    same animal held-out pairs. Size-matching kills the "more data" confound.
-4. **Diagnose**: read every null on both axes (see "Reading a result"), so a chance-level
-   compose-rate is split into delivery-null vs no-transfer before it is called a null.
+4. **Diagnose**: read every null on both axes (see "Reading a result"), so a compose-rate at
+   what you would get by luck is split into delivery-null vs no-transfer before it is called a
+   null.
 
 ## Goals
 1. **Transfer (A)** (three-way rule):
    - *support* if held-out pairs compose above the do-no-harm baseline across most
      of the 15, direction intact.
-   - *null* if compose-rate is at chance level (delivery-null or no-transfer, per the
-     two-tier read).
+   - *null* if compose-rate is no better than what you would get by luck (delivery-null or
+     no-transfer, per the two-tier read).
    - *inconclusive* between → widen seeds/pairs, do not loosen the threshold.
    [checkpoint: cross-run leaderboard table + the degradation curve]
 2. **Contrast (B)** (three-way rule):
@@ -143,9 +146,9 @@ Terms only this scope uses. Shared vocabulary is in the root `MASTER_PLAN.md`.
 - **Held-out:** a pair the LoRA never trained on. The only kind that tests transfer.
 - **LOPO (leave-one-pair-out):** train fifteen LoRAs, each missing one pair, test each on its
   missing pair. Transfer as a rate instead of an anecdote.
-- **Delivery-null vs no-transfer:** the two ways a held-out pair can sit at chance level. The fix
-  never arrived (distance-reached at chance level), or it arrived pointing wrong (direction-cosine
-  low). The two-tier read exists to tell them apart.
+- **Delivery-null vs no-transfer:** the two ways a held-out pair can score only what you would
+  get by luck. The fix never arrived (distance-reached no better than luck), or it
+  arrived pointing wrong (direction-cosine low). The two-tier read exists to tell them apart.
 - **Direction-cosine:** how aligned the run's correction is with the pool-mean correction.
 - **Distance-reached:** how far toward the Mono target the fix actually moved the prediction.
 - **Do-no-harm control:** pairs that compose fine without any fix; the LoRA must not break them.

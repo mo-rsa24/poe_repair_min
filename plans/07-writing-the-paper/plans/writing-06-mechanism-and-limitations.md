@@ -47,7 +47,7 @@ in the `.tex`, with both pressure-test verdicts reflected in the wording.
 - [ ] write the mechanism section per plan 02's verdict (full section if
       replicated, negative paragraph if not)
 - [ ] write the three honesty caveats: the cached true correction is computed
-      from the joint prompt, so that demonstration is not Mono-free; mid-λ doses
+      from the joint prompt, so that demonstration is not Mono-free; mid-λ amounts
       are off-policy (endpoints exact); the transfer number is cited with its
       checkpoint
 

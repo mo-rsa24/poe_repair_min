@@ -1,13 +1,14 @@
 # 🔁 Replication on other models and samplers
 
-This plan asks whether the dose result still holds when the model and the sampler are swapped for
-different ones.
+This plan asks whether more correction still gives more composition when the model and the
+sampler are swapped for different ones.
 
 **No step number: nothing waits on this.** Background, listed in the background-experiments pool of the [repo root MASTER_PLAN.md](../../../MASTER_PLAN.md), which also holds the one `## Running order` table. This plan asks the same result on another model and sampler. Its scaffold waits at `artifacts/plans/parked/cross-model-replication`.
 
 ## What this asks, in one line
-Does the dose result survive a different model and a different sampler? This is background work: a
-reviewer is likely to ask for it, and the paper makes no claim that depends on it.
+Does more correction still give more composition on a different model and a different sampler?
+This is background work: a reviewer is likely to ask for it, and the paper makes no claim that
+depends on it.
 
 ## Description
 Repeat the causal core cheaply, beyond the one model and one sampler it was found on.
@@ -25,7 +26,7 @@ samplers, the [interaction term](../../../context/world/interaction-term.md) is 
 text-to-image diffusion in general rather than something peculiar to SDXL. Serves DoD 8.
 
 ## Goal
-One dose curve per model, the window-in-SNR overlay across samplers, the SDE
+One compose-rate-against-λ curve per model, the window-in-SNR overlay across samplers, the SDE
 density traces, and an answer to whether added noise on its own ever escapes
 the blend.
 
@@ -49,5 +50,5 @@ All further facts live in the sub-scope's own plans.
 ```bash
 # done when the sub-scope's DoD is done; spot check:
 ls /datasets/mmolefe/poe_repair_min/outputs/interaction_term/replication/
-# expect per-model dose curves + sampler window overlay
+# expect one compose-rate curve per model + sampler window overlay
 ```

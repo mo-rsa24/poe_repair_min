@@ -86,8 +86,8 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 Navigation: ⬅️ [The question written before the run](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
 - [x] ✅ With the window switched off everywhere, does the output match plain PoE exactly?
-      Yes, byte-identical on a_cat×a_dog seed 9 at 50 steps. The comparison is against a full-dose
-      window placed past the last step rather than against `run_cfg_poe`. Both runs then batch
+      Yes, byte-identical on a_cat×a_dog seed 9 at 50 steps. The comparison is against a window
+      carrying the full amount placed past the last step rather than against `run_cfg_poe`. Both runs then batch
       four UNet branches, so only the window logic can differ. Comparing against the three-branch
       PoE sampler would fail for batch-shape reasons alone and would say nothing about leakage.
 - [x] ✅ Does the peak sit where the correction is largest?
@@ -136,19 +136,19 @@ The early window that composes delivers less correction than the late window tha
 seeds, through the same sampler as the nine windows and verified against it.
 
 - [x] ✅ Does the late window still fail when given exactly the correction total that works early?
-      Yes, on every seed. Sixteen runs crossing two windows against two doses
+      Yes, on every seed. Sixteen runs crossing two windows against two amounts
       (`--mode swap`, `dose_matched/swap_manifest.json`). On seed 12 the early window at its own
-      dose of 3.6 units gives a white cat lying beside a tan dog; the late window at that same
+      3.6 units gives a white cat lying beside a tan dog; the late window at that same
       3.6 units gives one fused animal with cat ears and a dog muzzle. Same seed, same noise,
       same prompt, same delivered correction, and the only difference is when it arrives.
 
       Two things fell out that were not asked for. Tripling the correction in the late window
       changes almost nothing. The 10.7-unit run is near-identical to the 3.6-unit one, same
       pose and same background, so late application is inert rather than merely weak. And the
-      early window tolerates that 3x overdose without breaking, still composing at lambda 2.96,
-      which is well outside anything the run across doses measured.
+      early window tolerates three times the amount without breaking, still composing at lambda
+      2.96, which is well outside anything the run across correction amounts measured.
 
-      What follows for the writing: the paper may say timing decides rather than dose. The
+      What follows for the writing: the paper may say timing decides rather than amount. The
       verdict is by eye on the images; the detector's count is recorded in
       `dose_matched/swap_scores.json` beside it, and disagrees with the pictures on this pair
       often enough that the eye read is the one cited.
@@ -162,11 +162,12 @@ seeds, through the same sampler as the nine windows and verified against it.
 
       This also answers the objection that made the run look not worth doing. The worry was that
       matching the totals forces the late windows to roughly a quarter strength, so a flat tail
-      would just be a weak dose. That is not what happens. The windows at steps 5 to 15 and 10 to
+      would just be a weak correction. That is not what happens. The windows at steps 5 to 15 and 10 to
       20 compose at 0.52 and 0.37 strength. A fraction-strength correction works early and does
       nothing late, so strength does not explain the tail.
 
-      What follows for the writing: the caption may say the cliff survives dose-matching. It may
+      What follows for the writing: the caption may say the cliff survives matching for amount.
+      It may
       not present these as population rates. Four runs per point on one pair is a rate over four
       runs only, and the nine windows over eight pairs remain the population estimate.
 
@@ -176,7 +177,7 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
 
 - [x] ✅ **Was the comparison fair?** The nine windows differed in when the correction lands and
       also in how much of it lands, because the correction's own size grows through the run. That
-      confound was real and it is removed: the two dose-matched runs under
+      confound was real and it is removed: the two runs matched for amount under
       [Asked after the result](#asked-after-the-result) hold the delivered total constant and the
       cliff survives. Same seed, same noise, same prompt, same delivered correction, only the
       timing differs.
@@ -184,7 +185,8 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
       than added afterwards: with the window switched off everywhere the output is byte-identical
       to plain PoE on a_cat×a_dog seed 9 at 50 steps. See the first question under
       [Written before the run](#written-before-the-run-answered-after) for why the comparison is
-      against a full-dose window placed past the last step and not against `run_cfg_poe`.
+      against a window carrying the full amount placed past the last step and not against
+      `run_cfg_poe`.
 - [x] ✅ **Did the run respect the environment?** All 288 runs present, no missing or skipped
       windows, output under `/datasets`. The whole grid ran under `nohup` on GPU 1 outside Slurm,
       so harvest it by `pgrep` rather than `squeue`.
@@ -201,8 +203,8 @@ writer reads, not a second copy of the argument.
 | the correction matters early | that the best window measured is also the earliest window measured, so the curve cannot say whether the true best sits earlier still |
 | why the correction matters early | not because it is large there. It is about 2.7 times larger late than early, and it rises where the compose rate falls. No figure may put size and timing on one axis without saying they disagree, which is what `correction-size-per-step-beside-outcome-per-window` exists to show |
 | step 16, the fork step | it may not be described as the moment the correction matters, and F4's caption may not draw it as a band behind the timing curve. The register's current layout says it should, and that layout was written when the two numbers were expected to agree |
-| timing decides rather than dose | the verdict is by eye on the images. The detector's count is in `dose_matched/swap_scores.json` beside it and disagrees with the pictures on this pair often enough that the eye read is the one cited |
-| the cliff survives dose-matching | these are not population rates. Four runs per point on one pair is a rate over four runs only; the nine windows over eight pairs remain the population estimate |
+| timing decides rather than amount | the verdict is by eye on the images. The detector's count is in `dose_matched/swap_scores.json` beside it and disagrees with the pictures on this pair often enough that the eye read is the one cited |
+| the cliff survives matching for amount | these are not population rates. Four runs per point on one pair is a rate over four runs only; the nine windows over eight pairs remain the population estimate |
 
 ## Still open
 

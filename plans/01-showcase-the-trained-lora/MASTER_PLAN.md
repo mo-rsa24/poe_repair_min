@@ -6,10 +6,10 @@ standard a reader can trace, instead of by the cached true correction.**
 
 ## What is this plan
 This scope turns the trained pooled adapter `phase1_r8_100k` into the paper's figure program:
-the causal dose evidence moved off the cached true correction (the correction computed from the
-joined prompt, saved once and read back) and onto the adapter, the cheap
-decisive tests of what the adapter learned, the three re-scoped experiments with the softness
-question measured rather than assumed, the mechanism read live during training, and the
+the causal evidence from the run across correction amounts moved off the cached true correction
+(the correction computed from the joined prompt, saved once and read back) and onto the adapter,
+the cheap decisive tests of what the adapter learned, the three re-scoped experiments with the
+softness question measured rather than assumed, the mechanism read live during training, and the
 assembled showcase set. Every choice that could
 have gone another way is recorded with its reason in
 [decisions-taken-here.md](decisions-taken-here.md), this scope's source of truth; plans quote
@@ -32,7 +32,7 @@ experiment set and the tests; this scope executes them.
         ┌─────────────────────────────────────────────────────┐
         │ ONE RUNNER: PoE + injected correction               │
         │ A (r8 100k→200k) · B (r16/r32 fresh→100k) ·         │
-        │ C (λ×window) · dose series (4 controls) · dog×dog   │
+        │ C (λ×window) · amount series (4 controls) · dog×dog │
         └───────┬──────────────────────────┬──────────────────┘
    tracking set │                          │ the checkpoint watcher
    every 10k    │                          │ (h-space + Jacobian, off-device)
@@ -44,7 +44,7 @@ experiment set and the tests; this scope executes them.
                 ▼                   └────────┬─────────┘
         ┌─────────────────────────────────────────────┐
         │ THE FIGURE WALL  (paper/iclr/figures/)      │
-        │ dose · window overlay · transfer matrix ·   │
+        │ amount · window overlay · transfer matrix · │
         │ counted joint-prompt · rank ablation        │
         └─────────────────────────────────────────────┘
 ```
@@ -54,10 +54,10 @@ claims read one line of the grid, never a diagonal. Extending B to 200k is an op
 resume once A's endpoint exists.
 
 ## High-level overview
-Five subsystems: the runner (`run_lora_residual_inject` and its window/dose variants, shared by
-A, B, C, the dose series and the dog×dog test); the tracking set (the live-curve measuring tool
-built in `instrument-02`, extended with four curves and frozen before any launch); the
-checkpoint watcher (a process on a non-training device that reads checkpoints while a run is
+Five subsystems: the runner (`run_lora_residual_inject` and its window and amount variants,
+shared by A, B, C, the run across correction amounts and the dog×dog test); the tracking set (the
+live-curve measuring tool built in `instrument-02`, extended with four curves and frozen before
+any launch); the checkpoint watcher (a process on a non-training device that reads checkpoints while a run is
 going); the scorer and counted figures (instance-count scorer, already validated for two-animal
 scenes); and the figure wall with its sidecars.
 
@@ -92,8 +92,8 @@ every figure obeying the ledger's one standard.
 2. Dog x dog test judged against its pre-registration.
 3. Tracking set extended, and a first short run proving the wiring, before any launch.
 4. A, B, C run; verdicts against their pre-registered thresholds in review files.
-5. Adapter-dose figure with the four control rows, AUC beside the cached correction's
-   0.387-vs-0.023.
+5. Compose rate against the multiplier on the adapter's correction, with the four control rows,
+   AUC beside the cached correction's 0.387-vs-0.023.
 6. Counted joint-prompt figure: three bars per pair, a strip of repaired renders as anecdote.
 7. Transfer matrix at the group-pooled, concept-disjoint tier.
 8. Mechanism interventions' verdict on the causal caption.
@@ -130,7 +130,7 @@ All thirteen plans are written. Assembly (05) runs last despite its number.
 | # | Plan | What it does | Status |
 |---|---|---|---|
 | 01 | [01-read-the-plateau-curves](plans/01-read-the-plateau-curves.md) | the free read that re-scopes A and B; it informs them, nothing waits on it | ⚠️ written |
-| 02 | [02-the-dog-x-dog-null-probe](plans/02-the-dog-x-dog-null-probe.md) | the pre-registered null-input control | ⚠️ written |
+| 02 | [02-the-dog-x-dog-null-probe](plans/02-the-dog-x-dog-null-probe.md) | the pre-registered same-prompt check | ⚠️ written |
 | 03 | [03-the-lora-dose-sweep](plans/03-the-lora-dose-sweep.md) | lambda on the learned correction, four controls; shares one runner with 07 and 02 | ⚠️ written |
 | 04 | [04-the-transfer-matrix-figure](plans/04-the-transfer-matrix-figure.md) | group-pooled, concept-disjoint tier | ⚠️ written |
 | 05 | [05-assemble-the-showcase-figures](plans/05-assemble-the-showcase-figures.md) | the wall, under the standard; closes the scope | ⚠️ written |

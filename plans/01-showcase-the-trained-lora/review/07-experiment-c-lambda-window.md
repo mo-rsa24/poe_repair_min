@@ -58,7 +58,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 Navigation: ⬅️ [The bar](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
-- [ ] ⚠️ Where along the grid does [compose rate](../../../context/world/compose-rate.md) arrive (the dose story) relative to where blur
+- [ ] ⚠️ Where along the grid does [compose rate](../../../context/world/compose-rate.md) arrive (the more-correction-more-composition story) relative to where blur
   arrives (the cost story), and do the two leave a usable middle λ?
 - [ ] ⚠️ Did the λ=0 identity hold against the cached PoE render (mode-level, fp16 drift band)?
 

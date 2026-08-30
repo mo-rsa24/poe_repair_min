@@ -29,7 +29,7 @@ scope's own check has produced the number.
 PoE fails at "a cat and a dog" because multiplying two predictions asks for an
 image that is both things at once, while the sentence means two things side by
 side. The gap between those readings is a concrete cached quantity, r_t.
-Injected back at the right dose and time it turns the blend into two animals.
+Injected back in the right amount and at the right time it turns the blend into two animals.
 It is small, shared across pairs, and concentrated in a narrow noise band,
 which is why a rank-8 LoRA can learn it once and fix pairs it never saw. This
 scope proves that account and produces the paper's figures.
@@ -38,7 +38,7 @@ scope proves that account and produces the paper's figures.
 1. Check the ground this scope inherits. Score phase1_r8_100k at step 100000,
    re-test the mechanism beyond seed 9, and commit the correction-size
    normalization in writing before any result is read.
-2. Establish the causal claim through dose, direction, and timing (the matched
+2. Establish the causal claim through amount, direction, and timing (the matched
    window pair W1/W2), corroborated in image, manifold, and language space.
 3. Say what kind of thing the term is. It is small (the spectrum, plus how much
    of a held-out pair's correction the training pairs' directions explain) and
@@ -50,11 +50,14 @@ scope proves that account and produces the paper's figures.
 
 ## Goals
 1. Causal: this is supported if the [compose rate](../../context/world/compose-rate.md)
-   rises with λ on most pairs while the norm-matched random control stays at
-   chance level. It is a null if the pair's own real correction fails at λ=1, or
-   if the random control does as well as it. It is inconclusive if the scorer and
-   the eyeball disagree, and the answer to that is to fix the measuring tool and
-   rerun, never to loosen the threshold.
+   rises with λ on most pairs while the norm-matched random control stays at what
+   you would get by luck. It is a null if the pair's own real correction fails at
+   λ=1, or if the random control does as well as it. It is inconclusive if the
+   scorer and the eyeball disagree, and the answer to that is to fix the measuring
+   tool and rerun, never to loosen the threshold.
+
+   > A null here would read like this: the compose rate at λ=1 is the same as the
+   > compose rate at λ=0, so adding the correction back changed nothing.
 2. Timing: the W2 sliding-window curve peaks in a band and the path-split d(t)
    elbow lands in it; W1-vs-W2 coincidence or divergence recorded either way.
 3. Smallness: the top-k energy of the stacked cached targets beats what a
@@ -76,8 +79,8 @@ scope proves that account and produces the paper's figures.
         Rewording direction text is /integrate-plans or /refine-plan, not
         sync-plan-tree. -->
 4. Universality: ‖r_t‖ curves collapse in log-SNR across pairs; the window
-   sits at the same noise levels across samplers; the dose result replicates
-   on SD 1.5 and SD 2.1.
+   sits at the same noise levels across samplers; more correction still gives
+   more composition on SD 1.5 and SD 2.1.
 5. Prediction: the three pair groups order along a falling curve under the
    pre-registered normalization; if only one normalization shows it, report
    both and adopt neither.
@@ -99,7 +102,7 @@ broke. Nothing is claimed here without the tool that measured it.
 2. ✅ Mechanism re-test verdict recorded: REPLICATES (median 1.52x over
    64 pair-and-seed runs, 2026-08-05). Caveat: the control pair shows the
    effect too.
-3. Dose-response figure with all three control rows.
+3. The more-correction-more-composition figure with all three control rows.
 4. W2 timing curve, enhanced W1 companion, joint window figure.
 5. Cache analyses delivered: SNR collapse, d(t), density climb, spectrum with
    held-out projection.
@@ -107,8 +110,8 @@ broke. Nothing is claimed here without the tool that measured it.
    [chimera](../../context/world/chimera.md) quality control.
 7. Composition-type scatter with the new attribute-pair runs and the separate
    measuring tool they need.
-8. Replication delivered: SD 1.5 and SD 2.1 dose tests, the same test repeated
-   across samplers, SDE density traces.
+8. Replication delivered: SD 1.5 and SD 2.1 runs across correction amounts, the
+   same test repeated across samplers, SDE density traces.
 9. Two /pressure-test passes done (window-timing novelty; SuperDiff span
    sentence) before those claims go to print.
 10. Seven figures through /design-figure and built via /evidence-ladder.
@@ -180,8 +183,8 @@ is in the root `MASTER_PLAN.md` and is not repeated here.
 
 - **The correction:** plain-English name for the residual `r_t`. The step-by-step gap between
   what the model predicts from the joined prompt and what plain PoE predicts.
-- **Dose-response:** the shape borrowed from pharmacology. Add more of something and measure
-  more effect. A real cause gives a rising curve; a coincidence gives a flat one.
+- **More correction, more composition:** the shape the causal claim predicts. Add more of the
+  correction and the compose rate rises. A coincidence gives a flat line instead.
 - **The three rows (`oracle`, `random`, `wrong_pair`):** what gets injected. The pair's own real
   correction, a random vector of the same size, and a different pair's correction. The last two
   are the fakes that make the first one evidence.

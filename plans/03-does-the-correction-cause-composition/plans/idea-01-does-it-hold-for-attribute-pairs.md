@@ -45,6 +45,9 @@ The scatter with regime coloring, plus the strip of example images at λ=0, one 
 - **the scatter**
   - Success: types order along a falling curve under the pre-registered
     normalization (or the null is reported under that same normalization).
+
+    > A null here means the three composition types sit at the same height on the
+    > scatter, so knowing the type tells you nothing about the correction's size.
   - Failure: the relationship appears in only one normalization. Report both and
     adopt neither, which is what Goal 5 counts as inconclusive.
 

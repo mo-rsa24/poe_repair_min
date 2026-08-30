@@ -25,9 +25,10 @@ point tier three captions open up.
 ## The caption the structure figures are entitled to
 
 "Small and shared" is only half-entitled. The measured claim: eight directions fitted on 11
-training pairs carry 22.6% of the corrections' energy (norm-matched chance level 16.1%, iid
-chance level 2.1%); the same directions carry 7.4% of six unseen pairs' energy (random-direction line k/d =
-0.012%); the sharing concentrates in steps 0 to 9 (4.4% at k=8 early, 0.19% late). The honest
+training pairs carry 22.6% of the corrections' energy; eight random directions matched for norm
+would carry 16.1% and eight iid random directions 2.1%, so those two numbers are what you would
+get by luck. The same directions carry 7.4% of six unseen pairs' energy (random-direction line
+k/d = 0.012%); the sharing concentrates in steps 0 to 9 (4.4% at k=8 early, 0.19% late). The honest
 phrase is "a rule shared, a vector not": same-pair cross-seed cosine is 0.002, so no single
 correction vector exists to memorise. From `outputs/interaction_term/cache_analyses/spectrum.json`
 and `spectrum_windowed.json`.
@@ -39,9 +40,9 @@ and `spectrum_windowed.json`.
   k/d guards a projection. Never a self-fit reference level against a projection (that mistake
   was made live in a walk and is the reason the rule is written down).
 - No MDS or UMAP panel may invite the reader to read distances.
-- Dose figures: [compose rate](../../context/world/compose-rate.md) (y, 0 to 1) against lambda
-  (x), one curve per injected vector, the
-  four-control-row layout, AUC always carrying its meaning in words.
+- The more-correction-more-composition figures plot
+  [compose rate](../../context/world/compose-rate.md) (y, 0 to 1) against lambda (x), one curve
+  per injected vector, in the four-control-row layout, AUC always carrying its meaning in words.
 - Directions are indexed by step; a direction found at one timestep is not asserted at another.
 - Rank-8 (LoRA weight space) and k=8 (r_t space) are different objects; no figure may imply the
   rank was chosen from the spectrum. SVD on targets, never on LoRA outputs.
@@ -89,10 +90,10 @@ All showcase injections run at steps 0 to 10 of the 50-step DDIM schedule, guida
 Settled from evidence already on disk (outputs/interaction_term/window/window_curves.json,
 8 pairs x 9 windows x 4 seeds, 288 scored runs): compose rate by window centre falls 0.656
 (centre 5) to 0.250 (10) to 0.094 (15) to 0.031 (20) to 0.0 (25 on), while visible commitment
-sits at steps 18 to 36; late dose tripled changes nothing; dose-matched rescaling keeps the
-cliff. The figure is the per-pair overlay: compose rate vs window centre, one curve per pair,
-each pair's commitment step marked, showing the intervention door closes at or before visible
-commitment and its position is shared while commitment varies. A sharp-edge width-1 series is
+sits at steps 18 to 36; tripling the amount of correction late changes nothing; rescaling
+matched for amount keeps the cliff. The figure is the per-pair overlay: compose rate vs window
+centre, one curve per pair, each pair's commitment step marked, showing the intervention door
+closes at or before visible commitment and its position is shared while commitment varies. A sharp-edge width-1 series is
 owed only if the paper ever claims a door location rather than a door. Captions may say "acts
 before the picture decides"; they may not say "because of commitment", and sampler-vs-model
 attribution stays in `is-the-gap-the-samplers-or-the-models`. Constraint exported to the
@@ -126,6 +127,10 @@ seed-noise band (spread over the 8 held-out seeds) of 100k, with no crispness ch
 frozen tracking set (defined below), means length is not the knob. Rough cost 6.6 GPU-hours
 at the measured 4.2 optimizer steps/s; measure it.
 
+> A null threshold is the number a result has to stay under to count as no effect. If 200k's
+> held-out compose rate sits inside the seed-noise band around 100k's, the extra training changed
+> nothing that this measure can see.
+
 **Experiment B, capacity.** Fresh runs at rank 16 and rank 32 (alpha equal to rank), 100k
 steps each, everything else identical (`sweep_s1_rank.sh` is the runner for the capacity axis).
 Buys the rank-ablation figure: same pairs, same lambda, same inference across r8/r16/r32 at
@@ -137,8 +142,8 @@ that makes capacity the right lever to pull.
 **Experiment C, injection.** No training. Lambda grid {0, 0.25, 0.5, 0.75, 1.0} crossed with
 the step window at inference on existing checkpoints. If softness tracks lambda at a fixed
 checkpoint, the blur is the injection, not undertraining. C is also the intervention that
-lets any discovered direction use causal language, and it shares one runner with the
-adapter-dose series below.
+lets any discovered direction use causal language, and it shares one runner with the adapter's
+run across correction amounts below.
 
 **Two tasks owed alongside, already routed to figure-01-the-transfer-figures.md:** score the
 unscored 70k to 100k per-epoch samples (closing F8a's gap), and the qualitative best-case panel
@@ -223,11 +228,12 @@ The reproducibility diagnostic (two LoRAs on disjoint seed subsets, same eval no
 corrected image?) is deliberately optional: one extra training, revisit after the dog x dog test
 lands.
 
-## The adapter-dose series is owed and approved
+## The run across correction amounts for the adapter is owed and approved
 
 Roughly twenty figures measure the cached r_t; one measured the LoRA. The paper ships the LoRA,
-so the causal dose curve must be the LoRA's own: lambda on r-hat with the wrong-seed and shuffled
-controls, the same machinery as the cached-correction series with the injection source swapped.
+so the causal compose-rate-against-lambda curve must be the LoRA's own: lambda on r-hat with the
+wrong-seed and shuffled controls, the same machinery as the cached-correction series with the
+injection source swapped.
 The dog x dog test is this series' zero-interaction control; Experiment C above is its lambda
 grid; the three share one runner.
 

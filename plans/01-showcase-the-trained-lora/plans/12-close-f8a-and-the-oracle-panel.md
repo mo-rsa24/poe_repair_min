@@ -67,7 +67,7 @@
 
 ⬅️ [Previous](#quick-context-where-you-are) | 📋 [TOC](#table-of-contents) | [Next](#environment-facts-this-plan-depends-on) ➡️
 
-**Expected runtime:** scoring only for the tail (in-session, under an hour); the best-case panel reuses renders from the dose series where the pair and seed match, and renders only the missing ones (a small batch).
+**Expected runtime:** scoring only for the tail (in-session, under an hour); the best-case panel reuses renders from the run across correction amounts where the pair and seed match, and renders only the missing ones (a small batch).
 
 **Prerequisites:** the validated scorer; the render store behind `dose_curves.json` for the cached-correction renders.
 
@@ -106,7 +106,7 @@
 1. **The reconciliation check** against figure-01 next door (has it scored the tail or built the panel already?).
 2. **The tail scoring**: per-epoch samples for steps 70k-100k through the scorer; extend `compose_rate.json`'s table shape into `compose_rate_full.json`.
 3. **The F8a extension**: re-run `scripts/adapter_transfers.py` against the full table.
-4. **The best-case panel**: LoRA-corrected against cached-true-correction-corrected (true r_t, λ=1) on the four F9 pairs, reusing renders from the dose series where the pair and seed match; caption states the comparison is qualitative.
+4. **The best-case panel**: LoRA-corrected against cached-true-correction-corrected (true r_t, λ=1) on the four F9 pairs, reusing renders from the run across correction amounts where the pair and seed match; caption states the comparison is qualitative.
 
 ---
 

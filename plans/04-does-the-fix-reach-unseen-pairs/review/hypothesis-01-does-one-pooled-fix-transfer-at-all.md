@@ -94,6 +94,8 @@ written with the answer already visible.
       run's eval; a pair sitting at the no-fix level cannot yet be split delivery-null vs
       no-transfer.
 
+      > A null on such a pair means it composed as rarely with the fix as without it.
+
 ## Could the answer be an artefact
 
 Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC](#table-of-contents) | [Next](#what-the-write-up-owes) ➡️
@@ -104,7 +106,7 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
       overlap, from the realised split rather than the config.
 - [ ] ⚠️ **Was the measuring tool sound?** The compose-rate scorer must have read only this run's
       output directory. This is the fault that has already produced convincing wrong numbers in
-      this project once, in the dose series.
+      this project once, in the run across correction amounts.
 - [ ] ⚠️ **Did the run respect the environment?** Output under `/datasets`, checkpoints written
       through to step 100000, and no silent fp16 fallback in the eval hook.
 

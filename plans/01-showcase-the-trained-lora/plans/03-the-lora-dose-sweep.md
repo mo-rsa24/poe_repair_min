@@ -1,4 +1,4 @@
-# 🧪 The LoRA dose series
+# 🧪 The LoRA's run across correction amounts
 
 **This plan asks one question: does turning up the LoRA's own correction, a little at a time, make more pictures compose, while matched fake corrections do nothing?**
 
@@ -17,7 +17,7 @@
 | Step | Plan | What it does |
 |------|------|-------------|
 | 32 (previous) | [02-the-dog-x-dog-null-probe](02-the-dog-x-dog-null-probe.md) | The zero-interaction control run |
-| **33 (current)** | **03: the-lora-dose-sweep** | The causal dose curve for the shipped LoRA |
+| **33 (current)** | **03: the-lora-dose-sweep** | Compose rate against the amount of correction, for the shipped LoRA |
 | 34 (next) | [04-the-transfer-matrix-figure](04-the-transfer-matrix-figure.md) | The reviewer-credible transfer demo |
 
 ---
@@ -47,16 +47,17 @@
 
 ⬅️ [Previous](#position-in-the-plan-tree) | 📋 [TOC](#table-of-contents) | [Next](#considerations) ➡️
 
-**The hypothesis:** *the LoRA's own output r̂ causes composition the way the cached true correction does: [compose rate](../../../context/world/compose-rate.md) rises with λ on r̂ and the matched controls stay at chance level.*
+**The hypothesis:** *the LoRA's own output r̂ causes composition the way the cached true correction does: [compose rate](../../../context/world/compose-rate.md) rises with λ on r̂ and the matched controls stay at what you would get by luck.*
 
 > The cached true correction is the correction computed from the joined prompt, saved once and
-> read back. Chance level is what compose rate reads when nothing real is being injected. AUC is
+> read back. What you would get by luck is what compose rate reads when the injected vector
+> carries no real correction, and it is not zero. AUC is
 > the area under the compose-rate-against-λ curve, on a 0-to-1 scale: 1.0 would mean every
 > generation composed at every λ, 0.0 that none did.
 
 **Why this run and not the cached one:** roughly twenty figures measure the cached r_t and one measured the LoRA, while the LoRA is the artifact the paper ships (ledger). The cached correction's numbers exist for comparison (AUC 0.387 real against 0.023 random, from `dose_curves.json`); this series swaps the injection source and keeps everything else.
 
-**If true:** compose rate rises with λ; wrong-seed and shuffled controls stay at chance level; AUC lands beside the cached correction's for comparison.
+**If true:** compose rate rises with λ; wrong-seed and shuffled controls stay at what you would get by luck; AUC lands beside the cached correction's for comparison.
 
 **If false:** the curve stays flat, or a control rises with it, and the causal story cannot be carried by the LoRA's own output.
 
@@ -64,8 +65,8 @@
 
 **Associated materials:**
 - **Review questions:** [../review/03-the-lora-dose-sweep.md](../review/03-the-lora-dose-sweep.md)
-- **Ledger entries:** [the adapter-dose series](../decisions-taken-here.md#the-adapter-dose-series-is-owed-and-approved) and [experiment C](../decisions-taken-here.md#the-longer-training-question-runs-as-three-experiments-re-scoped-by-evidence)
-- **The machinery to copy:** the cached-correction dose series under `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/` and its runner
+- **Ledger entries:** [the run across correction amounts for the adapter](../decisions-taken-here.md#the-run-across-correction-amounts-for-the-adapter-is-owed-and-approved) and [experiment C](../decisions-taken-here.md#the-longer-training-question-runs-as-three-experiments-re-scoped-by-evidence)
+- **The machinery to copy:** the cached correction's own run across amounts under `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/` and its runner
 
 ---
 
@@ -97,7 +98,7 @@
 
 ⬅️ [Previous](#environment-facts-this-plan-depends-on) | 📋 [TOC](#table-of-contents) | [Next](#why-this-plan-exists) ➡️
 
-**The causal dose figure for the shipped artifact: compose rate against λ on r̂, four control rows, AUC beside the cached correction's.** It matters now because the paper's causal story currently rests on a correction no deployed system has access to.
+**The causal figure for the shipped artifact: compose rate against λ on r̂, four control rows, AUC beside the cached correction's.** It matters now because the paper's causal story currently rests on a correction no deployed system has access to.
 
 ---
 
@@ -105,7 +106,7 @@
 
 ⬅️ [Previous](#the-claim) | 📋 [TOC](#table-of-contents) | [Next](#description-what-to-build) ➡️
 
-**The problem.** The register is lopsided. The causal dose evidence all belongs to the cached correction, and the paper ships the LoRA.
+**The problem.** The register is lopsided. All the evidence that more correction gives more composition belongs to the cached correction, and the paper ships the LoRA.
 
 **The solution.** The same machinery with the injection source swapped: λ on r̂ instead of λ on cached r_t, wrong-seed and shuffled controls kept.
 
@@ -132,7 +133,7 @@ Serves master-plan objective 3 and goal 3. Checkable outcomes:
 
 1. The manifest's per-condition counts printed and recorded before launch.
 2. `dose_curves_lora.json` written with every condition scored.
-3. The review file's threshold question answered; the dose figure drafted for plan 05.
+3. The review file's threshold question answered; the compose-rate-against-λ figure drafted for plan 05.
 
 ---
 
@@ -168,7 +169,7 @@ Serves master-plan objective 3 and goal 3. Checkable outcomes:
 
 2.1 **Monitor while it runs.** `squeue -u mmolefe` for a Slurm launch; for nohup, SSH to the node, `pgrep -af 'lora_dose'` and `tail -f` the log. ✅ renders accumulating under `/datasets/.../lora_dose/`; ❌ the log stalls or the disk guard trips: stop, `/ingest-error-pattern --from-run-log`.
 
-2.2 **Read the curve.** Open the drafted dose figure (task 1.4's quick plot): ✅ real-r̂ curve rises with λ and both controls stay at chance level; ❌ any control rises: record it, the comparison is contaminated and the review file says so.
+2.2 **Read the curve.** Open the drafted compose-rate-against-λ figure (task 1.4's quick plot): ✅ real-r̂ curve rises with λ and both controls stay at what you would get by luck; ❌ any control rises: record it, the comparison is contaminated and the review file says so.
 
 2.3 **Write the verdict** into the [review file](../review/03-the-lora-dose-sweep.md): AUC per condition, the threshold, the launch mode, wall time.
 
@@ -186,7 +187,7 @@ Serves master-plan objective 3 and goal 3. Checkable outcomes:
 - Every condition in the manifest scored; the review file's threshold question answered with AUC values.
 
 **Fail criteria:**
-- A control condition rises above chance level (contaminated comparison), or a condition's run count was zero anywhere (silent no-op).
+- A control condition rises above what you would get by luck (contaminated comparison), or a condition's run count was zero anywhere (silent no-op).
 
 **When you get results, answer the open questions in the [review file](../review/03-the-lora-dose-sweep.md).**
 
@@ -200,7 +201,7 @@ Serves master-plan objective 3 and goal 3. Checkable outcomes:
 
 | Figure | Lane | What it shows | Save to |
 |--------|------|---------------|---------|
-| the LoRA dose figure | subject | compose rate (y, 0-1) vs λ (x), one curve per injection source (r̂, wrong-seed, shuffled), AUC in words | drafted here, shipped by plan 05 |
+| the LoRA's compose-rate-against-λ figure | subject | compose rate (y, 0-1) vs λ (x), one curve per injection source (r̂, wrong-seed, shuffled), AUC in words | drafted here, shipped by plan 05 |
 
 ### Generated during plan execution
 
@@ -236,7 +237,7 @@ Serves master-plan objective 3 and goal 3. Checkable outcomes:
 
 ⬅️ [Previous](#orchestration-keeping-catalogs-and-plan-files-in-sync) | 📋 [TOC](#table-of-contents) | [Next](#recommended-skill) ➡️
 
-**File:** the cached-correction dose runner feeding `/datasets/.../outputs/interaction_term/dose/dose_curves.json` — the schema and control-row layout to mirror.
+**File:** the cached correction's runner across amounts, feeding `/datasets/.../outputs/interaction_term/dose/dose_curves.json` — the schema and control-row layout to mirror.
 **File:** `scripts/showcase/dog_x_dog_probe.py` (plan 02) — the shared runner this extends.
 
 ---
@@ -248,7 +249,7 @@ Serves master-plan objective 3 and goal 3. Checkable outcomes:
 ▶ Paste to run this plan (reuses the injection runner plan 07 builds):
 
 ```
-/run-experiment plans/01-showcase-the-trained-lora/plans/03-the-lora-dose-sweep.md — four control rows; stop if any control rises above chance level; AUC always carries its meaning in words.
+/run-experiment plans/01-showcase-the-trained-lora/plans/03-the-lora-dose-sweep.md — four control rows; stop if any control rises above what you would get by luck; AUC always carries its meaning in words.
 ```
 
 alt, headless overnight: in a fresh session run `/unattended run-experiment plans/01-showcase-the-trained-lora/plans/03-the-lora-dose-sweep.md` and paste the tmux block it emits (hours of renders, numeric abort conditions, no human mid-loop). What has to pass before this runs and the review file's threshold are the stop conditions.

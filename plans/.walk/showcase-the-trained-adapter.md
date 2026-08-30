@@ -151,7 +151,8 @@ computation layer 1 must decide.
   Expanded 2026-08-29 into four children:
   1. *The checkpoint*: LCM-LoRA (latent-consistency/lcm-lora-sdxl, ~400MB on the already-loaded
      base UNet) over the full LCM-SDXL UNet; instrument-grade tolerates the lighter variant;
-     switch only if frames come out too rough. Near-floor: a download-and-try settles it.
+     switch only if frames come out too rough. The cost is about as low as it gets: a
+     download-and-try settles it.
   2. *The condition fed to the probe* (needs a decision): the endpoint depends on the prompt the
      consistency function is given. (i) joint prompt = where the joint flow would carry this
      state, the sharp version of the layer-2 teacher-forced read; (ii) each expert prompt = a
@@ -216,7 +217,8 @@ already worked here rather than choosing fresh:
    commitment (18-36 per pair), with the correction coherent early (consecutive cosine 0.564,
    steps 0-9) and jittery late (-0.174, steps 20-49). Four instruments, no contradiction.
 2. Boundary one: "any early push works" is dead; the random-direction control at matched norm
-   gives dose AUC 0.023 against 0.387 real, so the claim is early AND correctly aimed.
+   gives an area under the correction-amount curve of 0.023 against 0.387 for the real
+   correction, so the claim is early AND correctly aimed.
 3. Boundary two: no sampler-vs-model attribution in any figure until the
    is-the-gap-the-samplers-or-the-models scope reports (its free-bound run is step 24).
 4. Minted: the timing-ladder figure candidate (ASCII sketch above, route to design-figure
@@ -397,6 +399,9 @@ lives as an exploratory thread under artifacts/ideas/. No video route, because i
     measured 4.2 steps/s (measure it). Bar, written before launch: if held-out compose rate
     at 200k minus at 100k lies within the seed-noise band (spread over the 8 held-out seeds)
     and the frozen figure tracking set shows no crispness change, length is not the knob (null).
+
+    > A null here means the compose rate at 200k steps looks the same as it did at 100k.
+
   - **Experiment B, capacity**: fresh runs at rank 16 and rank 32 (alpha = rank), everything
     else identical, 100k steps each. One axis. Deliverable: the rank-ablation figure, same
     cells, same lambda, same inference across r8/r16/r32 at matched steps. Bar: r16/r32

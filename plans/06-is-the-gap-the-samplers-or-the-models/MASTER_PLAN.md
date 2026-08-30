@@ -41,7 +41,7 @@ own scope rather than one step inside a scope that is half finished.
 **A [Langevin corrector](/home-mscluster/mmolefe/goal-setting/learning/sampler-correctors-for-composition/plans/21-langevin-dynamics.md) run to equilibrium at each noise level removes part of the correction `r_t`
 and leaves a part that does not go away, and what it leaves at the low-noise end of the run is the
 model's error rather than the sampler's.** This scope returns that share as a number with its
-limit attached, and puts three composition rules on one dose axis so the paper has a baseline row
+limit attached, and puts three composition rules on one amount axis so the paper has a baseline row
 rather than an assertion.
 
 > Langevin means nudging the latent along the score and adding a little fresh random noise, over
@@ -59,7 +59,7 @@ take it away. The other is the model's: `p(cat)·p(dog)` is not `p(cat and dog)`
 touches it, and it does not vanish at zero noise.
 
 This scope builds the corrector, calibrates it, and measures what survives it. It then compares
-plain product-of-experts, SuperDiff and the corrector along one generalised dose axis, so the
+plain product-of-experts, SuperDiff and the corrector along one generalised amount axis, so the
 three rules are read against each other rather than as three unrelated pictures.
 
 ## Why this plan exists
@@ -132,7 +132,7 @@ then the curve that sizes one error against the other, then the same nine window
 with the corrector in place of the injected correction.
 
 **The comparison half, steps 28 to 30.** SuperDiff wired at this repo's 50 steps, two grids
-putting three composition rules on one dose axis, and a full read of the Feynman-Kac paper, which
+putting three composition rules on one amount axis, and a full read of the Feynman-Kac paper, which
 happens only if the first two justify it.
 
 The two halves ask different questions. The first sizes an error, the second compares methods.
@@ -217,7 +217,7 @@ cannot be written honestly until that number exists.
 
 Size the sampler's share of the correction against the model's share, on the one part of the run
 where the two can be told apart, and say plainly where they cannot. Then put plain
-product-of-experts, SuperDiff and a Langevin corrector on one dose axis, so the paper's own rule
+product-of-experts, SuperDiff and a Langevin corrector on one amount axis, so the paper's own rule
 is read against two published ones instead of standing alone.
 
 ## Objectives
@@ -234,7 +234,7 @@ is read against two published ones instead of standing alone.
 4. Rerun the same nine window positions with the corrector in place of the injected correction, so
    the two mechanisms can be compared at the same moments of the run.
 5. Wire SuperDiff at this repo's settings and check it still works there, then compare three rules
-   along one generalised dose axis.
+   along one generalised amount axis.
 6. Decide whether Feynman-Kac correctors are built or cited, with the reason recorded either way.
 
 ## Goals
@@ -259,6 +259,10 @@ is read against two published ones instead of standing alone.
    `k=200` still differ by more than `MAX_K_INSTABILITY = 0.05`, or the displacement is under
    `MIN_CHAIN_DISPLACEMENT`, or the composing pair behaves like the failing pair. Every threshold
    sits in source, so moving one after the answer is visible shows up in a diff.
+
+   > A null here means the curve at 200 corrector steps sits on top of the curve at none: the
+   > correction's size at the end of the run is the same whether the chain ran or not.
+
 5. **The timing comparison is recorded either way.** Whether the corrector's compose rate peaks in
    the same window the injected correction does. Same window is a strong result, two different
    mechanisms acting at the same moment. A different window is stronger and gets its own
@@ -267,7 +271,7 @@ is read against two published ones instead of standing alone.
    guidance 7.5, and the 200-step against 50-step check records whether the 50-step render still
    composes. If it does not, every comparison against it is between a working rule and a crippled
    one, and that sentence goes in the caption.
-7. **The three rules travel one axis.** Two grids on the generalised dose axis, with the delivered
+7. **The three rules travel one axis.** Two grids on the generalised amount axis, with the delivered
    absolute amount per row made visible or matched, and the places on the grid no rule can reach at
    `λ=1` labelled rather than left to look like failures.
 
@@ -279,8 +283,8 @@ A number the paper can print: the share of the correction still present at the l
 run once the Markov chain has equilibrated, measured on one failing pair and one composing pair,
 with the whole `k` grid shown so the trend is visible rather than asserted, and with the limit
 stated that the compose-decisive window is the one place this measurement cannot attribute. Beside
-it, two dose grids comparing three composition rules, and a decision on Feynman-Kac. A null is a
-result here and closes the scope honestly rather than failing it.
+it, two grids comparing three composition rules across correction amounts, and a decision on
+Feynman-Kac. A null is a result here and closes the scope honestly rather than failing it.
 
 ## Definition of Done
 
@@ -301,7 +305,7 @@ result here and closes the scope honestly rather than failing it.
    `poe/`, and the same-window question is answered either way.
 6. SuperDiff renders at 50 steps, the 200-against-50 parity check is recorded, and `eps_M` per step
    is exposed so `r_t^SD = eps_J - eps_M` can be formed.
-7. Both dose grids exist in
+7. Both grids across correction amounts exist in
    `paper/iclr/figures/how-much-is-added/across-composition-rules/`, each with its `.json` sidecar
    and a `README.md` entry naming which rule produced it, and the `λ=1` column is classified per
    row.
@@ -371,7 +375,7 @@ start today.
 | 26 | [what is left once the chain settles](plans/hypothesis-02-what-is-left-once-the-chain-settles.md) | tests the claim | the measurement everything downstream waits on: ‖r_t^(k)‖ and ‖eps_PoE‖ per step against `k ∈ {0,1,5,20,100,200}`, two pairs, one seed, no images and no detector. Applies the three-way threshold | 24, 25 | ⚠️ not started |
 | 27 | [does the corrector compose in the same window](plans/hypothesis-03-does-the-corrector-compose-in-the-same-window.md) | tests the claim | the same nine window positions rerun with the corrector in place of the injected correction, matched to the existing figure | 26 | ⚠️ not started |
 | 28 | [SuperDiff at this repo's fifty steps](plans/baseline-01-superdiff-at-this-repos-fifty-steps.md) | establishes a baseline | wires SuperDiff into `poe_repair/composers/superdiff.py`, matches it to 50 steps at guidance 7.5, and checks with its own 200-against-50 render whether matching broke it | 26 | ⚠️ not started |
-| 29 | [three rules on one dose axis](plans/baseline-02-three-rules-on-one-dose-axis.md) | establishes a baseline | the generalised injection `eps_M + λ·r_t^M`, and the two dose grids that compare four rows along it | 25, 28 | ⚠️ not started |
+| 29 | [three rules on one amount axis](plans/baseline-02-three-rules-on-one-dose-axis.md) | establishes a baseline | the generalised injection `eps_M + λ·r_t^M`, and the two grids across correction amounts that compare four rows along it | 25, 28 | ⚠️ not started |
 | 30 | [Feynman-Kac correctors: built or cited](plans/idea-01-feynman-kac-correctors-gated.md) | explores | a full read of arXiv 2503.02819 and a built-or-cited decision, run only if the corrector condition moved anything | 26, 29 | ⚠️ not started |
 
 Each plan carries its own `## Environment Facts This Plan Depends On` field, its own Figure Catalog
@@ -408,7 +412,7 @@ reshuffle. Each one names the plan that owns it, so `/populate-plans` cannot dro
 | A flat curve whose median displacement is under `MIN_CHAIN_DISPLACEMENT` is a broken measuring tool, not a null | steps 25 and 26 |
 | The rows deliver different absolute amounts at the same `λ`, because `‖r_t^M‖` differs per row. [The timing plan](../03-does-the-correction-cause-composition/plans/hypothesis-03-when-in-the-run-it-matters.md) met this and answered it with a `--mode matched` condition, so either put the delivered total on each row label or run matched | step 29 |
 | The corrector rows will not reproduce the joint render at `λ=1`, because the chain has already left the joint trajectory. Those grid positions are labelled not-an-identity, which makes the `λ=1` column a free classifier of what each rule is | step 29 |
-| The corrector's window figure files to `paper/iclr/figures/when-the-correction-arrives/mcmc/`, the four existing PNGs are already moved into `poe/`, and the dose grids file to `paper/iclr/figures/how-much-is-added/across-composition-rules/`, because the timing folder's name is a question about timing | steps 27 and 29 |
+| The corrector's window figure files to `paper/iclr/figures/when-the-correction-arrives/mcmc/`, the four existing PNGs are already moved into `poe/`, and the grids across correction amounts file to `paper/iclr/figures/how-much-is-added/across-composition-rules/`, because the timing folder's name is a question about timing | steps 27 and 29 |
 
 ## Environment Context
 
@@ -449,7 +453,7 @@ today and in parallel; everything else waits on step 26.
      + step size                     ├──▶ 28 SuperDiff at 50 steps
      (proven inert                   │         │
       before it is                   │         ▼
-      believed)                      │    29 three rules, one dose axis
+      believed)                      │    29 three rules, one amount axis
                                      │         │
                                      └─────────┴──▶ 30 Feynman-Kac: built or cited
                                                      (closes unrun if the gate was null)
@@ -485,7 +489,7 @@ generated run) is in the [root MASTER_PLAN.md](../../MASTER_PLAN.md) and is not 
   Both networks are evaluated there, so `r_t^(k) = eps_J(x_t^(k)) - eps_PoE(x_t^(k))`.
 - **The read zone:** the last five denoising steps, where the sampler's share has vanished by
   construction and anything left is the model's.
-- **The generalised dose axis:** for any composition rule `M` with a per-step prediction `eps_M`,
+- **The generalised amount axis:** for any composition rule `M` with a per-step prediction `eps_M`,
   define `r_t^M = eps_J - eps_M` and inject `eps_M + λ·r_t^M`. At `λ=0` the rule runs alone, at
   `λ=1` the prediction is `eps_J` exactly. Every rule then travels the same axis, so a `λ` column
   is a matched comparison rather than four unrelated pictures.

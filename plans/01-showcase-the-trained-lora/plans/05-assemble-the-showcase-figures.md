@@ -56,7 +56,7 @@ This extracts error patterns from the run transcript, deduplicates against globa
 
 ⬅️ [Previous](#table-of-contents) | 📋 [TOC](#table-of-contents) | [Next](#considerations) ➡️
 
-**The experiment:** none; this plan draws settled results. It assembles the showcase set: the structure figure from the spectra, the figure where two independent measurements agree on the same window (`step-35_two-instruments-one-window.png`), the dog × dog grid, the dose figure, the transfer matrix, each with a sidecar, each checked against [the ledger's standard](../decisions-taken-here.md).
+**The experiment:** none; this plan draws settled results. It assembles the showcase set: the structure figure from the spectra, the figure where two independent measurements agree on the same window (`step-35_two-instruments-one-window.png`), the dog × dog grid, the compose-rate-against-λ figure, the transfer matrix, each with a sidecar, each checked against [the ledger's standard](../decisions-taken-here.md).
 
 **What this plan does:** builds the two figures that need no new runs (the structure figure, and the one where two independent measurements agree on the same window), imports the run-produced figures from plans 02 to 04 as they land, and runs the standard check over the whole set.
 
@@ -121,7 +121,7 @@ This extracts error patterns from the run transcript, deduplicates against globa
 
 1. **Structure figure:** energy-at-k with train, held-out projection, and the applicable anchors, from spectrum.json + spectrum_windowed.json; script `scripts/showcase/structure_figure.py` (new).
 2. **Two measurements, one window:** F4a's curve of [compose rate](../../../context/world/compose-rate.md) against window position, and the early/late held-out projection, on aligned step axes; `scripts/showcase/two_instruments_window.py` (new).
-3. **Imports:** the dog × dog grid, dose figure, transfer matrix as their plans finish; copy + sidecar into `paper/iclr/figures/`.
+3. **Imports:** the dog × dog grid, the compose-rate-against-λ figure, the transfer matrix as their plans finish; copy + sidecar into `paper/iclr/figures/`.
 4. **The standard check:** a checklist pass over every figure against the ledger; violations fixed or the figure held back.
 
 ---
@@ -168,7 +168,7 @@ Serves [Objective 5 and DoD 4 of the scope master plan](../MASTER_PLAN.md).
 ◀ **Needs: plans 02, 03, 04** delivering their figures (import per arrival; do not wait for all).
 
 - [ ] **2.1** Import the dog × dog grid + norm curve with sidecars
-- [ ] **2.2** Import the dose figure with `dose_curves.json`
+- [ ] **2.2** Import the compose-rate-against-λ figure with `dose_curves.json`
 - [ ] **2.3** Import the transfer matrix with `transfer_matrix.json`
 
 ▶ **Next: [instruction 3.1](#3--run-the-standard-check)**.

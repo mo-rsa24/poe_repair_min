@@ -439,7 +439,7 @@ Known issues and solutions. This section is automatically updated after runs via
 
 ### From project catalog
 
-(Add entries from `environment/known-failures.md` that apply to runs of the dose series.)
+(Add entries from `environment/known-failures.md` that apply to the run across correction amounts.)
 
 ---
 

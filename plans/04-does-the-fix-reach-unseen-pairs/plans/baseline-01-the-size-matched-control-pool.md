@@ -63,8 +63,11 @@ assertion passing AND its pair count equals the animals pool's; both pools are
 evaluated on the identical animal held-out set (same pair slugs). A script asserts
 equal N and identical held-out slugs.
 STOP: if a size-matched mixed pool cannot be built at equal N → halt (B); (A) still
-carries the scope. Per-run: same delivery-null stop as plan 03 (distance-reached at
-chance level past the commitment window → mark delivery-null, move on).
+carries the scope. Per-run: same delivery-null stop as plan 03 (distance-reached no better than
+luck past the commitment window → mark delivery-null, move on).
+
+> A delivery-null run is one where the correction never moved the prediction far enough to change
+> the picture.
 
 ## Recommended skill
 ▶ `/run-experiment` ✅: drives the mixed-pool run and the same-held-out-set eval.

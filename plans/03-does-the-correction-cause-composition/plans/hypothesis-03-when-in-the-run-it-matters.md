@@ -252,7 +252,7 @@ about which grid was run.
 ⬅️ [Previous](#how-wide-the-window-is-and-why-not-the-obvious-rule) | 📋 [TOC](#table-of-contents) | [Next](#purpose-and-goal) ➡️
 
 One sliding-window experiment over the same eight held-out pairs and four seeds
-the dose series used. The base is full guided PoE at every step, with the prompt
+the run across correction amounts used. The base is full guided PoE at every step, with the prompt
 on throughout; a width-10 window slid across the 50 steps at stride 5 switches only
 the injected r_t on and off. Because conditioning never switches off, the only thing that
 changes across the nine positions is when the correction acts.
@@ -314,9 +314,9 @@ window positions with the scorer's verdict on each.
       curve with the fork step drawn on it, `scripts/window_strip.py` for the
       same run across all nine windows.
 
-▶ **Next: task 2.1**, the runs that untie timing from dose.
+▶ **Next: task 2.1**, the runs that untie timing from amount.
 
-### 2. 📊 Untying timing from dose, and the two ends of the run
+### 2. 📊 Untying timing from amount, and the two ends of the run
 
 ◀ **Needs: tasks 1.4 and 1.5**, so the nine-window curve exists to be challenged.
 
@@ -436,8 +436,8 @@ figure below exists on disk and is tracked in git.
 | F4a when it arrives | — | Every cat × dog run in the window grid, 9 windows across, 4 seeds down, time reading left to right | `window_position_grid.py` | **built** |
 | F4b size is not timing | — | Correction size per step against compose rate per window, on one step axis | `size_vs_timing.py` | **built** |
 | F4c the cliff in language | — | The same nine windows read by caption similarity instead of by counting animals | `caption_readback.py` | **built** |
-| F4d timing not dose | — | 2×2 of real samples: early and late windows crossed with each other's delivered total | `timing_vs_dose.py` | **built** |
-| F4e cliff survives dose-matching | — | The nine-window rate at full strength and with every window rescaled to one total | `timing_cliff_matched_dose.py` | **built** |
+| F4d timing not amount | — | 2×2 of real samples: early and late windows crossed with each other's delivered total | `timing_vs_dose.py` | **built** |
+| F4e cliff survives matching for amount | — | The nine-window rate at full strength and with every window rescaled to one total | `timing_cliff_matched_dose.py` | **built** |
 | F4f the window map | — | The window grid itself | `window_map_all_pairs.py` | ⚠️ no register row (instruction 4.1) |
 | F4g more start, same ceiling | — | Front-loaded series: five prefix cutoffs, correction on then off | `longer_correction_grid.py` | ⚠️ `reserved`, file exists (instruction 4.2) |
 | F4h too late to fix | — | Back-loaded series: five suffix cutoffs, correction off then on | `later_start_grid.py` | ⚠️ `reserved`, file exists (instruction 4.2) |

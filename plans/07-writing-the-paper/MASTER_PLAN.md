@@ -65,7 +65,7 @@ the story order, the figure layout, and every word. It reads figures from
    confirmed.
 
 ## Expected Outcome
-An ICLR 2027 submission. At minimum, a paper whose causal claim (dose, direction,
+An ICLR 2027 submission. At minimum, a paper whose causal claim (amount, direction,
 timing) is figure-backed and whose transfer claim is one honest held-out number
 cited with its checkpoint. At most, that plus the universality evidence
 (cross-model replication, the same experiment run across samplers) as a second

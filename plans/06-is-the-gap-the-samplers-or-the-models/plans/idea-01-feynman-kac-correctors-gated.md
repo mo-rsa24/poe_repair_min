@@ -24,7 +24,7 @@ writes down the reason either way.
 | Step | Plan | What it does |
 |------|------|-------------|
 | 26 | [hypothesis-02: what-is-left-once-the-chain-settles](hypothesis-02-what-is-left-once-the-chain-settles.md) ⚠️ | the measurement this plan waits on. A null there closes this plan unrun |
-| 29 | [baseline-02: three-rules-on-one-dose-axis](baseline-02-three-rules-on-one-dose-axis.md) ⚠️ | says whether the corrector rows are worth extending to a second corrector family |
+| 29 | [baseline-02: three-rules-on-one-amount-axis](baseline-02-three-rules-on-one-dose-axis.md) ⚠️ | says whether the corrector rows are worth extending to a second corrector family |
 | **30 (current)** | **idea-01: feynman-kac-correctors-gated** ⚠️ | **a full read of arXiv 2503.02819, and a recorded decision to build it or cite it** |
 
 Design only. Verdicts and run state live in
@@ -102,6 +102,9 @@ returned a null, the corrector condition moved nothing and a second corrector fa
 related-work paragraph. Closing unrun with the reason recorded is a completed plan, not an
 abandoned one.
 
+> A null at step 26 means the correction's size at the end of the run came out the same whether the
+> chain ran or not.
+
 **No usable implementation was found when the scope was designed.**
 
 That is why this is a read rather than a wiring job, and it is also the first thing the read should
@@ -159,7 +162,7 @@ the paper's related-work section can reach it.
 ⬅️ [Previous](#why-this-plan-exists) | 📋 [TOC](#table-of-contents) | [Next](#description-what-to-do) ➡️
 
 ```
-   step 26 gate            step 29 dose grids
+   step 26 gate            step 29 amount grids
         │                        │
         └────────┬───────────────┘
                  ▼

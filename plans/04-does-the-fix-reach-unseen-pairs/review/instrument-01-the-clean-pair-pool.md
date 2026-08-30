@@ -98,8 +98,8 @@ Navigation: ⬅️ [Written before the run](#written-before-the-run-answered-aft
 Questions the result itself raised. **Nothing here may ever become the question above**, because it was
 written with the answer already visible.
 
-- [ ] 🟡 Does `an_elephant__x__a_penguin` actually compose by default? Raised by the dose series
-      scoring it 0 of 4 at strength 0. Unresolvable from the data in hand, which is why it sits
+- [ ] 🟡 Does `an_elephant__x__a_penguin` actually compose by default? Raised by the run across correction
+      amounts scoring it 0 of 4 at strength 0. Unresolvable from the data in hand, which is why it sits
       in [Still open](#still-open) rather than being answered here.
 
 ## Could the answer be an artefact
@@ -130,8 +130,8 @@ Navigation: ⬅️ [Could the answer be an artefact](#could-the-answer-be-an-art
 Navigation: ⬅️ [What the write-up owes](#what-the-write-up-owes) | 📋 [TOC](#table-of-contents) | [Next](#next-step) ➡️
 
 `an_elephant__x__a_penguin` is listed here as one of three compose-by-default control pairs, and
-that is what the do-no-harm check rests on. The dose review reports it scoring 0 of 4 at strength
-0, with all four images single fused creatures:
+that is what the do-no-harm check rests on. The review of the run across correction amounts
+reports it scoring 0 of 4 at strength 0, with all four images single fused creatures:
 [hypothesis-02 of the other claim](../../03-does-the-correction-cause-composition/review/hypothesis-02-more-correction-more-composition.md).
 
 Both cannot be true. Either the pool's assumption about that pair is wrong, or the two runs

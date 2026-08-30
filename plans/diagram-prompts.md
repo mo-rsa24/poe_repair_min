@@ -24,7 +24,9 @@ Four colours, each meaning exactly one thing, in every image of both lanes.
 | Blue | the uncorrected path: what plain Product-of-Experts does on its own |
 | Amber | the correction `r_t`, and anything carrying or learning it |
 | Green | measured and passed: a threshold met, a figure built, a component confirmed in the repo |
-| Red | measured and failed, or a null: a control at chance level, a threshold not met, a known limitation |
+| Red | measured and failed, or a null: a control that reads what you would get by luck, a threshold not met, a known limitation |
+
+> A null here means the numbers came out the same with the correction as without it.
 
 A **control** is drawn as a hollow amber outline at the same size as the solid amber correction,
 never as a fifth colour. That is faithful to what a control is here: the same size as the real
@@ -359,7 +361,7 @@ Text in the image: title banner "what reaches the page". Phase container title: 
 Exclusions: no product logos, no stage other than the three listed, no readable chart content inside the framed cards, no placeholder gibberish text, no watermark.
 ```
 
-Faithfulness note: the causal figure card is in progress with most frames green, because fourteen reserved places on the register are built. The one red frame is the low-rank card, whose argument does not stand against a chance level that controls for the right thing, and it must be a single frame rather than the whole card, since the rest of the set is fine.
+Faithfulness note: the causal figure card is in progress with most frames green, because fourteen reserved places on the register are built. The one red frame is the low-rank card, whose argument does not stand against what you would get by luck once that is worked out the right way, and it must be a single frame rather than the whole card, since the rest of the set is fine.
 
 ### Prompt 6 (Process): The manuscript
 
