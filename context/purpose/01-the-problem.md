@@ -44,6 +44,9 @@ pairs fail less often: `a_donkey__x__a_pony` at 6 of 8 and `a_crocodile__x__an_a
 are visually different" does not predict success on its own; `report/experiments-log.md`'s EXP-03 registers
 this as a pre-registered null rather than the hypothesis. 🔍
 
+> Registering it as a null means the expectation written down before the run was no effect: how
+> different the two animals look does not change how often the pair fails.
+
 **When PoE does render both concepts, the render still is not trustworthy on its own.** ✍️
 
 `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md` opened all 32 of the strongest-correction runs behind a

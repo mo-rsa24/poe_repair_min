@@ -33,7 +33,7 @@ Navigation: ⬅️ [The test](#the-test) | 📋 [TOC](#table-of-contents) | [Nex
 
 `MASTER_PLAN.md` step 4 (`hypothesis-02-more-correction-more-composition`) names this the
 headline claim and marks it done. The falsification shape, from `report/experiments-log.md`'s design
-convention: a dose-response curve where compose rate rises as the interaction term's strength (λ)
+convention: a curve where compose rate rises as the interaction term's strength (λ)
 rises, while a control that injects a random vector of the same size stays flat. ✍️
 
 **A held-out check landing above a threshold fixed before the run.** ✅
@@ -61,6 +61,9 @@ this scorer without a tighter check.
 wrong, delivering too little) and states its own null: fewer than 40% of failing runs landing in
 either mode would mean the two-mode decomposition is wrong, and a large group fitting neither
 would mean the corrector emits a fine correction and the run still fails for an unexplained reason.
+
+> A null here is the outcome where the split explains nothing: the failing runs would land in the
+> two modes about as often as they would if each run had been assigned a mode at random.
 
 ## What this cannot tell you
 
@@ -94,7 +97,7 @@ Navigation: ⬅️ [What this cannot tell you](#what-this-cannot-tell-you) | �
 | What | How it was established | When |
 |---|---|---|
 | The mission statement and the five-step ladder | Read in `MASTER_PLAN.md`, Mission and Objectives | 2026-08-24 |
-| The dose-response and held-out-seed thresholds | Read in `MASTER_PLAN.md`, Goals, and `report/experiments-log.md` | 2026-08-24 |
+| The more-correction-more-composition claim and the held-out-seed thresholds | Read in `MASTER_PLAN.md`, Goals, and `report/experiments-log.md` | 2026-08-24 |
 | The scorer's true-rate bound at λ=1 | Read in `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md` | 2026-08-24 |
 | The two-mode failure classification and its null | Read in `report/experiments-log.md`, EXP-05 | 2026-08-24 |
 | The animal-pair scope boundary | Read in `plans/standing/retrofit-poe-repair-min.md`, "Words this uses" | 2026-08-24 |

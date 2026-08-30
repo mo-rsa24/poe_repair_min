@@ -83,7 +83,7 @@ Navigation: ⬅️ [What it looks like](#what-it-looks-like) | 📋 [TOC](#table
 **It is the whole causal claim.** ✅ If adding this term back in (at increasing λ) reliably raises
 the compose rate while a same-sized random vector does not, the project has evidence the term is
 what PoE composition is missing, not just a correlate. `MASTER_PLAN.md` step 4 records this
-dose-response result as done.
+result as done.
 
 ## How it shows up in the data
 

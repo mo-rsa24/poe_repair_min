@@ -39,12 +39,27 @@ have to ask what a word means, the line was wrong, not the reader.
 | veracity | whether it is true | |
 | hedged | not yet measured | in prose. In a diagram prompt it stays, where it means a dashed outline |
 
+| dose | amount, or the multiplier | how much of the correction gets added. A medical metaphor for a number that scales a vector |
+| dose sweep, dose series | the run across correction amounts | |
+| dose axis | the amount axis | |
+| dose-response | more correction, more composition | say the finding, not the pharmacology |
+| null test, null probe | the same-prompt check | both experts are given the same words, so the correction between them should be zero. It is named for what it does, not for the value it expects |
+| chance level | what you would get by luck | introduced in an earlier pass of this file as a replacement for "floor", and no clearer than the thing it replaced |
+| floor | what you would get by luck, or the lowest it goes | judge per site: the statistical sense and the "minimum value" sense are different things |
+
 ## Kept, because the field genuinely calls it that
 
 These are not private labels, and removing them would cost more than it saves: a reader needs them
 to follow a paper. Each gets one plain gloss at its first use in a file, never a rename.
 
 speciation, Langevin, Tweedie, AUC, low-rank, held-out, basin, Mono-free.
+
+**null**, with a qualification rather than a replacement. A null result is statistics' own name for
+finding no effect, and it is a real outcome rather than a failure, so the word stays. At its first
+use in a file it is given a plain example instead of a definition: the two language-side reads
+came back null, meaning the numbers with the correction looked the same as the numbers without it.
+`null threshold` keeps the word for the same reason: it is the number a control has to stay under
+to count as having done nothing.
 
 ## Not changed, and why
 

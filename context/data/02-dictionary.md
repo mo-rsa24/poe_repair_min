@@ -132,7 +132,7 @@ How much of the interaction term is added back at inference. `0` reproduces plai
 **Type and shape** float, `0.0` to `1.0` across the settings this repo has run
 
 **Where it comes from** set as a sampling parameter, and run across a grid of values in the
-dose-response experiments
+experiments that test whether adding more of the correction composes more often
 
 **Stands for** a property of one render, applied over whichever
 [window](../world/interaction-term.md#words-this-file-uses) of steps that run specifies

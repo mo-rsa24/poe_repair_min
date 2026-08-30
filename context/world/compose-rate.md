@@ -64,7 +64,7 @@ Navigation: ⬅️ [What it looks like](#what-it-looks-like) | 📋 [TOC](#table
 
 **Every headline number the paper prints about whether the fix works is this rate.** ✅
 
-The dose-response claim ("more correction, more composition"), the held-out-seed and held-out-pair
+The claim that more correction gives more composition, the held-out-seed and held-out-pair
 thresholds, and the group-pooling verdicts in `MASTER_PLAN.md`'s Goals are all compose rates
 computed by this scorer. A weakness in the scorer is a weakness in every one of those claims, which
 is why the project runs a standing effort (`can-we-trust-the-compose-rate` in `MASTER_PLAN.md`'s
