@@ -35,7 +35,7 @@ was made by opening the thing and looking at it.
 
 **Where it came from**
 
-A `/retrofit-repo` sweep stopped at its census because `artifacts/` meant two contradictory things.
+A `/retrofit-repo` pass stopped at its census because `artifacts/` meant two contradictory things.
 The walk that resolved it ran on 2026-08-23 across eight piles, opening 119 images in the repository
 one at a time and judging the mount's 4,259 as eleven sets.
 
@@ -47,7 +47,7 @@ inside this repository.
 ## Words this uses
 
 **The naming rule.** `<what-is-measured>-as-<what-varies>`, plus a qualifier only where the figure
-shows something extra. No claim, no paper slot letter, no pair suffix, no venue, no relative name,
+shows something extra. No claim, no paper figure letter, no pair suffix, no venue, no relative name,
 no private label. A picture with no axes takes `-explainer` instead. The shortest phrase that stays
 true if the result changes.
 
@@ -62,9 +62,9 @@ cross-taxonomy era stay where they are. Anything cut by group stays, whatever it
 exception: it is the control that composes and the paper opens on it.
 
 **Struck words**, in filenames and in prose alike: `rung`, `dose`, `dose_matched`, `cache_analysis`,
-`readback`, `arm`, `adapter`, `oracle`, `full strength`. An arm is the corrected run or the
-uncorrected run. The adapter is a **lora**. The oracle is **the joint-prompt correction**. Full
-strength is **the earliest window where lambda = 1**.
+`readback`, `arm`, `adapter`, `oracle`, `full strength`. What `arm` named is the corrected run or
+the uncorrected run. What `adapter` named is a **lora**. What `oracle` named is **the joint-prompt
+correction**. What `full strength` named is **the earliest window where lambda = 1**.
 
 **The pair form.** Prose says "a cat and a dog" everywhere it is read. The on-disk slug stays
 `a_cat__x__a_dog`, because changing it costs 3,049 files and 456 directories and buys nothing a card
@@ -79,7 +79,7 @@ One experiment currently has up to four names: one on `/home-mscluster`, one on 
 
 A name that states a claim becomes a lie when the claim dies, and one already has: `F6`'s
 shared-structure argument is recorded as dead in `report/paper-evidence-index.md` while four files still
-carry its slot letter. A name that states a private label costs a lookup every time: nothing on disk
+carry its figure letter. A name that states a private label costs a lookup every time: nothing on disk
 says what `rung2` or `group A` or `idea5a` was. And a name that exists twice sends a reader to
 whichever copy their filesystem happens to hold, which `paper/iclr/figures.md` line 30 already does:
 it names a backing curve that does not exist at the path it gives.
@@ -97,10 +97,10 @@ first would break the paper build and the scoring scripts in the same commit.
 `/datasets` is not a git repository, so every move there is permanent. Nothing on it is deleted.
 The repository is a git work tree with 49 uncommitted paths at compile time.
 
-**No behaviour change during the sweep.**
+**No behaviour change during the pass.**
 
 `/retrofit-repo` moves files and writes cards. It does not edit source. Every code change in this
-plan belongs to the `/rename` task and happens before the sweep runs.
+plan belongs to the `/rename` task and happens before that pass runs.
 
 ## The scope tree
 
@@ -189,7 +189,7 @@ disk; only the second name goes.
 | `how-many-seeds-composed-as-the-window-moves` | `how-many-seeds-composed-as-the-window-moves`, **and a register row** |
 | `samples-as-the-correction-runs-longer` | `samples-as-the-correction-runs-longer` |
 | `samples-as-the-correction-starts-later` | `samples-as-the-correction-starts-later` |
-| `F4g-overcorrection-grid` + `-seed12` | a two-cell set: `samples-as-the-window-moves-and-strength-goes-past-one/{seed-09,seed-12}.png` |
+| `F4g-overcorrection-grid` + `-seed12` | a set of two runs: `samples-as-the-window-moves-and-strength-goes-past-one/{seed-09,seed-12}.png` |
 | `F5-one-dial-three-instruments` | **redraw as three**: `where-the-picture-sits-as-correction-rises`, `compose-rate-as-correction-rises-by-the-detector`, `direction-agreement-with-the-sampler-step` |
 | `how-far-the-corrected-run-separates-from-the-uncorrected-one` | `how-far-the-corrected-run-separates-from-the-uncorrected-one` |
 | `F6-spectrum-windowed` | **redraw as two**: `energy-captured-as-directions-are-added`, `outcome-correlation-by-direction-rank`; **and a register row** |
@@ -248,7 +248,7 @@ disk; only the second name goes.
 | `03-cannot-call/` | `cannot-decide/` |
 | `04-look-alike-by-design/` | `the-two-animals-look-alike/` |
 | `05-scored-failure/` | `scored-as-a-failure/` |
-| the 32 cells | unchanged: `<pair>_seed<N>_n<count>.png` is already pair, seed and count |
+| the 32 images | unchanged: `<pair>_seed<N>_n<count>.png` is already pair, seed and count |
 
 ### The experiment packages, and the code
 
@@ -259,9 +259,9 @@ disk; only the second name goes.
 | `poe_repair/experiments/residual_between_mono_and_poe/` | `residual_between_mono_and_poe/` |
 | `poe_repair/experiments/does_the_fix_reach_unseen_pairs/` | `does_the_fix_reach_unseen_pairs/` |
 | `poe_repair/experiments/compose_scorer_validation/` | `compose_scorer_validation/` |
-| the 24 `scripts/make_*.py` | named for the figure each draws, not its paper slot |
+| the 24 `scripts/make_*.py` | named for the figure each draws, not its paper figure letter |
 | the 9 `scripts/build_*.py` | `scripts/build/`, names unchanged |
-| the other 53 in `scripts/` | grouped by the experiment they probe |
+| the other 53 in `scripts/` | grouped by the experiment they belong to |
 | `pairs.py` | `poe_repair/pairs.py` |
 
 ### The duplicates found by opening, all four
@@ -277,7 +277,7 @@ disk; only the second name goes.
 
 For Claude to execute. Ask Claude to do these, in this order.
 
-### 0. 🧭 Preflight
+### 0. 🧭 The checks before anything moves
 
 - [ ] **Read [The rename table](#the-rename-table)** end to end. It is the input, and every row was
       settled by opening the thing.
@@ -293,16 +293,16 @@ For Claude to execute. Ask Claude to do these, in this order.
 - [ ] Run the following prompt: `/rename` over the 159 code files that spell output paths, the 24
       register rows in `paper/iclr/figures.md` that name a builder script, the 12 experiment
       packages under `poe_repair/experiments/`, and the 24 `make_*.py` builders that carry paper
-      slot letters.
+      figure letters.
 - [x] **Proven green 2026-08-24.** The test suite passes (229 passed, 1 skipped, 1 xfailed) and
       `tests/test_paths_resolve.py` confirms every real path-construction site routes through
-      `poe_repair/paths.py`. The literal grep below is **not** the gate: it still fires on
+      `poe_repair/paths.py`. The literal grep below is **not** what has to come back empty: it still fires on
       `paths.py`'s own constant values (which correctly hold the old on-disk names, since nothing
       has moved yet) and on docstrings/`--help` text that name a path for a human reader, not for
       I/O. Both are confirmed harmless by direct inspection, file list in commit `f293bdf`. Do not
       re-run this grep as a stop condition; it will never go empty while `paths.py` exists.
 
-### 2. 📦 Run the sweep
+### 2. 📦 Run the refiling pass
 
 - [ ] Run the following prompt: `/retrofit-repo plans/standing/retrofit-poe-repair-min.md`, stages 1 to 7 in
       the order above.
@@ -345,8 +345,8 @@ Each is untracked, so there is no undo. Confirm one path at a time.
 ### 6. 🔍 Re-judge one call in the audit set
 
 - [ ] Open `evidence/f2-lambda1-audit/05-scored-failure/a_seal__x__a_walrus_seed9_n1.png`. It shows
-      two distinct pinnipeds and the detector returned one. The card calls both scored-failure cells
-      correct. If this one is the scorer undercounting, the bound in that card moves **up** as well
+      two distinct pinnipeds and the detector returned one. The card calls both images scored as
+      failures correct. If this one is the scorer undercounting, the bound in that card moves **up** as well
       as down, and the card says so.
 
 ### 7. 📐 Decide the two redraws
@@ -354,7 +354,7 @@ Each is untracked, so there is no undo. Confirm one path at a time.
 - [ ] `F5-one-dial-three-instruments` is three figures in one strip, three x axes and three y axes
       under one caption. Decide whether it becomes three.
 - [ ] `F6-spectrum-windowed` is four panels answering two questions, and no register row names any
-      of it. Decide whether it becomes two, and whether the slot survives at all given
+      of it. Decide whether it becomes two, and whether the paper keeps a place for it at all given
       `report/paper-evidence-index.md` records its argument as dead.
 
 ## Outputs
@@ -379,7 +379,7 @@ more composition" on two, "the same cliff, scored in language", "the cliff is no
 "Geometry says not shared, the adapter transfers anyway". Renaming does not touch those. Redrawing
 does.
 
-**Two illustrations are owed**, with their prompts already written and their slots visible:
+**Two illustrations are owed**, with their prompts already written and the places they will sit already visible:
 `figures/rt-interior-peak.png` and `figures/posterior-narrowing-covariance.png` under
 `pressure-tests/`.
 
@@ -397,11 +397,11 @@ files.
 
 ## References
 
-- `RETROFIT.md` — the census and the sitting ledger
-- `~/.claude/ARTIFACT_TREE_FORMAT.md` v3 — the shape and the naming forms
-- `~/.claude/ERROR_MATRIX_SYSTEM.md` — the failure catalog's new home
-- `report/paper-evidence-index.md` — the second conforming card, and where F6's claim is recorded as dead
-- `evidence/f2-lambda1-audit/README.md` — the first conforming card, and the model for the rest
+- `RETROFIT.md`: the census and the sitting ledger
+- `~/.claude/ARTIFACT_TREE_FORMAT.md` v3: the shape and the naming forms
+- `~/.claude/ERROR_MATRIX_SYSTEM.md`: the failure catalog's new home
+- `report/paper-evidence-index.md`: the second conforming card, and where F6's claim is recorded as dead
+- `evidence/f2-lambda1-audit/README.md`: the first conforming card, and the model for the rest
 
 ## Next step
 

@@ -2,8 +2,8 @@
 
 **Nothing has run yet.** Every question below was written before any number was looked at. This
 file judges [the free-bound design](../plans/hypothesis-01-the-free-bound-on-the-models-share.md),
-and its answer says how much the rest of this scope is worth: a floor bounded away from zero means
-the model's share is already known to be nonzero before a single corrector step runs.
+and its answer says how much the rest of this scope is worth. A lower bound above zero means the
+model's share is already known to be nonzero before a single corrector step runs.
 
 ## Recommended prompt (when the run lands)
 
@@ -17,7 +17,7 @@ the model's share is already known to be nonzero before a single corrector step 
 |---|---|
 | [design](../plans/hypothesis-01-the-free-bound-on-the-models-share.md) | which files to read, the three caveats, and what the number does to the scope |
 | **this file** | **the verdict: not yet run** |
-| [the gate's verdict](hypothesis-02-what-is-left-once-the-chain-settles.md) | the measurement this floor is read against |
+| [the step 26 verdict](hypothesis-02-what-is-left-once-the-chain-settles.md) | the measurement this lower bound is read against |
 | [the questions this file was split from](../source/the-questions-pre-registered-against-it.md) | the whole pre-registered set, written before the scope existed |
 
 ## Table of contents
@@ -50,10 +50,10 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#run-kind) ➡️
 
 Navigation: ⬅️ [Words this file uses](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#runs) ➡️
 
-**Tests the claim.** A failed bar here does not close anything, because the bar is on the honesty
-of the read rather than on its value. What it changes is how much weight the gate's answer at step
-26 carries: without this floor, that answer stands alone rather than being read against a number
-that cost nothing.
+**Tests the claim.** Missing the threshold here does not close anything, because the threshold is on
+the honesty of the read rather than on its value. What it changes is how much weight step 26's
+answer carries. Without this lower bound, that answer stands alone rather than being read against a
+number that cost nothing.
 
 ## Runs
 
@@ -69,7 +69,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 - [ ] ⚠️ **Is the correction still bounded away from zero at the last denoising step, on the
       uncorrected path, in the numbers already on disk?** The sampler's share vanishes at zero
-      noise and the model's does not, so a nonzero size there is a floor under the model's share
+      noise and the model's does not, so a nonzero size there is a lower bound on the model's share
       before any corrector runs. The answer states four things or it does not count: the number
       with its unit, the seeds it came from, which trajectory it was cached along, and the
       unnormalised `‖r_t‖` beside the ratio.
@@ -87,8 +87,9 @@ Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC
       about `eps_PoE` late in the run and not about the model's share.
 - [ ] ⚠️ Which trajectory were the residuals cached along? At λ=0 that is the plain
       product-of-experts path, and the answer is about that path only.
-- [ ] ⚠️ Were both arms evaluated at the same latent at each step? If they were not, the late-step
-      values carry accumulated path difference as well as rule difference and cannot be read at all.
+- [ ] ⚠️ Were the joint prediction and the product-of-experts prediction evaluated at the same
+      latent at each step? If they were not, the late-step values carry accumulated path difference
+      as well as rule difference and cannot be read at all.
 - [ ] ⚠️ Do the three numbers this scope quotes from the timing verdict still say what they said?
       0.656 at steps 0 to 10, 0.000 from steps 20 to 30 onward, and the correction about 2.7 times
       larger late than early. If any has moved, the threat this scope answers has changed shape.
@@ -97,19 +98,19 @@ Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC
 
 Navigation: ⬅️ [Written before the run](#written-before-the-run-answered-after) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
-**Nothing here may ever become a bar**, because anything written here is written with the answer
-already visible. Empty until the read happens.
+**Nothing here may ever become a pre-registered threshold**, because anything written here is
+written with the answer already visible. Empty until the read happens.
 
 ## Could the answer be an artefact
 
 Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC](#table-of-contents) | [Next](#what-the-write-up-owes) ➡️
 
-- [ ] ⚠️ **Was the comparison fair?** Not applicable in the usual sense: nothing is compared here,
+- [ ] ⚠️ **Was the comparison fair?** Not applicable in the usual sense. Nothing is compared here;
       one curve is read at one end. What stands in for it is the "same latent at each step"
       question above, which is the condition under which the late-step values mean anything.
 - [ ] ⚠️ **Was the instrument sound?** Does
       [correction_size_over_the_run.py](../../../scripts/correction_size_over_the_run.py) at
-      line 101 compute what this read assumes it computes, over the cells the JSON claims, upcast
+      line 101 compute what this read assumes it computes, over the renders the JSON claims, upcast
       to fp32 from the fp16 cache?
 - [ ] ⚠️ **Did the run respect the environment?** Nothing is written and no GPU is used, so the
       check reduces to whether the three files read were the ones named in the design rather than
@@ -121,9 +122,9 @@ Navigation: ⬅️ [Could the answer be an artefact](#could-the-answer-be-an-art
 
 | What the paper says | What it owes alongside it |
 |---|---|
-| the floor under the model's share | that it is read at the low-noise end of the uncorrected path only, from a cache written for a different question |
-| the floor as a number | whether it is the unnormalised size or a ratio, since the two mean different things and only one of them answers the question |
-| this floor beside the gate's remainder at step 26 | that the two come from different seeds. The cached curve is seeds 4, 42 and 123; the gate runs seed 9, on the same two pairs. Putting them side by side is a cross-seed comparison and the caption says so |
+| the lower bound on the model's share | that it is read at the low-noise end of the uncorrected path only, from a cache written for a different question |
+| that lower bound as a number | whether it is the unnormalised size or a ratio, since the two mean different things and only one of them answers the question |
+| this lower bound beside the remainder measured at step 26 | that the two come from different seeds. The cached curve is seeds 4, 42 and 123; step 26 runs seed 9, on the same two pairs. Putting them side by side is a cross-seed comparison and the caption says so |
 
 ## Still open
 
@@ -135,5 +136,5 @@ Nothing open. This file has not been run against.
 
 Navigation: ⬅️ [Still open](#still-open) | 📋 [TOC](#table-of-contents)
 
-Answer the bar. It needs no GPU and reads files already on disk, and its number changes how much
-the rest of the scope is worth running.
+Answer the pre-registered question. It needs no GPU and reads files already on disk, and its number
+changes how much the rest of the scope is worth running.

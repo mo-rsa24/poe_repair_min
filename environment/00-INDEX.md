@@ -2,7 +2,7 @@
 
 What is true about the system this work runs on. Migrated 2026-08-24 from the single
 `docs/ENVIRONMENT.md` file (the old shape) into this folder, as part of stage 2 of the
-`/retrofit-repo` sweep ledgered in `RETROFIT.md`.
+`/retrofit-repo` pass ledgered in `RETROFIT.md`.
 
 Read [overview.md](overview.md) first, always. Then the row below matching what you are about
 to touch.
@@ -37,7 +37,7 @@ catalog is [known-failures.md](known-failures.md).
   untested this sitting, because testing means running a build, which writes a PDF outside this
   folder's scope. See [paper.md](paper.md).
 - **`co3_bw`'s exact difference from `co3`.** Confirmed to exist (`ls`, 2026-08-24) and referenced
-  by at least one launcher, but not probed for what specifically it changes. See
+  by at least one launcher, but nobody has checked what specifically it changes. See
   [hpc/nodes.md](hpc/nodes.md).
 - **Whether every job script's disk guard now reads the same resolved root as its output path,**
   after the `paths.resolve()` commits. Not re-audited this sitting. See `poe-disk-001` in
@@ -48,7 +48,7 @@ catalog is [known-failures.md](known-failures.md).
   `plans/` (each with its own `## Environment Context` pointer) and about a dozen plan and review
   files that link into specific anchors of the old file. Repointing all of them is out of scope
   for this sitting; see the audit output for the full list. This is flagged for whichever stage
-  of the retrofit sweep handles repo-wide path rewrites (the plan's stage table names stage 4,
+  of the retrofit pass handles repo-wide path rewrites (the plan's stage table names stage 4,
   `tidy-repo`, as "the bulk of it, both filesystems," which is the pass already doing repo-wide
   renames).
 - **No `reference`-type memory entry names the `environment/` folder.** The closest existing

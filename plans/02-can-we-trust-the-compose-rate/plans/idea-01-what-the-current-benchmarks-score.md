@@ -1,5 +1,8 @@
 # 🧪 What the published metrics score on the same images
 
+This plan asks whether any published metric or stronger detector agrees with the human labels
+where our own scorer does not.
+
 **No step number: nothing in the paper order waits on this.** This scope runs in its own internal order, and earns numbered steps only on the big-promotion condition its own `MASTER_PLAN.md` sets. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../MASTER_PLAN.md).
 
 | Within this scope | Plan | Status |
@@ -15,9 +18,9 @@ Run the current compositional benchmarks and the better detectors on exactly the
 `instrument-01` labelled, and see whether any of them agrees with people where ours does not.
 
 ## Why this plan exists
-Swapping a certified instrument for a new one needs evidence, not preference. This plan
-produces the one table that could justify it: every candidate scored on the same images against
-the same human labels, with our current scorer as the first row.
+Swapping a certified scorer for a new one needs evidence rather than preference. This plan
+produces the one table that could justify it. Every candidate is scored on the same images
+against the same human labels, with our current scorer as the first row.
 
 ## Description
 `/paper-scout` first, because a method with no source paper is a hunch wearing a method's
@@ -28,8 +31,8 @@ vision-language models used directly as judges). Then score each on the labelled
 
 ## Purpose
 Serves Objective 3 and Definition-of-Done item 7. Group 2, tries a new idea: it may change
-nothing. A winner earns a deferred task in this plan's own tree and the right to propose a group-1 run, never
-a direct change to a paper number.
+nothing. A winner earns a deferred task in this plan's own tree and the right to propose a group-1
+run. It never changes a paper number directly.
 
 ## Goal
 An agreement table, one row per candidate, current scorer first, scored on the judgeable pairs
@@ -43,11 +46,11 @@ on CPU.
 - Model weights and any cached scores go to `/datasets`, never `/home-mscluster`.
 - No external API key is assumed. A candidate that needs a hosted model is recorded as such and
   not run.
-- The 95% and 85% agreement thresholds are constants in the bake-off script, following
+- The 95% and 85% agreement thresholds are constants in the scoring script, following
   `MIN_BOX_FRACTION`.
 
 ## Success/Failure Outcomes
-- **A candidate clears the bar.** It becomes a deferred task in this plan's own tree, carrying its agreement number, and
+- **A candidate clears the threshold.** It becomes a deferred task in this plan's own tree, carrying its agreement number, and
   `gate-02` decides whether it re-certifies or replaces `scorer_validated.json`.
 - **Every candidate reproduces the same hole.** The expected outcome, written down before
   running: the benchmarks are built on presence questions, so a fusion answers yes to both. This
@@ -69,11 +72,11 @@ on CPU.
   - 💡 `/debug-config` on the first candidate's checkpoint load. Getting one
     open-vocabulary detector running offline on this cluster is the step most likely to eat a
     day, and it is worth doing once carefully before the other candidates queue behind it.
-- [ ] Build the agreement table, current scorer as row 1, judged against the 95%-versus-85%
-  bar held as constants in the script.
+- [ ] Build the agreement table, current scorer as row 1, judged against the 95% and 85%
+  thresholds held as constants in the script.
   - 💡 `/pair-figure` if the table is going anywhere near the paper. A table of agreement
     rates wants one example image per disagreement type beside it.
-- [ ] Any candidate clearing the bar becomes a deferred task in this plan's own tree, carrying its number and its source
+- [ ] Any candidate clearing the threshold becomes a deferred task in this plan's own tree, carrying its number and its source
   paper, as a proposed group-1 run. Nothing here changes a paper number.
 
 ## Engagement Instructions

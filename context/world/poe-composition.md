@@ -29,7 +29,7 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#what-poe-composition-is) �
   for "a cat" alone, and separately for "a dog" alone.
 - **Denoising step**: diffusion generation runs a fixed schedule of steps (here, 50) that turn
   pure noise into an image; each step's prediction can be combined differently.
-- **Mono**: the alternative to PoE — literally typing the joint prompt ("a cat and a dog") and
+- **Mono**: the alternative to PoE, literally typing the joint prompt ("a cat and a dog") and
   letting the model handle composition itself. Used only as the target the fix is measured
   against, never shipped as the method, because typing every joint prompt by hand is the thing
   PoE composition exists to avoid.
@@ -49,7 +49,7 @@ reason about both concepts together in one forward pass. ✅
 
 **Mono is the same model, given the literal joint prompt instead.** ✅
 
-`monolithic.png` in a pilot cell is the Mono render: one forward pass of SDXL on "a cat and a
+`monolithic.png` in a pilot run is the Mono render: one forward pass of SDXL on "a cat and a
 dog" together. It usually succeeds at showing both concepts, because the model was trained on
 image-caption pairs that already describe multiple things together. It is the ceiling PoE is
 compared against, not a proposed method, per `MASTER_PLAN.md`'s glossary: "Mono / the ceiling: the
@@ -83,7 +83,7 @@ Navigation: ⬅️ [Why the project cares](#why-the-project-cares) | 📋 [TOC](
 
 | Column | Stands for | Example | Entry |
 |---|---|---|---|
-| `arm` | which render method produced a given cell: PoE, Mono, or a corrected variant | `poe` (example) | [Dictionary § arm](../data/02-dictionary.md#arm) |
+| `arm` | which render method produced a given run: PoE, Mono, or a corrected variant | `poe` (example) | [Dictionary § arm](../data/02-dictionary.md#arm) |
 | `model_id` | the exact pretrained model both PoE and Mono run on | `stabilityai/stable-diffusion-xl-base-1.0` | [Dictionary § model_id](../data/02-dictionary.md#model_id) |
 
 ## What people get wrong

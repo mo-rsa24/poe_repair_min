@@ -1,5 +1,8 @@
 # 🔍 Has someone already said this?
 
+This plan asks whether a published benchmark already names and measures the two holes this scope
+wants to measure.
+
 **No step number: nothing in the paper order waits on this.** This scope runs in its own internal order, and earns numbered steps only on the big-promotion condition its own `MASTER_PLAN.md` sets. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../MASTER_PLAN.md).
 
 | Within this scope | Plan | Status |
@@ -18,8 +21,8 @@ either of those is news.
 
 ## Why this plan exists
 This scope's value depends entirely on the answer. If both halves are already named and
-measured in a published benchmark, the honest move is a methods paragraph citing it, not a new
-metric. Finding that out costs one session and no GPU. Finding it out after building the metric
+measured in a published benchmark, the honest move is a methods paragraph citing it rather than
+a new metric. Finding that out costs one session and no GPU. Finding it out after building the metric
 costs the metric.
 
 ## Description
@@ -29,8 +32,8 @@ Write the claim down first, in one paragraph, exactly as it will be tested. Then
 Record the verdict three ways. Act on it in the same session.
 
 ## Purpose
-Serves Objective 1 and Definition-of-Done item 1. It is also the switch for the rest of the
-scope: `idea-01` and `gate-02` do not start until it returns. `instrument-01` runs regardless.
+Serves Objective 1 and Definition-of-Done item 1. It also decides what else runs. `idea-01` and
+`gate-02` do not start until it returns, and `instrument-01` runs regardless.
 
 ## Goal
 A verdict in `review/gate-01-is-this-hole-already-known.md` naming one of three outcomes, with
@@ -46,12 +49,12 @@ citations, plus one line saying what happens to `idea-01` and `gate-02`.
   `writing-06-mechanism-and-limitations`. `idea-01` and `gate-02` are cancelled and marked so.
   `instrument-01` still runs, because the paper still needs the band on 94%.
 - **Said informally, never measured.** The scope continues, and the contribution becomes the
-  measurement rather than the observation. This is the outcome the verdict most needs to
-  distinguish, because it looks like "already known" and is not.
+  measurement rather than the observation. This is the outcome the verdict most needs to tell
+  apart from "already known", because the two look alike at a glance.
 - **Not addressed.** The scope continues at full size.
 - **The failure mode to avoid:** a verdict with no citations, or one that names a paper without
-  saying which of its metrics is the presence family. That is an opinion, not a check, and it
-  cannot gate anything.
+  saying which of its metrics is the presence family. That is an opinion rather than a check, so
+  it cannot hold anything back or release anything.
 
 ## Tasks
 - [ ] Write the claim as one paragraph BEFORE searching, so the search cannot soften it.
@@ -73,7 +76,7 @@ in the file, including any that turned out irrelevant, with one line saying why.
 line is present and names `idea-01` and `gate-02` by filename.
 
 STOP: no web access → halt, do not write a verdict from memory. A verdict with no citations is
-not a verdict and does not release the plans it gates.
+not a verdict, and it does not release the plans waiting on it.
 
 ## Recommended skill
 ▶ `/pressure-test` ✅: this plan is one invocation of it, on the paragraph written in task 1.

@@ -1,5 +1,8 @@
 # Is the gap the sampler's or the model's?
 
+This scope asks how much of the correction `r_t` is the sampler's fault, which a Markov chain can
+take away, and how much is the model's, which no amount of correction touches.
+
 > **This scope's plans sit in the one running order, not in a sequence of their own.** They are
 > steps 24 to 30 of the `## Running order` table in the
 > [repo root MASTER_PLAN.md](../../MASTER_PLAN.md), interleaved with every other scope's plans.
@@ -41,6 +44,9 @@ model's error rather than the sampler's.** This scope returns that share as a nu
 limit attached, and puts three composition rules on one dose axis so the paper has a baseline row
 rather than an assertion.
 
+> Langevin means nudging the latent along the score and adding a little fresh random noise, over
+> and over at one fixed noise level, until where it sits stops depending on where it started.
+
 ## What is this plan
 
 ⬅️ [Previous](#the-overall-claim) | 📋 [TOC](#table-of-contents) | [Next](#why-this-plan-exists) ➡️
@@ -63,9 +69,9 @@ three rules are read against each other rather than as three unrelated pictures.
 **The paper's timing result and a sampler artifact look identical.**
 
 [The timing plan](../03-does-the-correction-cause-composition/plans/hypothesis-03-when-in-the-run-it-matters.md)
-found that injecting the correction into steps 0 to 10 composes 0.656 of 32 cells while steps 20
-to 30 onward compose 0.000. The sampler's share of the error is worst at high noise, and high
-noise is the early steps. The picture that supports the paper's claim is also the picture a
+found that injecting the correction into steps 0 to 10 composes 0.656 of 32 runs, where one run is
+one pair generated at one seed, while steps 20 to 30 onward compose 0.000. The sampler's share of
+the error is worst at high noise, and high noise is the early steps. The picture that supports the paper's claim is also the picture a
 sampler artifact would draw.
 
 **It is the strongest objection a reviewer has available.**
@@ -83,7 +89,7 @@ result, which is why this scope is designed to return a size rather than a verdi
 
 | What the result says | What changes |
 |---|---|
-| mostly the model's share | the framing strengthens. The correction is a model-level object, the adapter is the right instrument, and the sampler comparison becomes a two-sentence related-work note |
+| mostly the model's share | the framing strengthens. The correction is a model-level object, the adapter is the right tool for it, and the sampler comparison becomes a two-sentence related-work note |
 | an even split | the paper reports both sizes, and the adapter is justified by the share a corrector cannot reach. Section 7 carries the corrector as the honest alternative for the other share |
 | mostly the sampler's share | the timing result is reread as a sampler artifact, the sampler comparison stops being optional and becomes a baseline the paper must beat, and section 7 carries it as a limitation rather than a footnote |
 
@@ -110,27 +116,29 @@ The measurement the whole scope turns on, drawn as it will look if the split is 
 ```
 
 The read is the right-hand end, where the sampler's share has vanished by construction and
-anything left is the model's. The left-hand end is where the compose rate is decided and where the
-two cannot be separated, which is the limit this scope returns beside its number.
+anything left is the model's. The left-hand end is where the [compose rate](context/world/compose-rate.md)
+is decided and where the two cannot be separated, which is the limit this scope returns beside its
+number.
 
 ## High-level overview
 
 ⬅️ [Previous](#what-this-scope-actually-does-visual) | 📋 [TOC](#table-of-contents) | [Next](#where-the-two-errors-can-be-told-apart-and-where-they-cannot) ➡️
 
-Seven plans in two halves, separated by one gate.
+Seven plans in two halves, with step 26 deciding whether the second half runs.
 
 **The diagnostic half, steps 24 to 27.** A free bound read off cached files, then a Langevin
 corrector composer beside the existing ones, then the step size fixed before any curve is read,
-then the curve that sizes one error against the other, then the window sweep rerun with the
-corrector in place of the injected correction.
+then the curve that sizes one error against the other, then the same nine window positions rerun
+with the corrector in place of the injected correction.
 
 **The comparison half, steps 28 to 30.** SuperDiff wired at this repo's 50 steps, two grids
-putting three composition rules on one dose axis, and a full read of the Feynman-Kac paper gated
-on whether the first two justify it.
+putting three composition rules on one dose axis, and a full read of the Feynman-Kac paper, which
+happens only if the first two justify it.
 
 The two halves ask different questions. The first sizes an error, the second compares methods.
 They are one scope because the second is only worth running under some outcomes of the first, and
-the gate between them is written into the plans rather than left to judgement.
+what step 26 has to return for the second half to start is written into the plans rather than left
+to judgement.
 
 The corrector follows
 [poe_internal.py](../../poe_repair/composers/poe_internal.py)'s per-step intervention pattern and
@@ -147,8 +155,8 @@ ordinary DDIM step is taken. The step size is `δ_t = c·β_t`, following the ve
 
 This section is why the measurement is read at the end of the run rather than across it. Getting
 it wrong would put a number in the paper that means something other than what the caption says. It
-belongs to step 26, the gate, and to that plan's review file, and it is stated rather than argued
-away.
+belongs to step 26, the step everything downstream waits on, and to that plan's review file, and it
+is stated rather than argued away.
 
 **What the corrector converges to.** Langevin driven by the product-of-experts score at noise
 level `t` has stationary distribution `q_t = p_t(cat)·p_t(dog)`, the product of the two diffused
@@ -165,8 +173,8 @@ that error is defined to vanish there. This number is the paper's estimate of th
 **What is left at the start of the run is still both.** At `t > 0` the corrector has settled the
 latent into `q_t`, the product of the diffused marginals. What the reverse process needs is the
 diffusion of the product, and those two differ precisely because noising and multiplying do not
-commute. So the floor at high noise is the non-commutation gap plus the diffused model gap, and no
-amount of `k` separates them. The early part of the curve is a size, not an attribution.
+commute. So what is left at high noise is the non-commutation gap plus the diffused model gap, and
+no amount of `k` separates them. The early part of the curve is a size, not an attribution.
 
 **Which lands on the timing result.** The compose-decisive window is steps 0 to 10, the high-noise
 end, which is the region where this scope cannot attribute. That limit goes in the caption and in
@@ -182,9 +190,9 @@ gap rather than a measurement of it. The caption owes that sentence.
 **What the composing pair controls.** On `a_butterfly__x__a_flower_meadow`, which composes under
 plain product-of-experts, `q_t` is already close to the joint and `eps_J` is evaluated somewhere it
 has seen. Its curve should be low at `k=0` and should not rise with `k`. If it rises the way the
-failing pair does, the rise is the probe walking the joint branch off-distribution and no reading
-of either curve is licensed. `an_elephant__x__a_penguin` is not used for this, because whether it
-composes by default is
+failing pair does, the rise is the test itself walking the joint branch off-distribution and no
+reading of either curve is licensed. `an_elephant__x__a_penguin` is not used for this, because
+whether it composes by default is
 [an open question in another review file](../04-does-the-fix-reach-unseen-pairs/review/instrument-01-the-clean-pair-pool.md).
 
 ## Purpose and goals
@@ -196,9 +204,9 @@ composes by default is
 It serves the paper's central framing, which is that a small, shared, learnable correction fixes
 composition and a rank-8 adapter can carry it. That framing rests on the correction being a
 model-level object. Nothing has tested it.
-[gate-01](../03-does-the-correction-cause-composition/plans/gate-01-two-literature-checks-before-print.md)
-already cites Soiffer et al. for a claim this scope turns into a number, and
-[writing-06](../07-writing-the-paper/plans/writing-06-mechanism-and-limitations.md)
+[The two literature checks before print](../03-does-the-correction-cause-composition/plans/gate-01-two-literature-checks-before-print.md)
+already cite Soiffer et al. for a claim this scope turns into a number, and
+[the mechanism and limitations section](../07-writing-the-paper/plans/writing-06-mechanism-and-limitations.md)
 cannot be written honestly until that number exists.
 
 **Goals** are numbered under [Goals](#goals) below.
@@ -221,9 +229,9 @@ is read against two published ones instead of standing alone.
 2. Build a Langevin corrector composer that is proven inert when switched off, and fix its one
    free parameter, the step size, before any curve is read.
 3. Measure the correction's size per denoising step against corrector count `k`, on one failing
-   pair and one composing pair, and apply a three-way bar that was written in source before the
-   answer was visible.
-4. Rerun the nine-position window sweep with the corrector in place of the injected correction, so
+   pair and one composing pair, and apply a three-way threshold that was written in source before
+   the answer was visible.
+4. Rerun the same nine window positions with the corrector in place of the injected correction, so
    the two mechanisms can be compared at the same moments of the run.
 5. Wire SuperDiff at this repo's settings and check it still works there, then compare three rules
    along one generalised dose axis.
@@ -235,7 +243,7 @@ is read against two published ones instead of standing alone.
 
 1. **The free bound.** The correction's size at the last denoising step, on the uncorrected path,
    read from cached files, stated with its unit, its trajectory, and whether the unnormalised
-   numerator was recoverable. A size bounded away from zero there is a floor under the model's
+   numerator was recoverable. A size bounded away from zero there is a lower limit on the model's
    share before a single corrector step runs.
 2. **The corrector is inert when off.** `k=0` reproduces plain product-of-experts byte-identical,
    and so does `k=200` with the corrector window placed past the last step.
@@ -243,14 +251,14 @@ is read against two published ones instead of standing alone.
    (median relative displacement below `MIN_CHAIN_DISPLACEMENT`) nor diverges (latent norm past
    1.5× the uncorrected latent, or a ratio rising monotonically with `k`), with the whole search
    table recorded and a human verdict on whether the range was adequate.
-4. **The gate fires one of three branches.** Support if, over the last five denoising steps, the
-   ratio at the plateaued `k` has fallen by at least `MIN_DROP_FOR_SPLIT = 0.20` of its `k=0`
-   value with at least `MIN_REMAINDER_FOR_SPLIT = 0.20` still there. Null if the change is under
-   `MAX_DRIFT_FOR_NULL = 0.05` at every step while the median displacement is at or above
-   `MIN_CHAIN_DISPLACEMENT = 0.05`. Inconclusive if `k=100` and `k=200` still differ by more than
-   `MAX_K_INSTABILITY = 0.05`, or the displacement is below its floor, or the composing pair
-   behaves like the failing pair. Every bar sits in source, so moving one after the answer is
-   visible shows up in a diff.
+4. **Step 26 returns one of three answers.** Support if, over the last five denoising steps, the
+   ratio at the `k` where the curve has stopped changing has fallen by at least
+   `MIN_DROP_FOR_SPLIT = 0.20` of its `k=0` value with at least `MIN_REMAINDER_FOR_SPLIT = 0.20`
+   still there. Null if the change is under `MAX_DRIFT_FOR_NULL = 0.05` at every step while the
+   median displacement is at or above `MIN_CHAIN_DISPLACEMENT = 0.05`. Inconclusive if `k=100` and
+   `k=200` still differ by more than `MAX_K_INSTABILITY = 0.05`, or the displacement is under
+   `MIN_CHAIN_DISPLACEMENT`, or the composing pair behaves like the failing pair. Every threshold
+   sits in source, so moving one after the answer is visible shows up in a diff.
 5. **The timing comparison is recorded either way.** Whether the corrector's compose rate peaks in
    the same window the injected correction does. Same window is a strong result, two different
    mechanisms acting at the same moment. A different window is stronger and gets its own
@@ -260,8 +268,8 @@ is read against two published ones instead of standing alone.
    composes. If it does not, every comparison against it is between a working rule and a crippled
    one, and that sentence goes in the caption.
 7. **The three rules travel one axis.** Two grids on the generalised dose axis, with the delivered
-   absolute amount per row made visible or matched, and the cells no rule can reach at `λ=1`
-   labelled rather than left to look like failures.
+   absolute amount per row made visible or matched, and the places on the grid no rule can reach at
+   `λ=1` labelled rather than left to look like failures.
 
 ## Expected Outcome
 
@@ -282,10 +290,10 @@ result here and closes the scope honestly rather than failing it.
    cached along, and one line on what it does to the claim.
 2. Both leak checks pass, and the step-size search table is filled with a picked `c` and a
    recorded human verdict on whether the tested range was adequate.
-3. `residual_curves.json` holds its 600 rows (2 pairs × 6 `k` values × 50 steps), the three-way bar
-   has printed one branch with the numbers it was judged against, and the eye read of the `k=100`
-   against `k=200` overlay is recorded beside it.
-4. The gate plan and its review file both carry the sentence that steps 0 to 10 are where the
+3. `residual_curves.json` holds its 600 rows (2 pairs × 6 `k` values × 50 steps), the three-way
+   threshold has printed one branch with the numbers it was judged against, and the eye read of the
+   `k=100` against `k=200` overlay is recorded beside it.
+4. The step-26 plan and its review file both carry the sentence that steps 0 to 10 are where the
    compose rate is decided and where this measurement cannot attribute. It is never dropped for
    space and never argued away.
 5. The corrector's window figure exists in
@@ -302,13 +310,13 @@ result here and closes the scope honestly rather than failing it.
 9. Every plan's review file has every pre-registered question answered, including the ones whose
    answer is "not run and why".
 10. Every figure this scope produced passes
-    [the figure bar](#the-figure-bar-every-plan-here-is-held-to) and carries a `.json` sidecar
-    recording which cells, seeds and settings were drawn.
+    [the figure standard](#the-figure-bar-every-plan-here-is-held-to) and carries a `.json` sidecar
+    recording which runs, seeds and settings were drawn.
 11. The measured size is folded into
     [the idea map's claim 2](../../artifacts/ideas/which-variable-explains-what-poe-is-missing/IDEA_MAP.md),
     its route row deleted, and
-    [gate-01](../03-does-the-correction-cause-composition/plans/gate-01-two-literature-checks-before-print.md)
-    updated, since it currently cites a paper for a claim this scope turns into a number.
+    [the two literature checks before print](../03-does-the-correction-cause-composition/plans/gate-01-two-literature-checks-before-print.md)
+    updated, since they currently cite a paper for a claim this scope turns into a number.
 12. The scope has a recall gallery: run `/recap-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/MASTER_PLAN.md`
     once every plan above is ✅, and record the Artifact URL it publishes.
 
@@ -316,7 +324,7 @@ result here and closes the scope honestly rather than failing it.
 
 ⬅️ [Previous](#definition-of-done) | 📋 [TOC](#table-of-contents) | [Next](#sub-scopes) ➡️
 
-This scope exists as a scope partly so its figures are held to the same bar as the rest of the
+This scope exists as a scope partly so its figures are held to the same standard as the rest of the
 paper's. Every Figure Catalog row in every plan below inherits this list, and a figure that fails
 one of these is redrawn rather than captioned around.
 
@@ -330,23 +338,23 @@ is wrong and more words will not save it.
 **A label on the thing,** never a legend the reader has to look up.
 
 **Every number carries its unit and its meaning.** Not "0.387 against 0.023", but what the quantity
-is, on what scale, for which arm.
+is, on what scale, for which condition.
 
 **Caveats and provenance live in the caption.** Moved off the face of the figure, never dropped. A
 caveat hidden is a false claim by omission.
 
-**A `.json` sidecar sits beside every figure** recording which cells, seeds and settings were
+**A `.json` sidecar sits beside every figure** recording which runs, seeds and settings were
 drawn, so a caption can be checked later without rerunning anything.
 
-**A measurement earns a main-text slot only if it advances understanding of the dynamics of failure
-and correction.** Anything else is prose.
+**A measurement earns a place in the main text only if it advances understanding of the dynamics of
+failure and correction.** Anything else is prose.
 
 ## Sub-Scopes
 
 ⬅️ [Previous](#the-figure-bar-every-plan-here-is-held-to) | 📋 [TOC](#table-of-contents) | [Next](#plans) ➡️
 
 None. If the Feynman-Kac read at step 30 comes back saying it should be built, that build is a
-sub-scope and not a task, because it is a second corrector family with its own instrument.
+sub-scope and not a task, because it is a second corrector family with its own measuring tools.
 
 ## Plans
 
@@ -358,24 +366,24 @@ start today.
 
 | Step | Plan | Run kind | What it does | Waits on | Status |
 |---|---|---|---|---|---|
-| 24 | [the free bound on the model's share](plans/hypothesis-01-the-free-bound-on-the-models-share.md) | tests the claim | reads the correction's size as the run approaches zero noise off cached files, and turns it into a floor under the model's share. No GPU, no queue | nothing | ⚠️ not started |
-| 25 | [the corrector, and the step size it runs at](plans/instrument-01-the-corrector-and-the-step-size-it-runs-at.md) | builds an instrument | builds `poe_repair/composers/poe_langevin.py`, proves it inert at `k=0` and with the window past the last step, and fixes the step-size multiplier `c` by search | nothing | ⚠️ not started |
-| 26 | [what is left once the chain settles](plans/hypothesis-02-what-is-left-once-the-chain-settles.md) | tests the claim | the gate: ‖r_t^(k)‖ and ‖eps_PoE‖ per step against `k ∈ {0,1,5,20,100,200}`, two pairs, one seed, no images and no detector. Applies the three-way bar | 24, 25 | ⚠️ not started |
-| 27 | [does the corrector compose in the same window](plans/hypothesis-03-does-the-corrector-compose-in-the-same-window.md) | tests the claim | the nine-position window sweep rerun with the corrector in place of the injected correction, matched to the existing figure | 26 | ⚠️ not started |
+| 24 | [the free bound on the model's share](plans/hypothesis-01-the-free-bound-on-the-models-share.md) | tests the claim | reads the correction's size as the run approaches zero noise off cached files, and turns it into a lower limit on the model's share. No GPU, no queue | nothing | ⚠️ not started |
+| 25 | [the corrector, and the step size it runs at](plans/instrument-01-the-corrector-and-the-step-size-it-runs-at.md) | builds a measuring tool | builds `poe_repair/composers/poe_langevin.py`, proves it inert at `k=0` and with the window past the last step, and fixes the step-size multiplier `c` by search | nothing | ⚠️ not started |
+| 26 | [what is left once the chain settles](plans/hypothesis-02-what-is-left-once-the-chain-settles.md) | tests the claim | the measurement everything downstream waits on: ‖r_t^(k)‖ and ‖eps_PoE‖ per step against `k ∈ {0,1,5,20,100,200}`, two pairs, one seed, no images and no detector. Applies the three-way threshold | 24, 25 | ⚠️ not started |
+| 27 | [does the corrector compose in the same window](plans/hypothesis-03-does-the-corrector-compose-in-the-same-window.md) | tests the claim | the same nine window positions rerun with the corrector in place of the injected correction, matched to the existing figure | 26 | ⚠️ not started |
 | 28 | [SuperDiff at this repo's fifty steps](plans/baseline-01-superdiff-at-this-repos-fifty-steps.md) | establishes a baseline | wires SuperDiff into `poe_repair/composers/superdiff.py`, matches it to 50 steps at guidance 7.5, and checks with its own 200-against-50 render whether matching broke it | 26 | ⚠️ not started |
 | 29 | [three rules on one dose axis](plans/baseline-02-three-rules-on-one-dose-axis.md) | establishes a baseline | the generalised injection `eps_M + λ·r_t^M`, and the two dose grids that compare four rows along it | 25, 28 | ⚠️ not started |
-| 30 | [Feynman-Kac correctors, gated](plans/idea-01-feynman-kac-correctors-gated.md) | explores | a full read of arXiv 2503.02819 and a built-or-cited decision, gated on whether the corrector arm moved anything | 26, 29 | ⚠️ not started |
+| 30 | [Feynman-Kac correctors: built or cited](plans/idea-01-feynman-kac-correctors-gated.md) | explores | a full read of arXiv 2503.02819 and a built-or-cited decision, run only if the corrector condition moved anything | 26, 29 | ⚠️ not started |
 
 Each plan carries its own `## Environment Facts This Plan Depends On` field, its own Figure Catalog
-held to [the figure bar](#the-figure-bar-every-plan-here-is-held-to), and a paired file in `review/`
+held to [the figure standard](#the-figure-bar-every-plan-here-is-held-to), and a paired file in `review/`
 whose questions were written before any run. They were authored from
 [the whole corrector design](source/the-whole-corrector-design.md), read alongside
 [the questions pre-registered against it](source/the-questions-pre-registered-against-it.md); both
 are deleted once nothing points at them.
 
 **No procedure files.** `procedures/` does not exist here on purpose: every task is one do-able
-unit, and the two manual arcs (reading the step-size search table at step 25, judging the gate curve
-at step 26) are short enough to live in those plans' Instructions lanes rather than in files of
+unit, and the two manual arcs (reading the step-size search table at step 25, judging step 26's
+curve) are short enough to live in those plans' Instructions lanes rather than in files of
 their own.
 
 **What hand-authoring this scope skipped.** No `diagram-prompts.md` was seeded here, because the
@@ -393,13 +401,13 @@ reshuffle. Each one names the plan that owns it, so `/populate-plans` cannot dro
 | What must survive | Which plan owns it |
 |---|---|
 | [Where the two errors can be told apart, and where they cannot](#where-the-two-errors-can-be-told-apart-and-where-they-cannot), in full, including that the compose-decisive window is exactly where attribution is impossible | step 26, in the plan and again in its review file |
-| The value at any single `k` is a statement about compute budget, not about the problem. Only the trend across `k` is a result, and only once it plateaus, which is why the grid runs to `k=200` rather than stopping at 100 | step 26, as a bar and as a caption sentence |
+| The value at any single `k` is a statement about compute budget, not about the problem. Only the trend across `k` is a result, and only once that trend has stopped changing, which is why the grid runs to `k=200` rather than stopping at 100 | step 26, as a threshold and as a caption sentence |
 | The `a_butterfly__x__a_flower_meadow` control, and why `an_elephant__x__a_penguin` is not used for it | steps 26 and 27 |
 | Two corrector counts are two trajectories, not one point wiggled twice, so no axis may be labelled "the correction at step t" | steps 26 and 27, in every caption |
 | A ratio with a moving denominator is not a measurement: numerator and denominator are separate recorded columns, plotted beneath the ratio | step 26 |
-| A flat curve with displacement below its floor is a failed instrument, not a null | steps 25 and 26 |
-| The rows deliver different absolute amounts at the same `λ`, because `‖r_t^M‖` differs per row. [The timing plan](../03-does-the-correction-cause-composition/plans/hypothesis-03-when-in-the-run-it-matters.md) met this and answered it with a `--mode matched` arm, so either put the delivered total on each row label or run matched | step 29 |
-| The corrector rows will not reproduce the joint render at `λ=1`, because the chain has already left the joint trajectory. Those cells are labelled not-an-identity, which makes the `λ=1` column a free classifier of what each rule is | step 29 |
+| A flat curve whose median displacement is under `MIN_CHAIN_DISPLACEMENT` is a broken measuring tool, not a null | steps 25 and 26 |
+| The rows deliver different absolute amounts at the same `λ`, because `‖r_t^M‖` differs per row. [The timing plan](../03-does-the-correction-cause-composition/plans/hypothesis-03-when-in-the-run-it-matters.md) met this and answered it with a `--mode matched` condition, so either put the delivered total on each row label or run matched | step 29 |
+| The corrector rows will not reproduce the joint render at `λ=1`, because the chain has already left the joint trajectory. Those grid positions are labelled not-an-identity, which makes the `λ=1` column a free classifier of what each rule is | step 29 |
 | The corrector's window figure files to `paper/iclr/figures/when-the-correction-arrives/mcmc/`, the four existing PNGs are already moved into `poe/`, and the dose grids file to `paper/iclr/figures/how-much-is-added/across-composition-rules/`, because the timing folder's name is a question about timing | steps 27 and 29 |
 
 ## Environment Context
@@ -429,8 +437,8 @@ The facts this scope's work rides on, which every plan below names in its own
 
 ⬅️ [Previous](#environment-context) | 📋 [TOC](#table-of-contents) | [Next](#glossary) ➡️
 
-How the seven plans gate each other. The free bound and the instrument start today and in parallel;
-everything else waits on the gate.
+Which of the seven plans has to finish before which. The free bound and the corrector build start
+today and in parallel; everything else waits on step 26.
 
 ```
   24 free bound  ────────┐
@@ -447,7 +455,7 @@ everything else waits on the gate.
                                                      (closes unrun if the gate was null)
 ```
 
-The gate is the only hard stop. A null there does not close the scope: it turns the comparison half
+Step 26 is the only hard stop. A null there does not close the scope: it turns the comparison half
 from a diagnosis into a baselines table, and every caption downstream changes with it.
 
 No rendered process image exists for this scope. Generating one needs a `diagram-prompts.md`, which
@@ -457,9 +465,9 @@ this scope does not have, per the note under [Plans](#plans).
 
 ⬅️ [Previous](#process-diagram) | 📋 [TOC](#table-of-contents)
 
-Terms used only in this scope, one plain line each. The shared vocabulary (PoE, chimera, Mono, the
-correction `r_t`, λ, seed against pair, cell) is in the [root MASTER_PLAN.md](../../MASTER_PLAN.md)
-and is not repeated here.
+Terms used only in this scope, one plain line each. The shared vocabulary (PoE,
+[chimera](context/world/chimera.md), Mono, the correction `r_t`, λ, seed against pair, one
+generated run) is in the [root MASTER_PLAN.md](../../MASTER_PLAN.md) and is not repeated here.
 
 - **The correction, `r_t`:** the per-step gap `eps_J - eps_PoE` between what the joined prompt
   predicts and what adding the two separate prompts predicts, both evaluated at the same latent.

@@ -1,5 +1,8 @@
 # 📊 The figures that carry the transfer argument
 
+Turn the transfer runs into the four figures a reviewer reads in order, each one designed before
+it is drawn and each one capped by what the figure register already promises.
+
 ## Recommended prompt (after run completes)
 
 After you finish this plan and want to ingest error patterns into the catalogs, use this prompt:
@@ -21,7 +24,7 @@ catalogs, and adds new entries. New errors propagate to all affected plan files.
 | Step | Plan | What it does |
 |------|------|-------------|
 | 13 (previous) | [figure-01: the-seven-paper-figures](../../03-does-the-correction-cause-composition/plans/figure-01-the-seven-paper-figures.md) ◑ | The figures the causal scope owes the paper (F6 needs a decision) |
-| **14 (current)** | **figure-01: the-transfer-figures** ◑ | **F8a and F8b built; the F8 pair waits on the leave-one-pair-out sweep** |
+| **14 (current)** | **figure-01: the-transfer-figures** ◑ | **F8a and F8b built; the F8 pair waits on the fifteen leave-one-pair-out runs** |
 | 15 (next) | [gate-01: two-literature-checks-before-print](../../03-does-the-correction-cause-composition/plans/gate-01-two-literature-checks-before-print.md) ⚠️ | The two `/pressure-test` passes before anything is written |
 
 ---
@@ -37,9 +40,9 @@ catalogs, and adds new entries. New errors propagate to all affected plan files.
 - [What happens (visual)](#what-happens-visual)
 - [Description: what to build](#description-what-to-build)
 - [Purpose and goal](#purpose-and-goal)
-- [Tasks](#tasks) — things for Claude to execute
-- [Instructions](#instructions) — things for you to do manually
-- [The engagement gate](#the-engagement-gate)
+- [Tasks](#tasks): things for Claude to execute
+- [Instructions](#instructions): things for you to do manually
+- [What has to pass here](#what-has-to-pass-here)
 - [Figure Catalog](#figure-catalog)
 - [Orchestration: keeping catalogs and plan files in sync](#orchestration-keeping-catalogs-and-plan-files-in-sync)
 - [Code references](#code-references)
@@ -72,20 +75,24 @@ Four things, one per figure, in reading order. The fix arrives during training. 
 the adapter never trained on. Arrival and transfer come apart when they disagree. An animals-only
 pool beats a size-matched mixed pool on the same held-out pairs.
 
+> Held-out: a pair the adapter was deliberately never trained on, kept back so it can be tested on
+> something genuinely new.
+
 **Words this plan uses**
 
-The four owed figures carry short internal names. They are this plan's names only, and they are
-not the paper's slot names.
+The four owed figures carry short internal names. They are this plan's names only, and the paper's
+figure register uses different ones.
 
 - **A2, delivery-live:** how far the correction travelled toward its target, over training steps.
-- **A3, transfer:** compose-rate against the fraction of pairs held out.
+- **A3, transfer:** [compose-rate](../../../context/world/compose-rate.md) against the fraction of
+  pairs held out.
 - **A4, delivery against transfer:** the same x-axis with compose-rate and direction-cosine as
   twin panels, so the two axes can be seen to diverge.
 - **A5, pool contrast:** animals-only against size-matched mixed, per held-out animal pair.
 
-**Oracle** names the correction computed from the joint prompt, the thing the adapter is trained
-to imitate. It is the target, not a shippable method: at full dose it reproduces the joint render
-by construction.
+**The joint-prompt correction** is the correction computed from the prompt that names both animals
+together, and it is what the adapter is trained to imitate. It is the target rather than something
+shippable, since at full strength it reproduces the joint render by construction.
 
 The paper's register calls the finished pair **F8**, and its two already-built neighbours **F8a**
 and **F8b**. A3 and A5 are what F8 is assembled from.
@@ -93,17 +100,17 @@ and **F8b**. A3 and A5 are what F8 is assembled from.
 **Where it stands**
 
 Two figures are built and in the register as **built**: F8a (one pooled adapter composes on pairs
-it never trained on) and F8b (the adapter against the oracle correction it imitates). Both read
-files that already existed, so neither waited on this plan's dependencies. The four owed figures
-have not started, because A2 needs step 9's live curves and A3, A4 and A5 need the fifteen-run
-sweep from step 11 and the mixed pool from step 12.
+it never trained on) and F8b (the adapter against the joint-prompt correction it imitates). Both
+read files that already existed, so neither waited on this plan's dependencies. The four owed figures
+have not started, because A2 needs step 9's live curves, while A3, A4 and A5 need the fifteen runs
+from step 11 and the mixed pool from step 12.
 
 **Associated materials**
 
 - Figure register, which caps every caption: [paper/iclr/figures.md](../../../paper/iclr/figures.md), rows F8a, F8b, F8
-- Sweep review file (feeds A3, A4): [review/hypothesis-02-transfer-as-a-rate-over-fifteen-pairs.md](../review/hypothesis-02-transfer-as-a-rate-over-fifteen-pairs.md)
-- Contrast review file (feeds A5): [review/baseline-01-the-size-matched-control-pool.md](../review/baseline-01-the-size-matched-control-pool.md)
-- This plan's own record: [review/figure-01-the-transfer-figures.md](../review/figure-01-the-transfer-figures.md)
+- The review file for the fifteen runs, which feeds A3 and A4: [transfer as a rate over fifteen pairs](../review/hypothesis-02-transfer-as-a-rate-over-fifteen-pairs.md)
+- The review file for the pool contrast, which feeds A5: [the size-matched control pool](../review/baseline-01-the-size-matched-control-pool.md)
+- This plan's own record: [the review file for the transfer figures](../review/figure-01-the-transfer-figures.md)
 
 **For the full picture**
 
@@ -120,7 +127,8 @@ sweep from step 11 and the mixed pool from step 12.
 Almost entirely GPU-free: each figure is a plotting script over a JSON file that already exists,
 so a figure is minutes of compute and the time goes into the design decision before it. The two
 exceptions are task 5.1, one GPU session for the instance-count scorer over the unscored tail, and
-task 5.2, at most four oracle re-renders. Budget one `/design-figure` round per figure.
+task 5.2, at most four re-renders of the joint-prompt correction. Budget one `/design-figure`
+round per figure.
 
 **Prerequisites**
 
@@ -181,8 +189,9 @@ limits are settled while the answer is still unknown.
 
 **Key insights**
 
-1. **Splitting delivery from transfer is the whole point.** A floor compose-rate means either the
-   correction never arrived or it arrived pointing the wrong way, and those are different findings.
+1. **Splitting delivery from transfer is the whole point.** A compose-rate no better than
+   uncorrected PoE means either the correction never arrived or it arrived pointing the wrong way,
+   and those are two different findings.
    A4 exists so the two can be seen apart rather than argued about.
 
 2. **The pool contrast needs pairing, not averaging.** A5 is paired bars per held-out animal pair,
@@ -227,7 +236,8 @@ existed, so neither waited on steps 11 and 12.
 ⬅️ [Previous](#what-happens-visual) | 📋 [TOC](#table-of-contents) | [Next](#purpose-and-goal) ➡️
 
 1. **A2, delivery-live.** Fraction-of-distance-reached on the y-axis, training step on the x-axis,
-   one faint line per held-out pair, with the ~40% plateau drawn as a horizontal reference line.
+   one faint line per held-out pair, with a horizontal reference line at the ~40% level where the
+   curves flatten.
    Reads the live curves logged by step 9. Saves to `paper/iclr/figures/`.
 
 2. **A3, transfer.** Compose-rate on the y-axis, fraction of pairs held out on the x-axis. The
@@ -242,8 +252,8 @@ existed, so neither waited on steps 11 and 12.
    per held-out animal pair, with the same-pair pairing drawn explicitly rather than implied by
    position. Reads step 12's contrast.
 
-Each of the four is designed through `/design-figure` first, and the design note is what the gate
-checks for.
+Each of the four is designed through `/design-figure` first, and the design note is what the check
+below looks for.
 
 ---
 
@@ -262,15 +272,16 @@ evidence set. F1 belongs to the compose-scorer scope, not here.
    drawn.
 2. Each was designed through `/design-figure` before being built, evidenced by a design note per
    figure.
-3. Register slot F8 is assembled from A3 and A5 and its row flips from `reserved` to `built`.
+3. The F8 row the register has reserved is assembled from A3 and A5, and its status flips from
+   `reserved` to `built`.
 
 ---
 
 ## Environment Facts This Plan Depends On
 - Figure builds need no GPU: they read existing JSON (`compose_rate.json`, `pair_pool.json`,
   `dose_curves.json`). Two exceptions: task 5.1 runs the instance-count scorer (GroundingDINO,
-  cuda) over the unscored per-epoch tail, and task 5.2 may re-render four oracle cells; both need
-  a GPU session. `co3`'s absolute python path runs the scorer module and any script under
+  cuda) over the unscored per-epoch tail, and task 5.2 may re-render four joint-prompt images. Both
+  need a GPU session. `co3`'s absolute python path runs the scorer module and any script under
   `scripts/` invoked to regenerate a source file.
 - Figures 2.1 to 2.4 read `artifacts/results/does-the-fix-reach-unseen-pairs/`, which may span
   both `/home-mscluster` and `/datasets`; check `environment/storage.md` before assuming a path
@@ -292,8 +303,8 @@ evidence set. F1 belongs to the compose-scorer scope, not here.
   - Outputs `paper/iclr/figures/compose-rate-as-the-lora-trains.{png,pdf,json}`
   - Which commit built it, and whether it has been judged: the
     [review file](../review/figure-01-the-transfer-figures.md)
-- [x] **1.2** F8b, the shippable adapter against the oracle correction it imitates: one horizontal
-  dot row per pair, four markers per row.
+- [x] **1.2** F8b, the shippable adapter against the joint-prompt correction it imitates: one
+  horizontal dot row per pair, four markers per row.
   - Built by `python scripts/adapter_vs_oracle_cost.py`, reads `dose_curves.json` and the pooled run's
     `compose_rate.json`, no new runs
   - Outputs `paper/iclr/figures/compose-rate-by-pair-for-lora-against-the-joint-prompt-correction.{png,pdf,json}`
@@ -307,7 +318,8 @@ evidence set. F1 belongs to the compose-scorer scope, not here.
 ◀ **Needs: steps 11 and 12** to have landed, so the leaderboard and the contrast exist to plot.
 
 - [ ] **2.1** **[needs /design-figure]** A2 delivery-live: fraction-of-distance-reached over
-  training, one faint line per held-out pair, the ~40% plateau drawn as a reference line.
+  training, one faint line per held-out pair, a reference line at the ~40% level where the curves
+  flatten.
 - [ ] **2.2** **[needs /design-figure]** A3 (A) transfer: compose-rate vs fraction held out,
   do-no-harm baseline as a band, real held-out thumbnails pinned at a couple of points.
 - [ ] **2.3** **[needs /design-figure]** A4 (A) real: compose-rate and direction-cosine as
@@ -315,7 +327,7 @@ evidence set. F1 belongs to the compose-scorer scope, not here.
 - [ ] **2.4** **[needs /design-figure]** A5 (B) pool: paired bars, animals vs mixed, per
   held-out animal pair, same-pair pairing explicit.
 
-▶ **Next: instruction 3.1** for each figure as it lands, then the engagement gate.
+▶ **Next: instruction 3.1** for each figure as it lands, then the checks below.
 
 ### 5. 📊 Two additions that need nothing from steps 11 or 12
 
@@ -338,27 +350,28 @@ task 5.2 renders at most four images.
   - Discharges F8a's "only checkpoints to 60000 were scored" caption cap and narrows F9's
     step-mismatch cap; update both rows in `paper/iclr/figures.md` per instruction 3.3.
 - [ ] **5.2** **[needs /design-figure]** The qualitative ceiling panel: adapter-corrected beside
-  oracle-corrected (the true correction at λ=1) on the same four held-out cells as the F9 rows.
-  - The four cells, from F9's sidecar: `a_cat__x__a_dog`, `an_eagle__x__a_hawk`,
+  the same image corrected by the joint-prompt correction at λ=1, on the same four held-out
+  pair-and-seed cases as the F9 rows.
+  - The four cases, from F9's sidecar: `a_cat__x__a_dog`, `an_eagle__x__a_hawk`,
     `a_frog__x__a_toad`, `a_goose__x__a_swan`, all seed 9.
-  - Oracle renders exist for all four in the dose sweep, at
+  - Joint-prompt renders exist for all four in the dose series, at
     `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/pairs/<pair>/seed_9/teacher_residual_const_lam100/`,
     but were sampled at 20 inference steps where the F9 adapter samples used ddim at 50. A
-    crispness comparison at mismatched step counts is biased, so re-render the four oracle cells
-    at the F9 sampler settings; reusing the dose renders is acceptable only if the caption states
-    the step-count mismatch.
-  - Caption states the comparison is qualitative, because no crispness instrument exists.
+    crispness comparison at mismatched step counts is biased, so re-render the four joint-prompt
+    images at the F9 sampler settings; reusing the dose renders is acceptable only if the caption
+    states the step-count mismatch.
+  - Caption states the comparison is qualitative, because nothing here measures crispness.
   - What it decides: whether F9's softness is the adapter's fit or the correction's own ceiling.
-    A crisper oracle says more data or rank could close the gap; an equally soft oracle says the
-    ceiling belongs to the correction, and is accepted rather than chased.
+    A crisper joint-prompt image says more data or rank could close the gap; an equally soft one
+    says the ceiling belongs to the correction, and is accepted rather than chased.
 
-▶ **Next: instruction 3.1** for each as it lands, then the engagement gate.
+▶ **Next: instruction 3.1** for each as it lands, then the checks below.
 
 ---
 
 ## Instructions
 
-⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
+⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#what-has-to-pass-here) ➡️
 
 **For you to follow manually.** Do these yourself, interleaved with the Tasks rather than after
 them. A figure is judged by eye, and that judgment is not something a script can make.
@@ -403,11 +416,11 @@ them. A figure is judged by eye, and that judgment is not something a script can
    - ❌ a built figure with no answered question is the state this convention exists to prevent:
      the work is paid for and the value is uncollected
 
-▶ **Next: the engagement gate.**
+▶ **Next: the checks this plan has to pass.**
 
 ---
 
-## The engagement gate
+## What has to pass here
 
 ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
@@ -439,7 +452,7 @@ them. A figure is judged by eye, and that judgment is not something a script can
 
 ## Figure Catalog
 
-⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
+⬅️ [Previous](#what-has-to-pass-here) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
 
 These are result plots, not diagrams of a system, so the subject-versus-process split that the
 Lane column carries does not apply to them. The column is filled `—` deliberately rather than
@@ -449,8 +462,8 @@ guessed.
 
 | Item | Lane | What it shows | Built by | Output | Register row |
 |------|------|---------------|----------|--------|--------------|
-| F8a one adapter transfers | — | Compose rate over training steps, trained-on against held-out, with the uncorrected floor; second panel unpooled per pair | `python scripts/adapter_transfers.py` | `paper/iclr/figures/compose-rate-as-the-lora-trains.{png,pdf,json}` | F8a, **built** |
-| F8b adapter against the oracle | — | One dot row per pair: no injection, oracle at two doses, adapter at step 60000 | `python scripts/adapter_vs_oracle_cost.py` | `paper/iclr/figures/compose-rate-by-pair-for-lora-against-the-joint-prompt-correction.{png,pdf,json}` | F8b, **built** |
+| F8a one adapter transfers | — | Compose rate over training steps, trained-on against held-out, with the uncorrected PoE level; second panel unpooled per pair | `python scripts/adapter_transfers.py` | `paper/iclr/figures/compose-rate-as-the-lora-trains.{png,pdf,json}` | F8a, **built** |
+| F8b adapter against the joint-prompt correction | — | One dot row per pair: no injection, the joint-prompt correction at two strengths, adapter at step 60000 | `python scripts/adapter_vs_oracle_cost.py` | `paper/iclr/figures/compose-rate-by-pair-for-lora-against-the-joint-prompt-correction.{png,pdf,json}` | F8b, **built** |
 
 Numbers for both live in their sidecar `.json` and in the register row, never in this plan.
 
@@ -458,13 +471,13 @@ Numbers for both live in their sidecar `.json` and in the register row, never in
 
 | Item | Lane | What it shows | Reads | Status |
 |------|------|---------------|-------|--------|
-| A2 delivery-live | — | Fraction-of-distance-reached over training, one line per held-out pair, ~40% plateau as reference | Step 9's live curves | ⏳ not started |
+| A2 delivery-live | — | Fraction-of-distance-reached over training, one line per held-out pair, reference line where the curves flatten near 40% | Step 9's live curves | ⏳ not started |
 | A3 transfer | — | Compose-rate against fraction held out, do-no-harm band, thumbnails pinned | Step 11 leaderboard | ⏳ blocked on step 11 |
 | A4 delivery against transfer | — | Compose-rate and direction-cosine as twin panels on one x-axis | Step 11 leaderboard | ⏳ blocked on step 11 |
 | A5 pool contrast | — | Paired bars, animals against size-matched mixed, per held-out pair | Step 12 contrast | ⏳ blocked on step 12 |
-| F8 (the register slot) | — | Leaderboard plus degradation curve, assembled from A3 and A5 | A3 and A5 | ⏳ reserved |
+| F8 (the row the register reserves) | — | Leaderboard plus degradation curve, assembled from A3 and A5 | A3 and A5 | ⏳ reserved |
 | F8a full-run extension | — | Compose rate over training with the step 70000 to 100000 tail scored, closing the step-60000 cap | Existing per-epoch samples, re-scored by task 5.1 | ⏳ not started |
-| Ceiling panel | — | Adapter-corrected beside oracle-corrected (true correction, λ=1) on the four F9 held-out cells; qualitative, no crispness instrument | F9 sidecar cells plus dose-sweep λ=1 renders, oracle cells re-rendered at F9 sampler settings | ⏳ not started |
+| Ceiling panel | — | Adapter-corrected beside the same image corrected by the joint-prompt correction at λ=1, on the four F9 held-out pair-and-seed cases; qualitative, since nothing here measures crispness | The four cases in F9's sidecar plus the λ=1 renders from the dose series, re-rendered at F9 sampler settings | ⏳ not started |
 
 #### Organization workflow
 
@@ -519,8 +532,8 @@ fig.savefig(OUT_DIR / f"{FIG_NAME}.{ext}", dpi=300)   # OUT_DIR = paper/iclr/fig
 
 **File:** [scripts/adapter_vs_oracle_cost.py](../../../scripts/adapter_vs_oracle_cost.py)
 **Function:** `main`
-**What it does:** reads `dose_curves.json` for the oracle arm and the pooled run's
-`compose_rate.json` for the adapter arm, draws one dot row per pair, writes the same three outputs.
+**What it does:** reads `dose_curves.json` for the joint-prompt correction and the pooled run's
+`compose_rate.json` for the adapter, draws one dot row per pair, writes the same three outputs.
 No new runs.
 
 **Not yet written:** the four scripts behind A2 to A5. Each is authored after its `/design-figure`
@@ -541,7 +554,7 @@ round, not before.
 
 ⬅️ [Previous](#recommended-skill) | 📋 [TOC](#table-of-contents)
 
-Step 15, [gate-01: two literature checks before print](../../03-does-the-correction-cause-composition/plans/gate-01-two-literature-checks-before-print.md):
+Step 15, [the two literature checks before print](../../03-does-the-correction-cause-composition/plans/gate-01-two-literature-checks-before-print.md):
 the two `/pressure-test` passes that run before any of this is written up.
 
 ---
@@ -567,8 +580,8 @@ failures of a training run, and a plotting script over an existing JSON file can
   flat curve.
 - **poe-score-002**, compose-rate stuck at 0.0 even though the fix is active. Same reason: it is
   the failure that most looks like a real finding when plotted.
-- **poe-lora-001**, fraction-of-distance-reached plateaus at 20% instead of the expected 40%.
-  Directly relevant to A2, whose reference line is drawn at the plateau.
+- **poe-lora-001**, fraction-of-distance-reached levels off at 20% instead of the expected 40%.
+  Directly relevant to A2, whose reference line is drawn where the curve flattens.
 - **poe-lora-002**, direction-cosine diverges below 0.3 despite low training loss. Directly
   relevant to A4, which plots direction-cosine against compose-rate to tell delivery-null from
   no-transfer.

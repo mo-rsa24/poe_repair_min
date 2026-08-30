@@ -1,4 +1,7 @@
-# 🔍 Feynman-Kac correctors, gated
+# 🔍 Feynman-Kac correctors: built or cited
+
+This plan asks whether this project should implement a second corrector family or cite it, and it
+writes down the reason either way.
 
 ## Recommended prompt (after this plan completes)
 
@@ -20,7 +23,7 @@
 
 | Step | Plan | What it does |
 |------|------|-------------|
-| 26 | [hypothesis-02: what-is-left-once-the-chain-settles](hypothesis-02-what-is-left-once-the-chain-settles.md) ⚠️ | the gate. A null there closes this plan unrun |
+| 26 | [hypothesis-02: what-is-left-once-the-chain-settles](hypothesis-02-what-is-left-once-the-chain-settles.md) ⚠️ | the measurement this plan waits on. A null there closes this plan unrun |
 | 29 | [baseline-02: three-rules-on-one-dose-axis](baseline-02-three-rules-on-one-dose-axis.md) ⚠️ | says whether the corrector rows are worth extending to a second corrector family |
 | **30 (current)** | **idea-01: feynman-kac-correctors-gated** ⚠️ | **a full read of arXiv 2503.02819, and a recorded decision to build it or cite it** |
 
@@ -73,6 +76,9 @@ If the family matters, a reviewer will ask why the simplest member is the only o
 answer is either "we tried a second one" or "here is the cost, and here is why it was not worth it",
 and both are acceptable. Silence is not.
 
+> Langevin means nudging the latent along the score and adding a little fresh random noise, over
+> and over at one fixed noise level, until where it sits stops depending on where it started.
+
 **Time budget.** A full read plus a written cost estimate. No GPU, no queue, no implementation
 unless the decision comes back build, in which case that build is a sub-scope rather than a task
 here.
@@ -90,9 +96,11 @@ here.
 
 **This plan is allowed to close unrun, and that is a real outcome.**
 
-It tries an idea, so it may not change any claim. If [the gate](hypothesis-02-what-is-left-once-the-chain-settles.md)
-returned a null, the corrector arm moved nothing and a second corrector family is a related-work
-paragraph. Closing unrun with the reason recorded is a completed plan, not an abandoned one.
+It tries an idea, so it may not change any claim. If
+[what is left once the chain settles](hypothesis-02-what-is-left-once-the-chain-settles.md)
+returned a null, the corrector condition moved nothing and a second corrector family is a
+related-work paragraph. Closing unrun with the reason recorded is a completed plan, not an
+abandoned one.
 
 **No usable implementation was found when the scope was designed.**
 
@@ -101,7 +109,7 @@ recheck: an implementation appearing since would change the cost estimate by an 
 
 **Building it is a sub-scope, not a task.**
 
-A second corrector family needs its own instrument, its own leak checks, and its own step-size
+A second corrector family needs its own measuring tools, its own leak checks, and its own step-size
 equivalent. If the decision is build, it is decomposed rather than appended here.
 
 **Time budget: one read.** Nothing here competes for GPU.
@@ -120,7 +128,8 @@ reason and the cost.**
 **What is produced.** A cost estimate for implementing the method in this repo, and a
 built-or-cited decision written into the review file.
 
-**Falsify condition.** There is no bar, and the plan says so plainly rather than inventing one. It
+**Falsify condition.** There is no threshold, and the plan says so plainly rather than inventing
+one. It
 tries an idea, so its outcome may propose an experiment and may not change a claim. What would make
 it a failure is closing with no decision recorded, or with a decision whose reason is not written
 down.
@@ -141,9 +150,9 @@ the paper's related-work section can reach it.
 **Key insights.**
 
 1. The decision matters more than the implementation. "Cited, because implementing it costs X and
-   the gate showed Y" is a defensible sentence. "Not tried" is not.
-2. Gating the read on steps 26 and 29 stops it happening before it can be answered usefully. Its
-   cost estimate depends on what the simplest corrector already showed.
+   step 26 showed Y" is a defensible sentence. "Not tried" is not.
+2. Holding the read until steps 26 and 29 have run stops it happening before it can be answered
+   usefully. Its cost estimate depends on what the simplest corrector already showed.
 
 ## What happens (visual)
 
@@ -176,7 +185,7 @@ the paper's related-work section can reach it.
    full read.
 2. **The cost estimate.** What would have to be implemented in this repo, against what already
    exists after [step 25](instrument-01-the-corrector-and-the-step-size-it-runs-at.md), and what it
-   would buy given what the gate returned.
+   would buy given what step 26 returned.
 3. **The decision.** Built or cited, in the review file, with the reason.
 
 No code, no renders, no output under `/datasets`.
@@ -219,20 +228,21 @@ correctors are built or cited, with the reason recorded either way.
 - [ ] **0.1** Check this plan conforms and its instructions are concrete, before acting on it.
   - Paste: `/verify-plan @plans/06-is-the-gap-the-samplers-or-the-models/plans/idea-01-feynman-kac-correctors-gated.md`
   - Done when: the report comes back clean, or its proposals have been applied.
-- [ ] **0.2** Read the gate's branch and the `λ=1` classification, and decide whether this plan runs
-      at all.
-  - Run it only if the corrector arm moved something. If
-    [the gate](hypothesis-02-what-is-left-once-the-chain-settles.md) returned a null, the
-    Feynman-Kac read is a related-work paragraph and this plan closes unrun.
-  - **Done when:** the review file records either "running, because the gate returned X" or
-    "closed unrun, because the gate returned a null", with the branch named.
+- [ ] **0.2** Read what step 26 returned and the `λ=1` classification, and decide whether this plan
+      runs at all.
+  - Run it only if the corrector condition moved something. If
+    [what is left once the chain settles](hypothesis-02-what-is-left-once-the-chain-settles.md)
+    returned a null, the Feynman-Kac read is a related-work paragraph and this plan closes unrun.
+  - **Done when:** the review file records either "running, because step 26 returned X" or
+    "closed unrun, because step 26 returned a null", with the answer named.
 
-▶ **Next: [task 1.1](#1--read-it-and-cost-it)** if the gate opened, otherwise
+▶ **Next: [task 1.1](#1--read-it-and-cost-it)** if step 26 cleared the way, otherwise
 [the close out](#close-out--record-what-this-plan-taught) with the reason recorded.
 
 ### 1. 📖 Read it, and cost it
 
-◀ **Needs: [task 0.2](#0--preflight-check-this-plan-before-working-from-it)**, the gate's branch.
+◀ **Needs: [task 0.2](#0--preflight-check-this-plan-before-working-from-it)**, what step 26
+returned.
 
 - [ ] **1.1** Run the following prompt: `/unpack-paper https://arxiv.org/abs/2503.02819`
   - Produces: the full read of *Feynman-Kac Correctors in Diffusion*, Skreta et al., ICML 2025
@@ -248,7 +258,7 @@ correctors are built or cited, with the reason recorded either way.
   - **Done when:** the review file names what was searched and what was found, including "nothing".
 - [ ] **1.3** Write the cost estimate: what would have to be implemented here, against what already
       exists after [step 25](instrument-01-the-corrector-and-the-step-size-it-runs-at.md), and what
-      it would buy given the gate's branch.
+      it would buy given what step 26 returned.
   - **Done when:** the estimate names the pieces and gives a rough size for each, so the
     built-or-cited decision is made against a number rather than a feeling.
 
@@ -283,11 +293,11 @@ them.
 
 ◀ **Needs: [task 1.3](#1--read-it-and-cost-it)**, the cost estimate.
 
-- [ ] **2.1** Read the cost estimate against what the gate returned.
+- [ ] **2.1** Read the cost estimate against what step 26 returned.
   - Expected result: a decision that can be defended in one sentence in the related-work section.
-  - ✅ **Cited** if the cost is real and the gate's branch does not make a second corrector family
-    load-bearing. Write the sentence the paper will use.
-  - ✅ **Built** if the gate showed a large sampler share and this family plausibly reaches further.
+  - ✅ **Cited** if the cost is real and what step 26 returned does not make a second corrector
+    family load-bearing. Write the sentence the paper will use.
+  - ✅ **Built** if step 26 showed a large sampler share and this family plausibly reaches further.
     Then say so and stop here: the build is its own sub-scope, decomposed rather than appended to
     this plan.
 - [ ] **2.2** Write the decision and its reason into the review file.
@@ -307,7 +317,7 @@ recall gallery, per criterion 12 of [the scope's Definition of Done](../MASTER_P
 **Pass criteria**
 
 - The register row for 2503.02819 reads as a full read, or the plan is recorded as closed unrun
-  with the gate's branch named.
+  with step 26's answer named.
 - The built-or-cited decision is in the review file with its reason.
 - Every pre-registered question in the review file is answered, including with "not run and why".
 
@@ -318,7 +328,7 @@ recall gallery, per criterion 12 of [the scope's Definition of Done](../MASTER_P
 
 **Partial pass guidance**
 
-- Closing unrun is a full pass when the gate returned a null and that is recorded. It is not a
+- Closing unrun is a full pass when step 26 returned a null and that is recorded. It is not a
   partial anything.
 
 **When you get results, answer**
@@ -328,7 +338,7 @@ recall gallery, per criterion 12 of [the scope's Definition of Done](../MASTER_P
 
 ⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
 
-The bar every figure in this scope is held to is
+Every figure in this scope is held to the standard
 [in the scope's MASTER_PLAN](../MASTER_PLAN.md#the-figure-bar-every-plan-here-is-held-to).
 
 ### Pending: to be generated from prompts

@@ -25,8 +25,8 @@ here. When you are done, F2's percentages are safe to print and two questions in
 - [Before you start](#before-you-start)
 - [What you need to understand first: the two faults in the counting tool](#what-you-need-to-understand-first-the-two-faults-in-the-counting-tool)
 - [1. Confirm what the scorer is reading](#1-confirm-what-the-scorer-is-reading)
-- [2. Look at the bad box before choosing a bar](#2-look-at-the-bad-box-before-choosing-a-bar)
-- [3. Set the bars in the source code](#3-set-the-bars-in-the-source-code)
+- [2. Look at the bad box before choosing a threshold](#2-look-at-the-bad-box-before-choosing-a-threshold)
+- [3. Set the thresholds in the source code](#3-set-the-thresholds-in-the-source-code)
 - [4. Re-score and re-read](#4-re-score-and-re-read)
 - [5. If the direction does not survive](#5-if-the-direction-does-not-survive)
 - [6. The five-picture strip](#6-the-five-picture-strip)
@@ -48,32 +48,34 @@ near zero. **What is not yet safe is the exact percentages**, because the tool t
 animals had two faults (below). Both are now fixed in source; what remains is the re-score that
 applies them and the reading of the result.
 
-So this procedure is the last thing between F2 and the paper. F2 is one of eight slots, and the
-writing starts in earnest once five to ten are resolved, which makes this the highest-value hour
-available.
+So this procedure is the last thing between F2 and the paper. The paper has promised eight
+figures and F2 is one of them, and the writing starts in earnest once five to ten are resolved,
+which makes this the highest-value hour available.
 
 **Vocabulary, once.** The experiment turns the correction up in five steps and measures how often
-both animals appear. Each step is a *strength setting* (written λ, from 0 = none to 1 = all). A
-*cell* is one batch of images for one animal pair, at one strength, from one random seed; every
-count below is counting cells. The *oracle* row injects the real correction; the two *control*
-rows inject deliberately wrong vectors of the same size, and they are what makes the oracle's
-rise mean something.
+both animals appear. Each step is a *strength setting* (written λ, from 0 = none to 1 = all). One
+*run* is one batch of images for one animal pair, at one strength, from one random seed, and every
+count below is a count of runs. The *true-correction* row adds the real r_t back; the two *control*
+rows add deliberately wrong vectors of the same size, and they are what makes the true-correction
+row's rise mean something.
 
 When you finish, answer the two open questions in
-[../review/hypothesis-02-more-correction-more-composition.md](../review/hypothesis-02-more-correction-more-composition.md).
+[the review file](../review/hypothesis-02-more-correction-more-composition.md).
+
 ## Words this file uses
 
 Navigation: ⬅️ [Why you are doing this](#why-you-are-doing-this-and-where-it-lands) | 📋 [TOC](#table-of-contents) | [Next](#before-you-start) ➡️
 
 - **GroundingDINO**: the pretrained object detector used to count animals in generated images.
 - **λ (lambda)**: the strength setting, how much of the correction is added back, from 0 to 1.
-- **AUC**: area under the curve, one number summarising a whole curve so three can be compared
-  at a glance.
-- **oracle / controls**: the oracle uses the true interaction term; the two controls are
+- **AUC**: the area under the compose-rate-against-λ curve, on a 0-to-1 scale, so a whole curve
+  becomes one number and the three rows can be compared at a glance.
+- **the true-correction row and the control rows**: the true-correction row adds back the real
+  [interaction term](../../../context/world/interaction-term.md); the two control rows add
   deliberately wrong versions that should fail, and do.
 - **NMS**: the step that merges overlapping detections, so one animal found twice counts once.
-- **MIN_BOX_FRACTION**: the size bar, 0.25. A detection must span at least a quarter of the
-  image's longer side to count as an animal.
+- **MIN_BOX_FRACTION**: the minimum size a detection may have, 0.25. It must span at least a
+  quarter of the image's longer side to count as an animal.
 
 ## Before you start
 
@@ -103,23 +105,25 @@ Navigation: ⬅️ [Before you start](#before-you-start) | 📋 [TOC](#table-of-
 
 Both are fixed in source. You are applying the fixes and reading what comes out, so you need to know what each fault did before the steps make sense.
 
-**Fault one: the scorer read pairs that are not part of this sweep.** It collected every image
-folder under the output directory rather than only the ones this sweep wrote. Eleven folders hold
-a single cell at seed 1, and ten of them are *training* pairs (`a_wolf__x__a_husky`,
-`a_lion__x__a_tiger`, `a_cheetah__x__a_cougar` and the rest of the pooled-LoRA training set).
-Each has only λ=0 and λ=1 and no control rows. That is why the two end strengths were scored over
-44 cells while the three middle ones used 32: the ends and the middle were measured on different
-amounts of data, and on a different set of pairs.
+**Fault one: the scorer read pairs that were never generated for this experiment.** It collected
+every image folder under the output directory rather than only the ones this experiment wrote.
+Eleven folders hold a single run at seed 1, and ten of them are *training* pairs
+(`a_wolf__x__a_husky`, `a_lion__x__a_tiger`, `a_cheetah__x__a_cougar` and the rest of the
+pooled-LoRA training set). Each has only λ=0 and λ=1 and no control rows. That is why the two end
+strengths were scored over 44 runs while the three middle ones used 32, so the ends and the middle
+were measured on different amounts of data and on a different set of pairs.
 
-Nothing leaked in the training sense. The dose sweep trains nothing: it injects the cached
-correction into frozen base SDXL, so no model has ever seen any of these pairs. The damage was to
-the comparison, not to the split.
+Nothing leaked in the training sense. Generating images at each λ trains nothing, since it adds
+the cached correction into frozen base SDXL, so no model has ever seen any of these pairs. What
+broke was the comparison between rows, and the split between trained and unseen pairs is
+untouched.
 
 **Fault two: the animal count was not reliably a count of animals.** On the
 `an_elephant__x__a_penguin` seed 10 strip, the `random` control row at λ=1 shows one fused
 creature and the detector returned two boxes: the animal at 888px, and a 220px box on a shadow
 beside its feet. That second box turned a control-row blend into a `compose`, which is the worst
-place for a false positive, because the controls are what the oracle's rise is measured against.
+place for a false positive, because the control rows are what the true-correction row's rise is
+measured against.
 
 Confidence cannot separate that case. The false box scored **0.60**, above the real penguin's
 0.54 on the same strip. Size can: every genuine animal there spans 458px or more, every spurious
@@ -127,7 +131,7 @@ box 220px or less, on a 1024px image.
 
 ## 1. Confirm what the scorer is reading
 
-Navigation: ⬅️ [What you need to understand first](#what-you-need-to-understand-first-the-two-faults-in-the-counting-tool) | 📋 [TOC](#table-of-contents) | [Next](#2-look-at-the-bad-box-before-choosing-a-bar) ➡️
+Navigation: ⬅️ [What you need to understand first](#what-you-need-to-understand-first-the-two-faults-in-the-counting-tool) | 📋 [TOC](#table-of-contents) | [Next](#2-look-at-the-bad-box-before-choosing-a-threshold) ➡️
 
 ```bash
 PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
@@ -140,14 +144,19 @@ print('seeds present:', seeds)
 "
 ```
 
-Expect `32` cells for every row and seeds `[9, 10, 11, 12]`. Those are this sweep's own seeds,
-the first four of the held-out block defined in `artifacts/results/does-the-fix-reach-unseen-pairs/seed_pool.yaml`.
+Every row should print `32`, and the seeds should be `[9, 10, 11, 12]`. Those four are the ones
+this experiment generated with, the first four of the held-out block defined in
+`artifacts/results/does-the-fix-reach-unseen-pairs/seed_pool.yaml`.
+
+> Held-out here means seeds and pairs deliberately kept out of training, so nothing measured on
+> them can be explained by the model having seen them.
+
 If a seed 1 appears, the seed restriction in step 3 is not taking effect and nothing below is
 worth reading.
 
-## 2. Look at the bad box before choosing a bar
+## 2. Look at the bad box before choosing a threshold
 
-Navigation: ⬅️ [1. Confirm what the scorer is reading](#1-confirm-what-the-scorer-is-reading) | 📋 [TOC](#table-of-contents) | [Next](#3-set-the-bars-in-the-source-code) ➡️
+Navigation: ⬅️ [1. Confirm what the scorer is reading](#1-confirm-what-the-scorer-is-reading) | 📋 [TOC](#table-of-contents) | [Next](#3-set-the-thresholds-in-the-source-code) ➡️
 
 Do not pick a threshold from a number alone. Draw the boxes and look at them.
 
@@ -166,18 +175,18 @@ diagnostic never overwrites the figure candidate).
 
 Read the middle row's λ=1 panel, where two boxes sit on one animal. Every magenta box in that
 figure is either spurious or a duplicate of a box already kept; every yellow one is a real animal.
-That is the picture the bar in step 3 is set from.
+That is the picture the threshold in step 3 is set from.
 
-## 3. Set the bars in the source code
+## 3. Set the thresholds in the source code
 
-Navigation: ⬅️ [2. Look at the bad box](#2-look-at-the-bad-box-before-choosing-a-bar) | 📋 [TOC](#table-of-contents) | [Next](#4-re-score-and-re-read) ➡️
+Navigation: ⬅️ [2. Look at the bad box](#2-look-at-the-bad-box-before-choosing-a-threshold) | 📋 [TOC](#table-of-contents) | [Next](#4-re-score-and-re-read) ➡️
 
-Both bars live in source, not on a command line, so a later change shows up in a git diff instead
-of hiding in someone's shell history.
+Both thresholds live in source rather than on a command line, so a later change shows up in a git
+diff instead of hiding in someone's shell history.
 
 **Fault one:** `scripts/plot_dose_curves.py` carries `SWEEP_SEEDS = (9, 10, 11, 12)` beside its
-collection code, so it takes only this sweep's cells. `--all-seeds` gives the old behaviour back,
-and the run prints which seeds it used either way.
+collection code, so it reads only the runs this experiment generated. `--all-seeds` gives the old
+behaviour back, and the run prints which seeds it used either way.
 
 **Fault two:** `poe_repair/experiments/compose_scorer_validation/detection_scorer.py` carries
 `MIN_BOX_FRACTION = 0.25`. A detection must span at least a quarter of the image's longer side to
@@ -190,8 +199,9 @@ grep -n "MIN_BOX_FRACTION\|conf\|nms_iou" poe_repair/experiments/compose_scorer_
 grep -n "SWEEP_SEEDS" scripts/plot_dose_curves.py
 ```
 
-The filter can only remove detections, so it can only push compose rates down. It cannot
-manufacture the result the paper claims. Check it on known cells before spending an hour:
+The filter can only remove detections, so it can only push the
+[compose rate](../../../context/world/compose-rate.md) down. It cannot manufacture the result the
+paper claims. Check it on two images whose answer you already know before spending an hour:
 
 ```bash
 $PY - <<'EOF'
@@ -210,42 +220,43 @@ The false positive on the control drops from 2 to 1, and the real composition st
 
 ## 4. Re-score and re-read
 
-Navigation: ⬅️ [3. Set the bars](#3-set-the-bars-in-the-source-code) | 📋 [TOC](#table-of-contents) | [Next](#5-if-the-direction-does-not-survive) ➡️
+Navigation: ⬅️ [3. Set the thresholds](#3-set-the-thresholds-in-the-source-code) | 📋 [TOC](#table-of-contents) | [Next](#5-if-the-direction-does-not-survive) ➡️
 
 ```bash
 $PY scripts/plot_dose_curves.py --root outputs/interaction_term/dose/pairs --device cpu
 ```
 
-Drop `--device cpu` if the card is free. The bars come from the source edits in step 3, so this
-command takes no threshold arguments by design: you cannot accidentally re-score with a different
-bar than the one in the diff.
+Drop `--device cpu` if the card is free. The thresholds come from the source edits in step 3, so
+this command deliberately takes no threshold arguments, which means you cannot accidentally
+re-score against a number that differs from the one in the diff.
 
-It prints the per-row table and the AUCs (one number summarising each curve's total area, so the
-three curves can be compared at a glance) and rewrites `dose_curves.json` and `dose_curves.png`.
-Both, in one pass: an earlier run used `--no-figure`, which is why the plot on disk can be older
+It prints the per-row table and the AUCs, and it rewrites both `dose_curves.json` and
+`dose_curves.png` in one pass. Run it without `--no-figure`, or the plot on disk ends up older
 than the scores beside it.
 
 What to check, in order:
 
-- **Cells per row is equal across all five strengths.** If the end strengths hold more cells than
-  the middle ones, the seed restriction did not take effect and nothing below is worth reading.
-- **The oracle row still rises and both control rows stay near the floor.** That direction is what
-  the paper claims. If it survives, answer the first open review question `✅` with the new
+- **Every row is backed by the same number of runs at all five strengths.** If the end strengths
+  hold more runs than the middle ones, the seed restriction did not take effect and nothing below
+  is worth reading.
+- **The true-correction row still rises and both control rows stay near zero.** That direction is
+  what the paper claims. If it survives, answer the first open review question `✅` with the new
   percentages.
 - **How far the percentages moved.** Record the new numbers beside the pre-cutoff ones (6% to 94%,
-  AUC 0.422 for the oracle against 0.059 and 0.070 for the controls). The size floor should pull
-  the controls down more than the oracle, since the controls are where the false positives were.
-  If it does, the gap widens and the paper's claim is stronger than the earlier read showed.
+  AUC 0.422 for the true correction against 0.059 and 0.070 for the two controls, all on the
+  0-to-1 scale). The minimum-size rule should pull the controls down further than the true
+  correction, since the controls are where the false positives were. If it does, the gap widens
+  and the paper's claim is stronger than the earlier read showed.
 
 ## 5. If the direction does not survive
 
 Navigation: ⬅️ [4. Re-score and re-read](#4-re-score-and-re-read) | 📋 [TOC](#table-of-contents) | [Next](#6-the-five-picture-strip) ➡️
 
-Then this was a run testing a scientific claim, and the claim failed its pre-set pass mark. The
-standing rule applies: answer the review question `❌` with the numbers, close the plan, and write
-one follow-on plan file asking why. Do not loosen either bar until the curve comes back. Both were
-chosen in step 3 by looking at actual boxes, and moving one afterwards to rescue a result is
-exactly the kind of after-the-fact adjustment this whole setup exists to prevent.
+Then this was a run testing a scientific claim, and the claim failed the pass mark set before it
+ran. The standing rule applies. Answer the review question `❌` with the numbers, close the plan,
+and write one follow-on plan file asking why. Do not loosen either threshold until the curve comes
+back. Both were chosen in step 3 by looking at actual boxes, and moving one afterwards to rescue a
+result is exactly the kind of after-the-fact adjustment this whole setup exists to prevent.
 
 ## 6. The five-picture strip
 
@@ -261,9 +272,9 @@ $PY scripts/dose_strip.py --pair an_elephant__x__a_penguin --seed 10 --device cp
 
 That pair carries the strip because it is the one a reviewer cannot dismiss. An elephant and a
 penguin share nothing, and PoE still fuses them into a single creature at λ=0, so the failure
-cannot be explained away as "the two animals look alike". Seed 10 is the seed whose oracle row
-rises monotonically; seeds 9 and 11 do not, and that belongs in the text rather than hidden by the
-choice of strip. `a_leopard__x__a_jaguar` seed 9 is the supplementary strip.
+cannot be explained away as "the two animals look alike". Seed 10 is the seed whose true-correction
+row rises at every step; seeds 9 and 11 do not, and that belongs in the text rather than hidden by
+the choice of strip. `a_leopard__x__a_jaguar` seed 9 is the supplementary strip.
 
 Two things in the figure are worth a sentence rather than smoothing over. At λ=0.5 the failure
 changes character: it stops fusing and drops the penguin entirely. At λ=1 the panel holds three
@@ -281,9 +292,9 @@ Navigation: ⬅️ [6. The five-picture strip](#6-the-five-picture-strip) | 📋
 
 | What | Where it lands | What it answers |
 |---|---|---|
-| the re-scored curves | `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/dose_curves.json` | *Do the curves hold when only this sweep's own cells are scored?* and *Do they hold under a bar chosen against the picture of the boxes?*, both in [the review file](../review/hypothesis-02-more-correction-more-composition.md) |
+| the re-scored curves | `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/dose_curves.json` | *Do the curves hold when only the runs this experiment generated are scored?* and *Do they hold under a threshold chosen by looking at the boxes?*, both in [the review file](../review/hypothesis-02-more-correction-more-composition.md) |
 | the annotated box diagnostic | `dose_strip_an_elephant__x__a_penguin_seed10_boxes.png` | why `MIN_BOX_FRACTION` is 0.25 rather than a number picked from a table |
-| the five-picture strip | `paper/iclr/figures/compose-rate-as-correction-rises.pdf` | register slot F2, the paper's headline figure |
+| the five-picture strip | `paper/iclr/figures/compose-rate-as-correction-rises.pdf` | F2 in the figure register, the paper's headline figure |
 
 ## Recommended Prompts
 
@@ -294,10 +305,10 @@ Run these when a term here stops meaning anything. Each leaves something you can
 - **On λ and the correction itself:** `/drip --math the correction r_t and what the strength
   setting λ scales, one step per message` → `/polish` to file it → `/math-scene` on that file, to
   drag λ and watch the prediction move from PoE toward the Mono target.
-- **On the counting rule:** `/demonstrate show me five cells the scorer calls compose and five it
+- **On the counting rule:** `/demonstrate show me five images the scorer calls compose and five it
   calls blend, with their boxes drawn, so I can see the rule agree and disagree with my eye`.
-- **On the shape of the whole sweep:** `/experiment-atlas the dose sweep: 8 pairs x 4 seeds x 5
-  strengths x 3 rows, which cells are missing, and which feed slot F2`.
+- **On the shape of the whole experiment:** `/experiment-atlas the runs across λ: 8 pairs x 4 seeds
+  x 5 strengths x 3 rows, which combinations were never generated, and which ones feed F2`.
 
 ## Next step
 

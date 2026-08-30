@@ -1,5 +1,7 @@
 # 📏 Pre-register the correction-size measure
 
+Settle how the correction's size is expressed, in a committed script, before any result is read.
+
 **Step 2 of 22.** Waits on nothing. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../MASTER_PLAN.md).
 
 | Step | Plan | Status |
@@ -27,7 +29,7 @@ pairs, the committed choice, dated, written before any cross-type plot is
 generated.
 
 ## Illustrations
-The program spine: what order, and which plans gate which.
+The order the plans run in, and which ones have to finish before which.
 
 ```mermaid
 flowchart LR
@@ -56,12 +58,13 @@ flowchart LR
       denominator moves with the sampler schedule, which plan 08 varies.
 - [x] write the memo with the committed choice and date
       (report/normalization_preregistration.md, relative_norm, 2026-08-05)
-- [x] bulk-load smoke over the full cache: 70/70 ok, 790 cells, 38324 step
-      files, zero NaN. Note 70 distinct pairs, not 76: six slugs are cached
-      under both splits (see report/instrument_smoke.md).
+- [x] load the whole cache once and check it: 70/70 ok, 790 pair-and-seed runs,
+      38324 step files, zero NaN. There are 70 distinct pairs behind the 76
+      directories, because six slugs are cached under both splits (see
+      report/instrument_smoke.md).
 
 ## Success/Failure Outcomes
-- **bulk-load smoke**
+- **the whole-cache load check**
   - Success: every distinct pair scanned (70, not the 76 directory count),
     zero unreadable files, all step files carry the four eps keys at
     [1,4,128,128] fp16.  ✅ met 2026-08-05.

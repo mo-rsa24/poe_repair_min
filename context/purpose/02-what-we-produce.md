@@ -19,7 +19,7 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#who-reads-it) ➡️
 **One generated image per (pair, seed, render method, step schedule), plus the per-step latent
 trajectory it was decoded from.** ✅
 
-A cell such as `data/pilot/seed_42/a_cat__x__a_dog/` holds `poe.png` (plain PoE), `monolithic.png`
+A run such as `data/pilot/seed_42/a_cat__x__a_dog/` holds `poe.png` (plain PoE), `monolithic.png`
 (Mono, the joint-prompt cheat), `solo_a.png` and `solo_b.png` (each concept alone, the two
 "experts"), `trajectory_manifold.png` (a 2-D projection of the denoising path), and
 `summary.json` (the per-step and final size of the interaction term, `d_t_poe_vs_mono` and
@@ -51,9 +51,10 @@ folder (see [Cross-linking](../00-INDEX.md) in the format this folder follows).
 
 **The plan tree's verdicts.** ✅
 
-Every run is judged against a bar written before the run, per this project's `CLAUDE.md` and
-`~/.claude/EXPERIMENT_CONVENTIONS.md`. W&B (project `prime_lab/poe-repair-animals-compose`) holds
-the curves; the plan tree holds only the verdict, the run id, and the bar it was judged against.
+Every run is judged against a threshold written down before the run, per this project's `CLAUDE.md`
+and `~/.claude/EXPERIMENT_CONVENTIONS.md`. W&B (project `prime_lab/poe-repair-animals-compose`)
+holds the curves; the plan tree holds only the verdict, the run id, and the threshold it was judged
+against.
 
 ## What they do differently
 
@@ -67,13 +68,16 @@ catalogue: one trained corrector per group of similar pairs, each backed by its 
 and held-out-pair evidence. Both are documented outcomes; neither is a failure of the project, per
 `MASTER_PLAN.md`'s Definition of Done.
 
+> Held-out means the seeds or pairs were kept aside and never used during training, so a result on
+> them says how the corrector does on cases it has not seen.
+
 ## Where this came from
 
 Navigation: ⬅️ [What they do differently](#what-they-do-differently) | 📋 [TOC](#table-of-contents)
 
 | What | How it was established | When |
 |---|---|---|
-| A pilot cell's five images and its summary.json fields | Read directly, `data/pilot/seed_42/a_cat__x__a_dog/` | 2026-08-24 |
+| A pilot run's five images and its summary.json fields | Read directly, `data/pilot/seed_42/a_cat__x__a_dog/` | 2026-08-24 |
 | The compose/blend rule and its scorer | Read in `artifacts/results/can-we-trust-the-compose-score/compose-scorer-validation/scorer_validated.json` | 2026-08-24 |
 | W&B owns the numbers, the plan tree owns the verdict | Read in project `CLAUDE.md` | 2026-08-24 |
 | The two possible shapes of the deliverable (single LoRA vs catalogue) | Read in `MASTER_PLAN.md`, Expected Outcome | 2026-08-24 |

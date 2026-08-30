@@ -18,7 +18,7 @@ here blocks all three rather than bounding any of them.
 |---|---|
 | [design](../plans/instrument-01-the-corrector-and-the-step-size-it-runs-at.md) | the composer, the two leak checks, the search and its bounds |
 | **this file** | **the verdict: not yet run** |
-| [the gate's verdict](hypothesis-02-what-is-left-once-the-chain-settles.md) | what this instrument is built to measure |
+| [the step 26 verdict](hypothesis-02-what-is-left-once-the-chain-settles.md) | what this composer is built to measure |
 | [the questions this file was split from](../source/the-questions-pre-registered-against-it.md) | the whole pre-registered set, written before the scope existed |
 
 ## Table of contents
@@ -50,12 +50,17 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#run-kind) ➡️
   byte-identical to plain product-of-experts. A single differing byte means the composer changes
   something it should not.
 
+> A Langevin corrector is a small repeated random walk that nudges the latent along the score and
+> adds a little noise each time. Run for long enough at a fixed noise level it forgets where it
+> started and settles wherever the score says the probability actually is.
+
 ## Run kind
 
 Navigation: ⬅️ [Words this file uses](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#runs) ➡️
 
-**Builds an instrument.** A missed bar blocks every plan downstream of it: steps 26, 27 and 29 all
-run this composer. It does not bound a claim, it decides whether any claim can be measured.
+**Builds an instrument.** Missing the threshold blocks every plan downstream of it, because steps
+26, 27 and 29 all run this composer. It does not bound a claim; it decides whether any claim can be
+measured.
 
 ## Runs
 
@@ -63,8 +68,8 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
-| Leak check, `k=0` byte-identical to plain product-of-experts | Builds an instrument | not launched | 1 cell | stdout only | ⚠️ not run |
-| Leak check, `k=200` with the window past the last step | Builds an instrument | not launched | 1 cell | stdout only | ⚠️ not run |
+| Leak check, `k=0` byte-identical to plain product-of-experts | Builds an instrument | not launched | 1 render | stdout only | ⚠️ not run |
+| Leak check, `k=200` with the window past the last step | Builds an instrument | not launched | 1 render | stdout only | ⚠️ not run |
 | Step-size search, `c ∈ {0.01, 0.035, 0.1, 0.3, 1.0}` at `k=20` | Builds an instrument | not launched | ~110 plain-render equivalents | `corrector/step_size_search.json`, and [the search table](#the-step-size-search) | ⚠️ not run |
 
 ## The pre-registered bar
@@ -75,7 +80,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
       least one `c` has a median relative displacement at or above `MIN_CHAIN_DISPLACEMENT = 0.05`
       while its maximum latent norm stays within 1.5× the uncorrected latent's and its ratio does
       not rise monotonically with `k`; the pick is the largest such `c`. A search where every `c`
-      fails is a finding and stops the scope here: it says this corrector cannot be run stably on
+      fails is a finding and stops the scope here. It says this corrector cannot be run stably on
       this model at these settings. The bound lives in source as a module-level constant, so moving
       it after the answer is visible shows up in a diff.
 
@@ -88,10 +93,10 @@ Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC
       byte-identical? This catches a corrector running outside its window, which the first check
       cannot see.
 - [ ] ⚠️ Does the picked `c` sit in the middle of the tested range rather than at its edge? A pick
-      at the smallest or largest value means the range was wrong, and the fix is to extend the
-      sweep rather than accept the edge.
+      at the smallest or largest value means the range was wrong, and the fix is to test more
+      values of `c` rather than accept the edge.
 - [ ] ⚠️ Does anything else in the tree already measure a corrected residual? The vendored Du et al.
-      code under `composition/reduce_reuse_recycle/` is expected and is a reference, not a
+      code under `composition/reduce_reuse_recycle/` is expected and is a reference rather than a
       collision.
 
 ## The step-size search
@@ -112,15 +117,15 @@ than in a log. `δ_t = c·β_t`, at `k=20`, on `a_cat__x__a_dog` seed 9.
 **Picked `c`:** not yet.
 
 **Was the range adequate?** A pick at the smallest or largest tested `c` means it was not, and the
-fix is to extend the sweep rather than accept the edge. Recorded by hand under instruction 3.3 of
-the design.
+fix is to test more values of `c` rather than accept the edge. Recorded by hand under instruction
+3.3 of the design.
 
 ## Asked after the result
 
 Navigation: ⬅️ [The step-size search](#the-step-size-search) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
-**Nothing here may ever become a bar**, because anything written here is written with the answer
-already visible. Empty until the search runs.
+**Nothing here may ever become a pre-registered threshold**, because anything written here is
+written with the answer already visible. Empty until the search runs.
 
 ## Could the answer be an artefact
 
@@ -151,11 +156,11 @@ Navigation: ⬅️ [What the write-up owes](#what-the-write-up-owes) | 📋 [TOC
 
 | What is unresolved | What would settle it | Who or what is blocked by it |
 |---|---|---|
-| whether one pair and one seed is enough to fix a step size for the whole scope | the search rerun on the composing pair, at the cost of the search again. Deferred until the gate's two panels are seen to agree or disagree | nothing yet. This file records the single pair as a choice rather than an oversight |
+| whether one pair and one seed is enough to fix a step size for the whole scope | the search rerun on the composing pair, at the cost of the search again. Deferred until step 26's two panels are seen to agree or disagree | nothing yet. This file records the single pair as a choice rather than an oversight |
 
 ## Next step
 
 Navigation: ⬅️ [Still open](#still-open) | 📋 [TOC](#table-of-contents)
 
-Run the two leak checks. Neither costs more than one cell, and a failure in either stops the scope
+Run the two leak checks. Neither costs more than one render, and a failure in either stops the scope
 before 670 plain-render equivalents are spent on a composer that is not inert.

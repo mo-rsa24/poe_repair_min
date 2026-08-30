@@ -9,7 +9,7 @@ claim.
 No web page was fetched while building this folder: the repository's own documents (the paper
 draft, `MASTER_PLAN.md`, `report/experiments-log.md`, the evidence and results-archive folders, and the
 pipeline's own output files) were sufficient to ground every claim this pass made, per the
-tier-1, read-only probes described in `~/.claude/skills/context-pulse/SKILL.md`.
+tier-1, read-only checks described in `~/.claude/skills/context-pulse/SKILL.md`.
 
 ## 1. Leveraging Low-Rank Adaptation for Multi-Concept Customization in Training-Free Diffusion Models
 

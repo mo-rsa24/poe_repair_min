@@ -1,5 +1,9 @@
 # 🧪 Does the corrector compose in the same window?
 
+This plan asks whether a corrector switched on inside a ten-step window changes what comes out of
+the run, and whether the window where it works is the same early window the injected correction
+works in.
+
 ## Recommended prompt (after this plan completes)
 
 ```
@@ -21,9 +25,9 @@
 
 | Step | Plan | What it does |
 |------|------|-------------|
-| 6 | [hypothesis-03: when-in-the-run-it-matters](../../03-does-the-correction-cause-composition/plans/hypothesis-03-when-in-the-run-it-matters.md) ◑ | built the injected-correction window sweep this plan is matched against, cell for cell |
-| 26 | [hypothesis-02: what-is-left-once-the-chain-settles](hypothesis-02-what-is-left-once-the-chain-settles.md) ⚠️ | the gate, which this plan is softly gated on |
-| **27 (current)** | **hypothesis-03: does-the-corrector-compose-in-the-same-window** ⚠️ | **reruns the nine-position window sweep with the corrector in place of the injected correction, and asks whether the compose rate peaks at the same moment** |
+| 6 | [hypothesis-03: when-in-the-run-it-matters](../../03-does-the-correction-cause-composition/plans/hypothesis-03-when-in-the-run-it-matters.md) ◑ | generated the injected-correction renders at all nine window positions, which this plan is matched against render for render |
+| 26 | [hypothesis-02: what-is-left-once-the-chain-settles](hypothesis-02-what-is-left-once-the-chain-settles.md) ⚠️ | the measurement this plan waits on, though not strictly |
+| **27 (current)** | **hypothesis-03: does-the-corrector-compose-in-the-same-window** ⚠️ | **generates the nine window positions again with the corrector in place of the injected correction, and asks whether the [compose rate](context/world/compose-rate.md) peaks at the same moment** |
 | 29 | [baseline-02: three-rules-on-one-dose-axis](baseline-02-three-rules-on-one-dose-axis.md) ⚠️ | the other half of the comparison, on dose rather than timing |
 
 Design only. Verdicts and run state live in
@@ -54,8 +58,8 @@ Design only. Verdicts and run state live in
 
 ⬅️ [Previous](#position-in-the-plan-tree) | 📋 [TOC](#table-of-contents) | [Next](#quick-context-where-you-are) ➡️
 
-Slide a ten-step corrector window across the run, the same nine positions the injected-correction
-sweep used, and ask whether the compose rate peaks in the same window that the injected correction
+Slide a ten-step corrector window across the run, at the same nine positions the injected-correction
+renders used, and ask whether the compose rate peaks in the same window that the injected correction
 does.
 
 ## Quick context: where you are
@@ -80,8 +84,8 @@ cannot attribute anything in the early window, which is where the compose rate i
 plan asks a behavioural question about that same window instead, which is answerable there.
 
 **Dataset details.** `a_cat__x__a_dog` seeds 9 to 12 as rows. Nine ten-step window positions as
-columns, matched to the existing sweep, plus a tenth column with the corrector on for all 50 steps.
-Forty cells, each decoded and scored.
+columns, matched to the existing figure, plus a tenth column with the corrector on for all 50 steps.
+Forty renders, each decoded and scored.
 
 **Associated materials.** [The review questions](../review/hypothesis-03-does-the-corrector-compose-in-the-same-window.md),
 [the whole corrector design](../source/the-whole-corrector-design.md), and the figure this one is
@@ -91,24 +95,24 @@ matched against, `paper/iclr/figures/when-the-correction-arrives/poe/samples-as-
 
 ⬅️ [Previous](#quick-context-where-you-are) | 📋 [TOC](#table-of-contents) | [Next](#the-claim) ➡️
 
-**The gate on this plan is soft, deliberately.**
+**This plan waits on step 26, but not strictly.**
 
 A flat curve at [step 26](hypothesis-02-what-is-left-once-the-chain-settles.md) does not strictly
 imply no change in compose rate, because the corrector can relocate the trajectory without
 shrinking `‖r_t‖`. If step 26 comes back flat and this plan still composes, that combination is the
 finding and it goes in the review file as such. Run this plan anyway in that case, and record that
-it was run against a flat gate.
+it was run against a flat curve at step 26.
 
-**This plan decodes and scores, so it costs more than its cell count suggests.**
+**This plan decodes and scores, so it costs more than the number of renders suggests.**
 
-Forty cells at 50 steps each, plus a VAE decode and a detector pass per cell. Unlike step 26, wall
-time here does not track UNet evaluations alone.
+Forty renders at 50 steps each, plus a VAE decode and a detector pass on each one. Unlike step 26,
+wall time here does not track UNet evaluations alone.
 
 **The comparison only works if the layout matches.**
 
-Same pair, same seeds, same nine positions, same green-border rule for a detector-composed cell.
-A figure that is nearly the same is worse than one that is obviously different, because the reader
-will compare them anyway.
+Same pair, same seeds, same nine positions, same green-border rule for a render the detector scored
+as composed. A figure that is nearly the same is worse than one that is obviously different,
+because the reader will compare them anyway.
 
 **The corrector runs at the `k` on the flat part of step 26's curve.**
 
@@ -129,13 +133,13 @@ or does not peak where the injected correction's does, and the answer is recorde
 **Independent variable.** The position of the ten-step corrector window, nine positions across the
 50 steps, plus an all-50 column. Seeds 9 to 12 as the repeat axis.
 
-**Dependent variable.** Whether the detector scores the cell as composed, per cell, and the compose
-rate per column as seeds composed out of 4.
+**Dependent variable.** Whether the detector scores each render as composed, and the compose rate
+per column as seeds composed out of 4.
 
-**Falsify condition.** There is no pass or fail here, which is the point: this is a comparison
-recorded either way, and the review file's question is written so that both answers are reportable.
-What would make it uninterpretable is a layout that does not match the existing figure, since the
-whole read is the comparison between the two.
+**Falsify condition.** There is no pass or fail here. This is a comparison recorded either way, and
+the review file's question is written so that both answers are reportable. What would make it
+uninterpretable is a layout that does not match the existing figure, since the whole read is the
+comparison between the two.
 
 **Why this matters right now.** It is the only thing this scope can say about the compose-decisive
 early window, because [step 26](hypothesis-02-what-is-left-once-the-chain-settles.md) cannot
@@ -155,8 +159,8 @@ attribution is not.
 
 **Key insights.**
 
-1. Matching the existing sweep cell for cell is what turns two figures into one comparison. Any
-   deviation in pair, seeds, positions or border rule has to be paid for in caption prose.
+1. Matching the existing figure render for render is what turns two figures into one comparison.
+   Any deviation in pair, seeds, positions or border rule has to be paid for in caption prose.
 2. Same window and different window are both results. Only "we did not look" is a failure.
 
 ## What happens (visual)
@@ -182,18 +186,18 @@ attribution is not.
 
 ⬅️ [Previous](#what-happens-visual) | 📋 [TOC](#table-of-contents) | [Next](#purpose-and-goal) ➡️
 
-1. **The corrector window sweep.** The composer from
+1. **The run across the ten columns.** The composer from
    [step 25](instrument-01-the-corrector-and-the-step-size-it-runs-at.md) already takes a
-   `corrector_window` tuple, so this is a driver over nine positions plus an all-50 arm, at the `k`
-   on the flat part of step 26's curve.
+   `corrector_window` tuple, so this is a driver over nine positions plus an all-50 condition, at
+   the `k` on the flat part of step 26's curve.
 2. **The figure.** Rows are seeds 9 to 12, columns are the nine window positions plus the all-50
-   column, cells are the final picture, green border where the detector scored composed.
+   column, each square is the final picture, green border where the detector scored composed.
 3. **The comparison, written down.** One paragraph in the review file saying whether the peak
-   column matches the injected-correction sweep's.
+   column matches the injected-correction figure's.
 
 Figure to
 `paper/iclr/figures/when-the-correction-arrives/mcmc/samples-as-a-ten-step-corrector-window-slides.png`,
-with its `.json` sidecar. The `mcmc/` subfolder is where every corrector-arm figure in this scope
+with its `.json` sidecar. The `mcmc/` subfolder is where every corrector figure in this scope
 files, because the folder's own `README.md` splits the timing question by which composition rule
 supplied the term.
 
@@ -203,14 +207,14 @@ supplied the term.
 
 **Purpose**
 
-Serves objective 4 of [the scope's direction](../MASTER_PLAN.md): rerun the nine-position window
-sweep with the corrector in place of the injected correction, so the two mechanisms can be compared
-at the same moments of the run.
+Serves objective 4 of [the scope's direction](../MASTER_PLAN.md). It generates the nine window
+positions again with the corrector in place of the injected correction, so the two mechanisms can
+be compared at the same moments of the run.
 
 **Goals**
 
-1. Forty scored cells, four seeds by ten columns.
-2. The figure, matched cell for cell to the injected-correction version and filed beside it.
+1. Forty scored renders, four seeds by ten columns.
+2. The figure, matched render for render to the injected-correction version and filed beside it.
 3. One recorded answer to whether the peak window matches, with the number of seeds composed per
    column.
 
@@ -225,7 +229,7 @@ at the same moments of the run.
   `/datasets`, the filesystem actually written to, per
   [environment/storage.md](../../../environment/storage.md). Only the finished figure and its
   sidecar go into the repo, under `paper/iclr/figures/`.
-- biggpu allows one job per user, so the sweep runs under `nohup` outside Slurm and `squeue` is
+- biggpu allows one job per user, so this runs under `nohup` outside Slurm and `squeue` is
   blind to it. Harvest by `pgrep` on the session node, per
   [environment/hpc/execution-protocol.md](../../../environment/hpc/execution-protocol.md).
 - **The cached trajectories cannot be used.** The corrector moves the latent onto a different path.
@@ -240,13 +244,14 @@ at the same moments of the run.
 
 **For Claude to execute.** Ask Claude to do these.
 
-### 0. 🧭 Preflight: check this plan before working from it
+### 0. 🧭 Check this plan before working from it
 
 - [ ] **0.1** Check this plan conforms and its instructions are concrete, before acting on it.
   - Paste: `/verify-plan @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis-03-does-the-corrector-compose-in-the-same-window.md`
   - Done when: the report comes back clean, or its proposals have been applied.
-- [ ] **0.2** Read the existing injected-correction sweep and write down the layout this figure has
-      to match: pair, seeds, the nine window positions, and the exact rule the green border encodes.
+- [ ] **0.2** Read the existing injected-correction figure and write down the four layout facts this
+      figure has to match: the pair, the seeds, the nine window positions, and the exact rule the
+      green border encodes.
 
     ```bash
     ls -l paper/iclr/figures/when-the-correction-arrives/poe/
@@ -256,13 +261,13 @@ at the same moments of the run.
   - **Done when:** the four layout facts are quoted in this plan's review file, so a mismatch later
     is visible rather than argued about.
 
-▶ **Next: [task 1.1](#1--run-the-corrector-window-sweep)**.
+▶ **Next: [task 1.1](#1--generate-the-ten-window-columns)**.
 
-### 1. 🚀 Run the corrector window sweep
+### 1. 🚀 Generate the ten window columns
 
 ◀ **Needs: [task 2.2 of step 26](hypothesis-02-what-is-left-once-the-chain-settles.md#2--run-the-grid-and-plot-it)**,
-whose curve says which `k` sits on the flat part. Run this plan even if that gate came back flat,
-and record that it was run against a flat gate.
+whose curve says which `k` sits on the flat part. Run this plan even if that curve came back flat,
+and record that it was run against a flat curve.
 
 - [ ] **1.1** Recreate the sliding-window grid with the corrector at the `k` on the flat part of
       step 26's curve.
@@ -270,14 +275,14 @@ and record that it was run against a flat gate.
     plus a tenth column with the corrector on for all 50 steps.
   - Output goes to:
     `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window_curves_mcmc.json`
-  - **Done when:** that file holds 40 scored cells, counted rather than assumed.
+  - **Done when:** that file holds 40 scored renders, counted rather than assumed.
 - [ ] **1.2** Draw the figure.
-  - Rows are seeds 9 to 12, columns are the ten positions, cells are the final picture, green
+  - Rows are seeds 9 to 12, columns are the ten positions, each square is the final picture, green
     border where the detector scored composed. Column labels name the window in plain words on the
-    axis ("steps 0 to 10"), not in a legend.
+    axis ("steps 0 to 10") rather than in a legend.
   - Figure to
     `paper/iclr/figures/when-the-correction-arrives/mcmc/samples-as-a-ten-step-corrector-window-slides.png`,
-    with its `.json` sidecar recording cells, seeds, `k`, `c` and the border rule.
+    with its `.json` sidecar recording every render, the seeds, `k`, `c` and the border rule.
   - Add the entry to that folder's `README.md` naming the algorithm and what produced it.
   - **Done when:** the PNG, the sidecar and the README entry all exist.
 - [ ] **1.3** Confirm the timing folder's split by composition rule is intact, so this figure lands
@@ -320,7 +325,7 @@ them.
 
 ### 2. 👁️ Read the two grids side by side
 
-◀ **Needs: [task 1.2](#1--run-the-corrector-window-sweep)**, the new figure.
+◀ **Needs: [task 1.2](#1--generate-the-ten-window-columns)**, the new figure.
 
 - [ ] **2.1** Open both figures next to each other.
   - `paper/iclr/figures/when-the-correction-arrives/mcmc/samples-as-a-ten-step-corrector-window-slides.png`
@@ -329,8 +334,8 @@ them.
     on inside the window.
   - ❌ If the layouts differ in any of the four facts recorded at task 0.2, the comparison is not
     matched. Fix the figure rather than explaining the difference in the caption.
-- [ ] **2.2** Count composed cells per column by eye, on both grids, and note which column peaks on
-      each.
+- [ ] **2.2** Count composed renders per column by eye, on both grids, and note which column peaks
+      on each.
   - [The timing verdict](../../03-does-the-correction-cause-composition/review/hypothesis-03-when-in-the-run-it-matters.md)
     records that the detector and the eye disagree on cat and dog often enough that the eye read is
     the one cited. Do both, and cite the eye where they differ.
@@ -349,8 +354,8 @@ them.
 ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
 > **Why this checkpoint matters:** this is the scope's only statement about the window the paper's
-> timing result is about, and it is worth nothing unless it is matched cell for cell to the figure
-> it is compared against.
+> timing result is about, and it is worth nothing unless it is matched render for render to the
+> figure it is compared against.
 
 ```bash
 PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
@@ -365,18 +370,19 @@ ls -l paper/iclr/figures/when-the-correction-arrives/mcmc/
 
 **Pass criteria**
 
-- 40 scored cells in `window_curves_mcmc.json`.
+- 40 scored renders in `window_curves_mcmc.json`.
 - The figure and its `.json` sidecar exist under `mcmc/`, with a `README.md` entry.
 - The layout matches the four facts recorded at task 0.2.
 - Instruction 2.3 has recorded the same-window answer, whichever way it went.
 
 **Fail criteria (STOP)**
 
-- The layout does not match the existing sweep. The figure is not a comparison and must be redrawn.
+- The layout does not match the existing figure. The two are then not a comparison, and this one
+  must be redrawn.
 
 **Partial pass guidance**
 
-- No column composing is a result, not a failure. Record it and say what it bounds.
+- No column composing is still a result. Record it and say what it bounds.
 
 **When you get results, answer**
 [the review file](../review/hypothesis-03-does-the-corrector-compose-in-the-same-window.md).
@@ -385,7 +391,7 @@ ls -l paper/iclr/figures/when-the-correction-arrives/mcmc/
 
 ⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
 
-The bar every figure in this scope is held to is
+The standard every figure in this scope is held to is
 [in the scope's MASTER_PLAN](../MASTER_PLAN.md#the-figure-bar-every-plan-here-is-held-to).
 
 ### Pending: to be generated from prompts
@@ -396,7 +402,7 @@ None. This scope carries no `diagram-prompts.md`, so there is no illustrated map
 
 | Item | Lane | Description | Generated by | Status | Details |
 |---|---|---|---|---|---|
-| `mcmc/samples-as-a-ten-step-corrector-window-slides.png` | — | rows are seeds 9 to 12, columns are the nine ten-step window positions plus a corrector-on-all-50 column, cells are the final generated picture, green border where the detector scored the cell as two separate animals | the sweep driver at task 1.1 | ⏳ | **Main text, only if it differs from the injected-correction version.** Identical behaviour is one sentence of prose beside the existing figure, not a second picture. Sidecar `.json` records cells, seeds, `k`, `c` and the border rule |
+| `mcmc/samples-as-a-ten-step-corrector-window-slides.png` | — | rows are seeds 9 to 12, columns are the nine ten-step window positions plus a corrector-on-all-50 column, each square is the final generated picture, green border where the detector scored it as two separate animals | the driver at task 1.1 | ⏳ | **Main text, only if it differs from the injected-correction version.** If the behaviour is identical, one sentence of prose beside the existing figure covers it. Sidecar `.json` records every render, the seeds, `k`, `c` and the border rule |
 
 **Two sentences this figure's caption owes.** The corrector runs at one `k`, which is a compute
 budget rather than a property of the problem. And the green border encodes the detector's verdict,
@@ -404,7 +410,7 @@ which disagrees with the eye on this pair often enough that the eye count is quo
 
 ### Organization workflow
 
-1. Run the sweep, which writes the scored grid under `/datasets`.
+1. Generate the ten columns, which writes the scored grid under `/datasets`.
 2. Draw the figure into `paper/iclr/figures/when-the-correction-arrives/mcmc/` with its sidecar.
 3. Add the entry to that folder's `README.md`.
 
@@ -431,7 +437,7 @@ which disagrees with the eye on this pair often enough that the eye count is quo
 
 | Path | Why it is read |
 |---|---|
-| [scripts/interaction_term_window.py](../../../scripts/interaction_term_window.py) | the injected-correction window sweep this plan mirrors: the nine positions, the seeds, and the scored-grid format |
+| [scripts/interaction_term_window.py](../../../scripts/interaction_term_window.py) | the injected-correction window run this plan mirrors, with its nine positions, its seeds, and its scored-grid format |
 | `poe_repair/composers/poe_langevin.py` | the composer from [step 25](instrument-01-the-corrector-and-the-step-size-it-runs-at.md), whose `corrector_window` argument is what this plan slides |
 | `paper/iclr/figures/when-the-correction-arrives/README.md` | the folder's own rule for which subfolder a figure lands in, and the exact green-border rule quoted into captions |
 
@@ -460,7 +466,8 @@ Auto-updated after runs via `/ingest-error-pattern` and `/sync-plan-tree`.
 #### 🟡 the detector and the eye disagree on cat and dog
 
 **When it happens:** scoring this pair, at any dose or window.
-**What you see:** green borders on cells that do not look composed, or no border on cells that do.
+**What you see:** green borders on renders that do not look composed, or no border on renders that
+do.
 **Why:** the instance-count scorer is validated but not perfect on this pair, and
 [the timing verdict](../../03-does-the-correction-cause-composition/review/hypothesis-03-when-in-the-run-it-matters.md)
 already records the disagreement rate.

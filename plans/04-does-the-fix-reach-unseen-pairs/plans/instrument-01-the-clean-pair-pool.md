@@ -1,4 +1,7 @@
-# 🧬 A clean pool, behind the scorer gate
+# 🧬 A clean pool, built only once the scorer is trusted
+
+Build the set of animal pairs every later step in this scope is measured on, and start only
+after the compose-scorer has been proven to work.
 
 **Step 3 of 22.** Waits on nothing. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../MASTER_PLAN.md).
 
@@ -8,7 +11,7 @@
 | **3** | **this plan** | **✅** |
 | 4 | [hypothesis-02-more-correction-more-composition](../../03-does-the-correction-cause-composition/plans/hypothesis-02-more-correction-more-composition.md) | ◑ 6.3GB owed |
 
-Design only. Verdicts live in [../review/instrument-01-the-clean-pair-pool.md](../review/instrument-01-the-clean-pair-pool.md).
+Design only. Verdicts live in [the review file for this plan](../review/instrument-01-the-clean-pair-pool.md).
 
 ## What this asks, in one line
 Build the set of animal pairs this whole claim runs on. Three conditions, each closing a
@@ -22,15 +25,19 @@ specific hole:
   number this claim produces is unreadable.
 
 ## Why this plan exists
-Leave-one-pair-out is only a fair transfer test if no animal word repeats across
-pairs. If "wolf" appeared in a training pair and the held-out pair, the model would
-have seen the concept, so a compose would prove nothing. This plan builds a
-token-disjoint pool and confirms each pair actually fails by default, so the test in
-plan 03 starts from clean ground.
+Leaving one pair out is only a fair transfer test if no animal word repeats across
+pairs. If "wolf" appeared in a training pair and in the held-out pair, the model would
+have seen the concept, so a compose would prove nothing. This plan builds a pool where
+no animal word is shared between pairs, and confirms each pair actually fails by
+default, so the test in plan 03 starts from clean ground.
+
+> Held-out: the pair the model is deliberately never trained on, kept back so it can be
+> tested on something genuinely new.
 
 ## Description
-The pool the scope runs on, behind the gate that lets the scope start at all. First,
-check the cross-scope precondition: the sibling compose-scorer must have written
+The pool the scope runs on, plus the condition that has to hold before the scope may
+start at all. First, check what the sibling scope owes this one: the compose-scorer must
+have written
 `scorer_validated.json` with a passing verdict. Without it there is no trusted scorer,
 so the scope halts. Then curate ~15 blend-prone animal×animal pairs where no animal
 word repeats across pairs (~15 pairs ≈ ~30 distinct animals). Finalise `pair_pool.yaml`
@@ -39,13 +46,13 @@ by the compose-scorer, not by eye. Keep a few compose-by-default pairs as a do-n
 control.
 
 ## Purpose
-Serves Objective 1 (Pool) and Definition-of-Done item 1. Also the unattended
-entry-gate: this is where the dependency on compose-scorer is enforced.
+Serves Objective 1 (Pool) and Definition-of-Done item 1. It is also the way in: this is
+where an unattended run enforces the dependency on the compose-scorer.
 
 ## Goal
-`pair_pool.yaml` finalised and overlap-clean: ~15 token-disjoint blend-prone animal
-pairs + a few controls, each training pair's fails-by-default rate over 8 seeds
-recorded, gated behind a passing `scorer_validated.json`.
+`pair_pool.yaml` finalised with no animal word shared between pairs: ~15 blend-prone
+animal pairs plus a few controls, each training pair's fails-by-default rate over 8 seeds
+recorded, and none of it started until `scorer_validated.json` says the scorer passed.
 
 The pool on disk: `artifacts/results/does-the-fix-reach-unseen-pairs/{pair_pool.yaml, pair_prompts.yaml}`,
 19 pairs (15 blend-prone, cat×dog as the known-failure reference, 3 compose-by-default
@@ -72,14 +79,15 @@ controls), 38 distinct animals, no word repeated.
  
 
 ## Engagement Instructions
-GATE (unattended pass/fail): (a) `scorer_validated.json` exists AND pass flag true;
-(b) `pair_pool.yaml` loads and the pair_pool.py overlap assertion passes (exit 0);
-(c) each training pair's recorded fail-rate is above threshold and each control pair's
-is below. A script asserts all three.
-STOP: if `scorer_validated.json` is missing or its verdict is not pass → HALT, the
-compose-scorer dependency is unmet. If fewer than 10 token-disjoint blend-prone pairs
-survive scoring → halt (pool too small to support leave-one-out). If a pair intended
-for training scores compose-by-default → drop it, then re-check the ≥10 floor.
+MUST PASS before this counts as done, checked by a script with nobody watching: (a)
+`scorer_validated.json` exists AND its pass flag is true; (b) `pair_pool.yaml` loads and
+the pair_pool.py overlap assertion passes (exit 0); (c) each training pair's recorded
+fail-rate is above threshold and each control pair's is below.
+STOP: if `scorer_validated.json` is missing or its verdict is not pass → HALT, because
+the compose-scorer this depends on has not delivered. If fewer than 10 blend-prone pairs
+with no shared animal word survive scoring → halt, since the pool is then too small to
+leave one pair out. If a pair meant for training turns out to compose by default → drop
+it, then check again that at least 10 remain.
 
 ## Recommended skill
 ▶ `/run-experiment` ✅: drives the fail-rate scoring pass over 8 seeds and confirms

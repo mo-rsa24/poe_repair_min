@@ -4,7 +4,7 @@ A compose rate is the fraction of seeds, for one pair, that the validated scorer
 ("compose") rather than a failure ("blend", see [chimera.md](chimera.md)). The scorer behind it is
 a specific, validated detector rule, not a general judgement of whether the picture "looks right".
 
-![One cell the scorer calls a correct compose: a tabby cat and a white labrador, both clearly present](../images/world/03-compose-correctly-scored.png)
+![One run the scorer calls a correct compose: a tabby cat and a white labrador, both clearly present](../images/world/03-compose-correctly-scored.png)
 *Both animals are visible and separated. The detector found two distinct "animal" boxes here, which
 is the whole rule.*
 
@@ -53,7 +53,7 @@ round, under whichever render method (plain PoE, corrected PoE, or the LoRA) is 
 
 Navigation: ⬅️ [What a compose rate is](#what-a-compose-rate-is) | 📋 [TOC](#table-of-contents) | [Next](#why-the-project-cares) ➡️
 
-![One cell the scorer scores compose, but the audit judges an error: two dog muzzles, no cat](../images/world/04-compose-scorer-error-two-of-one.png)
+![One run the scorer scores compose, but the audit judges an error: two dog muzzles, no cat](../images/world/04-compose-scorer-error-two-of-one.png)
 *The detector correctly counted two animal instances and was scored a success. Both instances are
 the same dog. This is the one confirmed error the F2 audit found in the strongest-correction
 population; see [What people get wrong](#what-people-get-wrong).*
@@ -65,10 +65,14 @@ Navigation: ⬅️ [What it looks like](#what-it-looks-like) | 📋 [TOC](#table
 **Every headline number the paper prints about whether the fix works is this rate.** ✅
 
 The dose-response claim ("more correction, more composition"), the held-out-seed and held-out-pair
-bars, and the group-pooling verdicts in `MASTER_PLAN.md`'s Goals are all compose rates computed by
-this scorer. A weakness in the scorer is a weakness in every one of those claims, which is why the
-project runs a standing effort (`can-we-trust-the-compose-rate` in `MASTER_PLAN.md`'s background
-experiment table) specifically to bound the scorer's own error before trusting it further.
+thresholds, and the group-pooling verdicts in `MASTER_PLAN.md`'s Goals are all compose rates
+computed by this scorer. A weakness in the scorer is a weakness in every one of those claims, which
+is why the project runs a standing effort (`can-we-trust-the-compose-rate` in `MASTER_PLAN.md`'s
+background experiment table) specifically to bound the scorer's own error before trusting it
+further.
+
+> Held-out means the seeds or pairs were kept aside and never trained on, so the rate measured on
+> them says how the fix does on cases it has not seen.
 
 ## How it shows up in the data
 
@@ -87,7 +91,7 @@ Navigation: ⬅️ [How it shows up in the data](#how-it-shows-up-in-the-data) |
 
 **The scorer counts animals, it does not identify them.** ⚠️
 
-`artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md`, its own summary: of 32 cells behind a 94% headline compose
+`artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md`, its own summary: of 32 runs behind a 94% headline compose
 rate at full correction strength, 1 is a confirmed error (two of the same animal, called a
 success), 5 more "cannot be called" confidently by eye (mostly waterfowl and raptor pairs that look
 alike even to a person), and 12 more are pairs chosen *because* they look alike (leopard/jaguar,
@@ -99,8 +103,8 @@ rather than hedging vaguely." ✅
 **Querying the detector once per concept would not fix this.** ✍️
 
 The same card tested this idea against itself: asking the detector for "cat" and separately for
-"dog" would still fail to resolve the 5 "cannot call" cells and would do no better than guessing on
-the 12 look-alike-by-design cells, so it is recorded as considered and not worth building.
+"dog" would still fail to resolve the 5 "cannot call" runs and would do no better than guessing on
+the 12 look-alike-by-design runs, so it is recorded as considered and not worth building.
 
 ## Where this came from
 

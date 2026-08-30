@@ -3,8 +3,8 @@
 **Nothing has run yet.** Every question below was written before any corrector existed. This file
 judges [the corrector window design](../plans/hypothesis-03-does-the-corrector-compose-in-the-same-window.md).
 It is the only thing this scope can say about the compose-decisive early window, because
-[the gate](hypothesis-02-what-is-left-once-the-chain-settles.md) cannot attribute there by
-construction.
+[the residual measurement at step 26](hypothesis-02-what-is-left-once-the-chain-settles.md) cannot
+attribute there by construction.
 
 ## Recommended prompt (when the run lands)
 
@@ -18,8 +18,8 @@ construction.
 |---|---|
 | [design](../plans/hypothesis-03-does-the-corrector-compose-in-the-same-window.md) | the nine positions, the layout it must match, and where the figure files |
 | **this file** | **the verdict: not yet run** |
-| [the gate's verdict](hypothesis-02-what-is-left-once-the-chain-settles.md) | the soft gate this sits behind, and the `k` this sweep runs at |
-| [the timing verdict](../../03-does-the-correction-cause-composition/review/hypothesis-03-when-in-the-run-it-matters.md) | the injected-correction sweep this is compared against, cell for cell |
+| [the step 26 verdict](hypothesis-02-what-is-left-once-the-chain-settles.md) | the measurement this waits on, though not strictly, and the `k` these renders run at |
+| [the timing verdict](../../03-does-the-correction-cause-composition/review/hypothesis-03-when-in-the-run-it-matters.md) | the injected-correction figure this is compared against, render for render |
 
 ## Table of contents
 
@@ -39,21 +39,21 @@ construction.
 Navigation: 📋 [TOC](#table-of-contents) | [Next](#run-kind) ➡️
 
 - **The window**: the stretch of denoising steps during which the corrector is allowed to act. Ten
-  steps wide, slid to nine positions across the 50, plus an all-50 arm.
+  steps wide, slid to nine positions across the 50, plus an all-50 condition.
 - **The injected correction**: the cached `r_t` added back into plain product-of-experts, which is
-  the mechanism the existing window sweep used. The corrector is a different mechanism aimed at the
-  same failure.
+  the mechanism the existing set of window renders used. The corrector is a different mechanism
+  aimed at the same failure.
 - **Composed**: the detector scored the picture as two separate animals rather than one blended
-  one. The green border on a cell encodes exactly this.
+  one. The green border on a render encodes exactly this.
 - **The peak window**: the column with the most seeds composed out of four.
 
 ## Run kind
 
 Navigation: ⬅️ [Words this file uses](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#runs) ➡️
 
-**Tests the claim.** There is no pass or fail: same window and different window are both results,
-and both are reported. What would make the run worthless is a layout that does not match the figure
-it is compared against, since the comparison is the entire read.
+**Tests the claim.** There is no pass or fail here. Same window and different window are both
+results, and both are reported. What would make the run worthless is a layout that does not match
+the figure it is compared against, since the comparison is the entire read.
 
 ## Runs
 
@@ -61,7 +61,7 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
-| The corrector window sweep, 4 seeds × 10 columns | Tests the claim | not launched | 40 cells, each decoded and scored | `corrector/window_curves_mcmc.json` and `mcmc/samples-as-a-ten-step-corrector-window-slides.png` | ⚠️ gated on the bar at step 26 |
+| The corrector across ten window columns, 4 seeds × 10 columns | Tests the claim | not launched | 40 renders, each decoded and scored | `corrector/window_curves_mcmc.json` and `mcmc/samples-as-a-ten-step-corrector-window-slides.png` | ⚠️ waiting on the threshold at step 26 |
 
 ## The pre-registered bar
 
@@ -70,23 +70,25 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 - [ ] ⚠️ **Does the corrector's compose rate peak in the same window the injected correction
       does?** Recorded either way. Same window means two different mechanisms acting at the same
       moment. A different window is the stronger result and needs its own paragraph. This question
-      is answered even if the gate at step 26 returns a null, because a flat residual curve does
-      not imply a flat compose rate: the corrector can relocate the trajectory without shrinking
-      `‖r_t‖`. If it is run against a flat gate, this file says so.
+      is answered even if the measurement at step 26 returns a null, because a flat residual curve
+      does not imply a flat [compose rate](context/world/compose-rate.md). The corrector can
+      relocate the trajectory without shrinking `‖r_t‖`. If it is run against a flat curve at step
+      26, this file says so.
 
 ## Written before the run, answered after
 
 Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
-- [ ] ⚠️ Does the layout match the injected-correction sweep on all four facts: pair, seeds, the
-      nine window positions, and the exact rule the green border encodes? A nearly-matched pair of
-      figures is worse than an obviously different one, because a reader compares them anyway.
+- [ ] ⚠️ Does the layout match the injected-correction figure on all four facts, meaning the pair,
+      the seeds, the nine window positions, and the exact rule the green border encodes? A
+      nearly-matched pair of figures is worse than an obviously different one, because a reader
+      compares them anyway.
 - [ ] ⚠️ How many seeds compose per column, by the detector and by eye, for each of the ten columns?
-      The two counts go side by side, with the disagreements named cell by cell.
+      The two counts go side by side, with the disagreements named render by render.
 - [ ] ⚠️ Does the all-50 column compose more than the best ten-step window? If a full-run corrector
       is not better than a well-placed short one, that is a statement about when the corrector's
       work actually matters.
-- [ ] ⚠️ At which `k` was this run, and where does that `k` sit on the gate's curve? A `k` chosen
+- [ ] ⚠️ At which `k` was this run, and where does that `k` sit on step 26's curve? A `k` chosen
       off the flat part is a compute budget; a `k` chosen off the falling part is a different
       experiment.
 
@@ -94,8 +96,8 @@ Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC
 
 Navigation: ⬅️ [Written before the run](#written-before-the-run-answered-after) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
-**Nothing here may ever become a bar**, because anything written here is written with the answer
-already visible. Empty until the sweep runs.
+**Nothing here may ever become a pre-registered threshold**, because anything written here is
+written with the answer already visible. Empty until the renders are made.
 
 ## Could the answer be an artefact
 
@@ -108,7 +110,7 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
       [the timing verdict](../../03-does-the-correction-cause-composition/review/hypothesis-03-when-in-the-run-it-matters.md)
       records that it disagrees with the eye on cat and dog often enough that the eye read is the
       one cited. Both counts are taken here for that reason.
-- [ ] ⚠️ **Did the run respect the environment?** All 40 cells present, renders under `/datasets`
+- [ ] ⚠️ **Did the run respect the environment?** All 40 renders present, saved under `/datasets`
       with only the finished figure and its sidecar in the repo, launched under `nohup` outside
       Slurm and harvested by `pgrep` rather than `squeue`.
 
@@ -132,5 +134,5 @@ Nothing open. This file has not been run against.
 
 Navigation: ⬅️ [Still open](#still-open) | 📋 [TOC](#table-of-contents)
 
-Read the existing injected-correction sweep and write down the four layout facts this figure has to
-match, before any cell renders.
+Read the existing injected-correction figure and write down the four layout facts this figure has to
+match, before anything is rendered.

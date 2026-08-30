@@ -6,8 +6,8 @@
 waits on it, so it carries no step number and blocks nothing. Its four plans run in the internal
 order below, and it earns numbered steps in the one `## Running order` table in the
 [repo root MASTER_PLAN.md](../../MASTER_PLAN.md) only on the big-promotion condition in the
-Definition of Done: the false-compose rate comes back contaminated at the ten-point bar, or a
-candidate detector clears the 95-versus-85 bar.
+Definition of Done. That condition is met when the false-compose rate comes back contaminated at
+the ten-point threshold, or when a candidate detector clears the 95-versus-85 threshold.
 
 **Next in this scope:** [gate-01-is-this-hole-already-known](plans/gate-01-is-this-hole-already-known.md),
 one `/pressure-test` verdict. Nothing but instrument-01 may start before it comes back.
@@ -20,14 +20,15 @@ one `/pressure-test` verdict. Nothing but instrument-01 may start before it come
 | 4 of 4 | [gate-02-promote-or-close](plans/gate-02-promote-or-close.md) | promote or close, in writing | ⚠️ blocked by the other three |
 
 ## Mission
-Every compose rate in the paper comes from a detector we ask "how many animals", never "which
-animals". Two dogs scores the same as a cat and a dog. So 94% is an upper bound, and nobody has
-measured how far above the truth it sits. This scope measures it.
+Every [compose rate](../../context/world/compose-rate.md) in the paper comes from a detector that
+is asked how many animals are in the picture. It is never asked which animals. Two dogs scores the
+same as a cat and a dog. So 94% is an upper bound, and nobody has measured how far above the truth
+it sits. This scope measures it.
 
-The number that decides whether the paper changes is not how big the error is. It is whether
-the error gets bigger as λ gets bigger. If it stays the same size, F2's shape is real and we
-add one caveat. If it grows with λ, then part of F2's slope is just the detector becoming
-easier to please.
+What decides whether the paper changes is whether the error grows with λ. The size of the error on
+its own does not decide it. If the error stays the same size across λ, F2's shape is real and we
+add one caveat. If it grows with λ, then part of F2's slope is the detector becoming easier to
+please.
 
 ## Run kind
 Group 2, tries a new idea. It may propose experiments and may not change any claim in the
@@ -38,7 +39,7 @@ met.
 ## Depends on
 - `outputs/compose_scorer/scorer_validated.json`: the file this scope is checking. Read only.
   `does-the-fix-reach-unseen-pairs` will not start unless it exists, so nothing here edits it.
-- `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/`: all 32 cells at λ=1, sorted by hand, with `calls.json` as the
+- `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/`: all 32 images at λ=1, sorted by hand, with `calls.json` as the
   table. Kept back so the labelling pass can be scored against it.
 - `outputs/interaction_term/dose/pairs/`: 19 pairs × 5 seeds × λ ∈ {0, 0.25, 0.50, 0.75, 1.00},
   the real-correction row plus the `_random` and `_wrong_pair` control rows.
@@ -54,6 +55,9 @@ scored successes.
 picked because they blend (leopard/jaguar, cow/buffalo, frog/toad). That is the same thing that
 makes "are both animals there?" unanswerable from the picture. A better detector does not help,
 so how much of the pool is uncheckable is one of the numbers this scope reports.
+
+> Held-out pairs are the animal pairs kept out of the adapter's training set, so a result on them
+> says whether the fix reaches beyond what it was trained on.
 
 ## Objectives
 1. **Check nobody has said this already.** One `/pressure-test` verdict on the claim that
@@ -77,11 +81,11 @@ so how much of the pool is uncheckable is one of the numbers this scope reports.
    [checkpoint: a 19-row table, written before any label exists]
 3. **Labelled set built.** Four labels per image: both requested animals, separate; one animal
    or a fusion; two or more animals but not the two asked for; cannot tell. About 150 images
-   (judgeable pairs × 5 seeds × 5 λ, real-correction row), plus the λ=1 cells of both control
+   (judgeable pairs × 5 seeds × 5 λ, real-correction row), plus the λ=1 images from both control
    rows.
-   [checkpoint: label counts per λ, and the pass scored against the 32 audit cells]
+   [checkpoint: label counts per λ, and the pass scored against the 32 hand-sorted images]
 4. **The error measured against λ.** The false-compose rate is how often the scorer says
-   compose and a person says it did not. Bar written in code before the labels exist.
+   compose and a person says it did not. The threshold is written in code before the labels exist.
    - *contaminated* if the false-compose rate at λ=1 is 10 points or more above the rate at
      λ=0.50. F2's caption gets capped, and a group-1 run is proposed in
      `does-the-correction-cause-composition`.
@@ -109,17 +113,17 @@ the same "is there a cat?" question.
    so it cannot be adjusted to suit the labels. [inferred prerequisite]
 3. ⚠️ The labelling tool strips λ out of the file path and shuffles before showing an image, so
    the labeller cannot see which setting produced it. [inferred prerequisite]
-4. ⚠️ The labelling pass scored against the 32 cells in `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/`.
-   Disagreement above 10% throws the pass away and the user labels by hand. That bar lives in
-   the labelling script, not in prose. [inferred prerequisite]
+4. ⚠️ The labelling pass scored against the 32 hand-sorted images in `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/`.
+   Disagreement above 10% throws the pass away and the user labels by hand. That threshold lives
+   in the labelling script rather than in prose. [inferred prerequisite]
 5. ⚠️ Labelled set on `/datasets`, with label counts per λ and the coverage number.
 6. ⚠️ False-compose rate at λ=1 and at λ=0.50, both with denominators, judged against the
-   three-way bar.
+   three-way rule in goal 4.
 7. ⚠️ Every candidate named to its source paper, run with a working `--device cpu` route, judged
-   against the 95%-versus-85% bar.
+   against the 95%-versus-85% threshold.
 8. ⚠️ `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md` gives the band as 75% to 94% and says it cannot be
    narrowed from those images. It currently says 87% to 94%, which counts the 17 uncallable
-   cells as successes.
+   images as successes.
 9. ⚠️ Promotion decision written in `review/gate-02-*.md` against the two levels below.
 
 **Promotion, two levels.**
@@ -129,14 +133,14 @@ the same "is there a cat?" question.
 as an upper bound. Wording only. No row in the root `MASTER_PLAN.md` paper table.
 
 *The big one, the actual contribution.* Either goal 4 comes back *contaminated* at the 10-point
-bar, or goal 5 produces a candidate that clears the 95%-versus-85% bar. Either one earns a
+threshold, or goal 5 produces a candidate that clears the 95%-versus-85% threshold. Either one earns a
 numbered step in the root `## Running order` table and a group-1 plan in
 `does-the-correction-cause-composition`. `gate-02` must then say whether the winner re-certifies
 or replaces `scorer_validated.json`, and what that means for the runs
 `does-the-fix-reach-unseen-pairs` has already finished against the old one.
 
-*Neither happens.* The scope closes with the limitations paragraph and the labelled set as a
-reusable instrument. That is written down as the finding.
+*Neither happens.* The scope closes with the limitations paragraph and the labelled set kept as
+something later work can measure a new metric against. That is written down as the finding.
 
 ## Sub-Scopes
 (none)
@@ -151,7 +155,7 @@ Grouped by the run group each answers to. Statuses live in the review/ files.
 |---|---|---|
 | gate-01-is-this-hole-already-known | `/pressure-test` on the claim (DoD 1) | ⚠️ |
 
-**Instrument: changes no claim, needed whatever gate-01 says**
+**A measuring tool: changes no claim, and runs whatever `gate-01` says**
 
 | Plan | What it does | Status |
 |---|---|---|

@@ -22,7 +22,7 @@ time limit, node count).
 | `bigbatch` | mscluster[42-89], 48 nodes | 3 days | Fallback when no `biggpu` node is idle. |
 | `batch` | mscluster[120-219], 100 nodes | 1 day | Short jobs only. |
 | `stampede` | mscluster[22-41], 20 nodes | 3 days | Rarely used for this project. |
-| `gpuexpress` | mscluster116, 1 node | 1 hour | Smoke tests only. |
+| `gpuexpress` | mscluster116, 1 node | 1 hour | Short wiring checks only. |
 
 **`sinfo` never shows GPU GRES on this cluster.** Confirmed again live on 2026-08-24
 (`sinfo -o "%P %N %G"`): every partition reads `(null)` in the GRES column. A job script that
@@ -47,8 +47,8 @@ live via `ls -la` on 2026-08-24). Every job script must use this absolute path, 
 
 **`co3_bw` also appears in at least one launcher** (`scripts/animals_compose_transfer/smoke_live_curves.sh`,
 per `plans/04-does-the-fix-reach-unseen-pairs/plans/instrument-02-three-live-curves-while-training.md`).
-Confirmed to exist via the `ls` above; what specifically differs from `co3` has not been
-probed this sitting, so treat `co3_bw` as a second real environment whose exact purpose is
+Confirmed to exist via the `ls` above; what specifically differs from `co3` was not checked
+this sitting, so treat `co3_bw` as a second real environment whose exact purpose is
 still open (see `known-failures.md` if a run against it behaves unexpectedly).
 
 `superdiff` exists for SuperDiff-related work if its dependencies conflict with `co3`

@@ -1,22 +1,24 @@
 # 📄 The abstract
 
+This plan asks what the abstract says once the sections it summarises are already written.
+
 **Step 22 of 22.** Waits on steps 20 and 21. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../MASTER_PLAN.md).
 
 | Step | Plan | Status |
 |---|---|---|
-| 21 | [writing-06-mechanism-and-limitations](writing-06-mechanism-and-limitations.md) | ⚠️ |
+| 21 | [mechanism and limitations](writing-06-mechanism-and-limitations.md) | ⚠️ |
 | **22** | **this plan** | **⚠️** |
 
 ## What this asks, in one line
-Write the abstract last, from the spine and the finished sections, because an abstract written first describes the paper you hoped for.
+Write the abstract last, from the section order and the finished sections, because an abstract written first describes the paper you hoped for.
 
 ## Description
-Write the abstract, after the spine is locked and the method and introduction
-exist.
+Write the abstract, after the section order is locked and the method and
+introduction exist.
 
 ## Purpose
 Written first, an abstract locks a story the figures then have to serve. Written
-after the spine, it reports a story already decided. It is a separate plan from
+after the section order, it reports a story already decided. It is a separate plan from
 03 only because of that ordering. Serves DoD 6.
 
 ## Goal
@@ -28,11 +30,16 @@ limit, inside the ICLR word budget.
   `\begin{abstract}` block (currently stock ICLR filler text). Build with
   Ctrl+Shift+P → Build with recipe → `tectonic`. See `environment/paper.md`,
   "Paper: where the LaTeX lives and how it is built".
-- Depends on plan 01 (the spine) and plan 03 (method and intro) landing first.
+- Depends on plan 01 (the section order) and plan 03 (method and intro) landing
+  first.
 - Numbers quoted here must be ones that exist. Today that is the pooled held-out
   read (out_out 0.96 at step 60k, from `does-the-fix-reach-unseen-pairs` plan 03a), and
   it is always cited with its checkpoint. Anything from `does-the-correction-cause-composition` is
   owed until its runs land.
+
+  > Held-out pairs are the animal pairs the adapter never trained on, so a
+  > number measured on them says whether the fix reaches beyond what it was
+  > fitted to.
 
 ## Tasks
 - [ ] draft the abstract: the problem, the measurement, the fix, the transfer
@@ -44,14 +51,14 @@ limit, inside the ICLR word budget.
 ## Next
 
 1. `/draft-section abstract`. It refuses to run before SPINE.md exists, and its numbers piece
-   stays blocked while any cited slot is unfilled, which is the enforcement of "write it last".
+   stays blocked while any cited figure is still unfilled, which is what enforces "write it last".
 
 ## Success/Failure Outcomes
 - **the abstract**
   - Success: a reader knows what was claimed, what was shown, and what was not,
     without reading further.
   - Failure: it promises evidence the paper does not yet carry. Weaken the
-    sentence, do not defer the check.
+    sentence rather than deferring the check.
 
 ## Recommended skill
 ▶ `/restyle` ✅ against a pasted ICLR abstract whose voice you want. It preserves

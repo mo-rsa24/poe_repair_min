@@ -7,6 +7,10 @@ run, without ever seeing the literal joint prompt at inference. It is the projec
 fix, as distinct from the interaction term itself, which is only ever computed from the joint
 prompt during training and is not something a deployed system has access to.
 
+> Low-rank means the extra weights are kept as two thin matrices multiplied together rather than
+> one full-sized matrix, so the correction carries far fewer trainable numbers than the layer it
+> attaches to.
+
 ## Table of contents
 
 - [Words this file uses](#words-this-file-uses)
@@ -25,12 +29,12 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#what-the-lora-corrector-is)
   retraining the attention weights outright.
 - **Cross-attention (`attn2`)**: the layer inside SDXL's UNet where the text prompt's embedding
   enters the image-generation computation; this is where the LoRA is attached.
-- **Mono-free**: the property that matters most about this fix: at inference, the LoRA never
-  receives or encodes the joint prompt. Only its own trained weights and the PoE run's own state
-  are used.
-- Struck word: **adapter**. Current prose says **lora** in full, per
-  `plans/standing/retrofit-poe-repair-min.md`'s struck-words list; "adapter" survives only inside code
-  identifiers and older documents quoted verbatim.
+- **Mono-free**: at inference the LoRA never receives or encodes the joint prompt. Only its own
+  trained weights and the PoE run's own state are used. This is the property that matters most
+  about the fix.
+- **lora**: written out in full in prose, per the word list in
+  `plans/standing/retrofit-poe-repair-min.md`. The word "adapter" appears only inside code
+  identifiers and in older documents quoted verbatim.
 
 ## What the LoRA corrector is
 
@@ -46,7 +50,7 @@ prompt (Mono-free), the corrected PoE prediction moves toward the Mono ceiling."
 **It is trained per configuration, not once for the whole project.** ✍️
 
 Different training runs pool over different sets of pairs and seeds, matching the project's
-five-rung ladder (see [purpose/03-what-working-means.md](../purpose/03-what-working-means.md#the-test)):
+five-step ladder (see [purpose/03-what-working-means.md](../purpose/03-what-working-means.md#the-test)):
 one pair and one seed, one pair pooled over several seeds, one group of pairs pooled together, or
 the whole studied set at once. Which pooling unit is deployable is the project's open research
 question, not a settled fact this file can assert.
@@ -59,9 +63,9 @@ A LoRA is a set of trained numeric weights, not a directly picturable object. Wh
 (a corrected render, ideally closer to the Mono image than plain PoE) is picturable, and an
 example of that comparison is owed:
 
-> 📷 **Picture wanted**: one cell's PoE render, LoRA-corrected render, and Mono render side by
+> 📷 **Picture wanted**: one run's PoE render, LoRA-corrected render, and Mono render side by
 > side, so a reader can see what the correction visibly moved. Not yet selected; a strong
-> candidate is any cell behind `artifacts/results/can-we-trust-the-compose-score/compose-scorer-validation/scorer_validated.json`'s
+> candidate is any run behind `artifacts/results/can-we-trust-the-compose-score/compose-scorer-validation/scorer_validated.json`'s
 > `passing_spaces: instance_count` result. Save as
 > `images/world/05-lora-corrected-vs-poe-vs-mono.png`.
 
@@ -73,8 +77,8 @@ Navigation: ⬅️ [What it looks like](#what-it-looks-like) | 📋 [TOC](#table
 
 The interaction term itself needs the joint prompt to compute, which defeats the purpose of PoE
 composition. `MASTER_PLAN.md`'s Expected Outcome names the LoRA (or a catalogue of LoRAs, one per
-group) as "A deployable, Mono-free PoE corrector whose reach is characterised" — the project's
-actual deliverable.
+group) as "A deployable, Mono-free PoE corrector whose reach is characterised", which is the
+project's actual deliverable.
 
 ## How it shows up in the data
 
@@ -94,9 +98,9 @@ Navigation: ⬅️ [How it shows up in the data](#how-it-shows-up-in-the-data) |
 
 `context/research-guidelines.md` records this as a live worry, not a resolved one: whether a
 single-pair-trained LoRA's apparent transfer to a sibling pair is a real hit or "a memorised
-correction that happens to fit" is exactly why the project's own rung 3 (`does-the-fix-reach-unseen-pairs`)
-was downgraded from a publication gate to an optional smoke test, and rung 4 (group-wise pooling on
-concept-disjoint pairs) was named the reviewer-credible version instead
+correction that happens to fit" is exactly why the project's own step 3 (`does-the-fix-reach-unseen-pairs`)
+was downgraded from something the paper must clear to an optional short check, and step 4
+(group-wise pooling on concept-disjoint pairs) was named the reviewer-credible version instead
 (`plans/standing/retrofit-poe-repair-min.md`'s reference to `report/experiments-log.md` EXP-03).
 
 ## Where this came from

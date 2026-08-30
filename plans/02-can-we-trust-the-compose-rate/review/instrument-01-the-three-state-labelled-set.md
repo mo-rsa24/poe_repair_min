@@ -2,7 +2,8 @@
 
 **Unanswered.** This file judges
 [../plans/instrument-01-the-three-state-labelled-set.md](../plans/instrument-01-the-three-state-labelled-set.md),
-the labelled set that puts a band on every compose rate the paper prints. Its first question is
+the labelled set that puts a band on every [compose rate](../../../context/world/compose-rate.md)
+the paper prints. Its first question is
 the one that decides whether F2's shape is safe.
 
 ## Recommended prompt (when the labelling pass finishes)
@@ -17,7 +18,7 @@ the one that decides whether F2's shape is safe.
 |---|---|
 | [design](../plans/instrument-01-the-three-state-labelled-set.md) | the labelling rule, the blinding, the three-state scheme |
 | **this file** | **the verdict: how far above the truth the printed compose rate sits** |
-| [what it supplies](idea-01-what-the-current-benchmarks-score.md) | the judgeable-pair denominator every bake-off score is computed over |
+| [what it supplies](idea-01-what-the-current-benchmarks-score.md) | the judgeable-pair denominator every candidate's score is computed over |
 | [what reads it](gate-02-promote-or-close.md) | the decision, which needs the two false-compose rates |
 
 ## Table of contents
@@ -41,8 +42,8 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#run-kind) ➡️
   (stripes, tusks, a trunk), so a person can say from the picture which two animals are there.
   The other pairs cannot be judged at all, because the pool picked them for blending.
 - **False-compose rate**: among images the scorer calls compose, how often a person says the two
-  requested animals are not both there as separate animals. Not an error rate over all images:
-  the denominator is the scorer's own successes, because that is the number the paper prints.
+  requested animals are not both there as separate animals. The denominator is the scorer's own
+  successes rather than all images, because the success count is what the paper prints.
 - **Coverage**: how much of the pair pool any "is it there?" metric can be scored on at all.
 - **λ**: correction strength, on the grid {0, 0.25, 0.50, 0.75, 1.00} already on disk under
   `outputs/interaction_term/dose/pairs/`.
@@ -51,8 +52,8 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#run-kind) ➡️
 
 Navigation: ⬅️ [Words this file uses](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#runs) ➡️
 
-**Not a run: an instrument.** Judged by whether its checks could have failed, not by what they
-found. It changes no claim on its own. What it produces is handed to `gate-02`, which decides
+**Not a run: a measuring tool.** Judged by whether its checks could have failed, rather than by
+what they found. It changes no claim on its own. What it produces is handed to `gate-02`, which decides
 whether anything moves.
 
 ## Runs
@@ -63,7 +64,7 @@ The images already exist on disk. The work is labelling them, not generating the
 
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
-| labelling pass over the λ grid at `outputs/interaction_term/dose/pairs/` | Instrument | | labelling only; no generation | the three-state labels, the two false-compose rates, the coverage number | not started |
+| labelling pass over the λ grid at `outputs/interaction_term/dose/pairs/` | Measuring tool | | labelling only; no generation | the three-state labels, the two false-compose rates, the coverage number | not started |
 
 ## The pre-registered bar
 
@@ -93,10 +94,10 @@ Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC
       right rather than a check.
 - [ ] ⚠️ Does the review say plainly what this cannot measure?
       On the pairs chosen because they blend, no detector and no person can say which two animals
-      are present. That has to be stated as a limit of the instrument, not left for a reader to
-      infer from the coverage number.
+      are present. That has to be stated as a limit of the measuring tool, and not left for a
+      reader to infer from the coverage number.
 - [ ] ⚠️ Does `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md` now give the band as 75% to 94%?
-      It currently says 87% to 94%, which counts the 17 uncallable cells as successes. The
+      It currently says 87% to 94%, which counts the 17 uncallable images as successes. The
       corrected line must also say the band cannot be narrowed from those images.
 
 ## Asked after the result
@@ -114,19 +115,19 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
       The tool must strip λ from the source path and shuffle. Two assertions: no label record
       carries a λ in its path field, and the presentation order does not match the on-disk
       order. If either fails, the labels are contaminated by expectation and the set is rebuilt.
-      This is the fairness check that matters, because the bar compares two λ values against
-      each other.
+      This is the fairness check that matters, because the question above compares two λ values
+      against each other.
 - [ ] ⚠️ **Was the instrument sound?** Two checks, both required.
       *Was the judgeable-pair rule committed before the first label?* `git log` decides it, not
       memory. A rule written after seeing labels can be tuned until the rate comes out
       flattering, and no later check can detect that.
-      *Did the labelling pass agree with the existing hand sort on at least 90% of the 32 audit
-      cells?* Scored against `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/calls.json`, which the pass never sees.
-      Reported as a fraction, not a pass flag. Below 90% the automated pass is discarded and the
-      user labels the main set by hand. That bar lives in the labelling script.
+      *Did the labelling pass agree with the existing hand sort on at least 90% of the 32
+      hand-sorted images?* Scored against `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/calls.json`, which the pass never sees.
+      Reported as a fraction rather than a pass flag. Below 90% the automated pass is discarded
+      and the user labels the main set by hand. That threshold lives in the labelling script.
 - [ ] ⚠️ **Did the run respect the environment?** The labelled images must come from the λ grid
       at `outputs/interaction_term/dose/pairs/` and nowhere else, and every λ on the grid must
-      have contributed a non-empty set of cells rather than one silently selecting nothing.
+      have contributed a non-empty set of images rather than one silently selecting nothing.
 
 ## What the write-up owes
 
@@ -135,9 +136,9 @@ Navigation: ⬅️ [Could the answer be an artefact](#could-the-answer-be-an-art
 | What the paper says | What it owes alongside it |
 |---|---|
 | any printed compose rate, including the 94% | the band around it, and both false-compose rates with their denominators. The denominator is the scorer's own successes, not all images |
-| F2's shape | whether the slope is partly the detector becoming easier to please as the correction splits one blob into two. That is what the bar decides |
-| the coverage number | that on pairs chosen because they blend, no detector and no person can say which two animals are present. This is a limit of the instrument, not a gap in the data |
-| `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md` | the band as 75% to 94%, not the current 87% to 94%, which counts the 17 uncallable cells as successes. The corrected line must also say the band cannot be narrowed from those images |
+| F2's shape | whether the slope is partly the detector becoming easier to please as the correction splits one blob into two. That is what the question above decides |
+| the coverage number | that on pairs chosen because they blend, no detector and no person can say which two animals are present. This is a limit of the measuring tool rather than a gap in the data |
+| `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md` | the band as 75% to 94%, replacing the current 87% to 94%, which counts the 17 uncallable images as successes. The corrected line must also say the band cannot be narrowed from those images |
 
 ## Still open
 
@@ -146,7 +147,7 @@ Navigation: ⬅️ [What the write-up owes](#what-the-write-up-owes) | 📋 [TOC
 | What is unresolved | What would settle it | Who or what is blocked by it |
 |---|---|---|
 | everything in this file | the labelling pass over the λ grid | [gate-02](gate-02-promote-or-close.md), which needs the two false-compose rates, and [idea-01](idea-01-what-the-current-benchmarks-score.md), which needs the judgeable denominator |
-| the band printed in `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md` | correcting it to 75% to 94% | any reader who takes 87% as the floor, which counts 17 uncallable cells as successes |
+| the band printed in `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md` | correcting it to 75% to 94% | any reader who takes 87% as the lower end, which counts 17 uncallable images as successes |
 
 ## Next step
 

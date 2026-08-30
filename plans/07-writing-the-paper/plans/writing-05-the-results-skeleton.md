@@ -1,15 +1,18 @@
-# 🧱 Experiments and results: the frame, not the prose
+# 🧱 Experiments and results: the frame before the prose
+
+This plan asks what shape the experiments and results sections take while most of their numbers do
+not exist yet, so every gap is visible and names the run that closes it.
 
 **Step 18 of 22.** Waits on nothing. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../MASTER_PLAN.md).
 
 | Step | Plan | Status |
 |---|---|---|
-| 17 | [writing-02-the-title-and-the-section-spine](writing-02-the-title-and-the-section-spine.md) | ⚠️ |
+| 17 | [the title and the section order](writing-02-the-title-and-the-section-spine.md) | ⚠️ |
 | **18** | **this plan** | **⚠️** |
-| 19 | [writing-03-where-each-figure-goes](writing-03-where-each-figure-goes.md) | ⚠️ |
+| 19 | [where each figure goes](writing-03-where-each-figure-goes.md) | ⚠️ |
 
 ## What this asks, in one line
-Write the results section with every number as XX and every figure as its reserved slot, so 'what should I run next' becomes 'what is still blank'.
+Write the results section with every number as XX and every figure standing in the place reserved for it, so "what should I run next" becomes "what is still blank".
 
 ## Description
 Build the experiments and results sections as structure with named placeholders.
@@ -32,9 +35,14 @@ a named placeholder that says which run closes it.
 - What exists: the pooled held-out read (out_out 0.96 at step 60k) from
   `does-the-fix-reach-unseen-pairs` plan 03a, and the negative controls already
   reported in the root scope (group-A, internal-force).
+
+  > Held-out pairs are the animal pairs the adapter never trained on. A held-out
+  > number is the compose rate measured on those pairs only, so it says whether
+  > the fix reaches beyond what it was fitted to.
+
 - What is owed: `does-the-fix-reach-unseen-pairs` owes the leave-one-pair-out run, the
   mixed-pool contrast, and the 70k-100k scoring. `does-the-correction-cause-composition` owes plans
-  01-11 (only plan 00, the instruments, is complete).
+  01-11 (only plan 00, which builds the measuring tools, is complete).
 - The paper's transfer number is always cited with its checkpoint. That rule
   comes from `does-the-correction-cause-composition` DoD item 7, which names plan 03a as its owner.
 - Placeholders depend on the placeholder-figure macro from plan 00. Without it,
@@ -42,9 +50,9 @@ a named placeholder that says which run closes it.
 
 ## Tasks
 - [ ] Run `/draft-section results` (the map is `paper/iclr/DRAFT_MAP.md`, created round 1 from
-      the register if missing): one piece per register slot F1 to F8, the slot's claim sentence
-      as the topic sentence, the placeholder macro from plan 00, every number XX unless its
-      review question is answered. This task IS the section structure; compile lands it.
+      the register if missing): one piece per reserved place F1 to F8, that place's claim
+      sentence as the topic sentence, the placeholder macro from plan 00, every number XX unless
+      its review question is answered. This task IS the section structure; compile lands it.
 - [ ] Check every placeholder names the run that closes it, matching the register's
       Answered-by column. A placeholder with no named run is an unowned gap: name the run or
       cut the subsection.
@@ -66,13 +74,14 @@ a named placeholder that says which run closes it.
 
 ## Next
 
-1. `/draft-section results`: one piece per register slot, in register order; its `numbers`
+1. `/draft-section results`: one piece per reserved place, in register order; its `numbers`
    control re-derives every figure from its review file before any compile. Or by hand:
-   one subsection stub per register slot (F1 to F8 in `paper/iclr/figures.md`): the slot's claim
-   as the topic sentence, the placeholder-figure macro from plan 00, every number as XX.
+   one subsection stub per reserved place (F1 to F8 in `paper/iclr/figures.md`), carrying that
+   place's claim as the topic sentence, the placeholder-figure macro from plan 00, and every
+   number as XX.
 2. Build the PDF and read it: the blank spots ARE the remaining run order.
-3. When a slot turns fillable (plan_pulse reports it at session start), replace its XX numbers
-   from the review file it names, never from memory.
+3. When a reserved place turns fillable (plan_pulse reports it at session start), replace its XX
+   numbers from the review file it names, never from memory.
 
 ## Engagement Instructions
 ```bash
@@ -85,4 +94,5 @@ grep -c "PLACEHOLDER" iclr2027_conference.tex
 grep -c "owed" FIGURES.md
 ```
 Manual check, by eye: open the PDF and confirm each placeholder renders as a
-labelled grey box naming its slot, not as a broken reference or a blank.
+labelled grey box naming the figure it is holding a place for, rather than as a
+broken reference or a blank.

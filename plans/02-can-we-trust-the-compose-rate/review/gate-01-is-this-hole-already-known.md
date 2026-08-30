@@ -17,7 +17,7 @@ start until the questions below are answered. `instrument-01` runs regardless.
 |---|---|
 | [design](../plans/gate-01-is-this-hole-already-known.md) | the claim to write down first, and the benchmarks to search |
 | **this file** | **the verdict: already known, said informally, or not addressed** |
-| [what it gates](idea-01-what-the-current-benchmarks-score.md) | the bake-off, which does not start until this returns |
+| [what waits on it](idea-01-what-the-current-benchmarks-score.md) | scoring the candidate metrics, which does not start until this returns |
 | [what reads it](gate-02-promote-or-close.md) | the decision that writes the scope's ending |
 
 ## Table of contents
@@ -50,7 +50,7 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#run-kind) ➡️
 Navigation: ⬅️ [Words this file uses](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#runs) ➡️
 
 **Not a run: a literature check before print.** Judged by whether it could have come back
-"already known", not by which answer it gave.
+"already known", rather than by which answer it gave.
 
 ## Runs
 
@@ -84,12 +84,12 @@ Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC
       picture. A benchmark that turned out irrelevant still gets its line, saying why.
 - [ ] ⚠️ Does any published metric ask something other than presence or count?
       If one asks for separate instances of each named concept, that is our proposed metric
-      already published and the answer to the bar is "already known". If one asks a question
+      already published and the answer to the question above is "already known". If one asks a question
       neither family covers, name it, because it may be a better idea than ours.
 - [ ] ⚠️ Does the verdict say what happens next, by filename?
       It must name `idea-01-what-the-current-benchmarks-score` and `gate-02-promote-or-close`
-      and say for each whether it proceeds or is cancelled. Without that line the gate has not
-      gated anything.
+      and say for each whether it proceeds or is cancelled. Without that line nothing has been
+      decided, and both plans stay blocked.
 
 ## Asked after the result
 

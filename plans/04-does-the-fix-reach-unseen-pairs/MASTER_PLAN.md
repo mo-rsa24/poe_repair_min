@@ -4,19 +4,20 @@
 
 This scope owns **6 of the 22 steps**, 1 of them done. The steps interleave with the other scopes', so the list below is a filter on the one `## Running order` table in the [repo root MASTER_PLAN.md](../../MASTER_PLAN.md), never an order of its own.
 
-**Next in this scope: step 9**, [instrument-02-three-live-curves-while-training](plans/instrument-02-three-live-curves-while-training.md), one epoch on a GPU, and it gates steps 10 to 14.
+**Next in this scope: step 9**, [instrument-02-three-live-curves-while-training](plans/instrument-02-three-live-curves-while-training.md), one epoch on a GPU. Steps 10 to 14 cannot start until it passes.
 
 | Step | Plan | What it does | Status |
 |---|---|---|---|
 | 3 | ~~[instrument-01-the-clean-pair-pool](plans/instrument-01-the-clean-pair-pool.md)~~ | the pool that blends by default | ✅ |
-| 9 | [instrument-02-three-live-curves-while-training](plans/instrument-02-three-live-curves-while-training.md) | the one-epoch smoke | ⚠️ do this next |
+| 9 | [instrument-02-three-live-curves-while-training](plans/instrument-02-three-live-curves-while-training.md) | the one-epoch first run | ⚠️ do this next |
 | 10 | [hypothesis-01-does-one-pooled-fix-transfer-at-all](plans/hypothesis-01-does-one-pooled-fix-transfer-at-all.md) | finish the pooled read | ◑ read incomplete |
 | 11 | [hypothesis-02-transfer-as-a-rate-over-fifteen-pairs](plans/hypothesis-02-transfer-as-a-rate-over-fifteen-pairs.md) | fifteen adapters, one held out each | ⚠️ |
 | 12 | [baseline-01-the-size-matched-control-pool](plans/baseline-01-the-size-matched-control-pool.md) | the size-matched mixed pool | ⚠️ |
 | 14 | [figure-01-the-transfer-figures](plans/figure-01-the-transfer-figures.md) | the transfer figures | ◑ F8a and F8b built |
 
 ## Mission
-cat×dog through PoE makes a chimera, and that blend-two-animals failure is a
+cat×dog through PoE makes a [chimera](../../context/world/chimera.md), and that
+blend-two-animals failure is a
 specific, known problem. Train a rank-8 cross-attention LoRA on the cached
 guided residual r_t = ε̃_J − ε̃_PoE on a token-disjoint pool of blend-prone
 animal×animal pairs, then test on animal pairs and seeds it never saw. If it
@@ -36,19 +37,20 @@ precondition that lets the two scopes run in sequence unattended.
 Every eval is read on two axes, and the plans below refer to this block instead of
 restating it:
 1. **Did it compose?** The compose-scorer labels each output compose or blend. Over
-   the eval seeds this gives a **compose-rate**.
+   the eval seeds this gives a **[compose-rate](../../context/world/compose-rate.md)**.
 2. **Did the correction point the right way?** The **direction-cosine** is the cosine
    between this run's correction and the pool-mean correction. A separate number,
    **fraction-of-distance-reached**, is how far the correction travelled toward the
-   PoE→Mono target. Corrections tend to stall near ~40% of that distance (the "40%
-   plateau"), so this axis is watched live.
+   PoE→Mono target. Corrections tend to stall near ~40% of that distance, where the
+   curve stops rising, so this axis is watched live.
 
-Keeping these two axes separate is the whole point. A floor compose-rate splits two ways:
-- **delivery-null**: direction is right but the correction under-delivered (stalled at
-  the plateau). The operator may be fine; the run just didn't push far enough.
+Keeping these two axes separate is the whole point. A compose-rate sitting at chance level
+splits two ways:
+- **delivery-null**: direction is right but the correction under-delivered, stalling where
+  the curve stops rising. The operator may be fine; the run just didn't push far enough.
 - **no-transfer**: direction is wrong. No general operator was learned.
 
-Calling a floor result "no transfer" without checking direction hides this difference.
+Calling a chance-level result "no transfer" without checking direction hides this difference.
 So a null is diagnosed, not narrated.
 
 ## Objectives
@@ -62,14 +64,14 @@ So a null is diagnosed, not narrated.
    compose-rate and a degradation curve (rate vs fraction held out).
 3. **Contrast (B)**: an animals-only pool beats a size-matched mixed pool on the
    same animal held-out pairs. Size-matching kills the "more data" confound.
-4. **Diagnose**: read every null on both axes (see "Reading a result"), so a floor
+4. **Diagnose**: read every null on both axes (see "Reading a result"), so a chance-level
    compose-rate is split into delivery-null vs no-transfer before it is called a null.
 
 ## Goals
 1. **Transfer (A)** (three-way rule):
    - *support* if held-out pairs compose above the do-no-harm baseline across most
      of the 15, direction intact.
-   - *null* if compose-rate is at floor (delivery-null or no-transfer, per the
+   - *null* if compose-rate is at chance level (delivery-null or no-transfer, per the
      two-tier read).
    - *inconclusive* between → widen seeds/pairs, do not loosen the threshold.
    [checkpoint: cross-run leaderboard table + the degradation curve]
@@ -110,8 +112,8 @@ Grouped by the run group each answers to. Statuses live in the review/ files.
 
 | Plan | What it does | Status |
 |---|---|---|
-| instrument-01-the-clean-pair-pool | the clean pool behind the scorer gate (DoD 1) | ✅ |
-| instrument-02-three-live-curves-while-training | the three live curves; the sweep's safety gate (DoD 2) | ◑ wired, smoke owed |
+| instrument-01-the-clean-pair-pool | the clean pool behind the scorer check (DoD 1) | ✅ |
+| instrument-02-three-live-curves-while-training | the three live curves; what must pass before the long runs start (DoD 2) | ◑ wired, first short run owed |
 | hypothesis-01-does-one-pooled-fix-transfer-at-all | one pooled LoRA: does the fix transfer at all | ◑ run done, read incomplete |
 | hypothesis-02-transfer-as-a-rate-over-fifteen-pairs | transfer as a rate: 15 held-out points (DoD 3) | ⚠️ |
 
@@ -125,7 +127,7 @@ Grouped by the run group each answers to. Statuses live in the review/ files.
 
 | Plan | What it does | Status |
 |---|---|---|
-| figure-01-the-transfer-figures | the A2 to A5 cascade feeding register slot F8 (DoD 5) | ◑ F8a and F8b built; F8 itself waits on the sweep |
+| figure-01-the-transfer-figures | the A2 to A5 cascade feeding F8 in the figure register (DoD 5) | ◑ F8a and F8b built; F8 itself waits on the fifteen leave-one-pair-out runs |
 
 
 ## Environment Context
@@ -141,9 +143,9 @@ Terms only this scope uses. Shared vocabulary is in the root `MASTER_PLAN.md`.
 - **Held-out:** a pair the LoRA never trained on. The only kind that tests transfer.
 - **LOPO (leave-one-pair-out):** train fifteen LoRAs, each missing one pair, test each on its
   missing pair. Transfer as a rate instead of an anecdote.
-- **Delivery-null vs no-transfer:** the two ways a held-out pair can sit at floor. The fix never
-  arrived (distance-reached at floor), or it arrived pointing wrong (direction-cosine low). The
-  two-tier read exists to tell them apart.
+- **Delivery-null vs no-transfer:** the two ways a held-out pair can sit at chance level. The fix
+  never arrived (distance-reached at chance level), or it arrived pointing wrong (direction-cosine
+  low). The two-tier read exists to tell them apart.
 - **Direction-cosine:** how aligned the run's correction is with the pool-mean correction.
 - **Distance-reached:** how far toward the Mono target the fix actually moved the prediction.
 - **Do-no-harm control:** pairs that compose fine without any fix; the LoRA must not break them.

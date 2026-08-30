@@ -21,11 +21,11 @@ happening in the background, and what to do next.
 | The rule | Here, concretely |
 |---|---|
 | Write the results section first | `plans/07-writing-the-paper/plans/writing-05-the-results-skeleton.md` |
-| Every run names its cost and what it buys | Two lines in the design plan. Worked example: `480 cells at 50s, about 6h. Answers question 1, feeds figure F2.` The constraint here is GPU-days |
+| Every run names its cost and what it buys | Two lines in the design plan. Worked example: `480 runs at 50s, about 6h. Answers question 1, feeds figure F2.` The constraint here is GPU-days |
 | The reason a figure exists goes in its own document | [figures/what-each-figure-argues.md](figures/what-each-figure-argues.md) is the worked example: seven checkboxes in the plan, seven reasons in the document |
-| A figure serves its reader | Same document, and it is held to the same one-pass standard as the figures it describes. Here that means: x is the denoising step 0 to 50 with "noise" and "image" labelled at the ends, not log-SNR, because only DDIM is used; four or five named pairs drawn in front with the remaining pairs behind as a band; a strip of decoded frames above the curve, which costs no sampling because every cell already saved `latent_trajectory.pt`; spreads and percentages held back to the appendix table |
+| A figure serves its reader | Same document, and it is held to the same one-pass standard as the figures it describes. Here that means: x is the denoising step 0 to 50 with "noise" and "image" labelled at the ends, not log-SNR, because only DDIM is used; four or five named pairs drawn in front with the remaining pairs behind as a band; a strip of decoded frames above the curve, which costs no sampling because every run already saved `latent_trajectory.pt`; spreads and percentages held back to the appendix table |
 | Every read lands in the register | `plans/standing/literature/plans/01-reading-register.md` |
-| Suspiciously-good results are contamination until cleared | The canary here is the λ=0 check: injecting nothing must reproduce plain PoE to under 1e-5 |
+| Suspiciously-good results are contamination until cleared | The check that must pass here before anything else is believed is the λ=0 check: injecting nothing must reproduce plain PoE to under 1e-5 |
 | Organise on the way out | `python3 scripts/plan_pulse.py`, report-only, four checks, about 7 seconds over the whole tree |
 | Keep the handoff on disk | [ENVIRONMENT.md](ENVIRONMENT.md) is why the cluster has never had to be re-explained |
 
@@ -37,7 +37,7 @@ made twice in this repo.
 - **The scorer read three instances on an image of two cats.** A threshold chosen from a number
   and never checked against a picture fails silently. It also counted a 162px limb as a third
   animal. This is why `/visualize-data-samples` runs before any scorer, and why step 2 of the
-  diagnosis procedure (score five cells by eye, compare with the scorer) exists.
+  diagnosis procedure (score five runs by eye, compare with the scorer) exists.
 - **A figure plan became unreadable to its own author.** Lines like "the cure dosed" and "the
   fork elbow as a vertical band" named nothing to anyone who had not been in the conversation.
   The fix is in the writing-style section of `~/.claude/CLAUDE.md`: no private labels, a figure
@@ -57,8 +57,8 @@ made twice in this repo.
   the sampler could skip the arithmetic and use the joined-prompt prediction directly, which
   would have ignored the injected fake entirely and made all three curves look equally good.
   Switching it off during control runs is a decision recorded in the design plan, not a finding.
-- **The obvious measure gave the opposite answer, for reasons about the instrument.** In the
-  mechanism probe, comparing raw norms said attention moved 1.70× more than painted content,
+- **The obvious measure gave the opposite answer, because of how the measurement was built.** In
+  the mechanism test, comparing raw norms said attention moved 1.70× more than painted content,
   because the two maps are not on the same footing and the adapter dims attention by 25%
   overall. The argument for the scale-free measure is in
   [artifacts/results/residual-dynamics/content-change-relative-to-attention-change/measure-fairness.md](artifacts/results/residual-dynamics/content-change-relative-to-attention-change/measure-fairness.md).

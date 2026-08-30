@@ -1,5 +1,8 @@
 # 🏷️ The labelled set, and the band it puts on 94%
 
+This plan builds the human-labelled set that puts a band on the paper's 94%, and measures whether
+the scorer's error grows as λ grows.
+
 **No step number: nothing in the paper order waits on this.** This scope runs in its own internal order, and earns numbered steps only on the big-promotion condition its own `MASTER_PLAN.md` sets. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../MASTER_PLAN.md).
 
 | Within this scope | Plan | Status |
@@ -23,7 +26,7 @@ ends up using has to be certified against something.
 ## Description
 Four steps in a fixed order, and the order is the point. First write down which pairs a person
 can even judge, on a rule fixed before any image is opened. Then build a labelling tool that
-hides λ. Then check the labelling against the 32 cells already sorted by hand. Only then label
+hides λ. Then check the labelling against the 32 images already sorted by hand. Only then label
 the main set and compute the rates.
 
 The three prerequisites (the rule, the hidden λ, the calibration) are tasks 1 to 3 here rather
@@ -35,7 +38,7 @@ Serves Objectives 2 and 4, and Definition-of-Done items 2, 3, 4, 5, 6 and 8.
 ## Goal
 On `/datasets`: the labelled set with counts per λ. In the review file: the false-compose rate
 at λ=1 and at λ=0.50 with their denominators, the coverage number, and the judgement against
-the three-way bar. In the repo: `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md` giving the band as 75% to
+the three-way rule. In the repo: `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md` giving the band as 75% to
 94%.
 
 ## Environment Facts This Plan Depends On
@@ -44,8 +47,9 @@ the three-way bar. In the repo: `artifacts/results/can-we-trust-the-compose-scor
 - Large artifacts go to `/datasets` only. The labelled set and any cached crops land there,
   never on `/home-mscluster`.
 - Thresholds live as named constants in source, following `MIN_BOX_FRACTION` in
-  `poe_repair/experiments/compose_scorer_validation/detection_scorer.py`. The 10% calibration bar and the
-  10-point and 5-point λ bars are constants in the labelling and scoring scripts.
+  `poe_repair/experiments/compose_scorer_validation/detection_scorer.py`. The 10% calibration
+  threshold and the 10-point and 5-point λ thresholds are constants in the labelling and scoring
+  scripts.
 - Source images stay where they are. `scripts/plot_dose_curves.py` scores from
   `outputs/interaction_term/dose/pairs/`, so this plan copies and never moves.
 
@@ -53,8 +57,8 @@ the three-way bar. In the repo: `artifacts/results/can-we-trust-the-compose-scor
 - **"Cannot tell" exceeds 10% on the judgeable pairs.** The judgeable-pair rule was wrong. It
   gets rewritten and the split redone before any rate is computed. A rate over a set where a
   tenth of the images are uncallable is not a rate.
-- **Calibration disagrees with the hand sort on more than 10% of the 32 audit cells.** The
-  automated pass is discarded and the user labels the main set by hand. The bar sits in the
+- **Calibration disagrees with the hand sort on more than 10% of the 32 hand-sorted images.** The
+  automated pass is discarded and the user labels the main set by hand. The threshold sits in the
   script so this cannot be waved through.
 - **Fewer than four judgeable pairs survive the rule.** The set is too small to compute a rate
   per λ with a usable denominator. Halt and generate separable pairs before continuing.
@@ -72,22 +76,22 @@ the three-way bar. In the repo: `artifacts/results/can-we-trust-the-compose-scor
 - [ ] Build the labelling tool: it strips λ out of the file path, shuffles, shows one image
   with its prompt, and records one of four labels plus the scorer's own call. Any detector call
   it makes takes `--device cpu`. [inferred prerequisite, DoD 3]
-- [ ] Calibrate: run the labelling pass over the 32 cells in `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/`
-  only, and score it against `calls.json`. The 10% discard bar is a constant in the script.
+- [ ] Calibrate: run the labelling pass over the 32 hand-sorted images in `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/`
+  only, and score it against `calls.json`. The 10% discard threshold is a constant in the script.
   [inferred prerequisite, DoD 4]
 - [ ] Label the main set: judgeable pairs × 5 seeds × λ ∈ {0, 0.25, 0.50, 0.75, 1.00} on the
-  real-correction row, plus the λ=1 cells of the `_random` and `_wrong_pair` rows. Four labels:
+  real-correction row, plus the λ=1 images from the `_random` and `_wrong_pair` rows. Four labels:
   both requested animals separate; one animal or a fusion; two or more animals but not the two
   asked for; cannot tell. Write to `/datasets`. [DoD 5]
 - [ ] Compute the false-compose rate at λ=1 and at λ=0.50, each with its denominator, and the
-  coverage number. Judge against the three-way bar, whose 10-point and 5-point thresholds are
+  coverage number. Judge against the three-way rule, whose 10-point and 5-point thresholds are
   constants in the scoring script. [DoD 6]
   - 💡 `/pair-figure` before plotting anything. Whether a point is one image, one seed, or
     one pair is a live design question on three other review files in this tree, and
     answering it here differently would make the numbers uncomparable.
 - [ ] Rewrite the band in `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md` to 75% to 94%, stating it
   cannot be narrowed from those images. It currently says 87% to 94%, which counts the 17
-  uncallable cells as successes. [DoD 8]
+  uncallable images as successes. [DoD 8]
   - 💡 after this: `/reconcile artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md` to check nothing else
     in that file still assumes the old 87% figure.
 

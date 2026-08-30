@@ -1,5 +1,8 @@
 # ⚖️ Promote this, or close it
 
+This plan reads the other three verdicts and writes down whether the scope reaches the paper,
+changes one sentence of it, or closes.
+
 **No step number: nothing in the paper order waits on this.** This scope runs in its own internal order, and earns numbered steps only on the big-promotion condition its own `MASTER_PLAN.md` sets. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../MASTER_PLAN.md).
 
 | Within this scope | Plan | Status |
@@ -45,9 +48,9 @@ numbers that decided it, and the consequence for `scorer_validated.json` written
   metric re-certifies or replaces `scorer_validated.json`, and what that means for the runs
   `does-the-fix-reach-unseen-pairs` has already finished against the old certificate. Leaving
   that unstated would silently invalidate a sibling scope's results.
-- **Neither fires.** The scope closes. The labelled set stays as a reusable instrument and the
-  limitations paragraph still goes to `writing-06`. Written down as the finding, not left as an
-  absence.
+- **Neither fires.** The scope closes. The labelled set stays behind as something later work can
+  measure a new metric against, and the limitations paragraph still goes to `writing-06`. That
+  gets written down as the finding rather than left as an absence.
 
 ## Tasks
 - [ ] Read the three verdicts: `gate-01`'s literature outcome, `instrument-01`'s two rates

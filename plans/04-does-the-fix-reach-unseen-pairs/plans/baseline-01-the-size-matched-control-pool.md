@@ -1,5 +1,9 @@
 # 🅱️ The control pool: was it the animals, or just the amount of data?
 
+Train the same adapter on a pool of the same size made of non-animal concepts, then test it on
+the same animal pairs, so a win can be credited to the animals rather than to how much data there
+was.
+
 **Step 12 of 22.** Waits on step 11. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../MASTER_PLAN.md).
 
 | Step | Plan | Status |
@@ -46,17 +50,18 @@ set as (A), with the animals-vs-mixed contrast reported per held-out pair.
 - [ ] Run the mixed pool through the same training + wired-eval path as (A).
 - [ ] Evaluate the mixed-pool LoRA on the SAME animal held-out pairs used in (A),
   two-tier read.
-- [ ] Report the animals-vs-mixed contrast per held-out pair (compose-rate +
-  direction), on the identical held-out set.
+- [ ] Report the animals-vs-mixed contrast per held-out pair
+  ([compose-rate](../../../context/world/compose-rate.md) + direction), on the identical
+  held-out set.
 
 ## Engagement Instructions
-GATE (unattended pass/fail): the mixed `pair_pool.yaml` loads with the overlap
+WHAT MUST PASS FIRST (unattended pass/fail): the mixed `pair_pool.yaml` loads with the overlap
 assertion passing AND its pair count equals the animals pool's; both pools are
 evaluated on the identical animal held-out set (same pair slugs). A script asserts
 equal N and identical held-out slugs.
 STOP: if a size-matched mixed pool cannot be built at equal N → halt (B); (A) still
 carries the scope. Per-run: same delivery-null stop as plan 03 (distance-reached at
-floor past the commitment window → mark delivery-null, move on).
+chance level past the commitment window → mark delivery-null, move on).
 
 ## Recommended skill
 ▶ `/run-experiment` ✅: drives the mixed-pool run and the same-held-out-set eval.

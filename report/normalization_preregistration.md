@@ -10,7 +10,7 @@ Plan `plans/03-does-the-correction-cause-composition/plans/instrument-02-fix-the
 
 $$\text{size}(t) \;=\; \frac{\lVert r_t \rVert}{\lVert \tilde{\varepsilon}_{\text{PoE}} \rVert}$$
 
-Per step, then the **median over steps** for a per-cell number, then the
+Per step, then the **median over steps** for a per-run number, then the
 **median over seeds** for a per-pair number. Medians, not means: the early
 steps carry heavy fp16 cancellation noise and one bad step should not move a
 pair's number.

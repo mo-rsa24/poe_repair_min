@@ -30,7 +30,7 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#what-an-animal-pair-is) ➡
   dual-object, entanglement, concept collision) that classified pairs by *why* composition is
   hard, not just by species. See [What people get wrong](#what-people-get-wrong) for its current
   status.
-- **Cell**: one (pair, seed) point, the smallest unit a run or a figure is built from.
+- **Run**: one pair-and-seed point, the smallest unit a figure or a claim is built from.
 
 ## What an animal pair is
 
@@ -74,7 +74,7 @@ Navigation: ⬅️ [What it looks like](#what-it-looks-like) | 📋 [TOC](#table
 **The pair is the axis every transfer claim is measured across.** ✅
 
 Whether a LoRA trained on one pair (or one group of pairs) composes on a pair it never trained on
-is Objective 3 and Objective 4 of `MASTER_PLAN.md`'s five-rung ladder, and is the harder of the two
+is Objective 3 and Objective 4 of `MASTER_PLAN.md`'s five-step ladder, and is the harder of the two
 generalisation axes (pair vs seed) per `MASTER_PLAN.md`'s Glossary: "a new pair is the harder
 test."
 
@@ -84,8 +84,8 @@ Navigation: ⬅️ [Why the project cares](#why-the-project-cares) | 📋 [TOC](
 
 | Column | Stands for | Example | Entry |
 |---|---|---|---|
-| `pair_slug` | which two animals this cell is about | `a_cat__x__a_dog` (example) | [Dictionary § pair_slug](../data/02-dictionary.md#pair_slug) |
-| `seed` | which noise re-roll produced this cell | `42` (example) | [Dictionary § seed](../data/02-dictionary.md#seed) |
+| `pair_slug` | which two animals this run is about | `a_cat__x__a_dog` (example) | [Dictionary § pair_slug](../data/02-dictionary.md#pair_slug) |
+| `seed` | which noise re-roll produced this run | `42` (example) | [Dictionary § seed](../data/02-dictionary.md#seed) |
 | `fail_rate` | how often plain PoE fails this pair, over 8 seeds | `1.00` (example, 8 of 8) | [Dictionary § fail_rate](../data/02-dictionary.md#fail_rate-compose_rate) |
 | `group` | the six-way taxonomy label some pairs still carry | `group6_coherent_collision` (example) | [Dictionary § group](../data/02-dictionary.md#group-group_label) |
 

@@ -42,16 +42,17 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#run-kind) ➡️
   root `MASTER_PLAN.md` paper table. This is what we expect to happen.
 - **The big promotion**: a numbered step in the root `## Running order` and a new group-1 plan in
   `does-the-correction-cause-composition`. Earned only by a contaminated verdict at the 10-point
-  bar or a candidate clearing the 95%-versus-85% bar.
-- **Closure**: neither fires. The labelled set stays as a reusable instrument, the limitations
-  paragraph still goes to `writing-06`, and that is written down as the finding.
+  threshold or a candidate clearing the 95%-versus-85% threshold.
+- **Closure**: neither fires. The labelled set stays behind as something later work can measure a
+  new metric against, the limitations paragraph still goes to `writing-06`, and that is written
+  down as the finding.
 
 ## Run kind
 
 Navigation: ⬅️ [Words this file uses](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#runs) ➡️
 
 **Not a run: a decision.** Judged by whether it could have gone the other way, and by whether it
-names its consequences rather than only its verdict.
+names what follows from it rather than only its verdict.
 
 ## Runs
 
@@ -108,8 +109,8 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
       where the numbers could only ever have produced the small promotion has not decided
       anything, and saying so is more useful than naming a level.
 - [ ] ⚠️ **Was the instrument sound?** The deciding numbers come from three verdicts that must
-      each be complete first. A level named from a partial verdict is a guess wearing a
-      threshold. Confirm all three files carry answers before reading them.
+      each be complete first. A level named from a partial verdict is a guess dressed up as a
+      measured decision. Confirm all three files carry answers before reading them.
 - [x] ✅ **Did the run respect the environment?** Not applicable. No compute, no output directory,
       no flags. The inputs are three markdown files in this folder.
 
@@ -119,7 +120,7 @@ Navigation: ⬅️ [Could the answer be an artefact](#could-the-answer-be-an-art
 
 | What the paper says | What it owes alongside it |
 |---|---|
-| the band on the compose rate | it goes to `writing-06` under every outcome, closure included. This is the one handoff that does not depend on which level fired |
+| the band on the [compose rate](../../../context/world/compose-rate.md) | it goes to `writing-06` under every outcome, closure included. This is the one handoff that does not depend on which level fired |
 | F2's caption | the cap reading 94% as an upper bound, if the small promotion or better fired |
 | any number produced before a re-certification | whether it stands, needs re-scoring, or becomes a bounded claim. Silence here invalidates finished work in a sibling scope without saying so |
 

@@ -5,7 +5,8 @@ Navigation: 📋 [Index](00-INDEX.md) | [Overview](overview.md#access-paths)
 ## Access paths
 
 - **Repo and code:** `/home-mscluster/mmolefe/Playground/PhD/poe_repair_min`.
-- **Large artifacts** (checkpoints, caches, sweep outputs): `/datasets/mmolefe/poe_repair_min/`.
+- **Large artifacts** (checkpoints, caches, and what a run across many settings writes out):
+  `/datasets/mmolefe/poe_repair_min/`.
   These are separate filesystems with different quotas; there is no automatic mirroring between
   them, so a path that exists on one is not implied to exist on the other.
 - **Cached residual trajectories** (the r_t training targets, all four eps branches per step):
@@ -14,6 +15,9 @@ Navigation: 📋 [Index](00-INDEX.md) | [Overview](overview.md#access-paths)
   file on 2026-08-04).
 - **W&B project for the animals program:** `prime_lab/poe-repair-animals-compose`.
 
+> The heldout pairs are the animal pairs kept out of training on purpose, so a result measured on
+> them says whether the fix reaches pairs the model never trained on.
+
 ## Size, retention, and the quota gap
 
 Both filesystems are NFS mounts. Verified live via `df -h /datasets /home-mscluster` on
@@ -21,7 +25,7 @@ Both filesystems are NFS mounts. Verified live via `df -h /datasets /home-msclus
 
 | Mount | Size | Used | Free | What belongs there |
 |---|---|---|---|---|
-| `/datasets` | 377T | 30T (8%) | 348T | Every checkpoint, cache, and sweep output. |
+| `/datasets` | 377T | 30T (8%) | 348T | Every checkpoint, every cache, and every file a run across many settings writes. |
 | `/home-mscluster` | 73T | 29T (39%) | 45T | The repo, the conda envs, small results and logs. |
 
 (A prior check on 2026-08-09 read `/datasets` at 201T size / 24T used / 12% and `/home-mscluster`
@@ -42,8 +46,8 @@ target filesystem is too full (see `hpc/execution-protocol.md` step 4).
 
 **The guard must check the filesystem the script actually writes to, not an assumed one.**
 `scripts/mechanism_study/run_dose_sweep.sh` set its output root under the repo on
-`/home-mscluster` while its disk guard read `df /datasets/mmolefe`, so 3.4GB of sweep cells
-landed on the wrong mount with the guard reporting healthy the whole time. This is logged as
+`/home-mscluster` while its disk guard read `df /datasets/mmolefe`, so 3.4GB of that run's
+per-setting output landed on the wrong mount with the guard reporting healthy the whole time. This is logged as
 `poe-disk-001` in `known-failures.md`. A recent series of commits (`54b4b79`, `8522459`,
 `c3f8bb4`, `f293bdf`) routed output paths in roughly 100 files through a shared
 `paths.resolve()` helper specifically to stop this class of drift between "where output is

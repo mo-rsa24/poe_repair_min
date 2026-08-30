@@ -1,7 +1,7 @@
 # Runbook: poe_repair_min
 
 How to do the recurring things here by hand: checking the plan tree's state, and launching or
-harvesting a run on the cluster. Built 2026-08-24 during the retrofit sweep's stage 5, from
+harvesting a run on the cluster. Built 2026-08-24 during stage 5 of the retrofit pass, from
 `CLAUDE.md`'s own conventions section and `environment/hpc/`, not from a full excavation
 dialogue (this sitting has no interactive user to walk one with). More themes get added the
 next time something recurring happens by hand and isn't here yet.
@@ -29,7 +29,10 @@ next time something recurring happens by hand and isn't here yet.
 ## Still open
 
 No diagram prompts yet: neither theme crosses more than one system in a way that needs a
-picture over a command. Screenshot slots exist only in reading-a-training-run.md and are unfilled: they want captured W&B panels, which needs either a W&B or Playwright MCP connected (a human step in claude.ai connector settings) or the local wandb-API figures in that file's section 3. Both
+picture over a command. Only `reading-a-training-run.md` reserves places for screenshots, and
+they are all still empty: they want captured W&B panels, which needs either a W&B or Playwright
+MCP connected (a human step in claude.ai connector settings) or the local wandb-API figures in
+that file's section 3. Both
 recipes in `launching-and-harvesting-a-run.md` are `unverified`, transcribed from
 `environment/hpc/execution-protocol.md` rather than run live this sitting; the next real
 launch or harvest should upgrade them via `--capture`.

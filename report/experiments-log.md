@@ -6,16 +6,19 @@ against a canonical format if one is adopted.
 
 ## The axes
 
-Every experiment below is one choice on each of these. Nothing is planned per-cell.
+Every experiment below is one choice on each of these. Nothing is planned one run at a time.
 
 | Axis | Values | Notes |
 |---|---|---|
 | pair | 17 in the current pool, plus a new spread set built in EXP-02 | the current pool is selected on the outcome, see the warning below |
 | seed | 8 cached per pair | the sampling unit for anything about means |
 | step | 0 to 49 | the schedule is 50 steps everywhere in the cache |
-| arm | PoE, Mono (joint prompt), PoE plus oracle r_t over a window, PoE plus the trained adapter | one arm per comparison, never two changes at once |
+| condition | PoE, Mono (joint prompt), PoE plus the true r_t over a window, PoE plus the trained adapter | one condition per comparison, never two changes at once |
 | space | DINOv2, CLIP | a nuisance axis, not a science axis: DINOv2 is pre-committed, CLIP is reported as a robustness check |
 | adapter strength | number of training pairs, training steps, rank | only used in EXP-05 to manufacture failures |
+
+The true r_t is the correction computed from the joint prompt, which is available in the cache and
+is what a learned adapter is trying to reproduce.
 
 ## The selection warning that governs the whole file
 
@@ -44,8 +47,11 @@ Two consequences, both binding:
   first step after which that cosine stays at or above 0.90 for the rest of the run. Sensitivity
   at 0.80 and 0.95 is reported beside it so the verdict cannot rest on one threshold.
 
+  > Tweedie's formula turns the model's noise prediction at the current step into its best guess at
+  > the finished image, given where the run has got to so far.
+
   This is measured in latent space, not in DINOv2, and the reason is coverage rather than
-  preference: the DINOv2 reading exists for 3 pairs and 9 cells, where this one covers all 17
+  preference: the DINOv2 reading exists for 3 pairs and 9 runs, where this one covers all 17
   pairs at 8 seeds from the cache alone with no decoding and no GPU. The cost is that latent
   distance is not perceptual distance, so the measure is validated against the DINOv2 reading on
   the 3 pairs where both exist, and the agreement is reported with the result. If they disagree,
@@ -53,12 +59,16 @@ Two consequences, both binding:
 
   What the proxy assumes: that once the model's estimate of the finished image has settled, the
   alternative outcome is no longer reachable. That is the speciation claim itself, so the proxy is
-  descriptive. Only the handover sweep can make it causal.
+  descriptive. Only a run that hands the trajectory over from one path to the other, step by step,
+  can make it causal.
+
+  > The speciation claim is that a run splits early into one outcome or the other, and that after
+  > the split the outcome it did not take can no longer be reached.
 - ablation_rows: none. This is a measurement, not a comparison.
 - metric: the commitment step per (pair, seed), then the median per pair. Report the between-pair
   standard deviation of those medians against the pooled within-pair standard deviation across
   seeds. Both numbers, always, because the second is what makes the first mean anything.
-- sample_size: 17 pairs x 8 seeds = 136 cells. Cache only.
+- sample_size: 17 pairs x 8 seeds = 136 runs, one per pair and seed. Cache only.
 - falsify_condition: **varies** if the range of per-pair medians is at least 5 steps AND the
   between-pair standard deviation is at least 1.5x the within-pair. **Does not vary** if the range
   is under 2 steps OR the ratio is under 1.0. **Inconclusive** between those, which means add seeds
@@ -70,17 +80,18 @@ Two consequences, both binding:
 - figures: commitment step per pair, one point per pair at the median with its 8 seeds behind it,
   ordered by median. Qualitative half: the running estimate at the commitment step for the earliest
   and latest pair, beside their two endpoints.
-- compute: in-session, no GPU, about 8 minutes over 162 cells.
+- compute: in-session, no GPU, about 8 minutes over 162 runs.
 - status: ✅ done, with the perceptual check owed. `python scripts/commitment_step.py`, written up
   in `artifacts/results/when-the-correction-must-arrive/commitment-step/QUERY.md`. **Varies**: per-pair medians span 18 steps
-  (dolphin × porpoise 18, cat × dog 36), between-over-within 1.90 against a bar of 1.5, and the
+  (dolphin × porpoise 18, cat × dog 36), between-over-within 1.90 against a threshold of 1.5, and the
   verdict holds at both sensitivity thresholds. The unregistered reading matters more: every pair
   settles at step 18 or later while the correction only works over steps 0 to 10, so the
   correction stops working 8 to 26 steps before the picture settles. Either the decision happens
   well before settling, or this measure tracks the wrong event.
-- gates: EXP-04 then answered the question this one could not, and answered it against the measure:
-  the window sits at steps 0 to 10 for every pair regardless of when that pair settles. So failure
-  mode (c) of EXP-05 is removed, and the settling step is not the event that decides composition.
+- what it settles: EXP-04 then answered the question this one could not, and answered it against the
+  measure: the window sits at steps 0 to 10 for every pair regardless of when that pair settles. So
+  failure mode (c) of EXP-05 is removed, and the settling step is not the event that decides
+  composition.
 - qualitative half built (`/pair-figure`, `scripts/commitment_step_frames.py`): two rows, cat × dog
   seed 2 (individual step 36) and dolphin × porpoise seed 4 (individual step 20, pair median 18),
   three decoded Tweedie estimates per row (step 0, commitment step, step 49). In both rows the
@@ -97,7 +108,7 @@ Two consequences, both binding:
   predict.
 - independent_var: pair, chosen to span a similarity range rather than to fail.
 - dependent_var: plain PoE compose rate per pair, from the validated instance-count scorer.
-- ablation_rows: one arm only (plain PoE). No correction, no adapter.
+- ablation_rows: one condition only (plain PoE). No correction, no adapter.
 - metric: compose rate over 8 seeds per pair. The pair set is admissible only if it spans the
   range: at least 8 pairs above 0.5 and at least 8 below 0.5.
 - sample_size: 40 candidate pairs x 8 seeds = 320 samples, 50 steps each. Candidates chosen to
@@ -149,12 +160,12 @@ Two consequences, both binding:
 - claim_id: local: the effective correction window sits at the pair's own commitment step, so it
   moves when the commitment step moves.
 - independent_var: window position, the 9 sliding windows already used, crossed with pair.
-- dependent_var: compose rate under oracle r_t injected over that window.
-- ablation_rows: one row per pair. The existing window sweep covers cat × dog only, so every other
-  pair is new.
+- dependent_var: compose rate under the true r_t injected over that window.
+- ablation_rows: one row per pair. The window runs that already exist cover cat × dog only, so
+  every other pair is new.
 - metric: the window centre with the highest compose rate, per pair. Correlate that against the
   commitment step from EXP-01.
-- sample_size: 6 pairs x 9 windows x 4 seeds = 216 cells. Six pairs chosen to span the commitment
+- sample_size: 6 pairs x 9 windows x 4 seeds = 216 runs. Six pairs chosen to span the commitment
   range EXP-01 reports, which is why EXP-01 must come first.
 - falsify_condition: **support** if the best window centre spans at least 5 steps across pairs AND
   correlates with the commitment step at Spearman rho of at least 0.5. **null** if every pair's
@@ -162,11 +173,11 @@ Two consequences, both binding:
   all pairs and mode (c) of EXP-05 is dead. **inconclusive** between.
 - figures: compose rate against window centre, one curve per pair, with each pair's commitment step
   marked on its own curve.
-- compute: none needed. The sweep already existed at 8 pairs x 9 windows x 4 seeds, 288 scored
-  cells in `interaction_term/window/window_curves.json`, so this was a read rather than a run.
+- compute: none needed. The window runs already existed at 8 pairs x 9 windows x 4 seeds, 288 scored
+  runs in `interaction_term/window/window_curves.json`, so this was a read rather than a run.
 - status: ✅ done. `python scripts/window_vs_commitment.py`, written up in
   `artifacts/results/when-the-correction-must-arrive/window-vs-commitment/QUERY.md`. **Does not move.** All 8 pairs peak at
-  window centre 5 (steps 0 to 10), a span of 0 steps against a bar of 5, while their settling steps
+  window centre 5 (steps 0 to 10), a span of 0 steps against a threshold of 5, while their settling steps
   span 13 (23 to 36). The registered correlation is undefined because the best window never varies,
   which is the finding. Secondary summaries are weak: rho +0.16 for the compose-weighted centre and
   +0.26 for the latest window that still works. Left-censored: centre 5 is the earliest the grid
@@ -179,27 +190,29 @@ Two consequences, both binding:
   window sitting in the wrong place for a pair, is removed: EXP-04 measured every pair's window at
   the same place, so there is no per-pair window to miss.**
 - independent_var: pair, within a set of runs weak enough to produce failures.
-- dependent_var: three per-cell measures. Direction cosine and fraction-of-distance-reached, both
+- dependent_var: three measures per run. Direction cosine and fraction-of-distance-reached, both
   already in `_inline_sampling.py::direction_metrics`. Plus the gap between that pair's commitment
   step and the step where the adapter's correction is largest.
 - ablation_rows: the leave-one-pair-out runs already planned in the transfer scope, which produce
   degradation by construction. If those have not run, deliberately weakened adapters (fewer
   training pairs, fewer steps) serve the same purpose, and this is marked mixed because two things
   change at once between a weakened adapter and the full one.
-- metric: for each failing cell, which of the three measures is out of range. Report the count in
+- metric: for each failing run, which of the three measures is out of range. Report the count in
   each mode and the count that fits none, because a classification that explains nothing must be
   visible as such.
-- sample_size: gated. **Print the number of failing cells before classifying anything.** Fewer than
-  5 failing cells means stop and report "no failures available to classify" rather than splitting
-  noise. Today that count is zero: the worst transfer pair is 0.9375 and none sit at the floor.
-- falsify_condition: **support** if at least 70% of failing cells fall into exactly one of the two
+- sample_size: held back until there is something to classify. **Print the number of failing runs
+  before classifying anything.** Fewer than
+  5 failing runs means stop and report "no failures available to classify" rather than splitting
+  noise. Today that count is zero: the worst transfer pair is 0.9375 and none sit at the bottom of
+  the range.
+- falsify_condition: **support** if at least 70% of failing runs fall into exactly one of the two
   remaining modes. **null** if fewer than 40% do, meaning aiming and delivery are not the right
-  decomposition. **inconclusive** between, which means add failing cells from more leave-one-out
+  decomposition. **inconclusive** between, which means add failing runs from more leave-one-out
   runs.
 - what would surprise us: a large group fitting neither mode. Both remaining modes are about the
   correction the adapter emits, so failures fitting neither would mean the adapter emits a fine
   correction and the run fails anyway, which nothing in the current picture explains.
-- figures: one row per failing pair showing what the adapter produced against the oracle correction
+- figures: one row per failing pair showing what the adapter produced against the true correction
   at matched steps, beside the two numbers.
 - compute: GPU-light, re-scoring existing checkpoints with the metrics already wired.
 - status: ⚠️ pending, blocked on failures existing at all.
@@ -210,7 +223,7 @@ Two consequences, both binding:
    failure mode before anyone builds a classifier around it.
 2. EXP-02, because Claim 1 is untestable until an outcome axis exists.
 3. EXP-04 and EXP-03 in either order once their inputs land.
-4. EXP-05 last, and only when failing cells exist.
+4. EXP-05 last, and only when failing runs exist.
 
 ## What must be printed on every run
 

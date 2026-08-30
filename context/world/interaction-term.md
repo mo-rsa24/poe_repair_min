@@ -27,11 +27,12 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#what-the-interaction-term-i
   a symbol in code and plan files. `r_t = ε̃_Mono − ε̃_PoE` (some earlier documents write the
   Mono-minus-PoE order as `ε̃_J − ε̃_PoE`; both name the same gap, see
   [What people get wrong](#what-people-get-wrong)).
-  Struck word: **oracle**. Some plan files still call this quantity "the oracle" when describing it
-  as the target a trained corrector imitates. Current prose calls it the joint-prompt correction or
-  the interaction term instead, per `plans/standing/retrofit-poe-repair-min.md`'s struck-words list.
-- **λ (lambda)**: the dial for how much of the interaction term to add back at inference, from 0
-  (plain PoE) to 1 (the full correction).
+  Some plan files call this same quantity "the oracle" when describing it as the target a trained
+  corrector imitates. It means the correction computed from the joint prompt, which is what this
+  file calls the interaction term, per the word list in
+  `plans/standing/retrofit-poe-repair-min.md`.
+- **λ (lambda)**: the multiplier on how much of the interaction term is added back at inference,
+  from 0 (plain PoE) to 1 (the full correction).
 - **Window**: the span of denoising steps over which the correction is injected. It does not have
   to cover the whole run.
 - **Commitment step**: the step after which a run's outcome stops changing, measured separately
@@ -50,7 +51,7 @@ prediction, which makes explicit the signal omitted by linear score composition.
 
 **It is measured directly in the pipeline's cached output, not estimated indirectly.** ✅
 
-A pilot cell's `summary.json` carries `d_t_poe_vs_mono`, a per-step magnitude array (50 values,
+A pilot run's `summary.json` carries `d_t_poe_vs_mono`, a per-step magnitude array (50 values,
 step 0 near 0.0 rising to about 0.246 by the final step for `a_cat__x__a_dog` seed 42), and
 `d_T_poe_vs_mono`, the same quantity's final value. Read directly,
 `data/pilot/seed_42/a_cat__x__a_dog/summary.json`. ✅
@@ -68,8 +69,8 @@ Navigation: ⬅️ [What the interaction term is](#what-the-interaction-term-is)
 There is no single picture of the interaction term itself: it is a per-step vector in the model's
 noise-prediction space, not a rendered image. The two images in
 [poe-composition.md](poe-composition.md#what-it-looks-like) are its endpoints (the Mono target and
-the PoE render it is measured against); a rendered picture of the term's own trajectory is the
-diagram slot above.
+the PoE render it is measured against). A rendered picture of the term's own trajectory is what the
+diagram wanted at the top of this file would show.
 
 Why a seed's radius carries nothing and only its direction matters, with the window and
 commitment numbers on a step ruler, is drawn in
@@ -90,7 +91,7 @@ Navigation: ⬅️ [Why the project cares](#why-the-project-cares) | 📋 [TOC](
 
 | Column | Stands for | Example | Entry |
 |---|---|---|---|
-| `d_T_poe_vs_mono` | the interaction term's final-step size for one cell | `0.246` (example, `a_cat__x__a_dog` seed 42) | [Dictionary § d_T / d_t](../data/02-dictionary.md#d_t-d_t) |
+| `d_T_poe_vs_mono` | the interaction term's final-step size for one run | `0.246` (example, `a_cat__x__a_dog` seed 42) | [Dictionary § d_T / d_t](../data/02-dictionary.md#d_t-d_t) |
 | `d_t_poe_vs_mono` | the same quantity at every one of the 50 steps | array of 50 floats, `0.0` to `0.246` (example) | [Dictionary § d_T / d_t](../data/02-dictionary.md#d_t-d_t) |
 | `lambda` | how much of the term is injected at inference | `1.0` (example, full strength) | [Dictionary § lambda](../data/02-dictionary.md#lambda) |
 | `step` | which of the 50 denoising steps a value belongs to | `10` (example) | [Dictionary § step](../data/02-dictionary.md#step) |
@@ -124,6 +125,6 @@ Navigation: ⬅️ [What people get wrong](#what-people-get-wrong) | 📋 [TOC](
 | What | How it was established | When |
 |---|---|---|
 | The interaction term's definition | Read in `paper/iclr/iclr2027_conference.tex`, abstract | 2026-08-24 |
-| Its measured per-step and final values for one cell | Read directly, `data/pilot/seed_42/a_cat__x__a_dog/summary.json` | 2026-08-24 |
+| Its measured per-step and final values for one run | Read directly, `data/pilot/seed_42/a_cat__x__a_dog/summary.json` | 2026-08-24 |
 | The window-vs-commitment-step finding | Read in `report/experiments-log.md`, EXP-01 and EXP-04 | 2026-08-24 |
-| The struck word "oracle" and its replacement | Read in `plans/standing/retrofit-poe-repair-min.md`, "Words this uses" | 2026-08-24 |
+| The word "oracle" in older plan files, and what it names here | Read in `plans/standing/retrofit-poe-repair-min.md`, "Words this uses" | 2026-08-24 |

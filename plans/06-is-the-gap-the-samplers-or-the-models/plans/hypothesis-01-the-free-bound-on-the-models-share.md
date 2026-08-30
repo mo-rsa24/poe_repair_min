@@ -1,5 +1,8 @@
 # 🧪 The free bound on the model's share
 
+Asks whether the correction is still bigger than zero at the last denoising step in numbers already
+sitting on disk, since whatever is left there is a lower bound on the model's share of the error.
+
 ## Recommended prompt (after this plan completes)
 
 ```
@@ -8,7 +11,7 @@
 
 ## Recommended skill
 
-▶ `/analyze-run the correction size as the run approaches zero noise, from paper/iclr/figures/correction-size-over-the-denoising-run.json` ✅ reads a finished result and writes the verdict against a pre-registered bar, which is exactly this plan's shape.
+▶ `/analyze-run the correction size as the run approaches zero noise, from paper/iclr/figures/correction-size-over-the-denoising-run.json` ✅ reads a finished result and writes the verdict against a threshold fixed before the run, which is exactly this plan's shape.
    alt: `/eda-synthesize` if the two JSON files turn out to need reshaping before they can be read together.
 
 ## Position in the plan tree
@@ -19,9 +22,9 @@
 | Step | Plan | What it does |
 |------|------|-------------|
 | 6 | [hypothesis-03: when-in-the-run-it-matters](../../03-does-the-correction-cause-composition/plans/hypothesis-03-when-in-the-run-it-matters.md) ◑ | found the cliff at steps 0 to 10, which is also where a sampler artifact would live |
-| **24 (current)** | **hypothesis-01: the-free-bound-on-the-models-share** ⚠️ | **reads the correction's size as the run reaches zero noise off files already on disk, and turns it into a floor under the model's share** |
+| **24 (current)** | **hypothesis-01: the-free-bound-on-the-models-share** ⚠️ | **reads the correction's size as the run reaches zero noise off files already on disk, and turns it into a lower bound on the model's share** |
 | 25 | [instrument-01: the-corrector-and-the-step-size-it-runs-at](instrument-01-the-corrector-and-the-step-size-it-runs-at.md) ⚠️ | builds the corrector this bound caps the value of |
-| 26 | [hypothesis-02: what-is-left-once-the-chain-settles](hypothesis-02-what-is-left-once-the-chain-settles.md) ⚠️ | the gate, which reads its own result against this floor |
+| 26 | [hypothesis-02: what-is-left-once-the-chain-settles](hypothesis-02-what-is-left-once-the-chain-settles.md) ⚠️ | the run the rest of the scope waits on, which reads its own result against this lower bound |
 
 Design only. Verdicts and run state live in
 [the paired review file](../review/hypothesis-01-the-free-bound-on-the-models-share.md).
@@ -53,7 +56,7 @@ Design only. Verdicts and run state live in
 
 Is the correction still bounded away from zero at the last denoising step, in the numbers already
 sitting on disk? The [sampler's share of the error](/home-mscluster/mmolefe/goal-setting/learning/sampler-correctors-for-composition/plans/15-the-two-gaps.md) is defined to vanish as the noise goes to zero,
-and the model's share is not. So anything left at the end of the run is already a floor under the
+and the model's share is not. So anything left at the end of the run is already a lower bound on the
 model's share, bought with no GPU at all.
 
 ## Quick context: where you are
@@ -64,8 +67,8 @@ model's share, bought with no GPU at all.
 approaches zero noise. What is left there is the model's disagreement with the product, not the
 sampler's.
 
-**If true.** The model's share has a floor before any corrector is built, and the whole `k` grid at
-step 26 becomes a sizing exercise on a quantity already known to be nonzero.
+**If true.** The model's share has a lower bound before any corrector is built, and the whole `k`
+grid at step 26 becomes a sizing exercise on a quantity already known to be nonzero.
 
 **If false.** A size near zero at the last step, honestly measured, is the first evidence that the
 correction is mostly the sampler's, and it raises the stakes on everything downstream rather than
@@ -107,11 +110,11 @@ the model's share.
 At λ=0 the cached path is the plain product-of-experts path, so the answer is about that path and
 no other. Say which path in the answer or the number is uninterpretable.
 
-**Both arms must have been evaluated at the same latent at each step.**
+**Both predictions must have been taken at the same latent at each step.**
 
-If they were not, the late-step values carry accumulated path difference as well as rule
-difference, and they cannot be read at all. This is a property of how the cache was written, not
-something this plan can fix.
+If `eps_J` and `eps_PoE` were read at different latents, the late-step values carry accumulated path
+difference as well as rule difference, and they cannot be read at all. This is a property of how the
+cache was written, and this plan cannot fix it.
 
 **Known issues.** See [Error Matrix](#error-matrix).
 
@@ -119,7 +122,7 @@ something this plan can fix.
 
 ⬅️ [Previous](#considerations) | 📋 [TOC](#table-of-contents) | [Next](#why-this-plan-exists) ➡️
 
-**The correction's size at the last denoising step, on the uncorrected path, is a floor under the
+**The correction's size at the last denoising step, on the uncorrected path, is a lower bound on the
 model's share of the error, and it can be read today from files already on disk.**
 
 **Independent variable.** The denoising step `t`, read at the low-noise end of the run. Nothing is
@@ -129,14 +132,14 @@ varied and nothing is run.
 actually supports: the unnormalised `‖r_t‖₂` if it is recoverable, and the ratio
 `‖r_t‖/‖eps_PoE‖` beside it either way, with the denominator reported separately.
 
-**Falsify condition.** This is a read, not a run, so the bar is on the honesty of the answer rather
-than on its value. The answer counts only if it states four things: the number with its unit, the
+**Falsify condition.** Nothing is run here, so what the answer has to clear is honesty rather than a
+value. The answer counts only if it states four things: the number with its unit, the
 seeds it came from, the trajectory it was cached along, and the unnormalised `‖r_t‖` beside the
 ratio. An answer missing any of the four is not an answer and the question stays open.
 
-**Why this matters right now.** It costs nothing and it caps everything below it. A large floor
-means the model's share is already big and the `k` grid at step 26 is measuring the size of
-something known to exist. A floor near zero makes the corrector work more urgent, not less.
+**Why this matters right now.** It costs nothing and it caps everything below it. A large lower
+bound means the model's share is already big and the `k` grid at step 26 is measuring the size of
+something known to exist. A lower bound near zero makes the corrector work more urgent.
 
 ## Why this plan exists
 
@@ -275,9 +278,9 @@ plan is read against are known to be current.
   - Produces: the last-step values per seed and per pair, plus the `peak_at_edge` field from the
     collapse analyses.
   - **The seeds here are 4, 42 and 123**, on `a_cat__x__a_dog` and
-    `a_butterfly__x__a_flower_meadow`. [The gate at step 26](hypothesis-02-what-is-left-once-the-chain-settles.md)
-    runs seed 9 on the same two pairs, so reading its remainder against this floor is a cross-seed
-    comparison. Say so when the two numbers are put beside each other.
+    `a_butterfly__x__a_flower_meadow`. [Step 26, what is left once the chain settles](hypothesis-02-what-is-left-once-the-chain-settles.md),
+    runs seed 9 on the same two pairs, so reading its remainder against this lower bound is a
+    cross-seed comparison. Say so when the two numbers are put beside each other.
   - **Done when:** the review file names the last-step value for each of the two pairs, with its
     unit and its seeds, not when the commands have run.
 - [ ] **1.2** State the three things that make the read worth having, in the review file.
@@ -289,18 +292,18 @@ plan is read against are known to be current.
     for both pairs at all three seeds. Read `‖delta‖` from those and report it beside the ratio.
   - Which trajectory the residuals were cached along. At λ=0 that is the plain product-of-experts
     path and the answer is about that path only.
-  - Whether both arms were evaluated at the same latent at each step. If they were not, the
-    late-step values carry accumulated path difference as well as rule difference and cannot be
+  - Whether `eps_J` and `eps_PoE` were evaluated at the same latent at each step. If they were not,
+    the late-step values carry accumulated path difference as well as rule difference and cannot be
     read at all.
   - **Done when:** all three appear as sentences in the review file, each with an answer rather
-    than a hedge.
+    than a maybe.
   - 💡 `/plain-speak --gloss` on the finished paragraph if the three caveats end up reading as
     jargon; they have to survive a cold read by someone judging the number months later.
-- [ ] **1.3** Write the floor into the review file as a number with its unit and its meaning, and
-      say what it does to the claim.
-  - A large floor means the model's share is already big and the `k` grid at step 26 is a sizing
-    exercise. A floor near zero, honestly measured, is the first evidence for the sampler's share
-    and raises the stakes on everything below.
+- [ ] **1.3** Write the lower bound into the review file as a number with its unit and its meaning,
+      and say what it does to the claim.
+  - A large lower bound means the model's share is already big and the `k` grid at step 26 is a
+    sizing exercise. A lower bound near zero, honestly measured, is the first evidence for the
+    sampler's share and raises the stakes on everything below.
   - **Done when:** the first pre-registered question in the review file is ticked with the number
     that answered it beside it.
 
@@ -338,10 +341,10 @@ them.
     bound at all. Record that, and mark the first pre-registered question 🟡 rather than ✅: the
     run finished and the question still cannot be answered.
 - [ ] **2.2** Decide in one line whether this changes the `k` grid at step 26.
-  - A floor above roughly a fifth of the `k=0` value makes the grid a sizing exercise on a known
-    quantity. A floor near zero makes the grid the whole argument.
-  - Record your line in the review file's `## Still open` or against the bar, whichever it belongs
-    to. This is a judgement the code cannot make.
+  - A lower bound above roughly a fifth of the `k=0` value makes the grid a sizing exercise on a
+    known quantity. A lower bound near zero makes the grid the whole argument.
+  - Record your line in the review file's `## Still open` or against the pre-registered threshold,
+    whichever it belongs to. This is a judgement the code cannot make.
 
 ▶ **Next: [the close out](#close-out--record-what-this-plan-taught)**, then
 [step 25, the corrector and the step size it runs at](instrument-01-the-corrector-and-the-step-size-it-runs-at.md),
@@ -374,7 +377,7 @@ ls "$RES/a_cat__x__a_dog/seed_42/teacher_residual_const_lam000/residuals" | wc -
 **Pass criteria**
 
 - The last-step correction size is written into the review file with its unit, for both pairs.
-- All three caveats are answered rather than hedged.
+- All three caveats are answered plainly, with no "probably" and no "likely".
 - One line says what the number does to the rest of the scope.
 
 **Fail criteria (STOP)**
@@ -395,8 +398,8 @@ ls "$RES/a_cat__x__a_dog/seed_42/teacher_residual_const_lam000/residuals" | wc -
 
 ⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
 
-The bar every figure in this scope is held to is
-[in the scope's MASTER_PLAN](../MASTER_PLAN.md#the-figure-bar-every-plan-here-is-held-to).
+Every figure in this scope is held to
+[the standard set in the scope's direction](../MASTER_PLAN.md#the-figure-bar-every-plan-here-is-held-to).
 
 ### Pending: to be generated from prompts
 
@@ -418,8 +421,8 @@ Nothing to organise. The output of this plan is answers in its review file.
 
 | What changes | Where it has to be reflected |
 |---|---|
-| the floor is measured | [the idea map's claim 2](../../../artifacts/ideas/which-variable-explains-what-poe-is-missing/IDEA_MAP.md), whose "checks outstanding" row names this exact read |
-| the floor is measured | [the gate plan](hypothesis-02-what-is-left-once-the-chain-settles.md)'s reading of its own curve, which is judged against this number |
+| the lower bound is measured | [the idea map's claim 2](../../../artifacts/ideas/which-variable-explains-what-poe-is-missing/IDEA_MAP.md), whose "checks outstanding" row names this exact read |
+| the lower bound is measured | the reading of the curve at [step 26](hypothesis-02-what-is-left-once-the-chain-settles.md), which is judged against this number |
 | the plan's status | the scope [MASTER_PLAN.md](../MASTER_PLAN.md) and the root running order, both by `sync-plan-tree` rather than by hand |
 
 | Step | Command | Triggered by | Outcome |
@@ -446,7 +449,7 @@ Nothing to organise. The output of this plan is answers in its review file.
 
 [Step 25, the corrector and the step size it runs at](instrument-01-the-corrector-and-the-step-size-it-runs-at.md).
 It does not wait on this plan's answer, so it can start in parallel; what waits is the reading of
-step 26's curve, which is judged against this floor.
+step 26's curve, which is judged against this lower bound.
 
 ## Error Matrix
 

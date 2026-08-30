@@ -1,5 +1,8 @@
 # 🔬 The corrector, and the step size it runs at
 
+This plan asks whether a corrector can be built here that provably changes nothing when it is
+switched off, and what step size it should run at.
+
 ## Recommended prompt (after this plan completes)
 
 ```
@@ -19,9 +22,9 @@ follow it.
 
 | Step | Plan | What it does |
 |------|------|-------------|
-| 24 | [hypothesis-01: the-free-bound-on-the-models-share](hypothesis-01-the-free-bound-on-the-models-share.md) ⚠️ | the free read that caps what this instrument is worth. Does not block this build |
+| 24 | [hypothesis-01: the-free-bound-on-the-models-share](hypothesis-01-the-free-bound-on-the-models-share.md) ⚠️ | the free read that caps what this corrector is worth. Does not block this build |
 | **25 (current)** | **instrument-01: the-corrector-and-the-step-size-it-runs-at** ⚠️ | **builds the Langevin corrector composer, proves it inert when switched off, and fixes the one free parameter before any curve is read** |
-| 26 | [hypothesis-02: what-is-left-once-the-chain-settles](hypothesis-02-what-is-left-once-the-chain-settles.md) ⚠️ | the gate, which cannot be believed unless this plan passed |
+| 26 | [hypothesis-02: what-is-left-once-the-chain-settles](hypothesis-02-what-is-left-once-the-chain-settles.md) ⚠️ | the measurement everything downstream waits on, which cannot be believed unless this plan passed |
 | 29 | [baseline-02: three-rules-on-one-dose-axis](baseline-02-three-rules-on-one-dose-axis.md) ⚠️ | needs the composer built here to produce its two corrector rows |
 
 Design only. Verdicts and run state live in
@@ -57,6 +60,9 @@ Build a composer that runs `k` [Langevin corrector steps](/home-mscluster/mmolef
 taking the reverse step. Prove it produces byte-identical output to plain product-of-experts when
 it is switched off. Then fix its step size by search, before any measurement is read off it.
 
+> Langevin means nudging the latent along the score and adding a little fresh random noise, over
+> and over at one fixed noise level, until where it sits stops depending on where it started.
+
 ## Words this plan uses
 
 ⬅️ [Previous](#what-this-asks-in-one-line) | 📋 [TOC](#table-of-contents) | [Next](#quick-context-where-you-are) ➡️
@@ -73,7 +79,7 @@ noise level `t`. It is the difference between a corrector that does nothing and 
 was never on.
 
 **The corrector window.** A range of steps inside which the corrector acts and outside which it
-does not, matching the interface the injected-correction window sweep already uses.
+does not, matching the interface the injected-correction window runs already use.
 
 ## Quick context: where you are
 
@@ -110,7 +116,7 @@ fixes `c` before any curve exists to be disappointed by.
 
 **Expected effort: the composer plus the search, roughly 110 plain-render equivalents of GPU.**
 
-The two leak checks are one cell each. The search is five `c` values at `k=20` on one pair and one
+The two leak checks are one run each. The search is five `c` values at `k=20` on one pair and one
 seed, which at `3k + 5 = 65` UNet evaluations per noise level over 50 levels is about 22 plain
 renders per value.
 
@@ -150,7 +156,7 @@ a step size picked by a recorded search rather than inherited from another codeb
 maximum latent norm as a multiple of the uncorrected latent's norm, and whether the residual ratio
 rises monotonically with `k`.
 
-**Falsify condition, pre-registered.** The bars live in source as module-level constants, following
+**Falsify condition, pre-registered.** The thresholds live in source as module-level constants, following
 the `MIN_MEDIAN_RATIO` pattern this repo already uses, so they cannot be moved after the answer is
 visible.
 
@@ -163,7 +169,7 @@ visible.
   in the range fails. That second one is a finding rather than a bug: it says this corrector cannot
   be run stably on this model at these settings, and it is written up as such.
 - **Inconclusive.** The picked `c` sits at the smallest or the largest value tested, which means
-  the range was wrong. The fix is to extend the sweep, never to accept the edge.
+  the range was wrong. The fix is to try a wider range of `c`, never to accept the edge.
 
 **Why this matters right now.** Steps 26, 27 and 29 all measure something on the path this composer
 produces. A composer that leaks, or one running at a step size nobody defended, makes all three
@@ -189,8 +195,8 @@ whose table is recorded whether or not it is flattering.
    the first check cannot see because at `k=0` there is nothing to ignore.
 2. The step size is the one place a null result can be manufactured by accident, so it is fixed
    before any curve exists rather than tuned after one disappoints.
-3. The search table is evidence about the instrument, not about the phenomenon, which is why it
-   lives in the review file and not in a paper figure.
+3. The search table says how the corrector behaves rather than how composition behaves, which is
+   why it lives in the review file and never in a paper figure.
 
 ## What happens (visual)
 
@@ -266,8 +272,8 @@ read.
   disk guard on `/datasets`, the filesystem it actually writes to, per
   [environment/storage.md](../../../environment/storage.md).
 - **The cached trajectories cannot be used by this plan or anything after it.** The corrector moves
-  the latent onto a different path, so every cached cell under `interaction_term/` describes a run
-  this composer is not doing.
+  the latent onto a different path, so every cached run under `interaction_term/` describes
+  something this composer is not doing.
 - The models run in fp16. Every norm upcasts to fp32 before it is taken, since the differences
   measured here are small enough that fp16 accumulation shows up in the third digit.
 - SDXL base, DDIM, 50 steps, guidance 7.5, latents 4×128×128 at 1024².
@@ -327,7 +333,7 @@ duplicating something already here.
     corrector logic differs and not the batch shape.
   - **Done when:** the command prints its identity-pass string. A single differing byte is a fail,
     not a rounding note.
-- [ ] **1.3** The second leak check, which the window sweep never needed.
+- [ ] **1.3** The second leak check, which the injected-correction window runs never needed.
 
     ```bash
     PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
@@ -349,7 +355,7 @@ parameter.
 ◀ **Needs: [task 1.2](#1--build-the-corrector-composer)**, so a moving chain can be told apart from
 a broken composer.
 
-- [ ] **2.1** Sweep the multiplier `c ∈ {0.01, 0.035, 0.1, 0.3, 1.0}` at `k=20` on
+- [ ] **2.1** Run the multiplier at each of `c ∈ {0.01, 0.035, 0.1, 0.3, 1.0}` at `k=20` on
       `a_cat__x__a_dog` seed 9, where `δ_t = c·β_t`.
 
     ```bash
@@ -365,7 +371,7 @@ a broken composer.
 - [ ] **2.2** Record per `c`: the median relative displacement `‖x_t^(k) - x_t^(0)‖/‖x_t^(0)‖` over
       the 50 levels, the maximum latent norm as a multiple of the uncorrected latent's norm, and
       whether the residual ratio rises monotonically with `k`.
-  - **Done when:** the five-row table in the review file is filled, every cell populated.
+  - **Done when:** the five-row table in the review file is filled, every entry populated.
 - [ ] **2.3** Pick the largest `c` that neither stalls (displacement below
       `MIN_CHAIN_DISPLACEMENT = 0.05`) nor diverges (latent norm past 1.5× the uncorrected latent,
       or a monotone rise in the ratio with `k`). Write the picked value and the whole search table
@@ -408,12 +414,12 @@ them.
     of the uncorrected latent, and whether the ratio rose with `k`.
   - Expected result: displacement rises with `c`, and the latent norm stays near 1.0 until some `c`
     where it runs away.
-  - ✅ If the three columns tell that story, the instrument behaves and the pick is meaningful.
+  - ✅ If the three columns tell that story, the corrector behaves and the pick is meaningful.
   - ❌ If displacement is flat across all five `c` values, the corrector is not being applied at
     all. That is a build bug, not a step-size finding. Go back to task 1.2.
 - [ ] **3.2** Confirm the picked `c` sits in the middle of the usable range rather than at its edge.
-  - A pick at the smallest or largest tested `c` means the range was wrong, and the fix is to
-    extend the sweep, not to accept the edge.
+  - A pick at the smallest or largest tested `c` means the range was wrong, and the fix is to try a
+    wider range of `c` rather than accept the edge.
   - ❌ If the pick is at an edge, say so and send task 2.1 back with a wider range.
 - [ ] **3.3** Write your verdict in one line into the review file's step-size section: the picked
       `c`, and whether the range was adequate.
@@ -459,8 +465,8 @@ $PY -c "import json;d=json.load(open('$OUT/step_size_search.json'));print(len(d[
 
 **Partial pass guidance**
 
-- A pick at an edge is a partial pass. Extend the sweep and rerun rather than proceeding; a step
-  size at the edge of the tested range is a step size nobody has bounded.
+- A pick at an edge is a partial pass. Widen the range of `c` and rerun rather than proceeding; a
+  step size at the edge of the tested range is a step size nobody has bounded.
 
 **When you get results, answer**
 [the review file](../review/instrument-01-the-corrector-and-the-step-size-it-runs-at.md).
@@ -469,7 +475,7 @@ $PY -c "import json;d=json.load(open('$OUT/step_size_search.json'));print(len(d[
 
 ⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
 
-The bar every figure in this scope is held to is
+Every figure in this scope is held to the standard
 [in the scope's MASTER_PLAN](../MASTER_PLAN.md#the-figure-bar-every-plan-here-is-held-to).
 
 ### Pending: to be generated from prompts
@@ -480,7 +486,7 @@ None. This scope carries no `diagram-prompts.md`, so there is no illustrated map
 
 | Item | Lane | Description | Generated by | Status | Details |
 |---|---|---|---|---|---|
-| the step-size search table | — | five `c` values against median displacement, maximum latent norm as a multiple of the uncorrected latent, and whether the ratio rose with `k` | `scripts/corrector_residual_curve.py --step-size-search` | ⏳ | **Not a figure and never a paper figure.** It measures the instrument rather than the phenomenon, so it lives as a table in the review file |
+| the step-size search table | — | five `c` values against median displacement, maximum latent norm as a multiple of the uncorrected latent, and whether the ratio rose with `k` | `scripts/corrector_residual_curve.py --step-size-search` | ⏳ | **Not a figure and never a paper figure.** It says how the corrector behaves rather than how composition behaves, so it lives as a table in the review file |
 
 ### Organization workflow
 
@@ -493,7 +499,7 @@ The search table stays in the review file. Nothing from this plan is filed under
 
 | What changes | Where it has to be reflected |
 |---|---|
-| the picked `c` | [the gate plan](hypothesis-02-what-is-left-once-the-chain-settles.md) and [the dose-axis plan](baseline-02-three-rules-on-one-dose-axis.md), both of which run the composer at this value |
+| the picked `c` | [what is left once the chain settles](hypothesis-02-what-is-left-once-the-chain-settles.md) and [three rules on one dose axis](baseline-02-three-rules-on-one-dose-axis.md), both of which run the composer at this value |
 | a leak check fails | the whole scope stops; the scope [MASTER_PLAN.md](../MASTER_PLAN.md) records it and no downstream plan starts |
 | the plan's status | the scope [MASTER_PLAN.md](../MASTER_PLAN.md) and the root running order, both by `sync-plan-tree` rather than by hand |
 
@@ -544,7 +550,8 @@ failure modes this plan is most exposed to.
 **When it happens:** a window argument that is parsed but never consulted in the per-step branch.
 **What you see:** the first leak check passes, and every later measurement is contaminated by a
 corrector running where it was told not to.
-**Why:** at `k=0` there is nothing to gate, so the first check cannot see a broken gate.
+**Why:** at `k=0` there is nothing for the window to switch off, so the first check cannot see a
+window that is never consulted.
 **How to fix:** task 1.3, the `k=200` check with the window past the last step, which is the only
 thing that catches it.
 

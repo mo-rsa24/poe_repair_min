@@ -18,7 +18,7 @@ between a working rule and one run outside its intended settings.
 | [design](../plans/baseline-01-superdiff-at-this-repos-fifty-steps.md) | the wiring, the step-count match, and the per-step prediction hook |
 | **this file** | **the verdict: not yet run** |
 | [the dose-axis verdict](baseline-02-three-rules-on-one-dose-axis.md) | where this row is actually compared, and what the parity answer changes in its captions |
-| [the gate's verdict](hypothesis-02-what-is-left-once-the-chain-settles.md) | whether this half of the scope is a diagnosis or a baselines table |
+| [the step 26 verdict](hypothesis-02-what-is-left-once-the-chain-settles.md) | whether this half of the scope is a diagnosis or a baselines table |
 
 ## Table of contents
 
@@ -50,9 +50,9 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#run-kind) ➡️
 
 Navigation: ⬅️ [Words this file uses](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#runs) ➡️
 
-**Establishes a baseline.** A missed bar means the comparison has no fair floor: every figure
-comparing against SuperDiff would be comparing a working rule against a crippled one. It does not
-close the plan, it adds a sentence to every caption that uses this row.
+**Establishes a baseline.** Missing the threshold means the comparison has no fair starting point.
+Every figure comparing against SuperDiff would then compare a working rule against a crippled one.
+It does not close the plan; it adds a sentence to every caption that uses this row.
 
 Per this project's run conventions a baseline may not change a claim, and it freezes on landing.
 
@@ -62,8 +62,8 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
-| SuperDiff at 50 against 200 steps | Establishes a baseline | not launched | 2 cells | `corrector/superdiff/parity/`, both renders scored | ⚠️ not run |
-| The per-step prediction hook, verified on one cell | Establishes a baseline | not launched | 1 cell | 50 per-step norms of `r_t^SD` | ⚠️ not run |
+| SuperDiff at 50 against 200 steps | Establishes a baseline | not launched | 2 renders | `corrector/superdiff/parity/`, both renders scored | ⚠️ not run |
+| The per-step prediction hook, verified on one render | Establishes a baseline | not launched | 1 render | 50 per-step norms of `r_t^SD` | ⚠️ not run |
 
 ## The pre-registered bar
 
@@ -86,15 +86,16 @@ Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC
       tried before anything is recorded.
 - [ ] ⚠️ Did the checkpoint download land under `/datasets` rather than `/home-mscluster`? The home
       filesystem has hit 100% once here and silently killed checkpointing.
-- [ ] ⚠️ Which branch did [the gate](hypothesis-02-what-is-left-once-the-chain-settles.md) fire?
-      The runs in this plan are the same either way; the sentences around them are not.
+- [ ] ⚠️ Which branch did
+      [the measurement at step 26](hypothesis-02-what-is-left-once-the-chain-settles.md) fire? The
+      runs in this plan are the same either way, though the sentences around them are not.
 
 ## Asked after the result
 
 Navigation: ⬅️ [Written before the run](#written-before-the-run-answered-after) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
-**Nothing here may ever become a bar**, because anything written here is written with the answer
-already visible. Empty until the parity check runs.
+**Nothing here may ever become a pre-registered threshold**, because anything written here is
+written with the answer already visible. Empty until the parity check runs.
 
 ## Could the answer be an artefact
 

@@ -1,15 +1,18 @@
 # ✍️ Method and introduction, written by hand
 
+This plan asks how the method and the introduction read as finished prose, since neither of them
+waits on a run that has not finished.
+
 **Step 20 of 22.** Waits on step 17. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../MASTER_PLAN.md).
 
 | Step | Plan | Status |
 |---|---|---|
-| 19 | [writing-03-where-each-figure-goes](writing-03-where-each-figure-goes.md) | ⚠️ |
+| 19 | [where each figure goes](writing-03-where-each-figure-goes.md) | ⚠️ |
 | **20** | **this plan** | **⚠️** |
-| 21 | [writing-06-mechanism-and-limitations](writing-06-mechanism-and-limitations.md) | ⚠️ |
+| 21 | [mechanism and limitations](writing-06-mechanism-and-limitations.md) | ⚠️ |
 
 ## What this asks, in one line
-Write the two sections that depend on no unfinished run: the method (settled) and the introduction (follows from the spine).
+Write the two sections that depend on no unfinished run: the method, which is settled, and the introduction, which follows from the section order.
 
 ## Description
 Write the two sections that do not depend on unfinished runs: the method, and
@@ -18,7 +21,7 @@ the introduction.
 ## Purpose
 The method is settled (cache r_t, train a rank-8 cross-attention LoRA on it,
 inject at inference without ever encoding the joint prompt), so it can be
-written today. The introduction follows from the spine. Together they are most
+written today. The introduction follows from the section order. Together they are most
 of the paper's non-results prose. Serves DoD 6.
 
 ## Goal
@@ -35,15 +38,21 @@ Both sections present in the `.tex` as real prose, building to a PDF.
 - Prose is written by hand. `/restyle` is the only skill pass, and it runs after
   a section exists, never as a drafter.
 - The glossary at the bottom of the root `MASTER_PLAN.md` holds the project's
-  agreed plain definitions (PoE, chimera, Mono-free, r_t, lambda, the crossbar).
+  agreed plain definitions: PoE, the [chimera](context/world/chimera.md),
+  Mono-free, r_t, lambda, and the train-against-evaluate grid whose rows are
+  what a model trained on and whose columns are what it was tested on.
   Reuse that wording so the paper and the plan tree do not drift apart.
+
+  > Mono-free means the joint prompt is never given to the model at inference.
+  > It is used only while training, to work out what the correction should have
+  > been.
 
 ## Tasks
 - [ ] write the method: the cached residual, the rank-8 cross-attention LoRA,
       the injection at inference, and why it is Mono-free
 - [ ] write the introduction against SPINE.md, ending on the contributions
 - [ ] write the related-work paragraph placement (it may be a section or fold
-      into the intro; the spine decides)
+      into the intro; the section order decides)
 - [ ] /restyle pass over both, against a named ICLR exemplar
 
 ## Next

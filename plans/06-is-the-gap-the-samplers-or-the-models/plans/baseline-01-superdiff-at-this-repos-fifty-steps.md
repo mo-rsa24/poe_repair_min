@@ -1,5 +1,8 @@
 # 🔌 SuperDiff at this repo's fifty steps
 
+Does SuperDiff still compose when it runs at this repo's 50 steps instead of the 200 its authors
+use?
+
 ## Recommended prompt (after this plan completes)
 
 ```
@@ -21,7 +24,7 @@
 
 | Step | Plan | What it does |
 |------|------|-------------|
-| 26 | [hypothesis-02: what-is-left-once-the-chain-settles](hypothesis-02-what-is-left-once-the-chain-settles.md) ⚠️ | the gate. A null there turns this half into a baselines table rather than a diagnosis, and the framing of every caption changes with it |
+| 26 | [hypothesis-02: what-is-left-once-the-chain-settles](hypothesis-02-what-is-left-once-the-chain-settles.md) ⚠️ | the answer that decides how this half is framed. A null there turns it into a baselines table rather than a diagnosis, and the framing of every caption changes with it |
 | **28 (current)** | **baseline-01: superdiff-at-this-repos-fifty-steps** ⚠️ | **wires a published composition rule into this repo, matched to 50 steps at guidance 7.5, and checks whether matching broke it** |
 | 29 | [baseline-02: three-rules-on-one-dose-axis](baseline-02-three-rules-on-one-dose-axis.md) ⚠️ | needs the per-step prediction this plan exposes |
 
@@ -42,7 +45,7 @@ Design only. Verdicts and run state live in
 - [Environment Facts This Plan Depends On](#environment-facts-this-plan-depends-on)
 - [Tasks](#tasks) — things for Claude to execute
 - [Instructions](#instructions) — things for you to do manually
-- [The engagement gate](#the-engagement-gate)
+- [The check before moving on](#the-check-before-moving-on)
 - [Figure Catalog](#figure-catalog)
 - [Orchestration: keeping catalogs and plan files in sync](#orchestration-keeping-catalogs-and-plan-files-in-sync)
 - [Code references](#code-references)
@@ -66,11 +69,15 @@ product-of-experts and the Langevin corrector, wrapping the pipeline from
 [superdiff-sdxl-v1-0](https://huggingface.co/superdiff/superdiff-sdxl-v1-0), source at
 [necludov/super-diffusion](https://github.com/necludov/super-diffusion).
 
+> The Langevin corrector is an extra step slipped in between the sampler's own steps. It nudges
+> the latent along the model's score and adds a little noise, so the state settles onto what the
+> model says is likely instead of only following the sampler's path.
+
 **What it does.** SuperDiff is a composition rule derived from the continuity equation rather than
 from naive score addition. Skreta et al.,
 [arXiv 2412.17762](https://arxiv.org/abs/2412.17762), ICLR 2025 Spotlight. It is a published
 alternative to the rule this paper is about, and a reviewer will ask about it whichever way
-[the gate](hypothesis-02-what-is-left-once-the-chain-settles.md) came back.
+[step 26](hypothesis-02-what-is-left-once-the-chain-settles.md) came back.
 
 **Key components.** The composer wrapper, the step-count match, and a hook exposing the per-step
 prediction `eps_M` so that `r_t^SD = eps_J - eps_M` can be formed. That last one is what
@@ -98,7 +105,7 @@ step count is the right call and it has a cost that this plan measures rather th
 **A baseline freezes on landing.**
 
 Per this project's run conventions, a baseline may not change any claim. What it can do is give the
-comparison a floor, and that only works if the floor is a fair one.
+comparison something to be measured against, and that only works if the comparison is a fair one.
 
 **The per-step prediction is the deliverable that is easiest to skip.**
 
@@ -121,7 +128,8 @@ Nothing else differs.
 
 **Dependent variable.** Whether the render composes, by the detector and by eye.
 
-**Falsify condition.** The bar is on the parity check, not on SuperDiff's quality.
+**Falsify condition.** The threshold sits on the parity check. How good SuperDiff's pictures are
+is a separate question this plan does not judge.
 
 - **Pass.** The 50-step render composes on the tested pair and seed. SuperDiff is comparable and
   step 29 proceeds with it as an ordinary row.
@@ -133,7 +141,7 @@ Nothing else differs.
   check, not the method. Try one more pair before recording anything.
 
 **Why this matters right now.** It is a reviewer's first question about a paper proposing a
-composition fix, and it is asked whether or not the gate came back with a split.
+composition fix, and it is asked whether or not step 26 came back with a split.
 
 ## Why this plan exists
 
@@ -205,7 +213,7 @@ settings and check it still works there, before three rules are compared along o
 
 1. `poe_repair/composers/superdiff.py` exists and renders at 50 DDIM steps at guidance 7.5.
 2. The 200-against-50 parity check is recorded, with the verdict and both renders.
-3. `eps_M` is available per step, verified by forming `r_t^SD` on one cell.
+3. `eps_M` is available per step, verified by forming `r_t^SD` on one pair at one seed.
 
 ## Environment Facts This Plan Depends On
 
@@ -231,13 +239,14 @@ settings and check it still works there, before three rules are compared along o
 
 **For Claude to execute.** Ask Claude to do these.
 
-### 0. 🧭 Preflight: check this plan before working from it
+### 0. 🧭 Check this plan before working from it
 
 - [ ] **0.1** Check this plan conforms and its instructions are concrete, before acting on it.
   - Paste: `/verify-plan @plans/06-is-the-gap-the-samplers-or-the-models/plans/baseline-01-superdiff-at-this-repos-fifty-steps.md`
   - Done when: the report comes back clean, or its proposals have been applied.
-- [ ] **0.2** Confirm which branch [the gate](hypothesis-02-what-is-left-once-the-chain-settles.md)
-      fired, and record it in this plan's review file.
+- [ ] **0.2** Confirm which way
+      [step 26](hypothesis-02-what-is-left-once-the-chain-settles.md) came out, and record it in
+      this plan's review file.
   - A null there turns this half of the scope into a baselines table rather than a diagnosis, which
     changes the framing of every caption this plan and step 29 produce. The runs are the same
     either way; the sentences around them are not.
@@ -247,7 +256,7 @@ settings and check it still works there, before three rules are compared along o
 
 ### 1. 🔌 Wire the pipeline
 
-◀ **Needs: [task 0.2](#0--preflight-check-this-plan-before-working-from-it)**, so the captions are
+◀ **Needs: [task 0.2](#0--check-this-plan-before-working-from-it)**, so the captions are
 framed correctly from the start.
 
 - [ ] **1.1** Wire the pipeline into `poe_repair/composers/superdiff.py`.
@@ -258,7 +267,7 @@ framed correctly from the start.
   - **Done when:** one render completes and lands under
     `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/superdiff/`.
 - [ ] **1.2** Expose `eps_M` per step so `r_t^SD = eps_J - eps_M` can be formed.
-  - **Done when:** `r_t^SD` is formed on one cell and its per-step norm printed for all 50 steps,
+  - **Done when:** `r_t^SD` is formed on one pair at one seed and its per-step norm printed for all 50 steps,
     proving the hook returns a prediction and not a placeholder.
 
 ▶ **Next: [task 2.1](#2--the-step-count-parity-check)**.
@@ -297,11 +306,11 @@ published method is not enough to put in a caption.
   - Done when: the row records the promotion, dated, as a promotion of the 2026-08-12 row rather
     than a first read.
 
-▶ **Next: [the engagement gate](#the-engagement-gate).**
+▶ **Next: [the check before moving on](#the-check-before-moving-on).**
 
 ## Instructions
 
-⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
+⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#the-check-before-moving-on) ➡️
 
 **For you to follow manually.** Do these yourself, interleaved with the Tasks rather than after
 them.
@@ -328,7 +337,7 @@ them.
 ▶ **Next: [the close out](#close-out--record-what-this-plan-taught)**, then
 [step 29](baseline-02-three-rules-on-one-dose-axis.md).
 
-## The engagement gate
+## The check before moving on
 
 ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
@@ -350,7 +359,7 @@ $PY -c "import json;d=json.load(open('$SD/parity/eps_m_norms.json'));print(len(d
 
 - `superdiff.py` renders at 50 DDIM steps at guidance 7.5.
 - Both parity renders exist and are scored.
-- `eps_M` is available at all 50 steps, verified by forming `r_t^SD` on one cell.
+- `eps_M` is available at all 50 steps, verified by forming `r_t^SD` on one pair at one seed.
 - Instruction 3.3 has recorded the eye verdict beside the detector's.
 
 **Fail criteria (STOP)**
@@ -369,9 +378,9 @@ $PY -c "import json;d=json.load(open('$SD/parity/eps_m_norms.json'));print(len(d
 
 ## Figure Catalog
 
-⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
+⬅️ [Previous](#the-check-before-moving-on) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
 
-The bar every figure in this scope is held to is
+The standard every figure in this scope is held to is
 [in the scope's MASTER_PLAN](../MASTER_PLAN.md#the-figure-bar-every-plan-here-is-held-to).
 
 ### Pending: to be generated from prompts
@@ -382,11 +391,11 @@ None. This scope carries no `diagram-prompts.md`, so there is no illustrated map
 
 | Item | Lane | Description | Generated by | Status | Details |
 |---|---|---|---|---|---|
-| the two parity renders | — | the same pair and seed at 200 steps and at 50 steps, side by side | task 2.1 | ⏳ | **Not a paper figure.** It measures whether the instrument was set up fairly, not the phenomenon, so it stays in the review file. If the 50-step render fails, the pair of images is worth keeping as the evidence behind the caption sentence, filed under `paper/iclr/figures/when-the-correction-arrives/superdiff/` with a `README.md` entry |
+| the two parity renders | — | the same pair and seed at 200 steps and at 50 steps, side by side | task 2.1 | ⏳ | **Not a paper figure.** It measures whether SuperDiff was set up fairly here rather than measuring the phenomenon, so it stays in the review file. If the 50-step render fails, the pair of images is worth keeping as the evidence behind the caption sentence, filed under `paper/iclr/figures/when-the-correction-arrives/superdiff/` with a `README.md` entry |
 
 ### Organization workflow
 
-1. Render both parity cells under `/datasets`.
+1. Render both parity pictures under `/datasets`.
 2. Keep them in the review file unless the check failed, in which case file the pair under
    `paper/iclr/figures/when-the-correction-arrives/superdiff/` with its sidecar and README entry,
    because a caption sentence needs its evidence reachable.

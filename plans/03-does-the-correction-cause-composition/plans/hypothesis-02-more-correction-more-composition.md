@@ -1,5 +1,9 @@
 # 🧪 Hypothesis 02: More correction, more composition
 
+This plan asks whether adding back more of the missing correction produces more composition, by
+generating images at five injection strengths and checking that two deliberately wrong vectors of
+the same size do nothing.
+
 **Step 4 of 22.** Waits on steps 1 and 2. The running order is in [repo root MASTER_PLAN.md](../../../MASTER_PLAN.md).
 
 ## Position in the plan tree
@@ -24,7 +28,7 @@
 - [Purpose and goal](#purpose-and-goal)
 - [Why the controls are fair](#why-the-controls-are-fair)
 - [Tasks](#tasks)
-- [The engagement gate](#the-engagement-gate)
+- [What must pass before the next step](#what-must-pass-before-the-next-step)
 - [Outputs / Figure](#outputs--figure)
 - [Code references](#code-references)
 - [Next step](#next-step)
@@ -40,27 +44,27 @@
 
 *The correction term $r_t$ is the missing piece that PoE drops. If true, adding more of it should produce more composition, while deliberately wrong vectors of the same size should stay flat.*
 
-**If true:** The real correction's compose-rate curve rises as λ (correction strength) increases from 0 to 1. Both fake rows (random vector and wrong pair's correction) stay near zero at all λ.
+**If true:** The real correction's [compose-rate](../../../context/world/compose-rate.md) curve rises as λ (correction strength) increases from 0 to 1. Both fake rows (random vector and wrong pair's correction) stay near zero at all λ.
 
 **If false:** Either the correction is not the cause of composition failure (other factors matter more), or the controls are not actually controls (the fakes are not comparable to the real one).
 
 **Dataset details:**
-- **Corrections:** Already cached from training, with exact starting noise per cell, under `training_cache/`
+- **Corrections:** Already cached from training, with the exact starting noise for each pair-and-seed run, under `training_cache/`
 - **Pairs:** 8 unseen animal pairs (not seen during training)
 - **Seeds:** 4 random seeds per pair
 - **Strengths:** λ ∈ {0, 0.25, 0.50, 0.75, 1.00}
 - **Rows:** Real correction, random vector (size-matched), wrong pair's correction
-- **Total cells:** 8 × 4 × 5 × 3 = 480 pictures (minus 40 duplicates at λ=0 = 440 unique images)
+- **Total generated images:** 8 × 4 × 5 × 3 = 480 pictures (minus 40 duplicates at λ=0 = 440 unique images)
 
 **Review questions:** Answered in [../review/hypothesis-02-more-correction-more-composition.md](../review/hypothesis-02-more-correction-more-composition.md)
 
 **Vocabulary once:**
 - **PoE** (Product of Experts): the broken way. Ask the model about "a cat" and "a dog" separately, add the predictions. Usually fuses into one animal.
-- **Mono** (monocular): the cheat that works. Hand the model "a cat and a dog" joined. Composes fine, but defeats the scientific point (it's the oracle, not evidence).
+- **Mono** (monocular): the cheat that works. Hand the model "a cat and a dog" joined. It composes fine, but it defeats the scientific point, because the joined prompt is the ground truth the paper is trying to explain rather than evidence about why PoE fails.
 - **The correction $r_t$**: the gap between Mono's prediction and PoE's. It is what PoE leaves out.
 - **λ (lambda)**: How much correction to inject, from 0 (none) to 1 (all).
-- **A cell**: One image, for one pair, at one λ, from one starting noise (one seed).
-- **Compose rate**: Fraction of cells showing two separate animals (vs one blended), scored by the validated scorer, never by eye.
+- **One run**: one image, for one pair, at one λ, from one starting noise (one seed).
+- **Compose rate**: Fraction of those images showing two separate animals rather than one blended one, scored by the validated scorer and never by eye.
 
 ---
 
@@ -69,15 +73,15 @@
 ⬅️ [Quick context](#quick-context-the-hypothesis) | 📋 [TOC](#table-of-contents) | [The claim](#the-claim) ➡️
 
 **Runtime:**
-- One cell runs in-session on this node's 3090 (minutes).
-- Full set: ~50 seconds per cell × 440 unique cells = ~6 hours on GPU.
+- One image takes minutes in-session on this node's 3090.
+- Full set: ~50 seconds per image × 440 unique images = ~6 hours on GPU.
 - Submission: `scripts/mechanism_study/run_dose_sweep.sh`, resumable, to biggpu (100GB VRAM, safer) or bigbatch (fallback).
 
 **Environment constraints:**
 - Corrections are already cached; nothing here recomputes them.
-- GPU is shared; check `nvidia-smi` before starting—a full card kills the job mid-run.
-- Output goes to `/datasets` (not `/home-mscluster`). Job aborts if `/datasets` exceeds 90% capacity.
-- W&B logging is mandatory: three-panel triptych per cell (Mono, plain PoE, corrected) so every number has a picture beside it.
+- The GPU is shared, so check `nvidia-smi` before starting. A full card kills the job mid-run.
+- Output goes to `/datasets` and never `/home-mscluster`. The job aborts if `/datasets` exceeds 90% capacity.
+- W&B logging is mandatory: a three-panel picture per image (Mono, plain PoE, corrected) so every number has something to look at beside it.
 
 **Disk state:**
 - **Before (2026-08-18):** 6.3GB on `/home-mscluster` (freed by moving to `/datasets`).
@@ -89,7 +93,7 @@
 
 ⬅️ [Considerations](#considerations) | 📋 [TOC](#table-of-contents) | [Why this plan exists](#why-this-plan-exists) ➡️
 
-**Wire live compose-rate logging into the dose-sweep harness, run 480 pictures through three injection conditions (real correction, random vector, wrong pair's correction), score the outputs, and plot three curves (compose rate vs λ, one per injection type).**
+**Wire live compose-rate logging into the code that generates images across λ, put 480 pictures through three injection conditions (real correction, random vector, wrong pair's correction), score the outputs, and plot three curves (compose rate vs λ, one per injection type).**
 
 **The paper's central causal claim depends on this figure:** more correction ⟹ more composition, while controls stay flat.
 
@@ -165,7 +169,7 @@ Take the correction we already have cached, add a fraction of it back into PoE s
 
 **The setup:**
 - Fraction is λ, stepping through {0, 0.25, 0.50, 0.75, 1.00}.
-- Starting noise is held fixed across all λ for one cell, so the only thing changing is how much correction goes in.
+- Starting noise is held fixed across all λ within one pair and seed, so the only thing changing is how much correction goes in.
 
 **Three rows for every (pair, seed, λ):**
 1. **Real correction:** Inject $r_t$ at strength λ.
@@ -191,7 +195,7 @@ This is the paper's central causal claim (Objective 1, Definition of Done item 3
 **Goals:**
 1. 480 scored pictures (8 pairs × 4 seeds × 5 strengths × 3 rows), minus 40 duplicates at λ=0 = 440 unique images.
 2. Three curves: compose rate against λ, one per injection type (real, random, wrong pair).
-3. Figure slot **F2** filled: the paper's headline figure in two halves (quantitative curves + qualitative grid).
+3. Figure **F2** filled, the place the paper reserves for its headline figure, in two halves (the curves plus the grid of pictures).
 
 **What success looks like:**
 - Real correction curve: rises monotonically from ~0 at λ=0 to ~80–95% at λ=1.
@@ -211,7 +215,7 @@ A control only works if it differs in exactly one way. These are deliberate desi
 Both fakes are scaled to match the real correction's length. Otherwise, a fake that failed could have failed for being too weak rather than for pointing the wrong way. Only direction is supposed to differ.
 
 **Measuring the real correction throughout:**
-$\delta_{\text{norm}}$ (the real correction's magnitude) and the PMI check (algebraic test that the correction equals Mono - PoE) are recorded per cell, even during fake runs. Both describe the real pair of concepts, not whatever vector we injected, so both keep measuring the real correction throughout.
+$\delta_{\text{norm}}$ (the real correction's magnitude) and the PMI check (algebraic test that the correction equals Mono - PoE) are recorded for every generated image, even during fake runs. Both describe the real pair of concepts, not whatever vector we injected, so both keep measuring the real correction throughout.
 
 **Full-strength shortcut is disabled during fakes:**
 At λ=1, the code could skip the arithmetic and use the Mono prediction directly (it gives the same answer when the correction is real). During a fake run, that would ignore the fake and return the real answer, silently making all three rows identical. This bug would be the hardest to catch.
@@ -222,10 +226,10 @@ At λ=0, nothing is injected, so all three rows are the same picture by construc
 ---
 
 ## Environment Facts This Plan Depends On
-- `co3` python at its absolute path. The 480-cell sweep (~6h at ~50s/cell) goes to biggpu first,
-  else bigbatch; the smoke test on one cell fits the in-session GPU.
+- `co3` python at its absolute path. Generating all 480 images (~6h at ~50s each) goes to biggpu
+  first, else bigbatch. The single trial image fits the in-session GPU.
 - `scripts/mechanism_study/run_dose_sweep.sh` writes to `$REPO/outputs/...` while its own disk
-  guard checks `/datasets/mmolefe`, so a sweep this size will fill `/home-mscluster` unless the
+  guard checks `/datasets/mmolefe`, so a job this size will fill `/home-mscluster` unless the
   output is moved by hand afterward (as this plan's own last task had to do). See
   [environment/storage.md](../../../environment/storage.md).
 

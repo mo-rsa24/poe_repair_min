@@ -1,24 +1,27 @@
 # 🔍 The mechanism section and the three honesty caveats
 
+This plan asks what the paper may claim about how the fix works inside the model, and states the
+three places where the evidence stops.
+
 **Step 21 of 22.** Waits on step 15. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../MASTER_PLAN.md).
 
 | Step | Plan | Status |
 |---|---|---|
-| 20 | [writing-04-method-and-introduction](writing-04-method-and-introduction.md) | ⚠️ |
+| 20 | [method and introduction](writing-04-method-and-introduction.md) | ⚠️ |
 | **21** | **this plan** | **⚠️** |
-| 22 | [writing-07-the-abstract-written-last](writing-07-the-abstract-written-last.md) | ⚠️ |
+| 22 | [the abstract, written last](writing-07-the-abstract-written-last.md) | ⚠️ |
 
 ## What this asks, in one line
-Write the mechanism section from the answered review questions, honest about scope: what replicated (the value-channel read, median 1.52x over 64 cells) and exactly where its boundary sits.
+Write the mechanism section from the answered review questions, saying what replicated (the value-channel read, median 1.52x over 64 runs) and exactly where its boundary sits.
 
 ## Description
-Write the mechanism section to match whatever verdict the re-probe returns, and
-write the three caveats that keep the paper's claims honest.
+Write the mechanism section to match whatever verdict the repeated value-channel
+test returns, and write the three caveats that keep the paper's claims honest.
 
 ## Purpose
-Both were moved here from `does-the-correction-cause-composition/plans/gate-01-two-literature-checks-before-print.md` on
-2026-08-05 so that all paper prose has one owner. That scope keeps the two
-/pressure-test gates and hands their verdicts over as input. Serves DoD 9.
+All the paper's prose has one owner, so the mechanism section and the caveats are written here.
+`does-the-correction-cause-composition/plans/gate-01-two-literature-checks-before-print.md` keeps
+the two /pressure-test checks and hands their verdicts over as input. Serves DoD 9.
 
 ## Goal
 The mechanism section (or its negative paragraph) and the three caveats present
@@ -32,6 +35,9 @@ in the `.tex`, with both pressure-test verdicts reflected in the wording.
   decides which version gets written: a full section if the value-channel
   finding replicates across held-out pairs and seeds on `lora_step_100000.pt`,
   a negative paragraph if not. Do not write it before the verdict exists.
+
+  > Held-out pairs are the animal pairs the adapter never trained on, so a
+  > result on them says whether the fix reaches beyond what it was fitted to.
 - Blocked on `does-the-correction-cause-composition/plans/gate-01-two-literature-checks-before-print.md` for the two verdicts,
   which land in `docs/pressure_tests/`.
 - A negative verdict shrinks the section; it does not remove it. The honest
@@ -40,15 +46,20 @@ in the `.tex`, with both pressure-test verdicts reflected in the wording.
 ## Tasks
 - [ ] write the mechanism section per plan 02's verdict (full section if
       replicated, negative paragraph if not)
-- [ ] write the three honesty caveats: the oracle uses the joint prompt
-      (not Mono-free, demonstration only); mid-λ doses are off-policy
-      (endpoints exact); the transfer number is cited with its checkpoint
+- [ ] write the three honesty caveats: the cached true correction is computed
+      from the joint prompt, so that demonstration is not Mono-free; mid-λ doses
+      are off-policy (endpoints exact); the transfer number is cited with its
+      checkpoint
+
+  > Mono-free means the joint prompt is never given to the model at inference.
+  > It is used only while training, to work out what the correction should have
+  > been.
 - [ ] fold both /pressure-test verdicts into the wording: a verdict of
       "already measured" on the window claim downgrades the novelty wording,
       not the experiment
 
 - [ ] Write the do-no-harm limitation. The pool lists `an_elephant__x__a_penguin` as a pair that
-      composes fine without any correction, and the strength sweep scored it 0 of 4 at strength 0
+      composes fine without any correction, and the run across strengths scored it 0 of 4 at strength 0
       with four single fused creatures. So the claim currently has no demonstrated do-no-harm
       control. State that as the boundary it is, and say what would settle it: a pair the plain
       method composes reliably, verified over seeds before being called a control.
@@ -79,4 +90,4 @@ grep -c "mechanism" paper/iclr/iclr2027_conference.tex   # expect the section pr
 ```
 Manual check, by eye: read the mechanism section next to plan 02's verdict note.
 Does the section claim more than the verdict supports? That comparison is the
-gate, and no command can make it.
+check, and no command can make it.

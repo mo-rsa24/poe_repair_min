@@ -3,7 +3,7 @@
 The scope's pictures. Everything here is marked [planned] and drawn hedged: nothing is built yet,
 and the map says so truthfully.
 
-**9 prompts · 1 rendered · 1 rendering · 7 waiting**
+**9 prompts · 2 rendered · 1 rendering · 6 waiting**
 
 ## Abstraction chain
 
@@ -34,7 +34,7 @@ Faithfulness note: Both curves are dashed: no plateau has been read yet. The 0.4
 
 ### Prompt 2 (Subject): the null-input probe [planned]
 
-⚙️ rendering
+🖼️ rendered 2026-08-30 `diagrams/the-null-input-probe.png` (no revision needed)
 Save as: `diagrams/the-null-input-probe.png`
 
 > Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded directional arrows, each color meaning exactly one kind of traffic, with a small legend inside the image. Solid lines are actual transfers; dashed lines are reserved for control, acknowledgement, retry, and optional paths. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Clean sans-serif labels under every icon. Generous spacing, no clutter, no watermark.
@@ -45,7 +45,7 @@ Faithfulness note: Both expert cards must read the same word, and the amber arro
 
 ### Prompt 3 (Subject): the dose dial moves to the adapter [planned]
 
-⏳ not rendered
+⚙️ rendering
 Save as: `diagrams/the-dose-dial-moves-to-the-adapter.png`
 
 > Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded directional arrows, each color meaning exactly one kind of traffic, with a small legend inside the image. Solid lines are actual transfers; dashed lines are reserved for control, acknowledgement, retry, and optional paths. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Clean sans-serif labels under every icon. Generous spacing, no clutter, no watermark.

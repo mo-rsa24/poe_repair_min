@@ -114,18 +114,19 @@ Check [hpc/nodes.md](hpc/nodes.md) for which partitions and nodes carry which GP
 ### LoRA and correction dynamics
 
 #### Entry ID: poe-lora-001
-**Name:** Fraction-of-distance-reached plateaus at 20% instead of an expected 40%
+**Name:** Fraction-of-distance-reached stops rising at 20% instead of the expected 40%
 
 **Symptom:** `eval/frac_distance_reached/mean` climbs to about 0.2 by epoch 1, then stalls.
-Expected plateau is about 0.4 based on prior runs.
+Prior runs stop rising at about 0.4.
 
 **Root cause:** LoRA rank too low (r=4 or r=8) to capture the full correction magnitude. The
 correction saturates the LoRA space before reaching the full PoE-to-Mono distance.
 
 **Solution:**
 1. Check the LoRA rank used (in config; default is r=16).
-2. If r < 16, increase to r=32 or r=64 and re-run the smoke test.
-3. If r >= 16, the plateau really is 20% for this particular correction. Document it in run
+2. If r < 16, increase to r=32 or r=64 and re-run the short one-epoch check that proves the
+   wiring works.
+3. If r >= 16, this particular correction really does stop at 20%. Document it in run
    notes and adjust the hypothesis rather than the rank.
 
 **First discovered:** poe_repair_min, step-09
@@ -190,11 +191,11 @@ ssh <node> 'GPU=<idx> nohup bash /abs/path/to/launch.sh > /abs/path/to/logs/<nam
 Verify the launch in the same SSH call: `sleep 5; pgrep -af "train"` plus `tail` of the absolute
 log path.
 
-**First discovered:** poe_repair_min, step-09 (smoke run launch on `mscluster106`, shared-device
-path)
+**First discovered:** poe_repair_min, step-09 (the first short run launched on `mscluster106`,
+shared-device path)
 
 **Affects steps:** any step launched over SSH on a node this session is not on (step-09, step-10,
-step-11 sweeps)
+and step-11's runs across many settings)
 
 **Category:** 🟡 warning
 
@@ -214,8 +215,8 @@ throughout, and large output is later found on `/home-mscluster` instead of the 
 **Root cause:** `scripts/mechanism_study/run_dose_sweep.sh` set its output root under the repo
 on `/home-mscluster` while its disk guard read `df /datasets/mmolefe`. The two paths were
 configured independently and drifted apart; the guard was checking a filesystem the script was
-not writing to, so it could never catch the problem it exists to catch. 3.4GB of sweep cells
-landed on the wrong mount this way.
+not writing to, so it could never catch the problem it exists to catch. 3.4GB of output from
+that run across many settings landed on the wrong mount this way.
 
 **Solution:** A disk guard must resolve the same root the script's output path resolves to and
 `df` exactly that mount, never a hardcoded or assumed one. A series of commits (`54b4b79`,
@@ -227,8 +228,8 @@ unverified until its `df` target is checked against its actual output root by ha
 **First discovered:** poe_repair_min, `scripts/mechanism_study/run_dose_sweep.sh`, recorded in
 the project's own `CLAUDE.md`
 
-**Affects steps:** any step with a job script that writes large output (checkpoints, caches,
-sweep cells)
+**Affects steps:** any step with a job script that writes large output (checkpoints, caches, and
+the per-setting output of a run across many settings)
 
 **Category:** 🔴 critical
 

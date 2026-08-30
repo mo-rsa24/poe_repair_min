@@ -23,7 +23,7 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#seed) ➡️
 
 **What it means in the world** ✅
 
-Which two animal concepts a cell tests, written as the on-disk slug form (see
+Which two animal concepts a run tests, written as the on-disk slug form (see
 [world/animal-pair.md § Words this file uses](../world/animal-pair.md#words-this-file-uses)).
 
 **Example** `a_cat__x__a_dog` (example, this project's own reference pair)
@@ -45,15 +45,18 @@ Navigation: ⬅️ [`pair_slug`](#pair_slug) | 📋 [TOC](#table-of-contents) | 
 
 **What it means in the world** ✅
 
-Which re-roll of the starting noise produced this cell. The pair of concepts does not change; only
+Which re-roll of the starting noise produced this run. The pair of concepts does not change; only
 the random starting point does.
 
 **Example** `42` (example; the project's own reference seed for `a_cat__x__a_dog`). Held-out
 evaluation seeds are `9`, `10`, `11`, `12`, per `plans/standing/retrofit-poe-repair-min.md`.
 
+> Held-out means kept aside and never used while the fix was being built or tuned, so a result on
+> those seeds says something about new cases rather than about the ones already seen.
+
 **Type and shape** integer
 
-**Where it comes from** set at sampling time; cached per (pair, seed) cell
+**Where it comes from** set at sampling time; cached per (pair, seed) run
 
 **Stands for** a property of one render, not of the pair itself
 
@@ -94,9 +97,9 @@ Navigation: ⬅️ [`group` / `group_label`](#group-group_label) | 📋 [TOC](#t
 **What it means in the world** ✍️
 
 Which render method produced a given image: plain PoE, Mono, PoE plus the interaction term
-injected at some strength, or PoE plus the trained LoRA. The word "arm" itself is struck from
-prose (`plans/standing/retrofit-poe-repair-min.md`: "An arm is the corrected run or the uncorrected run.");
-it survives as a column and function-family name in code.
+injected at some strength, or PoE plus the trained LoRA. In prose this project says "the corrected
+run" or "the uncorrected run" instead of using this field's name; the name survives as a column
+heading and a function-family name in code.
 
 **Example** `poe` (example; other observed values include `mono`, and the method names in
 `poe_repair/methods/_sampling.py`: `run_cfg`, `run_cfg_poe`, `run_teacher_residual`,
@@ -110,7 +113,7 @@ called
 **Stands for** a property of one render, not of the pair or the seed
 
 **Watch out** at full correction strength a sampler could in principle fall back to reproducing
-the Mono prediction directly, which would make every arm look identical for the wrong reason; this
+the Mono prediction directly, which would make every render method look identical for the wrong reason; this
 risk is checked for, per
 [world/poe-composition.md § What people get wrong](../world/poe-composition.md#what-people-get-wrong)
 ⚠️
@@ -126,16 +129,16 @@ How much of the interaction term is added back at inference. `0` reproduces plai
 
 **Example** `1.0` (example, full strength)
 
-**Type and shape** float, `0.0` to `1.0` in the sweeps seen in this repo
+**Type and shape** float, `0.0` to `1.0` across the settings this repo has run
 
-**Where it comes from** set as a sampling parameter, swept across a grid in the dose-response
-experiments
+**Where it comes from** set as a sampling parameter, and run across a grid of values in the
+dose-response experiments
 
 **Stands for** a property of one render, applied over whichever
 [window](../world/interaction-term.md#words-this-file-uses) of steps that run specifies
 
-**Watch out** `λ=0` must reproduce plain PoE to under 1e-5; this is the project's own canary check
-against contamination (`context/research-guidelines.md`: "the λ=0 check: injecting nothing must
+**Watch out** `λ=0` must reproduce plain PoE to under 1e-5; this is the check that must pass before
+any result here is believed, and it is what catches contamination (`context/research-guidelines.md`: "the λ=0 check: injecting nothing must
 reproduce plain PoE to under 1e-5") ⚠️
 
 ### `step`
@@ -187,7 +190,7 @@ between the Mono and PoE predictions: `d_t` per denoising step, `d_T` at the fin
 same quantity as a 50-value array, rising from `0.0` at step 0 to that final value
 
 **Type and shape** float (`d_T`) or array of 50 floats (`d_t`), both non-negative and generally
-increasing over the run for the one cell inspected
+increasing across the 50 steps in the one run inspected
 
 **Where it comes from** computed during sampling by comparing the Mono and PoE noise predictions
 at each step; written into `summary.json`'s `metrics` block

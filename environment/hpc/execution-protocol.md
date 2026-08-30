@@ -35,12 +35,13 @@ action and is actually a several-step decision.
    **Safety rules for the shared-device path, all mandatory:**
    - Never start on a device carrying a foreign process.
    - Re-check the device inside the launch script itself (a guard that aborts if the chosen
-     device has more than 1GB in use), not only in the preflight check minutes earlier: state
-     can change between the check and the launch.
+     device has more than 1GB in use), not only in the check run minutes earlier before the
+     launch: state can change between the check and the launch.
    - Keep VRAM usage within the free device only.
    - Record node, device index, and PID in the log header.
    - These runs are invisible to `squeue` (Slurm does not know about them), so harvesting a
-     shared-device run means `pgrep -af 'sweep|train'` on the node, not `squeue`.
+     shared-device run means running `pgrep -af 'sweep|train'` on the node; `squeue` will never
+     show it.
 
    **The admin node cap trips this path too.** `biggpu` carries an administrator cap on how
    many nodes a user may hold at once, separate from the one-job rule. When `sbatch` is denied
@@ -49,7 +50,7 @@ action and is actually a several-step decision.
    below), so prefer it, but still verify with `nvidia-smi` before pinning
    `CUDA_VISIBLE_DEVICES`; the guard rules below stay mandatory.
 
-4. **Every job script carries a preflight block:** a `df` disk guard on the checkpoint target
+4. **Every job script opens with a block of checks that must pass before the work starts:** a `df` disk guard on the checkpoint target
    (abort at 90% full; must check the filesystem the script actually writes to, see
    `storage.md`), a `co3` python path check, and an `nvidia-smi` guard that aborts in seconds if
    no GPU is visible.
@@ -58,16 +59,17 @@ action and is actually a several-step decision.
    (reduce batch size or resolution, or move to `biggpu`), wrong environment (fix the path),
    missing GPU or bad `#SBATCH` directives (fix and resubmit), node failure (resubmit
    elsewhere). Retries are bounded; never silently loop.
-6. **In-session tier.** Cache-only analyses (SVD, SNR curves, language probes, scoring cached
+6. **In-session tier.** Cache-only analyses (SVD, SNR curves, language-space tests, scoring cached
    PNGs) and light GPU inference run directly on the current session node (`mscluster85`, RTX
    3090 24GB), no queue, while bigger jobs wait. Reference point: `phase1_r8_100k` TRAINING
-   peaked at 22.95GB VRAM, so training-scale work goes to `biggpu`; SDXL inference-only sweeps
-   generally fit the 3090, but check `nvidia-smi` for co-tenants before launching.
+   peaked at 22.95GB VRAM, so training-scale work goes to `biggpu`; SDXL inference-only runs
+   across many settings generally fit the 3090, but check `nvidia-smi` for co-tenants before
+   launching.
 
 ## Skill wiring
 
 `/run-experiment` drives GPU tasks. Every experiment logs to W&B, including the qualitative
-Mono vs PoE vs LoRA triptych panels, so `/analyze-run` can sweep runs later. `/execute-plan-tree`
+Mono vs PoE vs LoRA triptych panels, so `/analyze-run` can go back over runs later. `/execute-plan-tree`
 may run tasks unattended, using each plan's pre-registered falsification rules and
 `/demonstrate` checkpoints as its stop conditions.
 

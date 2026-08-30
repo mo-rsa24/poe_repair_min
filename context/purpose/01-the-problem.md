@@ -46,7 +46,7 @@ this as a pre-registered null rather than the hypothesis. 🔍
 
 **When PoE does render both concepts, the render still is not trustworthy on its own.** ✍️
 
-`artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md` opened all 32 of the strongest-correction cells behind a
+`artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md` opened all 32 of the strongest-correction runs behind a
 94% headline compose rate by eye: 1 of 32 was a real scorer error (two of the same animal, called
 a success), and 5 more could not be called confidently either way, most because the pool
 deliberately contains look-alike pairs (leopard vs jaguar, cow vs buffalo). The card's own
@@ -75,10 +75,18 @@ concretely, is in [world/interaction-term.md](../world/interaction-term.md). ✅
 A rank-8 low-rank adapter (LoRA) on SDXL's cross-attention layers is trained to predict the
 interaction term at every denoising step and add its prediction back into the PoE run, without the
 LoRA ever seeing the joint prompt at inference (Mono-free). What a LoRA does here is in
-[world/lora-corrector.md](../world/lora-corrector.md). The open research question is not whether
-this closes the gap on one memorised pair (it does, per `MASTER_PLAN.md` Objective 1), but how far
-the fix reaches: one trained pair, a pooled set of seeds, a group of similar pairs, or a single
-corrector spanning the whole studied set of pairs. That reach is what
+[world/lora-corrector.md](../world/lora-corrector.md).
+
+> Low-rank means the extra weights are stored as two thin matrices multiplied together instead of
+> one full-sized one, so the correction has far fewer trainable numbers than the layer it sits on.
+> Rank-8 is how thin: eight columns wide.
+
+> Mono-free means the joint prompt is never given to the model at inference. It is used only while
+> training, to work out what the correction should have been.
+
+This already closes the gap on one memorised pair, per `MASTER_PLAN.md` Objective 1. The open
+research question is how far the fix reaches: one trained pair, a pooled set of seeds, a group of
+similar pairs, or a single corrector spanning the whole studied set of pairs. That reach is what
 [purpose/03-what-working-means.md](03-what-working-means.md) defines as the test.
 
 ## Where this came from

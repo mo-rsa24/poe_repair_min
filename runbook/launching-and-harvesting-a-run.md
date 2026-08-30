@@ -7,9 +7,9 @@ Contents: [1. Decide where a run goes](#1-decide-where-a-run-goes) ·
 [3. Harvest what is running](#3-harvest-what-is-running)
 
 The full reasoning behind each step, the mandatory safety rules for the shared-device path, and
-the disk-guard and `co3`-path preflight requirements are in
-[environment/hpc/execution-protocol.md](../environment/hpc/execution-protocol.md). This theme
-holds only the commands; that file holds the why.
+the disk-guard and `co3`-path checks a job must pass before it starts are in the
+[launch protocol](../environment/hpc/execution-protocol.md). This theme holds only the commands;
+that file holds the why.
 
 ## 1. Decide where a run goes
 
@@ -49,12 +49,12 @@ and `cd <repo> &&` is not reliable (`known-failures.md`, entry `poe-launch-001`,
 silent failures on 2026-08-19). The launch script does `cd "$REPO"` internally so the caller
 needs no working directory.
 
-✅ Expected: the `pgrep` line shows the new process; the log tail shows the preflight block
-passing (disk guard, `co3` path check, `nvidia-smi` guard) followed by real training/generation
-output.
+✅ Expected: the `pgrep` line shows the new process; the log tail shows the block of checks that
+runs before anything else passing (disk guard, `co3` path check, `nvidia-smi` guard) followed by
+real training/generation output.
 
 ❌ **`pgrep` shows nothing**: the launch failed before backgrounding; read the full log, not just
-the tail, for the preflight guard that aborted it.
+the tail, for the guard that aborted it before the run started.
 
 ## 3. Harvest what is running
 
@@ -67,10 +67,10 @@ squeue -u mmolefe                     # normal sbatch jobs
 ssh <node> "pgrep -af 'sweep|train'"  # shared-device runs launched with nohup; invisible to squeue
 ```
 
-**Why both.** `biggpu` allows one job per user, so long sweeps on a shared half-used node are
-started with `nohup` outside Slurm rather than via `sbatch`, and Slurm is blind to them. A
-harvest that only checks `squeue` will report "nothing running" while a real sweep is mid-flight
-on another node.
+**Why both.** `biggpu` allows one job per user, so a long run across many settings on a shared
+half-used node is started with `nohup` outside Slurm rather than via `sbatch`, and Slurm is blind
+to it. A harvest that only checks `squeue` will report "nothing running" while a real run is
+still going on another node.
 
 ✅ Expected: the output count against what the plan expected, and the tail of the log, per
 `CLAUDE.md`'s "Harvest reads three execution modes, not one."

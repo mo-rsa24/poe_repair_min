@@ -33,7 +33,8 @@ Full partition table, per-node GPU models, and the environment list are in
 
 Navigation: ⬅️ [Compute / runtime](#compute--runtime) | 📋 [TOC](#table-of-contents) | [Next](#auth) ➡️
 
-Repo and code on `/home-mscluster`; every checkpoint, cache, and sweep output on
+Repo and code on `/home-mscluster`; every checkpoint, every cache, and everything a run across
+many settings writes goes to
 `/datasets/mmolefe/poe_repair_min/`, a separate filesystem with its own quota and no automatic
 mirroring to the repo side. W&B project: `prime_lab/poe-repair-animals-compose`.
 
@@ -47,8 +48,9 @@ Navigation: ⬅️ [Access paths](#access-paths) | 📋 [TOC](#table-of-contents
 - Cluster access: SSH, already established in-session; no per-job auth.
 - W&B: API key present in `~/.netrc` (confirmed present, not read, live 2026-08-24) and
   `WANDB_API_KEY` (confirmed set in this session's shell, 2026-08-24); no human step needed.
-- Hugging Face model downloads (SDXL, SD 1.5/2.1): anonymous pulls have sufficed; if a gated
-  model is ever needed, that is a human browser step.
+- Hugging Face model downloads (SDXL, SD 1.5/2.1): anonymous pulls have sufficed; if a model
+  ever requires accepting its licence on the Hugging Face website first, that is a human browser
+  step.
 
 ## Execution model
 
@@ -57,8 +59,8 @@ Navigation: ⬅️ [Auth](#auth) | 📋 [TOC](#table-of-contents) | [Next](#know
 "Running an experiment" is decided by a fixed order of checks: an already-allocated interactive
 node first, then an idle `biggpu` node, then a shared half-used `biggpu` node reached over SSH
 with a pinned free GPU device (invisible to `squeue`, harvested with `pgrep` instead), then
-`bigbatch` as the fallback. Every job script carries a preflight block (disk guard, `co3` path
-check, GPU-visibility guard) before it submits.
+`bigbatch` as the fallback. Every job script begins with checks that must pass before any work
+starts: the disk guard, the `co3` path check, and a GPU-visibility guard.
 
 The full six-step protocol, the shared-device safety rules, and the SSH absolute-path rule
 (the fix for a launch failure that recurred three times on 2026-08-19) are in

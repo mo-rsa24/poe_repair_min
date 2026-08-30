@@ -2,8 +2,8 @@
 
 Navigation: 📋 [Index](00-INDEX.md) | [Overview](overview.md#provenance)
 
-One row per fact, wherever in this folder the fact lives. `verified` means probed live on the
-date given and the result seen. `stated` means a person said it and it was not probed.
+One row per fact, wherever in this folder the fact lives. `verified` means someone ran the check
+live on the date given and saw the result. `stated` means a person said it and nobody checked it.
 `inferred` means it was read out of the repository or a document and confirmed by neither a
 person nor a run this sitting.
 
@@ -17,10 +17,10 @@ person nor a run this sitting.
 | `mscluster110`: Blackwell-class | `hpc/nodes.md` | stated | not machine-verified |
 | `co3` python resolves to `python3.10` at the stated absolute path | `hpc/nodes.md`, `overview.md` | verified | `ls -la`, live, 2026-08-24 |
 | Env list under `~/miniforge3/envs/` (13 environments including `co3`, `co3_bw`, `superdiff`) | `hpc/nodes.md` | verified | `ls`, live, 2026-08-24 |
-| `co3_bw`'s exact purpose versus `co3` | `hpc/nodes.md` | inferred | seen only as a launcher reference in one plan file; not probed this sitting |
+| `co3_bw`'s exact purpose versus `co3` | `hpc/nodes.md` | inferred | seen only as a launcher reference in one plan file; not checked this sitting |
 | `superdiff` exists for SuperDiff work if `co3` dependencies conflict | `hpc/nodes.md` | stated | not re-verified this sitting |
 | Shared-device path and its safety rules | `hpc/execution-protocol.md` | verified | live over SSH on `mscluster106`, 2026-08-19: GPU 1 at 1MiB/0% while GPU 0 carried another user's 8GB process; a torch matmul from `co3_bw` on GPU 1 succeeded without touching GPU 0 |
-| SSH launch line must use absolute paths (`poe-launch-001`) | `hpc/execution-protocol.md`, `known-failures.md` | verified | reproduced three times, 2026-08-19, on a smoke-run launch on `mscluster106` |
+| SSH launch line must use absolute paths (`poe-launch-001`) | `hpc/execution-protocol.md`, `known-failures.md` | verified | reproduced three times, 2026-08-19, launching the first short run on `mscluster106` |
 | `/datasets` and `/home-mscluster` sizes, used, free | `storage.md` | verified | `df -h /datasets /home-mscluster`, live, 2026-08-24 (supersedes a 2026-08-09 `df -h` reading kept alongside it for the delta) |
 | No per-user `quota` command on these nodes | `storage.md` | verified | `which quota`, live, 2026-08-24 |
 | `/home-mscluster` hit 100% once and killed checkpointing | `storage.md`, `overview.md` | stated | hard-won operational history, carried from the project's earlier cluster notes; no run reproduces this on demand |

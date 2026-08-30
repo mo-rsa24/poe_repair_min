@@ -1,5 +1,9 @@
 # 🧪 What is left once the chain settles
 
+Asks how much of the correction survives once a corrector has been run to equilibrium at every noise
+level, because what survives at the end of the run is the model's error and what goes away is the
+sampler's.
+
 ## Recommended prompt (after this plan completes)
 
 ```
@@ -9,7 +13,7 @@
 ## Recommended skill
 
 ▶ `/analyze-run the corrector residual curve, k sweep against denoising step` ✅ reads a finished
-   grid against a bar that was written before it, which is this plan's whole shape.
+   grid against a threshold written before it, which is this plan's whole shape.
    alt: `/defend-results` once the branch has fired, since this is the measurement a reviewer will
    attack first.
 
@@ -20,10 +24,10 @@
 
 | Step | Plan | What it does |
 |------|------|-------------|
-| 24 | [hypothesis-01: the-free-bound-on-the-models-share](hypothesis-01-the-free-bound-on-the-models-share.md) ⚠️ | the floor this plan's answer is read against |
+| 24 | [hypothesis-01: the-free-bound-on-the-models-share](hypothesis-01-the-free-bound-on-the-models-share.md) ⚠️ | the lower bound this plan's answer is read against |
 | 25 | [instrument-01: the-corrector-and-the-step-size-it-runs-at](instrument-01-the-corrector-and-the-step-size-it-runs-at.md) ⚠️ | the composer and the `c` this plan runs at |
-| **26 (current)** | **hypothesis-02: what-is-left-once-the-chain-settles** ⚠️ | **the gate: the correction's size per step against corrector count `k`, judged against a three-way bar written in source before the answer existed** |
-| 27 | [hypothesis-03: does-the-corrector-compose-in-the-same-window](hypothesis-03-does-the-corrector-compose-in-the-same-window.md) ⚠️ | gated on this, softly |
+| **26 (current)** | **hypothesis-02: what-is-left-once-the-chain-settles** ⚠️ | **the run the rest of the scope waits on: the correction's size per step against corrector count `k`, judged against a three-way threshold written in source before the answer existed** |
+| 27 | [hypothesis-03: does-the-corrector-compose-in-the-same-window](hypothesis-03-does-the-corrector-compose-in-the-same-window.md) ⚠️ | waits on this, softly |
 | 21 | [writing-06: mechanism-and-limitations](../../07-writing-the-paper/plans/writing-06-mechanism-and-limitations.md) ⚠️ | cannot be written honestly until this plan returns a size |
 
 Design only. Verdicts and run state live in
@@ -63,6 +67,10 @@ product-of-experts score actually describes, then measure what is left of the co
 settled point. The part that goes away when the chain settles belongs to the sampler. The part
 still there at the end of the run belongs to the model.
 
+> A Langevin corrector is a small repeated random walk that nudges the latent along the score and
+> adds a little noise each time. Run for long enough at a fixed noise level it forgets where it
+> started and settles wherever the score says the probability actually is.
+
 ## Words this plan uses
 
 ⬅️ [Previous](#what-this-asks-in-one-line) | 📋 [TOC](#table-of-contents) | [Next](#quick-context-where-you-are) ➡️
@@ -79,8 +87,8 @@ only a target at each noise level, so with enough corrector steps it samples the
 This is the share a corrector can take away, and it goes to zero as noise goes to zero.
 
 **The model's share.** `p(cat)·p(dog)` is not `p(cat and dog)`. Multiplying two distributions asks
-for one thing that is both animals, which is the chimera. No corrector touches this, and it does
-not vanish at zero noise.
+for one thing that is both animals, which is the [chimera](../../../context/world/chimera.md). No
+corrector touches this, and it does not vanish at zero noise.
 
 **The corrector count, `k`.** How many unadjusted Langevin steps run at each of the 50 noise levels
 before the reverse step is taken. `k=0` is plain product-of-experts.
@@ -109,9 +117,10 @@ strengthens, and the sampler comparison becomes a two-sentence related-work note
 comparison stops being optional and becomes a baseline the paper must beat.
 
 **Rationale.** The project has a causal result and a timing result. Injecting `r_t` raises the
-compose rate with dose while a norm-matched random control stays at the floor. Injecting it only
-into steps 0 to 10 composes 0.656 of 32 cells, while steps 20 to 30 onward compose 0.000. Both are
-in [the timing verdict](../../03-does-the-correction-cause-composition/review/hypothesis-03-when-in-the-run-it-matters.md).
+[compose rate](../../../context/world/compose-rate.md) with dose while a norm-matched random control
+stays at chance level. Injecting it only into steps 0 to 10 composes 0.656 of 32 pair-and-seed runs,
+while steps 20 to 30 onward compose 0.000. Both are in
+[the timing verdict](../../03-does-the-correction-cause-composition/review/hypothesis-03-when-in-the-run-it-matters.md).
 The threat is that the same picture is what a sampler artifact looks like: the sampler's share is
 worst at high noise, and high noise is the early steps, which is exactly the window that decides
 the outcome. Nothing measured so far tells the two apart, because `r_t` is both of them added
@@ -138,7 +147,7 @@ caption says so.
 **The joint model is evaluated where it would never go.**
 
 `eps_J(x_t^(k))` asks the joint-prompt branch to predict noise at a latent produced by a chain
-targeting the product of two marginals. That is a legitimate probe and an off-distribution
+targeting the product of two marginals. That is a fair thing to ask and an off-distribution
 evaluation at the same time. It also gives a third reason the curve could rise with `k`, on top of
 a step size that is too large: the joint branch could simply be degrading as the chain walks away
 from anywhere it has seen. The pair that composes by default is the control that separates those,
@@ -154,10 +163,11 @@ the ratio caused by a rising denominator is visible rather than hidden.
 
 A curve flat from `k=1` reads as "the corrector does nothing, it is all the model's share", and it
 reads identically when the step size is so small the chain never left where it started. Every point
-carries the median relative displacement `‖x_t^(k) - x_t^(0)‖/‖x_t^(0)‖` beside it, and a flat
-curve with a displacement under the floor is a failed instrument, not a null.
+carries the median relative displacement `‖x_t^(k) - x_t^(0)‖/‖x_t^(0)‖` beside it. A flat curve
+whose displacement sits below `MIN_CHAIN_DISPLACEMENT` means the measurement failed, and it is not
+a null.
 
-**The trend is the result, and only once it plateaus.**
+**The trend is the result, and only once it stops falling.**
 
 The value at any single `k` is a statement about the compute budget, not about the problem. A curve
 still falling between the two largest `k` has not equilibrated and licenses no reading at all,
@@ -192,29 +202,29 @@ relative chain displacement. All in fp32, upcast from the fp16 the models run in
 | What else could produce a falling curve | What answers it |
 |---|---|
 | the denominator grew rather than the numerator shrinking | both are recorded and plotted separately (task 2.3) |
-| the chain diverged and the latents are garbage | the latent-norm bound from the step-size search, and the composing-pair arm |
-| the joint branch degrades off-distribution, so any rise is the probe and not the pair | the composing-pair arm, where the corrector's target is close to the joint and the curve should stay low at all `k` |
-| the corrector never moved | the displacement column, with a floor in source |
+| the chain diverged and the latents are garbage | the latent-norm bound from the step-size search, and the pair that composes by default |
+| the joint branch degrades off-distribution, so any rise comes from the measurement itself rather than from the pair | the pair that composes by default, where the corrector's target is close to the joint and the curve should stay low at all `k` |
+| the corrector never moved | the displacement column, with its minimum written in source |
 | the chain has not equilibrated at the largest `k` | the `k=100` against `k=200` comparison, with an instability bound in source |
 
-**Falsify condition, three-way, at the pre-registered bars.** The bars live in source as
+**Falsify condition, three-way, at the pre-registered thresholds.** The thresholds live in source as
 module-level constants in `scripts/corrector_residual_curve.py`, following the `MIN_MEDIAN_RATIO`
 pattern this repo already uses, so they cannot be moved after the answer is visible.
 
-- **Support, the split is real.** Over the last five denoising steps, the ratio at the plateaued
-  `k` has fallen by at least `MIN_DROP_FOR_SPLIT = 0.20` of its `k=0` value. At least
+- **Support, the split is real.** Over the last five denoising steps, the ratio at the `k` where the
+  curve has settled has fallen by at least `MIN_DROP_FOR_SPLIT = 0.20` of its `k=0` value. At least
   `MIN_REMAINDER_FOR_SPLIT = 0.20` of it is still there. Something went away and something stayed.
   The size of what stayed is the paper's number for the model's share.
-- **Null, it is all the model's.** At every step the change between `k=0` and the plateaued `k` is
+- **Null, it is all the model's.** At every step the change between `k=0` and the settled `k` is
   under `MAX_DRIFT_FOR_NULL = 0.05`, while the median displacement is at or above
   `MIN_CHAIN_DISPLACEMENT = 0.05`. The corrector ran, moved the latent, and changed nothing. The
   null goes into section 7, and the comparison half of this scope becomes a baselines table rather
   than a diagnosis.
 - **Inconclusive.** The ratio still moves by more than `MAX_K_INSTABILITY = 0.05` between `k=100`
-  and `k=200`, or the displacement is below its floor, or the composing-pair arm shows the same
-  behaviour as the failing pair. Then the step size is wrong or the probe is measuring itself.
-  Return to [step 25](instrument-01-the-corrector-and-the-step-size-it-runs-at.md) and widen the
-  search. Never loosen a bar.
+  and `k=200`, or the displacement is below its minimum, or the pair that composes by default shows
+  the same behaviour as the failing pair. Then the step size is wrong or the measurement is reading
+  itself. Return to [step 25](instrument-01-the-corrector-and-the-step-size-it-runs-at.md) and widen
+  the search. Never loosen a threshold.
 
 **Why this matters right now.** This is the number the paper's framing rests on and it has never
 been measured here. Step 21 of the running order cannot be written honestly without it.
@@ -227,8 +237,8 @@ been measured here. Step 21 of the running order cannot be written honestly with
 composition, and that a rank-8 adapter can carry it. If most of `r_t` is the sampler's error, a
 training-free corrector gets most of the same benefit and the adapter is answering a question the
 sampler had already solved. That is the strongest reviewer objection available against this work,
-and [gate-01](../../03-does-the-correction-cause-composition/plans/gate-01-two-literature-checks-before-print.md)
-already cites the paper that raises it.
+and [the two literature checks before print](../../03-does-the-correction-cause-composition/plans/gate-01-two-literature-checks-before-print.md)
+already cite the paper that raises it.
 
 **The approach.** Let a Markov chain do at each noise level what reverse diffusion cannot, then
 measure what the correction still is at the settled point. Read the answer where the two errors
@@ -247,7 +257,7 @@ separate, and say plainly where they do not.
 
 | What the result says | What changes |
 |---|---|
-| mostly the model's share | the framing strengthens. The correction is a model-level object, the adapter is the right instrument, and the sampler comparison becomes a two-sentence related-work note |
+| mostly the model's share | the framing strengthens. The correction is a model-level object, the adapter is the right tool for it, and the sampler comparison becomes a two-sentence related-work note |
 | an even split | the paper reports both sizes, and the adapter is justified by the share a corrector cannot reach. Section 7 carries the corrector as the honest alternative for the other share |
 | mostly the sampler's share | the timing result is reread as a sampler artifact, the sampler comparison stops being optional and becomes a baseline the paper must beat, and section 7 carries it as a limitation rather than a footnote |
 
@@ -301,7 +311,7 @@ share.
 **What is left at the start of the run is still both.** At `t > 0` the corrector has settled the
 latent into `q_t`, the product of the diffused marginals. The thing the reverse process would need
 is the diffusion of the product, and those two differ precisely because noising and multiplying do
-not commute. So the floor at high noise is the non-commutation gap plus the diffused model gap, and
+not commute. So what the curve bottoms out at under high noise is the non-commutation gap plus the diffused model gap, and
 no amount of `k` separates them. The early part of the curve is a size, not an attribution.
 
 **Which lands on the timing result.** The compose-decisive window is steps 0 to 10, the high-noise
@@ -319,7 +329,7 @@ distributional gap rather than a measurement of it. The caption owes that senten
 **What the composing pair controls.** On `a_butterfly__x__a_flower_meadow`, which composes under
 plain product-of-experts, `q_t` is already close to the joint and `eps_J` is evaluated somewhere it
 has seen. Its curve should be low at `k=0` and should not rise with `k`. If it rises the same way
-the failing pair does, the rise is the probe walking the joint branch off-distribution and no
+the failing pair does, the rise is this measurement walking the joint branch off-distribution and no
 reading of either curve is licensed. `an_elephant__x__a_penguin` is not used for this, because
 whether it composes by default is
 [an open question in another review file](../../04-does-the-fix-reach-unseen-pairs/review/instrument-01-the-clean-pair-pool.md),
@@ -329,10 +339,11 @@ and a control whose own behaviour is unsettled controls nothing.
 
 ⬅️ [Previous](#where-the-two-errors-can-be-told-apart-and-where-they-cannot) | 📋 [TOC](#table-of-contents) | [Next](#purpose-and-goal) ➡️
 
-1. **`scripts/corrector_residual_curve.py`.** Carries the five bars as module-level constants, runs
-   the `k` grid, writes `residual_curves.json`, and prints which of the three branches fired. It is
-   also the script [step 25](instrument-01-the-corrector-and-the-step-size-it-runs-at.md) added
-   `--check-identity` and `--step-size-search` to, so the bars and the search live in one file.
+1. **`scripts/corrector_residual_curve.py`.** Carries the five thresholds as module-level constants,
+   runs the `k` grid, writes `residual_curves.json`, and prints which of the three branches fired.
+   It is also the script [step 25](instrument-01-the-corrector-and-the-step-size-it-runs-at.md)
+   added `--check-identity` and `--step-size-search` to, so the thresholds and the search live in
+   one file.
 2. **The grid.** `k ∈ {0, 1, 5, 20, 100, 200}` over all 50 steps, on two pairs at seed 9. Per
    `(pair, seed, k, t)`: numerator, denominator, ratio, relative displacement, latent norm.
 3. **One figure.** Ratio against denoising step, one curve per `k`, one panel per pair, with the
@@ -350,7 +361,7 @@ under `/home-mscluster`.
 
 Serves objective 3 of [the scope's direction](../MASTER_PLAN.md): measure the correction's size per
 denoising step against corrector count `k`, on one failing pair and one composing pair, and apply a
-three-way bar written in source before the answer was visible.
+three-way threshold written in source before the answer was visible.
 
 **Goals**
 
@@ -375,7 +386,8 @@ three-way bar written in source before the answer was visible.
   is blind to it. Harvest by `pgrep -af 'corrector|run_corrector'` on the session node, per
   [environment/hpc/execution-protocol.md](../../../environment/hpc/execution-protocol.md).
 - **The cached trajectories cannot be used.** The corrector moves the latent onto a different path,
-  so every cached cell under `interaction_term/` describes a run this plan is not doing.
+  so every cached pair-and-seed trajectory under `interaction_term/` is for a path this plan is not
+  on.
 - The models run in fp16. Every norm upcasts to fp32 before it is taken, since the differences
   measured here are small enough that fp16 accumulation shows up in the third digit.
 - SDXL base, DDIM, 50 steps, guidance 7.5, latents 4×128×128 at 1024².
@@ -386,7 +398,7 @@ three-way bar written in source before the answer was visible.
 
 ⬅️ [Previous](#environment-facts-this-plan-depends-on) | 📋 [TOC](#table-of-contents) | [Next](#tasks) ➡️
 
-The arithmetic, so the smoke run can check it rather than a guess standing in for it. Guided
+The arithmetic, so the first short run can check it rather than a guess standing in for it. Guided
 product-of-experts is 3 UNet evaluations per call (prompt A, prompt B, unconditional) and the joint
 branch is 2 (joint, unconditional). One noise level at corrector count `k` costs `3k + 5`
 evaluations, and there are 50 levels.
@@ -429,7 +441,7 @@ anywhere, so wall time tracks UNet evaluations directly.
 ◀ **Needs: [instruction 3.3 of step 25](instrument-01-the-corrector-and-the-step-size-it-runs-at.md#3--read-the-step-size-search-by-eye-before-the-grid-launches)**,
 your signed-off `c`.
 
-- [ ] **1.1** Write `scripts/corrector_residual_curve.py` with the five bars as module-level
+- [ ] **1.1** Write `scripts/corrector_residual_curve.py` with the five thresholds as module-level
       constants.
 
     ```python
@@ -443,11 +455,11 @@ your signed-off `c`.
   - They sit in source so moving one after seeing the answer shows up in a diff.
   - **`MAX_K_INSTABILITY` is where the compute-budget discipline lives.** The value at any single
     `k` is a statement about the compute budget, not about the problem. Only the trend across `k`
-    is a result, and only once it plateaus. That rule is enforced by this constant refusing to
+    is a result, and only once it stops falling. That rule is enforced by this constant refusing to
     license a reading, not by a sentence asking the reader to remember it.
   - **Done when:** the five constants exist at module level and `--verdict` refuses to print a
     branch when the instability bound is exceeded.
-- [ ] **1.2** Smoke in-session: one pair, one seed, `k ∈ {0, 1}` only.
+- [ ] **1.2** The first short run, in-session: one pair, one seed, `k ∈ {0, 1}` only.
 
     ```bash
     PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
@@ -457,7 +469,7 @@ your signed-off `c`.
   - Check the measured wall time per noise level against [What it costs](#what-it-costs). A cost
     estimate out by more than 2× means the branch count is wrong and the grid is re-planned before
     it launches.
-  - **Done when:** the smoke prints a per-level time and it is within 2× of the table.
+  - **Done when:** the short run prints a per-level time and it is within 2× of the table.
 
 ▶ **Next: [task 2.1](#2--run-the-grid-and-plot-it)**, the launch.
 
@@ -480,7 +492,7 @@ before 670 plain-render equivalents are committed.
   - Output goes to: `$OUT/residual_curves.json`
   - **Done when:** `residual_curves.json` holds 600 rows (2 pairs × 6 `k` × 50 steps), counted, not
     assumed.
-- [ ] **2.2** Apply the three-way bar in code, print which branch fired, and write the verdict into
+- [ ] **2.2** Apply the three-way threshold in code, print which branch fired, and write the verdict into
       the review file with the numbers it was judged against.
 
     ```bash
@@ -488,7 +500,7 @@ before 670 plain-render equivalents are committed.
     $PY scripts/corrector_residual_curve.py --verdict
     ```
 
-  - **Done when:** the review file's pre-registered bar is ticked with the branch name and the
+  - **Done when:** the review file's pre-registered threshold is ticked with the branch name and the
     numbers, not just the branch name.
 - [ ] **2.3** Plot it.
   - One panel per pair. Ratio `‖r_t^(k)‖/‖eps_PoE‖` against denoising step 0 to 49, one curve per
@@ -497,18 +509,18 @@ before 670 plain-render equivalents are committed.
     cannot be separated, labelled on the shading rather than in a legend.
   - Figure to
     `paper/iclr/figures/when-the-correction-arrives/mcmc/how-much-of-the-correction-a-corrector-removes.png`,
-    with its `.json` sidecar recording which cells, seeds and settings were drawn.
+    with its `.json` sidecar recording which pairs, seeds and settings were drawn.
   - Add the entry to that folder's `README.md` naming the algorithm and what produced it.
   - **Done when:** the PNG, the sidecar and the README entry all exist.
   - 💡 `/analyze-figure` on the result before it goes near a caption: this figure has to survive a
     reviewer reading it as evidence for the opposite conclusion.
 
-▶ **Next: [instruction 4.1](#4--judge-the-gate-curve-by-eye-against-the-printed-verdict)**, the eye
+▶ **Next: [instruction 4.1](#4--judge-the-curve-by-eye-against-the-printed-verdict)**, the eye
 read the code cannot do.
 
 ### 3. 📝 Fold the size back into what already cites it
 
-◀ **Needs: [instruction 4.3](#4--judge-the-gate-curve-by-eye-against-the-printed-verdict)**, so the
+◀ **Needs: [instruction 4.3](#4--judge-the-curve-by-eye-against-the-printed-verdict)**, so the
 number being folded is one you have looked at.
 
 - [ ] **3.1** Fold the size into
@@ -518,9 +530,9 @@ number being folded is one you have looked at.
   - **Done when:** claim 2 carries the number and the routes table no longer has the
     `/frame-hypothesis` row.
 - [ ] **3.2** Update
-      [gate-01](../../03-does-the-correction-cause-composition/plans/gate-01-two-literature-checks-before-print.md)
-      with the measured size, since it currently cites Soiffer et al. for a claim this plan turns
-      into a number.
+      [the two literature checks before print](../../03-does-the-correction-cause-composition/plans/gate-01-two-literature-checks-before-print.md)
+      with the measured size, since that plan currently cites Soiffer et al. for a claim this plan
+      turns into a number.
   - **Done when:** that plan quotes the number and the branch, in place of the citation standing
     alone.
 
@@ -546,7 +558,7 @@ number being folded is one you have looked at.
 **For you to follow manually.** Do these yourself, interleaved with the Tasks rather than after
 them.
 
-### 4. 📊 Judge the gate curve by eye against the printed verdict
+### 4. 📊 Judge the curve by eye against the printed verdict
 
 ◀ **Needs: [tasks 2.2 and 2.3](#2--run-the-grid-and-plot-it)**, the printed branch and the figure.
 
@@ -554,7 +566,7 @@ them.
       `paper/iclr/figures/when-the-correction-arrives/mcmc/how-much-of-the-correction-a-corrector-removes.png`.
   - Check the `k=100` and `k=200` curves lie on top of each other.
   - ✅ If they do, the chain has equilibrated and the branch the code printed can be believed.
-  - ❌ If they do not, the chain has not equilibrated whatever the bar printed, and the honest
+  - ❌ If they do not, the chain has not equilibrated whatever the threshold printed, and the honest
     answer is inconclusive. Record that, and go back to
     [step 25](instrument-01-the-corrector-and-the-step-size-it-runs-at.md) with a wider search.
 - [ ] **4.2** Check the second row of panels: did the numerator fall, or did the denominator rise?
@@ -562,20 +574,20 @@ them.
     both are plotted.
 - [ ] **4.3** Look at the composing pair's panel.
   - Expected result: low at `k=0`, and it should not rise with `k`.
-  - ❌ If its curve behaves like the failing pair's, the probe is measuring itself and the whole
+  - ❌ If its curve behaves like the failing pair's, the measurement is reading itself and the whole
     grid is void. Record that judgement even when it agrees with the printed verdict, since it is
     the one check the code cannot make.
 
-▶ **Next: [task 3.1](#3--fold-the-size-back-into-what-already-cites-it)** if the gate stands,
-otherwise stop and write the inconclusive verdict.
+▶ **Next: [task 3.1](#3--fold-the-size-back-into-what-already-cites-it)** if the verdict stands,
+otherwise stop and write the inconclusive one.
 
 ## The engagement gate
 
 ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
 > **Why this checkpoint matters:** steps 27 and 28 both wait on this branch, and the framing of
-> every caption downstream changes with it. Nothing proceeds until the three-way bar has fired and
-> the branch is written down.
+> every caption downstream changes with it. Nothing proceeds until the three-way threshold has fired
+> and the branch is written down.
 
 ```bash
 PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
@@ -600,8 +612,8 @@ $PY scripts/corrector_residual_curve.py --verdict     # prints which of the thre
 **Fail criteria (STOP)**
 
 - Fewer than 600 rows: a level was skipped or a `k` value crashed and the loop swallowed it. Rerun
-  the missing cells; the script is resumable by design.
-- The composing pair behaves like the failing pair: the probe is measuring itself, the grid is
+  the missing pair-and-`k` combinations; the script is resumable by design.
+- The composing pair behaves like the failing pair: the measurement is reading itself, the grid is
   void, and no reading of either curve is licensed.
 
 **Partial pass guidance**
@@ -620,8 +632,8 @@ $PY scripts/corrector_residual_curve.py --verdict     # prints which of the thre
 
 ⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#not-run-what-this-plan-leaves-alone) ➡️
 
-The bar every figure in this scope is held to is
-[in the scope's MASTER_PLAN](../MASTER_PLAN.md#the-figure-bar-every-plan-here-is-held-to).
+Every figure in this scope is held to
+[the standard set in the scope's direction](../MASTER_PLAN.md#the-figure-bar-every-plan-here-is-held-to).
 
 ### Pending: to be generated from prompts
 
@@ -631,11 +643,11 @@ None. This scope carries no `diagram-prompts.md`, so there is no illustrated map
 
 | Item | Lane | Description | Generated by | Status | Details |
 |---|---|---|---|---|---|
-| `mcmc/how-much-of-the-correction-a-corrector-removes.png` | — | y is the correction's size relative to the product-of-experts prediction, `‖r_t^(k)‖/‖eps_PoE‖`, unitless on a 0-to-1 scale; x is denoising step 0 to 49; one curve per `k ∈ {0,1,5,20,100,200}`; one panel per pair; a second row carrying the two norms separately | `scripts/corrector_residual_curve.py` | ⏳ | **Main text, if the gate passes.** It is the dynamics of the correction under a corrector, which is the whole question. Sidecar `.json` beside it records the cells, seeds and settings drawn. From `corrector/residual_curves.json` |
+| `mcmc/how-much-of-the-correction-a-corrector-removes.png` | — | y is the correction's size relative to the product-of-experts prediction, `‖r_t^(k)‖/‖eps_PoE‖`, unitless on a 0-to-1 scale; x is denoising step 0 to 49; one curve per `k ∈ {0,1,5,20,100,200}`; one panel per pair; a second row carrying the two norms separately | `scripts/corrector_residual_curve.py` | ⏳ | **Main text, if the check passes.** It is the dynamics of the correction under a corrector, which is the whole question. Sidecar `.json` beside it records the pairs, seeds and settings drawn. From `corrector/residual_curves.json` |
 
 **Three sentences this figure's caption owes**, all argued for above and none droppable for space.
 The axis is the correction along the `k`-corrected path rather than along one path. `eps_J` is
-evaluated off-distribution, and that is a deliberate probe. The residual norm is a proxy for the
+evaluated off-distribution, and that is a deliberate choice. The residual norm is a proxy for the
 distributional gap rather than the gap itself.
 
 ### Organization workflow
@@ -651,10 +663,11 @@ distributional gap rather than the gap itself.
 ⬅️ [Previous](#figure-catalog) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
 
 **Metropolis adjustment.** The vendored `AnnealedMALASampler` needs a scalar energy, and SDXL is a
-score model with no energy head. That is why the convergence read here is a plateau in `k` plus a
-displacement column rather than an acceptance rate, which would have been the cheaper diagnostic.
+score model with no energy head. That is why the convergence read here is the curve flattening in
+`k` plus a displacement column rather than an acceptance rate, which would have been the cheaper
+diagnostic.
 
-**More than one seed on the gate curve.** This is a diagnostic, not a rate, and seeds cost the
+**More than one seed on this curve.** This is a diagnostic, not a rate, and seeds cost the
 whole grid again. If the two pairs disagree, that is the moment to add seeds, and the review file
 records that the single seed was a deliberate choice rather than an oversight.
 
@@ -667,8 +680,8 @@ records that the single seed was a deliberate choice rather than an oversight.
 
 | What changes | Where it has to be reflected |
 |---|---|
-| the gate's verdict | the review file, then [gate-01](../../03-does-the-correction-cause-composition/plans/gate-01-two-literature-checks-before-print.md), which currently cites a paper for a claim this makes into a number |
-| the gate's verdict | [step 27](hypothesis-03-does-the-corrector-compose-in-the-same-window.md), [step 28](baseline-01-superdiff-at-this-repos-fifty-steps.md) and [step 30](idea-01-feynman-kac-correctors-gated.md), all gated on it |
+| this plan's verdict | the review file, then [the two literature checks before print](../../03-does-the-correction-cause-composition/plans/gate-01-two-literature-checks-before-print.md), which currently cite a paper for a claim this makes into a number |
+| this plan's verdict | [step 27](hypothesis-03-does-the-corrector-compose-in-the-same-window.md), [step 28](baseline-01-superdiff-at-this-repos-fifty-steps.md) and [step 30](idea-01-feynman-kac-correctors-gated.md), all waiting on it |
 | a figure lands in `mcmc/` | that folder's `README.md` gains an entry naming the algorithm and what produced it, per this repo's artifact rule |
 | the size is measured | [the idea map's claim 2](../../../artifacts/ideas/which-variable-explains-what-poe-is-missing/IDEA_MAP.md), and its route row is deleted |
 | the plan's status | the scope [MASTER_PLAN.md](../MASTER_PLAN.md) and the root running order, both by `sync-plan-tree` rather than by hand |
@@ -696,8 +709,8 @@ records that the single seed was a deliberate choice rather than an oversight.
 ⬅️ [Previous](#code-references) | 📋 [TOC](#table-of-contents) | [Next](#error-matrix) ➡️
 
 [Step 27, does the corrector compose in the same window](hypothesis-03-does-the-corrector-compose-in-the-same-window.md).
-Its gate on this plan is deliberately soft: a flat curve here does not imply a flat compose rate,
-because the corrector can relocate the trajectory without shrinking `‖r_t‖`.
+It waits on this plan only softly, since a flat curve here does not imply a flat compose rate. The
+corrector can relocate the trajectory without shrinking `‖r_t‖`.
 
 ## Error Matrix
 
@@ -732,15 +745,15 @@ degrading off-distribution.
 **Why:** two different causes with the same signature.
 **How to fix:** check the latent norm against 1.5× the uncorrected latent first; that is the
 diverging case and the fix is a smaller `c`. Then check the composing-pair panel; if it rises too,
-the probe is measuring itself and the grid is void.
+the measurement is reading itself and the grid is void.
 
 #### 🟡 the grid finished but `residual_curves.json` has fewer than 600 rows
 
 **When it happens:** a level was skipped, or a `k` value crashed and the loop swallowed it.
-**What you see:** a plausible-looking file with missing cells.
-**Why:** the loop catches per-cell failures so one crash does not kill the sweep.
-**How to fix:** count rows per `(pair, k)` and rerun the missing cells; the script is resumable by
-design.
+**What you see:** a plausible-looking file with missing pair-and-`k` combinations.
+**Why:** the loop catches per-combination failures so one crash does not kill the whole grid.
+**How to fix:** count rows per `(pair, k)` and rerun the missing combinations; the script is
+resumable by design.
 
 ---
 

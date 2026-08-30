@@ -31,7 +31,7 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#the-themes) ➡️
 | What the trained LoRA corrector does, and why it never sees the joint prompt | [LoRA corrector § What the LoRA corrector is](world/lora-corrector.md#what-the-lora-corrector-is) |
 | What an animal pair is, and why the pool is biased toward failure | [Animal pair § What an animal pair is](world/animal-pair.md#what-an-animal-pair-is) |
 | What a compose rate is, and what the scorer can and cannot tell you | [Compose rate § What a compose rate is](world/compose-rate.md#what-a-compose-rate-is) |
-| How a prompt pair becomes a scored cell | [Where it comes from § The journey](data/01-where-it-comes-from.md#the-journey) |
+| How a prompt pair becomes a scored run | [Where it comes from § The journey](data/01-where-it-comes-from.md#the-journey) |
 | What `pair_slug`, `seed`, `lambda`, `d_T`, or `n_instances` mean | [Dictionary](data/02-dictionary.md) |
 | Who reads the output, and what they do with it | [What we produce § Who reads it](purpose/02-what-we-produce.md#who-reads-it) |
 | How would we know this project is working | [What working means § The test](purpose/03-what-working-means.md#the-test) |
@@ -92,9 +92,9 @@ The things this pass could not settle by reading. Each names who or what would s
 Navigation: ⬅️ [Still open](#still-open) | 📋 [TOC](#table-of-contents)
 
 - [ ] 📷 [world/lora-corrector.md § What it looks like](world/lora-corrector.md#what-it-looks-like):
-      one cell's PoE render, LoRA-corrected render, and Mono render side by side. No search tried
+      one run's PoE render, LoRA-corrected render, and Mono render side by side. No search tried
       yet beyond noting a candidate source (`artifacts/results/can-we-trust-the-compose-score/compose-scorer-validation/scorer_validated.json`'s
-      passing cells). Save as `images/world/05-lora-corrected-vs-poe-vs-mono.png`.
+      passing runs). Save as `images/world/05-lora-corrected-vs-poe-vs-mono.png`.
 - [ ] 🖼️ All 8 pieces in [diagram-prompts.md](diagram-prompts.md) are written and unrendered: 4
       subject-lane pieces plus capstone are missing from this count (3 pieces + capstone = 4
       subject, 3 pieces + capstone = 4 process). Paste each into ChatGPT, save under `diagrams/`,

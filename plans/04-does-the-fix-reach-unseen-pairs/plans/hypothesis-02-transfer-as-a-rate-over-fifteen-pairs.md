@@ -1,5 +1,8 @@
 # 🅰️ Hold out each pair in turn: transfer as a rate, not an anecdote
 
+Train fifteen LoRAs, each one missing a different pair, and measure how often the fix still works
+on the pair its own LoRA never saw.
+
 ## Position in the plan tree
 
 | Step | Plan | What it does |
@@ -8,7 +11,7 @@
 | **11 (current)** | **this plan** | **Measures transfer rate across 15 held-out pairs** |
 | 12 | [baseline-01-the-size-matched-control-pool](baseline-01-the-size-matched-control-pool.md) | Compares against control |
 
-The one order is in the `## Running order` table in [repo root MASTER_PLAN.md](../../../MASTER_PLAN.md). Verdicts live in [../review/hypothesis-02-transfer-as-a-rate-over-fifteen-pairs.md](../review/hypothesis-02-transfer-as-a-rate-over-fifteen-pairs.md).
+The one order is in the `## Running order` table in [repo root MASTER_PLAN.md](../../../MASTER_PLAN.md). Verdicts live in [the review file for this plan](../review/hypothesis-02-transfer-as-a-rate-over-fifteen-pairs.md).
 
 ---
 
@@ -23,7 +26,7 @@ The one order is in the `## Running order` table in [repo root MASTER_PLAN.md](.
 - [Description: what to build](#description-what-to-build)
 - [Purpose and goal](#purpose-and-goal)
 - [Tasks](#tasks)
-- [The engagement gate](#the-engagement-gate)
+- [What has to pass here](#what-has-to-pass-here)
 - [Figure Catalog](#figure-catalog)
 - [Orchestration: keeping catalogs and plan files in sync](#orchestration-keeping-catalogs-and-plan-files-in-sync)
 - [Code references](#code-references)
@@ -49,7 +52,10 @@ This extracts error patterns from the run transcript, deduplicates against globa
 
 **The experiment**: Leave-one-pair-out (LOPO) cross-validation across 15 animal pairs from the finalised training pool.
 
-**The hypothesis**: The LoRA-based correction $r_t$ transfers to pairs the model never trained on, with a degradation curve that shows the relationship between held-out fraction and compose rate.
+**The hypothesis**: The LoRA-based correction $r_t$ transfers to pairs the model never trained on, with a degradation curve that shows the relationship between the held-out fraction and the [compose rate](../../../context/world/compose-rate.md).
+
+> Held-out: the pair a given LoRA is deliberately never trained on, kept back so that LoRA can be
+> tested on something it has genuinely never seen.
 
 **If true:** The fix is pair-general (not pair-specific), so removing different pairs from training should yield a smooth degradation curve (compose-rate drops gradually as more data is held out). All 15 held-out evaluations compose with moderate-to-high rates.
 
@@ -65,10 +71,10 @@ This extracts error patterns from the run transcript, deduplicates against globa
 - **Training pool**: 15 animal pairs (cat×dog, eagle×hawk, etc.)
 - **Hold-out strategy**: Each run holds out exactly one pair; the other ~14 are used for training.
 - **Eval pairs**: Each run evaluates on the one pair it never saw.
-- **Known phenomenon**: Compose-rate typically plateaus at 40–60% on new pairs; direction-cosine should stay high (0.8+) if the fix is pair-general.
+- **Known phenomenon**: Compose-rate typically levels off at 40-60% on new pairs; direction-cosine should stay high (0.8+) if the fix is pair-general.
 
 **Associated materials**:
-- **Review questions**: [../review/hypothesis-02-transfer-as-a-rate-over-fifteen-pairs.md](../review/hypothesis-02-transfer-as-a-rate-over-fifteen-pairs.md)
+- **Review questions**: [the review file for this plan](../review/hypothesis-02-transfer-as-a-rate-over-fifteen-pairs.md)
 - **Procedures**: (none yet; recommend creating [procedures/hypothesis-02-run-lopo-sweep.md](procedures/hypothesis-02-run-lopo-sweep.md) if manual steps emerge)
 - **Assets/outputs**: Will be saved to `outputs/interaction_term/transfer_rate/`
   - **Figure organization**: Use [figure-coverage-prompt.md](diagrams/figure-coverage-prompt.md) to scan the repo, rename all related figures to the step-11 naming convention, and consolidate them into `outputs/interaction_term/transfer_rate/figures/`. This prompt generates a FIGURE_CATALOG.md that maps each figure to axes, meaning, and original location.
@@ -82,7 +88,7 @@ This extracts error patterns from the run transcript, deduplicates against globa
 
 ⬅️ [Previous](#quick-context-where-you-are) | 📋 [TOC](#table-of-contents) | [Next](#the-claim) ➡️
 
-**Expected runtime**: 15 sequential LoRA trainings, each to step budget (typically ~8-12 hours wall time per run, total ~5-7 days for the sweep).
+**Expected runtime**: 15 sequential LoRA trainings, each to step budget (typically ~8-12 hours wall time per run, total ~5-7 days for all fifteen).
 
 **Prerequisites**:
 - Finalised pair pool in `pair_pool.yaml`
@@ -106,7 +112,7 @@ This extracts error patterns from the run transcript, deduplicates against globa
 
 ⬅️ [Previous](#considerations) | 📋 [TOC](#table-of-contents) | [Next](#why-this-plan-exists) ➡️
 
-**15 LoRAs, each trained without one pair, will compose on their held-out pairs with a measurable rate (0–100%), producing a degradation curve that shows transfer robustness.**
+**15 LoRAs, each trained without one pair, will compose on their held-out pairs at some measurable rate between 0 and 100%. Read across the fifteen, those rates give a degradation curve, and the shape of that curve is what says whether transfer is robust.**
 
 **Why this matters right now:** A single transfer test cannot answer whether the fix is robust across the pair distribution. Fifteen points (one per held-out pair) yield a rate, a confidence band, and a curve showing how the fix breaks down as training data is removed.
 
@@ -187,9 +193,9 @@ If the fix is pair-general, the curve declines smoothly. If it's pair-specific o
 1. **Configure the 15 leave-one-pair-out runs**
    - Iterate over `pair_pool.yaml`; for each pair, create a config that trains on all other ~14 pairs.
    - Reuse `multi_pair_trainer.py` / `train_pooled.py` with a flag that specifies held-out pair.
-   - Write configs to a sweep directory (e.g., `configs/lopo_sweep/`).
+   - Write configs to their own directory (e.g., `configs/lopo_sweep/`).
 
-2. **Run the 15-run sweep with live eval**
+2. **Run all 15 trainings with live eval**
    - Use wired eval hook that logs compose-rate, direction-cosine, distance-reached per step.
    - Each run trains to its step budget (e.g., 10,000 steps or convergence).
    - Runs may be parallel (if cluster allows) or sequential via Slurm array job.
@@ -232,22 +238,23 @@ If the fix is pair-general, the curve declines smoothly. If it's pair-specific o
 
 ## Tasks
 
-⬅️ [Previous](#purpose-and-goal) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
+⬅️ [Previous](#purpose-and-goal) | 📋 [TOC](#table-of-contents) | [Next](#what-has-to-pass-here) ➡️
 
-### 1. 🔧 Configure LOPO sweep
+### 1. 🔧 Configure the 15 leave-one-pair-out runs
 
 - [ ] Read `pair_pool.yaml` and extract all 15 pair names.
 - [ ] For each pair, generate a training config that holds out that pair and trains on ~14 others.
 - [ ] Write configs to `configs/lopo_sweep/` with naming scheme `lopo-{pair-name}.yaml`.
 - [ ] Verify 15 configs exist and each references the correct held-out pair.
 
-### 2. 🖥️ Run the 15-run sweep
+### 2. 🖥️ Launch the 15 trainings
 
 - [ ] Launch the 15 runs sequentially on one `biggpu` allocation, or across nodes' idle second
   GPUs via the shared-device path; a Slurm array job does not fit, since `biggpu` allows one job
   per user (see Environment Facts above).
 - [ ] Each run uses wired eval hook: compose-rate, direction-cosine, distance-reached logged to W&B per step.
-- [ ] Monitor runs via W&B dashboard and `squeue`; mark delivery-null runs (see gate below) and skip full budget.
+- [ ] Monitor runs via W&B dashboard and `squeue`; mark delivery-null runs (see the pass and fail
+  criteria below) and skip the full budget for them.
 - [ ] Collect W&B run IDs and checkpoint paths after all complete.
 
 ### 3. 📊 Eval held-out pairs
@@ -264,7 +271,7 @@ If the fix is pair-general, the curve declines smoothly. If it's pair-specific o
 
 ---
 
-## The engagement gate
+## What has to pass here
 
 ⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
@@ -283,15 +290,15 @@ If the fix is pair-general, the curve declines smoothly. If it's pair-specific o
 
 **Partial pass guidance**:
 - If 13–14 of 15 LoRAs complete: compute curve with available data, mark missing runs as `null` on leaderboard, and note in review file that n=13–14 instead of 15.
-- If a single run's distance-reached is zero: mark as `delivery-null` (not `no-transfer`) and exclude from curve calculation. Do not re-run a single cell to complete the grid.
+- If a single run's distance-reached is zero: mark it `delivery-null` rather than `no-transfer` and exclude it from the curve. Do not re-run one pair on its own just to fill in the grid.
 
-**When you get results, answer** [../review/hypothesis-02-transfer-as-a-rate-over-fifteen-pairs.md](../review/hypothesis-02-transfer-as-a-rate-over-fifteen-pairs.md).
+**When you get results, answer** [the review questions for this plan](../review/hypothesis-02-transfer-as-a-rate-over-fifteen-pairs.md).
 
 ---
 
 ## Figure Catalog
 
-⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
+⬅️ [Previous](#what-has-to-pass-here) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
 
 **Purpose**: Every figure related to this plan is tracked in a single catalog. Figures fall into two categories: (1) ones to be generated from diagram prompts (status: Pending), and (2) ones expected to be generated during plan execution (status: Generated during run).
 
@@ -308,7 +315,7 @@ Run each `.prompt.md` file through Claude (or `/prompt-storyboard`) and save out
 
 | Figure | Description | Generated by | Status | Axes |
 |--------|-------------|--------------|--------|------|
-| Degradation curve | Compose-rate (%) vs fraction-held-out (1/15–15/15), one point per pair | `/run-experiment` 15-run sweep, W&B aggregation | ⏳ Generated during run | X: fraction held out (0 to 1); Y: compose-rate (0.0 to 1.0) |
+| Degradation curve | Compose-rate (%) vs fraction-held-out (1/15–15/15), one point per pair | `/run-experiment` over all 15 runs, W&B aggregation | ⏳ Generated during run | X: fraction held out (0 to 1); Y: compose-rate (0.0 to 1.0) |
 | Leaderboard table | One row per held-out pair: pair name, compose y/n, distance-reached, direction-cosine, space-1 score, space-2 score | Post-run aggregation script | ⏳ Generated during run | N/A (table); columns: pair, compose, distance, cosine, embeddings |
 
 ### Generated during plan execution
@@ -320,7 +327,7 @@ Run each `.prompt.md` file through Claude (or `/prompt-storyboard`) and save out
 ### Organization workflow
 
 1. Generate pending figures: Run each prompt through Claude and save to `diagrams/`.
-2. Execute the plan: Run `/run-experiment` 15-run sweep.
+2. Execute the plan: Run `/run-experiment` over all 15 runs.
 3. After all 15 runs complete, pull W&B summaries for each run.
 4. Aggregate metrics into `leaderboard.json` (script or manual).
 5. Plot degradation curve using `leaderboard.json` as input.
@@ -338,7 +345,7 @@ Run each `.prompt.md` file through Claude (or `/prompt-storyboard`) and save out
 
 2. **Update the Error Matrix section** (automatic): `/sync-plan-tree` reads both catalogs and regenerates the Error Matrix section of this plan file. New errors from this run are now visible in the section below.
 
-3. **Organize figures** (manual, but guided): After the 15-run sweep finishes, W&B outputs metrics to your project. Use the [figure-coverage-prompt.md](diagrams/figure-coverage-prompt.md) to scan the repo for all related figures (existing artifacts/results/ (per-question) and report/paper-evidence-index.md, outputs/, paper/ figures plus new W&B plots). The prompt renames them to the step-11 naming convention and consolidates them into `outputs/interaction_term/transfer_rate/figures/`. It generates a `FIGURE_CATALOG.md` that maps each figure to its axes, meaning, and original location.
+3. **Organize figures** (manual, but guided): After all 15 runs finish, W&B outputs metrics to your project. Use the [figure-coverage-prompt.md](diagrams/figure-coverage-prompt.md) to scan the repo for all related figures (existing artifacts/results/ (per-question) and report/paper-evidence-index.md, outputs/, paper/ figures plus new W&B plots). The prompt renames them to the step-11 naming convention and consolidates them into `outputs/interaction_term/transfer_rate/figures/`. It generates a `FIGURE_CATALOG.md` that maps each figure to its axes, meaning, and original location.
 
 **Why this matters**: Without orchestration, the Error Matrix section becomes stale after a run completes, and figures scatter across the repo. With it, you run two commands post-run (`/ingest-error-pattern` and the figure-coverage prompt) and everything stays current. The next time you visit this plan file, you see what actually happened, not what was planned.
 

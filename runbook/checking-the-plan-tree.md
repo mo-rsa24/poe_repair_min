@@ -11,7 +11,7 @@ Contents: [1. Run the state check](#1-run-the-state-check)
 The four-check report-only pass named in `CLAUDE.md`'s "What the conventions look like in this
 repo": stale in-flight claims, unharvested output, orphaned plan files, and jargon that won't
 read cold. About 7 seconds over the whole tree. The session-start hook already runs checks 1
-and 2 automatically; run this by hand for checks 3 and 4, or any time after a sweep that moved
+and 2 automatically; run this by hand for checks 3 and 4, or any time after a pass that moved
 plan files.
 
 ```bash

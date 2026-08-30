@@ -2,9 +2,10 @@
 
 **Unanswered, and blocked until `gate-01` returns.** This file judges
 [../plans/idea-01-what-the-current-benchmarks-score.md](../plans/idea-01-what-the-current-benchmarks-score.md),
-the bake-off between our scorer and the published alternatives on the same labelled images.
+the head-to-head scoring of our scorer against the published alternatives on the same labelled
+images.
 
-## Recommended prompt (when the bake-off lands)
+## Recommended prompt (when the scores land)
 
 ```
 /analyze-run <bake-off run id>
@@ -14,9 +15,9 @@ the bake-off between our scorer and the published alternatives on the same label
 
 | File | What it holds |
 |---|---|
-| [design](../plans/idea-01-what-the-current-benchmarks-score.md) | the candidates, their published defaults, the bake-off script |
+| [design](../plans/idea-01-what-the-current-benchmarks-score.md) | the candidates, their published defaults, the scoring script |
 | **this file** | **the verdict: did any published metric beat ours on human agreement** |
-| [what gates it](gate-01-is-this-hole-already-known.md) | the literature check that must return first |
+| [what must return first](gate-01-is-this-hole-already-known.md) | the literature check this plan waits on |
 | [what supplies its labels](instrument-01-the-three-state-labelled-set.md) | the judgeable-pair denominator every score is computed over |
 
 ## Table of contents
@@ -57,7 +58,7 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
-| the bake-off, all candidates at published defaults | Tries a new idea | | one score per candidate; some candidates may need a GPU | the agreement table | not started |
+| scoring every candidate at its published defaults | Tries a new idea | | one score per candidate; some candidates may need a GPU | the agreement table | not started |
 
 ## The pre-registered bar
 
@@ -68,7 +69,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
       Yes: that candidate becomes a deferred task in this plan's own tree, carrying its number and its source paper, and
       `gate-02` decides whether it re-certifies or replaces `scorer_validated.json`. No: nothing
       is swapped, and the table is evidence for the limitations paragraph. Both thresholds are
-      constants in the bake-off script, so neither can be adjusted after the scores are in. This
+      constants in the scoring script, so neither can be adjusted after the scores are in. This
       is the only question that may promote anything.
 
 ## Written before the run, answered after
@@ -87,8 +88,8 @@ Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC
 
 Navigation: ⬅️ [Written before the run](#written-before-the-run-answered-after) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
-Questions the bake-off itself raised. **Nothing here may ever become a bar**, because it was
-written with the answer already visible. Nothing yet: the bake-off has not run.
+Questions the scoring run itself raised. **Nothing here may ever become a bar**, because it was
+written with the answer already visible. Nothing yet: the scoring has not run.
 
 ## Could the answer be an artefact
 
@@ -122,8 +123,8 @@ Navigation: ⬅️ [What the write-up owes](#what-the-write-up-owes) | 📋 [TOC
 
 | What is unresolved | What would settle it | Who or what is blocked by it |
 |---|---|---|
-| everything in this file | the bake-off | [gate-02](gate-02-promote-or-close.md), which needs the best agreement score to decide the promotion level |
-| whether this plan runs at all | [gate-01](gate-01-is-this-hole-already-known.md) returning. An "already known" verdict cancels it | the bake-off itself |
+| everything in this file | scoring the candidates | [gate-02](gate-02-promote-or-close.md), which needs the best agreement score to decide the promotion level |
+| whether this plan runs at all | [gate-01](gate-01-is-this-hole-already-known.md) returning. An "already known" verdict cancels it | the scoring run itself |
 | the judgeable-pair denominator every score needs | [instrument-01](instrument-01-the-three-state-labelled-set.md) landing | the scores, which cannot be computed without it |
 
 ## Next step

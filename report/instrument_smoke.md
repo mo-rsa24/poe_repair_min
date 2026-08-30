@@ -1,4 +1,4 @@
-# Instrument smoke: does-the-correction-cause-composition scope
+# What the measuring scripts do on real data: the does-the-correction-cause-composition scope
 
 Recorded outputs from plan `plans/03-does-the-correction-cause-composition/plans/instrument-01-build-the-measuring-scripts.md`.
 Every number below was produced by running the command shown, on
@@ -6,7 +6,7 @@ Every number below was produced by running the command shown, on
 
 Date: 2026-08-05.
 
-## Cache smoke: PASS
+## The cache check: PASS
 
 ```
 $ python scripts/cache_smoke.py --all
@@ -23,6 +23,9 @@ files. Every file carries the four eps keys at `[1,4,128,128]` fp16.
 pairs**, not 76. There are 76 pair *directories* (18 train + 58 held-out), but
 six slugs are cached under both splits. Anything that averages "per pair" over
 the directory listing double-counts those six. Plan 01 should say 70.
+
+> Held-out means kept out of training and used only for testing, so a number
+> measured on a held-out pair says something about pairs the method never saw.
 
 ## The r_t loader: PASS
 
@@ -62,7 +65,7 @@ The plan's success criterion said "matches to fp16 round-trip precision". At
 the honest reading is: same formula, different rounding, fp32 is the better
 number. Recorded rather than relaxed.
 
-## The two canaries: PASS (8 tests)
+## The two tests that must pass before anything else counts: PASS (8 tests)
 
 ```
 $ python -m pytest tests/test_interaction_term_canaries.py -q
@@ -89,10 +92,10 @@ same batch shape, run twice       bit-identical
 cuBLAS picks different kernels by shape. Over 50 steps that compounds to 0.635
 in the final latent. No amount of correct injection code makes that comparison
 exact, and a tolerance loose enough to pass would be far too loose to catch a
-real leak. Every canary therefore holds the batch shape fixed at four branches
-and varies only λ, which is the thing under test.
+real leak. Every one of these tests therefore holds the batch shape fixed at
+four branches and varies only λ, which is the thing under test.
 
-### Proof the canaries can fail
+### Proof these tests can fail
 
 Two deliberate mutations, each reverted afterwards.
 
@@ -122,7 +125,7 @@ written before the injection branch runs:
 
 Normalising matters as much as the reference: ‖delta‖ is ~40x smaller than
 ‖eps_poe‖, so dividing by eps_poe buries a 0.1% leak. Threshold set at 0.02%,
-between the clean floor (~0) and the mutation (0.09%).
+between the clean reading (~0) and the mutation (0.09%).
 
 ### The PMI identity
 
@@ -143,8 +146,8 @@ cancellation signature again, not a broken identity. The test asserts the
 median stays under 8%. Plan 05 is where this curve gets read as a result rather
 than a guard.
 
-_(Superseded: every script listed here as "still to do" was subsequently
-written and smoked. See the sections below.)_
+_(Every script this plan listed as still to do was subsequently written and run
+on real data. The sections below record what each one did.)_
 
 ---
 
@@ -166,8 +169,9 @@ showed heavy step-to-step jitter purely from that. Spread is then measured
 relative to the median curve's own height, so the headline number does not
 depend on the scaling choice.
 
-At 12 pairs this reads "no collapse". That is the instrument reporting, not a
-verdict: the sample is small and plan 05 owns the full-cache run. The median
+At 12 pairs this reads "no collapse". That is the script reporting what it
+measured rather than a verdict, since the sample is small and plan 05 owns the
+full-cache run. The median
 curve does show a clean hump peaking near log-SNR 0, and the interquartile band
 is tight through the middle with the spread concentrated in the high-noise
 left tail.
@@ -200,16 +204,20 @@ by N alone. Measured on random vectors in 65536 dims:
 | 100 | 17.1% |
 | 300 | 6.0% |
 
-A first smoke run at N=30 reported "92% [energy at k=16](/home-mscluster/mmolefe/goal-setting/learning/spectral-structure-of-the-correction/plans/10-energy-at-k-on-the-real-matrix.md)", which is almost
-entirely this artifact. The script now prints the matched Gaussian floor beside
-every number and warns when N is small relative to k.
+A first short run at N=30 reported "92% [energy at k=16](/home-mscluster/mmolefe/goal-setting/learning/spectral-structure-of-the-correction/plans/10-energy-at-k-on-the-real-matrix.md)", which is almost
+entirely this artifact. The script now prints the matched Gaussian chance level
+beside every number and warns when N is small relative to k.
 
 Two guards worth noting: the stack is centred before the [SVD](/home-mscluster/mmolefe/goal-setting/learning/spectral-structure-of-the-correction/plans/06-svd-of-the-real-matrix.md) (otherwise
 component 1 is just the mean, flattering the low-rank claim for free), and
 slugs cached under both splits are excluded from the held-out set (otherwise
 the "held-out" projection is partly measuring training pairs).
 
-## fork_curve.py: RUNS (1 cell, generated for the smoke)
+> Low-rank means the corrections all lie close to a small number of shared
+> directions, so a few of them would be enough to write any one down. That is
+> what makes a rank-8 adapter a plausible thing to train.
+
+## fork_curve.py: RUNS (one run, generated for this check)
 
 ```
 $ python scripts/fork_curve.py --root outputs/interaction_term/dose/pairs
@@ -223,7 +231,7 @@ different starting point.
 
 This script reads trajectories and does not sample. With none on disk it exits
 2 and prints the commands that produce them, rather than failing obscurely.
-The two used above were generated at 20 steps for this smoke.
+The two trajectories used above were generated at 20 steps for this check.
 
 ## The phenomenon, seen
 
@@ -235,10 +243,10 @@ Same pair, same seed, same noise. Only the dose differs.
 | one animal: cat ears and whiskers fused onto a dog muzzle and tongue | two animals, a tabby cat and a white dog, sitting side by side |
 
 This is the chimera the scope exists to explain, and the correction closing it,
-on one cell at 20 steps. Not a result (one cell, no scorer, short schedule),
-but it confirms the instruments are wired to the real phenomenon.
+on one run at 20 steps. Not a result (one run, no scorer, short schedule),
+but it confirms the measuring scripts are wired to the real phenomenon.
 
-## climb.py: RUNS (10 pairs, 23 cells)
+## climb.py: RUNS (10 pairs, 23 runs)
 
 ```
 $ python scripts/climb.py --all --max-pairs 10 --max-seeds 2
@@ -252,13 +260,13 @@ step-to-step direction agreement (cosine, consecutive r_t):
 
 Two distributions, and the second is the informative one. A correction with a
 stable direction is something a low-rank adapter could learn; a thrashing one
-is not. At 0.799 median against a random floor of 0.0039, the direction is
-strongly structured over time, not noise.
+is not. At 0.799 median against a chance level of 0.0039, the direction is
+strongly structured over time rather than noise.
 
-The figure shows correction size climbing from ~5% early to a ~13% plateau, and
-direction agreement high throughout and rising near the end.
+The figure shows correction size climbing from ~5% early to about 13%, where it
+flattens off, and direction agreement high throughout and rising near the end.
 
-## plot_dose_curves.py: RUNS (1 cell, 2 doses)
+## plot_dose_curves.py: RUNS (one run, 2 doses)
 
 ```
 $ python scripts/plot_dose_curves.py --root outputs/interaction_term/dose/pairs
@@ -271,12 +279,12 @@ scorer: instance_count via IDEA-Research/grounding-dino-tiny
 
 The scorer agrees with the eye on both images: 1 instance for the chimera, 2
 for the side-by-side pair. That is the qualitative and quantitative sides
-landing on the same cell.
+landing on the same run.
 
 The script refuses to run unless `scorer_validated.json` says `pass: true`, so
-no dose curve can be produced with an unvetted instrument.
+no dose curve can be produced with a scorer nobody has validated.
 
-## plot_window_curves.py: RUNS (1 cell, 4 windows, 20 steps)
+## plot_window_curves.py: RUNS (one run, 4 windows, 20 steps)
 
 ```
 $ python scripts/plot_window_curves.py --root outputs/interaction_term/window/pairs
@@ -288,8 +296,8 @@ $ python scripts/plot_window_curves.py --root outputs/interaction_term/window/pa
 peak at window centre 2.5, band 2.5 to 2.5 (within one standard error)
 ```
 
-Two independent instruments agree on the early band: the peak here sits at
-window 0-5, and `fork_curve` put the path-split elbow at step 4 of 20. One cell
+Two separate measuring scripts agree on the early band: the peak here sits at
+window 0-5, and `fork_curve` put the path-split elbow at step 4 of 20. One run
 at 20 steps, so not a result, but the machinery is coherent.
 
 The images show why. Correcting in the first 5 steps produces two separate
@@ -297,7 +305,7 @@ animals. Correcting only in the last 5 leaves the chimera essentially
 untouched, still one animal with fused cat and dog features. Once the layout is
 settled early, a late correction cannot undo it.
 
-## quality_control.py: RUNS (1 cell)
+## quality_control.py: RUNS (one run)
 
 ```
 $ python scripts/quality_control.py --root outputs/interaction_term/dose/pairs
@@ -321,10 +329,10 @@ L3 shared binding direction over 20 pairs:
 ```
 
 Both read from `embeddings.pt`, which the cache already stores, so neither
-needs the UNet. The L3 number is reported against its own random floor for the
+needs the UNet. The L3 number is reported against its own chance level for the
 same reason the spectrum is: a small sample concentrates by chance.
 
-## manifold_slide.py: RUNS (1 cell, 5 doses)
+## manifold_slide.py: RUNS (one run, 5 doses)
 
 ```
 $ python scripts/manifold_slide.py --root outputs/interaction_term/dose/pairs
@@ -381,8 +389,8 @@ $ python scripts/cache_smoke.py --all
 70/70 ok   (790 cells, 38324 step files)
 ```
 
-Plan 00 is done. Every instrument runs on real data and every headline number
-above was produced by the command shown.
+Plan 00 is done. Every one of these scripts runs on real data, and every
+headline number above was produced by the command shown.
 
 ---
 
@@ -404,7 +412,7 @@ Two consequences, both bad:
   token-disjoint by design. The confound was mine, introduced by `--all`.
 
 A second contamination surfaced during the fix. `a_wolf__x__a_husky` is a
-*training* pair with 9 full 50-step cells under `train/`, but it also has 4
+*training* pair with 9 full 50-step runs under `train/`, but it also has 4
 single-step eval stubs under `heldout/` (zeroed eps, only `x_t` ever read).
 Taking the first two seeds picked the stubs, so one "trajectory" had one point
 and collapsed the shared log-SNR range to nothing.
@@ -412,8 +420,8 @@ and collapsed the shared log-SNR range to nothing.
 ## The fix
 
 `poe_repair/experiments/interaction_term/pool.py` reads the experiment's own
-`pair_pool.yaml`. Every affected script now takes `--pool`. Cells with fewer
-than 2 step files are skipped as eval stubs, and a pair's full cells win over
+`pair_pool.yaml`. Every affected script now takes `--pool`. Runs with fewer
+than 2 step files are skipped as eval stubs, and a pair's full runs win over
 its stubs.
 
 The held-out list is not uniform, so the pool keeps the roles apart:
@@ -433,8 +441,8 @@ Commands: `python scripts/<name>.py --pool` (spectrum with
 | correction size, median | 11.5% of ‖eps_PoE‖ | **10.1%**, IQR 8.1% to 12.4% |
 | direction agreement, median | 0.799 | **0.926**, IQR 0.768 to 0.965 |
 | L1 additivity gap, median | 1.3197 | **1.3467** |
-| L3 first direction | 27.1% (floor 6.5%, 4.2x) | **16.1%** (floor 7.5%, **2.1x**) |
-| energy at k=64, train | 51.9% | **62.6%** (floor 13.2%, 4.8x) |
+| L3 first direction | 27.1% (chance level 6.5%, 4.2x) | **16.1%** (chance level 7.5%, **2.1x**) |
+| energy at k=64, train | 51.9% | **62.6%** (chance level 13.2%, 4.8x) |
 | **energy at k=64, held-out** | **2.7%** | **6.0%** |
 
 Three of these move enough to change how they read. The collapse goes from "no

@@ -24,12 +24,12 @@ model call is made. `poe_repair/pairs.py` names the base pair list; the fail-rat
 selects the current pool now lives at
 `artifacts/results/does-the-fix-reach-unseen-pairs/fail_rate.md` (the directory this file's
 sources were read from, `outputs/animals_compose_transfer/`, no longer exists on disk, see
-[Still open](../00-INDEX.md#still-open)). `data/pilot/seed_<n>/<slug>/` is the per-cell output
-layout this project has used since the pilot stage. ✅
+[Still open](../00-INDEX.md#still-open)). `data/pilot/seed_<n>/<slug>/` is the output layout for
+one pair-and-seed run, used by this project since the pilot stage. ✅
 
 **② SDXL runs the 50-step denoising schedule under one or more render methods.** ✅
 
-For a given cell, several render methods can be run: plain PoE, Mono (the literal joint prompt),
+For a given pair and seed, several render methods can be run: plain PoE, Mono (the literal joint prompt),
 PoE plus the interaction term injected over a window at a chosen strength (λ), or PoE plus the
 trained LoRA's own prediction. `poe_repair/methods/_sampling.py` (per `README.md`'s repo layout)
 holds the functions for each: `run_cfg`, `run_cfg_poe`, `run_teacher_residual`,
@@ -41,12 +41,17 @@ from `data/pilot/seed_42/a_cat__x__a_dog/summary.json`'s `model_id` field. ✅
 Because every step's latent state is needed to measure the interaction term and to decode
 intermediate estimates, the run caches enough to recompute the model's running estimate of the
 finished image at any step (the Tweedie-formula estimate `report/experiments-log.md`'s EXP-01 uses). This is
-what lets several later measurements (commitment step, window sweeps) be re-derived from the cache
-alone, with no further GPU sampling, per `report/experiments-log.md`'s repeated "cache only" compute notes. 🔍
+what lets several later measurements (the commitment step, and re-running the injection window
+across many settings) be re-derived from the cache alone, with no further GPU sampling, per
+`report/experiments-log.md`'s repeated "cache only" compute notes. 🔍
 
-**④ A cell's images and summary are written to disk.** ✅
+> The Tweedie formula turns a noisy latent and the model's noise prediction at that step into the
+> model's best guess of the clean image it is heading toward. It is what makes an intermediate
+> step viewable as a picture.
 
-A pilot cell (`data/pilot/seed_42/a_cat__x__a_dog/`) holds five PNGs (PoE, Mono, each concept
+**④ The images and summary for one run are written to disk.** ✅
+
+A pilot run (`data/pilot/seed_42/a_cat__x__a_dog/`) holds five PNGs (PoE, Mono, each concept
 alone, a trajectory-manifold plot) and a `summary.json` carrying the interaction term's per-step
 and final magnitude. Full-pool runs write the equivalent to `outputs/<family>/` on
 `/home-mscluster` or its mirror on `/datasets` (see [The two filesystems](#the-two-filesystems)).
@@ -59,10 +64,10 @@ distinct "animal" instances, and the rule in
 `compose` or `blend` label. Per-pair rates are aggregated across seeds
 (`artifacts/results/does-the-fix-reach-unseen-pairs/fail_rate.md`).
 
-**⑥ Labelled cells feed figures and review-file verdicts.** ✍️
+**⑥ Labelled runs feed figures and review-file verdicts.** ✍️
 
-A figure (tracked in `MASTER_PLAN.md`'s paper table) reads a set of cells' labels and images
-directly; a plan's review file records the verdict against a bar fixed before the run
+A figure (tracked in `MASTER_PLAN.md`'s paper table) reads a set of runs' labels and images
+directly; a plan's review file records the verdict against a threshold fixed before the run
 (`~/.claude/EXPERIMENT_CONVENTIONS.md`). Neither figures nor verdicts are restated in this folder;
 see [Cross-linking](../00-INDEX.md).
 
@@ -89,7 +94,7 @@ Navigation: ⬅️ [The two filesystems](#the-two-filesystems) | 📋 [TOC](#tab
 | What | How it was established | When |
 |---|---|---|
 | The render-method functions and their names | Read in `README.md`, repo layout section | 2026-08-24 |
-| A cell's on-disk shape and its model id | Read directly, `data/pilot/seed_42/a_cat__x__a_dog/summary.json` | 2026-08-24 |
+| One run's on-disk shape and its model id | Read directly, `data/pilot/seed_42/a_cat__x__a_dog/summary.json` | 2026-08-24 |
 | The scorer's compose/blend rule | Read in `artifacts/results/can-we-trust-the-compose-score/compose-scorer-validation/scorer_validated.json` | 2026-08-24 |
 | The two-filesystem split and its sync gaps | Read in `RETROFIT.md`, section 2 ("Moving") | 2026-08-24 |
 | The "cache only" measurement principle | Read in `report/experiments-log.md`, EXP-01 and EXP-04 compute notes | 2026-08-24 |

@@ -1,20 +1,25 @@
 # 🖨️ Two claims checked against the literature before they print
 
+This plan asks whether two sentences the paper wants to print survive contact with the published
+literature, and it answers that before either sentence is written.
+
 **Step 15 of 22.** Waits on step 13. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../MASTER_PLAN.md).
 
 | Step | Plan | Status |
 |---|---|---|
-| 14 | [figure-01-the-transfer-figures](../../04-does-the-fix-reach-unseen-pairs/plans/figure-01-the-transfer-figures.md) | ◑ F8 waits on the sweep |
+| 14 | [figure-01-the-transfer-figures](../../04-does-the-fix-reach-unseen-pairs/plans/figure-01-the-transfer-figures.md) | ◑ F8 waits on its series of runs |
 | **15** | **this plan** | **⚠️** |
 | 16 | [writing-01-make-the-template-build](../../07-writing-the-paper/plans/writing-01-make-the-template-build.md) | ◑ title still a stub |
 
 ## What this asks, in one line
-Two sentences the paper wants to print rest on the literature rather than on our runs: that
-nobody has causally measured the correction's timing, and that reweighting two experts cannot
-manufacture a correction outside their span. Each gets one `/pressure-test` verdict before the
-wording is allowed into the manuscript. One of them is also the recorded defence of the decision
-not to run baselines (Attend-and-Excite and SuperDiff are held in reserve as deferred tasks in
-this scope's own tree, with their trigger written down).
+Two sentences the paper wants to print rest on what the literature does and does not already
+contain, rather than on anything we ran. The first says nobody has causally measured when the
+correction matters during a run. The second says that reweighting two experts' predictions cannot
+manufacture a correction lying outside what those two predictions can express between them. Each
+sentence gets one `/pressure-test` verdict before the wording is allowed into the manuscript. The
+second verdict is also the written defence of the decision not to run baselines, since
+Attend-and-Excite and SuperDiff are held in reserve as deferred tasks in this scope's own tree,
+with the condition that would bring them back written down.
 
 ## Description
 The two literature checks that must pass before specific claims go into the
@@ -29,17 +34,18 @@ Both pressure-test verdicts recorded, and handed to `writing-the-paper` for fold
 into the wording.
 
 ## Environment Facts This Plan Depends On
-- None apply (literature checks, in-session).
-- The writing this plan used to own moved to
-  `plans/07-writing-the-paper/plans/writing-06-mechanism-and-limitations.md` on 2026-08-05, so all
-  paper prose has one owner. The verdicts produced here are its input.
+- None apply. Both checks are literature reading done in-session.
+- All paper prose has one owner,
+  `plans/07-writing-the-paper/plans/writing-06-mechanism-and-limitations.md`. The verdicts
+  produced here are its input.
 
 ## Tasks
-- [ ] /pressure-test: "the interaction term's timing has not been causally
-      measured (sliding-window injection of the cached PoE→joint residual)"
+- [ ] /pressure-test: "the [interaction term](../../../context/world/interaction-term.md)'s
+      timing has not been causally measured (sliding-window injection of the cached PoE→joint
+      residual)"
 - [ ] /pressure-test: "reweighting two experts' predictions cannot
       reproduce a correction outside their span (contra SuperDiff AND on
-      chimera pairs)"
+      [chimera](../../../context/world/chimera.md) pairs)"
 
 ## Success/Failure Outcomes
 - **pressure-test passes**
@@ -60,5 +66,5 @@ into the wording.
 ```bash
 ls docs/pressure_tests/          # expect two dated verdict notes
 ```
-The draft-text check moved with the writing, to
+The check on the draft text itself belongs to the writing plan,
 `plans/07-writing-the-paper/plans/writing-06-mechanism-and-limitations.md`.
