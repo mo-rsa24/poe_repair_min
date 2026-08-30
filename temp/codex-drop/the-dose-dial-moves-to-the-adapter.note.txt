@@ -1,0 +1,1 @@
+The left panel is faded because that sweep is measured and done; the right is hedged because it has not run. The two AUC numbers on the register card, 0.387 for the real correction against 0.023 for the random one, are the oracle result this sweep is compared against, and belong to the left panel's work, never to the right.

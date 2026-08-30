@@ -3,7 +3,7 @@
 The scope's pictures. Everything here is marked [planned] and drawn hedged: nothing is built yet,
 and the map says so truthfully.
 
-**9 prompts · 0 rendered · 9 waiting**
+**9 prompts · 1 rendered · 1 rendering · 7 waiting**
 
 ## Abstraction chain
 
@@ -23,7 +23,7 @@ chip, scorer lens, register board, outcome tile, researcher persona.
 
 ### Prompt 1 (Subject): the plateau read [planned]
 
-⏳ not rendered
+🖼️ rendered 2026-08-30 `diagrams/the-plateau-read.png` (one revision: the curves arrived solid, which claimed a measured plateau)
 Save as: `diagrams/the-plateau-read.png`
 
 > Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded directional arrows, each color meaning exactly one kind of traffic, with a small legend inside the image. Solid lines are actual transfers; dashed lines are reserved for control, acknowledgement, retry, and optional paths. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Clean sans-serif labels under every icon. Generous spacing, no clutter, no watermark.
@@ -34,7 +34,7 @@ Faithfulness note: Both curves are dashed: no plateau has been read yet. The 0.4
 
 ### Prompt 2 (Subject): the null-input probe [planned]
 
-⏳ not rendered
+⚙️ rendering
 Save as: `diagrams/the-null-input-probe.png`
 
 > Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded directional arrows, each color meaning exactly one kind of traffic, with a small legend inside the image. Solid lines are actual transfers; dashed lines are reserved for control, acknowledgement, retry, and optional paths. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Clean sans-serif labels under every icon. Generous spacing, no clutter, no watermark.

@@ -1,0 +1,22 @@
+Reading prompt from stdin...
+OpenAI Codex v0.147.0-alpha.6.5
+--------
+workdir: /home-mscluster/mmolefe/Playground/PhD/poe_repair_min
+model: gpt-5.6-sol
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: xhigh
+reasoning summaries: none
+session id: 01a051c6-cedf-7170-80da-1fd814db2e10
+--------
+user
+Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded directional arrows, each color meaning exactly one kind of traffic, with a small legend inside the image. Solid lines are actual transfers; dashed lines are reserved for control, acknowledgement, retry, and optional paths. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Clean sans-serif labels under every icon. Generous spacing, no clutter, no watermark.
+
+Two expert cards both reading "a dog" feed blue arrows into a PoE junction; the junction's outcome tile shows one dog. An adapter chip attaches from below with an amber arrow labeled "r-hat, should be near zero", drawn hedged. Two dashed outcome tiles to the right: green "still one dog: the rule held" and red "two dogs: a plurality prior, the caption dies". A small window bracket labeled "steps 0 to 10" sits on the step strip beneath.
+
+Aspect ratio: landscape 16:9.
+Anything drawn hedged must use a DASHED outline, never a solid one: a dashed stroke means the thing has not been measured yet, and a solid stroke would claim a result that does not exist. Legend swatches must match the stroke style of what they label.
+Save the final PNG to temp/codex-drop/the-null-input-probe.png relative to the current directory.
+Do not edit any other files.
+
