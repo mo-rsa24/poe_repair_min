@@ -26,7 +26,7 @@ and nobody finds out for days. This measuring tool is what makes leaving them al
 - [Words this file uses](#words-this-file-uses)
 - [Run kind](#run-kind)
 - [Runs](#runs)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [Asked after the result](#asked-after-the-result)
 - [Could the answer be an artefact](#could-the-answer-be-an-artefact)
@@ -60,7 +60,7 @@ failure here blocks the fifteen runs rather than closing this plan.
 
 ## Runs
 
-Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
@@ -86,7 +86,7 @@ was SSH. The run was pinned to GPU 1 with `CUDA_VISIBLE_DEVICES`, guarded by a c
 launch script that aborts if the target device already holds more than 1GB, and the other user's
 process was never touched.
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
@@ -99,7 +99,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
+Navigation: ⬅️ [The question written before the run](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
 - [x] ✅ Is the scorer wired into the evaluation loop?
       Yes, and proven end to end: the pooled run wrote a per-held-out-pair compose rate
@@ -117,7 +117,7 @@ Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC
 
 Navigation: ⬅️ [Written before the run](#written-before-the-run-answered-after) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
-Questions the run itself raised. **Nothing here may ever become a bar**, because it was written
+Questions the run itself raised. **Nothing here may ever become the question above**, because it was written
 with the answer already visible.
 
 - [ ] ⚠️ Is the compose-rate curve interpretable across pairs yet? Anchor images exist for only 2
@@ -130,7 +130,7 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
 
 - [x] ✅ **Was the comparison fair?** Not applicable: nothing is compared here. This measuring tool
       asks whether three numbers appear and carry real values, not whether one condition beats another.
-- [ ] ⚠️ **Was the instrument sound?** The question this whole file exists to answer, and it is
+- [ ] ⚠️ **Was the measuring tool sound?** The question this whole file exists to answer, and it is
       the one written before the run, above. Not settled until all three series carry non-null values.
 - [x] ✅ **Did the run respect the environment?** Output landed under `/datasets`, the run was
       pinned to an idle device with a guard that aborts if that device is occupied, and the other

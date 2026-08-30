@@ -28,7 +28,7 @@ go-ahead note itself is unwritten.
 - [Words this file uses](#words-this-file-uses)
 - [Run kind](#run-kind)
 - [Runs](#runs)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [Asked after the result](#asked-after-the-result)
 - [Could the answer be an artefact](#could-the-answer-be-an-artefact)
@@ -57,13 +57,13 @@ Navigation: ⬅️ [Words this file uses](#words-this-file-uses) | 📋 [TOC](#t
 
 ## Runs
 
-Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
 | phase1_r8_100k, pooled rank-8 LoRA on 11 training pairs, 88 pair-and-seed runs | Tests the claim | config `all_groups` | 100000 steps | `artifacts/results/does-the-fix-reach-unseen-pairs/pooled_lora/phase1_r8_100k`, checkpoints to step 100000 | finished; read incomplete |
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
@@ -76,7 +76,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
+Navigation: ⬅️ [The question written before the run](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
 Nothing beyond the one question above. This run was deliberately cheap and asked one question.
 
@@ -84,7 +84,7 @@ Nothing beyond the one question above. This run was deliberately cheap and asked
 
 Navigation: ⬅️ [Written before the run](#written-before-the-run-answered-after) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
-Questions the result itself raised. **Nothing here may ever become a bar**, because it was
+Questions the result itself raised. **Nothing here may ever become the question above**, because it was
 written with the answer already visible.
 
 - [ ] ⚠️ Do steps 70000 to 100000 change the read? Training ran 40k steps past the last scored
@@ -102,7 +102,7 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
       scorer at the same checkpoint, and the only thing differing between them is whether the
       adapter trained on the pair. Confirm the eleven training pairs and the held-out set do not
       overlap, from the realised split rather than the config.
-- [ ] ⚠️ **Was the instrument sound?** The compose-rate scorer must have read only this run's
+- [ ] ⚠️ **Was the measuring tool sound?** The compose-rate scorer must have read only this run's
       output directory. This is the fault that has already produced convincing wrong numbers in
       this project once, in the dose series.
 - [ ] ⚠️ **Did the run respect the environment?** Output under `/datasets`, checkpoints written

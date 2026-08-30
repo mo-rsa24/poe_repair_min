@@ -26,7 +26,7 @@ the correction does its work.
 - [Words this file uses](#words-this-file-uses)
 - [Run kind](#run-kind)
 - [Runs](#runs)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [Asked after the result](#asked-after-the-result)
 - [Could the answer be an artefact](#could-the-answer-be-an-artefact)
@@ -57,7 +57,7 @@ follow-on.
 
 ## Runs
 
-Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
@@ -65,7 +65,7 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 | First short run, 3 windows (0-10, 15-25, 40-50), a_cat×a_dog seed 9 | Checks the runner | 2026-08-10, in-session GPU 1 | 3 runs | `window/pairs/a_cat__x__a_dog/seed_9/` | done, passed |
 | Timing grid, 9 windows × 8 pairs × 4 seeds = 288 runs | Tests the claim | 2026-08-10 19:00, `run_window_sweep.sh` under nohup, GPU 1 | 288 runs | `/datasets/.../interaction_term/window/pairs/`, scored into `window_curves.json` | done, all 288 present, no missing or skipped windows |
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
@@ -83,7 +83,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
+Navigation: ⬅️ [The question written before the run](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
 - [x] ✅ With the window switched off everywhere, does the output match plain PoE exactly?
       Yes, byte-identical on a_cat×a_dog seed 9 at 50 steps. The comparison is against a full-dose
@@ -126,7 +126,7 @@ Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC
 
 Navigation: ⬅️ [Written before the run](#written-before-the-run-answered-after) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
-**Nothing here may ever become a bar**, because it was written with the timing answer already
+**Nothing here may ever become the question above**, because it was written with the timing answer already
 visible. These two runs exist to remove that answer's one confound.
 
 The nine window positions could not separate two things. The windows differ in when the correction
@@ -180,7 +180,7 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
       [Asked after the result](#asked-after-the-result) hold the delivered total constant and the
       cliff survives. Same seed, same noise, same prompt, same delivered correction, only the
       timing differs.
-- [x] ✅ **Was the instrument sound?** The leak check answers it, and it was pre-registered rather
+- [x] ✅ **Was the measuring tool sound?** The leak check answers it, and it was pre-registered rather
       than added afterwards: with the window switched off everywhere the output is byte-identical
       to plain PoE on a_cat×a_dog seed 9 at 50 steps. See the first question under
       [Written before the run](#written-before-the-run-answered-after) for why the comparison is

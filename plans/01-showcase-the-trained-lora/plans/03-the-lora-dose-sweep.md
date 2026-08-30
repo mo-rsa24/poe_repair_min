@@ -33,7 +33,7 @@
 - [Purpose and goal](#purpose-and-goal)
 - [Tasks](#tasks)
 - [Instructions](#instructions)
-- [The engagement gate](#the-engagement-gate)
+- [What has to pass before this runs](#what-has-to-pass-before-this-runs)
 - [Figure Catalog](#figure-catalog)
 - [Orchestration: keeping catalogs and plan files in sync](#orchestration-keeping-catalogs-and-plan-files-in-sync)
 - [Code references](#code-references)
@@ -64,7 +64,7 @@
 
 **Associated materials:**
 - **Review questions:** [../review/03-the-lora-dose-sweep.md](../review/03-the-lora-dose-sweep.md)
-- **Ledger entries:** [the adapter-dose series](../decisions-taken-here.md#the-adapter-dose-sweep-is-owed-and-approved) and [experiment C](../decisions-taken-here.md#the-longer-training-question-runs-as-three-experiments-re-scoped-by-evidence)
+- **Ledger entries:** [the adapter-dose series](../decisions-taken-here.md#the-adapter-dose-series-is-owed-and-approved) and [experiment C](../decisions-taken-here.md#the-longer-training-question-runs-as-three-experiments-re-scoped-by-evidence)
 - **The machinery to copy:** the cached-correction dose series under `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/` and its runner
 
 ---
@@ -160,7 +160,7 @@ Serves master-plan objective 3 and goal 3. Checkable outcomes:
 
 ## Instructions
 
-⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
+⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#what-has-to-pass-before-this-runs) ➡️
 
 ### 2. 📈 Read the series
 
@@ -172,11 +172,11 @@ Serves master-plan objective 3 and goal 3. Checkable outcomes:
 
 2.3 **Write the verdict** into the [review file](../review/03-the-lora-dose-sweep.md): AUC per condition, the threshold, the launch mode, wall time.
 
-▶ **Next: the engagement gate.**
+▶ **Next: what has to pass before this runs.**
 
 ---
 
-## The engagement gate
+## What has to pass before this runs
 
 ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
@@ -194,7 +194,7 @@ Serves master-plan objective 3 and goal 3. Checkable outcomes:
 
 ## Figure Catalog
 
-⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
+⬅️ [Previous](#what-has-to-pass-before-this-runs) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
 
 ### Pending
 
@@ -251,7 +251,7 @@ Serves master-plan objective 3 and goal 3. Checkable outcomes:
 /run-experiment plans/01-showcase-the-trained-lora/plans/03-the-lora-dose-sweep.md — four control rows; stop if any control rises above chance level; AUC always carries its meaning in words.
 ```
 
-alt, headless overnight: in a fresh session run `/unattended run-experiment plans/01-showcase-the-trained-lora/plans/03-the-lora-dose-sweep.md` and paste the tmux block it emits (hours of renders, numeric abort conditions, no human mid-loop). The engagement gate and the review file's threshold are the stop conditions.
+alt, headless overnight: in a fresh session run `/unattended run-experiment plans/01-showcase-the-trained-lora/plans/03-the-lora-dose-sweep.md` and paste the tmux block it emits (hours of renders, numeric abort conditions, no human mid-loop). What has to pass before this runs and the review file's threshold are the stop conditions.
 
 ---
 

@@ -21,7 +21,7 @@ causal claim rests on.
 
 - [Words this file uses](#words-this-file-uses)
 - [Runs](#runs)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [Could the answer be an artefact](#could-the-answer-be-an-artefact)
 - [Still open](#still-open)
@@ -40,13 +40,13 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#runs) ➡️
 
 ## Runs
 
-Navigation: ⬅️ [Words](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Words](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 | Date | Run id | What ran | Launch mode | Wall time | Outcome |
 |---|---|---|---|---|---|
 | | | | | | |
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
@@ -61,7 +61,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
+Navigation: ⬅️ [The bar](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
 - [ ] ⚠️ How does the LoRA's AUC sit beside the cached true correction's 0.387, on the same axes and the same runs?
 - [ ] ⚠️ Does softness track λ at the fixed checkpoint (experiment C's question)? If yes, the
@@ -75,7 +75,7 @@ Navigation: ⬅️ [Before/after](#written-before-the-run-answered-after) | 📋
 - [ ] ⚠️ **Was the comparison fair?** Exactly one thing differs between conditions: same pairs,
   seeds, window and guidance throughout; the printed run counts per condition were non-zero and
   equal where intended.
-- [ ] ⚠️ **Was the instrument sound?** Scorer validated (`scorer_validated.json`); spot-check
+- [ ] ⚠️ **Was the measuring tool sound?** Scorer validated (`scorer_validated.json`); spot-check
   renders against counts at λ=0 and λ=1.
 - [ ] ⚠️ **Did the run respect the environment?** Outputs on `/datasets`; disk guard on the
   written filesystem; launch mode recorded (Slurm vs nohup, since `squeue` is blind to nohup).

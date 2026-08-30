@@ -33,7 +33,7 @@
 - [Purpose and goal](#purpose-and-goal)
 - [Tasks](#tasks)
 - [Instructions](#instructions)
-- [The engagement gate](#the-engagement-gate)
+- [What has to pass before this runs](#what-has-to-pass-before-this-runs)
 - [Figure Catalog](#figure-catalog)
 - [Orchestration: keeping catalogs and plan files in sync](#orchestration-keeping-catalogs-and-plan-files-in-sync)
 - [Code references](#code-references)
@@ -56,7 +56,7 @@
 
 **Associated materials:**
 - **Review questions:** [../review/06-extend-the-tracking-set.md](../review/06-extend-the-tracking-set.md)
-- **Ledger entry:** [the shared measuring tool](../decisions-taken-here.md#the-shared-instrument-extends-instrument-02-and-nothing-else)
+- **Ledger entry:** [the shared measuring tool](../decisions-taken-here.md#the-shared-tracking-set-extends-instrument-02-and-nothing-else)
 - **The wiring it extends:** [instrument-02](../../04-does-the-fix-reach-unseen-pairs/plans/instrument-02-three-live-curves-while-training.md)
 
 ---
@@ -148,7 +148,7 @@ Serves goal 3 (tracking set extended, and proven by a short run, before any laun
 
 ## Instructions
 
-⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
+⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#what-has-to-pass-before-this-runs) ➡️
 
 ### 2. 📈 Prove the first short run in W&B
 
@@ -160,11 +160,11 @@ Serves goal 3 (tracking set extended, and proven by a short run, before any laun
 
 2.3 **Record the verdict** in the [review file](../review/06-extend-the-tracking-set.md).
 
-▶ **Next: the engagement gate.**
+▶ **Next: what has to pass before this runs.**
 
 ---
 
-## The engagement gate
+## What has to pass before this runs
 
 ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
@@ -182,7 +182,7 @@ Serves goal 3 (tracking set extended, and proven by a short run, before any laun
 
 ## Figure Catalog
 
-⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
+⬅️ [Previous](#what-has-to-pass-before-this-runs) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
 
 ### Pending
 

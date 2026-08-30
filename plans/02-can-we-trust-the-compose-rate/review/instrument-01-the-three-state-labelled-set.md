@@ -26,7 +26,7 @@ the one that decides whether F2's shape is safe.
 - [Words this file uses](#words-this-file-uses)
 - [Run kind](#run-kind)
 - [Runs](#runs)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [Asked after the result](#asked-after-the-result)
 - [Could the answer be an artefact](#could-the-answer-be-an-artefact)
@@ -58,7 +58,7 @@ whether anything moves.
 
 ## Runs
 
-Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 The images already exist on disk. The work is labelling them, not generating them.
 
@@ -66,7 +66,7 @@ The images already exist on disk. The work is labelling them, not generating the
 |---|---|---|---|---|---|
 | labelling pass over the λ grid at `outputs/interaction_term/dose/pairs/` | Measuring tool | | labelling only; no generation | the three-state labels, the two false-compose rates, the coverage number | not started |
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
@@ -82,7 +82,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
+Navigation: ⬅️ [The question written before the run](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
 - [ ] ⚠️ Is "cannot tell" at or below 10% of labels on judgeable pairs?
       Above that, the judgeable-pair rule was wrong. The rule is rewritten, the split redone, and
@@ -104,7 +104,7 @@ Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC
 
 Navigation: ⬅️ [Written before the run](#written-before-the-run-answered-after) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
-Questions the labelling itself raised. **Nothing here may ever become a bar**, because it was
+Questions the labelling itself raised. **Nothing here may ever become the question above**, because it was
 written with the answer already visible. Nothing yet: the pass has not run.
 
 ## Could the answer be an artefact
@@ -117,7 +117,7 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
       order. If either fails, the labels are contaminated by expectation and the set is rebuilt.
       This is the fairness check that matters, because the question above compares two λ values
       against each other.
-- [ ] ⚠️ **Was the instrument sound?** Two checks, both required.
+- [ ] ⚠️ **Was the measuring tool sound?** Two checks, both required.
       *Was the judgeable-pair rule committed before the first label?* `git log` decides it, not
       memory. A rule written after seeing labels can be tuned until the rate comes out
       flattering, and no later check can detect that.

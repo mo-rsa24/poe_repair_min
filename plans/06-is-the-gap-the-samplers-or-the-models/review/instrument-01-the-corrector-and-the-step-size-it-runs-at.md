@@ -26,7 +26,7 @@ here blocks all three rather than bounding any of them.
 - [Words this file uses](#words-this-file-uses)
 - [Run kind](#run-kind)
 - [Runs](#runs)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [The step-size search](#the-step-size-search)
 - [Asked after the result](#asked-after-the-result)
@@ -58,21 +58,21 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#run-kind) ➡️
 
 Navigation: ⬅️ [Words this file uses](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#runs) ➡️
 
-**Builds an instrument.** Missing the threshold blocks every plan downstream of it, because steps
+**Builds a measuring tool.** Missing the threshold blocks every plan downstream of it, because steps
 26, 27 and 29 all run this composer. It does not bound a claim; it decides whether any claim can be
 measured.
 
 ## Runs
 
-Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
-| Leak check, `k=0` byte-identical to plain product-of-experts | Builds an instrument | not launched | 1 render | stdout only | ⚠️ not run |
-| Leak check, `k=200` with the window past the last step | Builds an instrument | not launched | 1 render | stdout only | ⚠️ not run |
-| Step-size search, `c ∈ {0.01, 0.035, 0.1, 0.3, 1.0}` at `k=20` | Builds an instrument | not launched | ~110 plain-render equivalents | `corrector/step_size_search.json`, and [the search table](#the-step-size-search) | ⚠️ not run |
+| Leak check, `k=0` byte-identical to plain product-of-experts | Builds a measuring tool | not launched | 1 render | stdout only | ⚠️ not run |
+| Leak check, `k=200` with the window past the last step | Builds a measuring tool | not launched | 1 render | stdout only | ⚠️ not run |
+| Step-size search, `c ∈ {0.01, 0.035, 0.1, 0.3, 1.0}` at `k=20` | Builds a measuring tool | not launched | ~110 plain-render equivalents | `corrector/step_size_search.json`, and [the search table](#the-step-size-search) | ⚠️ not run |
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
@@ -86,7 +86,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#the-step-size-search) ➡️
+Navigation: ⬅️ [The question written before the run](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#the-step-size-search) ➡️
 
 - [ ] ⚠️ With `k=0`, does the composer reproduce plain product-of-experts byte-identical?
 - [ ] ⚠️ With a corrector window placed past the last step and `k=200`, is the output still
@@ -133,7 +133,7 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
 
 - [ ] ⚠️ **Was the comparison fair?** Across the five search rows, only `c` varies. Same pair, same
       seed, same `k`, same 50 DDIM steps, same guidance, same starting latent.
-- [ ] ⚠️ **Was the instrument sound?** The leak checks compare against a `k=0` run of the new
+- [ ] ⚠️ **Was the measuring tool sound?** The leak checks compare against a `k=0` run of the new
       composer rather than against `run_cfg_poe`, so only the corrector logic differs and not the
       batch shape. And a flat displacement column across every `c` means the corrector is not being
       applied at all, which is a build bug wearing the costume of a search result.

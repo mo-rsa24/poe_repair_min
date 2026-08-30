@@ -30,7 +30,7 @@ overclaims is worse than a missing one, because it survives review until someone
 - [Words this file uses](#words-this-file-uses)
 - [Run kind](#run-kind)
 - [Runs](#runs)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [Asked after the result](#asked-after-the-result)
 - [Could the answer be an artefact](#could-the-answer-be-an-artefact)
@@ -60,7 +60,7 @@ a figure back to `/design-figure` rather than closing the plan.
 
 ## Runs
 
-Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 | Figure | Kind | Built | Cost | Output | State |
 |---|---|---|---|---|---|
@@ -73,7 +73,7 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 | F8a full-run extension (task 5.1) | Figure run | | GPU session for the instance-count scorer over epochs 1400 to 2000 | | not started |
 | Ceiling panel (task 5.2) | Figure run | | at most four re-renders with the joint-prompt correction at F9 sampler settings | | not started |
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
@@ -84,7 +84,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
+Navigation: ⬅️ [The question written before the run](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
 **The run here is the reading of the figures, not their building.** F8a and F8b were already built
 when these questions were written, so this section pre-registers the read and not the build. The
@@ -147,7 +147,7 @@ last question makes that gap explicit rather than hiding it.
 
 Navigation: ⬅️ [Written before the run](#written-before-the-run-answered-after) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
-Questions the figures themselves raised once read. **Nothing here may ever become a bar**, because
+Questions the figures themselves raised once read. **Nothing here may ever become the question above**, because
 it was written with the answer already visible. Nothing yet: neither built figure has been read.
 
 ## Could the answer be an artefact
@@ -160,7 +160,7 @@ sound. That is the failure mode a figure has and a run does not.
 - [ ] ⚠️ **Was the comparison fair?** Do the two sides drawn next to each other differ in one
       thing only, and does the figure show the sampling unit it actually used? F8b is the live
       risk: sides sampled by pair but drawn as though sampled run by run read tighter than they are.
-- [ ] ⚠️ **Was the instrument sound?** Does each figure's `.json` sidecar carry the numbers the
+- [ ] ⚠️ **Was the measuring tool sound?** Does each figure's `.json` sidecar carry the numbers the
       panel draws, from the scored run and not a stale copy? A figure regenerated from an old
       sidecar is the quiet version of this failure.
 - [ ] ⚠️ **Did the run respect the environment?** Both `.png` and `.pdf` present at the register

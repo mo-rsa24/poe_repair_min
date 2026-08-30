@@ -32,7 +32,7 @@ answered.
 - [Run kind](#run-kind)
 - [Runs](#runs)
 - [Where the two errors can be told apart, and where they cannot](#where-the-two-errors-can-be-told-apart-and-where-they-cannot)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [Asked after the result](#asked-after-the-result)
 - [Could the answer be an artefact](#could-the-answer-be-an-artefact)
@@ -79,7 +79,7 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 
 ## Where the two errors can be told apart, and where they cannot
 
-Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 **This is why the measurement is read at the end of the run rather than across it, and it is
 repeated here in full rather than compressed into a caveat line.** Getting it wrong would put a
@@ -125,7 +125,7 @@ whether it composes by default is
 [an open question in another review file](../../04-does-the-fix-reach-unseen-pairs/review/instrument-01-the-clean-pair-pool.md),
 and a control whose own behaviour is unsettled controls nothing.
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Where the two errors can be told apart](#where-the-two-errors-can-be-told-apart-and-where-they-cannot) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
@@ -146,7 +146,7 @@ after the answer is visible shows up in a diff.
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
+Navigation: ⬅️ [The question written before the run](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
 - [ ] ⚠️ Did the numerator `‖eps_J - eps_PoE‖` fall, or did the denominator `‖eps_PoE‖` rise? The
       ratio alone cannot say, and both are recorded for this reason.
@@ -177,7 +177,7 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
 
 - [ ] ⚠️ **Was the comparison fair?** Only `k` varies across the curves. Same pair, same seed, same
       50 DDIM steps, same guidance, same step size, same starting latent.
-- [ ] ⚠️ **Was the instrument sound?** The two leak checks from
+- [ ] ⚠️ **Was the measuring tool sound?** The two leak checks from
       [step 25](instrument-01-the-corrector-and-the-step-size-it-runs-at.md), the displacement
       column, and the flattening in `k`. Any one of them failing voids the reading.
 - [ ] ⚠️ **Is the quantity what the caption says it is?** The residual norm at the settled point is

@@ -36,7 +36,7 @@ Step 45 in the root running order; waits on nothing (runs beside 44); next is
 - [Purpose and goal](#purpose-and-goal)
 - [Tasks](#tasks)
 - [Instructions](#instructions)
-- [The engagement gate](#the-engagement-gate)
+- [What has to pass before this runs](#what-has-to-pass-before-this-runs)
 - [Figure Catalog](#figure-catalog)
 - [Orchestration](#orchestration-keeping-catalogs-and-plan-files-in-sync)
 - [Code references](#code-references)
@@ -179,7 +179,7 @@ Navigation: ⬅️ [Previous](#purpose-and-goal) | 📋 [TOC](#table-of-contents
 
 **For Claude to execute.** Ask Claude to do these.
 
-### 0. 🧭 Preflight: check this plan before working from it
+### 0. 🧭 Check this plan before working from it
 
 - [ ] **0.1** Paste: `/verify-plan @plans/05-when-does-the-outcome-lock-in/plans/02-the-free-probe.md`
   - Done when: the report comes back clean, or its proposals have been applied.
@@ -188,7 +188,7 @@ Navigation: ⬅️ [Previous](#purpose-and-goal) | 📋 [TOC](#table-of-contents
 
 ### 1. 🔧 Price the plan, then build the script
 
-◀ **Needs: [task 0.1](#0--preflight-check-this-plan-before-working-from-it)**.
+◀ **Needs: [task 0.1](#0--check-this-plan-before-working-from-it)**.
 
 - [ ] **1.1** Establish whether per-step epsilons are cached, and print the answer.
   - Inspect one pair-and-seed run's files; print which tensors exist per step and their shapes.
@@ -228,11 +228,11 @@ Navigation: ⬅️ [Previous](#purpose-and-goal) | 📋 [TOC](#table-of-contents
   - Paste: `/sync-plan-tree @plans/05-when-does-the-outcome-lock-in/plans/02-the-free-probe.md — <one line>`
   - Done when: statuses match reality.
 
-▶ **Next: the engagement gate.**
+▶ **Next: what has to pass before this runs.**
 
 ## Instructions
 
-Navigation: ⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
+Navigation: ⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#what-has-to-pass-before-this-runs) ➡️
 
 **For you to follow manually.** Do these yourself.
 
@@ -252,9 +252,9 @@ Navigation: ⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](
    review file. This is the first read on the scope's headline question, informative here,
    judged formally in [plan 05](05-the-grid-and-the-figures.md).
 
-▶ **Next: the engagement gate**, then [plan 03](03-wire-the-oracle.md).
+▶ **Next: what has to pass before this runs**, then [plan 03](03-wire-the-oracle.md).
 
-## The engagement gate
+## What has to pass before this runs
 
 Navigation: ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
@@ -274,7 +274,7 @@ Navigation: ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | 
 
 ## Figure Catalog
 
-Navigation: ⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
+Navigation: ⬅️ [Previous](#what-has-to-pass-before-this-runs) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
 
 #### Pending: to be generated from prompts
 

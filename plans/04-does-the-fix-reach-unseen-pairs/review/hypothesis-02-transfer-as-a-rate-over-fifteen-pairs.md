@@ -30,7 +30,7 @@ answers.
 - [Words this file uses](#words-this-file-uses)
 - [Run kind](#run-kind)
 - [Runs](#runs)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [Asked after the result](#asked-after-the-result)
 - [Could the answer be an artefact](#could-the-answer-be-an-artefact)
@@ -62,13 +62,13 @@ Navigation: ⬅️ [Words this file uses](#words-this-file-uses) | 📋 [TOC](#t
 
 ## Runs
 
-Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
 | fifteen runs, one per held-out pair | Tests the claim | | | leaderboard plus degradation curve | not started |
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
@@ -78,7 +78,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
+Navigation: ⬅️ [The question written before the run](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
 - [ ] ⚠️ What shape does the degradation curve take?
       Report it either way. A gentle decline says the fix generalises smoothly; a cliff says
@@ -91,7 +91,7 @@ Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC
 
 Navigation: ⬅️ [Written before the run](#written-before-the-run-answered-after) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
-Questions the result itself raised. **Nothing here may ever become a bar**, because it was
+Questions the result itself raised. **Nothing here may ever become the question above**, because it was
 written with the answer already visible. Nothing yet: the fifteen runs have not started.
 
 ## Could the answer be an artefact
@@ -101,7 +101,7 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
 - [ ] ⚠️ **Was the comparison fair?** Each of the fifteen adapters must differ from the others in
       exactly one thing: which pair was held back. Print the realised training pool of every run
       and confirm the counts match and the held-out pair is genuinely absent from each.
-- [ ] ⚠️ **Was the instrument sound?** Each run scored over its own output directory only. With
+- [ ] ⚠️ **Was the measuring tool sound?** Each run scored over its own output directory only. With
       fifteen unattended runs writing under one parent, a scorer that collects every folder it
       finds produces fifteen plausible wrong answers, which is the fault this scope has already
       hit once.

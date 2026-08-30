@@ -25,7 +25,7 @@ model's share is already known to be nonzero before a single corrector step runs
 - [Words this file uses](#words-this-file-uses)
 - [Run kind](#run-kind)
 - [Runs](#runs)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [Asked after the result](#asked-after-the-result)
 - [Could the answer be an artefact](#could-the-answer-be-an-artefact)
@@ -57,13 +57,13 @@ number that cost nothing.
 
 ## Runs
 
-Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
-| The free bound: cached correction size as noise goes to zero | Tests the claim | not launched | no GPU, reads files already on disk | this file's [pre-registered bar](#the-pre-registered-bar) | ⚠️ not run |
+| The free bound: cached correction size as noise goes to zero | Tests the claim | not launched | no GPU, reads files already on disk | this file's [the question written before the run](#the-question-written-before-the-run) | ⚠️ not run |
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
@@ -76,7 +76,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
+Navigation: ⬅️ [The question written before the run](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
 - [ ] ⚠️ What is the unnormalised `‖r_t‖` at the last denoising steps, read from the raw `delta`
       tensors rather than from the ratio? The JSON stores only `‖r_t‖/‖eps_PoE‖`, and a ratio can
@@ -108,7 +108,7 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
 - [ ] ⚠️ **Was the comparison fair?** Not applicable in the usual sense. Nothing is compared here;
       one curve is read at one end. What stands in for it is the "same latent at each step"
       question above, which is the condition under which the late-step values mean anything.
-- [ ] ⚠️ **Was the instrument sound?** Does
+- [ ] ⚠️ **Was the measuring tool sound?** Does
       [correction_size_over_the_run.py](../../../scripts/correction_size_over_the_run.py) at
       line 101 compute what this read assumes it computes, over the renders the JSON claims, upcast
       to fp32 from the fp16 cache?

@@ -33,7 +33,7 @@
 - [Purpose and goal](#purpose-and-goal)
 - [Tasks](#tasks)
 - [Instructions](#instructions)
-- [The engagement gate](#the-engagement-gate)
+- [What has to pass before this runs](#what-has-to-pass-before-this-runs)
 - [Figure Catalog](#figure-catalog)
 - [Orchestration: keeping catalogs and plan files in sync](#orchestration-keeping-catalogs-and-plan-files-in-sync)
 - [Code references](#code-references)
@@ -147,7 +147,7 @@ Serves goal 4 (A, B, C run; verdicts against pre-registered thresholds). Checkab
 
 ## Instructions
 
-⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
+⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#what-has-to-pass-before-this-runs) ➡️
 
 ### 2. 👁️ Judge the trend
 
@@ -157,11 +157,11 @@ Serves goal 4 (A, B, C run; verdicts against pre-registered thresholds). Checkab
 
 2.2 **Check the numbers agree with the eyeball** (`lambda_softness.json`), then **write the verdict** into the [review file](../review/07-experiment-c-lambda-window.md).
 
-▶ **Next: the engagement gate.**
+▶ **Next: what has to pass before this runs.**
 
 ---
 
-## The engagement gate
+## What has to pass before this runs
 
 ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
@@ -179,7 +179,7 @@ Serves goal 4 (A, B, C run; verdicts against pre-registered thresholds). Checkab
 
 ## Figure Catalog
 
-⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
+⬅️ [Previous](#what-has-to-pass-before-this-runs) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
 
 ### Pending
 
@@ -234,7 +234,7 @@ Serves goal 4 (A, B, C run; verdicts against pre-registered thresholds). Checkab
 /run-experiment plans/01-showcase-the-trained-lora/plans/07-experiment-c-lambda-window.md — reuse plan 03's lambda-scaled runner (scripts/showcase/lora_dose_sweep.py) if it exists, else build it here and 03 reuses it; the lambda-0 render must match cached poe.png in mode before the grid runs.
 ```
 
-alt, headless overnight: in a fresh session run `/unattended run-experiment plans/01-showcase-the-trained-lora/plans/07-experiment-c-lambda-window.md` and paste the tmux block it emits (mechanical grid plus scoring, verified by its own sidecars). The engagement gate and the review file's threshold are the stop conditions.
+alt, headless overnight: in a fresh session run `/unattended run-experiment plans/01-showcase-the-trained-lora/plans/07-experiment-c-lambda-window.md` and paste the tmux block it emits (mechanical grid plus scoring, verified by its own sidecars). What has to pass before this runs and the review file's threshold are the stop conditions.
 
 ---
 

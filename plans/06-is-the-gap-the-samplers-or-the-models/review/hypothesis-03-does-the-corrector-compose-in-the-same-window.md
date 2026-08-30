@@ -26,7 +26,7 @@ attribute there by construction.
 - [Words this file uses](#words-this-file-uses)
 - [Run kind](#run-kind)
 - [Runs](#runs)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [Asked after the result](#asked-after-the-result)
 - [Could the answer be an artefact](#could-the-answer-be-an-artefact)
@@ -57,13 +57,13 @@ the figure it is compared against, since the comparison is the entire read.
 
 ## Runs
 
-Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
 | The corrector across ten window columns, 4 seeds × 10 columns | Tests the claim | not launched | 40 renders, each decoded and scored | `corrector/window_curves_mcmc.json` and `mcmc/samples-as-a-ten-step-corrector-window-slides.png` | ⚠️ waiting on the threshold at step 26 |
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
@@ -77,7 +77,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
+Navigation: ⬅️ [The question written before the run](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
 - [ ] ⚠️ Does the layout match the injected-correction figure on all four facts, meaning the pair,
       the seeds, the nine window positions, and the exact rule the green border encodes? A
@@ -106,7 +106,7 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
 - [ ] ⚠️ **Was the comparison fair?** Only the window position varies across columns, and only the
       mechanism varies between this figure and the injected-correction one. Same pair, same seeds,
       same 50 DDIM steps, same guidance, same scorer.
-- [ ] ⚠️ **Was the instrument sound?** The scorer is the validated instance-count detector, and
+- [ ] ⚠️ **Was the measuring tool sound?** The scorer is the validated instance-count detector, and
       [the timing verdict](../../03-does-the-correction-cause-composition/review/hypothesis-03-when-in-the-run-it-matters.md)
       records that it disagrees with the eye on cat and dog often enough that the eye read is the
       one cited. Both counts are taken here for that reason.

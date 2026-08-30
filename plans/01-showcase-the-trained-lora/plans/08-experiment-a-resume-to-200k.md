@@ -33,7 +33,7 @@
 - [Purpose and goal](#purpose-and-goal)
 - [Tasks](#tasks)
 - [Instructions](#instructions)
-- [The engagement gate](#the-engagement-gate)
+- [What has to pass before this runs](#what-has-to-pass-before-this-runs)
 - [Figure Catalog](#figure-catalog)
 - [Orchestration: keeping catalogs and plan files in sync](#orchestration-keeping-catalogs-and-plan-files-in-sync)
 - [Code references](#code-references)
@@ -149,7 +149,7 @@ Serves goal 4. Checkable outcomes:
 
 ## Instructions
 
-⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
+⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#what-has-to-pass-before-this-runs) ➡️
 
 ### 2. 📈 Watch and judge
 
@@ -161,11 +161,11 @@ Serves goal 4. Checkable outcomes:
 
 2.3 **Judge against the null threshold** using `experiment_a_verdict_inputs.json`; **write the verdict** into the [review file](../review/08-experiment-a-resume-to-200k.md).
 
-▶ **Next: the engagement gate.**
+▶ **Next: what has to pass before this runs.**
 
 ---
 
-## The engagement gate
+## What has to pass before this runs
 
 ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
@@ -183,7 +183,7 @@ Serves goal 4. Checkable outcomes:
 
 ## Figure Catalog
 
-⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
+⬅️ [Previous](#what-has-to-pass-before-this-runs) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
 
 ### Pending
 
@@ -239,7 +239,7 @@ Serves goal 4. Checkable outcomes:
 /run-experiment plans/01-showcase-the-trained-lora/plans/08-experiment-a-resume-to-200k.md — dry resume of ~100 steps in-session first; only then sbatch on an idle biggpu node with the pre-launch check block; the null threshold is pre-registered in the review file.
 ```
 
-alt, headless overnight: in a fresh session run `/unattended run-experiment plans/01-showcase-the-trained-lora/plans/08-experiment-a-resume-to-200k.md` and paste the tmux block it emits (multi-hour training, SSH-drop-prone, thresholds pre-registered). The engagement gate and the review file's threshold are the stop conditions.
+alt, headless overnight: in a fresh session run `/unattended run-experiment plans/01-showcase-the-trained-lora/plans/08-experiment-a-resume-to-200k.md` and paste the tmux block it emits (multi-hour training, SSH-drop-prone, thresholds pre-registered). What has to pass before this runs and the review file's threshold are the stop conditions.
 
 ---
 

@@ -62,7 +62,7 @@ going); the scorer and counted figures (instance-count scorer, already validated
 scenes); and the figure wall with its sidecars.
 
 ## Purpose and goals
-Purpose: a standalone scope under the [root master plan](../MASTER_PLAN.md); feeds
+Purpose: a standalone scope under the [root master plan](../../MASTER_PLAN.md); feeds
 writing-the-paper's results section and figure register.
 Goals: the numbered list under Goals below.
 

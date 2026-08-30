@@ -21,7 +21,7 @@ not a vector" caption used across the showcase figures.
 
 - [Words this file uses](#words-this-file-uses)
 - [Runs](#runs)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [Could the answer be an artefact](#could-the-answer-be-an-artefact)
 - [Still open](#still-open)
@@ -39,13 +39,13 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#runs) ➡️
 
 ## Runs
 
-Navigation: ⬅️ [Words](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Words](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 | Date | Run id | What ran | Wall time | Outcome |
 |---|---|---|---|---|
 | | | | | |
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
@@ -58,7 +58,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
+Navigation: ⬅️ [The bar](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
 - [ ] ⚠️ Did the identity check hold (max-abs pixel difference within the fp16 drift band of the
   λ=0 check that must pass before anything runs)?
@@ -73,7 +73,7 @@ Navigation: ⬅️ [Before/after](#written-before-the-run-answered-after) | 📋
 
 - [ ] ⚠️ **Was the comparison fair?** Same seeds, same sampler settings, same window as the
   cross-pair runs; only the concepts changed.
-- [ ] ⚠️ **Was the instrument sound?** The scorer is validated for two-animal scenes; a
+- [ ] ⚠️ **Was the measuring tool sound?** The scorer is validated for two-animal scenes; a
   same-species pair is inside its validation only if the count read holds; spot-check five
   renders by eye against the counts.
 - [ ] ⚠️ **Did the run respect the environment?** Outputs on `/datasets`; the disk guard checked

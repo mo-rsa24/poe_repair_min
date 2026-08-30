@@ -20,7 +20,7 @@ kind: measuring tool (a first short run proving the wiring; no science question 
 
 - [Words this file uses](#words-this-file-uses)
 - [Runs](#runs)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [Could the answer be an artefact](#could-the-answer-be-an-artefact)
 - [Still open](#still-open)
@@ -35,13 +35,13 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#runs) ➡️
 
 ## Runs
 
-Navigation: ⬅️ [Words](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Words](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 | Date | Run id | What ran | Wall time | Outcome |
 |---|---|---|---|---|
 | | | | | |
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
@@ -52,7 +52,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
+Navigation: ⬅️ [The bar](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
 - [ ] ⚠️ Did the eval pass's wall time grow, and by how much, against the band measured by
   `instrument-02`'s own short run (the admission rule promises roughly zero growth)?
@@ -63,7 +63,7 @@ Navigation: ⬅️ [The bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-con
 Navigation: ⬅️ [Before/after](#written-before-the-run-answered-after) | 📋 [TOC](#table-of-contents) | [Next](#still-open) ➡️
 
 - [ ] ⚠️ **Was the comparison fair?** The short run used the frozen manifest, not a subset.
-- [ ] ⚠️ **Was the instrument sound?** The inherited three curves still match the healthy shapes
+- [ ] ⚠️ **Was the measuring tool sound?** The inherited three curves still match the healthy shapes
   that `instrument-02` recorded.
 - [ ] ⚠️ **Did the run respect the environment?** Free-device launch per protocol; outputs on
   `/datasets`.

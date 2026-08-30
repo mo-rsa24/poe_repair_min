@@ -1,5 +1,7 @@
 # 📊 The counted joint-prompt figure
 
+**This plan asks one question: how often does the joint prompt itself fail to show both animals, counted rather than assumed?**
+
 **Step 41 in the root running order. Waits on: nothing (minutes of scoring on renders that exist). Next: [12-close-f8a-and-the-oracle-panel](12-close-f8a-and-the-oracle-panel.md).**
 
 ## Recommended prompt (after run completes)
@@ -16,7 +18,7 @@
 |------|------|-------------|
 | 40 (previous) | [10-the-mechanism-follower](10-the-mechanism-follower.md) | The mechanism reads |
 | **41 (current)** | **11: the-counted-joint-prompt-figure** | Score the mono renders; the three-bar figure |
-| 42 (next) | [12-close-f8a-and-the-oracle-panel](12-close-f8a-and-the-oracle-panel.md) | The unscored tail and the ceiling panel |
+| 42 (next) | [12-close-f8a-and-the-oracle-panel](12-close-f8a-and-the-oracle-panel.md) | The unscored tail and the best-case panel |
 
 ---
 
@@ -31,7 +33,7 @@
 - [Purpose and goal](#purpose-and-goal)
 - [Tasks](#tasks)
 - [Instructions](#instructions)
-- [The engagement gate](#the-engagement-gate)
+- [What has to pass before this runs](#what-has-to-pass-before-this-runs)
 - [Figure Catalog](#figure-catalog)
 - [Orchestration: keeping catalogs and plan files in sync](#orchestration-keeping-catalogs-and-plan-files-in-sync)
 - [Code references](#code-references)
@@ -45,16 +47,19 @@
 
 ⬅️ [Previous](#position-in-the-plan-tree) | 📋 [TOC](#table-of-contents) | [Next](#considerations) ➡️
 
-**The measurement:** the joint prompt's own compose rate, counted. On some held-out cells the joint prompt fails to show both animals; the LoRA, which never consumes the joint prompt at inference, restores them. That baseline is currently an anecdote; this plan makes it a number.
+**The measurement:** the joint prompt's own [compose rate](../../../context/world/compose-rate.md), counted. On some held-out runs the joint prompt fails to show both animals; the LoRA, which never consumes the joint prompt at inference, restores them. That baseline is currently an anecdote; this plan makes it a number.
 
-**The figure (ledger):** compose rate per pair, three bars (joint prompt, plain PoE, LoRA-corrected), same cells and seeds, with the repair-cell strip beside it as the anecdote.
+> Held-out means the pairs were never shown during training, so the number says how well the
+> adapter does on animals it has not seen.
+
+**The figure (ledger):** compose rate per pair, three bars (joint prompt, plain PoE, LoRA-corrected), the same pairs and seeds throughout, with a strip of repaired renders beside it as the anecdote.
 
 **The wording rule (ledger):** "restores composition the joint prompt loses on this pool", never "outperforms SDXL".
 
 **Associated materials:**
 - **Review questions:** [../review/11-the-counted-joint-prompt-figure.md](../review/11-the-counted-joint-prompt-figure.md)
 - **Ledger entry:** [the joint prompt's own failure](../decisions-taken-here.md#the-joint-prompts-own-failure-framing-and-count)
-- **The renders:** `mono.png` per cell under the training cache (`/datasets/mmolefe/poe_repair_min/outputs/training_cache/heldout/<pair>/seed_<n>/`)
+- **The renders:** one `mono.png` per pair-and-seed under the training cache (`/datasets/mmolefe/poe_repair_min/outputs/training_cache/heldout/<pair>/seed_<n>/`)
 
 ---
 
@@ -62,7 +67,7 @@
 
 ⬅️ [Previous](#quick-context-where-you-are) | 📋 [TOC](#table-of-contents) | [Next](#environment-facts-this-plan-depends-on) ➡️
 
-**Expected runtime:** minutes, in-session (ledger): the renders exist per cell; only the scorer runs.
+**Expected runtime:** minutes, in-session (ledger): the renders already exist for every pair and seed; only the scorer runs.
 
 **Prerequisites:** the validated scorer; the held-out pool definition (8 pairs × 8 seeds).
 
@@ -82,7 +87,7 @@
 
 ⬅️ [Previous](#environment-facts-this-plan-depends-on) | 📋 [TOC](#table-of-contents) | [Next](#why-this-plan-exists) ➡️
 
-**Mono as a measured ceiling: the three-bar figure that frames every showcase comparison honestly.** F8b already shows the oracle at 0.75 on some pairs; this plan gives the joint prompt itself the same treatment.
+**Mono as a measured ceiling: the three-bar figure that frames every showcase comparison honestly.** F8b already shows the cached true correction at 0.75 on some pairs; this plan gives the joint prompt itself the same treatment.
 
 ---
 
@@ -102,8 +107,8 @@
 
 ⬅️ [Previous](#why-this-plan-exists) | 📋 [TOC](#table-of-contents) | [Next](#purpose-and-goal) ➡️
 
-1. **The mono scoring pass**: every `mono.png` in the held-out pool through the instance-count scorer; `mono_baseline.json` (per cell: pair, seed, n_instances, compose).
-2. **The three-bar figure draft**: per pair, joint prompt vs plain PoE vs LoRA at λ=1 (the PoE and LoRA numbers exist in `compose_rate.json` and the transfer outputs), repair-cell strip beside it.
+1. **The mono scoring pass**: every `mono.png` in the held-out pool through the instance-count scorer; `mono_baseline.json` (per run: pair, seed, n_instances, compose).
+2. **The three-bar figure draft**: per pair, joint prompt vs plain PoE vs LoRA at λ=1 (the PoE and LoRA numbers exist in `compose_rate.json` and the transfer outputs), a strip of repaired renders beside it.
 
 ---
 
@@ -132,14 +137,14 @@ Serves goal 6. Checkable outcomes:
 
 ◀ **Needs: nothing** — renders and scorer exist.
 
-- [ ] **1.1 Score the mono renders** over the held-out pool; write `mono_baseline.json` to `/datasets/mmolefe/poe_repair_min/outputs/showcase/mono_baseline/`. Completion is observable: one row per cell of the pool, none missing.
+- [ ] **1.1 Score the mono renders** over the held-out pool; write `mono_baseline.json` to `/datasets/mmolefe/poe_repair_min/outputs/showcase/mono_baseline/`. Completion is observable: one row per pair-and-seed in the pool, none missing.
 - [ ] **1.2 Draft the three-bar figure** with its sidecar; caption uses the wording rule and names the tier, space, guidance 7.5, and checkpoint.
 
 ▶ **Next: [instruction 2.1](#2--spot-check-the-counts)**.
 
 ## Instructions
 
-⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
+⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#what-has-to-pass-before-this-runs) ➡️
 
 ### 2. 👁️ Spot-check the counts
 
@@ -151,15 +156,15 @@ Serves goal 6. Checkable outcomes:
 
 2.3 **Write the verdict** into the [review file](../review/11-the-counted-joint-prompt-figure.md).
 
-▶ **Next: the engagement gate.**
+▶ **Next: what has to pass before this runs.**
 
 ---
 
-## The engagement gate
+## What has to pass before this runs
 
 ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
-> Every showcase caption that compares against Mono waits on this number. Minutes of scoring gate the honesty of the whole wall.
+> Every showcase caption that compares against Mono waits on this number. Minutes of scoring decide whether the whole wall is honest.
 
 **Pass criteria:**
 - The pool fully scored; the spot-check agrees; the three-bar draft exists.
@@ -173,13 +178,13 @@ Serves goal 6. Checkable outcomes:
 
 ## Figure Catalog
 
-⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
+⬅️ [Previous](#what-has-to-pass-before-this-runs) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
 
 ### Pending
 
 | Figure | Lane | What it shows | Save to |
 |--------|------|---------------|---------|
-| the three-bar counted figure | subject | compose rate per pair: joint prompt, plain PoE, LoRA; repair strip beside | drafted here, shipped by plan 05 |
+| the three-bar counted figure | subject | compose rate per pair: joint prompt, plain PoE, LoRA; strip of repaired renders beside | drafted here, shipped by plan 05 |
 
 ### Generated during plan execution
 
@@ -225,7 +230,7 @@ Serves goal 6. Checkable outcomes:
 ▶ Paste to run this plan (minutes of scoring, no queue):
 
 ```
-Execute plans/01-showcase-the-trained-lora/plans/11-the-counted-joint-prompt-figure.md: score the cached mono renders, build the three-bars-per-pair figure with the repair strip beside it; the wording rule applies.
+Execute plans/01-showcase-the-trained-lora/plans/11-the-counted-joint-prompt-figure.md: score the cached mono renders, build the three-bars-per-pair figure with the strip of repaired renders beside it; the wording rule applies.
 ```
 
 ---
@@ -234,7 +239,7 @@ Execute plans/01-showcase-the-trained-lora/plans/11-the-counted-joint-prompt-fig
 
 ⬅️ [Previous](#recommended-skill) | 📋 [TOC](#table-of-contents) | [Next](#error-matrix) ➡️
 
-[12-close-f8a-and-the-oracle-panel](12-close-f8a-and-the-oracle-panel.md): the unscored 70k-100k tail and the qualitative ceiling panel, reconciled with the transfer-figures plan next door.
+[12-close-f8a-and-the-oracle-panel](12-close-f8a-and-the-oracle-panel.md): the unscored 70k-100k tail and the qualitative panel of what the cached correction reaches at best, reconciled with the transfer-figures plan next door.
 
 ---
 

@@ -22,7 +22,7 @@ here and nowhere else. Questions below were written at design time, before any n
 - [Words this file uses](#words-this-file-uses)
 - [Run kind](#run-kind)
 - [Runs](#runs)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [Asked after the result](#asked-after-the-result)
 - [Could the answer be an artefact](#could-the-answer-be-an-artefact)
@@ -44,17 +44,17 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#run-kind) ➡️
 
 Navigation: ⬅️ [Words this file uses](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#runs) ➡️
 
-**Builds an instrument.** A missed threshold blocks plans 04 and 05: a failed check means the adapter, not the science, is wrong.
+**Builds a measuring tool.** A missed threshold blocks plans 04 and 05: a failed check means the adapter, not the science, is wrong.
 
 ## Runs
 
-Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
 | | | | | | not started |
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
@@ -67,7 +67,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
+Navigation: ⬅️ [The question written before the run](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
 - [ ] ⚠️ Where did the checkpoint land and how big is it? Path, filesystem, size on disk.
 - [ ] ⚠️ What does the predictor's 4-step sharpness look like against the teacher's 25-step
@@ -77,7 +77,7 @@ Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC
 
 Navigation: ⬅️ [Written before the run](#written-before-the-run-answered-after) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
-Questions the result itself raised. **Nothing here may ever become a bar**, because it was
+Questions the result itself raised. **Nothing here may ever become the question above**, because it was
 written with the answer already visible.
 
 (none yet)
@@ -90,7 +90,7 @@ Three fixed checks. Each is answered or explicitly marked not applicable; none i
 
 - [ ] ⚠️ **Was the comparison fair?** Did exactly one axis differ between the sides being
       compared, and did the counts confirm it rather than the config claiming it?
-- [ ] ⚠️ **Was the instrument sound?** Did the thing doing the measuring measure what its name
+- [ ] ⚠️ **Was the measuring tool sound?** Did the thing doing the measuring measure what its name
       says, over the data this run wrote and no other?
 - [ ] ⚠️ **Did the run respect the environment?** Did every flag select a non-empty group, did
       the output land where the plan said, and did nothing silently fall back?

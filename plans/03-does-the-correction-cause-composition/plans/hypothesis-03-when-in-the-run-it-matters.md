@@ -46,7 +46,7 @@ Design only. Verdicts and run state live in
 - [Purpose and goal](#purpose-and-goal)
 - [Tasks](#tasks) — things for Claude to execute
 - [Instructions](#instructions) — things for you to do manually
-- [The engagement gate](#the-engagement-gate)
+- [What has to pass before this runs](#what-has-to-pass-before-this-runs)
 - [Figure Catalog](#figure-catalog)
 - [Not run: the conditioning-window half](#not-run-the-conditioning-window-half)
 - [Orchestration: keeping catalogs and plan files in sync](#orchestration-keeping-catalogs-and-plan-files-in-sync)
@@ -341,7 +341,7 @@ window positions with the scorer's verdict on each.
 
 ## Instructions
 
-⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
+⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#what-has-to-pass-before-this-runs) ➡️
 
 **For you to follow manually.** Do these yourself, interleaved with the Tasks rather than after
 them.
@@ -393,11 +393,11 @@ them.
      caption caps
    - ✅ the register's status matches what is on disk for every F4 row
 
-▶ **Next: the engagement gate.**
+▶ **Next: what has to pass before this runs.**
 
 ---
 
-## The engagement gate
+## What has to pass before this runs
 
 ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
@@ -425,7 +425,7 @@ them.
 
 ## Figure Catalog
 
-⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#not-run-the-conditioning-window-half) ➡️
+⬅️ [Previous](#what-has-to-pass-before-this-runs) | 📋 [TOC](#table-of-contents) | [Next](#not-run-the-conditioning-window-half) ➡️
 
 These are result plots rather than diagrams of a system, so the subject-versus-process split the
 Lane column carries does not apply. It is filled `—` deliberately rather than guessed. Every

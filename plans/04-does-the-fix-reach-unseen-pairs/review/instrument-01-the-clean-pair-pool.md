@@ -27,7 +27,7 @@ One thing checked here is contradicted by a sibling claim's run, and it is not s
 - [Words this file uses](#words-this-file-uses)
 - [Run kind](#run-kind)
 - [Runs](#runs)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [Asked after the result](#asked-after-the-result)
 - [Could the answer be an artefact](#could-the-answer-be-an-artefact)
@@ -58,13 +58,13 @@ found. A failure here blocks every plan in the scope rather than closing one.
 
 ## Runs
 
-Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
 | fail-rate scoring, 8 seeds per pair, instance-count scorer | Measuring tool | 2026-07-30 | 8 seeds × 19 pairs | `artifacts/results/does-the-fix-reach-unseen-pairs/fail_rate.{json,md}` | done |
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
@@ -76,7 +76,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
+Navigation: ⬅️ [The question written before the run](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
 - [x] ✅ Does any animal word repeat across pairs?
       No. 19 pairs, 38 distinct animals, and `pair_pool.py`'s overlap assertion passes. The pool
@@ -95,7 +95,7 @@ Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC
 
 Navigation: ⬅️ [Written before the run](#written-before-the-run-answered-after) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
-Questions the result itself raised. **Nothing here may ever become a bar**, because it was
+Questions the result itself raised. **Nothing here may ever become the question above**, because it was
 written with the answer already visible.
 
 - [ ] 🟡 Does `an_elephant__x__a_penguin` actually compose by default? Raised by the dose series
@@ -109,7 +109,7 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
 - [x] ✅ **Was the comparison fair?** Not applicable in the usual sense: nothing is compared here.
       The check that stands in for it is that the held-out pairs were deliberately left unscored,
       so building the measuring tool did not leak the transfer test.
-- [ ] 🟡 **Was the instrument sound?** The scorer is validated by `scorer_validated.json` and the
+- [ ] 🟡 **Was the measuring tool sound?** The scorer is validated by `scorer_validated.json` and the
       fail rates are measured over eight seeds rather than eyeballed. What is not sound is the
       control-pair assumption: one of the three control pairs scores as a failure elsewhere.
 - [x] ✅ **Did the run respect the environment?** Output landed at

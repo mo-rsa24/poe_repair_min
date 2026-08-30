@@ -30,7 +30,7 @@ than its name suggests.
 - [Words this file uses](#words-this-file-uses)
 - [Run kind](#run-kind)
 - [Runs](#runs)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [Asked after the result](#asked-after-the-result)
 - [Could the answer be an artefact](#could-the-answer-be-an-artefact)
@@ -58,14 +58,14 @@ here. Each analysis carries its own expected shape, named per question.
 
 ## Runs
 
-Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
 | snr_collapse, fork_curve, climb, spectrum: in-session scripts over the cache | Tests the claim | commits of 2026-08-05 | no GPU, no queue: reads the cache | `outputs/interaction_term/cache_analyses/` | done |
 | Mono-path generation for the fork read, 38/38 runs, 0 failed, mscluster109 GPU 1 | Tests the claim | 2026-08-05, `scripts/mechanism_study/generate_fork_paths.sh` | 38 runs | fork paths beside the cache | done |
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
@@ -77,7 +77,7 @@ its name suggests.
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
+Navigation: ⬅️ [The question written before the run](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
 - [x] 🟡 Does the correction's size follow noise level on one shared curve across pairs?
       Partly. Spread 19.7% over 17 pairs (34 curves) under the pre-committed `relative_norm`,
@@ -134,7 +134,7 @@ Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC
 
 Navigation: ⬅️ [Written before the run](#written-before-the-run-answered-after) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
-Questions the results themselves raised. **Nothing here may ever become a bar**, because it was
+Questions the results themselves raised. **Nothing here may ever become the question above**, because it was
 written with the answers already visible.
 
 - [ ] ⚠️ What does the [spectrum](/home-mscluster/mmolefe/goal-setting/learning/spectral-structure-of-the-correction/plans/09-energy-at-k-and-the-floors.md) add beyond within-run smoothness (D1's result) and cross-pair
@@ -154,7 +154,7 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
       norm while real ‖r_t‖ runs 8.7 to 107.6 across the 440 rows, so that baseline was measuring
       row size rather than direction structure. The verdict rests on the norm-matched baseline
       instead.
-- [x] ✅ **Was the instrument sound?** Two faults were found by reading rather than by luck, and
+- [x] ✅ **Was the measuring tool sound?** Two faults were found by reading rather than by luck, and
       both are fixed: the 20-step run pooled into the fork median, and the equal-norm baseline
       under the spectrum. The
       climb result carries its own controls (random-against-motion +0.000, wrong-step r_t +0.11)

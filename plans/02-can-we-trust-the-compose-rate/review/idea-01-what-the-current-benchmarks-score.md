@@ -25,7 +25,7 @@ images.
 - [Words this file uses](#words-this-file-uses)
 - [Run kind](#run-kind)
 - [Runs](#runs)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [Asked after the result](#asked-after-the-result)
 - [Could the answer be an artefact](#could-the-answer-be-an-artefact)
@@ -54,13 +54,13 @@ agreement score here does not rewrite any hypothesis.
 
 ## Runs
 
-Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
 | scoring every candidate at its published defaults | Tries a new idea | | one score per candidate; some candidates may need a GPU | the agreement table | not started |
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
@@ -74,7 +74,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
+Navigation: ⬅️ [The question written before the run](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
 - [ ] ⚠️ Did the prediction written before running hold?
       The plan requires a prediction on record first: which candidates are presence-family and
@@ -88,7 +88,7 @@ Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC
 
 Navigation: ⬅️ [Written before the run](#written-before-the-run-answered-after) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
-Questions the scoring run itself raised. **Nothing here may ever become a bar**, because it was
+Questions the scoring run itself raised. **Nothing here may ever become the question above**, because it was
 written with the answer already visible. Nothing yet: the scoring has not run.
 
 ## Could the answer be an artefact
@@ -98,7 +98,7 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
 - [ ] ⚠️ **Was the comparison fair?** Did every candidate run at published defaults?
       Assert it in the script rather than claiming it. A candidate whose thresholds were touched
       is disqualified, not asterisked, because a tuned competitor is not a comparison.
-- [ ] ⚠️ **Was the instrument sound?** Were all scores computed on judgeable pairs only?
+- [ ] ⚠️ **Was the measuring tool sound?** Were all scores computed on judgeable pairs only?
       The row count must match `instrument-01`'s judgeable denominator exactly. A candidate
       scoring well across all pairs including the unjudgeable ones is guessing, and the score is
       measuring the guess.

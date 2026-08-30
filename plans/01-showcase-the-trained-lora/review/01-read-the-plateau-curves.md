@@ -23,7 +23,7 @@ measurement (a read of already-logged curves; no new training).
 
 - [Words this file uses](#words-this-file-uses)
 - [Runs](#runs)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [Could the answer be an artefact](#could-the-answer-be-an-artefact)
 - [Still open](#still-open)
@@ -39,13 +39,13 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#runs) ➡️
 
 ## Runs
 
-Navigation: ⬅️ [Words](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Words](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 | Date | Run id | What ran | Wall time | Outcome |
 |---|---|---|---|---|
 | | | | | |
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
@@ -59,7 +59,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
+Navigation: ⬅️ [The bar](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
 - [ ] ⚠️ Do the W&B curve and the local `history.json` extraction agree at every checkpoint, to
   within logging precision?
@@ -76,7 +76,7 @@ Navigation: ⬅️ [Before/after](#written-before-the-run-answered-after) | 📋
 
 - [ ] ⚠️ **Was the comparison fair?** The metric averages over the eval runs; confirm the set of
   runs did not change across training (same pairs, same seeds at every eval step).
-- [ ] ⚠️ **Was the instrument sound?** `eval/frac_distance_reached` came from the wiring built in
+- [ ] ⚠️ **Was the measuring tool sound?** `eval/frac_distance_reached` came from the wiring built in
   `instrument-02`; the verdict on its first short run is in
   [that review file](../../04-does-the-fix-reach-unseen-pairs/review/instrument-02-three-live-curves-while-training.md).
 - [ ] ⚠️ **Did the run respect the environment?** Not applicable: nothing runs; the read is of

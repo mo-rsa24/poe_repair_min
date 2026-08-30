@@ -1,5 +1,7 @@
 # 🔬 Revalidate the scorer off animals
 
+**This plan asks one question: can the scorer be trusted on scenes that are not two animals, so the paper's captions may claim more than animal pairs?**
+
 **Step 43 in the root running order. Waits on: nothing. Next: back to [05-assemble-the-showcase-figures](05-assemble-the-showcase-figures.md), which closes the scope.**
 
 ## Recommended prompt (after run completes)
@@ -14,7 +16,7 @@
 
 | Step | Plan | What it does |
 |------|------|-------------|
-| 42 (previous) | [12-close-f8a-and-the-oracle-panel](12-close-f8a-and-the-oracle-panel.md) | The tail and the ceiling |
+| 42 (previous) | [12-close-f8a-and-the-oracle-panel](12-close-f8a-and-the-oracle-panel.md) | The tail and the best case |
 | **43 (current)** | **13: revalidate-the-scorer-off-animals** | The validation round that opens tier-three captions |
 | 35 (closes scope) | [05-assemble-the-showcase-figures](05-assemble-the-showcase-figures.md) | The wall, assembled last |
 
@@ -31,7 +33,7 @@
 - [Purpose and goal](#purpose-and-goal)
 - [Tasks](#tasks)
 - [Instructions](#instructions)
-- [The engagement gate](#the-engagement-gate)
+- [What has to pass before this runs](#what-has-to-pass-before-this-runs)
 - [Figure Catalog](#figure-catalog)
 - [Orchestration: keeping catalogs and plan files in sync](#orchestration-keeping-catalogs-and-plan-files-in-sync)
 - [Code references](#code-references)
@@ -45,18 +47,18 @@
 
 ⬅️ [Previous](#position-in-the-plan-tree) | 📋 [TOC](#table-of-contents) | [Next](#considerations) ➡️
 
-**The instrument question:** the instance-count scorer (GroundingDINO, count ≥ 2) is validated for two-animal scenes only. The population ladder's tier three, "SDXL composition generally", is claimable only once the scorer's verdicts are trusted on scenes that are not two animals: the four non-animal cells already generated (dog × oil-painting-style, dolphin × ocean-wave, mailbox × snowfield, typewriter × cactus).
+**The question about the measuring tool:** the instance-count scorer (GroundingDINO, count ≥ 2) is validated for two-animal scenes only. The population ladder's tier three, "SDXL composition generally", is claimable only once the scorer's verdicts are trusted on scenes that are not two animals: the four non-animal pairs already generated (dog × oil-painting-style, dolphin × ocean-wave, mailbox × snowfield, typewriter × cactus).
 
-**What validation means here, copying the pattern that produced `scorer_validated.json`:** a labelled mini-set, the scorer's read against the eye's, and a bar in code before the reading.
+**What validation means here, copying the pattern that produced `scorer_validated.json`:** a labelled mini-set, the scorer's read against the eye's, and the threshold written into the source before the reading.
 
-**If it validates:** tier-three captions open; the four cells get scored and enter the population figures.
+**If it validates:** tier-three captions open; the four pairs get scored and enter the population figures.
 
 **If it does not:** tier three stays closed, the captions keep their animal-pairs reach, and that is a recorded scope decision, not a failure.
 
 **Associated materials:**
 - **Review questions:** [../review/13-revalidate-the-scorer-off-animals.md](../review/13-revalidate-the-scorer-off-animals.md)
 - **Ledger entry:** [the population ladder](../decisions-taken-here.md#what-every-figure-claims-over-population)
-- **The cells:** under `/datasets/mmolefe/poe_repair_min/outputs/training_cache/heldout/` (`a_dog__x__oil_painting_style`, `a_dolphin__x__an_ocean_wave`, `a_mailbox__x__a_snowfield`, `a_typewriter__x__a_cactus`)
+- **The four pairs:** under `/datasets/mmolefe/poe_repair_min/outputs/training_cache/heldout/` (`a_dog__x__oil_painting_style`, `a_dolphin__x__an_ocean_wave`, `a_mailbox__x__a_snowfield`, `a_typewriter__x__a_cactus`)
 
 ---
 
@@ -64,7 +66,7 @@
 
 ⬅️ [Previous](#quick-context-where-you-are) | 📋 [TOC](#table-of-contents) | [Next](#environment-facts-this-plan-depends-on) ➡️
 
-**Expected runtime:** one validation round: labelling a mini-set by eye (the human half), one scoring pass (minutes). No training, no sweep.
+**Expected runtime:** one validation round: labelling a mini-set by eye (the human half), one scoring pass (minutes). No training, and nothing run across a range of settings.
 
 **The hard part is conceptual, not computational:** "compose" for dog × oil-painting-style is not an instance count; the labelling step must first write down what a pass looks like per non-animal pair kind, and that definition is the real deliverable.
 
@@ -82,7 +84,7 @@
 
 ⬅️ [Previous](#environment-facts-this-plan-depends-on) | 📋 [TOC](#table-of-contents) | [Next](#why-this-plan-exists) ➡️
 
-**A validation verdict that either opens tier-three captions or closes them with a reason.** Bars in code, per the repo's rule, before any verdict is read.
+**A validation verdict that either opens tier-three captions or closes them with a reason.** Thresholds live in the source, per the repo's rule, before any verdict is read.
 
 ---
 
@@ -90,7 +92,7 @@
 
 ⬅️ [Previous](#the-claim) | 📋 [TOC](#table-of-contents) | [Next](#description-what-to-build) ➡️
 
-**The problem.** The generated non-animal cells are unusable evidence while the scorer's reach stops at two-animal scenes; scoring them anyway would put uncheckable numbers in the paper.
+**The problem.** The generated non-animal renders are unusable evidence while the scorer's reach stops at two-animal scenes; scoring them anyway would put uncheckable numbers in the paper.
 
 **The solution.** The same validation pattern that earned `scorer_validated.json`, run on the new scene kinds.
 
@@ -102,7 +104,7 @@
 
 1. **The pass definition** per non-animal kind (object × style, object × scene), written before labelling; one page beside this plan.
 2. **The labelled mini-set**: N renders per kind labelled by eye against the definition [owner: human].
-3. **The scoring pass and the agreement read**: scorer vs labels, agreement rate per kind, the bar in code (copy the `MIN_MEDIAN_RATIO` pattern: threshold in source, visible in diff).
+3. **The scoring pass and the agreement read**: scorer against labels, agreement rate per kind, the threshold in code (copy the `MIN_MEDIAN_RATIO` pattern: threshold in source, visible in diff).
 4. **The verdict artifact**: `scorer_validated_offanimals.json`, mirroring the original's shape.
 
 ---
@@ -114,7 +116,7 @@
 Serves goal 4 of the Definition of Done (re-validation verdict recorded; tier-three opened or declined). Checkable outcomes:
 
 1. The pass definition exists per kind.
-2. The agreement rates computed against an in-code bar; the verdict artifact written.
+2. The agreement rates computed against a threshold that lives in the source; the verdict artifact written.
 
 ---
 
@@ -133,7 +135,7 @@ Serves goal 4 of the Definition of Done (re-validation verdict recorded; tier-th
 ◀ **Needs: nothing.**
 
 - [ ] **1.1 Write the pass definition per kind** (`plans/13-pass-definitions.md` beside this file): what "composed" means for object × style and object × scene, with one example render named per outcome.
-- [ ] **1.2 Build the labelling sheet**: sample renders per kind from the four cells' folders into one contact sheet with blank label columns.
+- [ ] **1.2 Build the labelling sheet**: sample renders per kind from the four pairs' folders into one contact sheet with blank label columns.
 - [ ] **1.3 Score the same renders** with the scorer (and any adapted prompt/class configuration it needs off animals); record the configuration verbatim in the sidecar.
 - [ ] **1.4 Compute agreement against the labels once they exist; bar in code** (`scripts/showcase/offanimal_validation.py`, threshold constant at top). Write `scorer_validated_offanimals.json`.
 
@@ -141,30 +143,30 @@ Serves goal 4 of the Definition of Done (re-validation verdict recorded; tier-th
 
 ## Instructions
 
-⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
+⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#what-has-to-pass-before-this-runs) ➡️
 
 ### 2. 👁️ Label and judge
 
 ◀ **Needs: [tasks 1.1 to 1.2](#1--define-score-compare)** done, so the definition and sheet exist.
 
-2.1 **Label the contact sheet** against the pass definition, one label per render, no peeking at scorer output [owner: human]. ✅ every render labelled; ambiguous cases get their own mark and are excluded from the bar, counted in the sidecar.
+2.1 **Label the contact sheet** against the pass definition, one label per render, no peeking at scorer output [owner: human]. ✅ every render labelled; ambiguous cases get their own mark and are excluded from the threshold, counted in the sidecar.
 
-2.2 **Read the agreement rates** from task 1.4's output against the in-code bar. ✅ bar met per kind: tier three opens for that kind; ❌ bar missed: tier three stays closed for that kind, recorded as a decision.
+2.2 **Read the agreement rates** from task 1.4's output against the threshold in the source. ✅ threshold met per kind: tier three opens for that kind; ❌ threshold missed: tier three stays closed for that kind, recorded as a decision.
 
 2.3 **Write the verdict** into the [review file](../review/13-revalidate-the-scorer-off-animals.md).
 
-▶ **Next: the engagement gate.**
+▶ **Next: what has to pass before this runs.**
 
 ---
 
-## The engagement gate
+## What has to pass before this runs
 
 ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
-> A caption's reach is bought here or not at all. Scoring the non-animal cells without this verdict would put numbers in the paper nobody can check.
+> A caption's reach is bought here or not at all. Scoring the non-animal renders without this verdict would put numbers in the paper nobody can check.
 
 **Pass criteria:**
-- Definitions written before labels; labels before agreement; bar in code before reading.
+- Definitions written before labels; labels before agreement; the threshold in the source before reading.
 
 **Fail criteria:**
 - Any ordering violation above (the whole point of the pattern), or the scorer configuration off animals left unrecorded.
@@ -175,7 +177,7 @@ Serves goal 4 of the Definition of Done (re-validation verdict recorded; tier-th
 
 ## Figure Catalog
 
-⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
+⬅️ [Previous](#what-has-to-pass-before-this-runs) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
 
 ### Pending
 
@@ -187,8 +189,8 @@ Serves goal 4 of the Definition of Done (re-validation verdict recorded; tier-th
 
 | Figure | Lane | Description | Generated by | Status |
 |--------|------|-------------|--------------|--------|
-| scorer_validated_offanimals.json | — | agreement per kind, bar, verdict (sidecar) | task 1.4 | ⏳ |
-| the labelled contact sheet | — | the human labels the bar was judged against | instruction 2.1 | ⏳ |
+| scorer_validated_offanimals.json | — | agreement per kind, threshold, verdict (sidecar) | task 1.4 | ⏳ |
+| the labelled contact sheet | — | the human labels the threshold was judged against | instruction 2.1 | ⏳ |
 
 ---
 
@@ -217,7 +219,7 @@ Serves goal 4 of the Definition of Done (re-validation verdict recorded; tier-th
 
 ⬅️ [Previous](#orchestration-keeping-catalogs-and-plan-files-in-sync) | 📋 [TOC](#table-of-contents) | [Next](#recommended-skill) ➡️
 
-**Pattern:** `scorer_validated.json`'s provenance and the `MIN_MEDIAN_RATIO` in-code-bar idiom from the mechanism re-probe scorer.
+**Pattern:** `scorer_validated.json`'s provenance and the `MIN_MEDIAN_RATIO` threshold-in-the-source idiom from the mechanism re-probe scorer.
 
 ---
 
@@ -228,7 +230,7 @@ Serves goal 4 of the Definition of Done (re-validation verdict recorded; tier-th
 ▶ Paste to run this plan (opens tier-three captions):
 
 ```
-Execute plans/01-showcase-the-trained-lora/plans/13-revalidate-the-scorer-off-animals.md: tasks 1.1 to 1.3 only (pass definitions, the labelling contact sheet, the scoring pass with its configuration recorded); stop before agreement. The labels are the user's to do blind; afterwards one follow-up prompt computes agreement against the in-code bar and writes scorer_validated_offanimals.json.
+Execute plans/01-showcase-the-trained-lora/plans/13-revalidate-the-scorer-off-animals.md: tasks 1.1 to 1.3 only (pass definitions, the labelling contact sheet, the scoring pass with its configuration recorded); stop before agreement. The labels are the user's to do blind; afterwards one follow-up prompt computes agreement against the threshold in the source and writes scorer_validated_offanimals.json.
 ```
 
 ---

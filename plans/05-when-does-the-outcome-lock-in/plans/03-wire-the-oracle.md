@@ -36,7 +36,7 @@ Step 46 in the root running order; waits on step 44 (the premise must stand); ne
 - [Purpose and goal](#purpose-and-goal)
 - [Tasks](#tasks)
 - [Instructions](#instructions)
-- [The engagement gate](#the-engagement-gate)
+- [What has to pass before this runs](#what-has-to-pass-before-this-runs)
 - [Figure Catalog](#figure-catalog)
 - [Orchestration](#orchestration-keeping-catalogs-and-plan-files-in-sync)
 - [Code references](#code-references)
@@ -173,7 +173,7 @@ Navigation: ⬅️ [Previous](#purpose-and-goal) | 📋 [TOC](#table-of-contents
 
 **For Claude to execute.** Ask Claude to do these.
 
-### 0. 🧭 Preflight: check this plan before working from it
+### 0. 🧭 Check this plan before working from it
 
 - [ ] **0.1** Paste: `/verify-plan @plans/05-when-does-the-outcome-lock-in/plans/03-wire-the-oracle.md`
   - Done when: the report comes back clean, or its proposals have been applied.
@@ -182,8 +182,8 @@ Navigation: ⬅️ [Previous](#purpose-and-goal) | 📋 [TOC](#table-of-contents
 
 ### 1. 🔧 Download and adapt
 
-◀ **Needs: [task 0.1](#0--preflight-check-this-plan-before-working-from-it)**, and
-[what plan 01 had to pass](01-basins-by-hand.md#the-engagement-gate), so the premise stands.
+◀ **Needs: [task 0.1](#0--check-this-plan-before-working-from-it)**, and
+[what plan 01 had to pass](01-basins-by-hand.md#what-has-to-pass-before-this-runs), so the premise stands.
 
 - [ ] **1.1** Download `latent-consistency/lcm-sdxl` (fp16 variant) with the HF cache pointed at
   `/datasets`, then print the landing path, its filesystem, and the size on disk.
@@ -224,11 +224,11 @@ Navigation: ⬅️ [Previous](#purpose-and-goal) | 📋 [TOC](#table-of-contents
   - Paste: `/sync-plan-tree @plans/05-when-does-the-outcome-lock-in/plans/03-wire-the-oracle.md — <one line>`
   - Done when: statuses match reality.
 
-▶ **Next: the engagement gate.**
+▶ **Next: what has to pass before this runs.**
 
 ## Instructions
 
-Navigation: ⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
+Navigation: ⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#what-has-to-pass-before-this-runs) ➡️
 
 **For you to follow manually.** Do these yourself.
 
@@ -244,9 +244,9 @@ Navigation: ⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](
    - ❌ If they read as different images while the numbers claim agreement, the soundness check
      in the review file fails regardless of the numbers; record what you saw.
 
-▶ **Next: the engagement gate**, then [plan 04](04-calibrate-the-instrument.md).
+▶ **Next: what has to pass before this runs**, then [plan 04](04-calibrate-the-instrument.md).
 
-## The engagement gate
+## What has to pass before this runs
 
 Navigation: ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
@@ -264,7 +264,7 @@ Navigation: ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | 
 
 ## Figure Catalog
 
-Navigation: ⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
+Navigation: ⬅️ [Previous](#what-has-to-pass-before-this-runs) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
 
 #### Pending: to be generated from prompts
 

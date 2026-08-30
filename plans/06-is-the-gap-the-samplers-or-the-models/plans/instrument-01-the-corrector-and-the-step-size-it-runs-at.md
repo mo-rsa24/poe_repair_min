@@ -45,7 +45,7 @@ Design only. Verdicts and run state live in
 - [Environment Facts This Plan Depends On](#environment-facts-this-plan-depends-on)
 - [Tasks](#tasks) — things for Claude to execute
 - [Instructions](#instructions) — things for you to do manually
-- [The engagement gate](#the-engagement-gate)
+- [What has to pass before this runs](#what-has-to-pass-before-this-runs)
 - [Figure Catalog](#figure-catalog)
 - [Orchestration: keeping catalogs and plan files in sync](#orchestration-keeping-catalogs-and-plan-files-in-sync)
 - [Code references](#code-references)
@@ -289,7 +289,7 @@ read.
 
 **For Claude to execute.** Ask Claude to do these.
 
-### 0. 🧭 Preflight: check this plan before working from it
+### 0. 🧭 Check this plan before working from it
 
 - [ ] **0.1** Check this plan conforms and its instructions are concrete, before acting on it.
   - Paste: `/verify-plan @plans/06-is-the-gap-the-samplers-or-the-models/plans/instrument-01-the-corrector-and-the-step-size-it-runs-at.md`
@@ -309,7 +309,7 @@ read.
 
 ### 1. 🔧 Build the corrector composer
 
-◀ **Needs: [task 0.2](#0--preflight-check-this-plan-before-working-from-it)**, so the build is not
+◀ **Needs: [task 0.2](#0--check-this-plan-before-working-from-it)**, so the build is not
 duplicating something already here.
 
 - [ ] **1.1** Write `poe_repair/composers/poe_langevin.py`.
@@ -395,11 +395,11 @@ sign-off on the pick. Step 26's whole cost rides on it.
   - Paste: `/sync-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/plans/instrument-01-the-corrector-and-the-step-size-it-runs-at.md — <one line>`
   - Done when: statuses, the running order and the Error Matrix match reality.
 
-▶ **Next: [the engagement gate](#the-engagement-gate).**
+▶ **Next: [what has to pass before this runs](#what-has-to-pass-before-this-runs).**
 
 ## Instructions
 
-⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
+⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#what-has-to-pass-before-this-runs) ➡️
 
 **For you to follow manually.** Do these yourself, interleaved with the Tasks rather than after
 them.
@@ -429,7 +429,7 @@ them.
 ▶ **Next: [step 26's task 1.1](hypothesis-02-what-is-left-once-the-chain-settles.md#1--write-the-gate-script-with-its-bars-in-source)**,
 which launches only once you have signed off here.
 
-## The engagement gate
+## What has to pass before this runs
 
 ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
@@ -473,7 +473,7 @@ $PY -c "import json;d=json.load(open('$OUT/step_size_search.json'));print(len(d[
 
 ## Figure Catalog
 
-⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
+⬅️ [Previous](#what-has-to-pass-before-this-runs) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
 
 Every figure in this scope is held to the standard
 [in the scope's MASTER_PLAN](../MASTER_PLAN.md#the-figure-bar-every-plan-here-is-held-to).

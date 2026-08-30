@@ -29,7 +29,7 @@ pair-and-seed runs the fix never trained on.
 - [Words this file uses](#words-this-file-uses)
 - [Run kind](#run-kind)
 - [Runs](#runs)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [Asked after the result](#asked-after-the-result)
 - [Could the answer be an artefact](#could-the-answer-be-an-artefact)
@@ -62,7 +62,7 @@ follow-on. It did not miss.
 
 ## Runs
 
-Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
@@ -75,7 +75,7 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 Run directly on the node rather than as a queued job, because biggpu allows one job per user and
 an interactive session was already using the one allowed.
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
@@ -102,7 +102,7 @@ rows above 1.** Both conditions have to hold, so one strong pair cannot carry a 
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
+Navigation: ⬅️ [The question written before the run](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
 - [x] 🟡 Is the effect specific to pairs that need fixing?
       **No, and this must be stated in the paper rather than hidden.** Split by role: the six
@@ -139,7 +139,7 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
 - [x] ✅ **Was the comparison fair?** One axis differs: the adapter off against on, from the
       identical starting state at matched steps. Nothing else changes between the two readings of
       one run, which is what makes the pattern difference attributable to the adapter.
-- [x] ✅ **Was the instrument sound?** Two checks, both passed.
+- [x] ✅ **Was the measuring tool sound?** Two checks, both passed.
       *Does the measurement read the right word for every pair?* Yes, after a fix. The measuring
       code originally used a hardcoded token position that is correct for "a cat" and "a dog" and
       wrong for any pair whose animal name splits into pieces. Three pool pairs split: walrus

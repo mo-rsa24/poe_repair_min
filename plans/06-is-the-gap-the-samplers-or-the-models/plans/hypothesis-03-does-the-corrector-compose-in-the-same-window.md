@@ -47,7 +47,7 @@ Design only. Verdicts and run state live in
 - [Environment Facts This Plan Depends On](#environment-facts-this-plan-depends-on)
 - [Tasks](#tasks) — things for Claude to execute
 - [Instructions](#instructions) — things for you to do manually
-- [The engagement gate](#the-engagement-gate)
+- [What has to pass before this runs](#what-has-to-pass-before-this-runs)
 - [Figure Catalog](#figure-catalog)
 - [Orchestration: keeping catalogs and plan files in sync](#orchestration-keeping-catalogs-and-plan-files-in-sync)
 - [Code references](#code-references)
@@ -314,11 +314,11 @@ can make.
   - Paste: `/sync-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis-03-does-the-corrector-compose-in-the-same-window.md — <one line>`
   - Done when: statuses, the running order and the Error Matrix match reality.
 
-▶ **Next: [the engagement gate](#the-engagement-gate).**
+▶ **Next: [what has to pass before this runs](#what-has-to-pass-before-this-runs).**
 
 ## Instructions
 
-⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
+⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#what-has-to-pass-before-this-runs) ➡️
 
 **For you to follow manually.** Do these yourself, interleaved with the Tasks rather than after
 them.
@@ -349,7 +349,7 @@ them.
 ▶ **Next: [the close out](#close-out--record-what-this-plan-taught)**, then
 [step 28](baseline-01-superdiff-at-this-repos-fifty-steps.md).
 
-## The engagement gate
+## What has to pass before this runs
 
 ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
@@ -389,7 +389,7 @@ ls -l paper/iclr/figures/when-the-correction-arrives/mcmc/
 
 ## Figure Catalog
 
-⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
+⬅️ [Previous](#what-has-to-pass-before-this-runs) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
 
 The standard every figure in this scope is held to is
 [in the scope's MASTER_PLAN](../MASTER_PLAN.md#the-figure-bar-every-plan-here-is-held-to).

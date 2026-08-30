@@ -32,7 +32,7 @@ a pre-registered question rewritten after the fact is no longer pre-registered.
 - [Words this file uses](#words-this-file-uses)
 - [Run kind](#run-kind)
 - [Runs](#runs)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [The step-size search](#the-step-size-search)
 - [Asked after the result](#asked-after-the-result)
@@ -72,11 +72,11 @@ carries, and all three are written in the design file's `## Why this plan exists
 
 ## Runs
 
-Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
-| The free bound: cached correction size as noise goes to zero | Tests the claim | not launched | no GPU, reads files on disk | this file's [first threshold](#the-pre-registered-bar) | ⚠️ not run |
+| The free bound: cached correction size as noise goes to zero | Tests the claim | not launched | no GPU, reads files on disk | this file's [first threshold](#the-question-written-before-the-run) | ⚠️ not run |
 | Leak check, `k=0` byte-identical to plain product-of-experts | Checks the runner | not launched | 1 run | stdout only | ⚠️ not run |
 | Leak check, `k=200` with the window past the last step | Checks the runner | not launched | 1 run | stdout only | ⚠️ not run |
 | Step-size search, `c ∈ {0.01, 0.035, 0.1, 0.3, 1.0}` at `k=20` | Checks the runner | not launched | ~110 plain-render equivalents | [the search table](#the-step-size-search) | ⚠️ not run |
@@ -85,7 +85,7 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 | SuperDiff at 50 against 200 steps | Baseline | not launched | 2 runs | step-count parity check | ⚠️ not run |
 | The two rule-by-dose grids | Baseline | not launched | 16 + 20 runs | `how-much-is-added/across-composition-rules/` | ⚠️ not run |
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
@@ -121,7 +121,7 @@ after the answer is visible shows up in a diff.
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#the-step-size-search) ➡️
+Navigation: ⬅️ [The question written before the run](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#the-step-size-search) ➡️
 
 - [ ] ⚠️ With `k=0`, does the composer reproduce plain product-of-experts byte-identical?
 - [ ] ⚠️ With a corrector window placed past the last step and `k=200`, is the output still
@@ -173,7 +173,7 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
 
 - [ ] ⚠️ **Was the comparison fair?** Only `k` varies across the curves. Same pair, same seed, same
       50 DDIM steps, same guidance, same step size, same starting latent.
-- [ ] ⚠️ **Was the instrument sound?** The two leak checks, the displacement column, and the point
+- [ ] ⚠️ **Was the measuring tool sound?** The two leak checks, the displacement column, and the point
       where the curve flattens in `k`. Any one of them failing voids the reading.
 - [ ] ⚠️ **Is the quantity what the caption says it is?** The residual norm at the settled point
       stands in for the distributional gap without being that gap. The corrector does not change

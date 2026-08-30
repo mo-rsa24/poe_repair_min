@@ -34,7 +34,7 @@ the picture alone, or does it add a second dog anyway?**
 - [Purpose and goal](#purpose-and-goal)
 - [Tasks](#tasks)
 - [Instructions](#instructions)
-- [The engagement gate](#the-engagement-gate)
+- [What has to pass before this runs](#what-has-to-pass-before-this-runs)
 - [Figure Catalog](#figure-catalog)
 - [Orchestration: keeping catalogs and plan files in sync](#orchestration-keeping-catalogs-and-plan-files-in-sync)
 - [Code references](#code-references)
@@ -62,7 +62,7 @@ the picture alone, or does it add a second dog anyway?**
 
 **Associated materials:**
 - **Review questions:** [../review/02-the-dog-x-dog-null-probe.md](../review/02-the-dog-x-dog-null-probe.md)
-- **The ledger entry:** [decisions-taken-here.md § The dog x dog test](../decisions-taken-here.md#the-dog-x-dog-probe-pre-registered)
+- **The ledger entry:** [decisions-taken-here.md § The dog x dog test](../decisions-taken-here.md#the-dog-x-dog-test-pre-registered)
 - **Checkpoint:** `artifacts/results/does-the-fix-reach-unseen-pairs/pooled_lora/phase1_r8_100k/checkpoints/lora_step_100000.pt` (rank 8, alpha 8, attn2 q/k/v)
 
 ---
@@ -161,7 +161,7 @@ Serves master-plan objective 2 and goal 2. Checkable outcomes:
 
 ## Instructions
 
-⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
+⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#what-has-to-pass-before-this-runs) ➡️
 
 ### 2. 👁️ Judge the renders
 
@@ -171,11 +171,11 @@ Serves master-plan objective 2 and goal 2. Checkable outcomes:
 
 2.2 **Write the verdict** into the [review file](../review/02-the-dog-x-dog-null-probe.md) with the counts and the ‖r̂‖ summary.
 
-▶ **Next: the engagement gate.**
+▶ **Next: what has to pass before this runs.**
 
 ---
 
-## The engagement gate
+## What has to pass before this runs
 
 ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
@@ -194,7 +194,7 @@ Serves master-plan objective 2 and goal 2. Checkable outcomes:
 
 ## Figure Catalog
 
-⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
+⬅️ [Previous](#what-has-to-pass-before-this-runs) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
 
 ### Pending
 

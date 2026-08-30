@@ -36,7 +36,7 @@ Step 44 in the root running order; waits on nothing; next is
 - [Purpose and goal](#purpose-and-goal)
 - [Tasks](#tasks)
 - [Instructions](#instructions)
-- [The engagement gate](#the-engagement-gate)
+- [What has to pass before this runs](#what-has-to-pass-before-this-runs)
 - [Figure Catalog](#figure-catalog)
 - [Orchestration](#orchestration-keeping-catalogs-and-plan-files-in-sync)
 - [Code references](#code-references)
@@ -176,7 +176,7 @@ Navigation: ⬅️ [Previous](#purpose-and-goal) | 📋 [TOC](#table-of-contents
 
 **For Claude to execute.** Ask Claude to do these.
 
-### 0. 🧭 Preflight: check this plan before working from it
+### 0. 🧭 Check this plan before working from it
 
 - [ ] **0.1** Check this plan conforms and its instructions are concrete, before acting on it.
   - Paste: `/verify-plan @plans/05-when-does-the-outcome-lock-in/plans/01-basins-by-hand.md`
@@ -186,7 +186,7 @@ Navigation: ⬅️ [Previous](#purpose-and-goal) | 📋 [TOC](#table-of-contents
 
 ### 1. 🔧 Build the test script
 
-◀ **Needs: [task 0.1](#0--preflight-check-this-plan-before-working-from-it)**, so the plan is known good.
+◀ **Needs: [task 0.1](#0--check-this-plan-before-working-from-it)**, so the plan is known good.
 
 - [ ] **1.1** Locate one cached pair-and-seed run and print what was found.
   - List the pair-and-seed runs under `/datasets/mmolefe/poe_repair_min/outputs/` that hold a
@@ -229,11 +229,11 @@ Navigation: ⬅️ [Previous](#purpose-and-goal) | 📋 [TOC](#table-of-contents
   - Paste: `/sync-plan-tree @plans/05-when-does-the-outcome-lock-in/plans/01-basins-by-hand.md — <one line on what you did>`
   - Done when: statuses, the running order and the Error Matrix match reality.
 
-▶ **Next: the engagement gate.**
+▶ **Next: what has to pass before this runs.**
 
 ## Instructions
 
-Navigation: ⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
+Navigation: ⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#what-has-to-pass-before-this-runs) ➡️
 
 **For you to follow manually.** Do these yourself.
 
@@ -255,9 +255,9 @@ Navigation: ⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](
    - [ ] Open the three JSONs, copy each step's two relative distances into
      [the review file](../review/01-basins-by-hand.md) under its one pre-registered question.
 
-▶ **Next: the engagement gate**, then [plan 02](02-the-free-probe.md).
+▶ **Next: what has to pass before this runs**, then [plan 02](02-the-free-probe.md).
 
-## The engagement gate
+## What has to pass before this runs
 
 Navigation: ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
@@ -279,7 +279,7 @@ Navigation: ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | 
 
 ## Figure Catalog
 
-Navigation: ⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
+Navigation: ⬅️ [Previous](#what-has-to-pass-before-this-runs) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
 
 #### Pending: to be generated from prompts
 

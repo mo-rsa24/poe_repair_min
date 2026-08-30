@@ -1,6 +1,8 @@
 # 🧪 Experiment B: rank 16 and 32
 
-**Step 39 in the root running order. Waits on: step 36 (the frozen instrument). Next: [10-the-mechanism-follower](10-the-mechanism-follower.md).**
+**This plan asks one question: does giving the adapter more capacity, rank 16 or rank 32 instead of rank 8, change anything at the same number of steps?**
+
+**Step 39 in the root running order. Waits on: step 36 (the frozen tracking set). Next: [10-the-mechanism-follower](10-the-mechanism-follower.md).**
 
 ## Recommended prompt (after run completes)
 
@@ -31,7 +33,7 @@
 - [Purpose and goal](#purpose-and-goal)
 - [Tasks](#tasks)
 - [Instructions](#instructions)
-- [The engagement gate](#the-engagement-gate)
+- [What has to pass before this runs](#what-has-to-pass-before-this-runs)
 - [Figure Catalog](#figure-catalog)
 - [Orchestration: keeping catalogs and plan files in sync](#orchestration-keeping-catalogs-and-plan-files-in-sync)
 - [Code references](#code-references)
@@ -45,11 +47,14 @@
 
 ⬅️ [Previous](#position-in-the-plan-tree) | 📋 [TOC](#table-of-contents) | [Next](#considerations) ➡️
 
-**The hypothesis:** *capacity is not the knob either: rank 16 and rank 32 land inside rank 8's seed-noise band on held-out compose rate at matched step counts.*
+**The hypothesis:** *capacity is not the knob either: rank 16 and rank 32 land inside rank 8's seed-noise band on held-out [compose rate](../../../context/world/compose-rate.md) at matched step counts.*
 
-**The design (ledger):** fresh runs at rank 16 and rank 32 (alpha equal to rank), 100k steps each, everything else identical; `sweep_s1_rank.sh` is the capacity harness. B buys the rank-ablation figure regardless of verdict: same cells, same λ, same inference across r8/r16/r32 at matched step counts.
+> Held-out means the pairs were never shown during training, so the number says how well the
+> adapter does on animals it has not seen.
 
-**The interpretation key (ledger):** the oracle-ceiling panel from plan 12. Oracle crisp with adapter soft is the one outcome that makes capacity the regime-correct lever; if the oracle is soft too, a null here is the expected and final answer.
+**The design (ledger):** fresh runs at rank 16 and rank 32 (alpha equal to rank), 100k steps each, everything else identical; `sweep_s1_rank.sh` is the runner for the capacity axis. B buys the rank-ablation figure regardless of verdict: same pairs, same λ, same inference across r8/r16/r32 at matched step counts.
+
+**The interpretation key (ledger):** the panel from plan 12 showing what the cached true correction reaches at best. If that correction gives crisp images while the adapter gives soft ones, capacity is the right lever to pull; if the cached correction is soft too, a null here is the expected and final answer.
 
 **Associated materials:**
 - **Review questions:** [../review/09-experiment-b-rank-16-32.md](../review/09-experiment-b-rank-16-32.md)
@@ -63,7 +68,7 @@
 
 **Expected runtime:** two runs of the same length as the original 100k training; measure from the first checkpoints. Roughly the bulk of the ledger's ~20 GPU-hours across three nodes.
 
-**Launch shape (ledger):** experiment A holds the Slurm slot, so B's two runs go over the SSH-plus-nohup idle-node path per [execution-protocol step 3](../../../environment/hpc/execution-protocol.md), including the admin node-cap fallback: prefer device 1, verify it is free. `squeue` is blind to these; monitoring is the nohup log plus `pgrep` on the node.
+**Launch shape (ledger):** experiment A holds the one Slurm job, so B's two runs go over the SSH-plus-nohup idle-node path per [execution-protocol step 3](../../../environment/hpc/execution-protocol.md), including the admin node-cap fallback: prefer device 1, verify it is free. `squeue` is blind to these; monitoring is the nohup log plus `pgrep` on the node.
 
 **Prerequisites:** plan 06's frozen tracking set.
 
@@ -92,9 +97,9 @@
 
 ⬅️ [Previous](#the-claim) | 📋 [TOC](#table-of-contents) | [Next](#description-what-to-build) ➡️
 
-**The problem.** If the softness is a capacity ceiling, no length of rank-8 training fixes it; if it is not, a rank sweep closes that door with a number.
+**The problem.** If the softness is a capacity ceiling, no length of rank-8 training fixes it; if it is not, running the same thing at two more ranks closes that door with a number.
 
-**The solution.** Two fresh trainings on the other rungs of the capacity ladder, judged inside the same instrument.
+**The solution.** Two fresh trainings at the next two capacity steps, judged through the same frozen tracking set.
 
 **Key insight.** Matched step counts are what make the three runs one comparison; a rank-32 run read at a different step count is a mixed comparison and the figure may not imply otherwise.
 
@@ -117,7 +122,7 @@
 Serves goal 4 and the rank-ablation figure. Checkable outcomes:
 
 1. Both runs reach 100k with tracking renders.
-2. `rank_ablation.json` complete at matched checkpoints; the review bar answered.
+2. `rank_ablation.json` complete at matched checkpoints; the review file's threshold question answered.
 
 ---
 
@@ -133,7 +138,7 @@ Serves goal 4 and the rank-ablation figure. Checkable outcomes:
 
 ### 1. 🧪 Launch the pair
 
-◀ **Needs: [06 instruction 2.3](06-extend-the-tracking-set.md#2--prove-the-smoke-in-wb)** (frozen instrument proven).
+◀ **Needs: [06 instruction 2.3](06-extend-the-tracking-set.md#2--prove-the-first-short-run-in-wb)** (frozen tracking set proven).
 
 - [ ] **1.1 Adapt the rank harness** to the pooled trainer with the tracking set on; ranks 16 and 32, alpha equal to rank, everything else the 100k config.
 - [ ] **1.2 Find two free devices and launch over SSH with nohup** (prefer device 1 per the protocol's node-cap fallback; verify free with `nvidia-smi` first). Record node, device, PID, and run id per run in the review Runs table. Completion is observable: `pgrep -af train` on each node shows the process; two new W&B runs appear.
@@ -143,7 +148,7 @@ Serves goal 4 and the rank-ablation figure. Checkable outcomes:
 
 ## Instructions
 
-⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
+⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#what-has-to-pass-before-this-runs) ➡️
 
 ### 2. 📈 Watch and judge
 
@@ -151,25 +156,25 @@ Serves goal 4 and the rank-ablation figure. Checkable outcomes:
 
 2.1 **Mid-run health check per run**: SSH to each node, `tail` the nohup log, `pgrep` the PID; in W&B, the tracking families updating on both runs. ✅ both advancing; ❌ one gone: harvest its log, `/ingest-error-pattern --from-run-log`, decide relaunch in the review.
 
-2.2 **Capture the three-rank comparison panel** at completion into the runbook's screenshot slot, captioned.
+2.2 **Capture the three-rank comparison panel** at completion into the place the runbook keeps for screenshots, captioned.
 
-2.3 **Judge against the null bar**; **write the verdict** into the [review file](../review/09-experiment-b-rank-16-32.md), reading it beside plan 12's oracle-ceiling panel.
+2.3 **Judge against the null threshold**; **write the verdict** into the [review file](../review/09-experiment-b-rank-16-32.md), reading it beside plan 12's panel of what the cached correction reaches at best.
 
-▶ **Next: the engagement gate.**
+▶ **Next: what has to pass before this runs.**
 
 ---
 
-## The engagement gate
+## What has to pass before this runs
 
 ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
 > Two runs on nohup paths that Slurm cannot see. The review's Runs table is the only ledger of where they live; an unrecorded PID is an orphaned GPU.
 
 **Pass criteria:**
-- Both runs at 100k; the ablation table complete at matched steps; the bar answered.
+- Both runs at 100k; the ablation table complete at matched steps; the threshold question answered.
 
 **Fail criteria:**
-- Step counts unmatched at judgment time (mixed comparison; the figure may not ship), or a run's manifest hash differs (instrument unfroze).
+- Step counts unmatched at judgment time (mixed comparison; the figure may not ship), or a run's manifest hash differs (the tracking set unfroze).
 
 **When you get results, answer the open questions in the [review file](../review/09-experiment-b-rank-16-32.md).**
 
@@ -177,7 +182,7 @@ Serves goal 4 and the rank-ablation figure. Checkable outcomes:
 
 ## Figure Catalog
 
-⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
+⬅️ [Previous](#what-has-to-pass-before-this-runs) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
 
 ### Pending
 
@@ -218,7 +223,7 @@ Serves goal 4 and the rank-ablation figure. Checkable outcomes:
 
 ⬅️ [Previous](#orchestration-keeping-catalogs-and-plan-files-in-sync) | 📋 [TOC](#table-of-contents) | [Next](#recommended-skill) ➡️
 
-**File:** `scripts/cross_seed_lora_pooling/sweep_s1_rank.sh` — the rank harness to adapt.
+**File:** `scripts/cross_seed_lora_pooling/sweep_s1_rank.sh` — the rank runner to adapt.
 **File:** `artifacts/results/does-the-fix-reach-unseen-pairs/pooled_lora/phase1_r8_100k/config.json` — the config every non-rank flag must match.
 
 ---
@@ -233,7 +238,7 @@ Serves goal 4 and the rank-ablation figure. Checkable outcomes:
 /run-experiment plans/01-showcase-the-trained-lora/plans/09-experiment-b-rank-16-32.md — SSH-plus-nohup per the execution protocol, absolute paths on the launch line, in-script device guard; if sbatch is denied by the admin node cap, prefer device 1 and verify it is free.
 ```
 
-alt, headless overnight: in a fresh session run `/unattended run-experiment plans/01-showcase-the-trained-lora/plans/09-experiment-b-rank-16-32.md` and paste the tmux block it emits (multi-hour training on remote devices, bars pre-registered). The engagement gate and the review file's bar are the stop conditions.
+alt, headless overnight: in a fresh session run `/unattended run-experiment plans/01-showcase-the-trained-lora/plans/09-experiment-b-rank-16-32.md` and paste the tmux block it emits (multi-hour training on remote devices, thresholds pre-registered). What has to pass before this runs and the review file's threshold are the stop conditions.
 
 ---
 

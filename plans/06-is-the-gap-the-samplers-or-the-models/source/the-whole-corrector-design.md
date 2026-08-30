@@ -54,7 +54,7 @@ one review file per plan.
 - [What it costs](#what-it-costs)
 - [Tasks](#tasks) — things for Claude to execute
 - [Instructions](#instructions) — things for you to do manually
-- [The engagement gate](#the-engagement-gate)
+- [What has to pass before this runs](#what-has-to-pass-before-this-runs)
 - [Figure Catalog](#figure-catalog)
 - [Not run: what this plan leaves alone](#not-run-what-this-plan-leaves-alone)
 - [Orchestration: keeping catalogs and plan files in sync](#orchestration-keeping-catalogs-and-plan-files-in-sync)
@@ -546,14 +546,14 @@ already written in [The claim](#the-claim). No images, no detector, no scorer.
 - [ ] **4.5** Apply the three-way threshold from [The claim](#the-claim) in code, print which branch
       fired, and write the verdict into the review file with the numbers it was judged against.
 
-▶ **Next: the engagement gate**, then either task 5 or a stop.
+▶ **Next: what has to pass before this runs**, then either task 5 or a stop.
 
 ### 5. 🖼️ Only if the curve falls: slide the corrector window across the run
 
 Run group: **hypothesis**. This matches the grid where the `r_t` window was slid: same pair, same
 seeds, same nine positions, corrector in place of injected `r_t`.
 
-◀ **Needs: task 4.5** returning support or an even split, and the engagement gate below.
+◀ **Needs: task 4.5** returning support or an even split, and what has to pass before this runs below.
 
 - [ ] **5.1** Recreate the sliding-window grid with the corrector at the `k` on the flat part of
       task 4's curve. `a_cat__x__a_dog` seeds 9 to 12 as rows, the same nine ten-step window
@@ -654,7 +654,7 @@ returned a null, the Feynman-Kac read is a related-work paragraph and this task 
 
 ## Instructions
 
-⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
+⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#what-has-to-pass-before-this-runs) ➡️
 
 **For you to follow manually.** Do these yourself, interleaved with the Tasks rather than after
 them.
@@ -709,7 +709,7 @@ them.
 
 ---
 
-## The engagement gate
+## What has to pass before this runs
 
 ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
@@ -746,7 +746,7 @@ beside it.
 
 ## Figure Catalog
 
-⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#not-run-what-this-plan-leaves-alone) ➡️
+⬅️ [Previous](#what-has-to-pass-before-this-runs) | 📋 [TOC](#table-of-contents) | [Next](#not-run-what-this-plan-leaves-alone) ➡️
 
 A measurement earns a place in the main text only if it advances understanding of the dynamics of
 failure and correction. Everything else is prose.

@@ -31,7 +31,7 @@ the scorer that was chosen by looking at real detections. F2's caption may quote
 - [Words this file uses](#words-this-file-uses)
 - [Run kind](#run-kind)
 - [Runs](#runs)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [Could the answer be an artefact](#could-the-answer-be-an-artefact)
 - [Asked after the result](#asked-after-the-result)
@@ -68,7 +68,7 @@ follow-on. It has not missed.
 
 ## Runs
 
-Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
@@ -88,7 +88,7 @@ read exactly the same rate at λ=0.
 The generation ran outside Slurm, on the session node, because biggpu allows one job per user.
 There is no job id, so the log path is its identity.
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
@@ -105,7 +105,7 @@ the plan.**
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
+Navigation: ⬅️ [The question written before the run](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
 Nothing beyond the threshold above and the three artefact checks below. All of them were written
 before any images were generated, which is why two of them could fail and did.
@@ -131,7 +131,7 @@ Navigation: ⬅️ [Written before the run](#written-before-the-run-answered-aft
       controls show one blended animal (cat ears and whiskers on a dog muzzle), and the real
       correction gives two separate animals. The controls do something visibly different.
 
-**Was the instrument sound?**
+**Was the measuring tool sound?**
 
 - [x] ✅ Does the scorer's instance count mean what the rule says it means?
       It does now, under the minimum detection size. Without one it did not, and the failure was

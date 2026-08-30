@@ -37,7 +37,7 @@ also: `/analyze-run` on the calibration W&B run once it lands.
 - [Purpose and goal](#purpose-and-goal)
 - [Tasks](#tasks)
 - [Instructions](#instructions)
-- [The engagement gate](#the-engagement-gate)
+- [What has to pass before this runs](#what-has-to-pass-before-this-runs)
 - [Figure Catalog](#figure-catalog)
 - [Orchestration](#orchestration-keeping-catalogs-and-plan-files-in-sync)
 - [Code references](#code-references)
@@ -177,7 +177,7 @@ Navigation: ⬅️ [Previous](#purpose-and-goal) | 📋 [TOC](#table-of-contents
 
 **For Claude to execute.** Ask Claude to do these.
 
-### 0. 🧭 Preflight: check this plan before working from it
+### 0. 🧭 Check this plan before working from it
 
 - [ ] **0.1** Paste: `/verify-plan @plans/05-when-does-the-outcome-lock-in/plans/04-calibrate-the-instrument.md`
   - Done when: the report comes back clean, or its proposals have been applied.
@@ -186,8 +186,8 @@ Navigation: ⬅️ [Previous](#purpose-and-goal) | 📋 [TOC](#table-of-contents
 
 ### 1. 🔧 Build the calibration script
 
-◀ **Needs: [task 0.1](#0--preflight-check-this-plan-before-working-from-it)**, and
-[what plan 03 had to pass](03-wire-the-oracle.md#the-engagement-gate).
+◀ **Needs: [task 0.1](#0--check-this-plan-before-working-from-it)**, and
+[what plan 03 had to pass](03-wire-the-oracle.md#what-has-to-pass-before-this-runs).
 
 - [ ] **1.1** Write `scripts/commitment/calibrate_oracle.py` per the Description, both thresholds
   in source, per-family selection counts printed before anything runs.
@@ -227,11 +227,11 @@ Navigation: ⬅️ [Previous](#purpose-and-goal) | 📋 [TOC](#table-of-contents
   - Paste: `/sync-plan-tree @plans/05-when-does-the-outcome-lock-in/plans/04-calibrate-the-instrument.md — <one line>`
   - Done when: statuses match reality.
 
-▶ **Next: the engagement gate.**
+▶ **Next: what has to pass before this runs.**
 
 ## Instructions
 
-Navigation: ⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
+Navigation: ⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#what-has-to-pass-before-this-runs) ➡️
 
 **For you to follow manually.** Do these yourself.
 
@@ -253,9 +253,9 @@ Navigation: ⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](
    - [ ] Record one line each: does the disagreement look like blur, a different subject, or a
      different composition. This shapes how plan 05's captions describe predictor error.
 
-▶ **Next: the engagement gate**, then [plan 05](05-the-grid-and-the-figures.md).
+▶ **Next: what has to pass before this runs**, then [plan 05](05-the-grid-and-the-figures.md).
 
-## The engagement gate
+## What has to pass before this runs
 
 Navigation: ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
@@ -274,7 +274,7 @@ Navigation: ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | 
 
 ## Figure Catalog
 
-Navigation: ⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
+Navigation: ⬅️ [Previous](#what-has-to-pass-before-this-runs) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
 
 #### Pending: to be generated from prompts
 

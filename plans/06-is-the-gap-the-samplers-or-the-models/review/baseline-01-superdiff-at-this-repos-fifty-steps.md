@@ -25,7 +25,7 @@ between a working rule and one run outside its intended settings.
 - [Words this file uses](#words-this-file-uses)
 - [Run kind](#run-kind)
 - [Runs](#runs)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [Asked after the result](#asked-after-the-result)
 - [Could the answer be an artefact](#could-the-answer-be-an-artefact)
@@ -58,14 +58,14 @@ Per this project's run conventions a baseline may not change a claim, and it fre
 
 ## Runs
 
-Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
 | SuperDiff at 50 against 200 steps | Establishes a baseline | not launched | 2 renders | `corrector/superdiff/parity/`, both renders scored | ⚠️ not run |
 | The per-step prediction hook, verified on one render | Establishes a baseline | not launched | 1 render | 50 per-step norms of `r_t^SD` | ⚠️ not run |
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
@@ -76,7 +76,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
+Navigation: ⬅️ [The question written before the run](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
 - [ ] ⚠️ Is `eps_M` available at every one of the 50 steps, verified by forming `r_t^SD` and
       printing its per-step norm? A wrapper that returns only a finished image cannot supply the
@@ -103,7 +103,7 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
 
 - [ ] ⚠️ **Was the comparison fair?** Only the step count differs between the two parity renders.
       Same pair, same seed, same model, same guidance, same prompt handling.
-- [ ] ⚠️ **Was the instrument sound?** The scorer is the validated instance-count detector, read
+- [ ] ⚠️ **Was the measuring tool sound?** The scorer is the validated instance-count detector, read
       over these two renders and no others, with the eye verdict recorded beside it.
 - [ ] ⚠️ **Did the run respect the environment?** Renders and weights under `/datasets` with the
       disk guard on the filesystem actually written to, and no relative path in a launch line onto

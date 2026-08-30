@@ -235,7 +235,7 @@ At λ=0, nothing is injected, so all three rows are the same picture by construc
 
 ## Tasks
 
-⬅️ [Why the controls are fair](#why-the-controls-are-fair) | 📋 [TOC](#table-of-contents) | [The engagement gate](#the-engagement-gate) ➡️
+⬅️ [Why the controls are fair](#why-the-controls-are-fair) | 📋 [TOC](#table-of-contents) | [What has to pass before this runs](#what-has-to-pass-before-this-runs) ➡️
 
 A design task either happened or it did not. Whether the experiment worked is a separate question, answered in the review file.
 
@@ -287,7 +287,7 @@ A design task either happened or it did not. Whether the experiment worked is a 
 
 ---
 
-## The engagement gate
+## What has to pass before this runs
 
 ⬅️ [Tasks](#tasks) | 📋 [TOC](#table-of-contents) | [Outputs / Figure](#outputs--figure) ➡️
 
@@ -308,7 +308,7 @@ A design task either happened or it did not. Whether the experiment worked is a 
 
 ## Outputs / Figure
 
-⬅️ [The engagement gate](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Code references](#code-references) ➡️
+⬅️ [What has to pass before this runs](#what-has-to-pass-before-this-runs) | 📋 [TOC](#table-of-contents) | [Code references](#code-references) ➡️
 
 **The register's reserved place F2** (paper's headline figure):
 

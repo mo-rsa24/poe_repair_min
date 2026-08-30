@@ -50,7 +50,7 @@ Design only. Verdicts and run state live in
 - [What it costs](#what-it-costs)
 - [Tasks](#tasks) — things for Claude to execute
 - [Instructions](#instructions) — things for you to do manually
-- [The engagement gate](#the-engagement-gate)
+- [What has to pass before this runs](#what-has-to-pass-before-this-runs)
 - [Figure Catalog](#figure-catalog)
 - [Not run: what this plan leaves alone](#not-run-what-this-plan-leaves-alone)
 - [Orchestration: keeping catalogs and plan files in sync](#orchestration-keeping-catalogs-and-plan-files-in-sync)
@@ -422,7 +422,7 @@ anywhere, so wall time tracks UNet evaluations directly.
 
 **For Claude to execute.** Ask Claude to do these.
 
-### 0. 🧭 Preflight: check this plan before working from it
+### 0. 🧭 Check this plan before working from it
 
 - [ ] **0.1** Check this plan conforms and its instructions are concrete, before acting on it.
   - Paste: `/verify-plan @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis-02-what-is-left-once-the-chain-settles.md`
@@ -549,11 +549,11 @@ number being folded is one you have looked at.
   - Paste: `/sync-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis-02-what-is-left-once-the-chain-settles.md — <one line>`
   - Done when: statuses, the running order and the Error Matrix match reality.
 
-▶ **Next: [the engagement gate](#the-engagement-gate).**
+▶ **Next: [what has to pass before this runs](#what-has-to-pass-before-this-runs).**
 
 ## Instructions
 
-⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
+⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#what-has-to-pass-before-this-runs) ➡️
 
 **For you to follow manually.** Do these yourself, interleaved with the Tasks rather than after
 them.
@@ -581,7 +581,7 @@ them.
 ▶ **Next: [task 3.1](#3--fold-the-size-back-into-what-already-cites-it)** if the verdict stands,
 otherwise stop and write the inconclusive one.
 
-## The engagement gate
+## What has to pass before this runs
 
 ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
@@ -630,7 +630,7 @@ $PY scripts/corrector_residual_curve.py --verdict     # prints which of the thre
 
 ## Figure Catalog
 
-⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#not-run-what-this-plan-leaves-alone) ➡️
+⬅️ [Previous](#what-has-to-pass-before-this-runs) | 📋 [TOC](#table-of-contents) | [Next](#not-run-what-this-plan-leaves-alone) ➡️
 
 Every figure in this scope is held to
 [the standard set in the scope's direction](../MASTER_PLAN.md#the-figure-bar-every-plan-here-is-held-to).

@@ -37,7 +37,7 @@ beyond what the ledger already fixed.
 - [Purpose and goal](#purpose-and-goal)
 - [Tasks](#tasks)
 - [Instructions](#instructions)
-- [The engagement gate](#the-engagement-gate)
+- [What has to pass before this runs](#what-has-to-pass-before-this-runs)
 - [Figure Catalog](#figure-catalog)
 - [Orchestration](#orchestration-keeping-catalogs-and-plan-files-in-sync)
 - [Code references](#code-references)
@@ -185,7 +185,7 @@ Navigation: ⬅️ [Previous](#purpose-and-goal) | 📋 [TOC](#table-of-contents
 
 **For Claude to execute.** Ask Claude to do these.
 
-### 0. 🧭 Preflight: check this plan before working from it
+### 0. 🧭 Check this plan before working from it
 
 - [ ] **0.1** Paste: `/verify-plan @plans/05-when-does-the-outcome-lock-in/plans/05-the-grid-and-the-figures.md`
   - Done when: the report comes back clean, or its proposals have been applied.
@@ -194,7 +194,7 @@ Navigation: ⬅️ [Previous](#purpose-and-goal) | 📋 [TOC](#table-of-contents
 
 ### 1. 🔧 Build the grid runner
 
-◀ **Needs: [task 0.1](#0--preflight-check-this-plan-before-working-from-it)**, plan 04's
+◀ **Needs: [task 0.1](#0--check-this-plan-before-working-from-it)**, plan 04's
 verdict recorded, and the filmstrip runs named in
 [the review file](../review/05-the-grid-and-the-figures.md) before anything runs.
 
@@ -245,11 +245,11 @@ verdict recorded, and the filmstrip runs named in
   - Done when: statuses match reality, and the master plan's recall-gallery criterion is the
     only thing left open in the scope.
 
-▶ **Next: the engagement gate.**
+▶ **Next: what has to pass before this runs.**
 
 ## Instructions
 
-Navigation: ⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
+Navigation: ⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#what-has-to-pass-before-this-runs) ➡️
 
 **For you to follow manually.** Do these yourself.
 
@@ -274,10 +274,10 @@ Navigation: ⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](
 3.3 **Read the three-timestamp figure and answer the cluster question** in
    [the review file](../review/05-the-grid-and-the-figures.md), per family and overall.
 
-▶ **Next: the engagement gate**, then the scope's recall gallery per
+▶ **Next: what has to pass before this runs**, then the scope's recall gallery per
 [the master plan](../MASTER_PLAN.md#definition-of-done).
 
-## The engagement gate
+## What has to pass before this runs
 
 Navigation: ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
@@ -298,7 +298,7 @@ Navigation: ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | 
 
 ## Figure Catalog
 
-Navigation: ⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
+Navigation: ⬅️ [Previous](#what-has-to-pass-before-this-runs) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
 
 #### Pending: to be generated from prompts
 

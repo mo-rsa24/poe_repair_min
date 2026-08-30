@@ -1,4 +1,6 @@
-# 🔬 The mechanism follower
+# 🔬 The checkpoint watcher that reads the mechanism
+
+**This plan asks one question: what did the LoRA actually add to cross-attention, and does injecting that thing on its own make pictures compose?**
 
 **Step 40 in the root running order. Waits on: steps 38 and 39 (it watches their checkpoint folders). Next: [11-the-counted-joint-prompt-figure](11-the-counted-joint-prompt-figure.md).**
 
@@ -31,7 +33,7 @@
 - [Purpose and goal](#purpose-and-goal)
 - [Tasks](#tasks)
 - [Instructions](#instructions)
-- [The engagement gate](#the-engagement-gate)
+- [What has to pass before this runs](#what-has-to-pass-before-this-runs)
 - [Figure Catalog](#figure-catalog)
 - [Orchestration: keeping catalogs and plan files in sync](#orchestration-keeping-catalogs-and-plan-files-in-sync)
 - [Code references](#code-references)
@@ -45,11 +47,11 @@
 
 ⬅️ [Previous](#position-in-the-plan-tree) | 📋 [TOC](#table-of-contents) | [Next](#considerations) ➡️
 
-**The object under study (ledger):** the interaction term is a rule, not a vector (same-pair cross-seed cosine 0.002), so the mechanism question is what state-dependent computation the LoRA added to cross-attention, the layer carrying object attribution.
+**The object under study (ledger):** the [interaction term](../../../context/world/interaction-term.md) is a rule, not a vector (same-pair cross-seed cosine 0.002), so the mechanism question is what state-dependent computation the LoRA added to cross-attention, the layer carrying object attribution.
 
-**The two reads (ledger):** h-space, the UNet bottleneck activations with the adapter on minus off (the correction in the model's own semantic space); and Jacobian singular directions (does the adapter open a new high-gain direction for the missing animal). Both run as one follower process: it watches a run's checkpoints folder, and when a broad-interval checkpoint lands (default first, middle, final) it computes both reads on a device that is not the training device and logs to the same W&B run. The training loop is never modified.
+**The two reads (ledger):** h-space, the UNet bottleneck activations with the adapter on minus off (the correction in the model's own semantic space); and Jacobian singular directions (does the adapter open a new high-gain direction for the missing animal). Both run as one watcher process: it watches a run's checkpoints folder, and when a broad-interval checkpoint lands (default first, middle, final) it computes both reads on a device that is not the training device and logs to the same W&B run. The training loop is never modified.
 
-**The causal rule (ledger, non-negotiable):** each read ends in its intervention: inject the found direction before about step 10, score composition. A direction figure without an intervention is the correlational-picture trap, and figures whose interventions fail to move compose rate stay out of the main text.
+**The causal rule (ledger, non-negotiable):** each read ends in its intervention: inject the found direction before about step 10, score composition. A direction figure without an intervention shows a correlation and nothing more, and figures whose interventions fail to move [compose rate](../../../context/world/compose-rate.md) stay out of the main text.
 
 **Associated materials:**
 - **Review questions:** [../review/10-the-mechanism-follower.md](../review/10-the-mechanism-follower.md)
@@ -61,9 +63,9 @@
 
 ⬅️ [Previous](#quick-context-where-you-are) | 📋 [TOC](#table-of-contents) | [Next](#environment-facts-this-plan-depends-on) ➡️
 
-**Expected runtime:** the follower is idle-then-bursty; each burst (two reads on a few showcase cells at one checkpoint) is minutes-to-an-hour on a non-training device. The interventions at the end are a small render batch each.
+**Expected runtime:** the watcher is idle-then-bursty; each burst (two reads on a few showcase renders at one checkpoint) is minutes-to-an-hour on a non-training device. The interventions at the end are a small render batch each.
 
-**Storage (ledger):** forced to pooled activations or a cell subset; never full per-step activation dumps.
+**Storage (ledger):** forced to pooled activations or a subset of the renders; never full per-step activation dumps.
 
 **Prerequisites:** A or B live (their checkpoint folders are what it watches); the phase1 checkpoints work for a dry run.
 
@@ -75,7 +77,7 @@
 
 ⬅️ [Previous](#considerations) | 📋 [TOC](#table-of-contents) | [Next](#the-claim) ➡️
 
-- A non-training device must exist while A and B run; the protocol's device census (`nvidia-smi` per node) decides where the follower lives ([execution-protocol](../../../environment/hpc/execution-protocol.md)).
+- A non-training device must exist while A and B run; the protocol's device census (`nvidia-smi` per node) decides where the watcher lives ([execution-protocol](../../../environment/hpc/execution-protocol.md)).
 - Outputs to `/datasets`; `co3` python.
 
 ---
@@ -84,7 +86,7 @@
 
 ⬅️ [Previous](#environment-facts-this-plan-depends-on) | 📋 [TOC](#table-of-contents) | [Next](#why-this-plan-exists) ➡️
 
-**Mechanism figures that appear live beside the training curves, each carrying its own causal test.** The paper's figure ladder is oracle-lean; this is the deliberate scope addition that lets the mechanism section, if the spine keeps one, be LoRA-measured.
+**Mechanism figures that appear live beside the training curves, each carrying its own causal test.** Most of the paper's figures measure the cached true correction rather than the adapter; this is the deliberate scope addition that lets the mechanism section, if the section order keeps one, be LoRA-measured.
 
 ---
 
@@ -94,7 +96,7 @@
 
 **The problem.** What the LoRA does is measured everywhere; how it does it is measured nowhere, and in-loop reads would slow every run (the rejected alternative).
 
-**The solution.** A follower that costs the training loop nothing and turns checkpoints into mechanism reads as they land.
+**The solution.** A watcher that costs the training loop nothing and turns checkpoints into mechanism reads as they land.
 
 **Key insight.** Reads keyed to first/middle/final checkpoints show mechanism *formation*, which post-hoc reads on the final checkpoint cannot.
 
@@ -104,9 +106,9 @@
 
 ⬅️ [Previous](#why-this-plan-exists) | 📋 [TOC](#table-of-contents) | [Next](#purpose-and-goal) ➡️
 
-1. **The follower** (`scripts/showcase/mechanism_follower.py`): watches a checkpoints dir; on a broad-interval checkpoint, runs the h-space read (adapter on minus off, pooled bottleneck activations, a few showcase cells) and the Jacobian read (top singular directions at steps inside the 0-10 window), logs both to the watched W&B run, saves arrays to `/datasets/mmolefe/poe_repair_min/outputs/showcase/mechanism/`.
+1. **The watcher** (`scripts/showcase/mechanism_follower.py`): watches a checkpoints dir; on a broad-interval checkpoint, runs the h-space read (adapter on minus off, pooled bottleneck activations, a few showcase renders) and the Jacobian read (top singular directions at steps inside the 0-10 window), logs both to the watched W&B run, saves arrays to `/datasets/mmolefe/poe_repair_min/outputs/showcase/mechanism/`.
 2. **The interventions**: for each discovered direction, inject before step 10 at a small λ grid, score compose rate; `intervention_scores.json`.
-3. **The dry run**: the follower pointed at the existing phase1 checkpoints folder proves the whole path before A and B need it.
+3. **The dry run**: the watcher pointed at the existing phase1 checkpoints folder proves the whole path before A and B need it.
 
 ---
 
@@ -129,9 +131,9 @@ Serves goal 8 (mechanism interventions' verdict on the causal caption). Checkabl
 
 - [ ] **0.1 Run the following prompt: `/verify-plan plans/01-showcase-the-trained-lora/plans/10-the-mechanism-follower.md`**
 
-▶ **Next: [task 1.1](#1--build-the-follower)**.
+▶ **Next: [task 1.1](#1--build-the-watcher)**.
 
-### 1. 🔬 Build the follower
+### 1. 🔬 Build the watcher
 
 ◀ **Needs: nothing to build; [08 task 1.2](08-experiment-a-resume-to-200k.md#1--launch-and-harvest) or [09 task 1.2](09-experiment-b-rank-16-32.md#1--launch-the-pair)** live before the watch phase.
 
@@ -144,31 +146,31 @@ Serves goal 8 (mechanism interventions' verdict on the causal caption). Checkabl
 
 ## Instructions
 
-⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
+⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#what-has-to-pass-before-this-runs) ➡️
 
 ### 2. 👁️ Read the mechanism panels
 
-◀ **Needs: [tasks 1.2 to 1.4](#1--build-the-follower)** producing panels.
+◀ **Needs: [tasks 1.2 to 1.4](#1--build-the-watcher)** producing panels.
 
-2.1 **Open the watched run in W&B**; the mechanism panels sit beside the training curves. ✅ reads appear within an hour of each broad checkpoint; ❌ the follower's log shows it skipped one: restart it, note in review.
+2.1 **Open the watched run in W&B**; the mechanism panels sit beside the training curves. ✅ reads appear within an hour of each broad checkpoint; ❌ the watcher's log shows it skipped one: restart it, note in review.
 
 2.2 **Judge each direction by its intervention**: compose rate moved = the figure may enter the main text; unmoved = it stays out (ledger). **Write verdicts** into the [review file](../review/10-the-mechanism-follower.md).
 
-▶ **Next: the engagement gate.**
+▶ **Next: what has to pass before this runs.**
 
 ---
 
-## The engagement gate
+## What has to pass before this runs
 
 ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
-> The trap this gate exists for is the correlational picture: a beautiful direction figure with no causal test. No intervention score, no main-text figure. No exceptions.
+> The mistake this section exists to prevent is a beautiful direction figure with no causal test behind it. No intervention score, no main-text figure. No exceptions.
 
 **Pass criteria:**
 - Dry run green; every reported direction carries an intervention score.
 
 **Fail criteria:**
-- The follower modified the training loop or ran on a training device (both rejected alternatives), or a direction is reported without its intervention.
+- The watcher modified the training loop or ran on a training device (both rejected alternatives), or a direction is reported without its intervention.
 
 **When you get results, answer the open questions in the [review file](../review/10-the-mechanism-follower.md).**
 
@@ -176,7 +178,7 @@ Serves goal 8 (mechanism interventions' verdict on the causal caption). Checkabl
 
 ## Figure Catalog
 
-⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
+⬅️ [Previous](#what-has-to-pass-before-this-runs) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
 
 ### Pending
 
@@ -232,7 +234,7 @@ Serves goal 8 (mechanism interventions' verdict on the causal caption). Checkabl
 Execute plans/01-showcase-the-trained-lora/plans/10-the-mechanism-follower.md: the checkpoint watcher on a non-training device, h-space and Jacobian reads at first/middle/final checkpoints, each ending in its injection-and-score intervention; it must never crash a training run.
 ```
 
-alt, headless overnight: in a fresh session run `/unattended run-experiment plans/01-showcase-the-trained-lora/plans/10-the-mechanism-follower.md` and paste the tmux block it emits (a long-lived watcher; the interventions score numerically). The engagement gate and the review file's bar are the stop conditions.
+alt, headless overnight: in a fresh session run `/unattended run-experiment plans/01-showcase-the-trained-lora/plans/10-the-mechanism-follower.md` and paste the tmux block it emits (a long-lived watcher; the interventions score numerically). What has to pass before this runs and the review file's threshold are the stop conditions.
 
 ---
 

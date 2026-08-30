@@ -44,7 +44,7 @@ Design only. Verdicts and run state live in
 - [Environment Facts This Plan Depends On](#environment-facts-this-plan-depends-on)
 - [Tasks](#tasks) — things for Claude to execute
 - [Instructions](#instructions) — things for you to do manually
-- [The engagement gate](#the-engagement-gate)
+- [What has to pass before this runs](#what-has-to-pass-before-this-runs)
 - [Figure Catalog](#figure-catalog)
 - [Orchestration: keeping catalogs and plan files in sync](#orchestration-keeping-catalogs-and-plan-files-in-sync)
 - [Reading list](#reading-list)
@@ -223,7 +223,7 @@ correctors are built or cited, with the reason recorded either way.
 
 **For Claude to execute.** Ask Claude to do these.
 
-### 0. 🧭 Preflight: check this plan before working from it
+### 0. 🧭 Check this plan before working from it
 
 - [ ] **0.1** Check this plan conforms and its instructions are concrete, before acting on it.
   - Paste: `/verify-plan @plans/06-is-the-gap-the-samplers-or-the-models/plans/idea-01-feynman-kac-correctors-gated.md`
@@ -241,7 +241,7 @@ correctors are built or cited, with the reason recorded either way.
 
 ### 1. 📖 Read it, and cost it
 
-◀ **Needs: [task 0.2](#0--preflight-check-this-plan-before-working-from-it)**, what step 26
+◀ **Needs: [task 0.2](#0--check-this-plan-before-working-from-it)**, what step 26
 returned.
 
 - [ ] **1.1** Run the following prompt: `/unpack-paper https://arxiv.org/abs/2503.02819`
@@ -280,11 +280,11 @@ where the plan closed unrun.
       is "not run and why".
   - Done when: no question in that file is left at ⚠️ without a stated reason.
 
-▶ **Next: [the engagement gate](#the-engagement-gate).**
+▶ **Next: [what has to pass before this runs](#what-has-to-pass-before-this-runs).**
 
 ## Instructions
 
-⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
+⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#what-has-to-pass-before-this-runs) ➡️
 
 **For you to follow manually.** Do these yourself, interleaved with the Tasks rather than after
 them.
@@ -307,7 +307,7 @@ them.
 ▶ **Next: [the close out](#close-out--record-what-this-plan-taught)**, and with it the scope's
 recall gallery, per criterion 12 of [the scope's Definition of Done](../MASTER_PLAN.md#definition-of-done).
 
-## The engagement gate
+## What has to pass before this runs
 
 ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
@@ -336,7 +336,7 @@ recall gallery, per criterion 12 of [the scope's Definition of Done](../MASTER_P
 
 ## Figure Catalog
 
-⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
+⬅️ [Previous](#what-has-to-pass-before-this-runs) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
 
 Every figure in this scope is held to the standard
 [in the scope's MASTER_PLAN](../MASTER_PLAN.md#the-figure-bar-every-plan-here-is-held-to).

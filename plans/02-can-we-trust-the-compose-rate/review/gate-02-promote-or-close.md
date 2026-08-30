@@ -25,7 +25,7 @@ and writes the ending.
 - [Words this file uses](#words-this-file-uses)
 - [Run kind](#run-kind)
 - [Runs](#runs)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [Asked after the result](#asked-after-the-result)
 - [Could the answer be an artefact](#could-the-answer-be-an-artefact)
@@ -56,7 +56,7 @@ names what follows from it rather than only its verdict.
 
 ## Runs
 
-Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 No compute. The inputs are the other three verdicts in this folder.
 
@@ -64,7 +64,7 @@ No compute. The inputs are the other three verdicts in this folder.
 |---|---|---|---|---|---|
 | the decision | Decision | | reading only, no GPU | the promotion level, and the handoffs it triggers | not started |
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
@@ -76,7 +76,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
+Navigation: ⬅️ [The question written before the run](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
 - [ ] ⚠️ If the big promotion fired, what happens to `scorer_validated.json`?
       Re-certified or replaced, stated in one sentence. That file is the precondition
@@ -98,7 +98,7 @@ Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC
 
 Navigation: ⬅️ [Written before the run](#written-before-the-run-answered-after) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
-Questions the decision itself raised. **Nothing here may ever become a bar**, because it was
+Questions the decision itself raised. **Nothing here may ever become the question above**, because it was
 written with the answer already visible. Nothing yet: the decision has not been made.
 
 ## Could the answer be an artefact
@@ -108,7 +108,7 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
 - [ ] ⚠️ **Was the comparison fair?** The three levels must all have been reachable. A decision
       where the numbers could only ever have produced the small promotion has not decided
       anything, and saying so is more useful than naming a level.
-- [ ] ⚠️ **Was the instrument sound?** The deciding numbers come from three verdicts that must
+- [ ] ⚠️ **Was the measuring tool sound?** The deciding numbers come from three verdicts that must
       each be complete first. A level named from a partial verdict is a guess dressed up as a
       measured decision. Confirm all three files carry answers before reading them.
 - [x] ✅ **Did the run respect the environment?** Not applicable. No compute, no output directory,

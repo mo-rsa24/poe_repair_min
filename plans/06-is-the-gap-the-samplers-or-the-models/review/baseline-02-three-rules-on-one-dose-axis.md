@@ -26,7 +26,7 @@ and which do something else.
 - [Words this file uses](#words-this-file-uses)
 - [Run kind](#run-kind)
 - [Runs](#runs)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [Asked after the result](#asked-after-the-result)
 - [Could the answer be an artefact](#could-the-answer-be-an-artefact)
@@ -61,14 +61,14 @@ experiment and nothing more.
 
 ## Runs
 
-Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
 | Grid one: 4 rules × seeds 9 to 12, at `λ=0.75` and `λ=0` | Establishes a baseline | not launched | 32 renders | `corrector/dose_across_rules/grid_one/`, figure `across-composition-rules/rules-at-one-dose.png` | ⚠️ not run |
 | Grid two: 4 rules × `λ ∈ {0, 0.25, 0.5, 0.75, 1}` at seed 9 | Establishes a baseline | not launched | 20 renders | `corrector/dose_across_rules/grid_two/`, figure `across-composition-rules/rules-as-the-dose-rises.png` | ⚠️ not run |
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
@@ -81,7 +81,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
+Navigation: ⬅️ [The question written before the run](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
 - [ ] ⚠️ At `λ=1`, which of the four rules reproduce the joint render exactly? The two
       product-of-experts-family rows should. The corrector rows should not, since the chain has
@@ -116,7 +116,7 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
       which is answered by the label or by matching the amounts. And the SuperDiff row is only fair
       if [its parity check](baseline-01-superdiff-at-this-repos-fifty-steps.md) passed; if it did
       not, that sentence is in the caption.
-- [ ] ⚠️ **Was the instrument sound?** The `λ=0` identity check per row, and the validated
+- [ ] ⚠️ **Was the measuring tool sound?** The `λ=0` identity check per row, and the validated
       instance-count detector read over these renders and no others, with the eye count beside it.
 - [ ] ⚠️ **Did the run respect the environment?** All 52 renders present across the two grids, saved
       under `/datasets` with only the finished figures and sidecars in the repo, norms upcast to

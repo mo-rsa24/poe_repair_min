@@ -30,7 +30,7 @@ template rather than anything about binding.
 - [Words this file uses](#words-this-file-uses)
 - [Run kind](#run-kind)
 - [Runs](#runs)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [Asked after the result](#asked-after-the-result)
 - [Could the answer be an artefact](#could-the-answer-be-an-artefact)
@@ -60,7 +60,7 @@ is a diagnosis, not a verdict.
 
 ## Runs
 
-Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 All outputs sit in `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cache_analyses/`.
 
@@ -71,7 +71,7 @@ All outputs sit in `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/ca
 | manifold slide, 32 runs × 5 doses × 3 rows, CLIP image space | Tests the claim | 2026-08-11, in-session | 480 CLIP embeddings over cached images | `manifold_slide_clip.json`, `manifold_slide_clip.png` | done, slides |
 | caption readback, same 32 runs, four-way caption bank | Tests the claim | 2026-08-11, in-session | CLIP image-text over the same 32 runs | `caption_readback.json`, `caption_readback.png` | done, crosses over |
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
@@ -88,7 +88,7 @@ the threshold rather than inside it).
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
+Navigation: ⬅️ [The question written before the run](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
 - [x] ❌ Does the additivity gap predict how big a correction each pair needs?
       **No.** Over 75 pairs, the rank correlation against the preregistered correction size
@@ -162,7 +162,7 @@ Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC
 
 Navigation: ⬅️ [Written before the run](#written-before-the-run-answered-after) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
-Questions the results themselves raised. **Nothing here may ever become a bar**, because it was
+Questions the results themselves raised. **Nothing here may ever become the question above**, because it was
 written with the answers already visible.
 
 - [ ] ⚠️ Why does anchoring to text recover a separation that image-to-image distance could not
@@ -184,7 +184,7 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
       random one did not control for the shared prompt template; rebuilding the residual with a
       solo prompt from a different pair keeps the template and destroys only the binding, and that
       is the comparison the verdict rests on.
-- [x] ✅ **Was the instrument sound?** Two proxies were deliberately excluded from the quality
+- [x] ✅ **Was the measuring tool sound?** Two proxies were deliberately excluded from the quality
       verdict because they cannot answer the question: Laplacian sharpness rises with the number
       of edges, and CLIP's own quality preference rises for anything less anatomically distorted,
       so both move with content by construction. CLIP's preference does show a gap (+0.33 sd),

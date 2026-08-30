@@ -43,7 +43,7 @@ Design only. Verdicts and run state live in
 - [Environment Facts This Plan Depends On](#environment-facts-this-plan-depends-on)
 - [Tasks](#tasks) — things for Claude to execute
 - [Instructions](#instructions) — things for you to do manually
-- [The engagement gate](#the-engagement-gate)
+- [What has to pass before this runs](#what-has-to-pass-before-this-runs)
 - [Figure Catalog](#figure-catalog)
 - [Orchestration: keeping catalogs and plan files in sync](#orchestration-keeping-catalogs-and-plan-files-in-sync)
 - [Code references](#code-references)
@@ -243,7 +243,7 @@ for.
 
 **For Claude to execute.** Ask Claude to do these.
 
-### 0. 🧭 Preflight: check this plan before working from it
+### 0. 🧭 Check this plan before working from it
 
 - [ ] **0.1** Check this plan conforms and its instructions are concrete, before acting on it.
   - Paste: `/verify-plan @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis-01-the-free-bound-on-the-models-share.md`
@@ -261,7 +261,7 @@ for.
 
 ### 1. 📊 Read the cached size at the low-noise end
 
-◀ **Needs: [task 0.2](#0--preflight-check-this-plan-before-working-from-it)**, so the numbers this
+◀ **Needs: [task 0.2](#0--check-this-plan-before-working-from-it)**, so the numbers this
 plan is read against are known to be current.
 
 - [ ] **1.1** Read the per-step correction size as the run approaches zero noise.
@@ -321,11 +321,11 @@ decides whether the number is a bound or an artefact of how the cache was writte
   - Paste: `/sync-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis-01-the-free-bound-on-the-models-share.md — <one line>`
   - Done when: statuses, the running order and the Error Matrix match reality.
 
-▶ **Next: [the engagement gate](#the-engagement-gate).**
+▶ **Next: [what has to pass before this runs](#what-has-to-pass-before-this-runs).**
 
 ## Instructions
 
-⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
+⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#what-has-to-pass-before-this-runs) ➡️
 
 **For you to follow manually.** Do these yourself, interleaved with the Tasks rather than after
 them.
@@ -350,7 +350,7 @@ them.
 [step 25, the corrector and the step size it runs at](instrument-01-the-corrector-and-the-step-size-it-runs-at.md),
 which builds the corrector this bound caps the value of.
 
-## The engagement gate
+## What has to pass before this runs
 
 ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
@@ -396,7 +396,7 @@ ls "$RES/a_cat__x__a_dog/seed_42/teacher_residual_const_lam000/residuals" | wc -
 
 ## Figure Catalog
 
-⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
+⬅️ [Previous](#what-has-to-pass-before-this-runs) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
 
 Every figure in this scope is held to
 [the standard set in the scope's direction](../MASTER_PLAN.md#the-figure-bar-every-plan-here-is-held-to).

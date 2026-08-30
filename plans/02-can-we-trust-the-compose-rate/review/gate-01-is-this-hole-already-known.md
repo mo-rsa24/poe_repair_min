@@ -25,7 +25,7 @@ start until the questions below are answered. `instrument-01` runs regardless.
 - [Words this file uses](#words-this-file-uses)
 - [Run kind](#run-kind)
 - [Runs](#runs)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [Asked after the result](#asked-after-the-result)
 - [Could the answer be an artefact](#could-the-answer-be-an-artefact)
@@ -54,7 +54,7 @@ Navigation: ⬅️ [Words this file uses](#words-this-file-uses) | 📋 [TOC](#t
 
 ## Runs
 
-Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 No compute. The work is reading, and the output is the verdict below.
 
@@ -62,7 +62,7 @@ No compute. The work is reading, and the output is the verdict below.
 |---|---|---|---|---|---|
 | the literature search | Literature check | | reading only, no GPU | the verdict and one line per benchmark examined | not started |
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
@@ -76,7 +76,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
+Navigation: ⬅️ [The question written before the run](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
 - [ ] ⚠️ For each benchmark examined, what question does it actually ask of an image?
       T2I-CompBench (arXiv 2307.06350), TIFA, VQAScore, Davidsonian Scene Graph, VISOR, and the
@@ -95,7 +95,7 @@ Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC
 
 Navigation: ⬅️ [Written before the run](#written-before-the-run-answered-after) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
-Questions the search itself raised. **Nothing here may ever become a bar**, because it was written
+Questions the search itself raised. **Nothing here may ever become the question above**, because it was written
 with the answer already visible. Nothing yet: the search has not run.
 
 ## Could the answer be an artefact
@@ -106,7 +106,7 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
       is open produces the answer this scope wants. Every benchmark on the list gets its line,
       including the ones that turned out irrelevant, so the coverage is visible rather than
       asserted.
-- [ ] ⚠️ **Was the instrument sound?** Was the claim written down before the search? Task 1 of
+- [ ] ⚠️ **Was the measuring tool sound?** Was the claim written down before the search? Task 1 of
       the plan requires the paragraph first. Check `git log` puts it before the verdict. A claim
       written after reading the literature can be shaped to survive it.
 - [x] ✅ **Did the run respect the environment?** Not applicable. No compute, no output directory,

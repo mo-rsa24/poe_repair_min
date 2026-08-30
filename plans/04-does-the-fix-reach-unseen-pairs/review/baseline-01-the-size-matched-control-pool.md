@@ -28,7 +28,7 @@ there was.
 - [Words this file uses](#words-this-file-uses)
 - [Run kind](#run-kind)
 - [Runs](#runs)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [Asked after the result](#asked-after-the-result)
 - [Could the answer be an artefact](#could-the-answer-be-an-artefact)
@@ -57,13 +57,13 @@ is known, and no tuning it down either.
 
 ## Runs
 
-Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
 | one mixed-pool run, same pair count, same held-out set | Produces a competitor | | | the contrast per held-out pair | not started |
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
@@ -74,7 +74,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
+Navigation: ⬅️ [The question written before the run](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
 Nothing beyond the one question above. This run exists to answer it and nothing else.
 
@@ -82,7 +82,7 @@ Nothing beyond the one question above. This run exists to answer it and nothing 
 
 Navigation: ⬅️ [Written before the run](#written-before-the-run-answered-after) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
-Questions the result itself raised. **Nothing here may ever become a bar**, because it was
+Questions the result itself raised. **Nothing here may ever become the question above**, because it was
 written with the answer already visible. Nothing yet: the run has not started.
 
 ## Could the answer be an artefact
@@ -92,7 +92,7 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
 - [ ] ⚠️ **Was the comparison fair?** The pools must differ in content and in nothing else.
       Print the realised pair count of both pools and confirm they match, rather than trusting
       the config to have built what it claims.
-- [ ] ⚠️ **Was the instrument sound?** Both pools must be scored by the same scorer over their
+- [ ] ⚠️ **Was the measuring tool sound?** Both pools must be scored by the same scorer over their
       own output directories only, on the identical held-out set.
 - [ ] ⚠️ **Did the run respect the environment?** Output under `/datasets`, and the pool-selection
       flag confirmed to have selected a non-empty set of mixed pairs rather than silently falling

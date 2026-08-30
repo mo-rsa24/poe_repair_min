@@ -1,4 +1,6 @@
-# 📊 Close F8a and build the oracle panel
+# 📊 Close F8a and build the best-case panel
+
+**This plan asks two questions: did anything move in the last 30k training steps, and does the cached true correction give crisper pictures than the adapter does?**
 
 **Step 42 in the root running order. Waits on: nothing. Next: [13-revalidate-the-scorer-off-animals](13-revalidate-the-scorer-off-animals.md).**
 
@@ -15,7 +17,7 @@
 | Step | Plan | What it does |
 |------|------|-------------|
 | 41 (previous) | [11-the-counted-joint-prompt-figure](11-the-counted-joint-prompt-figure.md) | The measured baseline |
-| **42 (current)** | **12: close-f8a-and-the-oracle-panel** | Score the 70k-100k tail; the qualitative ceiling panel |
+| **42 (current)** | **12: close-f8a-and-the-oracle-panel** | Score the 70k-100k tail; the qualitative best-case panel |
 | 43 (next) | [13-revalidate-the-scorer-off-animals](13-revalidate-the-scorer-off-animals.md) | Opens tier-three captions |
 
 ---
@@ -31,7 +33,7 @@
 - [Purpose and goal](#purpose-and-goal)
 - [Tasks](#tasks)
 - [Instructions](#instructions)
-- [The engagement gate](#the-engagement-gate)
+- [What has to pass before this runs](#what-has-to-pass-before-this-runs)
 - [Figure Catalog](#figure-catalog)
 - [Orchestration: keeping catalogs and plan files in sync](#orchestration-keeping-catalogs-and-plan-files-in-sync)
 - [Code references](#code-references)
@@ -45,7 +47,11 @@
 
 ⬅️ [Previous](#position-in-the-plan-tree) | 📋 [TOC](#table-of-contents) | [Next](#considerations) ➡️
 
-**Two owed pieces of evidence, both cheap.** First: the phase1 run's checkpoints 70k to 100k were never scored (the compose-rate table stops at 60k) while their per-epoch samples sit on disk; scoring them extends F8a (compose-rate-as-the-lora-trains) to the full run and closes the "did anything move late" gap. Second: the qualitative ceiling panel, LoRA-corrected beside true-r_t-injected renders on the same held-out cells, the interpretation key for experiment B (oracle crisp with adapter soft is the one outcome that makes capacity the lever).
+**Two owed pieces of evidence, both cheap.** First: the phase1 run's checkpoints 70k to 100k were never scored (the [compose rate](../../../context/world/compose-rate.md) table stops at 60k) while their per-epoch samples sit on disk; scoring them extends F8a (compose-rate-as-the-lora-trains) to the full run and closes the "did anything move late" gap. Second: the qualitative best-case panel, LoRA-corrected renders beside true-r_t-injected renders on the same held-out pairs and seeds. That panel is the interpretation key for experiment B: crisp from the cached true correction while the adapter is soft is the one outcome that makes capacity the lever to pull.
+
+> Held-out means the pairs were never shown during training, so the number says how well the
+> adapter does on animals it has not seen. The cached true correction is the correction computed
+> from the joined prompt, saved once and read back.
 
 **Reconciliation duty:** these two tasks were also routed to
 [figure-01-the-transfer-figures](../../04-does-the-fix-reach-unseen-pairs/plans/figure-01-the-transfer-figures.md) in the neighbouring scope. Task 1.1 checks whether that plan already picked them up; the work runs once, in whichever plan claims it first, and the other carries a pointer.
@@ -61,9 +67,9 @@
 
 ⬅️ [Previous](#quick-context-where-you-are) | 📋 [TOC](#table-of-contents) | [Next](#environment-facts-this-plan-depends-on) ➡️
 
-**Expected runtime:** scoring only for the tail (in-session, under an hour); the ceiling panel reuses dose-sweep renders where the cell matches and renders only missing cells (a small batch).
+**Expected runtime:** scoring only for the tail (in-session, under an hour); the best-case panel reuses renders from the dose series where the pair and seed match, and renders only the missing ones (a small batch).
 
-**Prerequisites:** the validated scorer; `dose_curves.json`'s render store for oracle cells.
+**Prerequisites:** the validated scorer; the render store behind `dose_curves.json` for the cached-correction renders.
 
 ---
 
@@ -79,7 +85,7 @@
 
 ⬅️ [Previous](#environment-facts-this-plan-depends-on) | 📋 [TOC](#table-of-contents) | [Next](#why-this-plan-exists) ➡️
 
-**F8a extended to the full run, and the ceiling panel that decides how experiment B's result is read.** Expected: the curve stays flat near 0.96; if it moves late, the train-longer question reopens and this plan's review says so.
+**F8a extended to the full run, and the best-case panel that decides how experiment B's result is read.** Expected: the curve stays flat near 0.96; if it moves late, the train-longer question reopens and this plan's review says so.
 
 ---
 
@@ -87,9 +93,9 @@
 
 ⬅️ [Previous](#the-claim) | 📋 [TOC](#table-of-contents) | [Next](#description-what-to-build) ➡️
 
-**The problem.** A figure whose x-axis stops at 60% of the run invites the question the paper cannot answer; and B's verdict has no interpretation without the ceiling panel.
+**The problem.** A figure whose x-axis stops at 60% of the run invites the question the paper cannot answer; and B's verdict has no interpretation without the best-case panel.
 
-**The solution.** Score what exists; render the few missing ceiling cells; label the panel qualitative because no crispness instrument exists.
+**The solution.** Score what exists; render the few missing best-case pictures; label the panel qualitative, because nothing here measures crispness with a number.
 
 ---
 
@@ -100,7 +106,7 @@
 1. **The reconciliation check** against figure-01 next door (has it scored the tail or built the panel already?).
 2. **The tail scoring**: per-epoch samples for steps 70k-100k through the scorer; extend `compose_rate.json`'s table shape into `compose_rate_full.json`.
 3. **The F8a extension**: re-run `scripts/adapter_transfers.py` against the full table.
-4. **The ceiling panel**: LoRA-corrected vs oracle-corrected (true r_t, λ=1) on the F9 cells, reusing dose renders where the cell matches; caption states the comparison is qualitative.
+4. **The best-case panel**: LoRA-corrected against cached-true-correction-corrected (true r_t, λ=1) on the four F9 pairs, reusing renders from the dose series where the pair and seed match; caption states the comparison is qualitative.
 
 ---
 
@@ -111,7 +117,7 @@
 Serves goal 9. Checkable outcomes:
 
 1. `compose_rate_full.json` covers 10k-100k.
-2. F8a rebuilt over the full x-axis; the ceiling panel exists with its sidecar.
+2. F8a rebuilt over the full x-axis; the best-case panel exists with its sidecar.
 
 ---
 
@@ -132,13 +138,13 @@ Serves goal 9. Checkable outcomes:
 - [ ] **1.1 Reconcile with figure-01 next door**: read its Owed section; if either piece is done there, link its output here and skip that piece. Completion is observable: one line in this plan's review naming what was found.
 - [ ] **1.2 Score the 70k-100k per-epoch samples**; write `compose_rate_full.json`. Completion is observable: rows for steps 70000 to 100000 with in_in and out_out rates and n.
 - [ ] **1.3 Rebuild F8a** over the full run (`python scripts/adapter_transfers.py`, full-table input); output beside the existing figure with its sidecar.
-- [ ] **1.4 Build the ceiling panel**: per F9 cell, LoRA render beside oracle render; render only missing oracle cells; sidecar names space (decoded pixels), mode (closed-loop), and the qualitative label.
+- [ ] **1.4 Build the ceiling panel**: for each F9 pair and seed, the LoRA render beside the cached-true-correction render; render only the missing ones; sidecar names space (decoded pixels), mode (closed-loop), and the qualitative label.
 
 ▶ **Next: [instruction 2.1](#2--read-the-tail-and-the-ceiling)**.
 
 ## Instructions
 
-⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
+⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#what-has-to-pass-before-this-runs) ➡️
 
 ### 2. 👁️ Read the tail and the ceiling
 
@@ -146,15 +152,15 @@ Serves goal 9. Checkable outcomes:
 
 2.1 **Read the extended F8a.** ✅ flat within noise past 60k: saturation confirmed, the caption may say the run trained past its metric; ❌ a late rise: the train-longer question reopens; say so in the review and flag plan 08's framing.
 
-2.2 **Read the ceiling panel.** ✅ oracle visibly crisper than the LoRA: capacity stays a live lever for B's reading; ❌ oracle equally soft: no training buys crispness, and B's null becomes the expected end of the story.
+2.2 **Read the best-case panel.** ✅ the cached true correction visibly crisper than the LoRA: capacity stays a live lever for B's reading; ❌ it is equally soft: no training buys crispness, and B's null becomes the expected end of the story.
 
 2.3 **Write both verdicts** into the [review file](../review/12-close-f8a-and-the-oracle-panel.md).
 
-▶ **Next: the engagement gate.**
+▶ **Next: what has to pass before this runs.**
 
 ---
 
-## The engagement gate
+## What has to pass before this runs
 
 ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
@@ -172,14 +178,14 @@ Serves goal 9. Checkable outcomes:
 
 ## Figure Catalog
 
-⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
+⬅️ [Previous](#what-has-to-pass-before-this-runs) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
 
 ### Pending
 
 | Figure | Lane | What it shows | Save to |
 |--------|------|---------------|---------|
-| F8a, full run | subject | compose rate (y) over training steps 10k-100k (x), trained-on vs held-out, floor drawn | `paper/iclr/figures/compose-rate-as-the-lora-trains.{png,pdf,json}` (extended) |
-| the ceiling panel | subject | LoRA beside oracle, same cells, qualitative label | drafted here, shipped by plan 05 |
+| F8a, full run | subject | compose rate (y) over training steps 10k-100k (x), trained-on vs held-out, uncorrected baseline drawn | `paper/iclr/figures/compose-rate-as-the-lora-trains.{png,pdf,json}` (extended) |
+| the best-case panel | subject | the LoRA render beside the cached-true-correction render, same pairs and seeds, qualitative label | drafted here, shipped by plan 05 |
 
 ### Generated during plan execution
 
@@ -215,7 +221,7 @@ Serves goal 9. Checkable outcomes:
 ⬅️ [Previous](#orchestration-keeping-catalogs-and-plan-files-in-sync) | 📋 [TOC](#table-of-contents) | [Next](#recommended-skill) ➡️
 
 **File:** `scripts/adapter_transfers.py` — F8a's builder, re-run on the full table.
-**Dir:** `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/` — the oracle render store the panel reuses.
+**Dir:** `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/` — the store of cached-true-correction renders the panel reuses.
 
 ---
 
@@ -226,10 +232,10 @@ Serves goal 9. Checkable outcomes:
 ▶ Paste to run this plan (reads existing renders):
 
 ```
-Execute plans/01-showcase-the-trained-lora/plans/12-close-f8a-and-the-oracle-panel.md: the reconciliation task against figure-01-the-transfer-figures.md first, never duplicate its tasks; then score 70k-100k and build the oracle panel that keys experiment B.
+Execute plans/01-showcase-the-trained-lora/plans/12-close-f8a-and-the-oracle-panel.md: the reconciliation task against figure-01-the-transfer-figures.md first, never duplicate its tasks; then score 70k-100k and build the best-case panel that keys experiment B.
 ```
 
-alt, headless overnight: in a fresh session run `/unattended run-experiment plans/01-showcase-the-trained-lora/plans/12-close-f8a-and-the-oracle-panel.md` and paste the tmux block it emits (the scoring sweep half only; the panel eyeball stays attended). The engagement gate and the review file's bar are the stop conditions.
+alt, headless overnight: in a fresh session run `/unattended run-experiment plans/01-showcase-the-trained-lora/plans/12-close-f8a-and-the-oracle-panel.md` and paste the tmux block it emits (the scoring half only; the panel eyeball stays attended). What has to pass before this runs and the review file's threshold are the stop conditions.
 
 ---
 

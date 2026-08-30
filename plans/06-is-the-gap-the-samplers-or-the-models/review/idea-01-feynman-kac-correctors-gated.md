@@ -27,7 +27,7 @@ closes unrun with the reason recorded. That is a completed plan rather than an a
 - [Words this file uses](#words-this-file-uses)
 - [Run kind](#run-kind)
 - [Runs](#runs)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [Asked after the result](#asked-after-the-result)
 - [Could the answer be an artefact](#could-the-answer-be-an-artefact)
@@ -64,13 +64,13 @@ may propose an experiment and nothing more. What it must produce is a decision w
 
 ## Runs
 
-Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
 | Full read of arXiv 2503.02819 and a cost estimate | Explores | not launched | no GPU, no queue, one read | the promoted register row and this file's decision | ⚠️ waiting on the threshold at step 26 |
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
@@ -81,7 +81,7 @@ three months and gets remade from scratch.
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
+Navigation: ⬅️ [The question written before the run](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
 - [ ] ⚠️ Are Feynman-Kac correctors built here or cited here, and why? The answer includes the case
       "not run, because step 26 returned a null", with the branch named.
@@ -109,7 +109,7 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
 
 - [ ] ⚠️ **Was the comparison fair?** Not applicable: nothing is compared, and this file says so
       rather than leaving the check unanswered.
-- [ ] ⚠️ **Was the instrument sound?** The measuring tool here is a read. It is sound if the register
+- [ ] ⚠️ **Was the measuring tool sound?** The measuring tool here is a read. It is sound if the register
       row can answer what the method does at each noise level; an abstract standing in for the full
       read cannot cost the implementation, and a row that overstates itself is worse than one that
       admits the gap.

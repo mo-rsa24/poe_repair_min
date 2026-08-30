@@ -42,7 +42,7 @@ This extracts error patterns from the run transcript, deduplicates against globa
 - [Purpose and goal](#purpose-and-goal)
 - [Tasks](#tasks) — things for Claude to execute
 - [Instructions](#instructions) — things for you to do manually
-- [The engagement gate](#the-engagement-gate)
+- [What has to pass before this runs](#what-has-to-pass-before-this-runs)
 - [Figure Catalog](#figure-catalog)
 - [Orchestration: keeping catalogs and plan files in sync](#orchestration-keeping-catalogs-and-plan-files-in-sync)
 - [Code references](#code-references)
@@ -142,7 +142,7 @@ Serves [Objective 5 and DoD 4 of the scope master plan](../MASTER_PLAN.md).
 
 ⬅️ [Previous](#purpose-and-goal) | 📋 [TOC](#table-of-contents) | [Next](#instructions) ➡️
 
-### 0. ✅ Preflight
+### 0. ✅ Check this plan before working from it
 
 ◀ **Needs: nothing**; the cache-only figures start immediately.
 
@@ -152,7 +152,7 @@ Serves [Objective 5 and DoD 4 of the scope master plan](../MASTER_PLAN.md).
 
 ### 1. 🖼️ Build the cache-only figures
 
-◀ **Needs: [group 0](#0--preflight)**.
+◀ **Needs: [group 0](#0--check-this-plan-before-working-from-it)**.
 
 - [ ] **1.1** `structure_figure.py`: three-curve energy-at-k per the ledger (train + both self-fit reference levels; held-out + k/d in a second panel); sidecar JSON with every plotted number
   - 💡 `/design-figure` on the two-panel split if the single-figure version fights itself ✅
@@ -180,13 +180,13 @@ Serves [Objective 5 and DoD 4 of the scope master plan](../MASTER_PLAN.md).
 - [ ] **4.1** `/sync-plan-tree plans/01-showcase-the-trained-lora`
 - [ ] **4.2** When every plan in the scope is ✅: run `/recap-plan-tree @plans/01-showcase-the-trained-lora/MASTER_PLAN.md` and record the Artifact URL in the master plan
 
-▶ **Next: the engagement gate.**
+▶ **Next: what has to pass before this runs.**
 
 ---
 
 ## Instructions
 
-⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
+⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#what-has-to-pass-before-this-runs) ➡️
 
 ### 3. ✅ Run the standard check
 
@@ -204,7 +204,7 @@ Serves [Objective 5 and DoD 4 of the scope master plan](../MASTER_PLAN.md).
 
 ---
 
-## The engagement gate
+## What has to pass before this runs
 
 ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
@@ -220,7 +220,7 @@ Serves [Objective 5 and DoD 4 of the scope master plan](../MASTER_PLAN.md).
 
 ## Figure Catalog
 
-⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
+⬅️ [Previous](#what-has-to-pass-before-this-runs) | 📋 [TOC](#table-of-contents) | [Next](#orchestration-keeping-catalogs-and-plan-files-in-sync) ➡️
 
 ### Pending: from the scope map
 
@@ -290,7 +290,7 @@ Execute plans/01-showcase-the-trained-lora/plans/05-assemble-the-showcase-figure
 
 ⬅️ [Previous](#recommended-skill) | 📋 [TOC](#table-of-contents) | [Next](#error-matrix) ➡️
 
-The scope closes with the recall gallery (task 4.2). The walk that designed this scope is archived at [plans/.walk/showcasing-the-trained-lora.md](../../.walk/showcasing-the-trained-lora.md).
+The scope closes with the recall gallery (task 4.2). The walk that designed this scope is archived at [plans/.walk/showcasing-the-trained-lora.md](../../../artifacts/drips/showcase-the-trained-adapter/the-parallel-walk.md).
 
 ---
 

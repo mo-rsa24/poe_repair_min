@@ -1,7 +1,7 @@
 # 🔬 Review: can the scorer be trusted off animals?
 
 Nothing has run yet. This file judges [the design](../plans/13-revalidate-the-scorer-off-animals.md).
-Run kind: instrument validation (labels first, bar in code, then the reading).
+Run kind: validating a measuring tool (labels first, the threshold written into the source, then the reading).
 
 ## Recommended prompt (when the run lands)
 
@@ -13,14 +13,14 @@ Run kind: instrument validation (labels first, bar in code, then the reading).
 
 | File | What it holds |
 |---|---|
-| [design](../plans/13-revalidate-the-scorer-off-animals.md) | the definitions, the mini-set, the bar |
+| [design](../plans/13-revalidate-the-scorer-off-animals.md) | the definitions, the mini-set, the threshold |
 | this file | agreement per kind and the tier-three verdict |
 
 ## Table of contents
 
 - [Words this file uses](#words-this-file-uses)
 - [Runs](#runs)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [Could the answer be an artefact](#could-the-answer-be-an-artefact)
 - [Still open](#still-open)
@@ -32,29 +32,29 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#runs) ➡️
 - **Kind**: object × style versus object × scene; each gets its own pass definition and its own
   verdict.
 - **Tier three**: the population ladder's widest caption, "SDXL composition generally"; it opens
-  per kind, only on a met bar.
+  per kind, and only when the threshold is met.
 
 ## Runs
 
-Navigation: ⬅️ [Words](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Words](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 | Date | What ran | Renders labelled | Wall time | Outcome |
 |---|---|---|---|---|
 | | | | | |
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
 **This is the one question whose failure moves the plan.**
 
-- [ ] ⚠️ **Does scorer-vs-eye agreement meet the in-code bar per kind?** The bar lives in
-  `scripts/showcase/offanimal_validation.py` and is quoted here verbatim at judgment time,
+- [ ] ⚠️ **Does scorer-against-eye agreement meet the threshold, per kind?** The threshold lives
+  in `scripts/showcase/offanimal_validation.py` and is quoted here verbatim at judgment time,
   with the agreement rates and the ambiguous-case count beside it.
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
+Navigation: ⬅️ [The bar](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
 - [ ] ⚠️ Which kind fails harder, object × style or object × scene, and does the failure mode
   suggest a different read (a style is not an instance; was the definition or the scorer at
@@ -66,8 +66,8 @@ Navigation: ⬅️ [The bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-con
 Navigation: ⬅️ [Before/after](#written-before-the-run-answered-after) | 📋 [TOC](#table-of-contents) | [Next](#still-open) ➡️
 
 - [ ] ⚠️ **Was the comparison fair?** Labels done blind to scorer output; ambiguous renders
-  excluded from the bar and counted.
-- [ ] ⚠️ **Was the instrument sound?** The original two-animal validation still reproduces on a
+  excluded from the threshold and counted.
+- [ ] ⚠️ **Was the measuring tool sound?** The original two-animal validation still reproduces on a
   spot-check (the scorer itself did not drift).
 - [ ] ⚠️ **Did the run respect the environment?** In-session; outputs to `/datasets`.
 

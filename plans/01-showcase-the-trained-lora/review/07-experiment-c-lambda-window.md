@@ -21,7 +21,7 @@ reading key for experiments A and B.
 
 - [Words this file uses](#words-this-file-uses)
 - [Runs](#runs)
-- [The pre-registered bar](#the-pre-registered-bar)
+- [The question written before the run](#the-question-written-before-the-run)
 - [Written before the run, answered after](#written-before-the-run-answered-after)
 - [Could the answer be an artefact](#could-the-answer-be-an-artefact)
 - [Still open](#still-open)
@@ -37,13 +37,13 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#runs) ➡️
 
 ## Runs
 
-Navigation: ⬅️ [Words](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#the-pre-registered-bar) ➡️
+Navigation: ⬅️ [Words](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#the-question-written-before-the-run) ➡️
 
 | Date | Run id | What ran | Wall time | Outcome |
 |---|---|---|---|---|
 | | | | | |
 
-## The pre-registered bar
+## The question written before the run
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
@@ -56,7 +56,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 ## Written before the run, answered after
 
-Navigation: ⬅️ [The bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
+Navigation: ⬅️ [The bar](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
 - [ ] ⚠️ Where along the grid does [compose rate](../../../context/world/compose-rate.md) arrive (the dose story) relative to where blur
   arrives (the cost story), and do the two leave a usable middle λ?
@@ -67,7 +67,7 @@ Navigation: ⬅️ [The bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-con
 Navigation: ⬅️ [Before/after](#written-before-the-run-answered-after) | 📋 [TOC](#table-of-contents) | [Next](#still-open) ➡️
 
 - [ ] ⚠️ **Was the comparison fair?** Only λ varied; checkpoint, window, seeds, guidance fixed.
-- [ ] ⚠️ **Was the instrument sound?** The sharpness proxy sanity-checked on a known-crisp and a
+- [ ] ⚠️ **Was the measuring tool sound?** The sharpness proxy sanity-checked on a known-crisp and a
   known-soft render before use.
 - [ ] ⚠️ **Did the run respect the environment?** In-session on a free device; outputs on
   `/datasets`.
