@@ -1,6 +1,6 @@
 # 🧪 Review: does capacity move what length could not?
 
-Nothing has run yet. This file judges [the design](../plans/09-experiment-b-rank-16-32.md).
+Nothing has run yet. This file judges [the design](../plans/experiments/09-experiment-b-rank-16-32.md).
 Run kind: ablation over the rank axis (one question per rank).
 
 ## Recommended prompt (when the run lands)
@@ -13,7 +13,7 @@ Run kind: ablation over the rank axis (one question per rank).
 
 | File | What it holds |
 |---|---|
-| [design](../plans/09-experiment-b-rank-16-32.md) | the two launches, the matched-steps rule, the null threshold |
+| [design](../plans/experiments/09-experiment-b-rank-16-32.md) | the two launches, the matched-steps rule, the null threshold |
 | this file | the verdict per rank, read beside the panel of what the cached correction reaches at best |
 
 ## Table of contents

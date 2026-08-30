@@ -1,14 +1,14 @@
 # 🔬 Review: does the pooled fix reach pairs sharing no concept with its pool?
 
-**Unanswered.** This file judges [../plans/04-the-transfer-matrix-figure.md](../plans/04-the-transfer-matrix-figure.md). Questions below were written at design time, before any run, per `~/.claude/EXPERIMENT_CONVENTIONS.md`.
+**Unanswered.** This file judges [../plans/04-the-transfer-matrix-figure.md](../plans/figures/04-the-transfer-matrix-figure.md). Questions below were written at design time, before any run, per `~/.claude/EXPERIMENT_CONVENTIONS.md`.
 
 ## Position in the plan tree
 
 | File | What it holds |
 |---|---|
-| [design](../plans/04-the-transfer-matrix-figure.md) | the group-by-disjoint-pair matrix with its disjointness audit |
+| [design](../plans/figures/04-the-transfer-matrix-figure.md) | the group-by-disjoint-pair matrix with its disjointness audit |
 | **this file** | **the verdict, once the runs land** |
-| [what it feeds](../plans/05-assemble-the-showcase-figures.md) | the transfer matrix ships from here |
+| [what it feeds](../plans/figures/05-assemble-the-showcase-figures.md) | the transfer matrix ships from here |
 
 ## Table of contents
 

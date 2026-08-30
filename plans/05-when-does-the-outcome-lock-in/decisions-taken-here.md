@@ -20,8 +20,8 @@ the image that state would finish as, without stepping the rest of the way.
 **(a) Is the endpoint from an off-manifold PoE state well-defined enough for the endpoint
 predictor to mean something?** Yes. The learned field is defined on the whole latent space, so a
 deterministic flow assigns every state exactly one endpoint, and endpoints cluster into modes.
-Near [the fold where nearby states land in different endings](/home-mscluster/mmolefe/goal-setting/learning/speciation-before-divergence/plans/08-caustic-as-fold.md) the label is unstable, and that instability is itself the commitment
-signal. What is being read is the base guided flow's map from a state to [where each state would finish](/home-mscluster/mmolefe/goal-setting/learning/speciation-before-divergence/plans/09-endpoint-map-and-consistency-condition.md), so the read is a counterfactual finish:
+Near [the fold where nearby states land in different endings](../../../../../goal-setting/learning/speciation-before-divergence/plans/08-caustic-as-fold.md) the label is unstable, and that instability is itself the commitment
+signal. What is being read is the base guided flow's map from a state to [where each state would finish](../../../../../goal-setting/learning/speciation-before-divergence/plans/09-endpoint-map-and-consistency-condition.md), so the read is a counterfactual finish:
 the image the plain guided model would land on if composing stopped at this step. Trust off
 distribution is measurable against the teacher, never assumable.
 

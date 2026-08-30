@@ -1,6 +1,6 @@
 # 🧪 Review: where does speciation cluster, and does it explain the gap?
 
-**Nothing has run yet.** This file judges [the design](../plans/05-the-grid-and-the-figures.md); answers land
+**Nothing has run yet.** This file judges [the design](../plans/figures/05-the-grid-and-the-figures.md); answers land
 here and nowhere else. Questions below were written at design time, before any number existed.
 
 ## Recommended prompt (when the run lands)
@@ -14,7 +14,7 @@ here and nowhere else. Questions below were written at design time, before any n
 
 | File | What it holds |
 |---|---|
-| [design](../plans/05-the-grid-and-the-figures.md) | the hypothesis, the thresholds, the code to write |
+| [design](../plans/figures/05-the-grid-and-the-figures.md) | the hypothesis, the thresholds, the code to write |
 | **this file** | **the verdict: what the runs answered, and what they could not** |
 
 ## Table of contents
@@ -129,4 +129,4 @@ Navigation: ⬅️ [What the write-up owes](#what-the-write-up-owes) | 📋 [TOC
 
 Navigation: ⬅️ [Still open](#still-open) | 📋 [TOC](#table-of-contents)
 
-Run [the design's tasks](../plans/05-the-grid-and-the-figures.md#tasks), then answer the questions above.
+Run [the design's tasks](../plans/figures/05-the-grid-and-the-figures.md#tasks), then answer the questions above.

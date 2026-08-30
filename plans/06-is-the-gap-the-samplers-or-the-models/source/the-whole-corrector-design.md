@@ -26,10 +26,10 @@ of them, then delete it once every task group has landed in a plan file.
 
 | Step | Plan | What it does |
 |------|------|-------------|
-| 6 | [hypothesis-03: when-in-the-run-it-matters](../../03-does-the-correction-cause-composition/plans/hypothesis-03-when-in-the-run-it-matters.md) ◑ | Found the cliff at steps 0 to 10, which is also where a sampler artifact would live |
-| 15 | [two literature checks before print](../../03-does-the-correction-cause-composition/plans/gate-01-two-literature-checks-before-print.md) ⚠️ | Already cites Soiffer et al. as the reason to train a fix rather than trust a sampler. This scope is the measurement behind that sentence |
+| 6 | [hypothesis-03: when-in-the-run-it-matters](../../03-does-the-correction-cause-composition/plans/hypothesis/05-when-in-the-run-it-matters.md) ◑ | Found the cliff at steps 0 to 10, which is also where a sampler artifact would live |
+| 15 | [two literature checks before print](../../03-does-the-correction-cause-composition/plans/checks/09-two-literature-checks-before-print.md) ⚠️ | Already cites Soiffer et al. as the reason to train a fix rather than trust a sampler. This scope is the measurement behind that sentence |
 | **24 to 30** | **this scope's seven plans** ⚠️ | **Size the sampler's share against the model's share, and compare three composition rules on one axis of correction amount** |
-| 21 | [writing-06: mechanism-and-limitations](../../07-writing-the-paper/plans/writing-06-mechanism-and-limitations.md) ⚠️ | Cannot be written honestly until step 26 returns a size |
+| 21 | [writing-06: mechanism-and-limitations](../../07-writing-the-paper/plans/writing/06-mechanism-and-limitations.md) ⚠️ | Cannot be written honestly until step 26 returns a size |
 
 Design only. The questions it is judged against are in
 [the pre-registered review questions](the-questions-pre-registered-against-it.md), which split into
@@ -95,7 +95,7 @@ goes to zero.
 
 **Error B, the model's share.** `p(cat)·p(dog)` is not `p(cat and dog)`. Multiplying two
 distributions asks for one thing that is both animals, which is the
-[chimera](context/world/chimera.md). No corrector touches
+[chimera](../../../context/world/chimera.md). No corrector touches
 this, and it does not vanish at zero noise.
 
 **The corrector count, `k`.** How many unadjusted Langevin steps run at each of the 50 noise
@@ -116,10 +116,10 @@ a matched comparison across rules rather than four unrelated pictures.
 ⬅️ [Previous](#words-this-plan-uses) | 📋 [TOC](#table-of-contents) | [Next](#considerations) ➡️
 
 The scope has a causal result and a timing result. Injecting `r_t` raises the
-[compose rate](context/world/compose-rate.md) as more correction is added, while a norm-matched random
+[compose rate](../../../context/world/compose-rate.md) as more correction is added, while a norm-matched random
 control stays at what you would get by luck, and injecting it only into steps 0 to 10 composes 0.656 of 32 runs while steps 20
 to 30 onward compose 0.000. Both are in
-[the timing verdict](../../03-does-the-correction-cause-composition/review/hypothesis-03-when-in-the-run-it-matters.md), which also records
+[the timing verdict](../../03-does-the-correction-cause-composition/review/05-when-in-the-run-it-matters.md), which also records
 that the correction is about 2.7 times larger late than early, so it works where it is smallest,
 and that tripling the amount added late changes almost nothing.
 
@@ -251,7 +251,7 @@ The paper's argument is that a small, shared, learnable correction fixes composi
 rank-8 adapter can carry it. If most of `r_t` is error A, a training-free corrector gets most of
 the same benefit and the adapter is answering a question the sampler had already solved. That is
 the strongest reviewer objection available against this work, and
-[the two literature checks before print](../../03-does-the-correction-cause-composition/plans/gate-01-two-literature-checks-before-print.md) already cite the paper that raises it.
+[the two literature checks before print](../../03-does-the-correction-cause-composition/plans/checks/09-two-literature-checks-before-print.md) already cite the paper that raises it.
 
 The outcome changes the manuscript either way, which is what makes it worth the GPU time.
 
@@ -333,7 +333,7 @@ it has seen. Its curve should be low at `k=0` and should not rise with `k`. If i
 way the failing pair does, the rise is the test walking the joint branch off-distribution and no
 reading of either curve is licensed. `an_elephant__x__a_penguin` is not used for this, because
 whether it composes by default is
-[an open question in another review file](../../04-does-the-fix-reach-unseen-pairs/review/instrument-01-the-clean-pair-pool.md).
+[an open question in another review file](../../04-does-the-fix-reach-unseen-pairs/review/01-the-clean-pair-pool.md).
 
 ---
 
@@ -437,7 +437,7 @@ directly. Task 1 costs nothing at all: it reads files already on disk.
 
 ### 0. 🧭 Check this plan before working from it
 
-- [ ] **0.1** Re-read [the timing verdict](../../03-does-the-correction-cause-composition/review/hypothesis-03-when-in-the-run-it-matters.md)
+- [ ] **0.1** Re-read [the timing verdict](../../03-does-the-correction-cause-composition/review/05-when-in-the-run-it-matters.md)
       and confirm the three numbers this plan quotes are still what it says. They are 0.656 at
       steps 0 to 10, 0.000 from steps 20 to 30 onward, and the correction 2.7 times larger late
       than early.
@@ -615,7 +615,7 @@ Run group: **baseline**.
 - [ ] **7.3** Grid two: columns are `λ ∈ {0, 0.25, 0.5, 0.75, 1}`, seed fixed at 9.
 - [ ] **7.4** Handle the two things this grid is known to hit rather than discovering them. The
       rows deliver different absolute amounts at the same `λ`, because `‖r_t^M‖` differs per row.
-      [The timing plan](../../03-does-the-correction-cause-composition/plans/hypothesis-03-when-in-the-run-it-matters.md) met this and answered it with
+      [The timing plan](../../03-does-the-correction-cause-composition/plans/hypothesis/05-when-in-the-run-it-matters.md) met this and answered it with
       a `--mode matched` setting, so either put the delivered total on each row label or run matched.
       And the corrector rows will not reproduce the joint render at `λ=1`, because the chain has
       already moved off the joint trajectory; label those pictures not-an-identity. A row that fails
@@ -650,7 +650,7 @@ returned a null, the Feynman-Kac read is a related-work paragraph and this task 
       and delete that map's `/frame-hypothesis` route row, per its own rule that a route row is
       deleted once the result is folded back in.
 - [ ] **C.3** Update
-      [the two literature checks before print](../../03-does-the-correction-cause-composition/plans/gate-01-two-literature-checks-before-print.md) with the measured size, since it
+      [the two literature checks before print](../../03-does-the-correction-cause-composition/plans/checks/09-two-literature-checks-before-print.md) with the measured size, since it
       currently cites Soiffer et al. for a claim this plan turns into a number.
 
 ---
@@ -702,7 +702,7 @@ them.
       not, and that is expected. Record for each row whether it converged, since that column is a
       free classifier of what each rule is doing.
 - [ ] **11.2** For grid one, count composed pictures per row by eye and compare against the detector's
-      count. [The timing verdict](../../03-does-the-correction-cause-composition/review/hypothesis-03-when-in-the-run-it-matters.md) records
+      count. [The timing verdict](../../03-does-the-correction-cause-composition/review/05-when-in-the-run-it-matters.md) records
       that the detector and the eye disagree on cat and dog often enough that the eye read is the
       one cited, so do both and cite the eye where they differ.
 - [ ] **11.3** Write both counts into the review file, side by side, with the disagreements named
@@ -780,7 +780,7 @@ been the cheaper diagnostic.
 
 **Other samplers on the same rule.** DDIM against DDPM against Euler, testing whether the window
 sits at fixed noise levels rather than fixed step numbers, is
-[generalization-01](../../03-does-the-correction-cause-composition/plans/generalization-01-other-models-and-samplers.md). That plan varies the
+[generalization-01](../../03-does-the-correction-cause-composition/plans/reach/10-other-models-and-samplers.md). That plan varies the
 integrator under one composition rule; this one varies the composition rule under one integrator.
 Neither answers the other.
 
@@ -800,7 +800,7 @@ SuperDiff is a published rule a reviewer will ask about either way.
 
 | What changes | Where it has to be reflected |
 |---|---|
-| the verdict from task 4 | the review file, then [the two literature checks before print](../../03-does-the-correction-cause-composition/plans/gate-01-two-literature-checks-before-print.md), which currently cites a paper for a claim this makes into a number |
+| the verdict from task 4 | the review file, then [the two literature checks before print](../../03-does-the-correction-cause-composition/plans/checks/09-two-literature-checks-before-print.md), which currently cites a paper for a claim this makes into a number |
 | a figure lands in `mcmc/` or `superdiff/` | that folder's `README.md` gains an entry naming the algorithm and what produced it, per this repo's artifact rule |
 | the full reads happen | [the reading register](../../standing/literature/reading-register.md) rows for 2302.11552, 2412.17762 and 2503.02819 move from abstract-level to full read. They are promotions of rows dated 2026-08-12, not first reads |
 | the size is measured | [the idea map's claim 2](../../../artifacts/ideas/which-variable-explains-what-poe-is-missing/IDEA_MAP.md), and its route row is deleted |

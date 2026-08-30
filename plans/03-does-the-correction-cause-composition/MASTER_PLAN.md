@@ -4,19 +4,19 @@
 
 This scope owns **9 of the 30 steps**, 5 of them done. The steps interleave with the other scopes', so the list below is a filter on the one `## Running order` table in the [repo root MASTER_PLAN.md](../../MASTER_PLAN.md), never an order of its own.
 
-**Next in this scope: step 6**, [when in the run the correction matters](plans/hypothesis-03-when-in-the-run-it-matters.md), driving the timing tab by hand.
+**Next in this scope: step 6**, [when in the run the correction matters](plans/hypothesis/05-when-in-the-run-it-matters.md), driving the timing tab by hand.
 
 | Step | Plan | What it does | Status |
 |---|---|---|---|
-| 1 | ~~[building the measuring scripts](plans/instrument-01-build-the-measuring-scripts.md)~~ | the thirteen measuring scripts | ✅ |
-| 2 | ~~[fixing the size measure before any result](plans/instrument-02-fix-the-size-measure-before-any-result.md)~~ | how the correction's size is expressed | ✅ |
-| 4 | [hypothesis-02-more-correction-more-composition](plans/hypothesis-02-more-correction-more-composition.md) | the headline causal result | ◑ 6.3GB owed off /home-mscluster |
-| 5 | ~~[hypothesis-04-what-the-cached-runs-already-show](plans/hypothesis-04-what-the-cached-runs-already-show.md)~~ | the analyses needing no GPU | ✅ |
-| 6 | [hypothesis-03-when-in-the-run-it-matters](plans/hypothesis-03-when-in-the-run-it-matters.md) | when the correction matters | ◑ driving the timing tab |
-| 7 | ~~[hypothesis-05-the-same-story-from-three-sides](plans/hypothesis-05-the-same-story-from-three-sides.md)~~ | the independent checks | ✅ |
-| 8 | ~~[hypothesis-01-what-the-fix-changes-inside-the-model](plans/hypothesis-01-what-the-fix-changes-inside-the-model.md)~~ | what the fix changes inside | ✅ |
-| 13 | [figure-01-the-seven-paper-figures](plans/figure-01-the-seven-paper-figures.md) | the figures this scope owes | ◑ F6 needs a decision |
-| 15 | [the two literature checks before print](plans/gate-01-two-literature-checks-before-print.md) | the two literature checks that must pass before print | ⚠️ |
+| 1 | ~~[building the measuring scripts](plans/tools/01-build-the-measuring-scripts.md)~~ | the thirteen measuring scripts | ✅ |
+| 2 | ~~[fixing the size measure before any result](plans/tools/02-fix-the-size-measure-before-any-result.md)~~ | how the correction's size is expressed | ✅ |
+| 4 | [hypothesis-02-more-correction-more-composition](plans/hypothesis/03-more-correction-more-composition.md) | the headline causal result | ◑ 6.3GB owed off /home-mscluster |
+| 5 | ~~[hypothesis-04-what-the-cached-runs-already-show](plans/hypothesis/04-what-the-cached-runs-already-show.md)~~ | the analyses needing no GPU | ✅ |
+| 6 | [hypothesis-03-when-in-the-run-it-matters](plans/hypothesis/05-when-in-the-run-it-matters.md) | when the correction matters | ◑ driving the timing tab |
+| 7 | ~~[hypothesis-05-the-same-story-from-three-sides](plans/hypothesis/06-the-same-story-from-three-sides.md)~~ | the independent checks | ✅ |
+| 8 | ~~[hypothesis-01-what-the-fix-changes-inside-the-model](plans/hypothesis/07-what-the-fix-changes-inside-the-model.md)~~ | what the fix changes inside | ✅ |
+| 13 | [figure-01-the-seven-paper-figures](plans/figures/08-the-seven-paper-figures.md) | the figures this scope owes | ◑ F6 needs a decision |
+| 15 | [the two literature checks before print](plans/checks/09-two-literature-checks-before-print.md) | the two literature checks that must pass before print | ⚠️ |
 
 **The corrector question is no longer in this scope.** Whether the correction is the sampler's
 error or the model's grew into
@@ -159,8 +159,8 @@ plan sits in the root's background-experiments pool and does not block the paper
 
 | Plan | What it does | Paper step | Status | Owes |
 |---|---|---|---|---|
-| idea-01-does-it-hold-for-attribute-pairs | whether attribute pairs behave like object pairs | bg | ⚠️ | its runs; the scaffold waits at artifacts/plans/parked/composition-type-cells |
-| generalization-01-other-models-and-samplers | the same result on another model and sampler | bg | ⚠️ | its runs; the scaffold waits at artifacts/plans/parked/cross-model-replication |
+| [does it hold for attribute pairs](plans/ideas/11-does-it-hold-for-attribute-pairs.md) | whether attribute pairs behave like object pairs | bg | ⚠️ | its runs; the scaffold waits at artifacts/plans/parked/composition-type-cells |
+| [the same result on another model and sampler](plans/reach/10-other-models-and-samplers.md) | the same result on another model and sampler | bg | ⚠️ | its runs; the scaffold waits at artifacts/plans/parked/cross-model-replication |
 | 11-inspector | shelved with its sub-scope: tooling, not paper work; returns after submission or on promotion | | shelved | |
 
 **What reaches the paper** (figure runs, plus the two checks that must pass before print)

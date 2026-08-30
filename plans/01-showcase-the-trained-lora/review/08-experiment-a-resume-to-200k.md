@@ -1,6 +1,6 @@
 # 🧪 Review: does doubling the training length move anything?
 
-Nothing has run yet. This file judges [the design](../plans/08-experiment-a-resume-to-200k.md).
+Nothing has run yet. This file judges [the design](../plans/experiments/08-experiment-a-resume-to-200k.md).
 Run kind: hypothesis (an experiment on the length axis with a null threshold fixed in advance).
 
 > A null threshold is the number the result has to stay under to count as no effect: a held-out
@@ -17,7 +17,7 @@ Run kind: hypothesis (an experiment on the length axis with a null threshold fix
 
 | File | What it holds |
 |---|---|
-| [design](../plans/08-experiment-a-resume-to-200k.md) | the resume, the frozen tracking set, the null threshold |
+| [design](../plans/experiments/08-experiment-a-resume-to-200k.md) | the resume, the frozen tracking set, the null threshold |
 | this file | the verdict against that threshold |
 
 ## Table of contents

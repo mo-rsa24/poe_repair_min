@@ -1,6 +1,6 @@
 # 📊 Review: what is the joint prompt's own compose rate?
 
-Nothing has run yet. This file judges [the design](../plans/11-the-counted-joint-prompt-figure.md).
+Nothing has run yet. This file judges [the design](../plans/figures/11-the-counted-joint-prompt-figure.md).
 Run kind: measurement (scoring renders that already exist).
 
 ## Recommended prompt (when the run lands)
@@ -13,7 +13,7 @@ Run kind: measurement (scoring renders that already exist).
 
 | File | What it holds |
 |---|---|
-| [design](../plans/11-the-counted-joint-prompt-figure.md) | the scoring pass and the three-bar figure |
+| [design](../plans/figures/11-the-counted-joint-prompt-figure.md) | the scoring pass and the three-bar figure |
 | this file | the measured baseline and the spot-check verdict |
 
 ## Table of contents
@@ -63,7 +63,7 @@ Navigation: ⬅️ [The bar](#the-question-written-before-the-run) | 📋 [TOC](
   those exact pair-and-seed runs (the "restores what the target loses" sentence needs named
   examples)?
 - [ ] ⚠️ Does `an_elephant__x__a_penguin` compose by default? Carry the answer to the
-  [clean-pair-pool review's open question](../../04-does-the-fix-reach-unseen-pairs/review/instrument-01-the-clean-pair-pool.md).
+  [clean-pair-pool review's open question](../../04-does-the-fix-reach-unseen-pairs/review/01-the-clean-pair-pool.md).
 
 ## Could the answer be an artefact
 

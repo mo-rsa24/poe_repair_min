@@ -1,0 +1,74 @@
+# 🅱️ The control pool: was it the animals, or just the amount of data?
+
+Train the same adapter on a pool of the same size made of non-animal concepts, then test it on
+the same animal pairs, so a win can be credited to the animals rather than to how much data there
+was.
+
+**Step 12 of 22.** Waits on step 11. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../../MASTER_PLAN.md).
+
+| Step | Plan | Status |
+|---|---|---|
+| 11 | [hypothesis-02-transfer-as-a-rate-over-fifteen-pairs](../hypothesis/04-transfer-as-a-rate-over-fifteen-pairs.md) | ⚠️ |
+| **12** | **this plan** | **⚠️** |
+| 13 | [figure-01-the-seven-paper-figures](../../../03-does-the-correction-cause-composition/plans/figures/08-the-seven-paper-figures.md) | ◑ F6 needs a decision |
+
+Design only. Verdicts live in [../review/baseline-01-the-size-matched-control-pool.md](../../review/05-the-size-matched-control-pool.md).
+
+## What this asks, in one line
+Run the identical training on a same-size pool of non-animal concepts and evaluate on the same
+held-out animal pairs: if the mixed pool does as well, the win was data volume, not the pool.
+
+> Held-out means an animal pair the adapter never trained on, so a result on it says whether
+> the fix reaches beyond what it was shown.
+
+## Why this plan exists
+A transfer win in plan 03 is worth little if any pool of the same size would have won.
+This plan rules that out: it runs a same-size mixed pool on the identical held-out
+animal pairs, so a win can be attributed to the animals pool specifically, not to how
+much data there was.
+
+## Description
+Build a mixed pool the same size as the animals pool (~15), swapping the animal pairs
+for scene/style/object concepts, then run it and evaluate on the SAME animal held-out
+pairs used in (A). Same size kills the "more data" confound: a win means animals help,
+not that there was more training signal.
+
+## Purpose
+Serves Objective 3 (Contrast B) and Definition-of-Done item 4.
+
+## Goal
+A size-matched mixed pool built and run, evaluated on the identical animal held-out
+set as (A), with the animals-vs-mixed contrast reported per held-out pair.
+
+## Environment Facts This Plan Depends On
+- `co3` python at its absolute path. The training + wired-eval path this plan reuses from (A) is
+  a full pooled-LoRA run: goes to biggpu first, else bigbatch.
+- Checkpoints and eval output write to `/datasets`, per the disk guard rule in
+  [environment/storage.md](../../../../environment/storage.md); (A)'s own checkpoint is
+  `artifacts/results/does-the-fix-reach-unseen-pairs/pooled_lora/phase1_r8_100k/checkpoints/`.
+
+## Tasks
+- [ ] Build the size-matched mixed `pair_pool.yaml`: equal N to the animals pool,
+  animal pairs swapped for scene/style/object concepts, overlap assertion passing.
+- [ ] Run the mixed pool through the same training + wired-eval path as (A).
+- [ ] Evaluate the mixed-pool LoRA on the SAME animal held-out pairs used in (A),
+  two-tier read.
+- [ ] Report the animals-vs-mixed contrast per held-out pair
+  ([compose-rate](../../../../context/world/compose-rate.md) + direction), on the identical
+  held-out set.
+
+## Engagement Instructions
+WHAT MUST PASS FIRST (unattended pass/fail): the mixed `pair_pool.yaml` loads with the overlap
+assertion passing AND its pair count equals the animals pool's; both pools are
+evaluated on the identical animal held-out set (same pair slugs). A script asserts
+equal N and identical held-out slugs.
+STOP: if a size-matched mixed pool cannot be built at equal N → halt (B); (A) still
+carries the scope. Per-run: same delivery-null stop as plan 03 (distance-reached no better than
+luck past the commitment window → mark delivery-null, move on).
+
+> A delivery-null run is one where the correction never moved the prediction far enough to change
+> the picture.
+
+## Recommended skill
+▶ `/run-experiment` ✅: drives the mixed-pool run and the same-held-out-set eval.
+   alt: `/debug-config` for the size-matched pair_pool.yaml construction.

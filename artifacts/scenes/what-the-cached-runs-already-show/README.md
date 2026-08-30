@@ -1,7 +1,7 @@
 # The four cached-trajectory analyses, as a page you can drive
 
 Seven claims from
-[../review/hypothesis-04-what-the-cached-runs-already-show.md](../review/hypothesis-04-what-the-cached-runs-already-show.md),
+[../../../plans/03-does-the-correction-cause-composition/review/04-what-the-cached-runs-already-show.md](../../../plans/03-does-the-correction-cause-composition/review/04-what-the-cached-runs-already-show.md),
 each one a thing you operate rather than read. Drag the noise level and the curve, the readout and
 the five expert pictures move together. Every ratio is recomputed in the browser from the loaded
 arrays, and every panel shows the file it read and when that file was written.

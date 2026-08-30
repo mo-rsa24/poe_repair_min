@@ -9,15 +9,15 @@ order below, and it earns numbered steps in the one `## Running order` table in 
 Definition of Done. That condition is met when the false-compose rate comes back contaminated at
 the ten-point threshold, or when a candidate detector clears the 95-versus-85 threshold.
 
-**Next in this scope:** [the literature check on whether this hole is already published](plans/gate-01-is-this-hole-already-known.md),
+**Next in this scope:** [the literature check on whether this hole is already published](plans/checks/01-is-this-hole-already-known.md),
 one `/pressure-test` verdict. Nothing but the labelled-set build may start before it comes back.
 
 | Within this scope | Plan | What it does | Status |
 |---|---|---|---|
-| 1 of 4 | [the literature check](plans/gate-01-is-this-hole-already-known.md) | is this hole already published | ⚠️ not started |
-| 2 of 4 | [building the three-state labelled set](plans/instrument-01-the-three-state-labelled-set.md) | the labelled set and the band | ⚠️ not started, runs whatever the literature check says |
-| 3 of 4 | [scoring the current benchmarks](plans/idea-01-what-the-current-benchmarks-score.md) | score the candidate detectors | ⚠️ blocked by the literature check |
-| 4 of 4 | [the promote-or-close decision](plans/gate-02-promote-or-close.md) | promote or close, in writing | ⚠️ blocked by the other three |
+| 1 of 4 | [the literature check](plans/checks/01-is-this-hole-already-known.md) | is this hole already published | ⚠️ not started |
+| 2 of 4 | [building the three-state labelled set](plans/tools/04-the-three-state-labelled-set.md) | the labelled set and the band | ⚠️ not started, runs whatever the literature check says |
+| 3 of 4 | [scoring the current benchmarks](plans/ideas/03-what-the-current-benchmarks-score.md) | score the candidate detectors | ⚠️ blocked by the literature check |
+| 4 of 4 | [the promote-or-close decision](plans/checks/02-promote-or-close.md) | promote or close, in writing | ⚠️ blocked by the other three |
 
 ## Mission
 Every [compose rate](../../context/world/compose-rate.md) in the paper comes from a detector that

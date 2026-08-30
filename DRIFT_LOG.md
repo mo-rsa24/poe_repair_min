@@ -21,6 +21,21 @@ links that did exist pointed at just two journeys.
   the six. That section is owned by `JOURNEY_FORMAT.md`, not by the weave, so it is reported here
   rather than drafted.
 
+## 2026-08-30: the first rename attempt broke links, and was reverted rather than patched
+
+Renaming 35 files into kind subfolders needs every inbound link recomputed, not string-replaced: a
+plain substitution assumes only the target moved, but files that reference each other were both
+moving, so the same substitution ran twice on some paths and produced `plans/figures/figures/...`
+and `checks/02-....md` pointing nowhere. `git mv` marks a moved file as a rename in `git status`,
+so a revert built from `grep '^ M'` silently skipped every renamed file's bad content, and the
+first attempt looked clean until a full link-resolution pass, not a keyword grep, caught it.
+
+The fix: for every moved file, its content was restored from the commit before any of this ran
+(read at its old path, written to its new one), and the link rewrite was redone as a resolver that
+recomputes each link from where the linking file used to sit to where its target now sits, rather
+than pattern-matching text. Zero dangling links to an old filename remain anywhere in the repo,
+verified with a full walk, not a sample.
+
 ## 2026-08-30: a plan scope was carrying 7 GB of build output
 
 `find plans -name "*.png"` returned 1388 images, which is what surfaced it. Scope 03 held two Vite

@@ -1,8 +1,8 @@
 # 🧭 Re-check the numbers behind the paper's headline figure
 
-Task 4 of [the design plan](../plans/hypothesis-02-more-correction-more-composition.md) sends you
+Task 4 of [the design plan](../plans/hypothesis/03-more-correction-more-composition.md) sends you
 here. When you are done, F2's percentages are safe to print and two questions in
-[the review file](../review/hypothesis-02-more-correction-more-composition.md) are answered.
+[the review file](../review/03-more-correction-more-composition.md) are answered.
 
 ## Recommended prompt (when you finish)
 
@@ -14,8 +14,8 @@ here. When you are done, F2's percentages are safe to print and two questions in
 
 | File | What it holds |
 |---|---|
-| [design](../plans/hypothesis-02-more-correction-more-composition.md) | the task that sends you here |
-| [review](../review/hypothesis-02-more-correction-more-composition.md) | the two questions your result answers |
+| [design](../plans/hypothesis/03-more-correction-more-composition.md) | the task that sends you here |
+| [review](../review/03-more-correction-more-composition.md) | the two questions your result answers |
 | **this file** | **the steps, and the reason behind each one** |
 
 ## Table of contents
@@ -60,7 +60,7 @@ rows add deliberately wrong vectors of the same size, and they are what makes th
 row's rise mean something.
 
 When you finish, answer the two open questions in
-[the review file](../review/hypothesis-02-more-correction-more-composition.md).
+[the review file](../review/03-more-correction-more-composition.md).
 
 ## Words this file uses
 
@@ -292,7 +292,7 @@ Navigation: ⬅️ [6. The five-picture strip](#6-the-five-picture-strip) | 📋
 
 | What | Where it lands | What it answers |
 |---|---|---|
-| the re-scored curves | `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/dose_curves.json` | *Do the curves hold when only the runs this experiment generated are scored?* and *Do they hold under a threshold chosen by looking at the boxes?*, both in [the review file](../review/hypothesis-02-more-correction-more-composition.md) |
+| the re-scored curves | `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/dose_curves.json` | *Do the curves hold when only the runs this experiment generated are scored?* and *Do they hold under a threshold chosen by looking at the boxes?*, both in [the review file](../review/03-more-correction-more-composition.md) |
 | the annotated box diagnostic | `dose_strip_an_elephant__x__a_penguin_seed10_boxes.png` | why `MIN_BOX_FRACTION` is 0.25 rather than a number picked from a table |
 | the five-picture strip | `paper/iclr/figures/compose-rate-as-correction-rises.pdf` | F2 in the figure register, the paper's headline figure |
 
@@ -314,6 +314,6 @@ Run these when a term here stops meaning anything. Each leaves something you can
 
 Navigation: ⬅️ [Recommended Prompts](#recommended-prompts) | 📋 [TOC](#table-of-contents)
 
-Go back to [the design plan](../plans/hypothesis-02-more-correction-more-composition.md), tick
+Go back to [the design plan](../plans/hypothesis/03-more-correction-more-composition.md), tick
 task 4, then answer the two re-score questions in
-[the review file](../review/hypothesis-02-more-correction-more-composition.md).
+[the review file](../review/03-more-correction-more-composition.md).

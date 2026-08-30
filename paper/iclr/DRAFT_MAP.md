@@ -1539,7 +1539,7 @@ floor and appears in F8a as a dotted line. The correction computed from the join
 ceiling and appears in F8b at lambda 0.75 and at lambda 1, the latter true by construction. The
 control that answers the real objection, that any pool of the same size would have worked, is the
 size-matched mixed pool in
-[baseline-01](../../plans/04-does-the-fix-reach-unseen-pairs/review/baseline-01-the-size-matched-control-pool.md).
+[baseline-01](../../plans/04-does-the-fix-reach-unseen-pairs/review/05-the-size-matched-control-pool.md).
 **It is designed and has not run.** ¶5.5 may state it as the design's intended control and ¶5.6
 may not report a result for it. The reserved leave-one-pair-out sweep behind F8 has not run
 either.
@@ -1677,7 +1677,7 @@ One session owns a piece at a time.
 
 | Route | Serves | Where the result lands | State |
 |---|---|---|---|
-| /paper-scout, the four foundational slots (forward and reverse process, score-based modelling, classifier-free guidance, and whether the sampler needs its own citation) | §2 ¶2, ¶3 and ¶4 | six rows appended to [the reading register](../../plans/standing/literature/reading-register.md), five entries appended to [iclr2027_conference.bib](iclr2027_conference.bib), and [the selection file](/home-mscluster/mmolefe/goal-setting/learning/poe-derivation-foundations/paper-scout/selection-2026-08-27.md) | returned and integrated. Ran inside this session at the author's instruction. Slot 2 split in two, since the score-matching framing and the noise-to-score identity are different claims in different papers. Slot 4 answered yes, and the citation was routed to the methods section rather than to section 2 |
+| /paper-scout, the four foundational slots (forward and reverse process, score-based modelling, classifier-free guidance, and whether the sampler needs its own citation) | §2 ¶2, ¶3 and ¶4 | six rows appended to [the reading register](../../plans/standing/literature/reading-register.md), five entries appended to [iclr2027_conference.bib](iclr2027_conference.bib), and [the selection file](../../../../../goal-setting/learning/poe-derivation-foundations/paper-scout/selection-2026-08-27.md) | returned and integrated. Ran inside this session at the author's instruction. Slot 2 split in two, since the score-matching framing and the noise-to-score identity are different claims in different papers. Slot 4 answered yes, and the citation was routed to the methods section rather than to section 2 |
 
 ### Routes out of the section 5 walk
 

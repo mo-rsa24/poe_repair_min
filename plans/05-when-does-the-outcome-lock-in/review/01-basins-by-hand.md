@@ -1,6 +1,6 @@
 # 🧪 Review: do basins and a ridge exist for the composed flow?
 
-**Nothing has run yet.** This file judges [the design](../plans/01-basins-by-hand.md); answers land
+**Nothing has run yet.** This file judges [the design](../plans/reading/01-basins-by-hand.md); answers land
 here and nowhere else. Questions below were written at design time, before any number existed.
 
 ## Recommended prompt (when the run lands)
@@ -14,7 +14,7 @@ here and nowhere else. Questions below were written at design time, before any n
 
 | File | What it holds |
 |---|---|
-| [design](../plans/01-basins-by-hand.md) | the hypothesis, the thresholds, the code to write |
+| [design](../plans/reading/01-basins-by-hand.md) | the hypothesis, the thresholds, the code to write |
 | **this file** | **the verdict: what the runs answered, and what they could not** |
 
 ## Table of contents
@@ -122,4 +122,4 @@ Navigation: ⬅️ [What the write-up owes](#what-the-write-up-owes) | 📋 [TOC
 
 Navigation: ⬅️ [Still open](#still-open) | 📋 [TOC](#table-of-contents)
 
-Run [the design's tasks](../plans/01-basins-by-hand.md#tasks), then answer the questions above.
+Run [the design's tasks](../plans/reading/01-basins-by-hand.md#tasks), then answer the questions above.

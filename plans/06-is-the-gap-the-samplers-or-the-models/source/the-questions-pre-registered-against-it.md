@@ -24,8 +24,8 @@ a pre-registered question rewritten after the fact is no longer pre-registered.
 |---|---|
 | [design](the-whole-corrector-design.md) | the corrector, the step-size search, the grid, the thresholds |
 | **this file** | **the verdict: not yet run** |
-| [the timing verdict](../../03-does-the-correction-cause-composition/review/hypothesis-03-when-in-the-run-it-matters.md) | the result this plan puts under threat, and the numbers it quotes |
-| [the two literature checks before print](../../03-does-the-correction-cause-composition/plans/gate-01-two-literature-checks-before-print.md) | cites Soiffer et al. for the claim this plan turns into a number |
+| [the timing verdict](../../03-does-the-correction-cause-composition/review/05-when-in-the-run-it-matters.md) | the result this plan puts under threat, and the numbers it quotes |
+| [the two literature checks before print](../../03-does-the-correction-cause-composition/plans/checks/09-two-literature-checks-before-print.md) | cites Soiffer et al. for the claim this plan turns into a number |
 
 ## Table of contents
 
@@ -115,7 +115,7 @@ after the answer is visible shows up in a diff.
       does?** Recorded either way. Same window means two different mechanisms acting at the same
       moment. A different window is the stronger result and needs its own paragraph. This question
       is answered even if the check above returns a null, because a flat residual curve does not
-      imply a flat [compose rate](context/world/compose-rate.md). The corrector can relocate the
+      imply a flat [compose rate](../../../context/world/compose-rate.md). The corrector can relocate the
       trajectory without shrinking `‖r_t‖`.
 
 - [ ] ⚠️ **Does SuperDiff still compose at 50 steps?** Its default is 200. If it does not, every

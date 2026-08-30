@@ -1,6 +1,6 @@
 # 🔬 Review: can the scorer be trusted off animals?
 
-Nothing has run yet. This file judges [the design](../plans/13-revalidate-the-scorer-off-animals.md).
+Nothing has run yet. This file judges [the design](../plans/tools/13-revalidate-the-scorer-off-animals.md).
 Run kind: validating a measuring tool (labels first, the threshold written into the source, then the reading).
 
 ## Recommended prompt (when the run lands)
@@ -13,7 +13,7 @@ Run kind: validating a measuring tool (labels first, the threshold written into 
 
 | File | What it holds |
 |---|---|
-| [design](../plans/13-revalidate-the-scorer-off-animals.md) | the definitions, the mini-set, the threshold |
+| [design](../plans/tools/13-revalidate-the-scorer-off-animals.md) | the definitions, the mini-set, the threshold |
 | this file | agreement per kind and the tier-three verdict |
 
 ## Table of contents

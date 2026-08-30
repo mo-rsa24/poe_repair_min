@@ -7,8 +7,8 @@ Copies of the run outputs, so the numbers are readable without reaching for `/da
 The originals live in
 `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/cache_analyses/`.
 
-Design: [../../plans/03-does-the-correction-cause-composition/plans/hypothesis-05-the-same-story-from-three-sides.md](../../plans/03-does-the-correction-cause-composition/plans/hypothesis-05-the-same-story-from-three-sides.md)
-Verdicts: [../../plans/03-does-the-correction-cause-composition/review/hypothesis-05-the-same-story-from-three-sides.md](../../plans/03-does-the-correction-cause-composition/review/hypothesis-05-the-same-story-from-three-sides.md)
+Design: [../../plans/03-does-the-correction-cause-composition/plans/hypothesis/06-the-same-story-from-three-sides.md](../../plans/03-does-the-correction-cause-composition/plans/hypothesis/06-the-same-story-from-three-sides.md)
+Verdicts: [../../plans/03-does-the-correction-cause-composition/review/06-the-same-story-from-three-sides.md](../../plans/03-does-the-correction-cause-composition/review/06-the-same-story-from-three-sides.md)
 
 ## The five answers
 

@@ -1,6 +1,6 @@
 # 🧪 Review: does softness track lambda at a fixed checkpoint?
 
-Nothing has run yet. This file judges [the design](../plans/07-experiment-c-lambda-window.md).
+Nothing has run yet. This file judges [the design](../plans/experiments/07-experiment-c-lambda-window.md).
 Run kind: hypothesis (an intervention on injection strength, no training). Its answer is the
 reading key for experiments A and B.
 
@@ -14,7 +14,7 @@ reading key for experiments A and B.
 
 | File | What it holds |
 |---|---|
-| [design](../plans/07-experiment-c-lambda-window.md) | the grid, the softness reads, the strip |
+| [design](../plans/experiments/07-experiment-c-lambda-window.md) | the grid, the softness reads, the strip |
 | this file | the verdict and the per-λ numbers |
 
 ## Table of contents

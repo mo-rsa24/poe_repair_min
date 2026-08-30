@@ -7,22 +7,22 @@ a submitted paper.
 
 This scope owns **7 of the 22 steps**, 0 of them done. The steps interleave with the other scopes', so the list below is a filter on the one `## Running order` table in the [repo root MASTER_PLAN.md](../../MASTER_PLAN.md), never an order of its own.
 
-**Next in this scope: step 16**, [make the template build](plans/writing-01-make-the-template-build.md), which waits on nothing and needs no GPU.
+**Next in this scope: step 16**, [make the template build](plans/writing/01-make-the-template-build.md), which waits on nothing and needs no GPU.
 
 | Step | Plan | What it does | Status |
 |---|---|---|---|
-| 16 | [make the template build](plans/writing-01-make-the-template-build.md) | build, de-stub, figure-path rule | ◑ title still a stub |
-| 17 | [the title and the section order](plans/writing-02-the-title-and-the-section-spine.md) | the claim in one line, section order | ⚠️ |
-| 18 | [the results skeleton](plans/writing-05-the-results-skeleton.md) | placeholders, not prose | ⚠️ |
-| 19 | [where each figure goes](plans/writing-03-where-each-figure-goes.md) | which figure goes where | ⚠️ |
-| 20 | [method and introduction](plans/writing-04-method-and-introduction.md) | method and intro prose | ⚠️ |
-| 21 | [mechanism and limitations](plans/writing-06-mechanism-and-limitations.md) | mechanism and the honest caveats | ⚠️ |
-| 22 | [the abstract, written last](plans/writing-07-the-abstract-written-last.md) | the abstract, written last | ⚠️ |
+| 16 | [make the template build](plans/writing/01-make-the-template-build.md) | build, de-stub, figure-path rule | ◑ title still a stub |
+| 17 | [the title and the section order](plans/writing/02-the-title-and-the-section-order.md) | the claim in one line, section order | ⚠️ |
+| 18 | [the results skeleton](plans/writing/05-the-results-skeleton.md) | placeholders, not prose | ⚠️ |
+| 19 | [where each figure goes](plans/writing/03-where-each-figure-goes.md) | which figure goes where | ⚠️ |
+| 20 | [method and introduction](plans/writing/04-method-and-introduction.md) | method and intro prose | ⚠️ |
+| 21 | [mechanism and limitations](plans/writing/06-mechanism-and-limitations.md) | mechanism and the honest caveats | ⚠️ |
+| 22 | [the abstract, written last](plans/writing/07-the-abstract-written-last.md) | the abstract, written last | ⚠️ |
 
 ## Mission
 Write and submit the ICLR 2027 paper arguing that PoE's compositional failure is a
 measurable quantity. Multiplying two predictions asks for one image that is both
-concepts at once, which is the [chimera](context/world/chimera.md), while the
+concepts at once, which is the [chimera](../../context/world/chimera.md), while the
 sentence means two things side by side. The gap between those readings is `r_t`,
 cached and concrete. It is small, shared across
 pairs, and concentrated in a narrow noise band, which is why a rank-8

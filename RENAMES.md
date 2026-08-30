@@ -260,3 +260,41 @@ grouping no sibling uses.
 | `plans/04-.../diagrams/why-this-plan-exists.prompt.md` | `plans/04-.../diagrams/blind-until-the-sweep-ends.prompt.md` | the prompt that draws the same argument as information rather than cost; it had no row in the plan's figure table and now has one |
 | `plans/04-.../plans/diagrams/*` | `plans/04-.../diagrams/` | one grouping per scope |
 | `plans/diagrams/closing-the-compositional-gap-02a-when-the-correction-acts.png` | `plans/diagrams/when-the-correction-acts.png` | it carried the name of a scope that no longer exists, plus a prompt index |
+
+## 2026-08-30: plan files grouped by kind, numbered by position in the scope
+
+Every scope's plan files now sit in a kind subfolder (`hypothesis/`, `tools/`, `figures/`,
+`checks/`, `ideas/`, `baselines/`, `reach/`, `reading/`, `tests/`, `experiments/`, `writing/`),
+and the number in each filename is that plan's position in the scope, never restarted per kind.
+`reading/01` is read first; `tests/02` and `tests/03` come next; there is no `tests/01`. Numbers
+came from the root running order, except scope 07, whose numbers are the paper's own section
+order and were kept as they were.
+
+`review/` stays flat inside every scope: `plan_pulse.py` identifies a review file by
+`basename(dirname(path)) == "review"` and its own path pattern allows no slash after `review/`,
+so a review file in a subfolder would silently stop being read. Review filenames were renamed to
+match their plan's new stem, without the kind prefix.
+
+35 files also lost a removed word from their name in the same pass: `gate-01-is-this-hole-already-known`
+is now `checks/01-is-this-hole-already-known`, `instrument-01-the-clean-pair-pool` is
+`tools/01-the-clean-pair-pool`, `03-the-lora-dose-sweep` is `tests/03-the-correction-amount-series`,
+`03-wire-the-oracle` is `tools/03-wire-the-endpoint-predictor`, `10-the-mechanism-follower` is
+`tests/10-the-checkpoint-watcher`, and so on for every file the earlier prose pass could not touch
+because a filename is not prose.
+
+Every inbound link was recomputed from where the linking file itself sits, not string-substituted:
+a plain substitution on `foo.md` -> `bar/foo.md` breaks the moment a file citing it has also moved,
+which is exactly what happened on the first attempt at this pass and produced doubled folder
+prefixes and dangling links; that attempt was reverted (each moved file's content restored from its
+clean commit) and redone as a resolver that walks each link's OLD directory to its target, follows
+the target through the move if it moved, then re-expresses the path relative to the file's NEW
+directory. Fixed in the same pass: eight `context/world/` links written root-relative from three
+different depths (added by an earlier prose-sweep session, never resolving), three references to a
+plan file whose content had been renamed but whose filename had not yet caught up, and six inbound
+references from `paper/iclr/` and two `artifacts/` READMEs that predate this rename and were wrong at
+any depth until now.
+
+Verified after: zero dangling links anywhere in the repo point at an old filename, the root running
+order and every scope's own table were rewritten to the new paths, `plan_pulse.py` reports the same
+findings as before the move (JARGON at 0, the same three unjudged review files under their new
+names), and the ticked-task count held at 142 throughout.

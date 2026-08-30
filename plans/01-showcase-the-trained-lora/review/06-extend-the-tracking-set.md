@@ -1,6 +1,6 @@
 # 🔬 Review: does the extended tracking set log everything, before anything launches?
 
-Nothing has run yet. This file judges [the design](../plans/06-extend-the-tracking-set.md). Run
+Nothing has run yet. This file judges [the design](../plans/tools/06-extend-the-tracking-set.md). Run
 kind: measuring tool (a first short run proving the wiring; no science question of its own).
 
 ## Recommended prompt (when the run lands)
@@ -13,7 +13,7 @@ kind: measuring tool (a first short run proving the wiring; no science question 
 
 | File | What it holds |
 |---|---|
-| [design](../plans/06-extend-the-tracking-set.md) | the four reads, the admission rule, the freeze |
+| [design](../plans/tools/06-extend-the-tracking-set.md) | the four reads, the admission rule, the freeze |
 | this file | the verdict on that short run, and the manifest hash |
 
 ## Table of contents
