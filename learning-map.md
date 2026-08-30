@@ -4,15 +4,12 @@ How the repo's working documents connect to the learning journeys under
 `/home-mscluster/mmolefe/goal-setting/learning`, and what to learn next for the work the running
 order says is coming. Maintained by `learning-pulse`; rendered by `/render-diagrams`.
 
-7 prompts · 0 rendered · 7 waiting
+6 prompts · 0 rendered · 6 waiting
 
-**The prompts below are stale and must be regenerated before rendering.** They draw four journeys
-and a `plans/` folder holding one tile with two stage chips. Six journeys are in scope and `plans/`
-now holds seven numbered scopes. Rendering them as they stand would produce accurate pictures of a
-tree that no longer exists.
-
-**Coverage, read from disk on 2026-08-30.** Every in-scope journey is now reachable from at least
-one working document, which was not true before this pass: three of them had none.
+**Re-derived on 2026-08-30, after the seven-scope promotion and the plan-file rename.** The
+previous version drew two woven journeys and two on an unused shelf; every in-scope journey is now
+reached by at least one document, so the shelf no longer describes anything on disk and is
+dropped rather than redrawn empty.
 
 | Journey | Reached from | Where the link sits |
 |---|---|---|
@@ -22,9 +19,12 @@ one working document, which was not true before this pass: three of them had non
 | poe-composition-diffusion | 1 document | `context/world/poe-composition.md`, on the words that describe combining two single-concept predictions |
 | diffusion-speciation-dynamics | 1 document | scope 05's master plan, on where trajectories visibly diverge |
 | trajectory-manifold-by-hand | 1 document | scope 01's figure-assembly plan, on the shared plane |
-| poe-derivation-foundations | 1 document | out of ledger scope (its Project field says concept journey), but the repo reaches it anyway |
+| poe-derivation-foundations | 1 document | `paper/iclr/DRAFT_MAP.md`, a paper-scout selection record, not the standing literature scope |
 
-19 links in total, and every one resolves to a file on disk.
+19 links in total, and every one resolves to a file on disk. The four single-link journeys are
+grouped into one cluster in the subject lane below, per the format's cap on pieces per lane;
+`sampler-correctors-for-composition` and `spectral-structure-of-the-correction` are drawn as named
+ladders since they carry most of the weight.
 
 `t2i-compositional-failure/` and `t2i-diffusion-scene-structure/` are excluded: the ledger records
 them as scouting piles holding only a `paper-scout/` output folder, not journeys.
@@ -86,79 +86,73 @@ Navigation: ⬅️ [Reading axes](#reading-axes) | 📋 [TOC](#table-of-contents
 
 ### Prompt 1 (Subject): The doing side
 
-[observed] ⏳ not rendered
+⏳ not rendered
 Save as: `learning-diagrams/learning-map-01-the-doing-side.png`
 
 ```
 Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded dashed arrow lines, each color meaning exactly one kind of flow, with a small legend inside the image. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Official product logos only on components that ARE that product; every other component gets a clean generic glyph. Small cartoon figures or vehicles for external actors (users, clients). Clean sans-serif labels under every icon, short and lowercase-friendly. Generous spacing, no clutter, no watermark.
 
 Scene: a rounded blue-tinted panel titled "the repo: poe_repair_min" holding five folder tiles in
-one row: "plans/", "context/", "environment/", "runbook/", "report/". The plans/ tile is larger
-and carries two small stage chips inside it: "sampler vs model scope" and "cause-composition
-review". Green thread stubs leave the tiles that carry links, each with a count pill: "5 links"
-from the sampler-vs-model chip, "1 link" from the review chip, "1 link" from runbook/, "2 links"
-from report/. The context/ and environment/ tiles have no stubs. Title banner: "where the work
-happens, and which documents reach for teaching".
+one row: "plans/" (drawn wider, with four small numbered scope chips inside it: "01" with pill
+"1", "03" with pill "1", "05" with pill "5", "06" with pill "5"), "context/" (pill "1"), "report/"
+(pill "2"), "runbook/" (pill "1"), "standing/" (pill "2"). A sixth tile off to the side, "paper/"
+(pill "1"), drawn slightly apart to show it sits outside the four working folders proper. Green
+thread stubs leave every tile and scope chip that carries a link, each ending in its count pill.
+Title banner: "where the work happens, and which documents reach for teaching".
 Exclusions: no journey ladders in this image, no logos, no red.
 ```
 
-Faithfulness note: thread stubs leave exactly four places with counts 5, 1, 1, 2; `context/` and
-`environment/` carry none, because on disk they hold no learning links.
+Faithfulness note: every folder tile and scope chip drawn here carries at least one real link;
+none is included to pad the row. The four plans/ scope chips (1+1+5+5=12) plus context (1), report
+(2), runbook (1), standing (2), and paper (1) sum to 19, the exact total in the coverage table.
+Two scopes that exist on disk, 02 and 04, and two that carry no link at all, 07, are absent from
+this picture because they genuinely reach no journey.
 
 ### Prompt 2 (Subject): The woven journeys
 
-[observed] ⏳ not rendered
+⏳ not rendered
 Save as: `learning-diagrams/learning-map-02-the-woven-journeys.png`
 
 ```
 Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded dashed arrow lines, each color meaning exactly one kind of flow, with a small legend inside the image. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Official product logos only on components that ARE that product; every other component gets a clean generic glyph. Small cartoon figures or vehicles for external actors (users, clients). Clean sans-serif labels under every icon, short and lowercase-friendly. Generous spacing, no clutter, no watermark.
 
-Scene: an amber-tinted panel titled "the learning root" holding two journey ladders. Left ladder
-labelled "sampler-correctors-for-composition" with a count pill "28 plans"; five green threads
-arrive bundled from off-canvas left, bundle pill "5 links, all from the sampler-vs-model scope".
-Right ladder labelled "spectral-structure-of-the-correction" with pills "14 plans" and a small
-book glyph "3 chapters"; four green threads arrive with pills "1 review", "1 runbook", "2 report".
-Each ladder has a small signpost icon at its base: "opens the journey's own map".
-Exclusions: no step-by-step content of either journey, no red, no logos.
+Scene: an amber-tinted panel titled "the learning root" holding three journey ladders side by
+side. Left ladder labelled "sampler-correctors-for-composition" with a count pill "28 plans";
+five green threads arrive bundled from off-canvas left, bundle pill "5 links, all from scope 06".
+Middle ladder labelled "spectral-structure-of-the-correction" with pills "14 plans" and a small
+book glyph "3 chapters"; five green threads arrive with pills "1 review", "1 runbook", "2 report",
+"1 draft map". Right ladder labelled "speciation-before-divergence" with pill "12 plans"; four
+green threads arrive with pills "2 from scope 05's master plan", "2 from its decision ledger".
+Below the three ladders, one grouped cluster tile, not a ladder, labelled "four more journeys,
+five links between them": "poe-composition-diffusion" (1 thread), "diffusion-speciation-dynamics"
+(1 thread), "trajectory-manifold-by-hand" (1 thread), "poe-derivation-foundations" (2 threads, pill
+"2"). Each of the three named ladders has a small signpost icon at its base: "opens the journey's
+own map".
+Exclusions: no step-by-step content of any journey, no red, no logos, no shelf.
 ```
 
-Faithfulness note: five threads into the left ladder and four into the right, nine woven links in
-total; the tenth link in the repo (a paper-scout selection in `paper/`) is deliberately absent
-because it points at a journey this map shelves.
-
-### Prompt 3 (Subject): The unused shelf
-
-[observed] ⏳ not rendered
-Save as: `learning-diagrams/learning-map-03-the-unused-shelf.png`
-
-```
-Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded dashed arrow lines, each color meaning exactly one kind of flow, with a small legend inside the image. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Official product logos only on components that ARE that product; every other component gets a clean generic glyph. Small cartoon figures or vehicles for external actors (users, clients). Clean sans-serif labels under every icon, short and lowercase-friendly. Generous spacing, no clutter, no watermark.
-
-Scene: a dimmed side platform titled "built, and nothing points here yet". Two journey ladders
-drawn at half opacity: "poe-composition-diffusion" with pill "57 leaves" and a red tag "0 links";
-"trajectory-manifold-by-hand" with pill "flow map" and two red tags "0 links" and "no master
-plan". No threads touch either ladder. A small caption strip at the bottom: "unfindable from the
-work is the same as lost".
-Exclusions: no green anywhere, no connections to anything.
-```
-
-Faithfulness note: both ladders must be visibly disconnected; the "no master plan" tag sits only
-on trajectory-manifold-by-hand, because that gap is real on disk and blocks any link to it.
+Faithfulness note: 5 threads into the left ladder, 5 into the middle, 4 into the right, and 5 into
+the grouped cluster (1, 1, 1, and 2 for poe-derivation-foundations): 19 threads total, matching the
+coverage table exactly. Nothing is bundled to make a round number; poe-derivation-foundations
+genuinely carries two links from one document, `paper/iclr/DRAFT_MAP.md`, a paper-scout selection
+record rather than the standing literature scope.
 
 ### Subject capstone: The whole weave
 
-[observed] ⏳ not rendered
-Save as: `learning-diagrams/learning-map-04-subject-capstone-the-whole-weave.png`
+⏳ not rendered
+Save as: `learning-diagrams/learning-map-03-subject-capstone-the-whole-weave.png`
 
 ```
 Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded dashed arrow lines, each color meaning exactly one kind of flow, with a small legend inside the image. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Official product logos only on components that ARE that product; every other component gets a clean generic glyph. Small cartoon figures or vehicles for external actors (users, clients). Clean sans-serif labels under every icon, short and lowercase-friendly. Generous spacing, no clutter, no watermark.
 
-Scene: the full picture composed from prompts 1 to 3. Blue repo panel on the left (five folder
-tiles, two stage chips inside plans/), amber learning panel on the right (the two woven ladders),
-the dimmed shelf below the amber panel (the two unused ladders). Nine green threads cross the gap
-with their count pills: 5, 1, 1, 2. In-image legend for the four colours. Title banner: "what
-teaches this work".
-Exclusions: nothing crosses into the shelf; no thread without a count pill.
+Scene: the full picture composed from prompts 1 and 2. Blue repo panel on the left (five folder
+tiles, the plans/ tile carrying its four scope chips 01/03/05/06, paper/ drawn apart), amber
+learning panel on the right (three named ladders — sampler-correctors, spectral-structure,
+speciation-before-divergence — plus the four-journey grouped cluster). Every thread that left a
+folder tile or scope chip in prompt 1 arrives at either a named ladder or the cluster; none
+crosses into empty space. In-image legend for the four colours. Title banner: "what teaches this
+work, now that every journey is reached".
+Exclusions: no dimmed shelf anywhere in this image; nothing here is unused.
 ```
 
 Faithfulness note: the thread counts sum to nine, they land on exactly two ladders, and the shelf
@@ -174,7 +168,7 @@ History: `learning-diagrams/process-versions/`. This lane is regenerated whole, 
 ### Prompt 1 (Process): The sampler-vs-model ramp
 
 ⏳ not rendered
-Save as: `learning-diagrams/learning-map-05-process-sampler-vs-model-ramp.png`
+Save as: `learning-diagrams/learning-map-04-process-sampler-vs-model-ramp.png`
 
 ```
 Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded dashed arrow lines, each color meaning exactly one kind of flow, with a small legend inside the image. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Official product logos only on components that ARE that product; every other component gets a clean generic glyph. Small cartoon figures or vehicles for external actors (users, clients). Clean sans-serif labels under every icon, short and lowercase-friendly. Generous spacing, no clutter, no watermark.
@@ -194,7 +188,7 @@ before the stage, never after; the picture claims a learning order, not a result
 ### Prompt 2 (Process): The spectrum-figure ramp
 
 ⏳ not rendered
-Save as: `learning-diagrams/learning-map-06-process-spectrum-figure-ramp.png`
+Save as: `learning-diagrams/learning-map-05-process-spectrum-figure-ramp.png`
 
 ```
 Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded dashed arrow lines, each color meaning exactly one kind of flow, with a small legend inside the image. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Official product logos only on components that ARE that product; every other component gets a clean generic glyph. Small cartoon figures or vehicles for external actors (users, clients). Clean sans-serif labels under every icon, short and lowercase-friendly. Generous spacing, no clutter, no watermark.
@@ -213,7 +207,7 @@ drawn beside the stage, not answered by the picture.
 ### Process capstone: This week's learning order
 
 ⏳ not rendered
-Save as: `learning-diagrams/learning-map-07-process-capstone-this-weeks-order.png`
+Save as: `learning-diagrams/learning-map-06-process-capstone-this-weeks-order.png`
 
 ```
 Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded dashed arrow lines, each color meaning exactly one kind of flow, with a small legend inside the image. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Official product logos only on components that ARE that product; every other component gets a clean generic glyph. Small cartoon figures or vehicles for external actors (users, clients). Clean sans-serif labels under every icon, short and lowercase-friendly. Generous spacing, no clutter, no watermark.
