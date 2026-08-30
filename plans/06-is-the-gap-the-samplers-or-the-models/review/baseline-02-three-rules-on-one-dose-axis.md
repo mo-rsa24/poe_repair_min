@@ -1,14 +1,14 @@
-# 📊 Review: what do four composition rules do when they travel the same dose axis?
+# 📊 Review: what do four composition rules do when they travel the same amount axis?
 
 **Nothing has run yet.** Every question below was written before any grid rendered. This file
-judges [the dose-axis design](../plans/baseline-02-three-rules-on-one-dose-axis.md). Its cheapest
+judges [the amount-axis design](../plans/baseline-02-three-rules-on-one-dose-axis.md). Its cheapest
 real finding is the `λ=1` column, which classifies for free which rules genuinely combine scores
 and which do something else.
 
 ## Recommended prompt (when the run lands)
 
 ```
-/analyze-run the two dose grids across composition rules, lambda 0 to 1 at seed 9
+/analyze-run the two grids across composition rules, lambda 0 to 1 at seed 9
 ```
 
 ## Position in the plan tree
@@ -38,7 +38,7 @@ and which do something else.
 
 Navigation: 📋 [TOC](#table-of-contents) | [Next](#run-kind) ➡️
 
-- **The generalised dose axis**: for any rule `M` with a per-step prediction `eps_M`, the
+- **The generalised amount axis**: for any rule `M` with a per-step prediction `eps_M`, the
   correction relative to that rule is `r_t^M = eps_J - eps_M`, and the injection is
   `eps_M + λ·r_t^M`. At `λ=0` the rule runs alone; at `λ=1` the prediction is `eps_J` exactly.
 - **The four rows**: plain product-of-experts with `r_t`, SuperDiff with `r_t^SD`, the corrector at
@@ -95,10 +95,10 @@ Navigation: ⬅️ [The question written before the run](#the-question-written-b
       asks about.
 - [ ] ⚠️ Do the two corrector rows differ from each other? `k=1` and `k=5` are two different
       trajectories, so a difference between them is about how far the chain settled and not about
-      dose.
+      how much correction was added.
 - [ ] ⚠️ Did both figures land in `paper/iclr/figures/how-much-is-added/across-composition-rules/`
-      rather than in the timing folder? These are dose figures, and the timing folder's name is a
-      question about timing.
+      rather than in the timing folder? These figures are about how much is added, and the timing
+      folder's name is a question about timing.
 
 ## Asked after the result
 
