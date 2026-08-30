@@ -29,7 +29,7 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#what-the-lora-corrector-is)
   receives or encodes the joint prompt. Only its own trained weights and the PoE run's own state
   are used.
 - Struck word: **adapter**. Current prose says **lora** in full, per
-  `plans/retrofit-poe-repair-min.md`'s struck-words list; "adapter" survives only inside code
+  `plans/standing/retrofit-poe-repair-min.md`'s struck-words list; "adapter" survives only inside code
   identifiers and older documents quoted verbatim.
 
 ## What the LoRA corrector is
@@ -97,7 +97,7 @@ single-pair-trained LoRA's apparent transfer to a sibling pair is a real hit or 
 correction that happens to fit" is exactly why the project's own rung 3 (`does-the-fix-reach-unseen-pairs`)
 was downgraded from a publication gate to an optional smoke test, and rung 4 (group-wise pooling on
 concept-disjoint pairs) was named the reviewer-credible version instead
-(`plans/retrofit-poe-repair-min.md`'s reference to `report/experiments-log.md` EXP-03).
+(`plans/standing/retrofit-poe-repair-min.md`'s reference to `report/experiments-log.md` EXP-03).
 
 ## Where this came from
 

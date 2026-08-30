@@ -56,11 +56,11 @@ Instruction 5's manual deletion. `git rm --cached` only; bytes still on disk, un
   or moving anything on that filesystem.
 - `scripts/build_*.py` (9 files) and ~50 other flat `scripts/*.py` files: pile 6's code-grouping
   verdict, not attempted.
-- Instructions 5, 6, 7 in `plans/retrofit-poe-repair-min.md` (the four irreversible deletions,
+- Instructions 5, 6, 7 in `plans/standing/retrofit-poe-repair-min.md` (the four irreversible deletions,
   the seal/walrus re-judgment, the two figure redraws): explicitly held for a person, per this
   sitting's own instructions and per the plan's own Tasks/Instructions split.
 - Task 3 ("Link the three journeys") and Task 4 ("The ten skills carrying stale paths") in
-  `plans/retrofit-poe-repair-min.md`: not attempted this sitting, out of this stage sequence's scope.
+  `plans/standing/retrofit-poe-repair-min.md`: not attempted this sitting, out of this stage sequence's scope.
 - A bare `pytest -q` from the repo root fails to collect (module-name collision between two
   `test_demo.py` files under `artifacts/results/`, pre-existing, not caused by this sitting's
   moves). `pytest tests/`, the project's real suite, is green.
@@ -374,7 +374,7 @@ deletion is blocked on reading the loader.
 1. **`/rename`**, plus the new paths module. Nothing moves until this is green, because 159 files
    spell the paths by hand.
 2. **The look pass**, six sittings, so the seven owed names exist.
-3. **`compile`** the walk into `plans/retrofit-poe-repair-min.md`.
+3. **`compile`** the walk into `plans/standing/retrofit-poe-repair-min.md`.
 4. **`/retrofit-repo`** against that plan, stages 1 to 7.
 
 Renames this sitting: none. Nothing has moved.

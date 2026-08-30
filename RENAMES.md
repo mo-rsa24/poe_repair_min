@@ -129,7 +129,7 @@ for Instruction 5's manual deletion.
 ## What this sweep did not touch
 
 The mount (`/datasets/mmolefe/poe_repair_min/`): every one of "The mount's eleven families" in
-`plans/retrofit-poe-repair-min.md`'s rename table is unrenamed, and no merge of
+`plans/standing/retrofit-poe-repair-min.md`'s rename table is unrenamed, and no merge of
 `outputs/interaction_term/` onto it has happened. This sweep does not move, rename, or delete
 anything on that filesystem; it only references and cards it. Resuming that half is its own
 sitting.
@@ -215,3 +215,15 @@ to read on return), which none of them carried while they sat in `plans/shelved/
 
 `plans/.walk/` keeps one file, `showcase-the-trained-adapter.md`, because that walk is still open:
 its guided-epsilon-view against predicted-x0-view thread waits on a settle-or-expand.
+
+## 2026-08-30: the filing pass
+
+| Old path | New path | Why |
+|---|---|---|
+| `output/imagegen/which-half-does-the-corrector-take.png` | `plans/06-is-the-gap-the-samplers-or-the-models/diagrams/` | a house-style render illustrating that scope's whole question; plan diagrams sit beside their plan |
+| `output/imagegen/the-joined-prompt-is-only-a-target.png` | `plans/01-showcase-the-trained-lora/diagrams/` | draws the shipped adapter's training-against-inference contract, which is scope 01's subject |
+| `output/` | removed (emptied) | an undeclared root folder holding two renders that belonged beside their plans |
+| `plans/retrofit-poe-repair-min.md` | `plans/standing/retrofit-poe-repair-min.md` | a plan with 17 open tasks that touches every scope; it belongs with the other standing work, not loose at the top of `plans/`. The root `RETROFIT.md` is the sweep's dated ledger and is a different document |
+
+`artifacts/_shared/` and `artifacts/_quarantine/` were examined and deliberately left in place;
+both are now declared in this repo's `CLAUDE.md`, which is where the reason lives.

@@ -22,7 +22,7 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#what-an-animal-pair-is) ➡
 - **Pair slug**: the on-disk and in-code name for a pair, always the form `a_cat__x__a_dog`
   (article, animal, double underscore, `x`, double underscore, article, animal). Kept in this
   exact form everywhere on disk even though prose says "a cat and a dog"; changing the slug form
-  was costed and rejected (`plans/retrofit-poe-repair-min.md`: "costs 3,049 files and 456
+  was costed and rejected (`plans/standing/retrofit-poe-repair-min.md`: "costs 3,049 files and 456
   directories and buys nothing a card does not already give").
 - **Seed**: a re-roll of the starting noise only; the pair of concepts stays the same. Contrast
   with changing the pair itself, which is the harder generalisation test.
@@ -54,7 +54,7 @@ spanning both successes and failures. ✅
 
 **One pair is a deliberate exception: it composes.** ✅
 
-`plans/retrofit-poe-repair-min.md`'s "Words this uses": `a_butterfly__x__a_flower_meadow` "is the
+`plans/standing/retrofit-poe-repair-min.md`'s "Words this uses": `a_butterfly__x__a_flower_meadow` "is the
 deliberate exception: it is the control that composes and the paper opens on it." 🔍 (This file has
 not independently verified its fail-rate in `fail_rate.md`, which does not list it; flagged in
 [Still open](../00-INDEX.md#still-open).)
@@ -97,7 +97,7 @@ Navigation: ⬅️ [How it shows up in the data](#how-it-shows-up-in-the-data) |
 
 `report/experiments-log.md` (its axes table) says "17 in the current pool, plus a new spread set built in
 EXP-02" (EXP-02 status: pending). `artifacts/results/does-the-fix-reach-unseen-pairs/fail_rate.md` lists exactly 17
-pairs (1 dissimilar control, 1 reference, 15 train). `plans/retrofit-poe-repair-min.md`'s "Words
+pairs (1 dissimilar control, 1 reference, 15 train). `plans/standing/retrofit-poe-repair-min.md`'s "Words
 this uses" instead names "the 20 animal pairs" as the current scope boundary, plus 7 non-animal
 pairs from an earlier era that stay on disk but are out of the live claim. This file cannot tell
 which count is current without checking which pairs, beyond the 17, exist under the pool's
@@ -119,6 +119,6 @@ Navigation: ⬅️ [What people get wrong](#what-people-get-wrong) | 📋 [TOC](
 |---|---|---|
 | The pool is biased toward failure by construction | Read in `report/experiments-log.md`, "The selection warning" | 2026-08-24 |
 | The 17-row fail-rate table | Read in `artifacts/results/does-the-fix-reach-unseen-pairs/fail_rate.md` | 2026-08-24 |
-| The butterfly control pair and the animal-pair boundary | Read in `plans/retrofit-poe-repair-min.md`, "Words this uses" | 2026-08-24 |
+| The butterfly control pair and the animal-pair boundary | Read in `plans/standing/retrofit-poe-repair-min.md`, "Words this uses" | 2026-08-24 |
 | The six-group taxonomy and its representative pairs | Read in `artifacts/plans/archived/phases/09-lora-taxonomy-single-seed.md` | 2026-08-24 |
 | Pair vs seed, which is the harder test | Read in `MASTER_PLAN.md`, Glossary | 2026-08-24 |

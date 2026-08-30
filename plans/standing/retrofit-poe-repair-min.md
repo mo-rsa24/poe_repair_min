@@ -304,7 +304,7 @@ For Claude to execute. Ask Claude to do these, in this order.
 
 ### 2. 📦 Run the sweep
 
-- [ ] Run the following prompt: `/retrofit-repo plans/retrofit-poe-repair-min.md`, stages 1 to 7 in
+- [ ] Run the following prompt: `/retrofit-repo plans/standing/retrofit-poe-repair-min.md`, stages 1 to 7 in
       the order above.
 - [ ] **Carve out the audit set first** if a smaller first move is wanted: it is self-contained,
       already carries its card, and `calls.json` records every source path so it rebuilds from

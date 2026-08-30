@@ -67,7 +67,7 @@ The things this pass could not settle by reading. Each names who or what would s
       [world/interaction-term.md § What people get wrong](world/interaction-term.md#what-people-get-wrong).
 - [ ] **The current animal-pair pool's size is not settled.** `artifacts/results/does-the-fix-reach-unseen-pairs/fail_rate.md`
       lists 17 pairs; `report/experiments-log.md` also says 17 "in the current pool"; but
-      `plans/retrofit-poe-repair-min.md` (a later document) names "the 20 animal pairs" as the
+      `plans/standing/retrofit-poe-repair-min.md` (a later document) names "the 20 animal pairs" as the
       scope boundary. Would settle it: list the pair directories actually present under the
       current pool's output folder and recount. See
       [world/animal-pair.md § What people get wrong](world/animal-pair.md#what-people-get-wrong).

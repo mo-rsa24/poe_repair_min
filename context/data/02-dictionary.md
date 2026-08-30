@@ -31,7 +31,7 @@ Which two animal concepts a cell tests, written as the on-disk slug form (see
 **Type and shape** text, `a_<animal1>__x__a_<animal2>` (or `an_` where grammar needs it)
 
 **Where it comes from** the pair pool definition, `artifacts/results/does-the-fix-reach-unseen-pairs/fail_rate.md`
-for the current 17-row pool, and `plans/retrofit-poe-repair-min.md` for the wider 20-pair boundary
+for the current 17-row pool, and `plans/standing/retrofit-poe-repair-min.md` for the wider 20-pair boundary
 (see [world/animal-pair.md § What people get wrong](../world/animal-pair.md#what-people-get-wrong))
 
 **Stands for** a property of an [animal pair](../world/animal-pair.md#what-an-animal-pair-is)
@@ -49,7 +49,7 @@ Which re-roll of the starting noise produced this cell. The pair of concepts doe
 the random starting point does.
 
 **Example** `42` (example; the project's own reference seed for `a_cat__x__a_dog`). Held-out
-evaluation seeds are `9`, `10`, `11`, `12`, per `plans/retrofit-poe-repair-min.md`.
+evaluation seeds are `9`, `10`, `11`, `12`, per `plans/standing/retrofit-poe-repair-min.md`.
 
 **Type and shape** integer
 
@@ -95,7 +95,7 @@ Navigation: ⬅️ [`group` / `group_label`](#group-group_label) | 📋 [TOC](#t
 
 Which render method produced a given image: plain PoE, Mono, PoE plus the interaction term
 injected at some strength, or PoE plus the trained LoRA. The word "arm" itself is struck from
-prose (`plans/retrofit-poe-repair-min.md`: "An arm is the corrected run or the uncorrected run.");
+prose (`plans/standing/retrofit-poe-repair-min.md`: "An arm is the corrected run or the uncorrected run.");
 it survives as a column and function-family name in code.
 
 **Example** `poe` (example; other observed values include `mono`, and the method names in

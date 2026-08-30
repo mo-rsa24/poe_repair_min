@@ -29,7 +29,7 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#what-the-interaction-term-i
   [What people get wrong](#what-people-get-wrong)).
   Struck word: **oracle**. Some plan files still call this quantity "the oracle" when describing it
   as the target a trained corrector imitates. Current prose calls it the joint-prompt correction or
-  the interaction term instead, per `plans/retrofit-poe-repair-min.md`'s struck-words list.
+  the interaction term instead, per `plans/standing/retrofit-poe-repair-min.md`'s struck-words list.
 - **λ (lambda)**: the dial for how much of the interaction term to add back at inference, from 0
   (plain PoE) to 1 (the full correction).
 - **Window**: the span of denoising steps over which the correction is injected. It does not have
@@ -126,4 +126,4 @@ Navigation: ⬅️ [What people get wrong](#what-people-get-wrong) | 📋 [TOC](
 | The interaction term's definition | Read in `paper/iclr/iclr2027_conference.tex`, abstract | 2026-08-24 |
 | Its measured per-step and final values for one cell | Read directly, `data/pilot/seed_42/a_cat__x__a_dog/summary.json` | 2026-08-24 |
 | The window-vs-commitment-step finding | Read in `report/experiments-log.md`, EXP-01 and EXP-04 | 2026-08-24 |
-| The struck word "oracle" and its replacement | Read in `plans/retrofit-poe-repair-min.md`, "Words this uses" | 2026-08-24 |
+| The struck word "oracle" and its replacement | Read in `plans/standing/retrofit-poe-repair-min.md`, "Words this uses" | 2026-08-24 |

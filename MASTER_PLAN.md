@@ -133,7 +133,7 @@ order the scopes for a reader arriving cold; they are not the step order, which 
 | `06-is-the-gap-the-samplers-or-the-models/` | live, nothing started | the one threat to the paper's framing: how much of the correction a Langevin corrector removes, and how much no corrector touches. Then three composition rules on one dose axis |
 | `07-writing-the-paper/` | live | the ICLR manuscript in `paper/iclr/`. No GPU, no queue. Runs nothing and consumes everything the six scopes above produce |
 | `standing/literature/` | standing | the reading register: what the field already knows, and the source behind every idea-trying run |
-| `retrofit-poe-repair-min.md` | standing | the one-name-per-thing sweep across the repo, executed by `/retrofit-repo`; sits beside the tree because it touches every scope |
+| `standing/retrofit-poe-repair-min.md` | standing | the one-name-per-thing sweep across the repo, executed by `/retrofit-repo`; sits beside the tree because it touches every scope |
 
 Everything finished, parked or cold has left `plans/` for `artifacts/plans/`, which is where to
 look for it:

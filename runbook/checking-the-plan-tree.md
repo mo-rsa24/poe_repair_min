@@ -29,7 +29,7 @@ STALE: task lines claiming a run is in flight with nothing in flight (1)
 UNHARVESTED: output newer than the plan that owns it (0)
 
 ORPHAN: markdown no task names (5)
-  plans/retrofit-poe-repair-min.md
+  plans/standing/retrofit-poe-repair-min.md
   plans/03-does-the-correction-cause-composition/assets/F1-schematic-prompt.md
   plans/02-can-we-trust-the-compose-rate/claim-under-test.md
   plans/diagrams/process-versions/01-2026-08-18.md

@@ -73,7 +73,7 @@ two-dog image by construction. See
 
 **Anything about pairs outside the animal-pair pool.** ✍️
 
-Per `plans/retrofit-poe-repair-min.md`'s "Words this uses": the animal pairs are the current
+Per `plans/standing/retrofit-poe-repair-min.md`'s "Words this uses": the animal pairs are the current
 scope; the seven non-animal pairs from an earlier cross-taxonomy era and the six-group taxonomy
 they came from (see [world/animal-pair.md § What people get wrong](../world/animal-pair.md#what-people-get-wrong))
 are not part of the live claim.
@@ -94,4 +94,4 @@ Navigation: ⬅️ [What this cannot tell you](#what-this-cannot-tell-you) | �
 | The dose-response and held-out-seed bars | Read in `MASTER_PLAN.md`, Goals, and `report/experiments-log.md` | 2026-08-24 |
 | The scorer's true-rate bound at λ=1 | Read in `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md` | 2026-08-24 |
 | The two-mode failure classification and its null | Read in `report/experiments-log.md`, EXP-05 | 2026-08-24 |
-| The animal-pair scope boundary | Read in `plans/retrofit-poe-repair-min.md`, "Words this uses" | 2026-08-24 |
+| The animal-pair scope boundary | Read in `plans/standing/retrofit-poe-repair-min.md`, "Words this uses" | 2026-08-24 |

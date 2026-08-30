@@ -87,8 +87,15 @@ than answering around it.
 
 ## Where to look first
 
-The root [MASTER_PLAN.md](MASTER_PLAN.md) carries `## Do this next` above a flat `## Running order`
-table covering every plan in every scope. No scope keeps an order of its own.
+The root [MASTER_PLAN.md](MASTER_PLAN.md) opens with `## Where things stand`, a snapshot of what
+is running and what to do next, then carries the one order across every plan in every scope in
+`## The paper: what has to land` and its three background lists. No scope keeps an order of its
+own, and `## One plan, one table` states that rule.
+
+`plans/` holds only work still to do: seven live scopes numbered `01` to `07` in the order a
+reader meets them, plus `standing/`. The numbers are a reading order, not the step order, which
+interleaves across scopes and lives in the root running order. Anything finished, parked or cold
+has left for `artifacts/plans/`.
 
 ## Folders this repo adds to the top level
 
@@ -97,6 +104,21 @@ repo keeps two more at the root: `context/` for what the project means in the re
 through `context/00-INDEX.md`), and `report/` for pre-registrations, instrument provenance and
 results summaries per `~/.claude/EXPERIMENT_CONVENTIONS.md`. Both are staples here; neither is a
 filing mistake.
+
+## Two folders under `artifacts/` that are not one of the eight kinds
+
+Both are declared here so no census reports them, and neither may be moved.
+
+`artifacts/_shared/cross_pair_pool_configs/` holds the pair, prompt and seed pool YAMLs that
+define which cells an experiment runs over. It is config the code reads, not an artifact: the
+path is hard-coded at `poe_repair/paths.py:150` as `GROUP_POOL_CONFIGS`, so moving it breaks
+every runner. Config stays where the tooling expects it.
+
+`artifacts/_quarantine/` is the holding pen the retrofit sweep created for files whose keep,
+re-run or discard call had not been made. It is not junk: `results-archive/` inside it holds the
+early findings the repository `README.md` cites nine times, so the front door depends on it. The
+dispositions are owned by the parked `artifact-reconciliation` scope, which is where an emptying
+pass would start, and until that scope resumes the pen stays as it is.
 
 ## Root files this repo adds to the list no check reports
 
