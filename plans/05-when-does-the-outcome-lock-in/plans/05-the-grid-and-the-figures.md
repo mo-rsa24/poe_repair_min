@@ -1,5 +1,8 @@
 # 📊 The grid and the figures
 
+**What this plan asks:** across the whole cache, at which step does each run's outcome lock in,
+and does that step land early enough to explain the gap the scope opened with?
+
 Step 48 in the root running order; waits on steps 45 and 47; last plan in the scope.
 
 ## Recommended prompt (after this plan completes)
@@ -10,7 +13,7 @@ Step 48 in the root running order; waits on steps 45 and 47; last plan in the sc
 
 ## Recommended skill
 
-— custom; no skill fits (the sweep runner and the figure scripts are bespoke).
+— custom; no skill fits (the grid runner and the figure scripts are bespoke).
 also: `/design-figure` before building the three-timestamp figure, if its layout needs deciding
 beyond what the ledger already fixed.
 
@@ -18,8 +21,8 @@ beyond what the ledger already fixed.
 
 | Step | Plan | What it does |
 |------|------|-------------|
-| 47 (previous) | [calibrate the instrument](04-calibrate-the-instrument.md) | the trust verdict |
-| **48 (current)** | **The grid and the figures** | **both sweeps with stability copies, the speciation table, and the scope's paper figures** |
+| 47 (previous) | [calibrate the measuring tool](04-calibrate-the-instrument.md) | the trust verdict |
+| **48 (current)** | **The grid and the figures** | **both prompt passes with stability copies, the speciation table, and the scope's paper figures** |
 | after | [the master plan's recall gallery](../MASTER_PLAN.md#definition-of-done) | closes the scope once every plan is ✅ |
 
 ## Table of contents
@@ -45,23 +48,28 @@ beyond what the ledger already fixed.
 
 Navigation: ⬅️ [Previous](#position-in-the-plan-tree) | 📋 [TOC](#table-of-contents) | [Next](#considerations) ➡️
 
-**The experiment.** Run the commitment probe over the full grid: three families, all cached
-pairs and seeds, all 50 steps, two sweeps (joint prompt; expert pair), three stability copies
-per read. From it: the per-cell speciation table, the per-step counterfactual compose-rate
-curves per family, destination filmstrips for chosen cells, and the three-timestamp figure.
+**The experiment.** Run the commitment test over the full grid: three families, all cached
+pairs and seeds, all 50 steps, two prompt passes (joint prompt; expert pair), three stability
+copies per read. From it: the speciation table per pair-and-seed run, the per-step
+counterfactual [compose-rate](../../../context/world/compose-rate.md) curves per family,
+destination filmstrips for chosen runs, and the three-timestamp figure.
+
+> **Speciation** is the field's word for the step at which the outcome stops being undecided.
+> A **basin** is the set of states that all flow to the same ending, so speciation is the step
+> after which the state can no longer leave the basin it is in.
 
 **The hypothesis.** Speciation clusters at or before the correction window's end (step 10)
-across families, which explains the 8-to-26-step gap as decide-then-descend. If it clusters
-inside the divergence band (18 to 36) instead, that story is dead and the scope's outcome is
-the honest kill. Rationale: pre-registered in the decision ledger before any run.
+across families, which explains the 8-to-26-step gap: the run decides early, then only descends.
+If it clusters inside the divergence band (18 to 36) instead, that story is dead and the scope's
+outcome is the honest kill. Rationale: pre-registered in the decision ledger before any run.
 
-**Context details.** Instrument per plan 04's verdict (oracle, shrunk oracle, or
-finish-the-run). Every oracle read carries its stability check; reads that flip under a 1%
-nudge are marked on-the-fence, never averaged in silently. Captions name the sweep that
-produced each figure.
+**Context details.** Measuring tool per plan 04's verdict (the endpoint predictor, a shrunk
+version of it, or finish-the-run). Every predictor read carries its stability check; reads that
+flip under a 1% nudge are marked on-the-fence, never averaged in silently. Captions name the
+prompt pass that produced each figure.
 
-**This plan's job.** Deliver the scope's evidence and figures, with the instrument's verdict
-and the probes' cross-check visible in every caption.
+**This plan's job.** Deliver the scope's evidence and figures, with the calibration verdict
+and the two tests' cross-check visible in every caption.
 
 **Associated materials.** Verdict: [the review file](../review/05-the-grid-and-the-figures.md).
 Figure rules: [the decision ledger](../decisions-taken-here.md) (PCA with printed variance,
@@ -73,14 +81,15 @@ UMAP excluded, state-space pictures paired with outcome curves).
 
 Navigation: ⬅️ [Previous](#quick-context-where-you-are) | 📋 [TOC](#table-of-contents) | [Next](#the-claim) ➡️
 
-**Expected runtime.** On the oracle: roughly 18k states times up to 3 copies at 1 to 4 calls,
-about one GPU-hour as the rough figure. On finish-the-run fallback: tens of GPU-hours, batched
-by family. Measure one family slice first; write both numbers in the Runs table.
+**Expected runtime.** On the endpoint predictor: roughly 18k states times up to 3 copies at 1 to
+4 calls, about one GPU-hour as the rough figure. On the finish-the-run fallback: tens of
+GPU-hours, batched by family. Measure one family slice first; write both numbers in the Runs
+table.
 
 **Prerequisites.** Plan 04's verdict recorded; plan 02's speciation table standing.
 
-**Project tracking.** W&B project `prime_lab/poe-repair-animals-compose`, one run per sweep;
-outputs to `/datasets/mmolefe/poe_repair_min/outputs/commitment/grid/`.
+**Project tracking.** W&B project `prime_lab/poe-repair-animals-compose`, one run per prompt
+pass; outputs to `/datasets/mmolefe/poe_repair_min/outputs/commitment/grid/`.
 
 **Known issues.** See [Error Matrix](#error-matrix).
 
@@ -88,7 +97,7 @@ outputs to `/datasets/mmolefe/poe_repair_min/outputs/commitment/grid/`.
 <summary>Environment Facts This Plan Depends On</summary>
 
 - The `co3` absolute python path; see [the environment index](../../../environment/00-INDEX.md).
-- Long sweeps outside Slurm run with `nohup` on the session node (biggpu allows one job per
+- Long runs outside Slurm run with `nohup` on the session node (biggpu allows one job per
   user); harvest reads the queue, the node's processes, and the output count.
 - Large artifacts to `/datasets` only; disk guard on the target filesystem.
 
@@ -99,8 +108,8 @@ outputs to `/datasets/mmolefe/poe_repair_min/outputs/commitment/grid/`.
 Navigation: ⬅️ [Previous](#considerations) | 📋 [TOC](#table-of-contents) | [Next](#why-this-plan-exists) ➡️
 
 **The speciation table, the compose-rate curves, the filmstrips, and the three-timestamp
-figure, each caption naming its sweep and its instrument, judged against the pre-registered
-cluster question.**
+figure, each caption naming its prompt pass and its measuring tool, judged against the
+pre-registered cluster question.**
 
 **Why this matters right now:** this is the deliverable the scope exists for; the paper's
 mechanism section either gains its explanation of the window-versus-divergence gap here or
@@ -110,17 +119,18 @@ records the kill.
 
 Navigation: ⬅️ [Previous](#the-claim) | 📋 [TOC](#table-of-contents) | [Next](#what-happens-visual) ➡️
 
-**The gap.** Plans 01 to 04 build and validate instruments; nothing yet measures the grid or
+**The gap.** Plans 01 to 04 build and validate the tools; nothing yet measures the grid or
 draws a figure the paper can cite.
 
-**The approach.** One sweep runner, then figure scripts reading its outputs; state-space views
+**The approach.** One grid runner, then figure scripts reading its outputs; state-space views
 (PCA overlay) paired with outcome curves per the ledger's rules.
 
 **Key insights:**
-1. The cluster question is judged per family and overall, with the bar in source
-   (`SPECIATION_EARLY_MAX = 10`, the step at or below which clustering supports
-   decide-then-descend; the divergence band 18 to 36 is read from the existing analyses).
-2. Disagreement between the oracle's speciation and plan 02's drift settling is reported as a
+1. The cluster question is judged per family and overall, with the threshold in source
+   (`SPECIATION_EARLY_MAX = 10`, the step at or below which clustering means the run decided
+   early and then only descended; the divergence band 18 to 36 is read from the existing
+   analyses).
+2. Disagreement between the predictor's speciation and plan 02's drift settling is reported as a
    finding, never reconciled silently.
 
 ## What happens (visual)
@@ -130,12 +140,12 @@ Navigation: ⬅️ [Previous](#why-this-plan-exists) | 📋 [TOC](#table-of-cont
 ```
  grid: 3 families x pairs x seeds x 50 steps x {x, x+d, x-d}
    |
-   sweep A: joint prompt      sweep B: expert pair
-   |                          |
-   compose rate per step      which-mode label per step
-   per family                 + filmstrips (chosen cells)
+   pass A: joint prompt        pass B: expert pair
+   |                           |
+   compose rate per step       which-mode label per step
+   per family                  + filmstrips (chosen runs)
    |
-   speciation per cell (bar in code)  + stability flags
+   speciation per pair-and-seed run (threshold in code) + stability flags
    |
    three-timestamp figure: |window 0-10| speciation | divergence 18-36|
    + PCA overlay (variance printed)  + scatter vs plan 02's settling
@@ -145,16 +155,16 @@ Navigation: ⬅️ [Previous](#why-this-plan-exists) | 📋 [TOC](#table-of-cont
 
 Navigation: ⬅️ [Previous](#what-happens-visual) | 📋 [TOC](#table-of-contents) | [Next](#purpose-and-goal) ➡️
 
-1. **The sweep runner** `scripts/commitment/grid_sweep.py`: both sweeps, stability copies,
-   instrument chosen by plan 04's `verdict.json`, per-family counts printed, resumable,
+1. **The grid runner** `scripts/commitment/grid_sweep.py`: both prompt passes, stability copies,
+   measuring tool chosen by plan 04's `verdict.json`, per-family counts printed, resumable,
    rows to `grid/speciation.json` and per-step scores to `grid/scores.json`.
 2. **The figure scripts** `scripts/commitment/figures.py`: the three-timestamp figure, the
-   per-family compose-rate curves, filmstrips for the cells named in the review file before
-   the run, the PCA overlay with its explained-variance number printed on the axes, and the
-   oracle-vs-drift speciation scatter.
+   per-family compose-rate curves, filmstrips for the pair-and-seed runs named in the review
+   file before the run, the PCA overlay with its explained-variance number printed on the axes,
+   and the scatter of predictor speciation against drift settling.
 3. **Filing**: figures and sidecars to
-   `artifacts/results/when-does-the-outcome-lock-in/`, register slots updated in the paper's
-   figure register.
+   `artifacts/results/when-does-the-outcome-lock-in/`, and the places the paper's figure
+   register has reserved for them filled in.
 
 ## Purpose and goal
 
@@ -164,8 +174,9 @@ Navigation: ⬅️ [Previous](#description-what-to-build) | 📋 [TOC](#table-of
 Outcome.
 
 **Goals:**
-1. `speciation.json` has one row per cell per family per sweep, counts printed and matching.
-2. The five figure kinds exist with sidecars, captions naming sweep and instrument.
+1. `speciation.json` has one row per pair-and-seed run per family per prompt pass, counts
+   printed and matching.
+2. The five figure kinds exist with sidecars, captions naming prompt pass and measuring tool.
 3. The cluster question is answered in the review file, either way.
 
 ## Tasks
@@ -179,29 +190,29 @@ Navigation: ⬅️ [Previous](#purpose-and-goal) | 📋 [TOC](#table-of-contents
 - [ ] **0.1** Paste: `/verify-plan @plans/05-when-does-the-outcome-lock-in/plans/05-the-grid-and-the-figures.md`
   - Done when: the report comes back clean, or its proposals have been applied.
 
-▶ **Next: [task 1.1](#1--build-the-sweep-runner)**.
+▶ **Next: [task 1.1](#1--build-the-grid-runner)**.
 
-### 1. 🔧 Build the sweep runner
+### 1. 🔧 Build the grid runner
 
 ◀ **Needs: [task 0.1](#0--preflight-check-this-plan-before-working-from-it)**, plan 04's
-verdict recorded, and the filmstrip cells named in
+verdict recorded, and the filmstrip runs named in
 [the review file](../review/05-the-grid-and-the-figures.md) before anything runs.
 
 - [ ] **1.1** Write `scripts/commitment/grid_sweep.py` per the Description; `--dry-run` prints
-  the grid size per family and the instrument the verdict chose.
-  - **Done when:** the dry run's counts match the cache and the chosen instrument is printed.
-- [ ] **1.2** Time one family slice and extrapolate; record both instrument costs in the Runs
+  the grid size per family and the measuring tool the verdict chose.
+  - **Done when:** the dry run's counts match the cache and the chosen tool is printed.
+- [ ] **1.2** Time one family slice and extrapolate; record the cost of both tools in the Runs
   table.
-  - **Done when:** the projection fits the session (oracle path) or is batched with `nohup`
-    (fallback path), and the choice is recorded.
+  - **Done when:** the projection fits the session (endpoint-predictor path) or is batched with
+    `nohup` (fallback path), and the choice is recorded.
 
-▶ **Next: [task 2.1](#2--run-the-sweeps)**.
+▶ **Next: [task 2.1](#2--run-the-two-prompt-passes)**.
 
-### 2. 🚀 Run the sweeps
+### 2. 🚀 Run the two prompt passes
 
-◀ **Needs: [tasks 1.1 to 1.2](#1--build-the-sweep-runner)**.
+◀ **Needs: [tasks 1.1 to 1.2](#1--build-the-grid-runner)**.
 
-- [ ] **2.1** Run sweep A (joint prompt) and sweep B (expert pair), stability copies on, W&B
+- [ ] **2.1** Run pass A (joint prompt) and pass B (expert pair), stability copies on, W&B
   logging on.
 
     ```bash
@@ -217,8 +228,8 @@ verdict recorded, and the filmstrip cells named in
     in the Runs table.
 - [ ] **2.2** Build all five figure kinds and file them with sidecars into
   `artifacts/results/when-does-the-outcome-lock-in/`, card entries written.
-  - **Done when:** the files exist, each sidecar names sweep, instrument, and the bar it was
-    judged against, and the Figure Catalog below links them.
+  - **Done when:** the files exist, each sidecar names the prompt pass, the measuring tool, and
+    the threshold it was judged against, and the Figure Catalog below links them.
 
 ▶ **Next: [instruction 3.1](#3--judge-the-filmstrips-and-the-captions)**.
 
@@ -244,7 +255,7 @@ Navigation: ⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](
 
 ### 3. 👁️ Judge the filmstrips and the captions
 
-◀ **Needs: [task 2.2](#2--run-the-sweeps)** done, so the figures exist.
+◀ **Needs: [task 2.2](#2--run-the-two-prompt-passes)** done, so the figures exist.
 
 3.1 **Open each filmstrip** under `artifacts/results/when-does-the-outcome-lock-in/`.
    - Expected result: sharp destination frames from early steps onward, with on-the-fence
@@ -252,12 +263,13 @@ Navigation: ⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](
    - ✅ If the marked fence region sits where the endpoint visibly changes, record "filmstrips
      judged consistent" in the review file.
    - ❌ If frames look committed where the stability flag says fence (or the reverse), record
-     the cells; the stability bar or the filmstrip rendering is wrong.
+     which pair-and-seed runs; either the stability threshold or the filmstrip rendering is wrong.
 
 3.2 **Read every caption against its sidecar.**
-   - [ ] Each caption names its sweep (joint or experts) and its instrument (oracle or teacher)
+   - [ ] Each caption names its prompt pass (joint or experts) and its measuring tool (the
+     endpoint predictor or the teacher)
    - [ ] The PCA overlay prints its explained variance on the axes
-   - [ ] Record "captions carry their sweep" in the review file, or list the offenders
+   - [ ] Record "captions carry their prompt pass" in the review file, or list the offenders
 
 3.3 **Read the three-timestamp figure and answer the cluster question** in
    [the review file](../review/05-the-grid-and-the-figures.md), per family and overall.
@@ -269,18 +281,18 @@ Navigation: ⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](
 
 Navigation: ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
-> **This gate decides what the paper's mechanism section may claim about the gap.**
+> **What passes here decides what the paper's mechanism section may claim about the gap.**
 
 - **Pass criteria:**
   - The speciation table is complete, the figures filed, and the cluster question answered
-    with its bar (either answer passes; the gate is about the evidence existing, not about
+    against its threshold (either answer passes; what matters is that the evidence exists, not
     which way it went).
 - **Fail criteria (STOP):**
-  - Missing cells silently dropped, or captions missing their sweep or instrument, or a
-    stability-flagged read averaged in as committed.
+  - Missing pair-and-seed runs silently dropped, or captions missing their prompt pass or
+    measuring tool, or a stability-flagged read averaged in as committed.
 - **Partial pass guidance:**
-  - A shrunk instrument (plan 04's verdict) shrinks the claims, never the honesty: captions
-    say which families and steps the oracle covered.
+  - A shrunk measuring tool (plan 04's verdict) shrinks the claims, never the honesty: captions
+    say which families and steps the endpoint predictor covered.
 
 **When you get results, answer** [the review file](../review/05-the-grid-and-the-figures.md).
 
@@ -293,7 +305,7 @@ Navigation: ⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-conte
 | Item | Lane | Prompt file | What it shows | Save to |
 |------|------|-------------|---------------|---------|
 | The three-timestamp strip | subject | [diagram-prompts.md](../diagram-prompts.md#prompt-5-subject-the-three-timestamp-strip) | window, speciation, divergence on one strip | `../diagrams/when-does-the-outcome-lock-in-05-the-three-timestamp-strip.png` |
-| The whole instrument | subject | [diagram-prompts.md](../diagram-prompts.md#subject-capstone-the-whole-instrument-on-one-page) | the capstone | `../diagrams/when-does-the-outcome-lock-in-00-capstone.png` |
+| The whole measuring tool | subject | [diagram-prompts.md](../diagram-prompts.md#subject-capstone-the-whole-measuring-tool-on-one-page) | the capstone | `../diagrams/when-does-the-outcome-lock-in-00-capstone.png` |
 | Process lane v01 | process | [diagram-prompts.md](../diagram-prompts.md#process-lane) | the five plans as a journey | `../diagrams/when-does-the-outcome-lock-in-process-01.png` |
 
 #### Generated during execution
@@ -301,14 +313,14 @@ Navigation: ⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-conte
 | Item | Lane | Description | Generated by | Status | Details |
 |------|------|-------------|--------------|--------|---------|
 | Three-timestamp figure | — | correction window, speciation marks, divergence band, one strip per family | `figures.py` | ⏳ | `artifacts/results/when-does-the-outcome-lock-in/window-speciation-divergence__per-family.png` |
-| Compose-rate curves | — | counterfactual compose rate per step, one curve per family, per sweep | `figures.py` | ⏳ | `...counterfactual-compose-rate-vs-step__per-family-per-sweep.png` |
-| Filmstrips | — | destination frames per step for the named cells, fence steps marked | `figures.py` | ⏳ | `...filmstrip__<cell>.png` |
+| Compose-rate curves | — | counterfactual compose rate per step, one curve per family, per prompt pass | `figures.py` | ⏳ | `...counterfactual-compose-rate-vs-step__per-family-per-sweep.png` |
+| Filmstrips | — | destination frames per step for the named pair-and-seed runs, fence steps marked | `figures.py` | ⏳ | `...filmstrip__<cell>.png` |
 | PCA overlay | — | three families' trajectories in the top PCs, variance printed | `figures.py` | ⏳ | `...pca-overlay__variance-printed.png` |
-| Oracle vs drift scatter | — | oracle speciation against plan 02's settling step | `figures.py` | ⏳ | `...oracle-speciation-vs-drift-settling__per-cell.png` |
+| Predictor vs drift scatter | — | the predictor's speciation step against plan 02's settling step | `figures.py` | ⏳ | `...oracle-speciation-vs-drift-settling__per-cell.png` |
 
 #### Organization workflow
 
-1. Run sweeps; 2. Build figures; 3. File with cards; 4. Update the paper's figure register.
+1. Run both prompt passes; 2. Build figures; 3. File with cards; 4. Update the paper's figure register.
 
 ## Orchestration: keeping catalogs and plan files in sync
 
@@ -328,8 +340,8 @@ Navigation: ⬅️ [Previous](#orchestration-keeping-catalogs-and-plan-files-in-
 **File:** `scripts/commitment/grid_sweep.py` (new)
 
 ```python
-SPECIATION_EARLY_MAX = 10   # clustering at or below supports decide-then-descend
-# instrument chosen from plan 04's verdict.json; never hardcoded here
+SPECIATION_EARLY_MAX = 10   # clustering at or below means the run decided early
+# measuring tool chosen from plan 04's verdict.json; never hardcoded here
 # per read: stability copies x_t, x_t +/- d; a flipped endpoint marks the step on-the-fence
 ```
 

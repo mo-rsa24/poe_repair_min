@@ -14,7 +14,7 @@ here and nowhere else. Questions below were written at design time, before any n
 
 | File | What it holds |
 |---|---|
-| [design](../plans/01-basins-by-hand.md) | the hypothesis, the bars, the code to write |
+| [design](../plans/01-basins-by-hand.md) | the hypothesis, the thresholds, the code to write |
 | **this file** | **the verdict: what the runs answered, and what they could not** |
 
 ## Table of contents
@@ -39,11 +39,14 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#run-kind) ➡️
 - **nudge**: a random-direction perturbation of 1% of the state's norm.
 - **the ridge**: where the nearest ending stops being unique, so a nudge decides the side.
 
+> A **basin** is the field's term for the set of states that all flow to the same ending, and
+> the ridge is the boundary between two of them.
+
 ## Run kind
 
 Navigation: ⬅️ [Words this file uses](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#runs) ➡️
 
-**Builds an instrument.** A missed bar blocks every plan downstream: the scope's premise is that commitment is a measurable event, and this run is the premise's test.
+**Builds an instrument.** A missed threshold blocks every plan downstream: the scope's premise is that commitment is a measurable event, and this run is the premise's test.
 
 ## Runs
 
@@ -60,8 +63,8 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 - [ ] ⚠️ At step 40, do both nudged endings agree with the unnudged one, with both relative
       latent distances under `REL_ENDING_DIST_MAX` (the constant in
       `scripts/commitment/perturb_finish.py`), while the step-5 endings were free to differ?
-      This is the bar because agreement late plus freedom early is exactly what basins with a
-      ridge predict, and its failure kills the scope at the cost of one afternoon.
+      This is the deciding question because agreement late plus freedom early is exactly what
+      basins with a ridge predict, and its failure kills the scope at the cost of one afternoon.
 
 ## Written before the run, answered after
 
@@ -69,7 +72,8 @@ Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC
 
 - [ ] ⚠️ At step 25 (inside the measured divergence window, 18 to 36), do the three endings
       agree, differ, or split 2-to-1? Any of the three is informative: agreement says this
-      cell decided before 25, a split says 25 sits near the ridge. Report it either way.
+      pair-and-seed run decided before 25, a split says 25 sits near the ridge. Report it
+      either way.
 - [ ] ⚠️ How large are the step-5 ending differences relative to typical inter-mode distance?
       A tiny spread even at step 5 would say the flow is more contractive than the divergence
       measurement suggests, a tension worth recording rather than resolving here.
@@ -102,7 +106,7 @@ Navigation: ⬅️ [Could the answer be an artefact](#could-the-answer-be-an-art
 
 | What the paper says | What it owes alongside it |
 |---|---|
-| the composed flow has basins with an unstable ridge | one cell, one seed, three steps: the claim's population is a single cell until plan 05 widens it |
+| the composed flow has basins with an unstable ridge | one pair-and-seed run, three steps: the claim's population is that single run until plan 05 widens it |
 
 ## Still open
 

@@ -1,12 +1,14 @@
 # 🧪 Review: does the fix reach pairs it never trained on?
 
 **Nothing has run yet.** This file holds the questions, written before the runs. It judges
-[../plans/hypothesis-02-transfer-as-a-rate-over-fifteen-pairs.md](../plans/hypothesis-02-transfer-as-a-rate-over-fifteen-pairs.md),
-the main question of this whole claim, and its answers fill register slot **F8**.
+[the plan that holds out each pair in turn](../plans/hypothesis-02-transfer-as-a-rate-over-fifteen-pairs.md),
+the main question of this whole claim, and its answers fill the place the register reserves for
+**F8**.
 
-It cannot start until the one-epoch smoke in
-[instrument-02](instrument-02-three-live-curves-while-training.md) is green, because fifteen
-unattended runs with a broken scorer produce fifteen convincing wrong answers.
+It cannot start until the one-epoch first run in
+[the three live curves during training](instrument-02-three-live-curves-while-training.md) is
+green, because fifteen unattended runs with a broken scorer produce fifteen convincing wrong
+answers.
 
 ## Recommended prompt (when the runs land)
 
@@ -18,9 +20,9 @@ unattended runs with a broken scorer produce fifteen convincing wrong answers.
 
 | File | What it holds |
 |---|---|
-| [design](../plans/hypothesis-02-transfer-as-a-rate-over-fifteen-pairs.md) | the leave-one-pair-out sweep, the held-out set, the bar |
+| [design](../plans/hypothesis-02-transfer-as-a-rate-over-fifteen-pairs.md) | the fifteen leave-one-pair-out runs, the held-out set, the threshold |
 | **this file** | **the verdict: transfer as a rate over fifteen held-out pairs** |
-| [what gates it](instrument-02-three-live-curves-while-training.md) | the one-epoch smoke that must be green first |
+| [what must pass first](instrument-02-three-live-curves-while-training.md) | the one-epoch first run that must be green before this starts |
 | [what defends it](baseline-01-the-size-matched-control-pool.md) | the size-matched pool that rules out data volume |
 
 ## Table of contents
@@ -40,12 +42,15 @@ unattended runs with a broken scorer produce fifteen convincing wrong answers.
 
 Navigation: 📋 [TOC](#table-of-contents) | [Next](#run-kind) ➡️
 
+- **Held-out**: an animal pair the adapter never trained on. The only kind that says whether the
+  fix reaches beyond what it was shown.
 - **Leave one pair out**: train fifteen adapters, each missing a different pair, and test each one
   on exactly the pair it never saw. Fifteen tests instead of one, so the answer is a rate rather
   than an anecdote.
-- **The degradation curve**: compose rate plotted against how much of the pool was held back. Its
+- **The degradation curve**: [compose rate](../../../context/world/compose-rate.md) plotted
+  against how much of the pool was held back. Its
   shape is the finding: a gentle slope and a cliff are different papers.
-- **At the floor**: a held-out pair that composes no better than the broken method. Two causes,
+- **At the no-fix level**: a held-out pair that composes no better than the broken method. Two causes,
   and telling them apart is why the extra measures exist: the correction never arrived, or it
   arrived pointing the wrong way.
 
@@ -53,7 +58,7 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#run-kind) ➡️
 
 Navigation: ⬅️ [Words this file uses](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#runs) ➡️
 
-**Tests the claim.** A failure of the bar below closes the plan and opens one follow-on.
+**Tests the claim.** A failure of the threshold below closes the plan and opens one follow-on.
 
 ## Runs
 
@@ -78,7 +83,7 @@ Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC
 - [ ] ⚠️ What shape does the degradation curve take?
       Report it either way. A gentle decline says the fix generalises smoothly; a cliff says
       there is a minimum pool size, which is a different and still publishable claim.
-- [ ] ⚠️ For every pair at the floor: did the correction fail to arrive, or arrive pointing
+- [ ] ⚠️ For every pair sitting at the no-fix level: did the correction fail to arrive, or arrive pointing
       wrong? Answered from the two direction measures, so a dead run is never misread as a
       transfer failure.
 
@@ -87,7 +92,7 @@ Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC
 Navigation: ⬅️ [Written before the run](#written-before-the-run-answered-after) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
 Questions the result itself raised. **Nothing here may ever become a bar**, because it was
-written with the answer already visible. Nothing yet: the sweep has not started.
+written with the answer already visible. Nothing yet: the fifteen runs have not started.
 
 ## Could the answer be an artefact
 
@@ -112,7 +117,7 @@ Navigation: ⬅️ [Could the answer be an artefact](#could-the-answer-be-an-art
 |---|---|
 | the fix reaches pairs it never trained on, at rate X over fifteen | the spread, not only the rate. Fifteen points with a spread is the claim; a mean alone hides whether one pair carried it |
 | the degradation curve | its shape stated plainly, including when the shape is a cliff. A cliff is a different claim, not a worse one |
-| any pair at the floor | which of the two causes it was, from the direction measures. A dead run reported as a transfer failure is a wrong claim |
+| any pair at the no-fix level | which of the two causes it was, from the direction measures. A dead run reported as a transfer failure is a wrong claim |
 
 ## Still open
 
@@ -120,12 +125,12 @@ Navigation: ⬅️ [What the write-up owes](#what-the-write-up-owes) | 📋 [TOC
 
 | What is unresolved | What would settle it | Who or what is blocked by it |
 |---|---|---|
-| everything in this file | the fifteen runs | register slot F8, and the transfer argument the paper is built on |
-| whether it is safe to launch fifteen unattended runs | the one-epoch smoke in [instrument-02](instrument-02-three-live-curves-while-training.md) going green | the launch itself |
+| everything in this file | the fifteen runs | the place the register reserves for F8, and the transfer argument the paper is built on |
+| whether it is safe to launch fifteen unattended runs | the one-epoch first run in [the three live curves plan](instrument-02-three-live-curves-while-training.md) going green | the launch itself |
 
 ## Next step
 
 Navigation: ⬅️ [Still open](#still-open) | 📋 [TOC](#table-of-contents)
 
-Get the [instrument-02](instrument-02-three-live-curves-while-training.md) smoke green, then
-launch the fifteen runs.
+Get the one-epoch first run in [the three live curves plan](instrument-02-three-live-curves-while-training.md)
+green, then launch the fifteen runs.

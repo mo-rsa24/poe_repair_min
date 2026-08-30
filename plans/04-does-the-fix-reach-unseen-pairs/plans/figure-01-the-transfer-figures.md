@@ -25,7 +25,7 @@ catalogs, and adds new entries. New errors propagate to all affected plan files.
 |------|------|-------------|
 | 13 (previous) | [figure-01: the-seven-paper-figures](../../03-does-the-correction-cause-composition/plans/figure-01-the-seven-paper-figures.md) ◑ | The figures the causal scope owes the paper (F6 needs a decision) |
 | **14 (current)** | **figure-01: the-transfer-figures** ◑ | **F8a and F8b built; the F8 pair waits on the fifteen leave-one-pair-out runs** |
-| 15 (next) | [gate-01: two-literature-checks-before-print](../../03-does-the-correction-cause-composition/plans/gate-01-two-literature-checks-before-print.md) ⚠️ | The two `/pressure-test` passes before anything is written |
+| 15 (next) | [the two literature checks before print](../../03-does-the-correction-cause-composition/plans/gate-01-two-literature-checks-before-print.md) ⚠️ | The two `/pressure-test` passes before anything is written |
 
 ---
 
@@ -215,15 +215,15 @@ step 9   three live curves            ──────────────
 step 10  pooled adapter run           ──┬───────────►  F8a one adapter          (BUILT)
          compose_rate.json             │
                                        └──┐
-step  8  dose sweep                       ├────────►  F8b adapter vs oracle    (BUILT)
+step  8  dose series                      ├────────►  F8b adapter vs oracle    (BUILT)
          dose_curves.json             ────┘
 
-step 11  fifteen-run sweep            ──┬───────────►  A3  transfer            (owed)
+step 11  the fifteen runs             ──┬───────────►  A3  transfer            (owed)
          leaderboard + curve            └───────────►  A4  delivery vs transfer (owed)
                                           │
 step 12  size-matched mixed pool      ────┴─────────►  A5  pool contrast        (owed)
 
-                                       A3 + A5  ────►  register slot F8  (reserved)
+                                       A3 + A5  ────►  F8, still reserved
 ```
 
 The two built figures sit outside the A2 to A5 chain: both were assembled from files that already
@@ -525,7 +525,7 @@ panels, writes PNG, PDF and a sidecar JSON holding every number drawn plus its c
 # outline
 src  = RUN / "compose_rate.json"      # scored pooled run
 pool = RUN / "pair_pool.json"         # which pairs were trained on
-# panel (a): trained-on vs held-out compose rate over steps, PoE floor dotted
+# panel (a): trained-on vs held-out compose rate over steps, no-fix PoE level dotted
 # panel (b): the held-out curves unpooled, one per pair
 fig.savefig(OUT_DIR / f"{FIG_NAME}.{ext}", dpi=300)   # OUT_DIR = paper/iclr/figures
 ```

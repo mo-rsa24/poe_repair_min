@@ -14,7 +14,7 @@ here and nowhere else. Questions below were written at design time, before any n
 
 | File | What it holds |
 |---|---|
-| [design](../plans/05-the-grid-and-the-figures.md) | the hypothesis, the bars, the code to write |
+| [design](../plans/05-the-grid-and-the-figures.md) | the hypothesis, the thresholds, the code to write |
 | **this file** | **the verdict: what the runs answered, and what they could not** |
 
 ## Table of contents
@@ -34,19 +34,23 @@ here and nowhere else. Questions below were written at design time, before any n
 
 Navigation: 📋 [TOC](#table-of-contents) | [Next](#run-kind) ➡️
 
-- **speciation step**: the step where a cell's counterfactual finish stops changing, the
-  field's word for basin entry (Biroli et al., arXiv 2402.18491).
+- **speciation step**: the step at which the outcome stops being undecided, measured as the
+  step where a pair-and-seed run's counterfactual finish stops changing. It is the field's word
+  for entering a basin (Biroli et al., arXiv 2402.18491).
 - **counterfactual finish**: the image the plain guided model would land on if composing
   stopped at this step.
 - **on-the-fence**: a read whose endpoint flips under a 1% nudge; marked, never averaged in.
-- **the two sweeps**: joint prompt (does it compose from here) and expert pair (which animal
-  wins).
+- **the two prompt passes**: joint prompt (does it compose from here) and expert pair (which
+  animal wins).
+
+> A **basin** is the set of states that all flow to the same ending, so speciation is the step
+> after which a state can no longer leave the basin it is in.
 
 ## Run kind
 
 Navigation: ⬅️ [Words this file uses](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#runs) ➡️
 
-**Tests the claim.** A missed bar rewrites the scope's story (the gap stays unexplained) and the paper's mechanism section says so; the figures ship either way, captioned honestly.
+**Tests the claim.** A missed threshold rewrites the scope's story (the gap stays unexplained) and the paper's mechanism section says so; the figures ship either way, captioned honestly.
 
 ## Runs
 
@@ -60,24 +64,26 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
-- [ ] ⚠️ Do the per-cell speciation steps cluster at or below `SPECIATION_EARLY_MAX = 10`
-      (in `scripts/commitment/grid_sweep.py`), per family and overall, rather than inside
-      the divergence band (18 to 36)? This is the bar because the ledger pre-registered it as
-      the decide-then-descend test: at-or-before-10 explains the window-versus-divergence gap,
-      inside-the-band kills that explanation.
+- [ ] ⚠️ Do the speciation steps, one per pair-and-seed run, cluster at or below
+      `SPECIATION_EARLY_MAX = 10` (in `scripts/commitment/grid_sweep.py`), per family and
+      overall, rather than inside the divergence band (18 to 36)? This is the deciding question
+      because the ledger pre-registered it as the test of whether the run decides early and then
+      only descends: at-or-before-10 explains the window-versus-divergence gap, inside-the-band
+      kills that explanation.
 
 ## Written before the run, answered after
 
 Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
-- [ ] ⚠️ Which cells are the filmstrip cells? Name them here before the run, so the choice
+- [ ] ⚠️ Which pair-and-seed runs get filmstrips? Name them here before the run, so the choice
       cannot chase the prettiest result.
-- [ ] ⚠️ Does the oracle's speciation agree with plan 02's drift settling per cell? A
+- [ ] ⚠️ Does the predictor's speciation agree with plan 02's drift settling, run for run? A
       systematic disagreement is a finding and is reported, with the scatter as its figure.
-- [ ] ⚠️ Does the LoRA family's compose-rate curve rise during steps 0 to 10 and plateau by
-      the window's end, as decide-then-descend predicts? Report the curve shape either way.
+- [ ] ⚠️ Does the LoRA family's [compose-rate](../../../context/world/compose-rate.md) curve
+      rise during steps 0 to 10 and flatten by the window's end, which is what deciding early
+      and then only descending predicts? Report the curve shape either way.
 - [ ] ⚠️ How many reads were on-the-fence per family, and where do they sit relative to each
-      cell's speciation step?
+      run's speciation step?
 
 ## Asked after the result
 
@@ -107,7 +113,7 @@ Navigation: ⬅️ [Could the answer be an artefact](#could-the-answer-be-an-art
 
 | What the paper says | What it owes alongside it |
 |---|---|
-| speciation at/before 10 explains the gap as decide-then-descend | instrument per plan 04's verdict in every caption; state-space views are paired with outcome curves, PCA variance printed |
+| speciation at or before 10 explains the gap: the run decides early, then only descends | the measuring tool per plan 04's verdict in every caption; state-space views are paired with outcome curves, PCA variance printed |
 
 ## Still open
 

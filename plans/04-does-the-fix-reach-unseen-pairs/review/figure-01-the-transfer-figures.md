@@ -2,12 +2,12 @@
 
 **Two figures are built and unjudged; four have not started.** This file holds the questions,
 written before the figures are read. It judges
-[../plans/figure-01-the-transfer-figures.md](../plans/figure-01-the-transfer-figures.md), whose
+[the plan that builds the transfer figures](../plans/figure-01-the-transfer-figures.md), whose
 figures carry the transfer argument into the paper.
 
 A figure plan is judged differently from a run. There is no metric to clear here: the question is
 whether each figure reads cold, and whether what it claims sits at or below its row in
-[../../../../../paper/iclr/figures.md](../../../paper/iclr/figures.md). A figure that
+[the figure register](../../../paper/iclr/figures.md). A figure that
 overclaims is worse than a missing one, because it survives review until someone checks.
 
 ## Recommended prompt (to judge a built figure)
@@ -65,20 +65,20 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 | Figure | Kind | Built | Cost | Output | State |
 |---|---|---|---|---|---|
 | F8a one adapter transfers | Figure run | commit 252441b | no GPU, drawn from scored results | `paper/iclr/figures/compose-rate-as-the-lora-trains.{png,pdf,json}` | built, unjudged |
-| F8b adapter against the oracle | Figure run | commit 252441b | no GPU, drawn from scored results | `paper/iclr/figures/compose-rate-by-pair-for-lora-against-the-joint-prompt-correction.{png,pdf,json}` | built, unjudged |
+| F8b adapter against the joint-prompt correction | Figure run | commit 252441b | no GPU, drawn from scored results | `paper/iclr/figures/compose-rate-by-pair-for-lora-against-the-joint-prompt-correction.{png,pdf,json}` | built, unjudged |
 | A2 delivery-live | Figure run | | | | not started |
 | A3 transfer | Figure run | | | | blocked on step 11 |
 | A4 delivery against transfer | Figure run | | | | blocked on step 11 |
 | A5 pool contrast | Figure run | | | | blocked on step 12 |
 | F8a full-run extension (task 5.1) | Figure run | | GPU session for the instance-count scorer over epochs 1400 to 2000 | | not started |
-| Ceiling panel (task 5.2) | Figure run | | at most four oracle re-renders at F9 sampler settings | | not started |
+| Ceiling panel (task 5.2) | Figure run | | at most four re-renders with the joint-prompt correction at F9 sampler settings | | not started |
 
 ## The pre-registered bar
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
 - [ ] ⚠️ Does every built figure read cold, and does its claim sit at or below its register row?
-      This is the bar because the figures are what the paper argues from. A figure whose claim
+      This is the question that matters because the figures are what the paper argues from. A figure whose claim
       outruns its row puts a sentence in the manuscript the evidence does not carry, and the
       register is the only place that ceiling is written down.
 
@@ -102,22 +102,22 @@ last question makes that gap explicit rather than hiding it.
       reproduces the joint render by construction, so a reader who mistakes it for a baseline
       draws the wrong conclusion about what the adapter is beating.
 
-- [ ] ⚠️ **F8b**: does the figure make its pair-matched, not cell-matched, sampling visible? The
-      oracle arm and the adapter arm ran different numbers of cells per pair, so the pair is the
-      sampling unit. If the figure implies otherwise, the comparison looks tighter than it is.
+- [ ] ⚠️ **F8b**: does the figure make visible that the pair, not the individual run, is what was
+      sampled? The joint-prompt-correction side and the adapter side ran different numbers of runs
+      per pair, so the pair is the sampling unit. If the figure implies otherwise, the comparison looks tighter than it is.
 
 - [ ] ⚠️ **F8a and F8b**: is the control pair marked on the figure? Elephant × penguin composes
       without any intervention, so its row is not evidence of transfer, and a reader who counts it
       as one overcounts the result.
 
-- [ ] ⚠️ **A2**: does the plateau reference line read as an observation rather than a target? It
+- [ ] ⚠️ **A2**: does the reference line where the curve stops rising read as an observation rather than a target? It
       is where corrections have tended to stall, not where they are supposed to land.
 
 - [ ] ⚠️ **A3**: is the do-no-harm baseline drawn as a band rather than a line? A single line
       claims a precision the control pairs do not have.
 
 - [ ] ⚠️ **A4**: can a reader see delivery and transfer come apart? The twin panels exist so a
-      floor compose-rate can be split into "the correction never arrived" and "it arrived pointing
+      [compose rate](../../../context/world/compose-rate.md) stuck at the no-fix level can be split into "the correction never arrived" and "it arrived pointing
       wrong". If the panels do not make that split visible, the figure has not earned its place.
 
 - [ ] ⚠️ **A5**: is the same-pair pairing drawn explicitly rather than implied by bar position?
@@ -133,12 +133,15 @@ last question makes that gap explicit rather than hiding it.
       step-60000 caption cap on F8a. A late move in either direction reopens the train-longer
       question, and the reopening is recorded here rather than smoothed over.
 
-- [ ] ⚠️ **Ceiling panel (task 5.2)**: read side by side at matched sampler settings, is the
-      oracle-corrected render visibly crisper than the adapter-corrected one on the four F9
-      held-out cells? A crisper oracle says the softness is the adapter's fit, and more data or a
-      higher rank could close it. An equally soft oracle says the ceiling belongs to the
-      correction, and is accepted rather than chased. The read is qualitative, because no
-      crispness instrument exists.
+- [ ] ⚠️ **Ceiling panel (task 5.2)**: read side by side at matched sampler settings, is the render
+      corrected by the joint-prompt correction visibly crisper than the adapter-corrected one on
+      the four F9 held-out runs? A crisper joint-prompt render says the softness is the adapter's
+      fit, and more data or a higher rank could close it. An equally soft one says the ceiling
+      belongs to the correction, and is accepted rather than chased. The read is qualitative,
+      because nothing here measures crispness.
+
+      > Held-out means a pair the adapter never trained on, so a result on it says whether the fix
+      > reaches beyond what it was shown.
 
 ## Asked after the result
 
@@ -154,9 +157,9 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
 For a figure run these ask whether the picture could mislead even when the underlying result is
 sound. That is the failure mode a figure has and a run does not.
 
-- [ ] ⚠️ **Was the comparison fair?** Do the arms drawn side by side differ in one thing only, and
-      does the figure show the sampling unit it actually used? F8b is the live risk: pair-matched
-      arms drawn as though cell-matched read tighter than they are.
+- [ ] ⚠️ **Was the comparison fair?** Do the two sides drawn next to each other differ in one
+      thing only, and does the figure show the sampling unit it actually used? F8b is the live
+      risk: sides sampled by pair but drawn as though sampled run by run read tighter than they are.
 - [ ] ⚠️ **Was the instrument sound?** Does each figure's `.json` sidecar carry the numbers the
       panel draws, from the scored run and not a stale copy? A figure regenerated from an old
       sidecar is the quiet version of this failure.
@@ -171,8 +174,8 @@ Navigation: ⬅️ [Could the answer be an artefact](#could-the-answer-be-an-art
 |---|---|
 | F8a: one adapter transfers | the step the read came from (60000), on the figure and not only in the caption |
 | F8a and F8b | that elephant × penguin composes without intervention, so its row is not evidence of transfer |
-| F8b: the adapter against the oracle | that λ=1 reproduces the joint render by construction, so it is the target and not a competing method |
-| F8b | that the sampling unit is the pair, not the cell |
+| F8b: the adapter against the joint-prompt correction | that λ=1 reproduces the joint render by construction, so it is the target and not a competing method |
+| F8b | that the sampling unit is the pair, not the individual run |
 | all six | whether each went through `/design-figure` first. For F8a and F8b the honest answer may be no, and it is recorded rather than backfilled |
 
 ## Still open
@@ -192,5 +195,6 @@ Navigation: ⬅️ [What the write-up owes](#what-the-write-up-owes) | 📋 [TOC
 
 Navigation: ⬅️ [Still open](#still-open) | 📋 [TOC](#table-of-contents)
 
-Read F8a and F8b against their register rows and answer the bar. Both are built and neither has
+Read F8a and F8b against their register rows and answer the one question written before the read.
+Both are built and neither has
 been judged, so this is the cheapest unblocked work in the file.

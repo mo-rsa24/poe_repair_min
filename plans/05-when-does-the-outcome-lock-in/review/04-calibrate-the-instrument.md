@@ -14,7 +14,7 @@ here and nowhere else. Questions below were written at design time, before any n
 
 | File | What it holds |
 |---|---|
-| [design](../plans/04-calibrate-the-instrument.md) | the hypothesis, the bars, the code to write |
+| [design](../plans/04-calibrate-the-instrument.md) | the hypothesis, the thresholds, the code to write |
 | **this file** | **the verdict: what the runs answered, and what they could not** |
 
 ## Table of contents
@@ -34,8 +34,8 @@ here and nowhere else. Questions below were written at design time, before any n
 
 Navigation: 📋 [TOC](#table-of-contents) | [Next](#run-kind) ➡️
 
-- **agreement**: scorer-verdict match plus DINOv2 distance between the oracle's frame and the
-  teacher's ending from the same state, at guidance 7.5.
+- **agreement**: scorer-verdict match plus DINOv2 distance between the endpoint predictor's
+  frame and the teacher's ending from the same state, at guidance 7.5.
 - **the families**: joint prompting, plain PoE, and LoRA-corrected, whose cached states sit at
   different distances from the tube the student was distilled on.
 - **the verdict**: adopt, shrink (families and steps that pass), or fall back (teacher
@@ -45,7 +45,7 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#run-kind) ➡️
 
 Navigation: ⬅️ [Words this file uses](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#runs) ➡️
 
-**Builds an instrument.** A missed bar does not stop the scope: it forks plan 05 onto its named fallback (shrink, or finish-the-run everywhere), and the verdict is the deliverable either way.
+**Builds an instrument.** A missed threshold does not stop the scope: it forks plan 05 onto its named fallback (shrink, or finish-the-run everywhere), and the verdict is the deliverable either way.
 
 ## Runs
 
@@ -61,9 +61,9 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 - [ ] ⚠️ Does every family's agreement sit at or above `AGREEMENT_FLOOR`, with no family
       more than `FAMILY_GAP_MAX` below another (both in
-      `scripts/commitment/calibrate_oracle.py`)? This is the bar because a per-family bias
-      is the confound that corrupts every cross-family figure even when average agreement
-      looks fine.
+      `scripts/commitment/calibrate_oracle.py`)? This is the deciding question because a
+      per-family bias is the confound that corrupts every cross-family figure even when
+      average agreement looks fine.
 
 ## Written before the run, answered after
 
@@ -104,7 +104,7 @@ Navigation: ⬅️ [Could the answer be an artefact](#could-the-answer-be-an-art
 
 | What the paper says | What it owes alongside it |
 |---|---|
-| the oracle is calibrated at guidance 7.5 | the checkpoint's trained guidance range is undocumented (its card's Training section is TODO); calibration at 7.5 covers our use, not the range |
+| the endpoint predictor is calibrated at guidance 7.5 | the checkpoint's trained guidance range is undocumented (its card's Training section is TODO); calibration at 7.5 covers our use, not the range |
 
 ## Still open
 

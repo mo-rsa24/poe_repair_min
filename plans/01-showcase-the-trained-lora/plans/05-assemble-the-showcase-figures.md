@@ -56,9 +56,9 @@ This extracts error patterns from the run transcript, deduplicates against globa
 
 ⬅️ [Previous](#table-of-contents) | 📋 [TOC](#table-of-contents) | [Next](#considerations) ➡️
 
-**The experiment:** none; this plan draws settled results. It assembles the showcase set: the structure figure from the spectra, the two-instruments-one-window figure, the probe grid, the dose figure, the transfer matrix, each with a sidecar, each checked against [the ledger's standard](../decisions-taken-here.md).
+**The experiment:** none; this plan draws settled results. It assembles the showcase set: the structure figure from the spectra, the figure where two independent measurements agree on the same window (`step-35_two-instruments-one-window.png`), the dog × dog grid, the dose figure, the transfer matrix, each with a sidecar, each checked against [the ledger's standard](../decisions-taken-here.md).
 
-**What this plan does:** builds the two figures that need no new runs (structure; two-instruments-one-window), imports the run-produced figures from plans 02 to 04 as they land, and runs the standard check over the whole set.
+**What this plan does:** builds the two figures that need no new runs (the structure figure, and the one where two independent measurements agree on the same window), imports the run-produced figures from plans 02 to 04 as they land, and runs the standard check over the whole set.
 
 **Associated materials:**
 - **Review questions:** none; figure runs draw settled results and take no review file per the conventions.
@@ -107,8 +107,11 @@ This extracts error patterns from the run transcript, deduplicates against globa
 **The solution:** one assembly pass owning the standard check, with the ledger as the checklist.
 
 **Key insights:**
-1. The two-instruments-one-window figure is free and strong: the injection-window curve (F4a) and the windowed held-out projection agree on steps 0 to 10 from independent instruments.
+1. The two-measurements-one-window figure is free and strong. The injection-window curve (F4a) and the windowed held-out projection agree on steps 0 to 10, and they were measured in completely different ways.
 2. Numbers live in figures and sidecars, not prose.
+
+> Held-out means the pairs were never shown during training, so the number says how well the
+> adapter does on animals it has not seen.
 
 ---
 
@@ -117,8 +120,8 @@ This extracts error patterns from the run transcript, deduplicates against globa
 ⬅️ [Previous](#why-this-plan-exists) | 📋 [TOC](#table-of-contents) | [Next](#purpose-and-goal) ➡️
 
 1. **Structure figure:** energy-at-k with train, held-out projection, and the applicable anchors, from spectrum.json + spectrum_windowed.json; script `scripts/showcase/structure_figure.py` (new).
-2. **Two-instruments-one-window:** F4a's compose-rate-vs-window-position curve and the early/late held-out projection on aligned step axes; `scripts/showcase/two_instruments_window.py` (new).
-3. **Imports:** the probe grid, dose figure, transfer matrix as their plans finish; copy + sidecar into `paper/iclr/figures/`.
+2. **Two measurements, one window:** F4a's curve of [compose rate](../../../context/world/compose-rate.md) against window position, and the early/late held-out projection, on aligned step axes; `scripts/showcase/two_instruments_window.py` (new).
+3. **Imports:** the dog × dog grid, dose figure, transfer matrix as their plans finish; copy + sidecar into `paper/iclr/figures/`.
 4. **The standard check:** a checklist pass over every figure against the ledger; violations fixed or the figure held back.
 
 ---
@@ -151,7 +154,7 @@ Serves [Objective 5 and DoD 4 of the scope master plan](../MASTER_PLAN.md).
 
 ◀ **Needs: [group 0](#0--preflight)**.
 
-- [ ] **1.1** `structure_figure.py`: three-curve energy-at-k per the ledger (train + both self-fit floors; held-out + k/d in a second panel); sidecar JSON with every plotted number
+- [ ] **1.1** `structure_figure.py`: three-curve energy-at-k per the ledger (train + both self-fit reference levels; held-out + k/d in a second panel); sidecar JSON with every plotted number
   - 💡 `/design-figure` on the two-panel split if the single-figure version fights itself ✅
 - [ ] **1.2** `two_instruments_window.py`: F4a's window curve and the windowed projection, aligned axes; sidecar
 - [ ] **1.3** Copy both into `paper/iclr/figures/` with sidecars
@@ -164,7 +167,7 @@ Serves [Objective 5 and DoD 4 of the scope master plan](../MASTER_PLAN.md).
 
 ◀ **Needs: plans 02, 03, 04** delivering their figures (import per arrival; do not wait for all).
 
-- [ ] **2.1** Import the probe grid + norm curve with sidecars
+- [ ] **2.1** Import the dog × dog grid + norm curve with sidecars
 - [ ] **2.2** Import the dose figure with `dose_curves.json`
 - [ ] **2.3** Import the transfer matrix with `transfer_matrix.json`
 
@@ -192,7 +195,7 @@ Serves [Objective 5 and DoD 4 of the scope master plan](../MASTER_PLAN.md).
 3.1 **Walk the checklist per figure**
    - Open each figure beside [the ledger](../decisions-taken-here.md)
    - Check: axes named with units; every number's meaning stated
-   - Check: correct anchor for the quantity (self-fit floors for train curves, k/d for projections)
+   - Check: correct anchor for the quantity (self-fit reference levels for train curves, k/d for projections)
    - Check: no distance-reading MDS panel; fidelity and composition never conflated; the two 8s never implied related
    - ✅ note "passes standard" in the figure's sidecar
    - ❌ fix or hold back; a held-back figure is named in the master plan, never silently dropped
@@ -205,7 +208,7 @@ Serves [Objective 5 and DoD 4 of the scope master plan](../MASTER_PLAN.md).
 
 ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
-> **This gate is the paper's figure quality bar.**
+> **This is where the paper's figures either meet the standard or do not ship.**
 
 **Pass criteria:**
 - Every shipped figure has a sidecar and a written standard pass.

@@ -280,7 +280,7 @@ Navigation: ⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-conte
 
 | Item | Lane | Prompt file | What it shows | Save to |
 |------|------|-------------|---------------|---------|
-| The free tests | subject | [diagram-prompts.md](../diagram-prompts.md#prompt-3-subject-the-free-probes) | the drift curve settling | `../diagrams/when-does-the-outcome-lock-in-03-the-free-probes.png` |
+| The free tests | subject | [diagram-prompts.md](../diagram-prompts.md#prompt-3-subject-the-free-tests) | the drift curve settling | `../diagrams/when-does-the-outcome-lock-in-03-the-free-probes.png` |
 | Process lane v01 | process | [diagram-prompts.md](../diagram-prompts.md#process-lane) | the five plans as a journey | `../diagrams/when-does-the-outcome-lock-in-process-01.png` |
 
 #### Generated during execution

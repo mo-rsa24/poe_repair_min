@@ -7,7 +7,7 @@ never saw, before paying for fifteen separate training runs.
 
 | Step | Plan | Status |
 |---|---|---|
-| 9 | [instrument-02-three-live-curves-while-training](instrument-02-three-live-curves-while-training.md) | ⚠️ do this next |
+| 9 | [the three live curves during training](instrument-02-three-live-curves-while-training.md) | ⚠️ do this next |
 | **10** | **this plan** | **◑ read incomplete** |
 | 11 | [hypothesis-02-transfer-as-a-rate-over-fifteen-pairs](hypothesis-02-transfer-as-a-rate-over-fifteen-pairs.md) | ⚠️ |
 

@@ -1,6 +1,8 @@
-# 🧪 Experiment C: the lambda-window injection sweep
+# 🧪 Experiment C: the lambda-window injection series
 
-**Step 37 in the root running order. Waits on: step 36 (the frozen instrument's softness reads). Next: [08-experiment-a-resume-to-200k](08-experiment-a-resume-to-200k.md).**
+**This plan asks one question: at a single fixed checkpoint, does the blur in the output grow as the injected correction is turned up?**
+
+**Step 37 in the root running order. Waits on: step 36 (the frozen tracking set's softness reads). Next: [08-experiment-a-resume-to-200k](08-experiment-a-resume-to-200k.md).**
 
 ## Recommended prompt (after run completes)
 
@@ -14,8 +16,8 @@
 
 | Step | Plan | What it does |
 |------|------|-------------|
-| 36 (previous) | [06-extend-the-tracking-set](06-extend-the-tracking-set.md) | The frozen instrument |
-| **37 (current)** | **07: experiment-c-lambda-window** | The no-training injection sweep on existing checkpoints |
+| 36 (previous) | [06-extend-the-tracking-set](06-extend-the-tracking-set.md) | The frozen tracking set |
+| **37 (current)** | **07: experiment-c-lambda-window** | The no-training injection run across values, on existing checkpoints |
 | 38 (next) | [08-experiment-a-resume-to-200k](08-experiment-a-resume-to-200k.md) | The length axis |
 
 ---
@@ -45,9 +47,12 @@
 
 ⬅️ [Previous](#position-in-the-plan-tree) | 📋 [TOC](#table-of-contents) | [Next](#considerations) ➡️
 
-**The hypothesis:** *the held-out softness is a property of the injection, not of undertraining: at a fixed checkpoint, softness tracks λ.*
+**The hypothesis:** *the softness on held-out pairs comes from the injection rather than from undertraining: at a fixed checkpoint, softness tracks λ.*
 
-**The design (ledger):** no training. The λ grid {0, 0.25, 0.5, 0.75, 1.0} crossed with the step window at inference on existing checkpoints, sharing plan 03's harness.
+> Held-out means the pairs were never shown during training, so the number says how well the
+> adapter does on animals it has not seen.
+
+**The design (ledger):** no training. The λ grid {0, 0.25, 0.5, 0.75, 1.0} crossed with the step window at inference on existing checkpoints, sharing plan 03's runner.
 
 **If true:** softness rises with λ at the fixed 100k checkpoint, and experiments A and B are read knowing the blur has an injection component no training length removes.
 
@@ -63,9 +68,9 @@
 
 ⬅️ [Previous](#quick-context-where-you-are) | 📋 [TOC](#table-of-contents) | [Next](#environment-facts-this-plan-depends-on) ➡️
 
-**Expected runtime:** in-session on a free device (ledger's launch shape); the grid over the F9 cells is dozens of renders, an afternoon. Record wall time in the review file.
+**Expected runtime:** in-session on a free device (ledger's launch shape); the grid over the F9 pairs is dozens of renders, an afternoon. Record wall time in the review file.
 
-**Prerequisites:** plan 03's harness with λ scaling; the 100k checkpoint; a softness read (the embedding-drift read from plan 06, reused offline, plus the qualitative strip).
+**Prerequisites:** plan 03's runner with λ scaling; the 100k checkpoint; a softness read (the embedding-drift read from plan 06, reused offline, plus the qualitative strip).
 
 **W&B project:** `prime_lab/poe-repair-animals-compose`.
 
@@ -83,7 +88,7 @@
 
 ⬅️ [Previous](#environment-facts-this-plan-depends-on) | 📋 [TOC](#table-of-contents) | [Next](#why-this-plan-exists) ➡️
 
-**The cheapest of the three experiments, run first: if softness tracks λ, the blur is the injection, and A's and B's null bars are read in that light.** It is also the intervention that lets any discovered direction use causal language (ledger).
+**The cheapest of the three experiments, run first: if softness tracks λ, the blur is the injection, and A's and B's null results are read in that light.** It is also the intervention that lets any discovered direction use causal language (ledger).
 
 ---
 
@@ -103,9 +108,9 @@
 
 ⬅️ [Previous](#why-this-plan-exists) | 📋 [TOC](#table-of-contents) | [Next](#purpose-and-goal) ➡️
 
-1. **The grid run**: {0, 0.25, 0.5, 0.75, 1.0} × window {0-10 fixed} on the F9 cells plus the repair cell, existing seeds, 100k checkpoint.
-2. **The softness table**: per λ, the embedding-drift read and a sharpness proxy, plus compose rate; `lambda_softness.json`.
-3. **The strip**: one row per λ for one cell, labelled descriptive, for plan 05's wall.
+1. **The grid run**: {0, 0.25, 0.5, 0.75, 1.0} × window {0-10 fixed} on the four F9 pairs plus the repaired pair, existing seeds, 100k checkpoint.
+2. **The softness table**: per λ, the embedding-drift read and a sharpness proxy, plus [compose rate](../../../context/world/compose-rate.md); `lambda_softness.json`.
+3. **The strip**: one row per λ for one named pair, labelled descriptive, for plan 05's wall.
 
 ---
 
@@ -113,10 +118,10 @@
 
 ⬅️ [Previous](#description-what-to-build) | 📋 [TOC](#table-of-contents) | [Next](#tasks) ➡️
 
-Serves goal 4 (A, B, C run; verdicts against pre-registered bars). Checkable outcomes:
+Serves goal 4 (A, B, C run; verdicts against pre-registered thresholds). Checkable outcomes:
 
-1. Every grid cell rendered and measured; `lambda_softness.json` complete.
-2. The review bar answered.
+1. Every point in the grid rendered and measured; `lambda_softness.json` complete.
+2. The review file's threshold question answered.
 
 ---
 
@@ -132,11 +137,11 @@ Serves goal 4 (A, B, C run; verdicts against pre-registered bars). Checkable out
 
 ### 1. 🧪 Run the grid
 
-◀ **Needs: the λ-scaled injection harness.** If [03 task 1.2](03-the-lora-dose-sweep.md#1--build-the-sweep) has run, reuse it; otherwise build it here and 03 reuses it (the root order lets either land first).
+◀ **Needs: the λ-scaled injection runner.** If [03 task 1.2](03-the-lora-dose-sweep.md#1--build-the-series) has run, reuse it; otherwise build it here and 03 reuses it (the root order lets either land first).
 
-- [ ] **1.1 Run the grid in-session** on a free device; outputs to `/datasets/mmolefe/poe_repair_min/outputs/showcase/experiment_c/`. Completion is observable: cell count on disk equals grid size.
-- [ ] **1.2 Measure softness per λ**; write `lambda_softness.json` (per cell: λ, compose, drift read, sharpness proxy).
-- [ ] **1.3 Build the descriptive strip** for one named cell.
+- [ ] **1.1 Run the grid in-session** on a free device; outputs to `/datasets/mmolefe/poe_repair_min/outputs/showcase/experiment_c/`. Completion is observable: the number of renders on disk equals the grid size.
+- [ ] **1.2 Measure softness per λ**; write `lambda_softness.json` (per run: λ, compose, drift read, sharpness proxy).
+- [ ] **1.3 Build the descriptive strip** for one named pair.
 
 ▶ **Next: [instruction 2.1](#2--judge-the-trend)**.
 
@@ -163,10 +168,10 @@ Serves goal 4 (A, B, C run; verdicts against pre-registered bars). Checkable out
 > A and B together cost roughly 20 GPU-hours; this afternoon-scale run fixes how their results will be read. Run it first.
 
 **Pass criteria:**
-- Grid complete; the review bar answered before A or B is interpreted.
+- Grid complete; the review file's threshold question answered before A or B is interpreted.
 
 **Fail criteria:**
-- The harness's λ=0 cell fails the identity check against cached PoE (then nothing here means anything; fix the harness).
+- The runner's λ=0 render fails the identity check against cached PoE (then nothing here means anything; fix the runner).
 
 **When you get results, answer the open questions in the [review file](../review/07-experiment-c-lambda-window.md).**
 
@@ -180,7 +185,7 @@ Serves goal 4 (A, B, C run; verdicts against pre-registered bars). Checkable out
 
 | Figure | Lane | What it shows | Save to |
 |--------|------|---------------|---------|
-| the λ-softness strip | subject | one cell at five λ values, blur and composition together, labelled descriptive | feeds plan 05 |
+| the λ-softness strip | subject | one pair at five λ values, blur and composition together, labelled descriptive | feeds plan 05 |
 
 ### Generated during plan execution
 
@@ -215,7 +220,7 @@ Serves goal 4 (A, B, C run; verdicts against pre-registered bars). Checkable out
 
 ⬅️ [Previous](#orchestration-keeping-catalogs-and-plan-files-in-sync) | 📋 [TOC](#table-of-contents) | [Next](#recommended-skill) ➡️
 
-**File:** `scripts/showcase/lora_dose_sweep.py` (plan 03) — the harness; this plan is a fixed-window slice of its grid with the softness read added.
+**File:** `scripts/showcase/lora_dose_sweep.py` (plan 03) — the runner; this plan is a fixed-window slice of its grid with the softness read added.
 
 ---
 
@@ -226,10 +231,10 @@ Serves goal 4 (A, B, C run; verdicts against pre-registered bars). Checkable out
 ▶ Paste to run this plan (in-session; a fixed-window slice of plan 03's grid):
 
 ```
-/run-experiment plans/01-showcase-the-trained-lora/plans/07-experiment-c-lambda-window.md — reuse plan 03's lambda-scaled harness (scripts/showcase/lora_dose_sweep.py) if it exists, else build it here and 03 reuses it; the lambda-0 canary must match cached poe.png in mode before the grid runs.
+/run-experiment plans/01-showcase-the-trained-lora/plans/07-experiment-c-lambda-window.md — reuse plan 03's lambda-scaled runner (scripts/showcase/lora_dose_sweep.py) if it exists, else build it here and 03 reuses it; the lambda-0 render must match cached poe.png in mode before the grid runs.
 ```
 
-alt, headless overnight: in a fresh session run `/unattended run-experiment plans/01-showcase-the-trained-lora/plans/07-experiment-c-lambda-window.md` and paste the tmux block it emits (mechanical grid plus scoring, verified by its own sidecars). The engagement gate and the review file's bar are the stop conditions.
+alt, headless overnight: in a fresh session run `/unattended run-experiment plans/01-showcase-the-trained-lora/plans/07-experiment-c-lambda-window.md` and paste the tmux block it emits (mechanical grid plus scoring, verified by its own sidecars). The engagement gate and the review file's threshold are the stop conditions.
 
 ---
 
@@ -237,7 +242,7 @@ alt, headless overnight: in a fresh session run `/unattended run-experiment plan
 
 ⬅️ [Previous](#recommended-skill) | 📋 [TOC](#table-of-contents) | [Next](#error-matrix) ➡️
 
-[08-experiment-a-resume-to-200k](08-experiment-a-resume-to-200k.md): the length axis, launched only with plan 06's instrument frozen.
+[08-experiment-a-resume-to-200k](08-experiment-a-resume-to-200k.md): the length axis, launched only once plan 06's tracking set is frozen.
 
 ---
 

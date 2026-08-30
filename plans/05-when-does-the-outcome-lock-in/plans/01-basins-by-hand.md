@@ -73,7 +73,7 @@ anything on the endpoint predictor.
 
 **Associated materials.** The verdict lands in [the review file](../review/01-basins-by-hand.md).
 The reasoning behind the design is in [the decision ledger](../decisions-taken-here.md); the
-full walk record is [the walk map](../../.walk/consistency-model-basin-oracle.md).
+full walk record is [the walk record](../../../artifacts/drips/consistency-model-basin-oracle/the-walk.md).
 
 **For the full picture.** The scope's [master plan](../MASTER_PLAN.md).
 
@@ -285,7 +285,7 @@ Navigation: ⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-conte
 
 | Item | Lane | Prompt file | What it shows | Save to |
 |------|------|-------------|---------------|---------|
-| The free tests | subject | [diagram-prompts.md](../diagram-prompts.md#prompt-3-subject-the-free-probes) | the perturbation triplet and the drift curve | `../diagrams/when-does-the-outcome-lock-in-03-the-free-probes.png` |
+| The free tests | subject | [diagram-prompts.md](../diagram-prompts.md#prompt-3-subject-the-free-tests) | the perturbation triplet and the drift curve | `../diagrams/when-does-the-outcome-lock-in-03-the-free-probes.png` |
 | Process lane v01 | process | [diagram-prompts.md](../diagram-prompts.md#process-lane) | the five plans as a journey, with what each one must pass | `../diagrams/when-does-the-outcome-lock-in-process-01.png` |
 
 #### Generated during execution

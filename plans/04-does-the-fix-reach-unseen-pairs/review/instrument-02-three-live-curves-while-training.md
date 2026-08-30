@@ -1,13 +1,13 @@
 # 🔬 Review: can a training run be read while it is still running?
 
-**Two thirds answered; the last third is the gate the fifteen-run sweep waits on.** This file
-judges [../plans/instrument-02-three-live-curves-while-training.md](../plans/instrument-02-three-live-curves-while-training.md).
+**Two thirds answered; the last third is what the fifteen runs are waiting on.** This file
+judges [the plan that wires three live curves into training](../plans/instrument-02-three-live-curves-while-training.md).
 
-Why it matters more than its size suggests: the sweep trains fifteen adapters unattended. If the
+Why it matters more than its size suggests: those fifteen adapters train unattended. If the
 scorer inside the training loop is wrong, all fifteen produce plausible numbers that mean nothing,
-and nobody finds out for days. This instrument is what makes that sweep safe to leave alone.
+and nobody finds out for days. This measuring tool is what makes leaving them alone safe.
 
-## Recommended prompt (when the smoke finishes)
+## Recommended prompt (when the first short run finishes)
 
 ```
 /analyze-run fy7a1ynd
@@ -18,8 +18,8 @@ and nobody finds out for days. This instrument is what makes that sweep safe to 
 | File | What it holds |
 |---|---|
 | [design](../plans/instrument-02-three-live-curves-while-training.md) | the three curves, where they are computed, how they are logged |
-| **this file** | **the verdict: two curves proven, the three-curve smoke still the gate** |
-| [what it gates](hypothesis-02-transfer-as-a-rate-over-fifteen-pairs.md) | the fifteen unattended runs that may not start until this is green |
+| **this file** | **the verdict: two curves proven, the three-curve first short run still outstanding** |
+| [what waits on it](hypothesis-02-transfer-as-a-rate-over-fifteen-pairs.md) | the fifteen unattended runs that may not start until this is green |
 
 ## Table of contents
 
@@ -40,11 +40,11 @@ and nobody finds out for days. This instrument is what makes that sweep safe to 
 Navigation: 📋 [TOC](#table-of-contents) | [Next](#run-kind) ➡️
 
 - **The three curves**, logged live per evaluation so a run can be read before it finishes:
-  - **compose rate**: how often two separate animals appear.
+  - **[compose rate](../../../context/world/compose-rate.md)**: how often two separate animals appear.
   - **direction agreement**: whether this run's correction points the same way as the pool's
     average correction.
   - **distance reached**: how far toward the target the correction actually moved the prediction.
-- **Why three and not one**: a pair sitting at the floor has two very different causes. Either the
+- **Why three and not one**: a pair that composes no better than the broken method has two very different causes. Either the
   correction never arrived (distance reached stays flat) or it arrived pointing the wrong way
   (direction agreement is low). One curve cannot tell those apart; the paper needs to.
 - **The shared-device path**: biggpu nodes hold two GPUs and Slurm registers neither, so a node
@@ -55,8 +55,8 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#run-kind) ➡️
 
 Navigation: ⬅️ [Words this file uses](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#runs) ➡️
 
-**Not a run: an instrument.** Judged by whether its checks could fail, not by what they found. A
-failure here blocks the fifteen-run sweep rather than closing this plan.
+**Not a run: a measuring tool.** Judged by whether its checks could fail, not by what they found. A
+failure here blocks the fifteen runs rather than closing this plan.
 
 ## Runs
 
@@ -64,15 +64,18 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
-| `smoke_20260819_151601` (W&B `fy7a1ynd`) | Instrument | 2026-08-19 15:16, commit `2aa4a91` (working tree dirty, 10 files), mscluster106 GPU 1 via the shared-device path | training 83s; the rest is the 152-cell eval pass, total not yet measured | `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/live_curves_smoke_run/smoke_20260819_151601/`; three W&B series in `prime_lab/poe-repair-animals-compose` | running |
+| `smoke_20260819_151601` (W&B `fy7a1ynd`) | Measuring tool | 2026-08-19 15:16, commit `2aa4a91` (working tree dirty, 10 files), mscluster106 GPU 1 via the shared-device path | training 83s; the rest is the eval pass over 152 pair-and-seed runs, total not yet measured | `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/live_curves_smoke_run/smoke_20260819_151601/`; three W&B series in `prime_lab/poe-repair-animals-compose` | running |
 
 **What this run is.** One epoch (50 optimizer steps) of pooled rank-8 LoRA training over the 11
-blend-prone animal pairs, then one full inline-sampling eval pass: 152 cells, being 11 train pairs
+blend-prone animal pairs, then one full inline-sampling eval pass over 152 pair-and-seed runs: 11 train pairs
 across 8 train seeds (88) plus 8 held-out pairs across 8 held-out seeds (64), each rendered at 25
 DDIM steps and scored. Launcher: `scripts/animals_compose_transfer/smoke_live_curves.sh`.
 
+> Held-out means an animal pair the adapter never trained on, so a result on it says whether
+> the fix reaches beyond what it was shown.
+
 **Where it got to.** The training epoch finished in 83 seconds; effectively all of the wall time
-is the 152-cell eval pass, which is what the three curves are computed from. Nothing had failed as
+is the eval pass over those 152 runs, which is what the three curves are computed from. Nothing had failed as
 of the last check.
 
 **Why it ran outside Slurm.** No biggpu node was idle: mscluster107, 109 and 112 were down, and
@@ -87,8 +90,8 @@ process was never touched.
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
-- [ ] ⚠️ Do all three land as three separate live curves on a one-epoch smoke run?
-      **This is the gate.** The fifteen-run sweep may not start until this is green, for the
+- [ ] ⚠️ Do all three land as three separate live curves on a one-epoch first short run?
+      **This is the check everything else waits on.** The fifteen runs may not start until this is green, for the
       reason above: a wrong in-loop scorer turns an unattended fan-out into fifteen runs of
       convincing nonsense. Judged against run `smoke_20260819_151601` when it finishes: each of
       `eval/compose_rate/mean`, `eval/direction_cosine/mean` and `eval/frac_distance_reached/mean`
@@ -103,10 +106,10 @@ Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC
       (`compose_rate.json`), which it could not have done unless the whole path worked.
 - [x] ✅ Are the two direction measures wired?
       Yes, in code and importing cleanly. `_inline_sampling.py::direction_metrics` logs both per
-      cell plus their means, reusing the existing maths rather than redefining it.
-- [ ] 🟡 What does a one-epoch smoke actually cost on a shared biggpu device?
-      Unknown until this run finishes. The plan's stated estimate was one hour, inherited from a
-      prior smoke whose log does not exist anywhere in the repo, so it has no evidence behind it.
+      pair-and-seed run plus their means, reusing the existing maths rather than redefining it.
+- [ ] 🟡 What does a one-epoch first short run actually cost on a shared biggpu device?
+      Unknown until this run finishes. The plan's stated estimate was one hour, inherited from an
+      earlier short run whose log does not exist anywhere in the repo, so it has no evidence behind it.
       Next action: record the measured wall time here when the run ends, and correct the plan's
       Considerations to that number.
 
@@ -125,10 +128,10 @@ with the answer already visible.
 
 Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC](#table-of-contents) | [Next](#what-the-write-up-owes) ➡️
 
-- [x] ✅ **Was the comparison fair?** Not applicable: nothing is compared here. This instrument
-      asks whether three numbers appear and carry real values, not whether one arm beats another.
+- [x] ✅ **Was the comparison fair?** Not applicable: nothing is compared here. This measuring tool
+      asks whether three numbers appear and carry real values, not whether one condition beats another.
 - [ ] ⚠️ **Was the instrument sound?** The question this whole file exists to answer, and it is
-      the bar above. Not settled until all three series carry non-null values.
+      the one written before the run, above. Not settled until all three series carry non-null values.
 - [x] ✅ **Did the run respect the environment?** Output landed under `/datasets`, the run was
       pinned to an idle device with a guard that aborts if that device is occupied, and the other
       user's process was never touched. Harvest it with `pgrep`, not `squeue`: this run is outside
@@ -140,8 +143,8 @@ Navigation: ⬅️ [Could the answer be an artefact](#could-the-answer-be-an-art
 
 | What the paper says | What it owes alongside it |
 |---|---|
-| a compose rate read from this smoke run | that `eval/compose_rate/mean` averages over 2 of the 19 sampled pairs only (`a_wolf__x__a_husky` in-train, `a_cat__x__a_dog` held-out), because anchor images exist for those two alone. The direction and distance curves cover all 152 cells. That is enough to answer the gate, which asks whether the metric appears and carries real values. It is not a transfer measurement, and the step-10 sweep needs the remaining anchors before its compose-rate means anything across pairs |
-| the cost of a smoke run | the measured wall time, once this run ends. The plan's one-hour estimate came from a prior smoke whose log does not exist in the repo |
+| a compose rate read from this first short run | that `eval/compose_rate/mean` averages over 2 of the 19 sampled pairs only (`a_wolf__x__a_husky` in-train, `a_cat__x__a_dog` held-out), because anchor images exist for those two alone. The direction and distance curves cover all 152 pair-and-seed runs. That is enough to answer the question this file waits on, which is whether the metric appears and carries real values. It is not a transfer measurement, and step 10's runs need the remaining anchors before their compose rate means anything across pairs |
+| the cost of a first short run | the measured wall time, once this run ends. The plan's one-hour estimate came from an earlier short run whose log does not exist in the repo |
 
 ## What the run cost, and what it bought
 
@@ -175,13 +178,13 @@ Navigation: ⬅️ [What the run cost](#what-the-run-cost-and-what-it-bought) | 
 
 | What is unresolved | What would settle it | Who or what is blocked by it |
 |---|---|---|
-| whether all three curves land as separate non-null series | `smoke_20260819_151601` finishing, then reading the three series in W&B | the fifteen-run sweep, which may not launch until this is green |
-| what a one-epoch smoke actually costs | the measured wall time of this run | the plan's Considerations, which currently carries an estimate with no evidence behind it |
-| anchor images for the remaining 17 of 19 sampled pairs | generating them | the step-10 sweep's compose-rate meaning anything across pairs |
+| whether all three curves land as separate non-null series | `smoke_20260819_151601` finishing, then reading the three series in W&B | the fifteen runs, which may not launch until this is green |
+| what a one-epoch first short run actually costs | the measured wall time of this run | the plan's Considerations, which currently carries an estimate with no evidence behind it |
+| anchor images for the remaining 17 of 19 sampled pairs | generating them | step 10's runs, whose compose rate means nothing across pairs without them |
 
 ## Next step
 
 Navigation: ⬅️ [Still open](#still-open) | 📋 [TOC](#table-of-contents)
 
 Check whether `smoke_20260819_151601` has finished (`pgrep`, not `squeue`), then read the three
-W&B series and answer the bar.
+W&B series and answer the question written before the run.

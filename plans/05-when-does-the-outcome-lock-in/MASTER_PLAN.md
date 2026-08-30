@@ -67,7 +67,7 @@ no new model; slice 4 decides whether slice 5 runs.
 > ridge between two basins is where a small nudge switches which ending you get.
 
 ## Purpose and goals
-Purpose: a standalone scope under the [root master plan](../MASTER_PLAN.md), whose mechanism
+Purpose: a standalone scope under the [root master plan](../../MASTER_PLAN.md), whose mechanism
 story needs to say why the correction window ends at step 10.
 Goals: the numbered list under Goals below.
 

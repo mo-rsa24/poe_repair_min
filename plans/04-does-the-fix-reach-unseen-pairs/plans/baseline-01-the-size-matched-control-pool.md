@@ -18,6 +18,9 @@ Design only. Verdicts live in [../review/baseline-01-the-size-matched-control-po
 Run the identical training on a same-size pool of non-animal concepts and evaluate on the same
 held-out animal pairs: if the mixed pool does as well, the win was data volume, not the pool.
 
+> Held-out means an animal pair the adapter never trained on, so a result on it says whether
+> the fix reaches beyond what it was shown.
+
 ## Why this plan exists
 A transfer win in plan 03 is worth little if any pool of the same size would have won.
 This plan rules that out: it runs a same-size mixed pool on the identical held-out

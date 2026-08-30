@@ -14,7 +14,7 @@ here and nowhere else. Questions below were written at design time, before any n
 
 | File | What it holds |
 |---|---|
-| [design](../plans/02-the-free-probe.md) | the hypothesis, the bars, the code to write |
+| [design](../plans/02-the-free-probe.md) | the hypothesis, the thresholds, the code to write |
 | **this file** | **the verdict: what the runs answered, and what they could not** |
 
 ## Table of contents
@@ -36,15 +36,21 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#run-kind) ➡️
 
 - **posterior-mean drift**: how far Tweedie's running estimate of the final image moves
   between consecutive steps; it settles when the posterior mass has concentrated on one basin.
-- **settling step**: the first step after which drift stays under its bar for all remaining steps.
-- **divergence step**: where this cell's paths visibly separate, read from the existing
-  trajectory-divergence analyses (18 to 36 across cells).
+- **settling step**: the first step after which drift stays under its threshold for all
+  remaining steps.
+- **divergence step**: where this pair-and-seed run's paths visibly separate, read from the
+  existing trajectory-divergence analyses (18 to 36 across runs).
+
+> **Tweedie** is the formula that turns a noisy state and the model's noise prediction into a
+> running guess at the final clean image. A **basin** is the set of states that all flow to the
+> same ending. **Speciation** is the field's word for the step at which the outcome stops being
+> undecided.
 
 ## Run kind
 
 Navigation: ⬅️ [Words this file uses](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#runs) ➡️
 
-**Tests the claim.** A missed bar does not close the scope; it kills the decide-then-descend reading before plan 05 spends GPU on it, which is this run's whole value.
+**Tests the claim.** A missed threshold does not close the scope; it kills the reading that the run decides early and then only descends, before plan 05 spends GPU on it, which is this run's whole value.
 
 ## Runs
 
@@ -58,22 +64,22 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
-- [ ] ⚠️ In every clean cell (drift defined and settling under `DRIFT_SETTLED_MAX`), does the
-      settling step land at or before the cell's divergence step
+- [ ] ⚠️ In every clean pair-and-seed run (drift defined and settling under
+      `DRIFT_SETTLED_MAX`), does the settling step land at or before that run's divergence step
       (`ORDERING_HOLDS_FRAC_MIN = 1.0` in `scripts/commitment/posterior_drift.py`)?
-      This is the bar because the ledger pre-registered the ordering as the story's first
-      falsifiable consequence.
+      This is the deciding question because the ledger pre-registered the ordering as the
+      story's first falsifiable consequence.
 
 ## Written before the run, answered after
 
 Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
-- [ ] ⚠️ Are per-step epsilons cached? Answer with the tensors found in one cell, and the
-      measured single-cell recompute time if they are not.
+- [ ] ⚠️ Are per-step epsilons cached? Answer with the tensors found in one pair-and-seed run,
+      and the measured recompute time for that one run if they are not.
 - [ ] ⚠️ Where do the settling steps cluster: near 10, or inside 18 to 36? Informative here;
-      judged as the headline bar in plan 05's review.
-- [ ] ⚠️ How many cells are 🟡 (drift never settles under the bar)? Each is listed, none is
-      forced into a verdict.
+      it is plan 05's deciding question.
+- [ ] ⚠️ How many pair-and-seed runs are 🟡 (drift never settles under the threshold)? Each is
+      listed, none is forced into a verdict.
 
 ## Asked after the result
 
@@ -103,7 +109,7 @@ Navigation: ⬅️ [Could the answer be an artefact](#could-the-answer-be-an-art
 
 | What the paper says | What it owes alongside it |
 |---|---|
-| settling reads the decision, divergence reads the display | the two are cousins, not the same theorem; the lag column is reported per cell, never averaged away |
+| settling reads the decision, divergence reads the display | the two are cousins, not the same theorem; the lag column is reported per pair-and-seed run, never averaged away |
 
 ## Still open
 

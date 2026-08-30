@@ -58,13 +58,16 @@ This extracts error patterns from the run transcript, deduplicates against globa
 
 **The experiment:** score group-pooled LoRA checkpoints on pairs sharing no concept with their training pool, as a matrix: training group by evaluation pair.
 
-**The hypothesis:** *the pooled correction transfers beyond its concepts: compose rate on disjoint pairs sits well above the un-corrected PoE floor.*
+**The hypothesis:** *the pooled correction transfers beyond its concepts: [compose rate](../../../context/world/compose-rate.md) on disjoint pairs sits well above plain PoE with no correction at all.*
 
 **If true:** the generalization figure ships at the tier the repo named reviewer-credible.
 
 **If false:** transfer is concept-bound; the paper claims within-distribution repair and says so.
 
-**What this plan does:** resolves the pooled checkpoints, runs the disjoint evaluation cells not already cached, and renders the matrix; the existing held-out grid is the qualitative rung beside it.
+**What this plan does:** resolves the pooled checkpoints, runs the disjoint evaluation combinations not already cached, and renders the matrix; the existing held-out grid is the qualitative view beside it.
+
+> Held-out means the pairs were never shown during training, so the number says how well the
+> adapter does on animals it has not seen.
 
 **Associated materials:**
 - **Review questions:** [../review/04-the-transfer-matrix-figure.md](../review/04-the-transfer-matrix-figure.md)
@@ -77,7 +80,7 @@ This extracts error patterns from the run transcript, deduplicates against globa
 
 ⬅️ [Previous](#quick-context-where-you-are) | 📋 [TOC](#table-of-contents) | [Next](#environment-facts-this-plan-depends-on) ➡️
 
-**Expected runtime:** depends on how many matrix cells are uncached; each cell is seeds x 50 DDIM steps. Enumerate cells first (task 1.1) and record the measured count and wall time in the review file.
+**Expected runtime:** depends on how many squares of the matrix are uncached; each square is seeds x 50 DDIM steps. Enumerate the squares first (task 1.1) and record the measured count and wall time in the review file.
 
 **Prerequisites:** pooled checkpoints via `checkpoints/latest.json` per group ([heldout_pair.sh](../../../scripts/cross_seed_lora_pooling/heldout_pair.sh) is the resolution pattern); `scorer_validated.json`; the disjointness audit in task 1.2.
 
@@ -101,7 +104,7 @@ This extracts error patterns from the run transcript, deduplicates against globa
 
 ⬅️ [Previous](#environment-facts-this-plan-depends-on) | 📋 [TOC](#table-of-contents) | [Next](#why-this-plan-exists) ➡️
 
-**Deliver the transfer matrix: training group by concept-disjoint evaluation pair, compose rate per cell, with the disjointness of every cell audited before any scoring.** Single-pair transfer stays a smoke test; this is the tier a reviewer believes.
+**Deliver the transfer matrix: training group by concept-disjoint evaluation pair, compose rate per square, with the disjointness of every square audited before any scoring.** Single-pair transfer stays a quick wiring check; this is the tier a reviewer believes.
 
 ---
 
@@ -114,8 +117,8 @@ This extracts error patterns from the run transcript, deduplicates against globa
 **The solution:** pooled training, disjoint evaluation, a matrix a reader can scan for structure.
 
 **Key insights:**
-1. Disjointness is a property to verify, not assert: a token shared between a pool and an eval pair silently demotes the cell to within-distribution.
-2. Mixed comparisons stay marked: cells differing in more than the train-group axis are read alone, never as cause and effect.
+1. Disjointness has to be verified rather than assumed. A token shared between a pool and an evaluation pair silently demotes that square to within-distribution.
+2. Mixed comparisons stay marked. Squares differing in more than the training-group axis are read alone, never as cause and effect.
 
 ---
 
@@ -123,9 +126,9 @@ This extracts error patterns from the run transcript, deduplicates against globa
 
 ⬅️ [Previous](#why-this-plan-exists) | 📋 [TOC](#table-of-contents) | [Next](#purpose-and-goal) ➡️
 
-1. **Cell census:** enumerate groups x candidate disjoint pairs; audit token-level disjointness per cell; write `matrix_manifest.json` (cell, disjoint yes/no, cached yes/no).
-2. **Fill:** run the uncached disjoint cells (window 0 to 10, λ=1, guidance 7.5, the eval seeds).
-3. **Score and render:** instance-count per cell; the matrix figure with per-cell compose rate and the PoE-floor row; sidecar `transfer_matrix.json`.
+1. **The census:** enumerate groups x candidate disjoint pairs; audit token-level disjointness for each square; write `matrix_manifest.json` (square, disjoint yes/no, cached yes/no).
+2. **Fill:** run the uncached disjoint squares (window 0 to 10, λ=1, guidance 7.5, the eval seeds).
+3. **Score and render:** instance-count per square; the matrix figure with per-square compose rate and the plain-PoE baseline row; sidecar `transfer_matrix.json`.
 
 ---
 
@@ -135,9 +138,9 @@ This extracts error patterns from the run transcript, deduplicates against globa
 
 Serves [Objective 4 and DoD 3 of the scope master plan](../MASTER_PLAN.md).
 
-1. The manifest exists with every cell's disjointness audited.
-2. All disjoint cells scored; the matrix + sidecar rendered.
-3. The review bar answered: transfer above the PoE floor or not, per group.
+1. The manifest exists with every square's disjointness audited.
+2. All disjoint squares scored; the matrix + sidecar rendered.
+3. The review file's threshold question answered: transfer above plain PoE or not, per group.
 
 ---
 
@@ -157,10 +160,10 @@ Serves [Objective 4 and DoD 3 of the scope master plan](../MASTER_PLAN.md).
 
 ◀ **Needs: [group 0](#0--preflight)**.
 
-- [ ] **1.1** Enumerate the matrix cells; print the count (the census is the anti-silent-no-op guard)
-- [ ] **1.2** Audit disjointness token-by-token per cell; a shared token marks the cell `within` and excludes it from the transfer read
-- [ ] **1.3** Run uncached disjoint cells with nohup, absolute paths; observable effect: per-cell PNG folders + manifest updates
-- [ ] **1.4** Score everything; write `transfer_matrix.json`; render the matrix with the PoE-floor row and true counts beside any rescaled marks
+- [ ] **1.1** Enumerate the squares of the matrix; print the count (the census is what stops a silent no-op)
+- [ ] **1.2** Audit disjointness token-by-token per square; a shared token marks that square `within` and excludes it from the transfer read
+- [ ] **1.3** Run the uncached disjoint squares with nohup, absolute paths; observable effect: one PNG folder per square + manifest updates
+- [ ] **1.4** Score everything; write `transfer_matrix.json`; render the matrix with the plain-PoE baseline row and true counts beside any rescaled marks
 
 ▶ **Next: [instruction 2.1](#2--read-the-matrix)**.
 
@@ -185,11 +188,11 @@ Serves [Objective 4 and DoD 3 of the scope master plan](../MASTER_PLAN.md).
 
 2.1 **Scan the matrix figure**
    - Open `.../transfer_matrix/matrix.png`
-   - Expected result: disjoint cells above the PoE-floor row, structure by group if any
+   - Expected result: disjoint squares above the plain-PoE baseline row, structure by group if any
    - ✅ record per-group rates in the review file
-   - ❌ any `within`-marked cell rendered as transfer: fix the figure before any reading
+   - ❌ any `within`-marked square rendered as transfer: fix the figure before any reading
 
-2.2 **Spot-check four cells by eye**
+2.2 **Spot-check four squares by eye**
    - Two best, two worst: open their PNGs, compare eyeball to score
    - ✅ agree: note it
    - ❌ disagree: scorer contract first, science second
@@ -205,8 +208,8 @@ Serves [Objective 4 and DoD 3 of the scope master plan](../MASTER_PLAN.md).
 > **The generalization claim of the paper rides on this tier being real.**
 
 **Pass criteria:**
-- Every rendered transfer cell passed the disjointness audit.
-- Matrix + sidecar exist; the bar answered per group.
+- Every rendered transfer square passed the disjointness audit.
+- Matrix + sidecar exist; the threshold question answered per group.
 
 **Fail criteria (STOP):**
 - Disjointness assumed anywhere; a shared token found after rendering.
@@ -229,7 +232,7 @@ Serves [Objective 4 and DoD 3 of the scope master plan](../MASTER_PLAN.md).
 
 | Figure | Description | Generated by | Status | Axes |
 |---|---|---|---|---|
-| step-34_transfer-matrix.png | compose rate per (train group, disjoint pair) | task 1.4 | ⏳ | rows: training group; columns: evaluation pair; cell: compose rate 0 to 1, PoE floor row beneath |
+| step-34_transfer-matrix.png | compose rate per (train group, disjoint pair) | task 1.4 | ⏳ | rows: training group; columns: evaluation pair; each square: compose rate 0 to 1, plain-PoE baseline row beneath |
 
 ---
 
@@ -273,7 +276,7 @@ When this plan runs and produces output, three things stay in sync: the error ca
 ▶ Paste to run this plan (the reviewer-credible tier):
 
 ```
-/run-experiment plans/01-showcase-the-trained-lora/plans/04-the-transfer-matrix-figure.md — group-pooled training evaluated on concept-disjoint pairs; void any cell sharing a token.
+/run-experiment plans/01-showcase-the-trained-lora/plans/04-the-transfer-matrix-figure.md — group-pooled training evaluated on concept-disjoint pairs; void any square sharing a token.
 ```
 
 ▶ `/run-experiment plans/01-showcase-the-trained-lora/plans/04-the-transfer-matrix-figure.md` ✅

@@ -4,12 +4,12 @@
 
 This scope owns **6 of the 22 steps**, 1 of them done. The steps interleave with the other scopes', so the list below is a filter on the one `## Running order` table in the [repo root MASTER_PLAN.md](../../MASTER_PLAN.md), never an order of its own.
 
-**Next in this scope: step 9**, [instrument-02-three-live-curves-while-training](plans/instrument-02-three-live-curves-while-training.md), one epoch on a GPU. Steps 10 to 14 cannot start until it passes.
+**Next in this scope: step 9**, [the three live curves during training](plans/instrument-02-three-live-curves-while-training.md), one epoch on a GPU. Steps 10 to 14 cannot start until it passes.
 
 | Step | Plan | What it does | Status |
 |---|---|---|---|
-| 3 | ~~[instrument-01-the-clean-pair-pool](plans/instrument-01-the-clean-pair-pool.md)~~ | the pool that blends by default | ✅ |
-| 9 | [instrument-02-three-live-curves-while-training](plans/instrument-02-three-live-curves-while-training.md) | the one-epoch first run | ⚠️ do this next |
+| 3 | ~~[the clean pair pool](plans/instrument-01-the-clean-pair-pool.md)~~ | the pool that blends by default | ✅ |
+| 9 | [the three live curves during training](plans/instrument-02-three-live-curves-while-training.md) | the one-epoch first run | ⚠️ do this next |
 | 10 | [hypothesis-01-does-one-pooled-fix-transfer-at-all](plans/hypothesis-01-does-one-pooled-fix-transfer-at-all.md) | finish the pooled read | ◑ read incomplete |
 | 11 | [hypothesis-02-transfer-as-a-rate-over-fifteen-pairs](plans/hypothesis-02-transfer-as-a-rate-over-fifteen-pairs.md) | fifteen adapters, one held out each | ⚠️ |
 | 12 | [baseline-01-the-size-matched-control-pool](plans/baseline-01-the-size-matched-control-pool.md) | the size-matched mixed pool | ⚠️ |

@@ -1,6 +1,8 @@
-# 🧪 The LoRA dose sweep
+# 🧪 The LoRA dose series
 
-**Step 33 in the root running order. Waits on: step 32 (the probe is this sweep's zero cell). Next: [04-the-transfer-matrix-figure](04-the-transfer-matrix-figure.md).**
+**This plan asks one question: does turning up the LoRA's own correction, a little at a time, make more pictures compose, while matched fake corrections do nothing?**
+
+**Step 33 in the root running order. Waits on: step 32 (the dog × dog test is this series' zero-interaction run). Next: [04-the-transfer-matrix-figure](04-the-transfer-matrix-figure.md).**
 
 ## Recommended prompt (after run completes)
 
@@ -14,7 +16,7 @@
 
 | Step | Plan | What it does |
 |------|------|-------------|
-| 32 (previous) | [02-the-dog-x-dog-null-probe](02-the-dog-x-dog-null-probe.md) | The zero-interaction control cell |
+| 32 (previous) | [02-the-dog-x-dog-null-probe](02-the-dog-x-dog-null-probe.md) | The zero-interaction control run |
 | **33 (current)** | **03: the-lora-dose-sweep** | The causal dose curve for the shipped LoRA |
 | 34 (next) | [04-the-transfer-matrix-figure](04-the-transfer-matrix-figure.md) | The reviewer-credible transfer demo |
 
@@ -45,11 +47,16 @@
 
 ⬅️ [Previous](#position-in-the-plan-tree) | 📋 [TOC](#table-of-contents) | [Next](#considerations) ➡️
 
-**The hypothesis:** *the LoRA's own output r̂ causes composition the way the cached oracle correction does: compose rate rises with λ on r̂ and the matched controls stay at the floor.*
+**The hypothesis:** *the LoRA's own output r̂ causes composition the way the cached true correction does: [compose rate](../../../context/world/compose-rate.md) rises with λ on r̂ and the matched controls stay at chance level.*
 
-**Why this run and not the oracle's:** roughly twenty figures measure the cached r_t and one measured the LoRA, while the LoRA is the artifact the paper ships (ledger). The oracle sweep's numbers exist for comparison (AUC 0.387 real against 0.023 random, from `dose_curves.json`); this sweep swaps the injection source and keeps everything else.
+> The cached true correction is the correction computed from the joined prompt, saved once and
+> read back. Chance level is what compose rate reads when nothing real is being injected. AUC is
+> the area under the compose-rate-against-λ curve, on a 0-to-1 scale: 1.0 would mean every
+> generation composed at every λ, 0.0 that none did.
 
-**If true:** compose rate rises with λ; wrong-seed and shuffled controls stay at the floor; AUC lands beside the oracle's for comparison.
+**Why this run and not the cached one:** roughly twenty figures measure the cached r_t and one measured the LoRA, while the LoRA is the artifact the paper ships (ledger). The cached correction's numbers exist for comparison (AUC 0.387 real against 0.023 random, from `dose_curves.json`); this series swaps the injection source and keeps everything else.
+
+**If true:** compose rate rises with λ; wrong-seed and shuffled controls stay at chance level; AUC lands beside the cached correction's for comparison.
 
 **If false:** the curve stays flat, or a control rises with it, and the causal story cannot be carried by the LoRA's own output.
 
@@ -57,8 +64,8 @@
 
 **Associated materials:**
 - **Review questions:** [../review/03-the-lora-dose-sweep.md](../review/03-the-lora-dose-sweep.md)
-- **Ledger entries:** [the adapter-dose sweep](../decisions-taken-here.md#the-adapter-dose-sweep-is-owed-and-approved) and [experiment C](../decisions-taken-here.md#the-longer-training-question-runs-as-three-experiments-re-scoped-by-evidence)
-- **Oracle machinery to copy:** the dose sweep under `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/` and its runner
+- **Ledger entries:** [the adapter-dose series](../decisions-taken-here.md#the-adapter-dose-sweep-is-owed-and-approved) and [experiment C](../decisions-taken-here.md#the-longer-training-question-runs-as-three-experiments-re-scoped-by-evidence)
+- **The machinery to copy:** the cached-correction dose series under `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/dose/` and its runner
 
 ---
 
@@ -66,9 +73,9 @@
 
 ⬅️ [Previous](#quick-context-where-you-are) | 📋 [TOC](#table-of-contents) | [Next](#environment-facts-this-plan-depends-on) ➡️
 
-**Expected runtime:** the grid is 5 λ values x the window x the probe pairs and seeds; at 50 DDIM steps a render is under a minute on a biggpu device, so the sweep is hours, not days. Name the exact cell count in task 1.1's manifest before launching and record measured wall time in the review file.
+**Expected runtime:** the grid is 5 λ values x the window x the dog × dog pairs and seeds; at 50 DDIM steps a render is under a minute on a biggpu device, so the whole series is hours, not days. Name the exact number of runs in task 1.1's manifest before launching and record measured wall time in the review file.
 
-**Prerequisites:** plan 02's harness (shared); the checkpoint; the validated scorer.
+**Prerequisites:** plan 02's runner (shared); the checkpoint; the validated scorer.
 
 **GPU:** one device, launched per [execution-protocol](../../../environment/hpc/execution-protocol.md); nohup path when Slurm has no idle node, and then `squeue` is blind to it (harvest by `pgrep` + the log).
 
@@ -82,7 +89,7 @@
 
 - Large outputs to `/datasets` only; the runner's disk guard checks that filesystem.
 - The `co3` python; fp16 with the upcast rule; guidance fixed at 7.5.
-- biggpu allows one Slurm job per user; long sweeps go nohup outside Slurm ([overview](../../../environment/overview.md)).
+- biggpu allows one Slurm job per user; long series go nohup outside Slurm ([overview](../../../environment/overview.md)).
 
 ---
 
@@ -90,7 +97,7 @@
 
 ⬅️ [Previous](#environment-facts-this-plan-depends-on) | 📋 [TOC](#table-of-contents) | [Next](#why-this-plan-exists) ➡️
 
-**The causal dose figure for the shipped artifact: compose rate against λ on r̂, four control rows, AUC beside the oracle's.** It matters now because the paper's causal story currently rests on a correction no deployed system has access to.
+**The causal dose figure for the shipped artifact: compose rate against λ on r̂, four control rows, AUC beside the cached correction's.** It matters now because the paper's causal story currently rests on a correction no deployed system has access to.
 
 ---
 
@@ -98,11 +105,11 @@
 
 ⬅️ [Previous](#the-claim) | 📋 [TOC](#table-of-contents) | [Next](#description-what-to-build) ➡️
 
-**The problem.** The register's imbalance: the causal dose evidence belongs to the oracle, the paper ships the LoRA.
+**The problem.** The register is lopsided. The causal dose evidence all belongs to the cached correction, and the paper ships the LoRA.
 
 **The solution.** The same machinery with the injection source swapped: λ on r̂ instead of λ on cached r_t, wrong-seed and shuffled controls kept.
 
-**Key insight.** The dog × dog probe (plan 02) is this sweep's zero-interaction control cell; the two share one harness, so 02 lands first and 03 reuses it.
+**Key insight.** The dog × dog test (plan 02) is this series' zero-interaction control; the two share one runner, so 02 lands first and 03 reuses it.
 
 ---
 
@@ -110,9 +117,9 @@
 
 ⬅️ [Previous](#why-this-plan-exists) | 📋 [TOC](#table-of-contents) | [Next](#purpose-and-goal) ➡️
 
-1. **The manifest**: pairs, seeds, λ grid {0, 0.25, 0.5, 0.75, 1.0}, window 0-10, controls (wrong-seed r̂, shuffled r̂), one row per cell, printed counts per arm before launch (a flag with an empty target group is a silent no-op).
-2. **The runner**: plan 02's harness plus λ scaling and the two control sources. Location: `scripts/showcase/lora_dose_sweep.py`.
-3. **The scored table**: `dose_curves_lora.json` mirroring the oracle's `dose_curves.json` schema (compose rate per λ per arm, AUC per arm with its meaning in words).
+1. **The manifest**: pairs, seeds, λ grid {0, 0.25, 0.5, 0.75, 1.0}, window 0-10, controls (wrong-seed r̂, shuffled r̂), one row per run, printed counts per condition before launch (a flag with an empty target group is a silent no-op).
+2. **The runner**: plan 02's runner plus λ scaling and the two control sources. Location: `scripts/showcase/lora_dose_sweep.py`.
+3. **The scored table**: `dose_curves_lora.json` mirroring the `dose_curves.json` schema of the cached-correction run (compose rate per λ per condition, AUC per condition with its meaning in words).
 4. **The softness read for plan 06**: per-λ CLIP/DINOv2 sharpness proxy or the qualitative strip, labelled descriptive, answering "does softness track λ at fixed checkpoint".
 
 ---
@@ -123,9 +130,9 @@
 
 Serves master-plan objective 3 and goal 3. Checkable outcomes:
 
-1. The manifest's per-arm counts printed and recorded before launch.
-2. `dose_curves_lora.json` written with all arms scored.
-3. The review file's bar answered; the dose figure drafted for plan 05.
+1. The manifest's per-condition counts printed and recorded before launch.
+2. `dose_curves_lora.json` written with every condition scored.
+3. The review file's threshold question answered; the dose figure drafted for plan 05.
 
 ---
 
@@ -137,33 +144,33 @@ Serves master-plan objective 3 and goal 3. Checkable outcomes:
 
 - [ ] **0.1 Run the following prompt: `/verify-plan plans/01-showcase-the-trained-lora/plans/03-the-lora-dose-sweep.md`**
 
-▶ **Next: [task 1.1](#1--build-the-sweep)**.
+▶ **Next: [task 1.1](#1--build-the-series)**.
 
-### 1. 🧪 Build the sweep
+### 1. 🧪 Build the series
 
-◀ **Needs: [02 tasks 1.1 to 1.4](02-the-dog-x-dog-null-probe.md#1--build-and-run-the-probe)** done, so the shared harness exists.
+◀ **Needs: [02 tasks 1.1 to 1.4](02-the-dog-x-dog-null-probe.md#1--build-and-run-the-test)** done, so the shared runner exists.
 
-- [ ] **1.1 Write the manifest and print per-arm counts.** Completion is observable: a printed table, one row per arm, cell counts non-zero for every arm.
+- [ ] **1.1 Write the manifest and print per-arm counts.** Completion is observable: a printed table, one row per condition, with a non-zero run count for every condition.
 - [ ] **1.2 Extend the harness with λ scaling and the wrong-seed / shuffled control sources.**
 - [ ] **1.3 Launch the sweep** per the execution protocol; output to `/datasets/mmolefe/poe_repair_min/outputs/showcase/lora_dose/`. Log the launch mode (Slurm or nohup) in the review file's Runs table.
-- [ ] **1.4 Score all arms; write `dose_curves_lora.json`** (schema mirrors the oracle file). Completion is observable: the json's per-arm row counts equal the manifest's.
+- [ ] **1.4 Score all arms; write `dose_curves_lora.json`** (schema mirrors the cached-correction file). Completion is observable: the json's per-condition row counts equal the manifest's.
 - [ ] **1.5 Compute the softness-vs-λ read** and save its strip beside the json, labelled descriptive.
 
-▶ **Next: [instruction 2.1](#2--read-the-sweep)**.
+▶ **Next: [instruction 2.1](#2--read-the-series)**.
 
 ## Instructions
 
 ⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](#the-engagement-gate) ➡️
 
-### 2. 📈 Read the sweep
+### 2. 📈 Read the series
 
-◀ **Needs: [tasks 1.1 to 1.5](#1--build-the-sweep)** done.
+◀ **Needs: [tasks 1.1 to 1.5](#1--build-the-series)** done.
 
-2.1 **Monitor while it runs.** `squeue -u mmolefe` for a Slurm launch; for nohup, SSH to the node, `pgrep -af 'lora_dose'` and `tail -f` the log. ✅ cells accumulating under `/datasets/.../lora_dose/`; ❌ the log stalls or the disk guard trips: stop, `/ingest-error-pattern --from-run-log`.
+2.1 **Monitor while it runs.** `squeue -u mmolefe` for a Slurm launch; for nohup, SSH to the node, `pgrep -af 'lora_dose'` and `tail -f` the log. ✅ renders accumulating under `/datasets/.../lora_dose/`; ❌ the log stalls or the disk guard trips: stop, `/ingest-error-pattern --from-run-log`.
 
-2.2 **Read the curve.** Open the drafted dose figure (task 1.4's quick plot): ✅ real-r̂ curve rises with λ and both controls hug the floor; ❌ any control rises: record it, the comparison is contaminated and the review file says so.
+2.2 **Read the curve.** Open the drafted dose figure (task 1.4's quick plot): ✅ real-r̂ curve rises with λ and both controls stay at chance level; ❌ any control rises: record it, the comparison is contaminated and the review file says so.
 
-2.3 **Write the verdict** into the [review file](../review/03-the-lora-dose-sweep.md): AUC per arm, the bar, the launch mode, wall time.
+2.3 **Write the verdict** into the [review file](../review/03-the-lora-dose-sweep.md): AUC per condition, the threshold, the launch mode, wall time.
 
 ▶ **Next: the engagement gate.**
 
@@ -173,13 +180,13 @@ Serves master-plan objective 3 and goal 3. Checkable outcomes:
 
 ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
-> This figure is the causal spine of the showcase. A flat curve or a rising control changes what the paper may claim, and finding that out before assembly is the point of running it now.
+> This figure is what the showcase's causal claim rests on. A flat curve or a rising control changes what the paper may claim, and finding that out before assembly is the point of running it now.
 
 **Pass criteria:**
-- Every manifest arm scored; the review bar answered with AUC values.
+- Every condition in the manifest scored; the review file's threshold question answered with AUC values.
 
 **Fail criteria:**
-- A control arm rises off the floor (contaminated comparison), or per-arm counts were zero anywhere (silent no-op).
+- A control condition rises above chance level (contaminated comparison), or a condition's run count was zero anywhere (silent no-op).
 
 **When you get results, answer the open questions in the [review file](../review/03-the-lora-dose-sweep.md).**
 
@@ -216,7 +223,7 @@ Serves master-plan objective 3 and goal 3. Checkable outcomes:
 
 ### 3. 🧹 Close out
 
-◀ **Needs: [instruction 2.3](#2--read-the-sweep)** done.
+◀ **Needs: [instruction 2.3](#2--read-the-series)** done.
 
 - [ ] **3.1 Run the following prompt: `/ingest-error-pattern --from-run-log`** (after any red run).
 - [ ] **3.2 Run the following prompt: `/sync-plan-tree plans/01-showcase-the-trained-lora/`**
@@ -229,8 +236,8 @@ Serves master-plan objective 3 and goal 3. Checkable outcomes:
 
 ⬅️ [Previous](#orchestration-keeping-catalogs-and-plan-files-in-sync) | 📋 [TOC](#table-of-contents) | [Next](#recommended-skill) ➡️
 
-**File:** the oracle dose runner feeding `/datasets/.../outputs/interaction_term/dose/dose_curves.json` — the schema and control-row layout to mirror.
-**File:** `scripts/showcase/dog_x_dog_probe.py` (plan 02) — the shared harness this extends.
+**File:** the cached-correction dose runner feeding `/datasets/.../outputs/interaction_term/dose/dose_curves.json` — the schema and control-row layout to mirror.
+**File:** `scripts/showcase/dog_x_dog_probe.py` (plan 02) — the shared runner this extends.
 
 ---
 
@@ -238,13 +245,13 @@ Serves master-plan objective 3 and goal 3. Checkable outcomes:
 
 ⬅️ [Previous](#code-references) | 📋 [TOC](#table-of-contents) | [Next](#next-step) ➡️
 
-▶ Paste to run this plan (reuses the injection harness plan 07 builds):
+▶ Paste to run this plan (reuses the injection runner plan 07 builds):
 
 ```
-/run-experiment plans/01-showcase-the-trained-lora/plans/03-the-lora-dose-sweep.md — four control rows; stop if any control leaves the floor; AUC always carries its meaning in words.
+/run-experiment plans/01-showcase-the-trained-lora/plans/03-the-lora-dose-sweep.md — four control rows; stop if any control rises above chance level; AUC always carries its meaning in words.
 ```
 
-alt, headless overnight: in a fresh session run `/unattended run-experiment plans/01-showcase-the-trained-lora/plans/03-the-lora-dose-sweep.md` and paste the tmux block it emits (hours of renders, numeric abort conditions, no human mid-loop). The engagement gate and the review file's bar are the stop conditions.
+alt, headless overnight: in a fresh session run `/unattended run-experiment plans/01-showcase-the-trained-lora/plans/03-the-lora-dose-sweep.md` and paste the tmux block it emits (hours of renders, numeric abort conditions, no human mid-loop). The engagement gate and the review file's threshold are the stop conditions.
 
 ---
 

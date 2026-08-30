@@ -1,4 +1,4 @@
-# 🧪 Review: does the wired oracle reproduce one teacher ending?
+# 🧪 Review: does the wired endpoint predictor reproduce one teacher ending?
 
 **Nothing has run yet.** This file judges [the design](../plans/03-wire-the-oracle.md); answers land
 here and nowhere else. Questions below were written at design time, before any number existed.
@@ -14,7 +14,7 @@ here and nowhere else. Questions below were written at design time, before any n
 
 | File | What it holds |
 |---|---|
-| [design](../plans/03-wire-the-oracle.md) | the hypothesis, the bars, the code to write |
+| [design](../plans/03-wire-the-oracle.md) | the hypothesis, the thresholds, the code to write |
 | **this file** | **the verdict: what the runs answered, and what they could not** |
 
 ## Table of contents
@@ -34,7 +34,8 @@ here and nowhere else. Questions below were written at design time, before any n
 
 Navigation: 📋 [TOC](#table-of-contents) | [Next](#run-kind) ➡️
 
-- **the oracle**: LCM-SDXL behind the adapter, jumping a cached state to its settled frame.
+- **the endpoint predictor**: LCM-SDXL behind the adapter, jumping a cached state to its
+  settled frame.
 - **the teacher**: SDXL itself finishing the run from the same state, the ground truth.
 - **the three asserts**: guidance enters as an embedding (`time_cond_proj_dim` present), no
   negative-prompt double pass, exact timestep mapping printed once.
@@ -43,7 +44,7 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#run-kind) ➡️
 
 Navigation: ⬅️ [Words this file uses](#words-this-file-uses) | 📋 [TOC](#table-of-contents) | [Next](#runs) ➡️
 
-**Builds an instrument.** A missed bar blocks plans 04 and 05: a failed smoke means the adapter, not the science, is wrong.
+**Builds an instrument.** A missed threshold blocks plans 04 and 05: a failed check means the adapter, not the science, is wrong.
 
 ## Runs
 
@@ -57,18 +58,19 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
-- [ ] ⚠️ On the smoke state (plan 01's cell, step 25, joint prompt), does the oracle's frame
-      match the teacher's ending on scorer verdict (`SMOKE_SCORER_MATCH`) with DINOv2
-      distance under `SMOKE_DINO_DIST_MAX` (both in `scripts/commitment/lcm_smoke.py`),
-      with all three adapter asserts holding? This is the bar because a parameterisation
-      mistake here fails silently as plausible frames everywhere downstream.
+- [ ] ⚠️ On the one state checked (plan 01's chosen pair-and-seed run, step 25, joint prompt),
+      does the predictor's frame match the teacher's ending on scorer verdict
+      (`SMOKE_SCORER_MATCH`) with DINOv2 distance under `SMOKE_DINO_DIST_MAX` (both in
+      `scripts/commitment/lcm_smoke.py`), with all three adapter asserts holding? This is the
+      deciding question because a parameterisation mistake here fails silently as plausible
+      frames everywhere downstream.
 
 ## Written before the run, answered after
 
 Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
 - [ ] ⚠️ Where did the checkpoint land and how big is it? Path, filesystem, size on disk.
-- [ ] ⚠️ What does the oracle's 4-step sharpness look like against the teacher's 25-step
+- [ ] ⚠️ What does the predictor's 4-step sharpness look like against the teacher's 25-step
       ending, to the eye? Blur alone is not failure; a different subject is.
 
 ## Asked after the result
@@ -99,7 +101,7 @@ Navigation: ⬅️ [Could the answer be an artefact](#could-the-answer-be-an-art
 
 | What the paper says | What it owes alongside it |
 |---|---|
-| the oracle is wired and smoke-tested | one state, one prompt: adoption is plan 04's verdict, never this smoke's |
+| the endpoint predictor is wired and checked once | one state, one prompt: adoption is plan 04's verdict, never this check's |
 
 ## Still open
 

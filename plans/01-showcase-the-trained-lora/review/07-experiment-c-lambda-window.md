@@ -49,16 +49,16 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 **This is the one question whose failure moves the plan.**
 
-- [ ] ⚠️ **Does the sharpness proxy fall monotonically with λ on the tracked cells?** Bar,
-  fixed before looking: a monotone decrease across the five λ values on the majority of cells
-  supports the injection account; flat within the cells' own spread kills it. The per-λ table
-  goes here.
+- [ ] ⚠️ **Does the sharpness proxy fall monotonically with λ on the tracked pairs?** The
+  threshold, fixed before looking: a monotone decrease across the five λ values on the majority
+  of pairs supports the injection account; flat within the pairs' own spread kills it. The per-λ
+  table goes here.
 
 ## Written before the run, answered after
 
 Navigation: ⬅️ [The bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
-- [ ] ⚠️ Where along the grid does compose rate arrive (the dose story) relative to where blur
+- [ ] ⚠️ Where along the grid does [compose rate](../../../context/world/compose-rate.md) arrive (the dose story) relative to where blur
   arrives (the cost story), and do the two leave a usable middle λ?
 - [ ] ⚠️ Did the λ=0 identity hold against the cached PoE render (mode-level, fp16 drift band)?
 

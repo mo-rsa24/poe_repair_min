@@ -180,7 +180,7 @@ BEFORE: Post-run logging only
 │                                                 │
 │ Now you can inspect the curves.                │
 │ But it's too late: you've wasted 18+ GPU hours │
-│ on a sweep that isn't working.                 │
+│ on runs that aren't working.                   │
 └────────────────────────────────────────────────┘
 
 AFTER: Live logging during training

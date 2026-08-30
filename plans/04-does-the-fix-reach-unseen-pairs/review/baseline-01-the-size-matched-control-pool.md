@@ -45,7 +45,8 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#run-kind) ➡️
 - **The mixed pool**: the same count of pairs, built from scenes, styles and objects instead of
   animals.
 - **The identical held-out set**: both pools are tested on the same unseen animal pairs. Testing
-  them on different sets would make the comparison meaningless.
+  them on different sets would make the comparison meaningless. Held-out means a pair the adapter
+  never trained on, so a result on it says whether the fix reaches beyond what it was shown.
 
 ## Run kind
 
@@ -75,7 +76,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 Navigation: ⬅️ [The pre-registered bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
-Nothing beyond the bar. This run exists to answer one question.
+Nothing beyond the one question above. This run exists to answer it and nothing else.
 
 ## Asked after the result
 

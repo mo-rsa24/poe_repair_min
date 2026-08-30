@@ -7,7 +7,7 @@ after the compose-scorer has been proven to work.
 
 | Step | Plan | Status |
 |---|---|---|
-| 2 | ~~[instrument-02-fix-the-size-measure-before-any-result](../../03-does-the-correction-cause-composition/plans/instrument-02-fix-the-size-measure-before-any-result.md)~~ | ✅ |
+| 2 | ~~[fixing the size measure before any result](../../03-does-the-correction-cause-composition/plans/instrument-02-fix-the-size-measure-before-any-result.md)~~ | ✅ |
 | **3** | **this plan** | **✅** |
 | 4 | [hypothesis-02-more-correction-more-composition](../../03-does-the-correction-cause-composition/plans/hypothesis-02-more-correction-more-composition.md) | ◑ 6.3GB owed |
 
