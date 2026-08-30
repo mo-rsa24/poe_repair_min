@@ -1,7 +1,7 @@
 # 🧪 Review: does the LoRA leave an agreeing pair alone?
 
 Nothing has run yet. This file judges [the design](../plans/02-the-dog-x-dog-null-probe.md). Run
-kind: hypothesis (a pre-registered null-input control). Its verdict feeds the "learned a rule,
+kind: hypothesis (a pre-registered same-prompt check). Its verdict feeds the "learned a rule,
 not a vector" caption used across the showcase figures.
 
 ## Recommended prompt (when the run lands)

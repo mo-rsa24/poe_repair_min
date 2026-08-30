@@ -75,6 +75,9 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
       relocate the trajectory without shrinking `‖r_t‖`. If it is run against a flat curve at step
       26, this file says so.
 
+      > A null at step 26 means the correction's size came out the same with the corrector running
+      > as without it.
+
 ## Written before the run, answered after
 
 Navigation: ⬅️ [The question written before the run](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️

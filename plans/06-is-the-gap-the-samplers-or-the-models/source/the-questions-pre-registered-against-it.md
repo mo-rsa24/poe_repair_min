@@ -105,6 +105,9 @@ after the answer is visible shows up in a diff.
       still differ by more than 0.05, if the median displacement is under 0.05, or if the composing
       pair behaves like the failing pair.
 
+      > A null here means the correction's size came out the same with the corrector running as
+      > without it.
+
       **The value at any single `k` describes the compute budget it was given. Only the trend
       across `k` is a result, and only once the curve has flattened.**
 

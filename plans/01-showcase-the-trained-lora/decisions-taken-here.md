@@ -210,7 +210,7 @@ rate, in which case the figures stay out of the main text.
 
 ## The dog x dog test, pre-registered
 
-Null-input control: C1 = C2 = "a dog" through PoE + LoRA, window 0-10, existing seeds. Because
+The same-prompt check: C1 = C2 = "a dog" through PoE + LoRA, window 0-10, existing seeds. Because
 the experts agree, the true correction is near zero, and language space agrees (the L1 additivity
 gap for an agreeing pair is near zero). Supports the rule story: corrected run still shows one
 dog and per-step ||r-hat|| is small on the cross-pair scale. Falsifies it: two dogs (the LoRA

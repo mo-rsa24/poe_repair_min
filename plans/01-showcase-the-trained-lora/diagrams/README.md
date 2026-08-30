@@ -26,6 +26,6 @@ names this file yet. Writing that prompt is what has to happen first.
 `the-plateau-read.png` and `the-null-input-probe.png` were rendered here and then moved to
 `temp/codex-drop/superseded-old-vocabulary/`. Both had a banned word painted into the title banner
 ("plateau", "probe"). They are kept rather than deleted so a regeneration can be compared against
-them. Their prompts, renamed to "reading where the curve flattens" and "the null-input test", are
+them. Their prompts, renamed to "reading where the curve flattens" and "the same-prompt check", are
 back at not-rendered in the scope's map.
 

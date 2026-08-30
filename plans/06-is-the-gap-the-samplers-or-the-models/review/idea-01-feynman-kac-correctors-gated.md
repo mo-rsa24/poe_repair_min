@@ -7,6 +7,9 @@ before the paper was read in full. This file judges
 the corrector changed nothing, a second corrector family is a related-work paragraph, and this plan
 closes unrun with the reason recorded. That is a completed plan rather than an abandoned one.
 
+> A null at step 26 means the correction's size came out the same with the corrector running as
+> without it.
+
 ## Recommended prompt (when the read lands)
 
 ```

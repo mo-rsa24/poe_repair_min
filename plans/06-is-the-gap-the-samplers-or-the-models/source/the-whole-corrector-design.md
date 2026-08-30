@@ -233,6 +233,9 @@ they cannot be moved after the answer is visible.
   `MIN_CHAIN_DISPLACEMENT = 0.05`. The corrector ran, moved the latent, and changed nothing. Stop
   at task 4, write the null into section 7, and the method-comparison half of this plan becomes a
   baselines table rather than a diagnosis.
+
+  > A null here means the correction's size came out the same with the corrector running as without
+  > it.
 - **Inconclusive.** The ratio still moves by more than `MAX_K_INSTABILITY = 0.05` between `k=100`
   and `k=200`, or the displacement is below its minimum, or the composing-pair condition shows the
   same behaviour as the failing pair. Then the step size is wrong or the test is measuring itself.

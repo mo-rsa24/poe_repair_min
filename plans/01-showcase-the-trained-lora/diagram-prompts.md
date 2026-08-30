@@ -15,7 +15,8 @@ and the map says so truthfully.
 
 **Vivid circuit**, inherited from the parent map, verbatim style paragraph at the head of every
 prompt. Palette inherited: blue the uncorrected PoE path, amber the correction and anything
-carrying it, green a threshold met, red a null or a failure; a control is a hollow amber outline.
+carrying it, green a threshold met, red a null result (the numbers came out no different from doing
+nothing) or a failure; a control is a hollow amber outline.
 Glyphs inherited: cache stack, correction coil, denoising track, multiplier dial, window bracket,
 adapter chip, scorer lens, figure board, outcome tile, researcher persona.
 
@@ -32,10 +33,10 @@ Save as: `diagrams/reading-where-the-curve-flattens.png`
 
 Faithfulness note: Both curves are dashed, because nothing has been measured yet. The 0.4 line is the threshold written before the run, not a measurement, and the two exits are equally weighted because either answer is a real result.
 
-### Prompt 2 (Subject): the null-input test [planned]
+### Prompt 2 (Subject): the same-prompt check [planned]
 
 ⏳ not rendered
-Save as: `diagrams/the-null-input-test.png`
+Save as: `diagrams/the-same-prompt-check.png`
 
 > Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded directional arrows, each color meaning exactly one kind of traffic, with a small legend inside the image. Solid lines are actual transfers; dashed lines are reserved for control, acknowledgement, retry, and optional paths. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Clean sans-serif labels under every icon. Generous spacing, no clutter, no watermark.
 >

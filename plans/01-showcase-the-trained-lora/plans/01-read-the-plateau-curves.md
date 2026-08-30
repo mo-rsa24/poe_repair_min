@@ -21,7 +21,7 @@ After you finish this plan and want to ingest error patterns into the catalogs, 
 |------|------|-------------|
 | — (previous) | scope opens here | — |
 | **31 (current)** | **01: read-the-plateau-curves** | The free curve-read that frames experiments A and B |
-| 32 (next) | [02-the-dog-x-dog-null-probe](02-the-dog-x-dog-null-probe.md) | The null-input control |
+| 32 (next) | [02-the-dog-x-dog-null-probe](02-the-dog-x-dog-null-probe.md) | The same-prompt check |
 
 ---
 
@@ -279,7 +279,7 @@ Execute plans/01-showcase-the-trained-lora/plans/01-read-the-plateau-curves.md: 
 
 ⬅️ [Previous](#recommended-skill) | 📋 [TOC](#table-of-contents) | [Next](#error-matrix) ➡️
 
-[02-the-dog-x-dog-null-probe](02-the-dog-x-dog-null-probe.md): the null-input control that tests whether the LoRA learned a rule or a plurality prior.
+[02-the-dog-x-dog-null-probe](02-the-dog-x-dog-null-probe.md): the same-prompt check that tests whether the LoRA learned a rule or a plurality prior.
 
 ---
 
