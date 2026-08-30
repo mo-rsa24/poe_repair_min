@@ -1,5 +1,8 @@
 # 📊 What the cached trajectories already tell us
 
+This plan asks what four questions about the correction can be answered from the trajectories
+already on disk, with no new sampling and no GPU queue.
+
 **Step 5 of 22.** Waits on step 1. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../MASTER_PLAN.md).
 
 | Step | Plan | Status |
@@ -26,13 +29,16 @@ Four analyses, each reading the cached predictions directly:
 - **Does the correction push along the direction sampling is already moving?** With two
   controls: a random vector, and the right correction taken from the wrong step.
 - **Is the correction low-rank enough for a small adapter to learn?** Stack the
-  corrections and ask how few directions carry most of their energy, against a
-  same-shape random floor.
+  corrections and ask how few directions carry most of their energy, against what a
+  same-shape random matrix gives.
+
+  > Low-rank means a few directions carry nearly all of the correction, so a small adapter has
+  > few things to learn rather than the full 65536 numbers per step.
 
 ## Purpose
 The theory core: the term is universal in noise level (Goal 4), the trajectory
 fork corroborates the timing read (Goal 2), the climb is the cheap tier of the
-density instrument, and the factorization answers why rank-8 suffices
+density measurement, and the factorization answers why rank-8 suffices
 (Goal 3). Serves DoD 5.
 
 ## Goal
@@ -40,12 +46,15 @@ Four figures, each with one number attached: collapse spread across pairs,
 fork elbow step, climb gap between PoE and Mono paths, energy-at-k with the
 held-out projection.
 
+> Held-out means a pair the adapter never trained on. It is the only kind that tests whether the
+> fix reaches something new.
+
 ## Environment Facts This Plan Depends On
 - Cached tensors are fp16: upcast to fp32 before any accumulation (the SVD
   especially).
 - Runs in-session on mscluster85 (CPU heavy, 123GB RAM covers the stacked
   matrix; restrict rows to the measured window).
-- The cache stores per-step states along one recorded path per cell; the fork
+- The cache stores per-step states along one recorded path per pair-and-seed run; the fork
   analysis needs BOTH the PoE and Mono paths.
 
 ## Tasks
@@ -53,8 +62,9 @@ Plain checkboxes: each analysis either ran or it did not. What each one FOUND is
 file, question by question.
 
 - [x] The correction's size against noise level, every pair overlaid, using the normalization
-      committed in `instrument-02-fix-the-size-measure-before-any-result`. Feeds slot F3.
-- [x] Confirm both trajectories exist per cell for the fork read. They did not: the cache walks
+      committed in `instrument-02-fix-the-size-measure-before-any-result`. Feeds F3's reserved
+      place in the register.
+- [x] Confirm both trajectories exist per pair-and-seed run for the fork read. They did not: the cache walks
       only the PoE path, so the Mono paths had to be generated (next task).
 - [x] Generate the missing Mono paths from the same pinned inits.
       `scripts/mechanism_study/generate_fork_paths.sh`, resumable.
@@ -62,9 +72,10 @@ file, question by question.
 - [x] The climb: does the correction align with the sampling motion, with a random control and a
       wrong-step control.
 - [x] The factorization: stack the windowed residuals in fp32, SVD, energy-at-k against a
-      same-shape random floor, and the held-out projection. Feeds slot F6.
+      same-shape random matrix, and the held-out projection. Feeds F6's reserved place in the
+      register.
 - [x] The spectrum's statistical entity, decided with `/pair-figure`: one row is the correction at
-      one denoising step of one cell, not a cell averaged over its timesteps. Reasoning and the
+      one denoising step of one run, not a run averaged over its timesteps. Reasoning and the
       numbers that rule out the averaged version are in the review.
 
 ## Next
@@ -73,7 +84,7 @@ file, question by question.
 
 ## Success/Failure Outcomes
 - **factorization**
-  - Success: pooled curve beats the Gaussian floor clearly; per-pair
+  - Success: pooled curve clearly beats what a same-shape Gaussian matrix gives; per-pair
     comparison readable either way.
   - Failure: fp16 accumulation artifacts (NaN/inf in singular values). Upcast
     was skipped; redo in fp32.

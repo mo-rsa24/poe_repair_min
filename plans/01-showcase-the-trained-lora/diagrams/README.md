@@ -15,3 +15,17 @@ joined prompt appears only in training, as the stored target, and never in the i
 **Where it came from.** A house-style render (vivid circuit) found loose at `output/imagegen/`
 with no prompt entry claiming it, filed here because it draws this scope's shipped artifact. No
 prompt in this scope's `diagram-prompts.md` names it, so re-rendering needs the prompt written.
+
+**It carries the old vocabulary.** The dial in the inference panel is labelled "dose dial", a name
+this project no longer uses (see [the word list](../../../context/plain-words.md)). The words are
+painted into the image, so fixing them means regenerating it, and no prompt in this scope's map
+names this file yet. Writing that prompt is what has to happen first.
+
+## Superseded renders
+
+`the-plateau-read.png` and `the-null-input-probe.png` were rendered here and then moved to
+`temp/codex-drop/superseded-old-vocabulary/`. Both had a banned word painted into the title banner
+("plateau", "probe"). They are kept rather than deleted so a regeneration can be compared against
+them. Their prompts, renamed to "reading where the curve flattens" and "the null-input test", are
+back at not-rendered in the scope's map.
+

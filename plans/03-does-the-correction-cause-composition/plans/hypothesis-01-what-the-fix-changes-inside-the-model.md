@@ -10,7 +10,7 @@ trained on.
 |---|---|---|
 | 7 | ~~[hypothesis-05-the-same-story-from-three-sides](hypothesis-05-the-same-story-from-three-sides.md)~~ | ✅ |
 | **8** | **this plan** | **✅** |
-| 9 | [instrument-02-three-live-curves-while-training](../../04-does-the-fix-reach-unseen-pairs/plans/instrument-02-three-live-curves-while-training.md) | ⚠️ do this next |
+| 9 | [three live curves while training](../../04-does-the-fix-reach-unseen-pairs/plans/instrument-02-three-live-curves-while-training.md) | ⚠️ do this next |
 
 Design only. Findings and run state live in
 [../review/hypothesis-01-what-the-fix-changes-inside-the-model.md](../review/hypothesis-01-what-the-fix-changes-inside-the-model.md).
@@ -115,8 +115,8 @@ is in `artifacts/results/residual-dynamics/content-change-relative-to-attention-
 PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
 $PY -m poe_repair.experiments.mechanism_study.value_probe \
   --checkpoint <lora_step_100000.pt> --pair-slug an_eagle__x__a_hawk --seed 9 \
-  --steps 10,25,40                              # smoke: expect 3 step files
+  --steps 10,25,40                              # first short run: expect 3 step files
 ls -d /datasets/mmolefe/poe_repair_min/outputs/interaction_term/reprobe/*/seed_* | wc -l
-                                                # expect 64 cells
+                                                # expect 64 pair-and-seed runs
 $PY scripts/mechanism_study/reprobe_table.py    # table + verdict.json
 ```

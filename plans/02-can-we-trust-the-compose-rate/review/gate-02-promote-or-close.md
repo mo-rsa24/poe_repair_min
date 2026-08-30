@@ -1,7 +1,7 @@
 # 🎯 Review: does this scope reach the paper, change a sentence, or close?
 
 **Unanswered, and blocked until the other three verdicts exist.** This file judges
-[../plans/gate-02-promote-or-close.md](../plans/gate-02-promote-or-close.md), which reads them
+[the plan that writes the ending](../plans/gate-02-promote-or-close.md), which reads them
 and writes the ending.
 
 ## Recommended prompt (when the three verdicts are in)
@@ -136,6 +136,6 @@ Navigation: ⬅️ [What the write-up owes](#what-the-write-up-owes) | 📋 [TOC
 
 Navigation: ⬅️ [Still open](#still-open) | 📋 [TOC](#table-of-contents)
 
-Wait for [gate-01](gate-01-is-this-hole-already-known.md),
-[instrument-01](instrument-01-the-three-state-labelled-set.md) and
-[idea-01](idea-01-what-the-current-benchmarks-score.md) to carry answers, then write the ending.
+Wait for [the literature check](gate-01-is-this-hole-already-known.md),
+[the labelled set](instrument-01-the-three-state-labelled-set.md) and
+[the benchmark scoring](idea-01-what-the-current-benchmarks-score.md) to carry answers, then write the ending.

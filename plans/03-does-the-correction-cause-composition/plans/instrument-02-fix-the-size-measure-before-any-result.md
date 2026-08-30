@@ -6,9 +6,9 @@ Settle how the correction's size is expressed, in a committed script, before any
 
 | Step | Plan | Status |
 |---|---|---|
-| 1 | ~~[instrument-01-build-the-measuring-scripts](instrument-01-build-the-measuring-scripts.md)~~ | ✅ |
+| 1 | ~~[building the measuring scripts](instrument-01-build-the-measuring-scripts.md)~~ | ✅ |
 | **2** | **this plan** | **✅** |
-| 3 | ~~[instrument-01-the-clean-pair-pool](../../04-does-the-fix-reach-unseen-pairs/plans/instrument-01-the-clean-pair-pool.md)~~ | ✅ |
+| 3 | ~~[building the clean pair pool](../../04-does-the-fix-reach-unseen-pairs/plans/instrument-01-the-clean-pair-pool.md)~~ | ✅ |
 
 ## What this asks, in one line
 Fix how the correction's size is expressed, in a committed script, before any result is read, so the choice of measure cannot follow the answer.
@@ -33,11 +33,11 @@ The order the plans run in, and which ones have to finish before which.
 
 ```mermaid
 flowchart LR
-    Z[00 build instruments] --> A[01 pre-register]
+    Z[00 build the measuring tools] --> A[01 pre-register]
     Z --> B
     Z --> C
     A --> C[03 dose test]
-    B[02 re-probe gate] --> I[09 print gates]
+    B[02 re-test before print] --> I[09 checks before print]
     C --> D[04 window pair]
     C --> F[06 corroborations]
     D --> E[05 cache analyses]

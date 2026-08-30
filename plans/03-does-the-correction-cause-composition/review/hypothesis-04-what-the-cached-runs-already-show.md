@@ -13,7 +13,7 @@ than its name suggests.
 ## Recommended prompt (to write the figures)
 
 ```
-/design-figure F6 the spectrum, energy at k against a norm-matched floor
+/design-figure F6 the spectrum, energy at k against a norm-matched random baseline
 ```
 
 ## Position in the plan tree

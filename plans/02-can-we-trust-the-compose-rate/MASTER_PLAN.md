@@ -9,15 +9,15 @@ order below, and it earns numbered steps in the one `## Running order` table in 
 Definition of Done. That condition is met when the false-compose rate comes back contaminated at
 the ten-point threshold, or when a candidate detector clears the 95-versus-85 threshold.
 
-**Next in this scope:** [gate-01-is-this-hole-already-known](plans/gate-01-is-this-hole-already-known.md),
-one `/pressure-test` verdict. Nothing but instrument-01 may start before it comes back.
+**Next in this scope:** [the literature check on whether this hole is already published](plans/gate-01-is-this-hole-already-known.md),
+one `/pressure-test` verdict. Nothing but the labelled-set build may start before it comes back.
 
 | Within this scope | Plan | What it does | Status |
 |---|---|---|---|
-| 1 of 4 | [gate-01-is-this-hole-already-known](plans/gate-01-is-this-hole-already-known.md) | is this hole already published | ⚠️ not started |
-| 2 of 4 | [instrument-01-the-three-state-labelled-set](plans/instrument-01-the-three-state-labelled-set.md) | the labelled set and the band | ⚠️ not started, runs whatever gate-01 says |
-| 3 of 4 | [idea-01-what-the-current-benchmarks-score](plans/idea-01-what-the-current-benchmarks-score.md) | score the candidate detectors | ⚠️ blocked by gate-01 |
-| 4 of 4 | [gate-02-promote-or-close](plans/gate-02-promote-or-close.md) | promote or close, in writing | ⚠️ blocked by the other three |
+| 1 of 4 | [the literature check](plans/gate-01-is-this-hole-already-known.md) | is this hole already published | ⚠️ not started |
+| 2 of 4 | [building the three-state labelled set](plans/instrument-01-the-three-state-labelled-set.md) | the labelled set and the band | ⚠️ not started, runs whatever the literature check says |
+| 3 of 4 | [scoring the current benchmarks](plans/idea-01-what-the-current-benchmarks-score.md) | score the candidate detectors | ⚠️ blocked by the literature check |
+| 4 of 4 | [the promote-or-close decision](plans/gate-02-promote-or-close.md) | promote or close, in writing | ⚠️ blocked by the other three |
 
 ## Mission
 Every [compose rate](../../context/world/compose-rate.md) in the paper comes from a detector that
@@ -69,7 +69,7 @@ so how much of the pool is uncheckable is one of the numbers this scope reports.
 3. **Try the best available tools against it.** Published compositional benchmarks and better
    detectors than grounding-dino-tiny, each named to the paper it came from, scored on the same
    labels.
-4. **Decide in writing** whether this gets promoted or closed, against the bars below.
+4. **Decide in writing** whether this gets promoted or closed, against the thresholds below.
 
 ## Goals
 1. **Literature verdict recorded**, three ways: already known and named, said informally but
@@ -135,7 +135,7 @@ as an upper bound. Wording only. No row in the root `MASTER_PLAN.md` paper table
 *The big one, the actual contribution.* Either goal 4 comes back *contaminated* at the 10-point
 threshold, or goal 5 produces a candidate that clears the 95%-versus-85% threshold. Either one earns a
 numbered step in the root `## Running order` table and a group-1 plan in
-`does-the-correction-cause-composition`. `gate-02` must then say whether the winner re-certifies
+`does-the-correction-cause-composition`. The promote-or-close decision must then say whether the winner re-certifies
 or replaces `scorer_validated.json`, and what that means for the runs
 `does-the-fix-reach-unseen-pairs` has already finished against the old one.
 
@@ -155,7 +155,7 @@ Grouped by the run group each answers to. Statuses live in the review/ files.
 |---|---|---|
 | gate-01-is-this-hole-already-known | `/pressure-test` on the claim (DoD 1) | ⚠️ |
 
-**A measuring tool: changes no claim, and runs whatever `gate-01` says**
+**A measuring tool: changes no claim, and runs whatever the literature check says**
 
 | Plan | What it does | Status |
 |---|---|---|
@@ -165,7 +165,7 @@ Grouped by the run group each answers to. Statuses live in the review/ files.
 
 | Plan | What it does | Status |
 |---|---|---|
-| idea-01-what-the-current-benchmarks-score | `/paper-scout`, then score them against the labels (DoD 7) | ⚠️ blocked by gate-01 |
+| idea-01-what-the-current-benchmarks-score | `/paper-scout`, then score them against the labels (DoD 7) | ⚠️ blocked by the literature check |
 
 **Not a run: the promotion decision**
 

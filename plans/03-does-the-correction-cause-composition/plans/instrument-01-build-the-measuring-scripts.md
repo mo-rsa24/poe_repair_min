@@ -7,7 +7,7 @@ Build the thirteen scripts every later plan measures with, and run each one on a
 | Step | Plan | Status |
 |---|---|---|
 | **1** | **this plan** | **✅** |
-| 2 | ~~[instrument-02-fix-the-size-measure-before-any-result](instrument-02-fix-the-size-measure-before-any-result.md)~~ | ✅ |
+| 2 | ~~[fixing the size measure before any result](instrument-02-fix-the-size-measure-before-any-result.md)~~ | ✅ |
 
 ## What this asks, in one line
 Build the thirteen measuring scripts before any experiment needs them, and run each one on a single cached pair-and-seed where the right answer is already known.
@@ -72,7 +72,7 @@ exists.
 flowchart TD
     S["run_teacher_residual (exists)"] --> W["inject.py / window.py CLI (thin)"]
     S --> E["extras: delta_norm, pmi_identity (exists)"]
-    W --> T["canary tests: lambda=0, window off"]
+    W --> T["the checks that must pass first: lambda=0, window off"]
     E --> A["analysis scripts (new)"]
     C["training_cache: 70 pairs"] --> A
     T --> P["plans 01-11 verify against these"]

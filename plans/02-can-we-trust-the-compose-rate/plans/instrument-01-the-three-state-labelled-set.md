@@ -7,11 +7,11 @@ the scorer's error grows as λ grows.
 
 | Within this scope | Plan | Status |
 |---|---|---|
-| 1 of 4 | [gate-01-is-this-hole-already-known](gate-01-is-this-hole-already-known.md) | ⚠️ not started |
+| 1 of 4 | [the literature check](gate-01-is-this-hole-already-known.md) | ⚠️ not started |
 | **2 of 4** | **this plan** | **⚠️ not started** |
-| 3 of 4 | [idea-01-what-the-current-benchmarks-score](idea-01-what-the-current-benchmarks-score.md) | ⚠️ blocked by gate-01 |
+| 3 of 4 | [scoring the current benchmarks](idea-01-what-the-current-benchmarks-score.md) | ⚠️ blocked by the literature check |
 
-Design only. The verdict lives in [../review/instrument-01-the-three-state-labelled-set.md](../review/instrument-01-the-three-state-labelled-set.md).
+Design only. The verdict lives in [this plan's review file](../review/instrument-01-the-three-state-labelled-set.md).
 
 ## What this asks, in one line
 How often does the scorer say "composed" when a person would not, and does that gap get bigger
@@ -19,7 +19,7 @@ as λ gets bigger?
 
 ## Why this plan exists
 94% is what a detector counting animals reports, and nobody has measured how far above the
-truth it sits. This plan produces the band. It runs whatever `gate-01` returns, because the
+truth it sits. This plan produces the band. It runs whatever the literature check returns, because the
 paper needs the band even if the metric idea is dead, and because whatever metric the paper
 ends up using has to be certified against something.
 

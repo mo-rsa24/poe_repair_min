@@ -18,11 +18,11 @@ one working document, which was not true before this pass: three of them had non
 |---|---|---|
 | sampler-correctors-for-composition | 5 documents | scope 06's master plan and four of its plans |
 | spectral-structure-of-the-correction | 4 documents | a scope 03 review file, the runbook, the report, the draft map |
-| speciation-before-divergence | 2 documents | scope 05's master plan (the speciation step, decide-then-descend) and its decision ledger (the caustic set, the endpoint map) |
+| speciation-before-divergence | 2 documents | scope 05's master plan (the speciation step, and the claim that the outcome is fixed early while the rest of the run only resolves it) and its decision ledger (the fold where nearby states land in different endings, and the function from a state to the image it becomes) |
 | poe-composition-diffusion | 1 document | `context/world/poe-composition.md`, on the words that describe combining two single-concept predictions |
 | diffusion-speciation-dynamics | 1 document | scope 05's master plan, on where trajectories visibly diverge |
 | trajectory-manifold-by-hand | 1 document | scope 01's figure-assembly plan, on the shared plane |
-| poe-derivation-foundations | 1 document | out of ledger scope (its Project cell says concept journey), but the repo reaches it anyway |
+| poe-derivation-foundations | 1 document | out of ledger scope (its Project field says concept journey), but the repo reaches it anyway |
 
 19 links in total, and every one resolves to a file on disk.
 
@@ -63,11 +63,11 @@ Navigation: ⬅️ [Meaning palette](#meaning-palette) | 📋 [TOC](#table-of-co
 | Glyph | Stands for | Tier |
 |---|---|---|
 | folder tile | one working folder (`plans/`, `context/`, `environment/`, `runbook/`, `report/`) | primary |
-| journey ladder | one journey's plan tree, drawn as a vertical ladder, rung count labelled | primary |
+| journey ladder | one journey's plan tree, drawn as a vertical ladder, step count labelled | primary |
 | small book | a textbook beside its journey's ladder | secondary |
 | green thread | the woven links from one folder to one journey, count on the thread | primary |
 | dim shelf | the side platform holding journeys nothing links to | secondary |
-| learning ramp | numbered amber rungs laid in front of a blue work stage (process lane only) | primary |
+| learning ramp | numbered amber steps laid in front of a blue work stage (process lane only) | primary |
 
 Every journey ladder is a pointer to that journey's own illustrated map or master plan, never a
 redrawing of its contents.
@@ -119,7 +119,7 @@ arrive bundled from off-canvas left, bundle pill "5 links, all from the sampler-
 Right ladder labelled "spectral-structure-of-the-correction" with pills "14 plans" and a small
 book glyph "3 chapters"; four green threads arrive with pills "1 review", "1 runbook", "2 report".
 Each ladder has a small signpost icon at its base: "opens the journey's own map".
-Exclusions: no rung-by-rung content of either journey, no red, no logos.
+Exclusions: no step-by-step content of either journey, no red, no logos.
 ```
 
 Faithfulness note: five threads into the left ladder and four into the right, nine woven links in
@@ -179,16 +179,16 @@ Save as: `learning-diagrams/learning-map-05-process-sampler-vs-model-ramp.png`
 ```
 Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded dashed arrow lines, each color meaning exactly one kind of flow, with a small legend inside the image. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Official product logos only on components that ARE that product; every other component gets a clean generic glyph. Small cartoon figures or vehicles for external actors (users, clients). Clean sans-serif labels under every icon, short and lowercase-friendly. Generous spacing, no clutter, no watermark.
 
-Scene: a single left-to-right track. First a learning ramp of five numbered amber rungs, badges 1
+Scene: a single left-to-right track. First a learning ramp of five numbered amber steps, badges 1
 to 5, labelled "15 the two gaps", "16 which gap a corrector removes", "21 langevin dynamics",
 "22 predictor-corrector sampling", "27 a corrector on the cached trajectories". The ramp feeds a
 blue stage block labelled "repo steps 24 to 26: the free bound, the corrector build, the
-chain-settles gate". A small flag on the stage: "then run". Banner: "learn first, then run the
+chain-settles check". A small flag on the stage: "then run". Banner: "learn first, then run the
 sampler-vs-model scope".
 Exclusions: no spectral material, no shelf, no red.
 ```
 
-Faithfulness note: the five rungs are these five journey plans in this order, and the ramp sits
+Faithfulness note: the five steps are these five journey plans in this order, and the ramp sits
 before the stage, never after; the picture claims a learning order, not a result.
 
 ### Prompt 2 (Process): The spectrum-figure ramp
@@ -199,8 +199,8 @@ Save as: `learning-diagrams/learning-map-06-process-spectrum-figure-ramp.png`
 ```
 Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded dashed arrow lines, each color meaning exactly one kind of flow, with a small legend inside the image. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Official product logos only on components that ARE that product; every other component gets a clean generic glyph. Small cartoon figures or vehicles for external actors (users, clients). Clean sans-serif labels under every icon, short and lowercase-friendly. Generous spacing, no clutter, no watermark.
 
-Scene: a second left-to-right track. A learning ramp of three numbered amber rungs, badges 1 to
-3, labelled "06 svd of the real matrix", "09 energy at k and the floors", "10 energy at k on the
+Scene: a second left-to-right track. A learning ramp of three numbered amber steps, badges 1 to
+3, labelled "06 svd of the real matrix", "09 energy at k and its chance levels", "10 energy at k on the
 real matrix". The ramp feeds a blue stage block labelled "defend the spectrum figure while
 writing". A small open-question chip beside the stage: "what does the spectrum add beyond D1 and
 D3?". Banner: "learn first, then judge the spectrum".
@@ -219,8 +219,8 @@ Save as: `learning-diagrams/learning-map-07-process-capstone-this-weeks-order.pn
 Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded dashed arrow lines, each color meaning exactly one kind of flow, with a small legend inside the image. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Official product logos only on components that ARE that product; every other component gets a clean generic glyph. Small cartoon figures or vehicles for external actors (users, clients). Clean sans-serif labels under every icon, short and lowercase-friendly. Generous spacing, no clutter, no watermark.
 
 Scene: one metro-style mainline running left to right through both tracks: the sampler ramp
-(five amber rungs) into its blue stage, then a transfer dot, then the spectrum ramp (three amber
-rungs) into its writing stage. Station dots on every rung, larger dots on the two blue stages.
+(five amber steps) into its blue stage, then a transfer dot, then the spectrum ramp (three amber
+steps) into its writing stage. Station dots on every step, larger dots on the two blue stages.
 In-image legend: amber station "learn", blue station "do". Banner: "the learning order the
 running order implies".
 Exclusions: no shelf, no counts, no third track.

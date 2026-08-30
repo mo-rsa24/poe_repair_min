@@ -14,7 +14,7 @@ not a vector" caption used across the showcase figures.
 
 | File | What it holds |
 |---|---|
-| [design](../plans/02-the-dog-x-dog-null-probe.md) | the probe, the preflight identity, the outcomes |
+| [design](../plans/02-the-dog-x-dog-null-probe.md) | what runs, the identity check, the outcomes |
 | this file | the verdict and the counts that decided it |
 
 ## Table of contents
@@ -30,12 +30,12 @@ not a vector" caption used across the showcase figures.
 
 Navigation: 📋 [TOC](#table-of-contents) | [Next](#runs) ➡️
 
-- **Agreeing pair**: both PoE experts get the same concept ("a dog"), so the true interaction
-  term is near zero.
+- **Agreeing pair**: both PoE experts get the same concept ("a dog"), so the true
+  [interaction term](../../../context/world/interaction-term.md) is near zero.
 - **‖r̂‖**: the norm of the LoRA's predicted correction at a step; "small" means small against
   the cross-pair scale (`train/delta_target_norm` ≈ 29.7 in the training history).
-- **The preflight identity**: with the LoRA off, PoE(A,A) must reduce to Mono(A) within fp16
-  drift, or the harness itself is broken.
+- **The identity check**: with the LoRA off, PoE(A,A) must reduce to Mono(A) within fp16
+  drift, or the runner itself is broken.
 
 ## Runs
 
@@ -51,17 +51,17 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 **This is the one question whose failure moves the plan.**
 
-- [ ] ⚠️ **Did any probe cell render two dogs?** Bar, fixed before looking: zero cells with
-  instance count ≥ 2 supports the rule story; any cell with two dogs falsifies "learned a rule"
-  as stated and the caption is rewritten, not defended. One dog with per-step ‖r̂‖ large on the
-  29.7 scale is 🟡 inconclusive, recorded as such.
+- [ ] ⚠️ **Did any dog × dog run render two dogs?** The threshold, fixed before looking: zero
+  runs with instance count ≥ 2 supports the rule story; any run with two dogs falsifies "learned
+  a rule" as stated and the caption is rewritten, not defended. One dog with per-step ‖r̂‖ large
+  on the 29.7 scale is 🟡 inconclusive, recorded as such.
 
 ## Written before the run, answered after
 
 Navigation: ⬅️ [The bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
-- [ ] ⚠️ Did the preflight identity hold (max-abs pixel difference within the fp16 drift band of
-  the λ-0 canary)?
+- [ ] ⚠️ Did the identity check hold (max-abs pixel difference within the fp16 drift band of the
+  λ=0 check that must pass before anything runs)?
 - [ ] ⚠️ Is ‖r̂‖ on the agreeing pair small at every step of the window, and what fraction of
   the cross-pair scale is its maximum?
 - [ ] ⚠️ Does language space agree (the L1 additivity gap for "a dog"+"a dog" near zero), as the
@@ -72,7 +72,7 @@ Navigation: ⬅️ [The bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-con
 Navigation: ⬅️ [Before/after](#written-before-the-run-answered-after) | 📋 [TOC](#table-of-contents) | [Next](#still-open) ➡️
 
 - [ ] ⚠️ **Was the comparison fair?** Same seeds, same sampler settings, same window as the
-  cross-pair cells; only the concepts changed.
+  cross-pair runs; only the concepts changed.
 - [ ] ⚠️ **Was the instrument sound?** The scorer is validated for two-animal scenes; a
   same-species pair is inside its validation only if the count read holds; spot-check five
   renders by eye against the counts.

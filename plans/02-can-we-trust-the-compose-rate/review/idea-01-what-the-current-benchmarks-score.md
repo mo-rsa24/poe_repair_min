@@ -1,7 +1,7 @@
 # 🔍 Review: does any published metric agree with people where ours does not?
 
 **Unanswered, and blocked until `gate-01` returns.** This file judges
-[../plans/idea-01-what-the-current-benchmarks-score.md](../plans/idea-01-what-the-current-benchmarks-score.md),
+[the plan that scores the published benchmarks](../plans/idea-01-what-the-current-benchmarks-score.md),
 the head-to-head scoring of our scorer against the published alternatives on the same labelled
 images.
 
@@ -123,13 +123,13 @@ Navigation: ⬅️ [What the write-up owes](#what-the-write-up-owes) | 📋 [TOC
 
 | What is unresolved | What would settle it | Who or what is blocked by it |
 |---|---|---|
-| everything in this file | scoring the candidates | [gate-02](gate-02-promote-or-close.md), which needs the best agreement score to decide the promotion level |
-| whether this plan runs at all | [gate-01](gate-01-is-this-hole-already-known.md) returning. An "already known" verdict cancels it | the scoring run itself |
-| the judgeable-pair denominator every score needs | [instrument-01](instrument-01-the-three-state-labelled-set.md) landing | the scores, which cannot be computed without it |
+| everything in this file | scoring the candidates | [the promote-or-close decision](gate-02-promote-or-close.md), which needs the best agreement score to decide the promotion level |
+| whether this plan runs at all | [the literature check](gate-01-is-this-hole-already-known.md) returning. An "already known" verdict cancels it | the scoring run itself |
+| the judgeable-pair denominator every score needs | [the labelled set](instrument-01-the-three-state-labelled-set.md) landing | the scores, which cannot be computed without it |
 
 ## Next step
 
 Navigation: ⬅️ [Still open](#still-open) | 📋 [TOC](#table-of-contents)
 
-Wait on [gate-01](gate-01-is-this-hole-already-known.md). If it says the scope continues, record
+Wait on [the literature check](gate-01-is-this-hole-already-known.md). If it says the scope continues, record
 the prediction before running anything.

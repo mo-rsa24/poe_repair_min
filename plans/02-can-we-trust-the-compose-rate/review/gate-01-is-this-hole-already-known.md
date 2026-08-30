@@ -1,7 +1,7 @@
 # 🔍 Review: has someone already said this?
 
 **Unanswered.** This file judges
-[../plans/gate-01-is-this-hole-already-known.md](../plans/gate-01-is-this-hole-already-known.md),
+[the plan that checks whether this hole is already published](../plans/gate-01-is-this-hole-already-known.md),
 the check that decides whether the rest of this scope gets built. `idea-01` and `gate-02` do not
 start until the questions below are answered. `instrument-01` runs regardless.
 
@@ -127,7 +127,7 @@ Navigation: ⬅️ [What the write-up owes](#what-the-write-up-owes) | 📋 [TOC
 
 | What is unresolved | What would settle it | Who or what is blocked by it |
 |---|---|---|
-| everything in this file | the literature search | [idea-01](idea-01-what-the-current-benchmarks-score.md) and [gate-02](gate-02-promote-or-close.md), both of which wait on this verdict. [instrument-01](instrument-01-the-three-state-labelled-set.md) runs regardless |
+| everything in this file | the literature search | [the benchmark scoring](idea-01-what-the-current-benchmarks-score.md) and [the promote-or-close decision](gate-02-promote-or-close.md), both of which wait on this verdict. [the labelled set](instrument-01-the-three-state-labelled-set.md) runs regardless |
 
 ## Next step
 

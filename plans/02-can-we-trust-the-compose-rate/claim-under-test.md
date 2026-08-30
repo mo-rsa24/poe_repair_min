@@ -1,8 +1,8 @@
 # The claim, written before the search
 
-Task 1 of [plans/gate-01-is-this-hole-already-known.md](plans/gate-01-is-this-hole-already-known.md).
+Task 1 of [the plan that checks whether this hole is already published](plans/gate-01-is-this-hole-already-known.md).
 This paragraph is fixed before any literature is read, so the search cannot soften it. The
-verdict on it goes in [review/gate-01-is-this-hole-already-known.md](review/gate-01-is-this-hole-already-known.md).
+verdict on it goes in [that plan's review file](review/gate-01-is-this-hole-already-known.md).
 
 ## The claim
 

@@ -1,4 +1,7 @@
-# 📊 Read the plateau curves
+# 📊 Read where the training curve stops rising
+
+**This plan asks one question: had the trained LoRA stopped improving by 100k steps, or was it
+still climbing?**
 
 **Step 31 in the root running order. Waits on: nothing. Next: [02-the-dog-x-dog-null-probe](02-the-dog-x-dog-null-probe.md).**
 
@@ -51,9 +54,12 @@ After you finish this plan and want to ingest error patterns into the catalogs, 
 Is the trained LoRA (`phase1_r8_100k`) at a ceiling, or was it still improving when training stopped? The scope's [decision ledger](../decisions-taken-here.md) settled that experiments A (train to 200k) and B (rank 16/32) run either way, so this read no longer decides *whether* they run; it is their **interpretation key**.
 
 **The signal already logged:**
-`eval/frac_distance_reached` (how much of the gap toward the joint prediction the LoRA's correction closes, 0 to 1) plateaus near 0.4 in instrument-02's live curves. Held-out compose rate saturates by step 50k (0.812 at 10k, 0.961 at 50k and 60k, from the run's own `compose_rate.json`). The train loss still creeps (median 0.00062 early to 0.00029 late).
+`eval/frac_distance_reached` (how much of the gap toward the joint prediction the LoRA's correction closes, 0 to 1) flattens near 0.4 in the live curves from `instrument-02`. Held-out [compose rate](../../../context/world/compose-rate.md) saturates by step 50k (0.812 at 10k, 0.961 at 50k and 60k, from the run's own `compose_rate.json`). The train loss still creeps (median 0.00062 early to 0.00029 late).
 
-**If flat across epochs and checkpoints:** ceiling. A's null result is expected and B's result is read as a capacity finding or a dead lever depending on the oracle-ceiling panel.
+> Held-out means the pairs were never shown during training, so the number says how well the
+> adapter does on animals it has not seen.
+
+**If flat across epochs and checkpoints:** ceiling. A's null result is expected and B's result is read as a capacity finding or a dead lever depending on the panel showing what the cached true correction can reach at best.
 
 **If still rising:** waypoint. A is expected to move the tracking set, and a flat A becomes a finding.
 
@@ -82,7 +88,7 @@ Is the trained LoRA (`phase1_r8_100k`) at a ceiling, or was it still improving w
 ⬅️ [Previous](#considerations) | 📋 [TOC](#table-of-contents) | [Next](#the-claim) ➡️
 
 - The `co3` python at `/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python` for the local history read ([environment/overview.md](../../../environment/overview.md)).
-- W&B owns the numbers; the plan tree owns the verdict. No curve is copied into markdown; the verdict, the run id, and the bar go in the review file.
+- W&B owns the numbers; the plan tree owns the verdict. No curve is copied into markdown; the verdict, the run id, and the threshold it was judged against go in the review file.
 
 ---
 
@@ -102,7 +108,7 @@ Is the trained LoRA (`phase1_r8_100k`) at a ceiling, or was it still improving w
 
 **The solution.** The interpretation key is free: the curves are already logged. Read them, fix the verdict in the review file, then launch.
 
-**Key insight.** The LoRA's L2 loss on a state-specific target commits it to the conditional mean of what its inputs pin down; averaged near-orthogonal corrections are small and smooth. That account predicts a flat plateau. A rising curve is the one observation that would contradict it.
+**Key insight.** The LoRA's L2 loss on a state-specific target commits it to the conditional mean of what its inputs pin down; averaged near-orthogonal corrections are small and smooth. That account predicts a curve that flattens and stays flat. A rising curve is the one observation that would contradict it.
 
 ---
 
@@ -110,7 +116,7 @@ Is the trained LoRA (`phase1_r8_100k`) at a ceiling, or was it still improving w
 
 ⬅️ [Previous](#why-this-plan-exists) | 📋 [TOC](#table-of-contents) | [Next](#purpose-and-goal) ➡️
 
-1. **The plateau read**: `eval/frac_distance_reached` over the full 100k steps, from W&B (browser) and from the local `history.json` (script), the two agreeing.
+1. **The curve read**: `eval/frac_distance_reached` over the full 100k steps, from W&B (browser) and from the local `history.json` (script), the two agreeing.
 2. **The checkpoint cross-section**: the same quantity at each saved checkpoint (10k steps apart), so "flat across epochs" is a table, not an impression.
 3. **The verdict**: one line in the review file, ceiling or waypoint, with the numbers that decided it.
 
@@ -123,7 +129,7 @@ Is the trained LoRA (`phase1_r8_100k`) at a ceiling, or was it still improving w
 Serves master-plan objective 1 (decide the train-longer framing from already-logged curves before any GPU is spent). Checkable outcomes:
 
 1. The per-checkpoint table exists as a sidecar json.
-2. The review file's bar question is answered with the deciding numbers.
+2. The review file's threshold question is answered with the deciding numbers.
 
 ---
 
@@ -150,7 +156,7 @@ For Claude to execute. Ask Claude to do these.
     /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -c "see code references"
     ```
   - Output goes to: `artifacts/results/does-the-fix-reach-unseen-pairs/pooled_lora/phase1_r8_100k/frac_distance_by_checkpoint.json`
-  - Completion is observable: the json holds one row per checkpoint (10k to 100k), each with the metric's mean over the eval cells at that step.
+  - Completion is observable: the json holds one row per checkpoint (10k to 100k), each with the metric's mean over the eval runs at that step.
 - [ ] **1.2 Compute the flatness numbers**
   - The last-half slope (linear fit over steps 50k to 100k) and the max-minus-min over the same span, written into the same sidecar.
 
@@ -170,7 +176,7 @@ For you to follow manually. Do these yourself.
 
 2.2 **Charts tab, search `eval/frac_distance_reached`.** You should see one curve over 100k steps. ✅ If its last half is flat by eye and the local slope from task 1.2 is consistent with zero at the curve's own noise, the verdict is ceiling. ❌ If it is visibly rising at 100k and the local slope agrees, the verdict is waypoint.
 
-2.3 **Screenshot the panel** into the slot named in [runbook/reading-a-training-run.md](../../../runbook/reading-a-training-run.md).
+2.3 **Screenshot the panel** into the place kept for it in [runbook/reading-a-training-run.md](../../../runbook/reading-a-training-run.md).
 
 2.4 **Write the verdict** into the [review file](../review/01-read-the-plateau-curves.md): ceiling or waypoint, the slope, the span, the run id.
 
@@ -185,7 +191,7 @@ For you to follow manually. Do these yourself.
 > Experiments A and B launch after this plan. Launching them without the verdict recorded turns both into runs nobody can interpret.
 
 **Pass criteria:**
-- The per-checkpoint sidecar exists and the review file's bar question is answered.
+- The per-checkpoint sidecar exists and the review file's threshold question is answered.
 
 **Fail criteria:**
 - The metric is missing from W&B or the local history, in which case the read falls back to the per-epoch samples and says so in the review file.
@@ -202,7 +208,7 @@ For you to follow manually. Do these yourself.
 
 | Figure | Lane | What it shows | Save to |
 |--------|------|---------------|---------|
-| (none owed by this plan; the plateau panel lives in W&B and its screenshot in the runbook slot) | — | — | — |
+| (none owed by this plan; the curve panel lives in W&B and its screenshot in the runbook) | — | — | — |
 
 ### Generated during plan execution
 

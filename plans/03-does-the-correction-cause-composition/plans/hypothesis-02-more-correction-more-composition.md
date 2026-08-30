@@ -10,7 +10,7 @@ the same size do nothing.
 
 | Step | Plan | Status |
 |---|---|---|
-| 3 | ~~[instrument-01: the-clean-pair-pool](../../04-does-the-fix-reach-unseen-pairs/plans/instrument-01-the-clean-pair-pool.md)~~ | ✅ |
+| 3 | ~~[building the clean pair pool](../../04-does-the-fix-reach-unseen-pairs/plans/instrument-01-the-clean-pair-pool.md)~~ | ✅ |
 | **4 (current)** | **hypothesis-02: more-correction, more-composition** | **⚠️ review ready** |
 | 5 | ~~[hypothesis-04: what-the-cached-runs-already-show](hypothesis-04-what-the-cached-runs-already-show.md)~~ | ✅ |
 
@@ -241,26 +241,28 @@ A design task either happened or it did not. Whether the experiment worked is a 
 
 ### 1. Code
 
-- [x] **Wire the injection harness.**
+- [x] **Wire up the code that does the injecting.**
   Write the code that injects a chosen vector (real, random, or wrong pair's) and runs three rows at every λ.
   - File: `scripts/interaction_term_inject.py` (built on `run_teacher_residual`)
-  - Injecting the real correction existed from `instrument-01-build-the-measuring-scripts`
+  - Injecting the real correction already existed, from the measuring scripts built in
+    `instrument-01-build-the-measuring-scripts`
   - Injecting a DIFFERENT vector was new
 
-- [x] **Prove the harness leaves plain PoE alone.**
+- [x] **Prove that code leaves plain PoE alone.**
   At λ=0, the output must match what the sampler itself saved for plain PoE.
-  - Test: 8 canary tests, each one shown to fail against a deliberately broken sampler
+  - Test: 8 checks that must pass before anything runs, each one shown to fail against a
+    deliberately broken sampler
   - Threshold: largest difference < 1e-5
 
 ### 2. Validation
 
-- [x] **Smoke test: one cell by hand.**
+- [x] **A first short run: one pair-and-seed generation by hand.**
   Run all three rows at full strength on a_cat×a_dog, seed 9, 20 steps. Score and view manually.
 
-- [x] **Full sweep.**
+- [x] **The full series across every setting.**
   8 unseen pairs × 4 seeds × 5 strengths × 3 rows = 480 pictures.
   - Script: `scripts/mechanism_study/run_dose_sweep.sh` (resumable)
-  - Time: ~50 seconds per cell on GPU, ~6 hours total
+  - Time: ~50 seconds per generated picture on GPU, ~6 hours total
 
 - [x] **Score every picture.**
   Use the validated composition scorer (GroundingDINO-based, decision: compose vs mono).
@@ -272,7 +274,7 @@ A design task either happened or it did not. Whether the experiment worked is a 
   Read [../procedures/hypothesis-02-recheck-the-headline-numbers.md](../procedures/hypothesis-02-recheck-the-headline-numbers.md) to completion. It prevents the scorer from picking up old pictures and sets cutoffs by visual inspection.
 
 - [x] **Build the curves and grid.**
-  Three curves on one axis; 3×5 grid of real cells above.
+  Three curves on one axis; 3×5 grid of real generated pictures above.
   - Script: `scripts/plot_dose_curves.py --root outputs/interaction_term/dose/pairs`
   - Layout: decided in `figure-01-the-seven-paper-figures`, not here
   - Grid: rebuilt per the procedure (step 6)
@@ -290,13 +292,13 @@ A design task either happened or it did not. Whether the experiment worked is a 
 ⬅️ [Tasks](#tasks) | 📋 [TOC](#table-of-contents) | [Outputs / Figure](#outputs--figure) ➡️
 
 **Pass criteria:**
-- All 480 cells generated (440 unique after dedup).
+- All 480 pictures generated (440 unique after dedup).
 - Three curves computed: compose rate vs λ for real, random, wrong pair.
-- 3×5 grid of real cells built, one row per injection type, one column per λ.
-- Scored pictures logged to W&B with triptych (Mono, PoE, corrected) per cell.
+- 3×5 grid of real generated pictures built, one row per injection type, one column per λ.
+- Scored pictures logged to W&B with triptych (Mono, PoE, corrected) per generated picture.
 
 **Fail criteria (stop and fix before proceeding):**
-- Harness disturbs plain PoE at λ=0 (difference > 1e-5).
+- The injection code disturbs plain PoE at λ=0 (difference > 1e-5).
 - GPU OOM (move to a larger node).
 - Scorer and eyes disagree on the same picture (fix the scorer, re-score, do not move the cutoff to rescue the curve).
 
@@ -308,17 +310,17 @@ A design task either happened or it did not. Whether the experiment worked is a 
 
 ⬅️ [The engagement gate](#the-engagement-gate) | 📋 [TOC](#table-of-contents) | [Code references](#code-references) ➡️
 
-**Figure slot F2** (paper's headline figure):
+**The register's reserved place F2** (paper's headline figure):
 
 | Component | Status | Location | What it shows |
 |-----------|--------|----------|---------------|
 | Curves (quantitative) | ✓ Ready | `outputs/interaction_term/dose/dose_curves.{json,png}` | Compose rate vs λ, three lines (real, random, wrong pair) |
-| Grid (qualitative) | ✓ Ready | `scripts/dose_strip.py` output, copied to figure location | 3×5 grid of real generated cells, one row per injection type, one column per λ, same pair and seed |
-| Combined figure | ⏳ Awaiting F2 layout decision | Slot F2, `paper/iclr/figures/` | Curves above or beside grid, caption finalized once scoring cutoff is set |
+| Grid (qualitative) | ✓ Ready | `scripts/dose_strip.py` output, copied to figure location | 3×5 grid of real generated pictures, one row per injection type, one column per λ, same pair and seed |
+| Combined figure | ⏳ Awaiting F2 layout decision | F2's reserved place, `paper/iclr/figures/` | Curves above or beside grid, caption finalized once scoring cutoff is set |
 
 **Supporting artifacts:**
-- W&B run: `prime_lab/poe-repair-animals-compose` project, 480-cell log with triptychs (Mono, PoE, corrected)
-- Review file: [../review/hypothesis-02-more-correction-more-composition.md](../review/hypothesis-02-more-correction-more-composition.md) — answers the bar question and other checks
+- W&B run: `prime_lab/poe-repair-animals-compose` project, a log of all 480 generated pictures with triptychs (Mono, PoE, corrected)
+- Review file: [../review/hypothesis-02-more-correction-more-composition.md](../review/hypothesis-02-more-correction-more-composition.md) — answers the one question written before the run, and the other checks
 
 ---
 
@@ -326,7 +328,7 @@ A design task either happened or it did not. Whether the experiment worked is a 
 
 ⬅️ [Outputs / Figure](#outputs--figure) | 📋 [TOC](#table-of-contents) | [Next step](#next-step) ➡️
 
-### Injection harness
+### The code that does the injecting
 
 **File:** `scripts/interaction_term_inject.py`  
 **What it does:** Takes a cached correction, injects it at strength λ into PoE sampling, generates the output, and logs it.
@@ -357,9 +359,9 @@ $PY scripts/plot_dose_curves.py --root outputs/interaction_term/dose/pairs
 # Outputs: dose_curves.json (data), dose_curves.png (visualization)
 ```
 
-### Smoke test command
+### The first-short-run command
 
-**Run one cell by hand:**
+**Run one pair-and-seed generation by hand:**
 ```bash
 $PY -m poe_repair.experiments.interaction_term.inject \
   --pair a_cat__x__a_dog --seed 9 --lambda 0 --check-canary
@@ -370,7 +372,7 @@ $PY -m poe_repair.experiments.interaction_term.inject \
 
 ```bash
 find outputs/interaction_term/dose/pairs -name "*.png" | wc -l
-# Expect: 440 (480 cells minus 40 λ=0 duplicates)
+# Expect: 440 (480 pictures minus 40 λ=0 duplicates)
 ```
 
 ---
@@ -379,7 +381,7 @@ find outputs/interaction_term/dose/pairs -name "*.png" | wc -l
 
 ⬅️ [Code references](#code-references) | 📋 [TOC](#table-of-contents) | [Error Matrix](#error-matrix) ➡️
 
-Once this gate passes (verdict: green), proceed to **step 5** [hypothesis-04: what-the-cached-runs-already-show](hypothesis-04-what-the-cached-runs-already-show.md), which reads these outputs without needing GPU.
+Once that check passes (verdict: green), proceed to **step 5** [hypothesis-04: what-the-cached-runs-already-show](hypothesis-04-what-the-cached-runs-already-show.md), which reads these outputs without needing GPU.
 
 After step 6 (hypothesis-03) finishes, step 13 (figure-01) builds F2 from the data on disk.
 
@@ -407,9 +409,9 @@ Known issues and solutions. This section is automatically updated after runs via
 
 #### 🟠 gpu-001: Shared GPU—job dies partway through
 
-**When it happens:** During the full sweep (`run_dose_sweep.sh`)
+**When it happens:** During the full series across every setting (`run_dose_sweep.sh`)
 
-**What you see:** CUDA OOM error, job killed at random cell count
+**What you see:** CUDA OOM error, job killed after an unpredictable number of pictures
 
 **Why:** Someone else is using the GPU; the card is shared, and multiple jobs overload it.
 
@@ -437,7 +439,7 @@ Known issues and solutions. This section is automatically updated after runs via
 
 ### From project catalog
 
-(Add entries from `environment/known-failures.md` that apply to dose-sweep runs.)
+(Add entries from `environment/known-failures.md` that apply to runs of the dose series.)
 
 ---
 

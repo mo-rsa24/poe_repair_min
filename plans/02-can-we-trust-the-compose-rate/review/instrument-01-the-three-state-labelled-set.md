@@ -1,7 +1,7 @@
 # 🔬 Review: how far above the truth does 94% sit, and does the gap grow with λ?
 
 **Unanswered.** This file judges
-[../plans/instrument-01-the-three-state-labelled-set.md](../plans/instrument-01-the-three-state-labelled-set.md),
+[the plan that builds the labelled set](../plans/instrument-01-the-three-state-labelled-set.md),
 the labelled set that puts a band on every [compose rate](../../../context/world/compose-rate.md)
 the paper prints. Its first question is
 the one that decides whether F2's shape is safe.
@@ -146,7 +146,7 @@ Navigation: ⬅️ [What the write-up owes](#what-the-write-up-owes) | 📋 [TOC
 
 | What is unresolved | What would settle it | Who or what is blocked by it |
 |---|---|---|
-| everything in this file | the labelling pass over the λ grid | [gate-02](gate-02-promote-or-close.md), which needs the two false-compose rates, and [idea-01](idea-01-what-the-current-benchmarks-score.md), which needs the judgeable denominator |
+| everything in this file | the labelling pass over the λ grid | [the promote-or-close decision](gate-02-promote-or-close.md), which needs the two false-compose rates, and [the benchmark scoring](idea-01-what-the-current-benchmarks-score.md), which needs the judgeable denominator |
 | the band printed in `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md` | correcting it to 75% to 94% | any reader who takes 87% as the lower end, which counts 17 uncallable images as successes |
 
 ## Next step

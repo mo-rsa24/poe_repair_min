@@ -7,11 +7,11 @@ where our own scorer does not.
 
 | Within this scope | Plan | Status |
 |---|---|---|
-| 2 of 4 | [instrument-01-the-three-state-labelled-set](instrument-01-the-three-state-labelled-set.md) | ⚠️ not started |
-| **3 of 4** | **this plan** | **⚠️ blocked by gate-01** |
-| 4 of 4 | [gate-02-promote-or-close](gate-02-promote-or-close.md) | ⚠️ blocked by the other three |
+| 2 of 4 | [building the three-state labelled set](instrument-01-the-three-state-labelled-set.md) | ⚠️ not started |
+| **3 of 4** | **this plan** | **⚠️ blocked by the literature check** |
+| 4 of 4 | [the promote-or-close decision](gate-02-promote-or-close.md) | ⚠️ blocked by the other three |
 
-Design only. The verdict lives in [../review/idea-01-what-the-current-benchmarks-score.md](../review/idea-01-what-the-current-benchmarks-score.md).
+Design only. The verdict lives in [this plan's review file](../review/idea-01-what-the-current-benchmarks-score.md).
 
 ## What this asks, in one line
 Run the current compositional benchmarks and the better detectors on exactly the images
@@ -51,7 +51,7 @@ on CPU.
 
 ## Success/Failure Outcomes
 - **A candidate clears the threshold.** It becomes a deferred task in this plan's own tree, carrying its agreement number, and
-  `gate-02` decides whether it re-certifies or replaces `scorer_validated.json`.
+  the promote-or-close plan decides whether it re-certifies or replaces `scorer_validated.json`.
 - **Every candidate reproduces the same hole.** The expected outcome, written down before
   running: the benchmarks are built on presence questions, so a fusion answers yes to both. This
   is the strongest evidence for the limitations paragraph and is recorded as a finding.
@@ -86,8 +86,8 @@ candidate that ran, ran at published defaults, and the script asserts no thresho
 that differs from the paper's. Scores are computed on judgeable pairs only, and the row count
 matches `instrument-01`'s judgeable denominator exactly.
 
-STOP: `gate-01` returned already-known → this plan is cancelled, not run. `instrument-01`'s
-labels do not exist yet → halt, there is nothing to score against.
+STOP: the literature check returned already-known → this plan is cancelled, not run. The
+labelled set does not exist yet → halt, there is nothing to score against.
 
 ## Recommended skill
 ▶ `/paper-scout` ✅ for tasks 1 and 2, then `/run-experiment` ✅ for tasks 3 to 5.

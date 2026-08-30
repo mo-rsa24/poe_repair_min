@@ -1,23 +1,26 @@
 # 🔭 The same story from three independent sides
 
+This plan asks whether three checks that share none of the strength series' machinery agree with
+its answer anyway.
+
 **Step 7 of 22.** Waits on step 4. The one order is the `## Running order` table in the [repo root MASTER_PLAN.md](../../../MASTER_PLAN.md).
 
 | Step | Plan | Status |
 |---|---|---|
-| 6 | [hypothesis-03-when-in-the-run-it-matters](hypothesis-03-when-in-the-run-it-matters.md) | ◑ timing tab owed |
+| 6 | [when in the run the correction matters](hypothesis-03-when-in-the-run-it-matters.md) | ◑ timing tab owed |
 | **7** | **this plan** | **✅** |
-| 8 | ~~[hypothesis-01-what-the-fix-changes-inside-the-model](hypothesis-01-what-the-fix-changes-inside-the-model.md)~~ | ✅ |
+| 8 | ~~[what the fix changes inside the model](hypothesis-01-what-the-fix-changes-inside-the-model.md)~~ | ✅ |
 
-Design only. Verdicts live in [../review/hypothesis-05-the-same-story-from-three-sides.md](../review/hypothesis-05-the-same-story-from-three-sides.md).
+Design only. Verdicts live in [this plan's review file](../review/hypothesis-05-the-same-story-from-three-sides.md).
 
 ## What this asks, in one line
-Three checks that share none of the strength-sweep's machinery, so they can agree with it
-independently rather than repeat it.
+Three checks that share none of the machinery behind the run across correction strengths, so they
+can agree with it independently rather than repeat it.
 
 ## Description
 Three independent reads:
 
-- **The picture moves out of the blend region.** Place the strength-sweep's images on the
+- **The picture moves out of the blend region.** Place the images from the strength series on the
   existing image-similarity axes and watch them slide as the strength rises. The control is
   the same-sized push in a random direction, which should not slide.
 - **The prompt's own arithmetic predicts which pairs are hard.** Ask whether the joined
@@ -29,7 +32,7 @@ Three independent reads:
 
 ## Purpose
 The causal claim shown from three sides (Goal 1's secondary reads). The
-language probes give the composition-type regimes predictive teeth; the
+language-space tests let the composition types predict which pairs are hard; the
 quality check removes the "the correction just improves image quality"
 objection. Serves DoD 6.
 
@@ -39,19 +42,19 @@ curve, the additivity-gap and binding-direction results, and the quality-gap
 table.
 
 ## Environment Facts This Plan Depends On
-- L1/L3 read cached `embeddings.pt` per cell. SDXL's own two text encoders give
+- L1 and L3 read cached `embeddings.pt` per pair-and-seed run. SDXL's own two text encoders give
   four views: pooled (1280, from text_encoder_2), the CLIP-L 77-token sequence
   (first 768 channels of the cached 2048), the bigG sequence (last 1280), and
   the concatenation cross-attention actually consumes. Concatenation order is
   fixed by `poe_repair/_sdxl/runtime.py`.
 - The manifold slide and L2 consume plan 03's dose images, which are on disk:
   440 renders under `outputs/interaction_term/dose/pairs`, λ ∈ {0, .25, .5,
-  .75, 1}, with 32 cells carrying the `_random` and `_wrong_pair` control rows.
+  .75, 1}, with 32 runs carrying the `_random` and `_wrong_pair` control rows.
 - The quality check reads `poe.png` and `mono.png` from the training cache:
-  749 paired cells.
+  749 paired runs.
 - CLIP embedding and GroundingDINO run in-session on the 3090 (light).
 - λ=1 reproduces ε_J exactly, so the full-dose picture is the joint render
-  (measured at 1.9 grey levels of 255). Every dose bar is therefore read at the
+  (measured at 1.9 grey levels of 255). Every dose reading is therefore taken at the
   largest interior dose, λ=0.75.
 
 ## Tasks
@@ -59,9 +62,9 @@ table.
       scatter against normalized ‖r_t‖
 - [x] L3 binding direction: b = e_J − normalized(e_A+e_B) per pair; cosine
       matrix and SVD across pairs, against a mismatched-solos control
-- [x] chimera quality control on cached poe.png/mono.png: quality proxies,
-      expect no gap
-- [x] manifold slide: embed plan 03's λ-sweep outputs on the existing CLIP
+- [x] [chimera](../../../context/world/chimera.md) quality control on cached poe.png/mono.png:
+      quality proxies, expect no gap
+- [x] manifold slide: embed plan 03's outputs across the λ series on the existing CLIP
       axes; random-direction path as the control
 - [x] L2 caption readback on plan 03's images: caption bank including the
       blend caption; crossover curve vs λ
@@ -71,17 +74,17 @@ table.
   - Success: gap computed for all pairs; correlation with ‖r_t‖ reported
     either way (a null is a finding: binding info lives in joint processing,
     not the embedding).
-  - Failure: pooled-only probing (the sequence form is the one cross-attention
+  - Failure: testing the pooled form only (the sequence form is the one cross-attention
     consumes; both must be reported).
 
 ## Next
 
 1. Final figure forms ride plan 10. The quality check and the caption readback are the two
    that carry their own argument; F5 takes the manifold slide.
-2. The `wrong_pair` control reaches 44% of the oracle's interior travel on the manifold
-   slide, against a 50% bar. Plan 10 should either widen that gap or say plainly that a
-   mis-aimed correction gets you nearly half the slide.
-3. L1 and L3 both come back null. If a later plan wants a language-space predictor, the
+2. The `wrong_pair` control reaches 44% of the interior travel the pair's own cached true
+   correction makes on the manifold slide, against a threshold of 50%. Plan 10 should either
+   widen that gap or say plainly that a mis-aimed correction gets you nearly half the slide.
+3. L1 and L3 both come back with no effect. If a later plan wants a language-space predictor, the
    place to look is joint processing (cross-attention maps), not the prompt embedding.
 
 **The short version:** the quality check alone. It removes the one standing objection ("the
@@ -101,11 +104,11 @@ $PY scripts/language_probes.py --probe l1 --probe l3
 # control. Expect flat quality and a large content gap.
 $PY scripts/quality_control.py
 
-# 32 cells x 5 doses x 3 rows in CLIP image space, ~3 min. Checks the lambda=1
+# 32 runs x 5 doses x 3 rows in CLIP image space, ~3 min. Checks the lambda=1
 # endpoint really is the mono render before reading anything off the curves.
 $PY scripts/manifold_slide.py
 
-# Same 32 cells against a four-way caption bank, ~3 min.
+# Same 32 runs against a four-way caption bank, ~3 min.
 $PY scripts/caption_readback.py
 ```
 

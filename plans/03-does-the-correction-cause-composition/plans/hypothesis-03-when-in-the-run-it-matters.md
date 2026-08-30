@@ -1,5 +1,8 @@
 # ⏱️ When in the denoising run is the correction needed?
 
+This plan asks at which point during the 50 denoising steps the correction has to act for the
+picture to come out as two animals.
+
 ## Recommended prompt (after run completes)
 
 After you finish this plan and want to ingest error patterns into the catalogs, use this prompt:
@@ -57,7 +60,8 @@ Design only. Verdicts and run state live in
 ## What this asks, in one line
 
 Let the correction act only inside a narrow window of the 50 denoising steps, slide that
-window from start to finish, and measure the compose rate at each position. A peak says
+window from start to finish, and measure the [compose rate](../../../context/world/compose-rate.md)
+at each position. A peak says
 when the correction is needed; a flat curve says it is needed throughout.
 
 ---
@@ -68,8 +72,11 @@ when the correction is needed; a flat curve says it is needed throughout.
 
 **The experiment**
 
-A sliding window over the 50 denoising steps, gating only the injected correction. Nine
-placements, eight held-out pairs, four seeds.
+A sliding window over the 50 denoising steps, switching only the injected correction on and off.
+Nine placements, eight held-out pairs, four seeds.
+
+> Held-out pairs are the animal pairs the adapter never trained on, so a result on them says
+> whether the fix reaches beyond what it was shown.
 
 **What it found**
 
@@ -89,8 +96,8 @@ no caption may draw the fork step as a band behind the timing curve.
 
 **Where it stands**
 
-The bar is answered and so is every pre-registered question, including two follow-ons added after
-the timing result to remove its one confound. Eight figures are built. What remains is manual:
+The one question written before the run is answered, and so is every other pre-registered
+question, including two follow-ons added after the timing result to remove its one confound. Eight figures are built. What remains is manual:
 driving the correction-timing tab by hand in the inspector.
 
 **Associated materials**
@@ -112,7 +119,7 @@ driving the correction-timing tab by hand in the inspector.
 **Expected runtime**
 
 The timing grid is the largest generation grid in the program: 9 windows × 8 pairs × 4 seeds = 288
-cells at about 31 seconds each, roughly 2.5 hours on one A6000. It has already run.
+runs at about 31 seconds each, roughly 2.5 hours on one A6000. It has already run.
 
 **Prerequisites**
 
@@ -120,11 +127,11 @@ Steps 4 and 5. Step 5 supplies the fork step this experiment's peak is compared 
 
 **Environment Facts This Plan Depends On**
 
-- W2 harness: `scripts/interaction_term_window.py` over `run_teacher_residual`'s
-  `correction_window`, which gates only the injected r_t and leaves conditioning on at every step.
-  Never reuse W1's uncond-outside gating for W2, that confounds losing-the-correction with
-  losing-conditioning.
-- Largest generation grid in the program: 9 windows × 8 pairs × 4 seeds = 288 cells at about 31s
+- The W2 runner is `scripts/interaction_term_window.py` over `run_teacher_residual`'s
+  `correction_window`, which switches only the injected r_t on and off and leaves conditioning on
+  at every step. Never reuse W1's way of dropping the unconditional branch outside the window for
+  W2, that confounds losing-the-correction with losing-conditioning.
+- Largest generation grid in the program: 9 windows × 8 pairs × 4 seeds = 288 runs at about 31s
   each, roughly 2.5 hours on one A6000.
 - Output goes to /datasets via `POE_REPAIR_OUTPUT_ROOT`, which the sampler reads; the disk guard
   checks the filesystem `$OUT` actually resolves to.
@@ -148,7 +155,7 @@ See the [Error Matrix](#error-matrix) at the bottom of this file.
 
 ⬅️ [Previous](#considerations) | 📋 [TOC](#table-of-contents) | [Next](#why-this-plan-exists) ➡️
 
-**Sliding a fixed-width window across the run, gating only the correction, measures causally when
+**Sliding a fixed-width window across the run, switching only the correction on and off, measures causally when
 the correction is needed, with no window assumed in advance.**
 
 **Why this matters right now:** it is the difference between a fix that must be applied throughout
@@ -174,11 +181,11 @@ placements is when the correction lands.
 
 **Key insights**
 
-1. **The base must stay fully conditioned.** Gating the prompt as well would confound losing the
+1. **The base must stay fully conditioned.** Switching the prompt off as well would confound losing the
    correction with losing conditioning, and the answer would mean nothing. That is a different
    experiment, named below and not run.
 
-2. **An all-off window must reproduce plain PoE exactly.** If gating leaks, every window position
+2. **An all-off window must reproduce plain PoE exactly.** If that switch leaks, every window position
    is contaminated and the curve is measuring the leak. The identity check runs before any grid.
 
 3. **The width had to be fixed before any window ran.** Choosing it after seeing the curve would
@@ -211,8 +218,8 @@ w9                         ####          window 40-50
        lives here              w3 and w4 only, by design
 ```
 
-Each row is 8 pairs × 4 seeds = 32 scored cells. The fork step lands inside only two of the nine
-placements, which is what lets the sweep disagree with it rather than being built to agree.
+Each row is 8 pairs × 4 seeds = 32 scored runs. The fork step lands inside only two of the nine
+placements, which is what lets the window curve disagree with it rather than being built to agree.
 
 ---
 
@@ -229,7 +236,7 @@ carries 15-22% of the total and the largest step is 1.8x the smallest
 width 25 every placement contains the fork step, so the curve would come out
 flat whatever the truth is, and the experiment would test nothing.
 
-So the width is set by what the sweep has to be able to resolve, not by where
+So the width is set by what the run across window positions has to be able to resolve, not by where
 the correction is large. Width 10 at stride 5 gives nine placements, each a
 fifth of the run, with the fork step inside only two of them (10-20 and 15-25).
 If timing matters those two win; if nothing peaks, timing does not matter, and
@@ -245,16 +252,16 @@ about which grid was run.
 ⬅️ [Previous](#how-wide-the-window-is-and-why-not-the-obvious-rule) | 📋 [TOC](#table-of-contents) | [Next](#purpose-and-goal) ➡️
 
 One sliding-window experiment over the same eight held-out pairs and four seeds
-the dose sweep used. The base is full guided PoE at every step, with the prompt
-on throughout; a width-10 window slid across the 50 steps at stride 5 gates only
-the injected r_t. Because conditioning never switches off, the only thing that
+the dose series used. The base is full guided PoE at every step, with the prompt
+on throughout; a width-10 window slid across the 50 steps at stride 5 switches only
+the injected r_t on and off. Because conditioning never switches off, the only thing that
 changes across the nine positions is when the correction acts.
 
 Two follow-on runs were added after the timing result, to remove its one confound. The windows
 differ in when the correction lands and also in how much of it lands, because the correction grows
 through the run. The swap run gives the late window exactly the total that works early; the matched
 run rescales every window to deliver the same total. Both are cat × dog, four seeds, through the
-same sampler as the sweep.
+same sampler as the window series.
 
 ---
 
@@ -264,22 +271,22 @@ same sampler as the sweep.
 
 **Purpose**
 
-It measures causally when the interaction term is needed, with no window assumed
+It measures causally when the [interaction term](../../../context/world/interaction-term.md) is needed, with no window assumed
 in advance. The peak is then compared against the fork step, which is the same
 moment estimated a different way, from cached trajectories rather than from new
 runs. Serves DoD 4 and Goal 2.
 
 **Goal**
 
-Register slot **F4**, in two halves read together: compose rate against window
-centre with the fork step drawn on it, and a strip of one cell across all nine
+The register's reserved place **F4**, in two halves read together: compose rate against window
+centre with the fork step drawn on it, and a strip of one run across all nine
 window positions with the scorer's verdict on each.
 
 ---
 
 ## Environment Facts This Plan Depends On
-- `co3` python at its absolute path. The 288-cell grid sweep goes to biggpu first, else bigbatch;
-  the three-window smoke test fits the in-session GPU.
+- `co3` python at its absolute path. The 288-run grid goes to biggpu first, else bigbatch;
+  the three-window first short run fits the in-session GPU.
 - `run_window_sweep.sh` writes under `$POE_REPAIR_OUTPUT_ROOT`, which must point at `/datasets`
   before launching a full grid, per the disk guard rule in
   [environment/storage.md](../../../environment/storage.md).
@@ -290,22 +297,22 @@ window positions with the scorer's verdict on each.
 
 **For Claude to execute.** Ask Claude to do these.
 
-### 1. 🔧 The harness and the grid
+### 1. 🔧 The runner and the grid
 
-- [x] **1.1** W2 harness: window-gated r_t injection on an always-conditioned PoE
+- [x] **1.1** The W2 runner: r_t injection switched on only inside the window, on an always-conditioned PoE
       base, and prove the λ=0-outside-window case equals plain PoE exactly.
       `scripts/interaction_term_window.py --window off --check-identity`.
 - [x] **1.2** Fix the window width and the grid in source, from the ‖r_t‖-vs-step
       curve. The section above records what the curve actually supports.
       `scripts/window_width.py`, `window_grid.py`.
-- [x] **1.3** Smoke in-session on one pair, one seed, three windows: early, over the
+- [x] **1.3** A first short run in-session on one pair, one seed, three windows: early, over the
       fork step, and late. `SMOKE=1 bash scripts/mechanism_study/run_window_sweep.sh`.
-- [x] **1.4** Full W2 grid: 288 cells, resumable, then score every image.
+- [x] **1.4** Full W2 grid: 288 runs, resumable, then score every image.
       `bash scripts/mechanism_study/run_window_sweep.sh`, then
       `python scripts/plot_window_curves.py`.
 - [x] **1.5** The curve and the image strips. `scripts/plot_window_curves.py` for the
       curve with the fork step drawn on it, `scripts/window_strip.py` for the
-      same cell across all nine windows.
+      same run across all nine windows.
 
 ▶ **Next: task 2.1**, the runs that untie timing from dose.
 
@@ -318,7 +325,7 @@ window positions with the scorer's verdict on each.
       `dose_matched/swap_manifest.json` and `swap_scores.json`.
 - [x] **2.2** The matched run: rescale every one of the nine windows to deliver the same total,
       then re-score. `--mode matched`, artifact `dose_matched/matched_scores.json`.
-- [x] **2.3** The front-loaded and back-loaded sweeps: five prefix cutoffs with the correction on
+- [x] **2.3** The front-loaded and back-loaded series: five prefix cutoffs with the correction on
       then off, and five suffix cutoffs with it off then on. `scripts/longer_correction_grid.py`,
       `later_start_grid.py`, `plot_growing_window_curves.py`, scored into
       `growing_window_curves.json`.
@@ -355,7 +362,7 @@ them.
    - Drag the window slider from the earliest position to the latest
    - Watch the picture, the scorer's verdict, and the marker on the curve
    - Expected result: all three move together, and the pictures visibly stop composing early in
-     the sweep
+     the series
    - ✅ the cliff is visible by eye, in the same place the curve puts it
    - ❌ the picture and the curve marker disagree: the manifest and the curve were built from
      different grids; rebuild both from `window_grid.py`
@@ -395,17 +402,17 @@ them.
 ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
 > **Why this checkpoint matters**: this plan's answer is what the paper's timing claim rests on. A
-> leaking harness would make every window position wrong in the same direction, which looks exactly
+> leaking runner would make every window position wrong in the same direction, which looks exactly
 > like a result.
 
 - **Pass criteria**
   - The all-off window reproduces plain PoE byte-identically
   - A mid-trajectory window visibly changes the output
-  - All 288 cells present, no missing or skipped windows
-  - The review file's pre-registered bar is answered
+  - All 288 runs present, no missing or skipped windows
+  - The review file's one question written before the run is answered
 
 - **Fail criteria (STOP)**
-  - The all-off window differs from plain PoE, meaning the gating leaks. Fix before any grid.
+  - The all-off window differs from plain PoE, meaning the switch leaks. Fix before any grid.
 
 - **Partial pass guidance**
   - A flat curve is a finding, not a failure: it would say timing does not matter. Record it as
@@ -426,14 +433,14 @@ figure below exists on disk and is tracked in git.
 
 | Item | Lane | What it shows | Built by | Register status |
 |------|------|---------------|----------|-----------------|
-| F4a when it arrives | — | Every cat × dog cell in the window grid, 9 windows across, 4 seeds down, time reading left to right | `window_position_grid.py` | **built** |
+| F4a when it arrives | — | Every cat × dog run in the window grid, 9 windows across, 4 seeds down, time reading left to right | `window_position_grid.py` | **built** |
 | F4b size is not timing | — | Correction size per step against compose rate per window, on one step axis | `size_vs_timing.py` | **built** |
 | F4c the cliff in language | — | The same nine windows read by caption similarity instead of by counting animals | `caption_readback.py` | **built** |
 | F4d timing not dose | — | 2×2 of real samples: early and late windows crossed with each other's delivered total | `timing_vs_dose.py` | **built** |
 | F4e cliff survives dose-matching | — | The nine-window rate at full strength and with every window rescaled to one total | `timing_cliff_matched_dose.py` | **built** |
 | F4f the window map | — | The window grid itself | `window_map_all_pairs.py` | ⚠️ no register row (instruction 4.1) |
-| F4g more start, same ceiling | — | Front-loaded sweep: five prefix cutoffs, correction on then off | `longer_correction_grid.py` | ⚠️ `reserved`, file exists (instruction 4.2) |
-| F4h too late to fix | — | Back-loaded sweep: five suffix cutoffs, correction off then on | `later_start_grid.py` | ⚠️ `reserved`, file exists (instruction 4.2) |
+| F4g more start, same ceiling | — | Front-loaded series: five prefix cutoffs, correction on then off | `longer_correction_grid.py` | ⚠️ `reserved`, file exists (instruction 4.2) |
+| F4h too late to fix | — | Back-loaded series: five suffix cutoffs, correction off then on | `later_start_grid.py` | ⚠️ `reserved`, file exists (instruction 4.2) |
 
 Numbers live in each figure's sidecar `.json` and in its register row, never in this plan.
 
@@ -490,9 +497,9 @@ OUT=/datasets/mmolefe/poe_repair_min/outputs/interaction_term/window
 $PY scripts/interaction_term_window.py --pair a_cat__x__a_dog --seed 9 \
     --window off --check-identity        # expect: byte-identical to PoE
 
-# The grid. Resumable, skips any cell whose image exists.
+# The grid. Resumable, skips any run whose image exists.
 bash scripts/mechanism_study/run_window_sweep.sh
-find $OUT/pairs -name '*_w*.png' | wc -l  # expect 288 for the sliding sweep
+find $OUT/pairs -name '*_w*.png' | wc -l  # expect 288 for the sliding window series
 
 # Score, then the two halves of F4, then the manifest the inspector reads.
 $PY scripts/plot_window_curves.py         # curve + peak band, prints missing windows
@@ -504,8 +511,8 @@ bash scripts/run_lora_inspector.sh        # prints the ssh -L line to tunnel wit
 ```
 
 **File:** [scripts/interaction_term_window.py](../../../scripts/interaction_term_window.py)
-**What it does:** gates only the injected r_t over `run_teacher_residual`'s `correction_window`,
-leaving conditioning on at every step. `--check-identity` is the leak check.
+**What it does:** switches the injected r_t on only inside `run_teacher_residual`'s
+`correction_window`, leaving conditioning on at every step. `--check-identity` is the leak check.
 
 **File:** [scripts/interaction_term_dose_matched.py](../../../scripts/interaction_term_dose_matched.py)
 **What it does:** `--mode swap` crosses the early and late windows against each other's delivered

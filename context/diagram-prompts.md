@@ -1,6 +1,6 @@
 # poe_repair_min context: illustrated map
 
-What the project's real-world objects are (subject lane) and how one cell's data moves from a
+What the project's real-world objects are (subject lane) and how one run's data moves from a
 prompt pair to a scored verdict (process lane). 8 prompts · 0 rendered · 8 waiting.
 
 ## Table of contents
@@ -39,7 +39,7 @@ Navigation: ⬅️ [Art direction](#art-direction) | 📋 [TOC](#table-of-conten
 |---|---|
 | warm accent (amber) | the interaction term / the correction being added |
 | cool accent (blue) | the plain PoE prediction, uncorrected |
-| green | a cell the scorer calls `compose` |
+| green | a run the scorer calls `compose` |
 | gray (neutral) | everything not carrying meaning: containers, labels, backgrounds |
 
 ## Glyph vocabulary
@@ -159,7 +159,7 @@ a thin stacked-layer insert labeled "LoRA, rank-8" attached to it. An arrow labe
 interaction term" leaves the LoRA insert in amber and rejoins the PoE prediction arrow (labeled
 "corrected PoE"), producing an output panel showing two separated animal silhouettes closer to
 the Mono output of Prompt 1. A crossed-out "joint prompt" box sits beside the LoRA insert with a
-"never seen at inference" label, drawn hedged (dashed outline).
+"never seen at inference" label, drawn dashed.
 
 Cast: the cross-attention slab, the rank-8 LoRA insert, the amber predicted-interaction-term
 arrow, the crossed-out joint-prompt box, the corrected-output artifact.

@@ -7,10 +7,10 @@ changes one sentence of it, or closes.
 
 | Within this scope | Plan | Status |
 |---|---|---|
-| 3 of 4 | [idea-01-what-the-current-benchmarks-score](idea-01-what-the-current-benchmarks-score.md) | ⚠️ blocked by gate-01 |
+| 3 of 4 | [scoring the current benchmarks](idea-01-what-the-current-benchmarks-score.md) | ⚠️ blocked by the literature check |
 | **4 of 4** | **this plan** | **⚠️ blocked by the other three** |
 
-Design only. The decision lives in [../review/gate-02-promote-or-close.md](../review/gate-02-promote-or-close.md).
+Design only. The decision lives in [this plan's review file](../review/gate-02-promote-or-close.md).
 
 ## What this asks, in one line
 Given what the other three plans found, does this scope earn a numbered step in the paper, a
@@ -53,8 +53,8 @@ numbers that decided it, and the consequence for `scorer_validated.json` written
   gets written down as the finding rather than left as an absence.
 
 ## Tasks
-- [ ] Read the three verdicts: `gate-01`'s literature outcome, `instrument-01`'s two rates
-  and coverage number, `idea-01`'s agreement table.
+- [ ] Read the three verdicts: the literature outcome from `gate-01`, the two rates and the
+  coverage number from `instrument-01`, the agreement table from `idea-01`.
 - [ ] Judge against the two promotion levels in `MASTER_PLAN.md`, quoting the numbers that
   decided it rather than summarising them.
 - [ ] If the big level fired: state re-certify or replace for `scorer_validated.json`, name

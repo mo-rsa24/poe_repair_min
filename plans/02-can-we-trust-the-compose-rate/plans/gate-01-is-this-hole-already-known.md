@@ -8,9 +8,9 @@ wants to measure.
 | Within this scope | Plan | Status |
 |---|---|---|
 | **1 of 4** | **this plan** | **⚠️ not started** |
-| 2 of 4 | [instrument-01-the-three-state-labelled-set](instrument-01-the-three-state-labelled-set.md) | ⚠️ not started |
+| 2 of 4 | [building the three-state labelled set](instrument-01-the-three-state-labelled-set.md) | ⚠️ not started |
 
-Design only. The verdict lives in [../review/gate-01-is-this-hole-already-known.md](../review/gate-01-is-this-hole-already-known.md).
+Design only. The verdict lives in [this plan's review file](../review/gate-01-is-this-hole-already-known.md).
 
 ## What this asks, in one line
 Two sentences this scope wants to build on may already be in the literature, in which case
@@ -21,7 +21,7 @@ either of those is news.
 
 ## Why this plan exists
 This scope's value depends entirely on the answer. If both halves are already named and
-measured in a published benchmark, the honest move is a methods paragraph citing it rather than
+measured in a published benchmark, the right move is a methods paragraph citing it rather than
 a new metric. Finding that out costs one session and no GPU. Finding it out after building the metric
 costs the metric.
 

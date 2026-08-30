@@ -51,8 +51,8 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 **This is the one question whose answer frames plan 06.**
 
-- [ ] ⚠️ **Is the last-half slope of `eval/frac_distance_reached` consistent with zero?** Bar,
-  fixed before looking: over steps 50k to 100k, a linear fit whose slope is smaller in magnitude
+- [ ] ⚠️ **Is the last-half slope of `eval/frac_distance_reached` consistent with zero?** The
+  threshold, fixed before looking: over steps 50k to 100k, a linear fit whose slope is smaller in magnitude
   than the curve's own per-eval-point noise (the standard deviation of residuals) means ceiling;
   a slope larger than that noise, and positive, means waypoint. The slope, the noise, and the
   verdict go here.
@@ -63,17 +63,21 @@ Navigation: ⬅️ [The bar](#the-pre-registered-bar) | 📋 [TOC](#table-of-con
 
 - [ ] ⚠️ Do the W&B curve and the local `history.json` extraction agree at every checkpoint, to
   within logging precision?
-- [ ] ⚠️ Does held-out compose rate (0.961 at 50k and 60k, unscored beyond) tell the same story
-  as `frac_distance_reached`, or do the two metrics diverge late?
+- [ ] ⚠️ Does held-out [compose rate](../../../context/world/compose-rate.md) (0.961 at 50k and
+  60k, unscored beyond) tell the same story as `frac_distance_reached`, or do the two metrics
+  diverge late?
+
+> Held-out means the pairs were never shown during training, so the number says how well the
+> adapter does on animals it has not seen.
 
 ## Could the answer be an artefact
 
 Navigation: ⬅️ [Before/after](#written-before-the-run-answered-after) | 📋 [TOC](#table-of-contents) | [Next](#still-open) ➡️
 
-- [ ] ⚠️ **Was the comparison fair?** The metric averages over eval cells; confirm the cell set
-  did not change across the run (same pairs, same seeds at every eval step).
-- [ ] ⚠️ **Was the instrument sound?** `eval/frac_distance_reached` came from instrument-02's
-  wiring; its smoke-run verdict is in
+- [ ] ⚠️ **Was the comparison fair?** The metric averages over the eval runs; confirm the set of
+  runs did not change across training (same pairs, same seeds at every eval step).
+- [ ] ⚠️ **Was the instrument sound?** `eval/frac_distance_reached` came from the wiring built in
+  `instrument-02`; the verdict on its first short run is in
   [that review file](../../04-does-the-fix-reach-unseen-pairs/review/instrument-02-three-live-curves-while-training.md).
 - [ ] ⚠️ **Did the run respect the environment?** Not applicable: nothing runs; the read is of
   logs already on disk.

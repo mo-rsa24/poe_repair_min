@@ -1,7 +1,10 @@
-# 🧪 The free probe: posterior-mean drift
+# 🧪 The free test: posterior-mean drift
+
+**What this plan asks:** in each cached run, does the model's running guess at the final image
+stop moving before the paths visibly separate?
 
 Step 45 in the root running order; waits on nothing (runs beside 44); next is
-[wiring the oracle](03-wire-the-oracle.md).
+[wiring the endpoint predictor](03-wire-the-oracle.md).
 
 ## Recommended prompt (after this plan completes)
 
@@ -18,8 +21,8 @@ Step 45 in the root running order; waits on nothing (runs beside 44); next is
 | Step | Plan | What it does |
 |------|------|-------------|
 | 44 (previous) | [basins by hand](01-basins-by-hand.md) | proves basins and a ridge exist |
-| **45 (current)** | **The free probe** | **posterior-mean drift per cell, the first speciation numbers, judged against the pre-registered ordering** |
-| 46 (next) | [wire the oracle](03-wire-the-oracle.md) | the LCM-SDXL adapter and its smoke |
+| **45 (current)** | **The free test** | **posterior-mean drift per pair-and-seed run, the first speciation numbers, judged against the pre-registered ordering** |
+| 46 (next) | [wire the endpoint predictor](03-wire-the-oracle.md) | the LCM-SDXL adapter and its one-state check |
 
 ## Table of contents
 
@@ -44,25 +47,33 @@ Step 45 in the root running order; waits on nothing (runs beside 44); next is
 
 Navigation: ⬅️ [Previous](#position-in-the-plan-tree) | 📋 [TOC](#table-of-contents) | [Next](#considerations) ➡️
 
-**The experiment.** For every cached cell, compute how far Tweedie's running estimate of the
-final image moves between consecutive steps (posterior-mean drift), find the step where it
-settles, and set that settling step beside the cell's divergence step from the existing
-trajectory-divergence analyses.
+**The experiment.** For every cached pair-and-seed run, compute how far Tweedie's running
+estimate of the final image moves between consecutive steps (posterior-mean drift), find the
+step where it settles, and set that settling step beside the same run's divergence step from the
+existing trajectory-divergence analyses.
 
-**The hypothesis.** The settling step lands at or before the divergence step in every cell
-where both are defined, because settling reads the decision and divergence reads its visible
-display. If true, the decide-then-descend story survives its first contact and the lag
-(divergence minus settling) becomes a measured per-cell quantity. If false in even one clean
-cell, the ordering claim is wrong as stated and the review file records what broke it.
-Rationale: shared noise masks a committed difference until it is removed.
+> **Tweedie** is the formula that turns a noisy state and the model's noise prediction into a
+> running guess at the final clean image.
 
-**Context details.** All cached cells; per state the estimate is
+> **Speciation** is the field's word for the step at which the outcome stops being undecided.
+> A **basin** is the set of states that all flow to the same ending, so the posterior mean
+> settles once the posterior mass has concentrated on one of them.
+
+**The hypothesis.** The settling step lands at or before the divergence step in every
+pair-and-seed run where both are defined, because settling reads the decision and divergence
+reads its visible display. If true, the story that the run decides early and then only descends
+survives its first contact, and the lag (divergence minus settling) becomes a measured quantity
+per pair-and-seed run. If false in even one clean run, the ordering claim is wrong as stated and
+the review file records what broke it. Rationale: shared noise masks a committed difference
+until it is removed.
+
+**Context details.** All cached pair-and-seed runs; per state the estimate is
 `x0_hat = (x_t - sigma_t * eps) / alpha_t`. Whether per-step epsilons are cached is unknown;
 task 1.1 settles it and prices the plan (zero extra compute if cached, 2 to 4 U-Net calls per
 state if not).
 
-**This plan's job.** Produce speciation numbers with no new model, so the oracle's numbers in
-plan 05 arrive with an independent cross-check already standing.
+**This plan's job.** Produce speciation numbers with no new model, so the endpoint predictor's
+numbers in plan 05 arrive with an independent cross-check already standing.
 
 **Associated materials.** Verdict: [the review file](../review/02-the-free-probe.md). Design
 reasoning: [the decision ledger](../decisions-taken-here.md). Divergence numbers:
@@ -75,7 +86,8 @@ reasoning: [the decision ledger](../decisions-taken-here.md). Divergence numbers
 Navigation: ⬅️ [Previous](#quick-context-where-you-are) | 📋 [TOC](#table-of-contents) | [Next](#the-claim) ➡️
 
 **Expected runtime.** If epsilons are cached: minutes, CPU-friendly. If not: one GPU pass over
-the grid, a few hours; measure a single cell first and write the number in the Runs table.
+the grid, a few hours; measure a single pair-and-seed run first and write the number in the Runs
+table.
 
 **Prerequisites.** The cache present; the divergence analyses readable.
 
@@ -98,34 +110,34 @@ unless the recompute path is taken, in which case log it to `prime_lab/poe-repai
 
 Navigation: ⬅️ [Previous](#considerations) | 📋 [TOC](#table-of-contents) | [Next](#why-this-plan-exists) ➡️
 
-**A per-cell speciation table from the cache alone, judged against the pre-registered ordering:
-settling at or before divergence, in every cell where both are defined.**
+**A speciation table per pair-and-seed run from the cache alone, judged against the
+pre-registered ordering: settling at or before divergence, everywhere both are defined.**
 
 **Why this matters right now:** it is the cheapest test of the scope's central story, and it
-gives plan 05's oracle curves an independent probe to agree or disagree with.
+gives plan 05's endpoint-predictor curves an independent read to agree or disagree with.
 
 ## Why this plan exists
 
 Navigation: ⬅️ [Previous](#the-claim) | 📋 [TOC](#table-of-contents) | [Next](#what-happens-visual) ➡️
 
-**The gap.** The repo measures divergence (paths separating) but has no per-cell number for the
-decision itself.
+**The gap.** The repo measures divergence (paths separating) but has no number for the
+decision itself, per pair-and-seed run.
 
 **The approach.** The posterior mean settles when the posterior mass has concentrated on one
 basin, so its settling step is a free commitment read.
 
 **Key insights:**
-1. Two independent probes agreeing on speciation is the corroboration figure; a systematic
+1. Two independent tests agreeing on speciation is the corroboration figure; a systematic
    disagreement is itself a finding and is reported, never hidden.
-2. The ordering bar lives in the script as `ORDERING_HOLDS_FRAC_MIN = 1.0` (every clean cell),
-   set now, before any number exists.
+2. The ordering threshold lives in the script as `ORDERING_HOLDS_FRAC_MIN = 1.0` (every clean
+   pair-and-seed run), set now, before any number exists.
 
 ## What happens (visual)
 
 Navigation: ⬅️ [Previous](#why-this-plan-exists) | 📋 [TOC](#table-of-contents) | [Next](#description-what-to-build) ➡️
 
 ```
- per cell:
+ per pair-and-seed run:
  drift(t) = || x0_hat(t) - x0_hat(t+1) ||   (fp32)
 
  drift |\
@@ -141,12 +153,13 @@ Navigation: ⬅️ [Previous](#why-this-plan-exists) | 📋 [TOC](#table-of-cont
 
 Navigation: ⬅️ [Previous](#what-happens-visual) | 📋 [TOC](#table-of-contents) | [Next](#purpose-and-goal) ➡️
 
-1. **The drift script** `scripts/commitment/posterior_drift.py`: per cell, the drift curve,
-   the settling step under a bar in source (`DRIFT_SETTLED_MAX`, the relative drift below
-   which all remaining steps must stay), and a JSON row per cell carrying the settling step,
-   the cell's divergence step, and the lag.
+1. **The drift script** `scripts/commitment/posterior_drift.py`: per pair-and-seed run, the
+   drift curve, the settling step under a threshold in source (`DRIFT_SETTLED_MAX`, the relative
+   drift below which all remaining steps must stay), and a JSON row per run carrying the
+   settling step, that run's divergence step, and the lag.
 2. **The comparison table** `posterior_drift/speciation_vs_divergence.json` plus one figure:
-   settling step against divergence step, one point per cell, the identity line drawn.
+   settling step against divergence step, one point per pair-and-seed run, the identity line
+   drawn.
 3. **Output root**: `/datasets/mmolefe/poe_repair_min/outputs/commitment/posterior_drift/`.
 
 ## Purpose and goal
@@ -154,11 +167,11 @@ Navigation: ⬅️ [Previous](#what-happens-visual) | 📋 [TOC](#table-of-conte
 Navigation: ⬅️ [Previous](#description-what-to-build) | 📋 [TOC](#table-of-contents) | [Next](#tasks) ➡️
 
 **Purpose.** Objective 2 of [the master plan](../MASTER_PLAN.md): measure the speciation step
-per cell with two independent probes; this plan is probe one.
+per pair-and-seed run with two independent tests; this plan is the first of the two.
 
 **Goals:**
-1. A settling step exists per cell, with the bar that defined it in source.
-2. The ordering question in the review file is answered ✅ or ❌ with the per-cell table.
+1. A settling step exists per pair-and-seed run, with the threshold that defined it in source.
+2. The ordering question in the review file is answered ✅ or ❌ with the full table.
 
 ## Tasks
 
@@ -178,28 +191,29 @@ Navigation: ⬅️ [Previous](#purpose-and-goal) | 📋 [TOC](#table-of-contents
 ◀ **Needs: [task 0.1](#0--preflight-check-this-plan-before-working-from-it)**.
 
 - [ ] **1.1** Establish whether per-step epsilons are cached, and print the answer.
-  - Inspect one cell's files; print which tensors exist per step and their shapes.
+  - Inspect one pair-and-seed run's files; print which tensors exist per step and their shapes.
   - **Done when:** the review file's orientation paragraph records "epsilons cached: yes/no"
-    and, if no, the measured single-cell recompute time that prices the grid.
-- [ ] **1.2** Write `scripts/commitment/posterior_drift.py` per the Description, bars
+    and, if no, the measured recompute time for a single pair-and-seed run, which prices the grid.
+- [ ] **1.2** Write `scripts/commitment/posterior_drift.py` per the Description, thresholds
   `DRIFT_SETTLED_MAX` and `ORDERING_HOLDS_FRAC_MIN = 1.0` in the source.
-  - **Done when:** the script runs on one cell and emits its drift curve and settling step.
+  - **Done when:** the script runs on one pair-and-seed run and emits its drift curve and
+    settling step.
 
-▶ **Next: [task 2.1](#2--run-over-every-cell)**.
+▶ **Next: [task 2.1](#2--run-over-every-pair-and-seed-run)**.
 
-### 2. 🚀 Run over every cell
+### 2. 🚀 Run over every pair-and-seed run
 
 ◀ **Needs: [tasks 1.1 to 1.2](#1--price-the-plan-then-build-the-script)**.
 
-- [ ] **2.1** Run the drift script over all cached cells.
+- [ ] **2.1** Run the drift script over everything in the cache.
 
     ```bash
     co3 python scripts/commitment/posterior_drift.py --all-cells \
       --out /datasets/mmolefe/poe_repair_min/outputs/commitment/posterior_drift/
     ```
 
-  - **Done when:** `speciation_vs_divergence.json` holds one row per cell (row count printed
-    and equal to the cell count from plan 01's task 1.1), and the scatter figure exists.
+  - **Done when:** `speciation_vs_divergence.json` holds one row per pair-and-seed run (row
+    count printed and equal to the count from plan 01's task 1.1), and the scatter figure exists.
 
 ▶ **Next: [instruction 3.1](#3--read-the-scatter-and-record-the-verdict)**.
 
@@ -224,14 +238,14 @@ Navigation: ⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](
 
 ### 3. 👁️ Read the scatter, and record the verdict
 
-◀ **Needs: [task 2.1](#2--run-over-every-cell)** done, so the scatter exists.
+◀ **Needs: [task 2.1](#2--run-over-every-pair-and-seed-run)** done, so the scatter exists.
 
 3.1 **Open the scatter figure** under
    `/datasets/mmolefe/poe_repair_min/outputs/commitment/posterior_drift/`.
-   - Expected result: one point per cell, settling step on y, divergence step on x, the
-     identity line drawn.
-   - ✅ If every point sits on or below the identity line, answer the review file's bar ✅.
-   - ❌ If any clean cell sits above the line, answer ❌ and copy that cell's id into
+   - Expected result: one point per pair-and-seed run, settling step on y, divergence step on x,
+     the identity line drawn.
+   - ✅ If every point sits on or below the identity line, answer the review file's question ✅.
+   - ❌ If any clean point sits above the line, answer ❌ and copy that run's id into
      "Asked after the result" for a follow-up look.
 
 3.2 **Record where the settling steps cluster** (near 10, or inside 18 to 36); one line in the
@@ -244,17 +258,17 @@ Navigation: ⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](
 
 Navigation: ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
-> **This gate protects the scope's story**: if the ordering fails broadly, decide-then-descend
-> is wrong and plan 05's interpretation must change before it runs.
+> **The scope's story rests on this**: if the ordering fails broadly, the run does not decide
+> early and then only descend, and plan 05's interpretation must change before it runs.
 
 - **Pass criteria:**
-  - Every clean cell's settling step is at or before its divergence step.
+  - Every clean pair-and-seed run's settling step is at or before its divergence step.
 - **Fail criteria (STOP and reassess, not abandon):**
-  - Multiple clean cells settle after diverging; the probe or the story is wrong, and the
-    review file's artefact checks come first.
+  - Several clean runs settle after diverging; either the measurement or the story is wrong, and
+    the review file's artefact checks come first.
 - **Partial pass guidance:**
-  - A handful of ambiguous cells (settling undefined because drift never settles under the
-    bar) is recorded as 🟡 per cell, not forced into either verdict.
+  - A handful of ambiguous runs (settling undefined because drift never settles under the
+    threshold) is recorded as 🟡 one by one, not forced into either verdict.
 
 **When you get results, answer** [the review file](../review/02-the-free-probe.md).
 
@@ -266,14 +280,14 @@ Navigation: ⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-conte
 
 | Item | Lane | Prompt file | What it shows | Save to |
 |------|------|-------------|---------------|---------|
-| The free probes | subject | [diagram-prompts.md](../diagram-prompts.md#prompt-3-subject-the-free-probes) | the drift curve settling | `../diagrams/when-does-the-outcome-lock-in-03-the-free-probes.png` |
+| The free tests | subject | [diagram-prompts.md](../diagram-prompts.md#prompt-3-subject-the-free-probes) | the drift curve settling | `../diagrams/when-does-the-outcome-lock-in-03-the-free-probes.png` |
 | Process lane v01 | process | [diagram-prompts.md](../diagram-prompts.md#process-lane) | the five plans as a journey | `../diagrams/when-does-the-outcome-lock-in-process-01.png` |
 
 #### Generated during execution
 
 | Item | Lane | Description | Generated by | Status | Details |
 |------|------|-------------|--------------|--------|---------|
-| Settling vs divergence scatter | — | settling step (y) against divergence step (x), one point per cell, identity line | `posterior_drift.py` | ⏳ | filed to `artifacts/results/when-does-the-outcome-lock-in/settling-step-vs-divergence-step__all-cells.png` |
+| Settling vs divergence scatter | — | settling step (y) against divergence step (x), one point per pair-and-seed run, identity line | `posterior_drift.py` | ⏳ | filed to `artifacts/results/when-does-the-outcome-lock-in/settling-step-vs-divergence-step__all-cells.png` |
 
 #### Organization workflow
 
@@ -298,7 +312,7 @@ Navigation: ⬅️ [Previous](#orchestration-keeping-catalogs-and-plan-files-in-
 **Relevant section:** the alpha/sigma schedule the drift computation reads its coefficients from.
 
 ```python
-# the whole probe, per cell
+# the whole computation, per pair-and-seed run
 x0_hat = (traj[t] - sigma[t] * eps[t]) / alpha[t]        # fp32
 drift[t] = (x0_hat[t] - x0_hat[t + 1]).norm() / x0_hat[t + 1].norm()
 t_star = first t after which drift stays below DRIFT_SETTLED_MAX
@@ -308,7 +322,8 @@ t_star = first t after which drift stays below DRIFT_SETTLED_MAX
 
 Navigation: ⬅️ [Previous](#code-references) | 📋 [TOC](#table-of-contents)
 
-[Wire the oracle](03-wire-the-oracle.md): the LCM-SDXL adapter, so probe two exists.
+[Wire the endpoint predictor](03-wire-the-oracle.md): the LCM-SDXL adapter, so the second test
+exists.
 
 ## Error Matrix
 

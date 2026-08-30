@@ -1,7 +1,10 @@
 # 🔬 Basins by hand
 
+**What this plan asks:** does the composed flow really have separate endings, with a knife-edge
+between them that a 1% nudge can fall off?
+
 Step 44 in the root running order; waits on nothing; next is
-[the free probe](02-the-free-probe.md).
+[the free test](02-the-free-probe.md).
 
 ## Recommended prompt (after this plan completes)
 
@@ -11,7 +14,7 @@ Step 44 in the root running order; waits on nothing; next is
 
 ## Recommended skill
 
-— custom; no skill fits (a twenty-line probe script against repo code).
+— custom; no skill fits (a twenty-line script against repo code).
 
 ## Position in the plan tree
 
@@ -19,7 +22,7 @@ Step 44 in the root running order; waits on nothing; next is
 |------|------|-------------|
 | 43 (previous) | [revalidate the scorer off animals](../../01-showcase-the-trained-lora/plans/13-revalidate-the-scorer-off-animals.md) | the label-pass validation in the sibling scope |
 | **44 (current)** | **Basins by hand** | **proves basins and a ridge exist for the composed flow, before any new model is downloaded** |
-| 45 (next) | [the free probe](02-the-free-probe.md) | posterior-mean drift as the first speciation number |
+| 45 (next) | [the free test](02-the-free-probe.md) | posterior-mean drift as the first speciation number |
 
 ## Table of contents
 
@@ -48,18 +51,25 @@ Navigation: ⬅️ [Previous](#position-in-the-plan-tree) | 📋 [TOC](#table-of
 run three times with the repo's own DDIM code, and see whether the three endings agree. Repeat
 at an early, a middle, and a late step.
 
-**The hypothesis.** Basins are real for the composed flow: at a late step the three endings are
-the same image, at an early step they are free to differ. If true, the commitment probe this
-scope builds has a well-posed thing to measure. If false, the valley picture is wrong, the
-basin-oracle premise dies here, and the scope re-marks before any model download. Rationale:
-a deterministic flow assigns every state one endpoint, and endpoints should cluster into modes.
+> A **basin** is the field's term for the set of states that all flow to the same ending. The
+> ridge is the boundary between two of them, where a nudge decides which ending you get.
 
-**Context details.** One pair-and-seed cell from the cached trajectories (each cell holds a
+> **Speciation**, the number plan 02 goes on to measure, is the field's word for the step at
+> which the outcome stops being undecided.
+
+**The hypothesis.** Basins are real for the composed flow: at a late step the three endings are
+the same image, at an early step they are free to differ. If true, the commitment test this
+scope builds has a well-posed thing to measure. If false, the valley picture is wrong, the
+premise behind the endpoint predictor dies here, and the scope re-marks before any model
+download. Rationale: a deterministic flow assigns every state one endpoint, and endpoints should
+cluster into modes.
+
+**Context details.** One pair-and-seed run from the cached trajectories (each holds a
 50-step `latent_trajectory.pt`); steps 5, 25 and 40; three endings per step, roughly 300 U-Net
 calls per step-triplet.
 
 **This plan's job.** Prove the premise cheaply, in an afternoon, before plans 03 to 05 spend
-anything on the oracle.
+anything on the endpoint predictor.
 
 **Associated materials.** The verdict lands in [the review file](../review/01-basins-by-hand.md).
 The reasoning behind the design is in [the decision ledger](../decisions-taken-here.md); the
@@ -74,7 +84,7 @@ Navigation: ⬅️ [Previous](#quick-context-where-you-are) | 📋 [TOC](#table-
 **Expected runtime.** A few minutes of GPU per step-triplet, three triplets total; measure the
 first and write the number into the review file's Runs table.
 
-**Prerequisites.** A GPU node and the cached cells present on `/datasets`.
+**Prerequisites.** A GPU node and the cached pair-and-seed runs present on `/datasets`.
 
 **Project tracking.** Output is small and local: `/datasets/mmolefe/poe_repair_min/outputs/commitment/basins_by_hand/`.
 No W&B run needed at this size.
@@ -95,8 +105,8 @@ No W&B run needed at this size.
 
 Navigation: ⬅️ [Previous](#considerations) | 📋 [TOC](#table-of-contents) | [Next](#why-this-plan-exists) ➡️
 
-**One cell, three probed steps, nine finished endings: enough to prove or kill the premise that
-the composed flow has basins with an unstable ridge between them.**
+**One pair-and-seed run, three tested steps, nine finished endings: enough to prove or kill the
+premise that the composed flow has basins with an unstable ridge between them.**
 
 **Why this matters right now:** every later plan in this scope measures "which basin, decided
 when"; if there are no basins, there is nothing to measure and the scope stops at a cost of one
@@ -140,14 +150,14 @@ Navigation: ⬅️ [Previous](#why-this-plan-exists) | 📋 [TOC](#table-of-cont
 
 Navigation: ⬅️ [Previous](#what-happens-visual) | 📋 [TOC](#table-of-contents) | [Next](#purpose-and-goal) ➡️
 
-1. **The probe script** `scripts/commitment/perturb_finish.py`. Loads one cell's
+1. **The test script** `scripts/commitment/perturb_finish.py`. Loads one pair-and-seed run's
    `latent_trajectory.pt`, builds the two nudged copies, finishes all three from a given step
    with the same composed epsilon the cache was made with (reusing `load_ddim_scheduler` and
    `ddim_prev_from_x0_eps`), decodes the endings, saves PNGs and a JSON of relative latent
-   distances. The agreement bar lives in this file as a constant
+   distances. The agreement threshold lives in this file as a constant
    (`REL_ENDING_DIST_MAX`), set before any run.
 2. **The output**: `/datasets/mmolefe/poe_repair_min/outputs/commitment/basins_by_hand/`
-   holding nine PNGs, one JSON per probed step, and one 3x3 contact-sheet image.
+   holding nine PNGs, one JSON per tested step, and one 3x3 contact-sheet image.
 
 ## Purpose and goal
 
@@ -158,7 +168,7 @@ structure is measurable on the cached trajectories at all.
 
 **Goals:**
 1. Nine endings exist on disk with their distance JSONs.
-2. The review file's bar is answered ✅ or ❌, either way with the numbers.
+2. The review file's question is answered ✅ or ❌, either way with the numbers.
 
 ## Tasks
 
@@ -172,19 +182,19 @@ Navigation: ⬅️ [Previous](#purpose-and-goal) | 📋 [TOC](#table-of-contents
   - Paste: `/verify-plan @plans/05-when-does-the-outcome-lock-in/plans/01-basins-by-hand.md`
   - Done when: the report comes back clean, or its proposals have been applied.
 
-▶ **Next: [task 1.1](#1--build-the-probe-script)**, the first real work.
+▶ **Next: [task 1.1](#1--build-the-test-script)**, the first real work.
 
-### 1. 🔧 Build the probe script
+### 1. 🔧 Build the test script
 
 ◀ **Needs: [task 0.1](#0--preflight-check-this-plan-before-working-from-it)**, so the plan is known good.
 
-- [ ] **1.1** Locate one cached cell and print what was found.
-  - List the pair-and-seed cells under `/datasets/mmolefe/poe_repair_min/outputs/` that hold a
-    `latent_trajectory.pt` (the same cells the trajectory-divergence analyses read), print the
-    count and the chosen cell's path.
-  - **Done when:** the chosen cell's path and the total cell count are printed and recorded in
+- [ ] **1.1** Locate one cached pair-and-seed run and print what was found.
+  - List the pair-and-seed runs under `/datasets/mmolefe/poe_repair_min/outputs/` that hold a
+    `latent_trajectory.pt` (the same ones the trajectory-divergence analyses read), print the
+    count and the chosen run's path.
+  - **Done when:** the chosen run's path and the total count are printed and recorded in
     the review file's orientation paragraph. A count of zero stops the plan here.
-- [ ] **1.2** Write `scripts/commitment/perturb_finish.py` per the Description, bar constant
+- [ ] **1.2** Write `scripts/commitment/perturb_finish.py` per the Description, threshold constant
   `REL_ENDING_DIST_MAX` in the source.
   - **Done when:** the script exists and `co3 python scripts/commitment/perturb_finish.py --help`
     prints its arguments.
@@ -193,9 +203,9 @@ Navigation: ⬅️ [Previous](#purpose-and-goal) | 📋 [TOC](#table-of-contents
 
 ### 2. 🚀 Run the three triplets
 
-◀ **Needs: [tasks 1.1 to 1.2](#1--build-the-probe-script)** done, so the script and the cell exist.
+◀ **Needs: [tasks 1.1 to 1.2](#1--build-the-test-script)** done, so the script and the chosen run exist.
 
-- [ ] **2.1** Run the probe at steps 5, 25 and 40 on the chosen cell.
+- [ ] **2.1** Run the test at steps 5, 25 and 40 on the chosen pair-and-seed run.
 
     ```bash
     co3 python scripts/commitment/perturb_finish.py --cell <chosen-cell-path> \
@@ -234,16 +244,16 @@ Navigation: ⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](
 3.1 **Open the contact sheet** at
    `/datasets/mmolefe/poe_repair_min/outputs/commitment/basins_by_hand/contact_sheet.png`
    (over the SSH port-forward image viewer or by copying it local).
-   - Expected result: a 3x3 grid, rows = probed steps 5, 25, 40; columns = nudged-down,
+   - Expected result: a 3x3 grid, rows = tested steps 5, 25, 40; columns = nudged-down,
      untouched, nudged-up endings.
    - ✅ If the step-40 row shows three versions of the same image and the step-5 row shows any
      visible divergence, record "basins real" in the review file.
    - ❌ If the step-40 row shows different images, record "picture wrong" in the review file and
-     stop the scope at the gate below.
+     stop the scope, per the pass and fail rules below.
 
 3.2 **Record the numbers beside the eyeball read.**
    - [ ] Open the three JSONs, copy each step's two relative distances into
-     [the review file](../review/01-basins-by-hand.md) under the bar question.
+     [the review file](../review/01-basins-by-hand.md) under its one pre-registered question.
 
 ▶ **Next: the engagement gate**, then [plan 02](02-the-free-probe.md).
 
@@ -251,12 +261,12 @@ Navigation: ⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](
 
 Navigation: ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
-> **This gate protects every later plan in the scope**: if basins are not real for the composed
-> flow, plans 02 to 05 measure nothing and must not run.
+> **Nothing later in this scope may run until this passes**: if basins are not real for the
+> composed flow, plans 02 to 05 measure nothing.
 
 - **Pass criteria:**
-  - Step-40 endings agree under `REL_ENDING_DIST_MAX` (both relative distances below the bar)
-    and the eyeball read concurs.
+  - Step-40 endings agree under `REL_ENDING_DIST_MAX` (both relative distances below the
+    threshold) and the eyeball read concurs.
   - Step-5 endings were free to differ (no requirement that they do).
 - **Fail criteria (STOP):**
   - Step-40 endings disagree under a 1% nudge, by number or by eye. The scope's premise is
@@ -275,8 +285,8 @@ Navigation: ⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-conte
 
 | Item | Lane | Prompt file | What it shows | Save to |
 |------|------|-------------|---------------|---------|
-| The free probes | subject | [diagram-prompts.md](../diagram-prompts.md#prompt-3-subject-the-free-probes) | the perturbation triplet and the drift curve | `../diagrams/when-does-the-outcome-lock-in-03-the-free-probes.png` |
-| Process lane v01 | process | [diagram-prompts.md](../diagram-prompts.md#process-lane) | the five plans as a journey with their gates | `../diagrams/when-does-the-outcome-lock-in-process-01.png` |
+| The free tests | subject | [diagram-prompts.md](../diagram-prompts.md#prompt-3-subject-the-free-probes) | the perturbation triplet and the drift curve | `../diagrams/when-does-the-outcome-lock-in-03-the-free-probes.png` |
+| Process lane v01 | process | [diagram-prompts.md](../diagram-prompts.md#process-lane) | the five plans as a journey, with what each one must pass | `../diagrams/when-does-the-outcome-lock-in-process-01.png` |
 
 #### Generated during execution
 
@@ -286,7 +296,7 @@ Navigation: ⬅️ [Previous](#the-engagement-gate) | 📋 [TOC](#table-of-conte
 
 #### Organization workflow
 
-1. Run the probe; 2. Judge by eye; 3. Copy the contact sheet into `artifacts/results/` with its
+1. Run the test; 2. Judge by eye; 3. Copy the contact sheet into `artifacts/results/` with its
 card entry; 4. Link it here.
 
 ## Orchestration: keeping catalogs and plan files in sync
@@ -308,7 +318,7 @@ Navigation: ⬅️ [Previous](#orchestration-keeping-catalogs-and-plan-files-in-
 
 **File:** [poe_repair/runtime.py](../../../poe_repair/runtime.py)
 **Functions:** `load_ddim_scheduler`, `ddim_prev_from_x0_eps`
-**Relevant section:** the DDIM stepping the probe reuses; the probe never reimplements the update.
+**Relevant section:** the DDIM stepping this script reuses; it never reimplements the update.
 
 ```python
 # perturb_finish, the core loop
@@ -322,7 +332,7 @@ for delta in (-1, 0, +1):
 
 Navigation: ⬅️ [Previous](#code-references) | 📋 [TOC](#table-of-contents)
 
-[The free probe](02-the-free-probe.md): posterior-mean drift as the first speciation number,
+[The free test](02-the-free-probe.md): posterior-mean drift as the first speciation number,
 needing no new model.
 
 ## Error Matrix
