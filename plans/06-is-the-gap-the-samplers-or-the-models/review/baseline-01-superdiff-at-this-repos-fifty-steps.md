@@ -17,7 +17,7 @@ between a working rule and one run outside its intended settings.
 |---|---|
 | [design](../plans/baseline-01-superdiff-at-this-repos-fifty-steps.md) | the wiring, the step-count match, and the per-step prediction hook |
 | **this file** | **the verdict: not yet run** |
-| [the dose-axis verdict](baseline-02-three-rules-on-one-dose-axis.md) | where this row is actually compared, and what the parity answer changes in its captions |
+| [the amount-axis verdict](baseline-02-three-rules-on-one-dose-axis.md) | where this row is actually compared, and what the parity answer changes in its captions |
 | [the step 26 verdict](hypothesis-02-what-is-left-once-the-chain-settles.md) | whether this half of the scope is a diagnosis or a baselines table |
 
 ## Table of contents

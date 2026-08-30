@@ -23,7 +23,7 @@ closes unrun with the reason recorded. That is a completed plan rather than an a
 | [design](../plans/idea-01-feynman-kac-correctors-gated.md) | what must pass first, the read, the cost estimate, and the built-or-cited decision |
 | **this file** | **the verdict: not yet run** |
 | [the step 26 verdict](hypothesis-02-what-is-left-once-the-chain-settles.md) | whether this plan runs at all |
-| [the dose-axis verdict](baseline-02-three-rules-on-one-dose-axis.md) | whether the corrector rows are worth extending to a second family |
+| [the amount-axis verdict](baseline-02-three-rules-on-one-dose-axis.md) | whether the corrector rows are worth extending to a second family |
 
 ## Table of contents
 
