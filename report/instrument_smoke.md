@@ -109,7 +109,7 @@ Two deliberate mutations, each reverted afterwards.
 
 Caught by exactly the two window tests, nothing spurious.
 
-**Mutation 2: `eps_t = eps_poe + 1e-3 * delta` at λ=0** (a 0.1% dose leak).
+**Mutation 2: `eps_t = eps_poe + 1e-3 * delta` at λ=0** (0.1% of the correction leaking in at λ=0).
 
 This one is the reason there are eight tests instead of six. Six of them
 compare one sampler run against another, so a leak at λ=0 moves *both* sides
@@ -205,8 +205,9 @@ by N alone. Measured on random vectors in 65536 dims:
 | 300 | 6.0% |
 
 A first short run at N=30 reported "92% [energy at k=16](/home-mscluster/mmolefe/goal-setting/learning/spectral-structure-of-the-correction/plans/10-energy-at-k-on-the-real-matrix.md)", which is almost
-entirely this artifact. The script now prints the matched Gaussian chance level
-beside every number and warns when N is small relative to k.
+entirely this artifact. The script now prints what the same measurement
+reads on matched Gaussian noise, beside every number, and warns when N is
+small relative to k.
 
 Two guards worth noting: the stack is centred before the [SVD](/home-mscluster/mmolefe/goal-setting/learning/spectral-structure-of-the-correction/plans/06-svd-of-the-real-matrix.md) (otherwise
 component 1 is just the mean, flattering the low-rank claim for free), and
@@ -235,7 +236,7 @@ The two trajectories used above were generated at 20 steps for this check.
 
 ## The phenomenon, seen
 
-Same pair, same seed, same noise. Only the dose differs.
+Same pair, same seed, same noise. Only the amount of correction differs.
 
 | λ=0 (PoE) | λ=1 (Mono) |
 |---|---|
@@ -260,13 +261,13 @@ step-to-step direction agreement (cosine, consecutive r_t):
 
 Two distributions, and the second is the informative one. A correction with a
 stable direction is something a low-rank adapter could learn; a thrashing one
-is not. At 0.799 median against a chance level of 0.0039, the direction is
+is not. At 0.799 median against the 0.0039 you would get by luck, the direction is
 strongly structured over time rather than noise.
 
 The figure shows correction size climbing from ~5% early to about 13%, where it
 flattens off, and direction agreement high throughout and rising near the end.
 
-## plot_dose_curves.py: RUNS (one run, 2 doses)
+## plot_dose_curves.py: RUNS (one run, 2 correction amounts)
 
 ```
 $ python scripts/plot_dose_curves.py --root outputs/interaction_term/dose/pairs
@@ -282,7 +283,8 @@ for the side-by-side pair. That is the qualitative and quantitative sides
 landing on the same run.
 
 The script refuses to run unless `scorer_validated.json` says `pass: true`, so
-no dose curve can be produced with a scorer nobody has validated.
+no curve of compose rate against correction amount can be produced with a
+scorer nobody has validated.
 
 ## plot_window_curves.py: RUNS (one run, 4 windows, 20 steps)
 
@@ -329,10 +331,10 @@ L3 shared binding direction over 20 pairs:
 ```
 
 Both read from `embeddings.pt`, which the cache already stores, so neither
-needs the UNet. The L3 number is reported against its own chance level for the
-same reason the spectrum is: a small sample concentrates by chance.
+needs the UNet. The L3 number is reported against what you would get by luck
+for the same reason the spectrum is: a small sample concentrates by chance.
 
-## manifold_slide.py: RUNS (one run, 5 doses)
+## manifold_slide.py: RUNS (one run, 5 correction amounts)
 
 ```
 $ python scripts/manifold_slide.py --root outputs/interaction_term/dose/pairs
@@ -344,13 +346,13 @@ $ python scripts/manifold_slide.py --root outputs/interaction_term/dose/pairs
   monotone in lambda: yes
 ```
 
-The projection rises monotonically from 0 to 1, so the dose does move the
+The projection rises monotonically from 0 to 1, so more correction does move the
 sample along the PoE-to-Mono axis. The endpoints are 0 and 1 by construction,
 which is the check that the axis is built correctly, not a result.
 
 The off-axis fraction is the interesting column: 79-87% in the middle of the
 range. The correction moves the sample toward Mono along a curved route, not a
-straight line. Worth knowing before anyone describes the dose as a simple
+straight line. Worth knowing before anyone describes the multiplier as a simple
 interpolation.
 
 ## composition_scatter.py: BLOCKED, by design
@@ -441,8 +443,8 @@ Commands: `python scripts/<name>.py --pool` (spectrum with
 | correction size, median | 11.5% of ‖eps_PoE‖ | **10.1%**, IQR 8.1% to 12.4% |
 | direction agreement, median | 0.799 | **0.926**, IQR 0.768 to 0.965 |
 | L1 additivity gap, median | 1.3197 | **1.3467** |
-| L3 first direction | 27.1% (chance level 6.5%, 4.2x) | **16.1%** (chance level 7.5%, **2.1x**) |
-| energy at k=64, train | 51.9% | **62.6%** (chance level 13.2%, 4.8x) |
+| L3 first direction | 27.1% (luck gives 6.5%, 4.2x) | **16.1%** (luck gives 7.5%, **2.1x**) |
+| energy at k=64, train | 51.9% | **62.6%** (luck gives 13.2%, 4.8x) |
 | **energy at k=64, held-out** | **2.7%** | **6.0%** |
 
 Three of these move enough to change how they read. The collapse goes from "no

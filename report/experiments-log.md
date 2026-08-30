@@ -34,6 +34,8 @@ Two consequences, both binding:
    elephant × penguin at 8 of 8. It enters the plan as a pre-registered null, not as the
    hypothesis.
 
+   > A null here means the numbers say similar pairs and dissimilar pairs fail at the same rate.
+
 ## EXP-01: does the commitment step vary from pair to pair?
 
 - claim_id: local: the step at which a run's outcome stops being changeable is a property of the

@@ -38,7 +38,7 @@ made twice in this repo.
   and never checked against a picture fails silently. It also counted a 162px limb as a third
   animal. This is why `/visualize-data-samples` runs before any scorer, and why step 2 of the
   diagnosis procedure (score five runs by eye, compare with the scorer) exists.
-- **A figure plan became unreadable to its own author.** Lines like "the cure dosed" and "the
+- **A figure plan became unreadable to its own author.** Lines like "three spaces one dial" and "the
   fork elbow as a vertical band" named nothing to anyone who had not been in the conversation.
   The fix is in the writing-style section of `~/.claude/CLAUDE.md`: no private labels, a figure
   line names its axes and its data, and every number carries its unit and its meaning.
