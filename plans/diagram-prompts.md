@@ -107,7 +107,7 @@ Faithfulness note: the four substitutes must be drawn the same size as the real 
 
 [built] `diagrams/when-the-correction-acts.png`. Zoom into
 prompt 2's window bracket, for
-`plans/does-the-correction-cause-composition/plans/hypothesis-03-when-in-the-run-it-matters.md`.
+`plans/03-does-the-correction-cause-composition/plans/hypothesis-03-when-in-the-run-it-matters.md`.
 
 ```
 Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded dashed arrow lines, each color meaning exactly one kind of flow, with a small legend inside the image. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Official product logos only on components that ARE that product; every other component gets a clean generic glyph. Small cartoon figures or vehicles for external actors (users, clients). Clean sans-serif labels under every icon, short and lowercase-friendly. Generous spacing, no clutter, no watermark.
@@ -289,7 +289,7 @@ Faithfulness note: all five stages are completed and none carries an outstanding
 ### Prompt 2a (Process): The stages that produced the timing answer
 
 [planned] Zoom into prompt 2's card two, for
-`plans/does-the-correction-cause-composition/plans/hypothesis-03-when-in-the-run-it-matters.md`.
+`plans/03-does-the-correction-cause-composition/plans/hypothesis-03-when-in-the-run-it-matters.md`.
 
 ```
 Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded dashed arrow lines, each color meaning exactly one kind of flow, with a small legend inside the image. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Official product logos only on components that ARE that product; every other component gets a clean generic glyph. Small cartoon figures or vehicles for external actors (users, clients). Clean sans-serif labels under every icon, short and lowercase-friendly. Generous spacing, no clutter, no watermark.
