@@ -24,7 +24,7 @@ This extracts error patterns from the run transcript, deduplicates against globa
 
 | Step | Plan | What it does |
 |------|------|-------------|
-| 33 (previous) | [03-the-lora-dose-sweep](../tests/03-the-correction-amount-series.md) | compose rate against the amount of correction |
+| 33 (previous) | [03-the-correction-amount-series](../tests/03-the-correction-amount-series.md) | compose rate against the amount of correction |
 | **34 (current)** | **04: the-transfer-matrix-figure** | **Group-pooled LoRAs evaluated on concept-disjoint pairs** |
 | 35 (next) | [05-assemble-the-showcase-figures](05-assemble-the-showcase-figures.md) | the assembly under the standard |
 

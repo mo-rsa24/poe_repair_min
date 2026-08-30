@@ -9,7 +9,7 @@ never saw, before paying for fifteen separate training runs.
 |---|---|---|
 | 9 | [the three live curves during training](../tools/02-three-live-curves-while-training.md) | ⚠️ do this next |
 | **10** | **this plan** | **◑ read incomplete** |
-| 11 | [hypothesis-02-transfer-as-a-rate-over-fifteen-pairs](04-transfer-as-a-rate-over-fifteen-pairs.md) | ⚠️ |
+| 11 | [04-transfer-as-a-rate-over-fifteen-pairs](04-transfer-as-a-rate-over-fifteen-pairs.md) | ⚠️ |
 
 Design only. Verdicts live in [the review file for this plan](../../review/03-does-one-pooled-fix-transfer-at-all.md).
 

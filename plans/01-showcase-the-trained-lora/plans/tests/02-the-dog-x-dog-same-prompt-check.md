@@ -3,7 +3,7 @@
 **This plan asks one question: when both experts are given the same animal, does the LoRA leave
 the picture alone, or does it add a second dog anyway?**
 
-**Step 32 in the root running order. Waits on: nothing. Next: [03-the-lora-dose-sweep](03-the-correction-amount-series.md).**
+**Step 32 in the root running order. Waits on: nothing. Next: [03-the-correction-amount-series](03-the-correction-amount-series.md).**
 
 ## Recommended prompt (after run completes)
 
@@ -17,9 +17,9 @@ the picture alone, or does it add a second dog anyway?**
 
 | Step | Plan | What it does |
 |------|------|-------------|
-| 31 (previous) | [01-read-the-plateau-curves](../reading/01-read-where-the-curves-flatten.md) | The free curve-read framing A and B |
+| 31 (previous) | [01-read-where-the-curves-flatten](../reading/01-read-where-the-curves-flatten.md) | The free curve-read framing A and B |
 | **32 (current)** | **02: the-dog-x-dog-null-probe** | The same-prompt check on the trained LoRA |
-| 33 (next) | [03-the-lora-dose-sweep](03-the-correction-amount-series.md) | Compose rate against the amount of correction; this test is its zero-interaction run |
+| 33 (next) | [03-the-correction-amount-series](03-the-correction-amount-series.md) | Compose rate against the amount of correction; this test is its zero-interaction run |
 
 ---
 
@@ -227,7 +227,7 @@ Serves master-plan objective 2 and goal 2. Checkable outcomes:
 - [ ] **3.1 Run the following prompt: `/ingest-error-pattern --from-run-log`** (only after a red run).
 - [ ] **3.2 Run the following prompt: `/sync-plan-tree plans/01-showcase-the-trained-lora/`**
 
-▶ **Next: [03-the-lora-dose-sweep](03-the-correction-amount-series.md).**
+▶ **Next: [03-the-correction-amount-series](03-the-correction-amount-series.md).**
 
 ---
 
@@ -256,7 +256,7 @@ Serves master-plan objective 2 and goal 2. Checkable outcomes:
 
 ⬅️ [Previous](#recommended-skill) | 📋 [TOC](#table-of-contents) | [Next](#error-matrix) ➡️
 
-[03-the-lora-dose-sweep](03-the-correction-amount-series.md): compose rate against the amount of correction on r̂, with this test as its zero-interaction run.
+[03-the-correction-amount-series](03-the-correction-amount-series.md): compose rate against the amount of correction on r̂, with this test as its zero-interaction run.
 
 ---
 

@@ -8,7 +8,7 @@ trained on.
 
 | Step | Plan | Status |
 |---|---|---|
-| 7 | ~~[hypothesis-05-the-same-story-from-three-sides](06-the-same-story-from-three-sides.md)~~ | ✅ |
+| 7 | ~~[06-the-same-story-from-three-sides](06-the-same-story-from-three-sides.md)~~ | ✅ |
 | **8** | **this plan** | **✅** |
 | 9 | [three live curves while training](../../../04-does-the-fix-reach-unseen-pairs/plans/tools/02-three-live-curves-while-training.md) | ⚠️ do this next |
 

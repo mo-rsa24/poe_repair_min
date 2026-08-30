@@ -7,9 +7,9 @@ already on disk, with no new sampling and no GPU queue.
 
 | Step | Plan | Status |
 |---|---|---|
-| 4 | [hypothesis-02-more-correction-more-composition](03-more-correction-more-composition.md) | ◑ 6.3GB owed |
+| 4 | [03-more-correction-more-composition](03-more-correction-more-composition.md) | ◑ 6.3GB owed |
 | **5** | **this plan** | **✅** |
-| 6 | [hypothesis-03-when-in-the-run-it-matters](05-when-in-the-run-it-matters.md) | ◑ timing tab owed |
+| 6 | [05-when-in-the-run-it-matters](05-when-in-the-run-it-matters.md) | ◑ timing tab owed |
 
 Design only. Findings and run state live in
 [../review/hypothesis-04-what-the-cached-runs-already-show.md](../../review/04-what-the-cached-runs-already-show.md).

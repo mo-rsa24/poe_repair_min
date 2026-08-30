@@ -4,9 +4,9 @@
 
 | Step | Plan | Status |
 |---|---|---|
-| 16 | [writing-01-make-the-template-build](01-make-the-template-build.md) | ◑ title still a stub |
+| 16 | [01-make-the-template-build](01-make-the-template-build.md) | ◑ title still a stub |
 | **17** | **this plan** | **⚠️** |
-| 18 | [writing-05-the-results-skeleton](05-the-results-skeleton.md) | ⚠️ |
+| 18 | [05-the-results-skeleton](05-the-results-skeleton.md) | ⚠️ |
 
 ## What this asks, in one line
 Commit one title and one sentence per section naming the claim that section carries, in an order where no claim depends on a later one.

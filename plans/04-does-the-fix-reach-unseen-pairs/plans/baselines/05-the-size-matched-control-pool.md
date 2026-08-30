@@ -8,9 +8,9 @@ was.
 
 | Step | Plan | Status |
 |---|---|---|
-| 11 | [hypothesis-02-transfer-as-a-rate-over-fifteen-pairs](../hypothesis/04-transfer-as-a-rate-over-fifteen-pairs.md) | ⚠️ |
+| 11 | [04-transfer-as-a-rate-over-fifteen-pairs](../hypothesis/04-transfer-as-a-rate-over-fifteen-pairs.md) | ⚠️ |
 | **12** | **this plan** | **⚠️** |
-| 13 | [figure-01-the-seven-paper-figures](../../../03-does-the-correction-cause-composition/plans/figures/08-the-seven-paper-figures.md) | ◑ F6 needs a decision |
+| 13 | [08-the-seven-paper-figures](../../../03-does-the-correction-cause-composition/plans/figures/08-the-seven-paper-figures.md) | ◑ F6 needs a decision |
 
 Design only. Verdicts live in [../review/baseline-01-the-size-matched-control-pool.md](../../review/05-the-size-matched-control-pool.md).
 

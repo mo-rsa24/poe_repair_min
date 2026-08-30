@@ -2,7 +2,7 @@
 
 **This plan asks one question: does giving the adapter more capacity, rank 16 or rank 32 instead of rank 8, change anything at the same number of steps?**
 
-**Step 39 in the root running order. Waits on: step 36 (the frozen tracking set). Next: [10-the-mechanism-follower](../tests/10-the-checkpoint-watcher.md).**
+**Step 39 in the root running order. Waits on: step 36 (the frozen tracking set). Next: [10-the-checkpoint-watcher](../tests/10-the-checkpoint-watcher.md).**
 
 ## Recommended prompt (after run completes)
 
@@ -18,7 +18,7 @@
 |------|------|-------------|
 | 38 (previous) | [08-experiment-a-resume-to-200k](08-experiment-a-resume-to-200k.md) | The length axis |
 | **39 (current)** | **09: experiment-b-rank-16-32** | The capacity axis at matched step counts |
-| 40 (next) | [10-the-mechanism-follower](../tests/10-the-checkpoint-watcher.md) | The h-space and Jacobian reads beside these runs |
+| 40 (next) | [10-the-checkpoint-watcher](../tests/10-the-checkpoint-watcher.md) | The h-space and Jacobian reads beside these runs |
 
 ---
 
@@ -218,7 +218,7 @@ Serves goal 4 and the rank-ablation figure. Checkable outcomes:
 - [ ] **3.1 Run the following prompt: `/ingest-error-pattern --from-run-log`** (after any red run).
 - [ ] **3.2 Run the following prompt: `/sync-plan-tree plans/01-showcase-the-trained-lora/`**
 
-▶ **Next: [10-the-mechanism-follower](../tests/10-the-checkpoint-watcher.md).**
+▶ **Next: [10-the-checkpoint-watcher](../tests/10-the-checkpoint-watcher.md).**
 
 ---
 
@@ -249,7 +249,7 @@ alt, headless overnight: in a fresh session run `/unattended run-experiment plan
 
 ⬅️ [Previous](#recommended-skill) | 📋 [TOC](#table-of-contents) | [Next](#error-matrix) ➡️
 
-[10-the-mechanism-follower](../tests/10-the-checkpoint-watcher.md): the h-space and Jacobian reads that run beside A's and B's checkpoints, off the training devices.
+[10-the-checkpoint-watcher](../tests/10-the-checkpoint-watcher.md): the h-space and Jacobian reads that run beside A's and B's checkpoints, off the training devices.
 
 ---
 

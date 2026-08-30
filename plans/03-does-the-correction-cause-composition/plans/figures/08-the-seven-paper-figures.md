@@ -7,9 +7,9 @@ scored runs and carrying its own control on the page.
 
 | Step | Plan | Status |
 |---|---|---|
-| 12 | [baseline-01-the-size-matched-control-pool](../../../04-does-the-fix-reach-unseen-pairs/plans/baselines/05-the-size-matched-control-pool.md) | ⚠️ |
+| 12 | [05-the-size-matched-control-pool](../../../04-does-the-fix-reach-unseen-pairs/plans/baselines/05-the-size-matched-control-pool.md) | ⚠️ |
 | **13** | **this plan** | **◑ F6 needs a decision** |
-| 14 | [figure-01-the-transfer-figures](../../../04-does-the-fix-reach-unseen-pairs/plans/figures/06-the-transfer-figures.md) | ◑ F8 waits on its series of runs |
+| 14 | [06-the-transfer-figures](../../../04-does-the-fix-reach-unseen-pairs/plans/figures/06-the-transfer-figures.md) | ◑ F8 waits on its series of runs |
 
 ## What this asks, in one line
 Design and build the seven main-paper figures, in the order a reader meets them,

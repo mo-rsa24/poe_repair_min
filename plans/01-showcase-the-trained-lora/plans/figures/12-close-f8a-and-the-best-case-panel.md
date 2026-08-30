@@ -54,7 +54,7 @@
 > from the joined prompt, saved once and read back.
 
 **Reconciliation duty:** these two tasks were also routed to
-[figure-01-the-transfer-figures](../../../04-does-the-fix-reach-unseen-pairs/plans/figures/06-the-transfer-figures.md) in the neighbouring scope. Task 1.1 checks whether that plan already picked them up; the work runs once, in whichever plan claims it first, and the other carries a pointer.
+[06-the-transfer-figures](../../../04-does-the-fix-reach-unseen-pairs/plans/figures/06-the-transfer-figures.md) in the neighbouring scope. Task 1.1 checks whether that plan already picked them up; the work runs once, in whichever plan claims it first, and the other carries a pointer.
 
 **Associated materials:**
 - **Review questions:** [../review/12-close-f8a-and-the-oracle-panel.md](../../review/12-close-f8a-and-the-best-case-panel.md)

@@ -3,7 +3,7 @@
 **This plan asks one question: had the trained LoRA stopped improving by 100k steps, or was it
 still climbing?**
 
-**Step 31 in the root running order. Waits on: nothing. Next: [02-the-dog-x-dog-null-probe](../tests/02-the-dog-x-dog-same-prompt-check.md).**
+**Step 31 in the root running order. Waits on: nothing. Next: [02-the-dog-x-dog-same-prompt-check](../tests/02-the-dog-x-dog-same-prompt-check.md).**
 
 ## Recommended prompt (after run completes)
 
@@ -21,7 +21,7 @@ After you finish this plan and want to ingest error patterns into the catalogs, 
 |------|------|-------------|
 | — (previous) | scope opens here | — |
 | **31 (current)** | **01: read-the-plateau-curves** | The free curve-read that frames experiments A and B |
-| 32 (next) | [02-the-dog-x-dog-null-probe](../tests/02-the-dog-x-dog-same-prompt-check.md) | The same-prompt check |
+| 32 (next) | [02-the-dog-x-dog-same-prompt-check](../tests/02-the-dog-x-dog-same-prompt-check.md) | The same-prompt check |
 
 ---
 
@@ -244,7 +244,7 @@ For you to follow manually. Do these yourself.
 - [ ] **3.1 Run the following prompt: `/ingest-error-pattern --from-run-log`** (only if anything failed red).
 - [ ] **3.2 Run the following prompt: `/sync-plan-tree plans/01-showcase-the-trained-lora/`**
 
-▶ **Next: [02-the-dog-x-dog-null-probe](../tests/02-the-dog-x-dog-same-prompt-check.md).**
+▶ **Next: [02-the-dog-x-dog-same-prompt-check](../tests/02-the-dog-x-dog-same-prompt-check.md).**
 
 ---
 
@@ -279,7 +279,7 @@ Execute plans/01-showcase-the-trained-lora/plans/01-read-the-plateau-curves.md: 
 
 ⬅️ [Previous](#recommended-skill) | 📋 [TOC](#table-of-contents) | [Next](#error-matrix) ➡️
 
-[02-the-dog-x-dog-null-probe](../tests/02-the-dog-x-dog-same-prompt-check.md): the same-prompt check that tests whether the LoRA learned a rule or a plurality prior.
+[02-the-dog-x-dog-same-prompt-check](../tests/02-the-dog-x-dog-same-prompt-check.md): the same-prompt check that tests whether the LoRA learned a rule or a plurality prior.
 
 ---
 

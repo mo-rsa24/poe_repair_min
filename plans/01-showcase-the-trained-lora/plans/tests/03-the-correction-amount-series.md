@@ -16,7 +16,7 @@
 
 | Step | Plan | What it does |
 |------|------|-------------|
-| 32 (previous) | [02-the-dog-x-dog-null-probe](02-the-dog-x-dog-same-prompt-check.md) | The zero-interaction control run |
+| 32 (previous) | [02-the-dog-x-dog-same-prompt-check](02-the-dog-x-dog-same-prompt-check.md) | The zero-interaction control run |
 | **33 (current)** | **03: the-lora-dose-sweep** | Compose rate against the amount of correction, for the shipped LoRA |
 | 34 (next) | [04-the-transfer-matrix-figure](../figures/04-the-transfer-matrix-figure.md) | The reviewer-credible transfer demo |
 

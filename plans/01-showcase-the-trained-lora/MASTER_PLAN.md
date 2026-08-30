@@ -129,18 +129,18 @@ All thirteen plans are written. Assembly (05) runs last despite its number.
 
 | # | Plan | What it does | Status |
 |---|---|---|---|
-| 01 | [01-read-the-plateau-curves](plans/reading/01-read-where-the-curves-flatten.md) | the free read that re-scopes A and B; it informs them, nothing waits on it | ⚠️ written |
-| 02 | [02-the-dog-x-dog-null-probe](plans/tests/02-the-dog-x-dog-same-prompt-check.md) | the pre-registered same-prompt check | ⚠️ written |
-| 03 | [03-the-lora-dose-sweep](plans/tests/03-the-correction-amount-series.md) | lambda on the learned correction, four controls; shares one runner with 07 and 02 | ⚠️ written |
+| 01 | [01-read-where-the-curves-flatten](plans/reading/01-read-where-the-curves-flatten.md) | the free read that re-scopes A and B; it informs them, nothing waits on it | ⚠️ written |
+| 02 | [02-the-dog-x-dog-same-prompt-check](plans/tests/02-the-dog-x-dog-same-prompt-check.md) | the pre-registered same-prompt check | ⚠️ written |
+| 03 | [03-the-correction-amount-series](plans/tests/03-the-correction-amount-series.md) | lambda on the learned correction, four controls; shares one runner with 07 and 02 | ⚠️ written |
 | 04 | [04-the-transfer-matrix-figure](plans/figures/04-the-transfer-matrix-figure.md) | group-pooled, concept-disjoint tier | ⚠️ written |
 | 05 | [05-assemble-the-showcase-figures](plans/figures/05-assemble-the-showcase-figures.md) | the wall, under the standard; closes the scope | ⚠️ written |
 | 06 | [06-extend-the-tracking-set](plans/tools/06-extend-the-tracking-set.md) | the `instrument-02` curves plus four more, before any launch | ⚠️ written |
 | 07 | [07-experiment-c-lambda-window](plans/experiments/07-experiment-c-lambda-window.md) | injection run across values, on existing checkpoints, in-session | ⚠️ written |
 | 08 | [08-experiment-a-resume-to-200k](plans/experiments/08-experiment-a-resume-to-200k.md) | length axis: rank 8 from 100k to 200k, sbatch on biggpu | ⚠️ written |
 | 09 | [09-experiment-b-rank-16-32](plans/experiments/09-experiment-b-rank-16-32.md) | rank axis at 100k, two idle nodes over SSH | ⚠️ written |
-| 10 | [10-the-mechanism-follower](plans/tests/10-the-checkpoint-watcher.md) | the checkpoint watcher: h-space + Jacobian per broad checkpoint, off-device, ends in interventions | ⚠️ written |
+| 10 | [10-the-checkpoint-watcher](plans/tests/10-the-checkpoint-watcher.md) | the checkpoint watcher: h-space + Jacobian per broad checkpoint, off-device, ends in interventions | ⚠️ written |
 | 11 | [11-the-counted-joint-prompt-figure](plans/figures/11-the-counted-joint-prompt-figure.md) | score mono renders; three bars per pair + repair strip | ⚠️ written |
-| 12 | [12-close-f8a-and-the-oracle-panel](plans/figures/12-close-f8a-and-the-best-case-panel.md) | score 70k-100k samples; the panel showing what the cached correction can reach at best (reconciles with figure-01 next door) | ⚠️ written |
+| 12 | [12-close-f8a-and-the-best-case-panel](plans/figures/12-close-f8a-and-the-best-case-panel.md) | score 70k-100k samples; the panel showing what the cached correction can reach at best (reconciles with figure-01 next door) | ⚠️ written |
 | 13 | [13-revalidate-the-scorer-off-animals](plans/tools/13-revalidate-the-scorer-off-animals.md) | opens tier-three captions | ⚠️ written |
 
 ## Environment Context

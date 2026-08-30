@@ -4,7 +4,7 @@
 
 | Step | Plan | Status |
 |---|---|---|
-| 15 | [gate-01-two-literature-checks-before-print](../../../03-does-the-correction-cause-composition/plans/checks/09-two-literature-checks-before-print.md) | ⚠️ |
+| 15 | [09-two-literature-checks-before-print](../../../03-does-the-correction-cause-composition/plans/checks/09-two-literature-checks-before-print.md) | ⚠️ |
 | **16** | **this plan** | **◑ title still a stub** |
 | 17 | [writing-02-the-title-and-the-section-spine](02-the-title-and-the-section-order.md) | ⚠️ |
 

@@ -2,7 +2,7 @@
 
 **This plan asks one question: how often does the joint prompt itself fail to show both animals, counted rather than assumed?**
 
-**Step 41 in the root running order. Waits on: nothing (minutes of scoring on renders that exist). Next: [12-close-f8a-and-the-oracle-panel](12-close-f8a-and-the-best-case-panel.md).**
+**Step 41 in the root running order. Waits on: nothing (minutes of scoring on renders that exist). Next: [12-close-f8a-and-the-best-case-panel](12-close-f8a-and-the-best-case-panel.md).**
 
 ## Recommended prompt (after run completes)
 
@@ -16,9 +16,9 @@
 
 | Step | Plan | What it does |
 |------|------|-------------|
-| 40 (previous) | [10-the-mechanism-follower](../tests/10-the-checkpoint-watcher.md) | The mechanism reads |
+| 40 (previous) | [10-the-checkpoint-watcher](../tests/10-the-checkpoint-watcher.md) | The mechanism reads |
 | **41 (current)** | **11: the-counted-joint-prompt-figure** | Score the mono renders; the three-bar figure |
-| 42 (next) | [12-close-f8a-and-the-oracle-panel](12-close-f8a-and-the-best-case-panel.md) | The unscored tail and the best-case panel |
+| 42 (next) | [12-close-f8a-and-the-best-case-panel](12-close-f8a-and-the-best-case-panel.md) | The unscored tail and the best-case panel |
 
 ---
 
@@ -211,7 +211,7 @@ Serves goal 6. Checkable outcomes:
 - [ ] **3.1 Run the following prompt: `/ingest-error-pattern --from-run-log`** (after any red run).
 - [ ] **3.2 Run the following prompt: `/sync-plan-tree plans/01-showcase-the-trained-lora/`**
 
-▶ **Next: [12-close-f8a-and-the-oracle-panel](12-close-f8a-and-the-best-case-panel.md).**
+▶ **Next: [12-close-f8a-and-the-best-case-panel](12-close-f8a-and-the-best-case-panel.md).**
 
 ---
 
@@ -239,7 +239,7 @@ Execute plans/01-showcase-the-trained-lora/plans/11-the-counted-joint-prompt-fig
 
 ⬅️ [Previous](#recommended-skill) | 📋 [TOC](#table-of-contents) | [Next](#error-matrix) ➡️
 
-[12-close-f8a-and-the-oracle-panel](12-close-f8a-and-the-best-case-panel.md): the unscored 70k-100k tail and the qualitative panel of what the cached correction reaches at best, reconciled with the transfer-figures plan next door.
+[12-close-f8a-and-the-best-case-panel](12-close-f8a-and-the-best-case-panel.md): the unscored 70k-100k tail and the qualitative panel of what the cached correction reaches at best, reconciled with the transfer-figures plan next door.
 
 ---
 

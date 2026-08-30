@@ -10,10 +10,10 @@ This scope owns **6 of the 22 steps**, 1 of them done. The steps interleave with
 |---|---|---|---|
 | 3 | ~~[the clean pair pool](plans/tools/01-the-clean-pair-pool.md)~~ | the pool that blends by default | ✅ |
 | 9 | [the three live curves during training](plans/tools/02-three-live-curves-while-training.md) | the one-epoch first run | ⚠️ do this next |
-| 10 | [hypothesis-01-does-one-pooled-fix-transfer-at-all](plans/hypothesis/03-does-one-pooled-fix-transfer-at-all.md) | finish the pooled read | ◑ read incomplete |
-| 11 | [hypothesis-02-transfer-as-a-rate-over-fifteen-pairs](plans/hypothesis/04-transfer-as-a-rate-over-fifteen-pairs.md) | fifteen adapters, one held out each | ⚠️ |
-| 12 | [baseline-01-the-size-matched-control-pool](plans/baselines/05-the-size-matched-control-pool.md) | the size-matched mixed pool | ⚠️ |
-| 14 | [figure-01-the-transfer-figures](plans/figures/06-the-transfer-figures.md) | the transfer figures | ◑ F8a and F8b built |
+| 10 | [03-does-one-pooled-fix-transfer-at-all](plans/hypothesis/03-does-one-pooled-fix-transfer-at-all.md) | finish the pooled read | ◑ read incomplete |
+| 11 | [04-transfer-as-a-rate-over-fifteen-pairs](plans/hypothesis/04-transfer-as-a-rate-over-fifteen-pairs.md) | fifteen adapters, one held out each | ⚠️ |
+| 12 | [05-the-size-matched-control-pool](plans/baselines/05-the-size-matched-control-pool.md) | the size-matched mixed pool | ⚠️ |
+| 14 | [06-the-transfer-figures](plans/figures/06-the-transfer-figures.md) | the transfer figures | ◑ F8a and F8b built |
 
 ## Mission
 cat×dog through PoE makes a [chimera](../../context/world/chimera.md), and that

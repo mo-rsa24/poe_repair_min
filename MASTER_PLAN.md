@@ -9,7 +9,7 @@ This block is a snapshot; the live version prints at session start, or on demand
 - **The last thing we did:** taught the environment the shared-device launch path (an allocated
   biggpu node with an idle second GPU, reached over SSH) and launched step 9's smoke run with it.
 - **Do this next:** step 9's one-epoch smoke run,
-  [instrument-02-three-live-curves-while-training](plans/04-does-the-fix-reach-unseen-pairs/plans/tools/02-three-live-curves-while-training.md),
+  [02-three-live-curves-while-training](plans/04-does-the-fix-reach-unseen-pairs/plans/tools/02-three-live-curves-while-training.md),
   is cooking on a shared biggpu device; it gates the whole transfer chain (steps 10, 11, 12 and 14
   wait behind it, and so does register slot F8). While it runs, write steps 16 or 18, which need
   no GPU and no queue. When the run finishes, judge its three curves against the review file's

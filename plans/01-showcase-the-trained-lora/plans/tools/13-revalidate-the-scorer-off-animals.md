@@ -16,7 +16,7 @@
 
 | Step | Plan | What it does |
 |------|------|-------------|
-| 42 (previous) | [12-close-f8a-and-the-oracle-panel](../figures/12-close-f8a-and-the-best-case-panel.md) | The tail and the best case |
+| 42 (previous) | [12-close-f8a-and-the-best-case-panel](../figures/12-close-f8a-and-the-best-case-panel.md) | The tail and the best case |
 | **43 (current)** | **13: revalidate-the-scorer-off-animals** | The validation round that opens tier-three captions |
 | 35 (closes scope) | [05-assemble-the-showcase-figures](../figures/05-assemble-the-showcase-figures.md) | The wall, assembled last |
 

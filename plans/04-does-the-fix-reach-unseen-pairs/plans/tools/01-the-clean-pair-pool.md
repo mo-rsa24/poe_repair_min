@@ -9,7 +9,7 @@ after the compose-scorer has been proven to work.
 |---|---|---|
 | 2 | ~~[fixing the size measure before any result](../../../03-does-the-correction-cause-composition/plans/tools/02-fix-the-size-measure-before-any-result.md)~~ | ✅ |
 | **3** | **this plan** | **✅** |
-| 4 | [hypothesis-02-more-correction-more-composition](../../../03-does-the-correction-cause-composition/plans/hypothesis/03-more-correction-more-composition.md) | ◑ 6.3GB owed |
+| 4 | [03-more-correction-more-composition](../../../03-does-the-correction-cause-composition/plans/hypothesis/03-more-correction-more-composition.md) | ◑ 6.3GB owed |
 
 Design only. Verdicts live in [the review file for this plan](../../review/01-the-clean-pair-pool.md).
 

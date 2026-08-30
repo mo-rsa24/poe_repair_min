@@ -7,9 +7,9 @@ literature, and it answers that before either sentence is written.
 
 | Step | Plan | Status |
 |---|---|---|
-| 14 | [figure-01-the-transfer-figures](../../../04-does-the-fix-reach-unseen-pairs/plans/figures/06-the-transfer-figures.md) | ◑ F8 waits on its series of runs |
+| 14 | [06-the-transfer-figures](../../../04-does-the-fix-reach-unseen-pairs/plans/figures/06-the-transfer-figures.md) | ◑ F8 waits on its series of runs |
 | **15** | **this plan** | **⚠️** |
-| 16 | [writing-01-make-the-template-build](../../../07-writing-the-paper/plans/writing/01-make-the-template-build.md) | ◑ title still a stub |
+| 16 | [01-make-the-template-build](../../../07-writing-the-paper/plans/writing/01-make-the-template-build.md) | ◑ title still a stub |
 
 ## What this asks, in one line
 Two sentences the paper wants to print rest on what the literature does and does not already
