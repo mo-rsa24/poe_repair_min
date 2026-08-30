@@ -1,7 +1,7 @@
 # F1 left panel: the image prompt
 
 Paste the fenced block below into ChatGPT, save what it returns as
-`assets/F1-schematic.png`, and `scripts/what_the_product_misses.py` does the rest.
+`diagrams/the-product-peaks-at-the-chimera.png`, and `scripts/what_the_product_misses.py` does the rest.
 
 **The drawn panel contains no animals.** It is contour geometry and labels, nothing
 else. Every animal a reader sees in figure 1 is a real model output, placed by the
@@ -114,7 +114,7 @@ script anchors both a label and a leader line to it.
 
 ## Then
 
-Save the accepted image as `assets/F1-schematic.png`. `scripts/what_the_product_misses.py` reads it,
+Save the accepted image as `diagrams/the-product-peaks-at-the-chimera.png`. `scripts/what_the_product_misses.py` reads it,
 draws it on the left axes, puts the real λ=0 cell on the right axes, and connects the
 peak dot to it. The script is the only thing that decides sizes and placement, so the
 figure can be rebuilt from the same PNG without regenerating anything.

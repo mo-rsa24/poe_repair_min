@@ -47,6 +47,6 @@ Someone about to run a big unattended sweep. They need to feel the urgency of th
 
 ## Save instructions
 
-**Output file:** `diagrams/figures/before-after-logging.png`
+**Output file:** `diagrams/before-after-logging.png`
 
 After generating this diagram, save it to the path above. The plan file will reference it.

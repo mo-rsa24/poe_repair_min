@@ -105,7 +105,7 @@ Faithfulness note: the four substitutes must be drawn the same size as the real 
 
 ### Prompt 2a (Subject): One thing changes, which is when the correction acts
 
-[built] `diagrams/closing-the-compositional-gap-02a-when-the-correction-acts.png`. Zoom into
+[built] `diagrams/when-the-correction-acts.png`. Zoom into
 prompt 2's window bracket, for
 `plans/does-the-correction-cause-composition/plans/hypothesis-03-when-in-the-run-it-matters.md`.
 

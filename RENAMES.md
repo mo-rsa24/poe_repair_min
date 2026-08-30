@@ -100,7 +100,7 @@ is therefore not yet empty.
 | `show-me/batch-shape-nondeterminism/` | `artifacts/notes/batch-shape-nondeterminism/` |
 | `captures/coind-conditional-independence-loss.md`, `captures/build.sh`, `captures/tufte.css` | `artifacts/notes/coind-conditional-independence-loss/` |
 | `flow-map-images/rung-01-conditional-independence.png` | `artifacts/notes/coind-conditional-independence-loss/rung-01-conditional-independence.png` |
-| `diagrams/figures/why-this-plan-exists.png` | `plans/closing-the-compositional-gap/plans/does-the-fix-reach-unseen-pairs/plans/diagrams/figures/why-this-plan-exists.png` |
+| `diagrams/what-finding-out-late-costs.png` | `plans/closing-the-compositional-gap/plans/does-the-fix-reach-unseen-pairs/diagrams/what-finding-out-late-costs.png` |
 
 ### Record folders, this sitting
 
@@ -184,7 +184,7 @@ The number is a reading order, not the step order, which stays in the root `## R
 | `plans/closing-the-compositional-gap/plans/writing-the-paper/` | `plans/07-writing-the-paper/` | consumes everything above it, so it reads last |
 | `plans/closing-the-compositional-gap/diagram-prompts.md` | `plans/diagram-prompts.md` | the parent's illustrated map becomes the project map |
 | `plans/closing-the-compositional-gap/diagrams/` | `plans/diagrams/` | its renders and process history travel with it |
-| `plans/closing-the-compositional-gap/plans/diagrams/why-this-plan-exists.prompt.md` | `plans/04-does-the-fix-reach-unseen-pairs/diagrams/` | it illustrates the transfer scope's sweep, so it sits beside that plan |
+| `plans/closing-the-compositional-gap/diagrams/what-finding-out-late-costs.prompt.md` | `plans/04-does-the-fix-reach-unseen-pairs/diagrams/` | it illustrates the transfer scope's sweep, so it sits beside that plan |
 | `plans/closing-the-compositional-gap/plans/diagrams/figure-coverage-prompt.md` | `plans/diagrams/figure-coverage-prompt.md` | generic across scopes; belongs with the project map |
 | `plans/closing-the-compositional-gap/MASTER_PLAN.md` | `artifacts/plans/archived/closing-the-compositional-gap/MASTER_PLAN.md` | its mission, running-order pointer and scope table were absorbed into the root `MASTER_PLAN.md`; keeping a pointer-only scope would have preserved the hop the promotion removes |
 
@@ -244,3 +244,19 @@ Nothing was deleted. `dist/` and `node_modules/` under `artifacts/scenes/` are n
 and were dropped from the index with `git rm --cached`, so 1309 regenerable build files stopped
 being tracked while every byte stayed on disk. Both apps rebuild with `npm install && npm run build`
 from the source beside them.
+
+## 2026-08-30: the diagram files renamed by what they show, and one grouping split healed
+
+Every scope now keeps its pictures in one `diagrams/` folder at the scope root. Scope 04 had two
+(`diagrams/` and `plans/diagrams/figures/`), and scope 03 kept its picture under `assets/`, a
+grouping no sibling uses.
+
+| Old path | New path | Why |
+|---|---|---|
+| `plans/03-does-the-correction-cause-composition/assets/F1-schematic.png` | `plans/03-does-the-correction-cause-composition/diagrams/the-product-peaks-at-the-chimera.png` | it draws two contour sets whose product is a thin lens with its peak marked, and "cat beside dog" outside carrying no product mass. `F1` is a register slot id, which names the picture's destination rather than the picture |
+| `.../assets/F1-schematic-prompt.md` | `.../diagrams/the-product-peaks-at-the-chimera.prompt.md` | the prompt follows its render |
+| `plans/04-.../plans/diagrams/figures/why-this-plan-exists.png` | `plans/04-.../diagrams/what-finding-out-late-costs.png` | it draws 90 GPU hours wasted against 2 hours invested. Two prompts in this scope were both called "why this plan exists", so neither name said which |
+| `plans/04-.../plans/diagrams/why-this-plan-exists.prompt.md` | `plans/04-.../diagrams/what-finding-out-late-costs.prompt.md` | the prompt that draws the bill |
+| `plans/04-.../diagrams/why-this-plan-exists.prompt.md` | `plans/04-.../diagrams/blind-until-the-sweep-ends.prompt.md` | the prompt that draws the same argument as information rather than cost; it had no row in the plan's figure table and now has one |
+| `plans/04-.../plans/diagrams/*` | `plans/04-.../diagrams/` | one grouping per scope |
+| `plans/diagrams/closing-the-compositional-gap-02a-when-the-correction-acts.png` | `plans/diagrams/when-the-correction-acts.png` | it carried the name of a scope that no longer exists, plus a prompt index |

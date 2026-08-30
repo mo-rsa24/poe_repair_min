@@ -77,7 +77,7 @@ Before running that 15-run sweep, we need to know *while it's training* whether 
 - **Review questions:** [../review/instrument-02-three-live-curves-while-training.md](../review/instrument-02-three-live-curves-while-training.md)
 - **Procedures:** (if any; add link here)
 - **Assets/outputs:** Saved to `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/live_curves_smoke_run/` (large artifacts live on `/datasets`, never under the repo)
-  - **Figure organization:** Use [figure-coverage-prompt.md](diagrams/figure-coverage-prompt.md) to scan the repo, rename all related figures to the step-09 naming convention, and consolidate them into `outputs/interaction_term/live_curves_smoke_run/figures/`. This prompt will generate a FIGURE_CATALOG.md that maps each figure to axes, meaning, and original location.
+  - **Figure organization:** Use [figure-coverage-prompt.md](../../diagrams/figure-coverage-prompt.md) to scan the repo, rename all related figures to the step-09 naming convention, and consolidate them into `outputs/interaction_term/live_curves_smoke_run/figures/`. This prompt will generate a FIGURE_CATALOG.md that maps each figure to axes, meaning, and original location.
   - **Locations scanned:** `artifacts/results/ (per-question) and report/paper-evidence-index.md`, `outputs/interaction_term/`, `paper/iclr/figures/`, ``artifacts/notes/` items (formerly `/show-me`), results/ folders
 
 For the full picture, see the [repo MASTER_PLAN.md](../../../MASTER_PLAN.md) and [hypothesis-01](../../03-does-the-correction-cause-composition/plans/hypothesis-01-what-the-fix-changes-inside-the-model.md).
@@ -135,7 +135,7 @@ This plan may encounter common errors when running. See the [Error Matrix](#erro
 **The dilemma:**  
 A 15-run unattended sweep takes 90+ GPU hours. When a run finishes, you can compute whether the fix arrived and transferred. But by then it's too late. If 10 runs failed silently, you've already wasted 60 hours. You need to know *while it runs* whether to kill it or let it complete.
 
-See [why-this-plan-exists.png](diagrams/figures/why-this-plan-exists.png) for a visual of the problem: 90 wasted hours without live logging versus 2 hours to early decision with it.
+See [why-this-plan-exists.png](diagrams/what-finding-out-late-costs.png) for a visual of the problem: 90 wasted hours without live logging versus 2 hours to early decision with it.
 
 **The solution:**  
 This plan puts two diagnostic measurements inside the training loop, so you can read and react to them in real time.
@@ -372,23 +372,24 @@ Do not proceed to step 10. The logging hook failed entirely. Check stderr for im
 
 ### Pending: to be generated from diagram prompts
 
-Run each `.prompt.md` file through Claude (or /prompt-storyboard) and save outputs to `diagrams/figures/` with the filenames below:
+Run each `.prompt.md` file through Claude (or /prompt-storyboard) and save outputs to `diagrams/` with the filenames below:
 
 | Figure | Prompt file | What it shows | Save to |
 |--------|-------------|---------------|---------|
-| Why this plan exists | [why-this-plan-exists.prompt.md](diagrams/why-this-plan-exists.prompt.md) | Two bars drawn to scale: 90 GPU hours spent blind against ~2 hours to the same decision | `diagrams/figures/why-this-plan-exists.png` |
-| Three metrics explained | [three-metrics-explained.prompt.md](diagrams/three-metrics-explained.prompt.md) | Three panels explaining compose-rate, direction-cosine, fraction-of-distance-reached | `diagrams/figures/three-metrics-explained.png` |
-| Where this plan sits | [context-diagram.prompt.md](diagrams/context-diagram.prompt.md) | This instrument's place between the wiring it needs and the 15-run sweep it gates | `diagrams/figures/context-diagram.png` |
+| Why this plan exists | [what-finding-out-late-costs.prompt.md](../diagrams/what-finding-out-late-costs.prompt.md) | Two bars drawn to scale: 90 GPU hours spent blind against ~2 hours to the same decision | `diagrams/what-finding-out-late-costs.png` |
+| Three metrics explained | [three-metrics-explained.prompt.md](../diagrams/three-metrics-explained.prompt.md) | Three panels explaining compose-rate, direction-cosine, fraction-of-distance-reached | `diagrams/three-metrics-explained.png` |
+| Where this plan sits | [context-diagram.prompt.md](../diagrams/context-diagram.prompt.md) | This instrument's place between the wiring it needs and the 15-run sweep it gates | `diagrams/context-diagram.png` |
 
 ### Built
 
 | Figure | Prompt file | What it shows | File |
 |--------|-------------|---------------|------|
-| Before/after logging | [before-after-logging.prompt.md](diagrams/before-after-logging.prompt.md) | Side-by-side: post-run analysis versus live logging during training | [diagrams/figures/before-after-logging.png](diagrams/figures/before-after-logging.png) |
+| Blind until the sweep ends | [blind-until-the-sweep-ends.prompt.md](../diagrams/blind-until-the-sweep-ends.prompt.md) | The same argument drawn as information rather than cost: nothing about run 1 is visible until every run has finished | `../diagrams/blind-until-the-sweep-ends.png` |
+| Before/after logging | [before-after-logging.prompt.md](../diagrams/before-after-logging.prompt.md) | Side-by-side: post-run analysis versus live logging during training | [diagrams/before-after-logging.png](diagrams/before-after-logging.png) |
 
 ### Generated during plan execution
 
-These figures will be created when the smoke run completes. Use [figure-coverage-prompt.md](diagrams/figure-coverage-prompt.md) to scan the repo, rename, and consolidate them:
+These figures will be created when the smoke run completes. Use [figure-coverage-prompt.md](../../diagrams/figure-coverage-prompt.md) to scan the repo, rename, and consolidate them:
 
 | Figure | Description | Generated by | Status | Axes |
 |--------|-------------|--------------|--------|------|
@@ -398,9 +399,9 @@ These figures will be created when the smoke run completes. Use [figure-coverage
 
 ### Organization workflow
 
-1. Generate pending figures: Run each prompt through Claude and save to `diagrams/figures/`.
+1. Generate pending figures: Run each prompt through Claude and save to `diagrams/`.
 2. Execute the plan: Run `/run-experiment` smoke. This produces W&B curves.
-3. Organize all figures: Run [figure-coverage-prompt.md](diagrams/figure-coverage-prompt.md) to scan the repo, rename figures to step-09 naming convention, move to `outputs/interaction_term/live_curves_smoke_run/figures/`, and generate [FIGURE_CATALOG.md](outputs/interaction_term/live_curves_smoke_run/FIGURE_CATALOG.md).
+3. Organize all figures: Run [figure-coverage-prompt.md](../../diagrams/figure-coverage-prompt.md) to scan the repo, rename figures to step-09 naming convention, move to `outputs/interaction_term/live_curves_smoke_run/figures/`, and generate [FIGURE_CATALOG.md](outputs/interaction_term/live_curves_smoke_run/FIGURE_CATALOG.md).
 
 ---
 
@@ -425,7 +426,7 @@ When this plan runs and produces output, three things need to stay in sync: the 
 
 3. **Organize figures (manual, but guided):**
    - After the smoke run finishes, W&B outputs three metric curves to your project.
-   - Use the [figure-coverage-prompt.md](diagrams/figure-coverage-prompt.md) to scan the repo for all related figures (existing artifacts/results/ (per-question) and report/paper-evidence-index.md, outputs/, paper/ figures plus new W&B screenshots).
+   - Use the [figure-coverage-prompt.md](../../diagrams/figure-coverage-prompt.md) to scan the repo for all related figures (existing artifacts/results/ (per-question) and report/paper-evidence-index.md, outputs/, paper/ figures plus new W&B screenshots).
    - The prompt renames them to the step-09 naming convention and consolidates them into `outputs/interaction_term/live_curves_smoke_run/figures/`.
    - It generates a `FIGURE_CATALOG.md` that maps each figure to its axes, meaning, and original location.
 
@@ -439,7 +440,7 @@ Without orchestration, the Error Matrix section becomes stale after a run comple
 |------|---------|--------------|---------|
 | Extract errors | `/ingest-error-pattern --from-run-log` | Manual (after run) | Errors added to catalogs |
 | Update Error Matrix | `/sync-plan-tree --update-error-matrices` | Auto (by ingest-error-pattern) | This plan file's Error Matrix regenerated |
-| Organize figures | Run [figure-coverage-prompt.md](diagrams/figure-coverage-prompt.md) | Manual (after run) | Figures renamed, consolidated, cataloged |
+| Organize figures | Run [figure-coverage-prompt.md](../../diagrams/figure-coverage-prompt.md) | Manual (after run) | Figures renamed, consolidated, cataloged |
 
 ---
 

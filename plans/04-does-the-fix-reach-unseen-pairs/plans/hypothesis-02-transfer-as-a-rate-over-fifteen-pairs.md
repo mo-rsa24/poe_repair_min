@@ -297,12 +297,12 @@ If the fix is pair-general, the curve declines smoothly. If it's pair-specific o
 
 ### Pending: to be generated from diagram prompts
 
-Run each `.prompt.md` file through Claude (or `/prompt-storyboard`) and save outputs to `diagrams/figures/` with the filenames below:
+Run each `.prompt.md` file through Claude (or `/prompt-storyboard`) and save outputs to `diagrams/` with the filenames below:
 
 | Figure | Prompt file | What it shows | Save to |
 |--------|-------------|---------------|---------|
-| LOPO strategy visual | [lopo-strategy.prompt.md](diagrams/lopo-strategy.prompt.md) | The leave-one-pair-out design: how 15 LoRAs test generalization | `diagrams/figures/lopo-strategy.png` |
-| Robustness vs brittleness | [robustness-curves.prompt.md](diagrams/robustness-curves.prompt.md) | Expected degradation curves: smooth (robust) vs sharp (brittle) | `diagrams/figures/robustness-curves.png` |
+| LOPO strategy visual | [lopo-strategy.prompt.md](diagrams/lopo-strategy.prompt.md) | The leave-one-pair-out design: how 15 LoRAs test generalization | `diagrams/lopo-strategy.png` |
+| Robustness vs brittleness | [robustness-curves.prompt.md](diagrams/robustness-curves.prompt.md) | Expected degradation curves: smooth (robust) vs sharp (brittle) | `diagrams/robustness-curves.png` |
 
 ### Generated during plan execution
 
@@ -319,7 +319,7 @@ Run each `.prompt.md` file through Claude (or `/prompt-storyboard`) and save out
 
 ### Organization workflow
 
-1. Generate pending figures: Run each prompt through Claude and save to `diagrams/figures/`.
+1. Generate pending figures: Run each prompt through Claude and save to `diagrams/`.
 2. Execute the plan: Run `/run-experiment` 15-run sweep.
 3. After all 15 runs complete, pull W&B summaries for each run.
 4. Aggregate metrics into `leaderboard.json` (script or manual).

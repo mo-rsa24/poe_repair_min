@@ -62,6 +62,6 @@ A researcher about to run a large unattended sweep. They need to understand: "If
 
 ## Save instructions
 
-**Output file:** `diagrams/figures/why-this-plan-exists.png`
+**Output file:** `diagrams/what-finding-out-late-costs.png`
 
 After generating this diagram, save it to the path above. The plan file will reference it in the "Why this plan exists" section.

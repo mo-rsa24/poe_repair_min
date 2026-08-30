@@ -83,6 +83,6 @@ Someone reading the plan and wondering "What do these metrics actually mean?" Th
 
 ## Save instructions
 
-**Output file:** `diagrams/figures/three-metrics-explained.png`
+**Output file:** `diagrams/three-metrics-explained.png`
 
 After generating this diagram, save it to the path above. The plan file will reference it.

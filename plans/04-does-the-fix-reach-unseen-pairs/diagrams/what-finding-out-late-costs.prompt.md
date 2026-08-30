@@ -40,4 +40,4 @@ Someone deciding whether this instrumentation plan is worth doing before the swe
 
 ## Save instructions
 
-**Output file:** `diagrams/figures/why-this-plan-exists.png`
+**Output file:** `diagrams/what-finding-out-late-costs.png`
