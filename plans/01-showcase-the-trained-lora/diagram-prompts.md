@@ -3,7 +3,7 @@
 The scope's pictures. Everything here is marked [planned] and drawn dashed: nothing is built yet,
 and the map says so truthfully.
 
-**9 prompts · 0 rendered · 9 waiting**
+**10 prompts · 10 rendered · 0 waiting**
 
 ## Abstraction chain
 
@@ -24,8 +24,12 @@ adapter chip, scorer lens, figure board, outcome tile, researcher persona.
 
 ### Prompt 1 (Subject): reading where the curve flattens [planned]
 
-⏳ not rendered
+🖼️ rendered 2026-09-01: `diagrams/reading-where-the-curve-flattens.png`
 Save as: `diagrams/reading-where-the-curve-flattens.png`
+
+<a href="diagrams/reading-where-the-curve-flattens.png"><img src="diagrams/reading-where-the-curve-flattens.png" width="800" alt="A monitor showing the fraction-of-distance-reached curve and the loss curve, both dashed as not yet measured, with the 0.4 threshold line and the two equally-weighted train-longer / stop-spend exits"></a>
+
+*Both curves dashed to mean not yet measured; the 0.4 threshold line is written before the run.*
 
 > Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded directional arrows, each color meaning exactly one kind of traffic, with a small legend inside the image. Solid lines are actual transfers; dashed lines are reserved for control, acknowledgement, retry, and optional paths. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Clean sans-serif labels under every icon. Generous spacing, no clutter, no watermark.
 >
@@ -35,8 +39,12 @@ Faithfulness note: Both curves are dashed, because nothing has been measured yet
 
 ### Prompt 2 (Subject): the same-prompt check [planned]
 
-⏳ not rendered
+🖼️ rendered 2026-09-01: `diagrams/the-same-prompt-check.png`
 Save as: `diagrams/the-same-prompt-check.png`
+
+<a href="diagrams/the-same-prompt-check.png"><img src="diagrams/the-same-prompt-check.png" width="800" alt="Two identical dog experts feed a PoE junction whose adapter correction should read near zero; a green exit shows the rule holding at one dog, a red exit of equal size shows the plurality-prior failure"></a>
+
+*Both expert cards read the same word; the correction is labeled a should-be, not a measured value.*
 
 > Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded directional arrows, each color meaning exactly one kind of traffic, with a small legend inside the image. Solid lines are actual transfers; dashed lines are reserved for control, acknowledgement, retry, and optional paths. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Clean sans-serif labels under every icon. Generous spacing, no clutter, no watermark.
 >
@@ -46,8 +54,12 @@ Faithfulness note: Both expert cards must read the same word, and the amber arro
 
 ### Prompt 3 (Subject): the multiplier moves to the adapter [planned]
 
-⏳ not rendered
+🖼️ rendered 2026-09-01: `diagrams/the-multiplier-moves-to-the-adapter.png`
 Save as: `diagrams/the-multiplier-moves-to-the-adapter.png`
+
+<a href="diagrams/the-multiplier-moves-to-the-adapter.png"><img src="diagrams/the-multiplier-moves-to-the-adapter.png" width="800" alt="The measured series with the cached true correction, faded on the left, beside the same series run on the adapter output, drawn dashed and prominent on the right, with an empty figure-board card reserved for the AUC comparison"></a>
+
+*The left panel is measured and faded; the right, on the adapter, is dashed because it has not run.*
 
 > Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded directional arrows, each color meaning exactly one kind of traffic, with a small legend inside the image. Solid lines are actual transfers; dashed lines are reserved for control, acknowledgement, retry, and optional paths. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Clean sans-serif labels under every icon. Generous spacing, no clutter, no watermark.
 >
@@ -57,8 +69,12 @@ Faithfulness note: The left panel is faded because that series is measured and d
 
 ### Prompt 4 (Subject): the transfer matrix [planned]
 
-⏳ not rendered
+🖼️ rendered 2026-09-01 (1 revision: the first attempt drew scored checkmarks with green/red verdicts on every tile, which asserted results that do not exist; corrected to hollow dashed placeholders): `diagrams/the-transfer-matrix.png`
 Save as: `diagrams/the-transfer-matrix.png`
+
+<a href="diagrams/the-transfer-matrix.png"><img src="diagrams/the-transfer-matrix.png" width="800" alt="A grid of hollow dashed placeholder tiles, rows trained-on-group against columns evaluated-on-disjoint-pair, diagonal marked not-applicable, a scorer lens hovering over one unscored tile"></a>
+
+*Every tile is an empty dashed placeholder: no run in this grid has been scored yet.*
 
 > Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded directional arrows, each color meaning exactly one kind of traffic, with a small legend inside the image. Solid lines are actual transfers; dashed lines are reserved for control, acknowledgement, retry, and optional paths. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Clean sans-serif labels under every icon. Generous spacing, no clutter, no watermark.
 >
@@ -68,8 +84,12 @@ Faithfulness note: Every tile is dashed, because no run is scored yet. Rows are 
 
 ### Prompt 5 (Subject): the grid and the meter [planned]
 
-⏳ not rendered
+🖼️ rendered 2026-09-01 (1 revision: the first attempt drew three extra platforms solid with filled meters, implying trained runs that do not exist; corrected to hollow, meter-free placeholders): `diagrams/the-grid-and-the-meter.png`
 Save as: `diagrams/the-grid-and-the-meter.png`
+
+<a href="diagrams/the-grid-and-the-meter.png"><img src="diagrams/the-grid-and-the-meter.png" width="800" alt="A rank-by-step-count grid with only rank 8 at 100k steps solid and carrying a meter panel; every other cell is a hollow dashed platform, with resume and fresh-run arrows showing what is planned, not measured"></a>
+
+*Only rank 8 at 100k is a real trained artifact; every other platform is dashed and carries no meter.*
 
 > Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded directional arrows, each color meaning exactly one kind of traffic, with a small legend inside the image. Solid lines are actual transfers; dashed lines are reserved for control, acknowledgement, retry, and optional paths. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Clean sans-serif labels under every icon. Generous spacing, no clutter, no watermark.
 >
@@ -79,8 +99,12 @@ Faithfulness note: Exactly one platform is solid, rank 8 at 100k, because that i
 
 ### Prompt 6 (Subject): the checkpoint watcher and its test [planned]
 
-⏳ not rendered
+🖼️ rendered 2026-09-01: `diagrams/the-checkpoint-watcher-and-its-test.png`
 Save as: `diagrams/the-checkpoint-watcher-and-its-test.png`
+
+<a href="diagrams/the-checkpoint-watcher-and-its-test.png"><img src="diagrams/the-checkpoint-watcher-and-its-test.png" width="800" alt="The checkpoint watcher reads first/middle/final checkpoints off the training device, converts them through a bottleneck lens and highest-gain directions into an early-window injection, ending at a scorer with two hollow, not-yet-measured outcome chips"></a>
+
+*The watcher runs off the training device; both outcome chips are dashed, since the test has not run.*
 
 > Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded directional arrows, each color meaning exactly one kind of traffic, with a small legend inside the image. Solid lines are actual transfers; dashed lines are reserved for control, acknowledgement, retry, and optional paths. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Clean sans-serif labels under every icon. Generous spacing, no clutter, no watermark.
 >
@@ -88,10 +112,29 @@ Save as: `diagrams/the-checkpoint-watcher-and-its-test.png`
 
 Faithfulness note: The watcher sits on its own platform, off the training device, which is a real constraint and not decoration. The window bracket is pinned at steps 0 to 10, the measured injection window, and the red caption states the condition under which none of this reaches the main text.
 
+### Prompt 7 (Subject): the lambda-softness strip [planned]
+
+🖼️ rendered 2026-09-01: `diagrams/the-lambda-softness-strip.png`
+Save as: `diagrams/the-lambda-softness-strip.png`
+
+<a href="diagrams/the-lambda-softness-strip.png"><img src="diagrams/the-lambda-softness-strip.png" width="800" alt="Five dashed platforms across lambda 0 to 1 for one fixed pair and checkpoint, each with empty sharpness and compose-rate gauges; the two endpoints are captioned already scored but drawn dashed like the rest"></a>
+
+*All five platforms are dashed, including the two endpoints captioned already scored: nothing in this row is re-drawn as a result.*
+
+> Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded directional arrows, each color meaning exactly one kind of traffic, with a small legend inside the image. Solid lines are actual transfers; dashed lines are reserved for control, acknowledgement, retry, and optional paths. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Clean sans-serif labels under every icon. Generous spacing, no clutter, no watermark.
+>
+> A single row of five hollow dashed platforms, one named pair carried through all five, labeled "λ=0" through "λ=1" left to right. Each platform holds a paired frame outline and a small meter pair: a sharpness gauge and a compose-rate gauge, both empty. A dashed amber curve traces across the five sharpness gauges, unfilled. The λ=0 platform is captioned "plain PoE, already scored" and the λ=1 platform "shipped configuration, already scored"; the three between are captioned "this plan renders these". A caption card: "one row, one pair, one checkpoint fixed".
+
+Faithfulness note: All five platforms are dashed because no point in this row has been measured yet, including the λ=0 and λ=1 endpoints, which are captioned as already scored elsewhere but not re-drawn as solid here. The sharpness curve is drawn unfilled, since a monotone rise is the thing being tested for, not asserted.
+
 ### Subject capstone: the adapter on trial [planned]
 
-⏳ not rendered
+🖼️ rendered 2026-09-01 (1 revision: a station label read "multiplier sweep", reintroducing a word this whole pass removed; renamed to "multiplier dial"): `diagrams/subject-capstone-the-adapter-on-trial.png`
 Save as: `diagrams/subject-capstone-the-adapter-on-trial.png`
+
+<a href="diagrams/subject-capstone-the-adapter-on-trial.png"><img src="diagrams/subject-capstone-the-adapter-on-trial.png" width="800" alt="Six dashed stations arranged around a solid adapter chip at center: the curve watcher, the same-prompt check, the multiplier dial, the length-and-rank grid, the checkpoint test, and the transfer matrix, none showing a scored result"></a>
+
+*All six stations drawn dashed; only the adapter chip is solid, and nothing here asserts a result.*
 
 > Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded directional arrows, each color meaning exactly one kind of traffic, with a small legend inside the image. Solid lines are actual transfers; dashed lines are reserved for control, acknowledgement, retry, and optional paths. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Clean sans-serif labels under every icon. Generous spacing, no clutter, no watermark.
 >
@@ -107,8 +150,12 @@ The checks and failure paths come from the plans' engagement checks, none invent
 
 ### Prompt 1 (Process): thirteen stations in five phases [planned]
 
-⏳ not rendered
+🖼️ rendered 2026-09-01: `diagrams/process-thirteen-stations-in-five-phases.png`
 Save as: `diagrams/process-thirteen-stations-in-five-phases.png`
+
+<a href="diagrams/process-thirteen-stations-in-five-phases.png"><img src="diagrams/process-thirteen-stations-in-five-phases.png" width="720" alt="Thirteen numbered stations across five phase panels, every status chip reading Not started, each carrying the real engagement check quoted from its plan, ending at a green showcase-set banner"></a>
+
+*All thirteen stations read Not started; every red check chip quotes a real engagement check, none invented.*
 
 > Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded directional arrows, each color meaning exactly one kind of traffic, with a small legend inside the image. Solid lines are actual transfers; dashed lines are reserved for control, acknowledgement, retry, and optional paths. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Clean sans-serif labels under every icon. Generous spacing, no clutter, no watermark.
 >
@@ -118,8 +165,12 @@ Faithfulness note: Thirteen stations, five phases, every status chip reading 'No
 
 ### Process capstone: the scope closed [planned]
 
-⏳ not rendered
+🖼️ rendered 2026-09-01: `diagrams/process-capstone-the-scope-closed.png`
 Save as: `diagrams/process-capstone-the-scope-closed.png`
+
+<a href="diagrams/process-capstone-the-scope-closed.png"><img src="diagrams/process-capstone-the-scope-closed.png" width="800" alt="All-green end-state image: thirteen shrunk stations feeding a recorded recap-plan-tree URL and a figure board with every card filled, titled showcase the trained adapter: closed"></a>
+
+*The only green image in the map: this shows the scope finished, not its current status.*
 
 > Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded directional arrows, each color meaning exactly one kind of traffic, with a small legend inside the image. Solid lines are actual transfers; dashed lines are reserved for control, acknowledgement, retry, and optional paths. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Clean sans-serif labels under every icon. Generous spacing, no clutter, no watermark.
 >
