@@ -1,7 +1,7 @@
 # 🌍 PoE composition (and Mono, the target it is compared against)
 
 Product-of-Experts (PoE) composition is the method under study: a way to make SDXL draw two
-named concepts at once by [combining two separate single-concept predictions](/home-mscluster/mmolefe/goal-setting/learning/poe-composition-diffusion/plans/07-poe-factorisation-and-normaliser.md) at every denoising
+named concepts at once by [combining two separate single-concept predictions](/home-mscluster/mmolefe/goal-setting/learning/deep-learning/diffusion-models/poe-composition-diffusion/plans/07-poe-factorisation-and-normaliser.md) at every denoising
 step, instead of retraining the model or hand-writing a joint prompt. It is the thing that fails
 (see [chimera.md](chimera.md)) and the thing the project's fix (see
 [lora-corrector.md](lora-corrector.md)) is trying to repair. Sibling file

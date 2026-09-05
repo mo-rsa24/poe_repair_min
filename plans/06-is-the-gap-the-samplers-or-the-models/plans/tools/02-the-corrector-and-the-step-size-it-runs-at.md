@@ -56,7 +56,7 @@ Design only. Verdicts and run state live in
 
 ⬅️ [Previous](#position-in-the-plan-tree) | 📋 [TOC](#table-of-contents) | [Next](#words-this-plan-uses) ➡️
 
-Build a composer that runs `k` [Langevin corrector steps](../../../../../../../goal-setting/learning/sampler-correctors-for-composition/plans/22-predictor-corrector-sampling.md) at each of the 50 noise levels before
+Build a composer that runs `k` [Langevin corrector steps](../../../../../../../goal-setting/learning/deep-learning/diffusion-models/sampler-correctors-for-composition/plans/22-predictor-corrector-sampling.md) at each of the 50 noise levels before
 taking the reverse step. Prove it produces byte-identical output to plain product-of-experts when
 it is switched off. Then fix its step size by search, before any measurement is read off it.
 

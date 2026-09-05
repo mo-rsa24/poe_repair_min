@@ -204,12 +204,12 @@ by N alone. Measured on random vectors in 65536 dims:
 | 100 | 17.1% |
 | 300 | 6.0% |
 
-A first short run at N=30 reported "92% [energy at k=16](/home-mscluster/mmolefe/goal-setting/learning/spectral-structure-of-the-correction/plans/10-energy-at-k-on-the-real-matrix.md)", which is almost
+A first short run at N=30 reported "92% [energy at k=16](/home-mscluster/mmolefe/goal-setting/learning/deep-learning/diffusion-models/spectral-structure-of-the-correction/plans/10-energy-at-k-on-the-real-matrix.md)", which is almost
 entirely this artifact. The script now prints what the same measurement
 reads on matched Gaussian noise, beside every number, and warns when N is
 small relative to k.
 
-Two guards worth noting: the stack is centred before the [SVD](/home-mscluster/mmolefe/goal-setting/learning/spectral-structure-of-the-correction/plans/06-svd-of-the-real-matrix.md) (otherwise
+Two guards worth noting: the stack is centred before the [SVD](/home-mscluster/mmolefe/goal-setting/learning/deep-learning/diffusion-models/spectral-structure-of-the-correction/plans/06-svd-of-the-real-matrix.md) (otherwise
 component 1 is just the mean, flattering the low-rank claim for free), and
 slugs cached under both splits are excluded from the held-out set (otherwise
 the "held-out" projection is partly measuring training pairs).

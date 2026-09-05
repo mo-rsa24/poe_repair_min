@@ -55,7 +55,7 @@ Design only. Verdicts and run state live in
 
 ⬅️ [Previous](#position-in-the-plan-tree) | 📋 [TOC](#table-of-contents) | [Next](#quick-context-where-you-are) ➡️
 
-Read Skreta et al.'s [Feynman-Kac correctors](../../../../../../../goal-setting/learning/sampler-correctors-for-composition/plans/26-feynman-kac-correctors.md) in full and decide, on the record, whether this project
+Read Skreta et al.'s [Feynman-Kac correctors](../../../../../../../goal-setting/learning/deep-learning/diffusion-models/sampler-correctors-for-composition/plans/26-feynman-kac-correctors.md) in full and decide, on the record, whether this project
 implements a second corrector family or cites one, with the cost of building it written down either
 way.
 

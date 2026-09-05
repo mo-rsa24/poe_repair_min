@@ -85,7 +85,7 @@ finds them.
 | `docs/evidence/EXP04-window-vs-commitment/` | `artifacts/results/when-the-correction-must-arrive/window-vs-commitment/` |
 
 **Not moved.** `docs/IMMERSE_PoE_Foundations.md` stays: its home is the `poe-derivation-foundations`
-learning journey at `/home-mscluster/mmolefe/goal-setting/learning/poe-derivation-foundations/`,
+learning journey at `/home-mscluster/mmolefe/goal-setting/learning/deep-learning/diffusion-models/poe-derivation-foundations/`,
 which this sweep cannot write into without a paired run (`retrofit-repo --paired <path>`). `docs/`
 is therefore not yet empty.
 
