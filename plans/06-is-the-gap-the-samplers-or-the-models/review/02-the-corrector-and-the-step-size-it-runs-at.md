@@ -1,7 +1,10 @@
 # 🔬 Review: does the corrector change nothing when switched off, and what step size does it run at?
 
-**The corrector is built, both leak checks pass byte for byte, and the step size is picked:
-`c = 30`, the largest of eight usable values, with `c = 100` the first to diverge.** Every question below was written before any corrector existed. This file
+**The corrector is built, both leak checks pass byte for byte, and the pre-registered search
+rule picks `c = 30`. The pick is provisional: the rendered samples show the chain wrecking the
+image from `c = 3` upward while both numeric divergence guards pass, and the composing-pair
+control at step 26 rejects `c = 30`. The grid is being repeated at `c = 3` and `c = 0.3` to find
+the largest step size that survives that control.** Every question below was written before any corrector existed. This file
 judges [the corrector and step-size design](../plans/tools/02-the-corrector-and-the-step-size-it-runs-at.md).
 Steps 26, 27 and 29 all measure something on the path this composer produces, so a failure recorded
 here blocks all three rather than bounding any of them.
@@ -140,7 +143,7 @@ than in a log. `δ_t = c·β_t`, at `k=20`, on `a_cat__x__a_dog` seed 9.
 | 10 | 1.103 (0.344 to 1.381) | 1.038 | no (2%, +0.0038) | 0.154 → 0.154 | usable |
 | 30 | 1.226 (0.432 to 1.497) | 1.113 | no (2%, +0.0082) | 0.123 → 0.124 | **usable, picked** |
 | 100 | 1.358 (1.078 to 3.073) | 3.086 | no (12%, +0.0022) | 0.184 → 0.155 | diverged |
-| 300 | see `step_size_search.json` once its row lands | | | | |
+| 300 | 1.339 (see the file) | 5.244 | no (16%, +0.0010) | 0.184 → 0.155 | diverged |
 
 The displacement is within one level: how far the 20-step chain moved from the point it started
 that level at, relative to that point's norm. The last column is the mean ratio over the last
@@ -182,6 +185,30 @@ written with the answer already visible.
   `k = 20` most of what the chain does to the residual is done through the path, not at the
   level. The grid's `k` sweep is the measurement of that; this table only says the instrument
   moves.
+- **The two numeric divergence guards do not see what the pictures show.** The final images of
+  the search chains (`corrector/search_renders/cat_dog_k20_by_c.png`, one tile per `c` at
+  `k = 20`, from the composer's own PNGs under `corrector/pairs/a_cat__x__a_dog/seed_9/`) are
+  photographs of one fused animal up to `c = 0.3`, a different scene with a leash and harness at
+  `c = 3`, a painterly smear at `c = 10`, and texture noise from `c = 30`, while the latent norm
+  stays within 1.11× and the residual ratio does not rise within a level for any of them. The
+  norm cannot rise because the Langevin step contracts toward the score's mean whatever its size
+  until `δ_t` passes 2; and the in-level ratio guard reads the joint branch at a point the chain
+  has already left the data manifold at, where the two branches agree about as badly as they did
+  before. So "does not diverge" as pre-registered is a statement about the Euler discretisation,
+  not about the sample, and the rule "the largest such `c`" lands on a step size whose chain
+  produces noise. On the composing pair the grid at step 26 makes this a number: at `c = 30` the
+  read-zone ratio rises from 0.090 at `k = 0` to 0.111 at `k = 200` (peak 0.169 at `k = 20`), and
+  its images are texture from `k = 1`, which is the pre-registered inconclusive branch there. At
+  `c = 0.3` the same pair holds at 0.092 to 0.093 from `k = 0` to `k = 20` with the meadow and the
+  butterfly intact in every tile (`corrector/search_renders/butterfly_c0p3_by_k.png`).
+- **What is being done about it, under the plan's own rule.** Step 26's inconclusive branch says
+  return here and widen; the still-open row below already named the composing pair as the
+  search's missing control. So the grid is being run again at `c = 3` and `c = 0.3`, and the
+  step size the scope proceeds at is the largest `c` whose composing-pair curve does not rise
+  past `1 + MAX_DRIFT_FOR_NULL` of its `k = 0` value at `k = 200`. No threshold moves; the
+  control that was already written into step 26 is applied to the search's candidates. The
+  numeric search table stays as the record of what the pre-registered rule alone would have
+  chosen.
 
 ## Could the answer be an artefact
 
@@ -216,7 +243,8 @@ Navigation: ⬅️ [What the write-up owes](#what-the-write-up-owes) | 📋 [TOC
 
 | What is unresolved | What would settle it | Who or what is blocked by it |
 |---|---|---|
-| whether one pair and one seed is enough to fix a step size for the whole scope | the search rerun on the composing pair, at the cost of the search again. Deferred until step 26's two panels are seen to agree or disagree | nothing yet. This file records the single pair as a choice rather than an oversight |
+| whether one pair and one seed is enough to fix a step size for the whole scope | the grid at step 26 on the composing pair, at `c = 30`, `3` and `0.3`; the largest `c` whose control curve does not rise is the step size the scope proceeds at | step 26's verdict and everything after it, until the repeated grids land |
+| a divergence guard that sees what the eye sees | a per-`c` render read by eye is now saved with every search row; a numeric candidate is the joint branch's ratio measured on the path across `k` (what step 26 does) rather than within a level | nothing: the composing-pair control already covers it for this scope, and a future search should carry it from the start |
 
 ## Next step
 
