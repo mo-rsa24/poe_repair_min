@@ -7,7 +7,7 @@ works in.
 ## Recommended prompt (after this plan completes)
 
 ```
-/sync-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis-03-does-the-corrector-compose-in-the-same-window.md — <same window or a different one>
+/sync-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis/04-does-the-corrector-compose-in-the-same-window.md — <same window or a different one>
 ```
 
 ## Recommended skill
@@ -59,8 +59,8 @@ Design only. Verdicts and run state live in
 ⬅️ [Previous](#position-in-the-plan-tree) | 📋 [TOC](#table-of-contents) | [Next](#quick-context-where-you-are) ➡️
 
 Slide a ten-step corrector window across the run, at the same nine positions the injected-correction
-renders used, and ask whether the compose rate peaks in the same window that the injected correction
-does.
+renders used, and ask whether the [compose rate](../../../../context/world/compose-rate.md) peaks
+in the same window that the injected correction does.
 
 ## Quick context: where you are
 
@@ -99,7 +99,7 @@ matched against, `paper/iclr/figures/when-the-correction-arrives/poe/samples-as-
 
 A flat curve at [step 26](03-what-is-left-once-the-chain-settles.md) does not strictly
 imply no change in compose rate, because the corrector can relocate the trajectory without
-shrinking `‖r_t‖`. If step 26 comes back flat and this plan still composes, that combination is the
+shrinking [`‖r_t‖`](../../../../context/world/interaction-term.md#words-this-file-uses). If step 26 comes back flat and this plan still composes, that combination is the
 finding and it goes in the review file as such. Run this plan anyway in that case, and record that
 it was run against a flat curve at step 26.
 
@@ -194,6 +194,18 @@ attribution is not.
    column, each square is the final picture, green border where the detector scored composed.
 3. **The comparison, written down.** One paragraph in the review file saying whether the peak
    column matches the injected-correction figure's.
+4. **The read-out every parallel session shares, and the fidelity read.** Two sheets per pair,
+   rows the held-out seeds 9 to 16, from the seed's cached initial noise. The first puts the joint
+   prompt, plain product-of-experts and the corrector on all 50 steps side by side. The second
+   starts from the rank-32 adapter at λ 1.2 on all 50 steps and adds `k ∈ {0, 5, 20}` corrector
+   steps on the last fifteen steps only (35 to 49), with the drift taken from the corrected
+   prediction, so the chain settles into the corrected model's distribution rather than plain
+   PoE's. The tail sheet is scored twice: compose (instance count) and sharpness (Laplacian
+   variance of the greyscale render, the same measure plan 07 of scope 01 used). The control
+   pair `a_butterfly__x__a_flower_meadow` runs on the same seeds so a corrector that breaks what
+   already works is caught. Driver: `scripts/corrector_window_sweep.py` (`--sheet`, `--tail`,
+   `--figures`, `--wandb`); thresholds in that file as `FIDELITY_MIN_SHARPNESS_RISE` and
+   `FIDELITY_MAX_COMPOSE_LOSS_SEEDS`.
 
 Figure to
 `paper/iclr/figures/when-the-correction-arrives/mcmc/samples-as-a-ten-step-corrector-window-slides.png`,
@@ -233,6 +245,13 @@ be compared at the same moments of the run.
   blind to it. Harvest by `pgrep` on the session node, per
   [environment/hpc/execution-protocol.md](../../../../environment/hpc/execution-protocol.md).
 - **The cached trajectories cannot be used.** The corrector moves the latent onto a different path.
+- The tail condition attaches the rank-32 adapter at step 30050,
+  `/datasets/mmolefe/poe_repair_min/outputs/showcase/phase1_r32_100k/checkpoints/lora_step_030050.pt`.
+  The windowed adapter sampler leaves the adapter enabled when it returns, so the tail stage runs
+  in its own process and no pure-corrector or reference render shares a process with it.
+- The control pair's held-out cache holds seeds 9 to 12 only. Seeds 13 to 16 start from the
+  from-seed float16 draw, which is the same construction as the cache's step-0 latent (checked
+  equal on every cached cell before the runs).
 - The models run in fp16, and anything normed upcasts to fp32 first.
 - SDXL base, DDIM, 50 steps, guidance 7.5, latents 4×128×128 at 1024².
 - No system LaTeX here, so the figure's PDF comes from matplotlib, per
@@ -247,9 +266,14 @@ be compared at the same moments of the run.
 ### 0. 🧭 Check this plan before working from it
 
 - [ ] **0.1** Check this plan conforms and its instructions are concrete, before acting on it.
-  - Paste: `/verify-plan @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis-03-does-the-corrector-compose-in-the-same-window.md`
+  - Paste: `/verify-plan @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis/04-does-the-corrector-compose-in-the-same-window.md`
   - Done when: the report comes back clean, or its proposals have been applied.
-- [ ] **0.2** Read the existing injected-correction figure and write down the four layout facts this
+- [ ] **0.2** Cross-reference this plan's terms against context/, environment/, runbook/,
+      report/, and any learning journey that names this project, in case a term this plan mentions
+      is already defined or explained somewhere else in the repo.
+  - Paste: `/xref-plan @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis/04-does-the-corrector-compose-in-the-same-window.md`
+  - Done when: the scan comes back with no candidates, or its proposed links have been applied.
+- [ ] **0.3** Read the existing injected-correction figure and write down the four layout facts this
       figure has to match: the pair, the seeds, the nine window positions, and the exact rule the
       green border encodes.
 
@@ -301,17 +325,65 @@ and record that it was run against a flat curve.
     figure and nothing else.
 
 ▶ **Next: [instruction 2.1](#2--read-the-two-grids-side-by-side)**, the comparison only a person
-can make.
+can make, and [task 3.1](#3--the-eight-seed-sheets-and-the-corrector-on-the-tail-of-the-adapter-run)
+in parallel.
+
+### 3. 🖼️ The eight-seed sheets, and the corrector on the tail of the adapter run
+
+◀ **Needs: [task 2.2 of step 26](03-what-is-left-once-the-chain-settles.md#2--run-the-grid-and-plot-it)**
+for the sheet's `k`, and [step 25's picked `c`](../tools/02-the-corrector-and-the-step-size-it-runs-at.md)
+for both.
+
+- [ ] **3.1** The eight-seed sheet per pair: joint prompt, plain PoE, corrector on all 50 steps.
+
+    ```bash
+    OUT=/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector
+    ssh <node> 'STAGE=sheet GPU=<idx> nohup bash /home-mscluster/mmolefe/Playground/PhD/poe_repair_min/scripts/mechanism_study/run_corrector_curve.sh > '"$OUT"'/logs/sheet.log 2>&1 &'
+    ```
+
+  - Both pairs, seeds 9 to 16, at the flat-part `k` and the picked `c`. Plain PoE is the composer
+    at `k=0`, byte-identical to the reference sampler; the joint prompt is plain CFG on the joint
+    embedding.
+  - Output goes to: `$OUT/sheet_scores.json`, renders under `$OUT/sheet/`.
+  - **Done when:** the file holds 16 rows (2 pairs × 8 seeds), each with three scored tiles.
+- [ ] **3.2** The tail condition: the rank-32 λ 1.2 run with the corrector on steps 35 to 49 only.
+
+    ```bash
+    ssh <node> 'STAGE=tail GPU=<idx> nohup bash /home-mscluster/mmolefe/Playground/PhD/poe_repair_min/scripts/mechanism_study/run_corrector_curve.sh > '"$OUT"'/logs/tail.log 2>&1 &'
+    ```
+
+  - `k ∈ {0, 5, 20}`, both pairs, seeds 9 to 16: 48 renders, each scored for compose and for
+    sharpness. `k=0` is the adapter alone, so the corrector's addition is visible in the sheet.
+  - Output goes to: `$OUT/tail_fidelity.json` with the printed branch.
+  - **Done when:** the file holds 48 rows and the branch line is one of support, null,
+    composition breaks, inconclusive or no branch fired, with the numbers it was judged on.
+- [ ] **3.3** Draw the four sheets, and log everything to W&B.
+
+    ```bash
+    PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
+    $PY scripts/corrector_window_sweep.py --figures --wandb
+    ```
+
+  - Sheets to `artifacts/results/is-the-gap-the-samplers-or-the-models/corrector-<pair>-eight-seed-sheet.png`
+    and `corrector-on-adapter-tail-<pair>-eight-seed-sheet.png`, each with a `.json` sidecar
+    carrying the compose rate per column and every tile's score, plus a `README.md` entry each.
+  - W&B project `prime_lab/poe-repair-animals-compose`: the sheets as images, the sidecars as
+    one artifact, and the run id written into the review file's `## Runs` table.
+  - **Done when:** the four PNGs, their sidecars and the README entries exist, and the review
+    file carries the W&B run id.
+
+▶ **Next: [instruction 4.1](#4--read-the-tail-sheet-by-eye)**, the sharpness read only an eye can
+confirm.
 
 ### Close out. 🔄 Record what this plan taught
 
 ◀ **Needs:** every group above attempted, including the ones that went red.
 
 - [ ] **Capture the failures this plan hit**, while they are still fresh.
-  - Paste: `/ingest-error-pattern --from-run-log @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis-03-does-the-corrector-compose-in-the-same-window.md`
+  - Paste: `/ingest-error-pattern --from-run-log @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis/04-does-the-corrector-compose-in-the-same-window.md`
   - Done when: each failure has a catalog entry, or there were none to record.
 - [ ] **Bring the tree current** with what actually happened.
-  - Paste: `/sync-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis-03-does-the-corrector-compose-in-the-same-window.md — <one line>`
+  - Paste: `/sync-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis/04-does-the-corrector-compose-in-the-same-window.md — <one line>`
   - Done when: statuses, the running order and the Error Matrix match reality.
 
 ▶ **Next: [what has to pass before this runs](#what-has-to-pass-before-this-runs).**
@@ -332,7 +404,7 @@ them.
   - `paper/iclr/figures/when-the-correction-arrives/poe/samples-as-a-ten-step-window-slides.png`
   - Expected result: two grids with identical rows and columns, differing only in what was switched
     on inside the window.
-  - ❌ If the layouts differ in any of the four facts recorded at task 0.2, the comparison is not
+  - ❌ If the layouts differ in any of the four facts recorded at task 0.3, the comparison is not
     matched. Fix the figure rather than explaining the difference in the caption.
 - [ ] **2.2** Count composed renders per column by eye, on both grids, and note which column peaks
       on each.
@@ -347,7 +419,24 @@ them.
     at this compute budget.
 
 ▶ **Next: [the close out](#close-out--record-what-this-plan-taught)**, then
-[step 28](../baselines/05-superdiff-at-this-repos-fifty-steps.md).
+[step 28](../baselines/05-what-changes-when-superdiff-leaves-its-own-defaults.md).
+
+### 4. 👁️ Read the tail sheet by eye
+
+◀ **Needs: [task 3.3](#3--the-eight-seed-sheets-and-the-corrector-on-the-tail-of-the-adapter-run)**,
+the tail sheet.
+
+- [ ] **4.1** Open `artifacts/results/is-the-gap-the-samplers-or-the-models/corrector-on-adapter-tail-cat-dog-eight-seed-sheet.png`.
+  - Row by row, compare the `k=0` tile (the adapter alone) with the `k=20` tile: is the `k=20`
+    one crisper, the same, or softer, and are both animals still there?
+  - The Laplacian variance printed on each tile is the number the branch was judged on; a tile
+    the number calls sharper that the eye calls noisier is the case the measure cannot see, and
+    it is recorded in the review file as such.
+- [ ] **4.2** Open the butterfly × meadow tail sheet and check nothing that composed at `k=0` has
+      lost its butterfly at `k=20`.
+- [ ] **4.3** Write the eye read in one line beside the printed branch in the review file.
+
+▶ **Next: [the close out](#close-out--record-what-this-plan-taught)**.
 
 ## What has to pass before this runs
 
@@ -371,8 +460,9 @@ ls -l paper/iclr/figures/when-the-correction-arrives/mcmc/
 **Pass criteria**
 
 - 40 scored renders in `window_curves_mcmc.json`.
+- 16 rows in `sheet_scores.json` and 48 in `tail_fidelity.json`, with the tail branch printed.
 - The figure and its `.json` sidecar exist under `mcmc/`, with a `README.md` entry.
-- The layout matches the four facts recorded at task 0.2.
+- The layout matches the four facts recorded at task 0.3.
 - Instruction 2.3 has recorded the same-window answer, whichever way it went.
 
 **Fail criteria (STOP)**
@@ -402,6 +492,8 @@ None. This scope carries no `diagram-prompts.md`, so there is no illustrated map
 
 | Item | Lane | Description | Generated by | Status | Details |
 |---|---|---|---|---|---|
+| `artifacts/results/is-the-gap-the-samplers-or-the-models/corrector-<pair>-eight-seed-sheet.png`, one per pair | — | rows are the held-out seeds 9 to 16, columns the joint prompt, plain PoE, and the corrector on all 50 steps at the flat-part `k`; frame colour is the scorer's verdict; the compose count per column is in the title and the sidecar | `scripts/corrector_window_sweep.py --figures` | ⏳ | **The read-out every parallel session shares.** Sidecar `.json` carries every tile's score, `k`, `c` and the sampler settings. For the control pair the frame is the unvalidated both-concepts read, said on the sheet |
+| `artifacts/results/is-the-gap-the-samplers-or-the-models/corrector-on-adapter-tail-<pair>-eight-seed-sheet.png`, one per pair | — | rows seeds 9 to 16, columns the joint prompt, plain PoE, the rank-32 λ 1.2 adapter alone, then the adapter plus `k=5` and `k=20` corrector steps on steps 35 to 49; each tile carries its instance count and its Laplacian variance | `scripts/corrector_window_sweep.py --figures` | ⏳ | **The fidelity read.** Sidecar carries the branch, the thresholds and every number. Main text only if the branch is support |
 | `mcmc/samples-as-a-ten-step-corrector-window-slides.png` | — | rows are seeds 9 to 12, columns are the nine ten-step window positions plus a corrector-on-all-50 column, each square is the final generated picture, green border where the detector scored it as two separate animals | the driver at task 1.1 | ⏳ | **Main text, only if it differs from the injected-correction version.** If the behaviour is identical, one sentence of prose beside the existing figure covers it. Sidecar `.json` records every render, the seeds, `k`, `c` and the border rule |
 
 **Two sentences this figure's caption owes.** The corrector runs at one `k`, which is a compute
@@ -426,10 +518,10 @@ which disagrees with the eye on this pair often enough that the eye count is quo
 
 | Step | Command | Triggered by | Outcome |
 |------|---------|--------------|---------|
-| Check the plan | `/verify-plan @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis-03-does-the-corrector-compose-in-the-same-window.md` | **task 0.1**, before any work | Conformance and thin instructions reported |
-| Capture patterns | `/ingest-error-pattern --from-run-log @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis-03-does-the-corrector-compose-in-the-same-window.md` | **the close out**, after any red run | Errors added to catalogs |
+| Check the plan | `/verify-plan @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis/04-does-the-corrector-compose-in-the-same-window.md` | **task 0.1**, before any work | Conformance and thin instructions reported |
+| Capture patterns | `/ingest-error-pattern --from-run-log @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis/04-does-the-corrector-compose-in-the-same-window.md` | **the close out**, after any red run | Errors added to catalogs |
 | Update Error Matrix | `/sync-plan-tree --update-error-matrices` | Auto (by ingest-error-pattern) | This plan file's Error Matrix regenerated |
-| Bring the tree current | `/sync-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis-03-does-the-corrector-compose-in-the-same-window.md` | **the close out** | Statuses, running order and Error Matrix match reality |
+| Bring the tree current | `/sync-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis/04-does-the-corrector-compose-in-the-same-window.md` | **the close out** | Statuses, running order and Error Matrix match reality |
 
 ## Code references
 
@@ -445,7 +537,7 @@ which disagrees with the eye on this pair often enough that the eye count is quo
 
 ⬅️ [Previous](#code-references) | 📋 [TOC](#table-of-contents) | [Next](#error-matrix) ➡️
 
-[Step 28, SuperDiff at this repo's fifty steps](../baselines/05-superdiff-at-this-repos-fifty-steps.md).
+[Step 28, what changes when SuperDiff leaves its own defaults](../baselines/05-what-changes-when-superdiff-leaves-its-own-defaults.md).
 It starts the comparison half, which asks how much is added rather than when.
 
 ## Error Matrix
@@ -478,7 +570,7 @@ already records the disagreement rate.
 **When it happens:** redrawing a layout from memory instead of from the existing figure.
 **What you see:** two figures a reader compares anyway, with a difference that is not the variable.
 **Why:** the four layout facts were not written down before drawing.
-**How to fix:** task 0.2 records them first; redraw rather than explain the difference in prose.
+**How to fix:** task 0.3 records them first; redraw rather than explain the difference in prose.
 
 ---
 

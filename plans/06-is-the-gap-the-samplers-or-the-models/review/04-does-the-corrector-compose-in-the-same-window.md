@@ -62,6 +62,8 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
 | The corrector across ten window columns, 4 seeds × 10 columns | Tests the claim | not launched | 40 renders, each decoded and scored | `corrector/window_curves_mcmc.json` and `mcmc/samples-as-a-ten-step-corrector-window-slides.png` | ⚠️ waiting on the threshold at step 26 |
+| The eight-seed sheet, 2 pairs × 8 seeds × (joint prompt, plain PoE, corrector on all 50 steps) | Tests the claim | not launched | 48 renders, 16 of them at the corrector's `k` | `corrector/sheet_scores.json`, `artifacts/results/is-the-gap-the-samplers-or-the-models/corrector-<pair>-eight-seed-sheet.png` | ⚠️ waiting on step 26's `k` |
+| The tail condition, 2 pairs × 8 seeds × `k ∈ {0, 5, 20}` on the rank-32 λ 1.2 run, corrector on steps 35 to 49 | Tests the claim | not launched | 48 renders; a level inside the window costs `6k + 6` UNet evaluations | `corrector/tail_fidelity.json`, `corrector-on-adapter-tail-<pair>-eight-seed-sheet.png` | ⚠️ waiting on step 25's `c` |
 
 ## The question written before the run
 
@@ -77,6 +79,27 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
       > A null at step 26 means the correction's size came out the same with the corrector running
       > as without it.
+
+- [ ] ⚠️ **Does a corrector on the last fifteen steps sharpen the corrected run without costing
+      composition?** The condition is the rank-32 adapter at λ 1.2 on all 50 steps, plus
+      `k ∈ {0, 5, 20}` Langevin steps on the corrected prediction inside steps 35 to 49, eight
+      held-out seeds of cat × dog, with butterfly × meadow as the control. Sharpness is the
+      Laplacian variance of the greyscale render; composed is the validated instance count.
+      Thresholds in `scripts/corrector_window_sweep.py`: `FIDELITY_MIN_SHARPNESS_RISE = 0.10`,
+      `FIDELITY_MAX_COMPOSE_LOSS_SEEDS = 1`.
+      **Support** if the mean sharpness over the 8 seeds at `k=20` is at least 10% above `k=0`,
+      `k=5` sits at or above `k=0`, and the composed count at `k=20` is within one seed of `k=0`.
+      **Null** if the mean sharpness at `k=20` is within 10% of `k=0` either way and composition
+      holds within one seed. **Composition breaks** if the composed count falls by two or more
+      seeds, whatever sharpness did. **Inconclusive** if the control pair loses two or more of
+      its composed seeds at `k=20`, since a corrector that breaks what already works licenses no
+      fidelity reading, or if sharpness moves non-monotonically (a rise past the band at `k=20`
+      with `k=5` below `k=0`). The sampler-share read at step 26 is untouched by this question.
+- [ ] ⚠️ **On the eight-seed sheet, what is the compose rate of the corrector on all 50 steps
+      against plain PoE and the joint prompt, on both pairs?** Recorded either way; it is the
+      read-out every parallel session reports on the same seeds. The one bar: the control pair's
+      corrector column may not lose more than one composed seed against its plain-PoE column,
+      which is the same `FIDELITY_MAX_COMPOSE_LOSS_SEEDS` in source.
 
 ## Written before the run, answered after
 
@@ -115,7 +138,9 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
       one cited. Both counts are taken here for that reason.
 - [ ] ⚠️ **Did the run respect the environment?** All 40 renders present, saved under `/datasets`
       with only the finished figure and its sidecar in the repo, launched under `nohup` outside
-      Slurm and harvested by `pgrep` rather than `squeue`.
+      Slurm and harvested by `pgrep` rather than `squeue`. For the tail condition: the adapter
+      stage ran in its own process, so no reference or pure-corrector render was made with the
+      adapter attached.
 
 ## What the write-up owes
 

@@ -4,7 +4,7 @@ This scope asks how much of the correction `r_t` is the sampler's fault, which a
 take away, and how much is the model's, which no amount of correction touches.
 
 > **This scope's plans sit in the one running order, not in a sequence of their own.** They are
-> steps 24 to 30 of the `## Running order` table in the
+> steps 24 to 30, 49 to 51 and 55 of the `## Running order` table in the
 > [repo root MASTER_PLAN.md](../../MASTER_PLAN.md), interleaved with every other scope's plans.
 > The `## Plans` list below is this folder's contents and its dependencies, never a list to work
 > down top to bottom.
@@ -38,7 +38,7 @@ own scope rather than one step inside a scope that is half finished.
 
 📋 [TOC](#table-of-contents) | [Next](#what-is-this-plan) ➡️
 
-**A [Langevin corrector](../../../../../goal-setting/learning/sampler-correctors-for-composition/plans/21-langevin-dynamics.md) run to equilibrium at each noise level removes part of the correction `r_t`
+**A [Langevin corrector](../../../../../goal-setting/learning/deep-learning/diffusion-models/sampler-correctors-for-composition/plans/21-langevin-dynamics.md) run to equilibrium at each noise level removes part of the correction `r_t`
 and leaves a part that does not go away, and what it leaves at the low-noise end of the run is the
 model's error rather than the sampler's.** This scope returns that share as a number with its
 limit attached, and puts three composition rules on one amount axis so the paper has a baseline row
@@ -236,6 +236,9 @@ is read against two published ones instead of standing alone.
 5. Wire SuperDiff at this repo's settings and check it still works there, then compare three rules
    along one generalised amount axis.
 6. Decide whether Feynman-Kac correctors are built or cited, with the reason recorded either way.
+7. Test whether the trained correction transfers across composition rules: inject the
+   PoE-trained adapters into SuperDiff at `kappa` 0.5 over the whole run, and if they do not
+   carry over, train adapters against SuperDiff's own residual `eps_J − eps_M` at that `kappa`.
 
 ## Goals
 
@@ -267,10 +270,10 @@ is read against two published ones instead of standing alone.
    the same window the injected correction does. Same window is a strong result, two different
    mechanisms acting at the same moment. A different window is stronger and gets its own
    paragraph.
-6. **SuperDiff is comparable or is said not to be.** It renders at SDXL base, DDIM, 50 steps,
-   guidance 7.5, and the 200-step against 50-step check records whether the 50-step render still
-   composes. If it does not, every comparison against it is between a working rule and a crippled
-   one, and that sentence goes in the caption.
+6. **SuperDiff is comparable or is said not to be.** It renders at SDXL base, guidance 7.5, on an
+   eight-cell grid (two pairs, 200 against 50 steps, its `kappa` blending weight clamped against
+   unclamped), and the grid records whether the 50-step renders still compose. If a cell does not,
+   every comparison against SuperDiff carries that sentence in its caption.
 7. **The three rules travel one axis.** Two grids on the generalised amount axis, with the delivered
    absolute amount per row made visible or matched, and the places on the grid no rule can reach at
    `λ=1` labelled rather than left to look like failures.
@@ -303,8 +306,8 @@ Feynman-Kac. A null is a result here and closes the scope honestly rather than f
 5. The corrector's window figure exists in
    `paper/iclr/figures/when-the-correction-arrives/mcmc/` beside the injected-correction version in
    `poe/`, and the same-window question is answered either way.
-6. SuperDiff renders at 50 steps, the 200-against-50 parity check is recorded, and `eps_M` per step
-   is exposed so `r_t^SD = eps_J - eps_M` can be formed.
+6. SuperDiff's eight-cell grid (two pairs, 200 against 50 steps, `kappa` clamped against unclamped)
+   is recorded, and `eps_M` per step is exposed so `r_t^SD = eps_J - eps_M` can be formed.
 7. Both grids across correction amounts exist in
    `paper/iclr/figures/how-much-is-added/across-composition-rules/`, each with its `.json` sidecar
    and a `README.md` entry naming which rule produced it, and the `λ=1` column is classified per
@@ -323,6 +326,16 @@ Feynman-Kac. A null is a result here and closes the scope honestly rather than f
     updated, since they currently cite a paper for a claim this scope turns into a number.
 12. The scope has a recall gallery: run `/recap-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/MASTER_PLAN.md`
     once every plan above is ✅, and record the Artifact URL it publishes.
+13. Six transfer sheets exist (cat×dog and butterfly×meadow at rank 8, 16, 32), each read against
+    plan 05's `kappa` 0.5 sheet, with the transfer verdict per (pair, rank) in plan 07's review
+    file.
+14. Plan 08 has either run, with its three adapters and their sheets, or closed unrun with plan
+    07's verdict quoted as the reason.
+15. The corrector's eight-seed sheets exist for both pairs, the joint prompt and plain PoE beside
+    the corrector on all 50 steps, and the tail sheets exist for both pairs, the rank-32 λ 1.2
+    adapter alone beside the adapter plus 5 and 20 corrector steps on the last fifteen steps,
+    with the fidelity branch printed from the thresholds in `scripts/corrector_window_sweep.py`
+    and the W&B run id in plan 04's review file.
 
 ## The figure bar every plan here is held to
 
@@ -374,9 +387,13 @@ start today.
 | 25 | [the corrector, and the step size it runs at](plans/tools/02-the-corrector-and-the-step-size-it-runs-at.md) | builds a measuring tool | builds `poe_repair/composers/poe_langevin.py`, proves it inert at `k=0` and with the window past the last step, and fixes the step-size multiplier `c` by search | nothing | ⚠️ not started |
 | 26 | [what is left once the chain settles](plans/hypothesis/03-what-is-left-once-the-chain-settles.md) | tests the claim | the measurement everything downstream waits on: ‖r_t^(k)‖ and ‖eps_PoE‖ per step against `k ∈ {0,1,5,20,100,200}`, two pairs, one seed, no images and no detector. Applies the three-way threshold | 24, 25 | ⚠️ not started |
 | 27 | [does the corrector compose in the same window](plans/hypothesis/04-does-the-corrector-compose-in-the-same-window.md) | tests the claim | the same nine window positions rerun with the corrector in place of the injected correction, matched to the existing figure | 26 | ⚠️ not started |
-| 28 | [SuperDiff at this repo's fifty steps](plans/baselines/05-superdiff-at-this-repos-fifty-steps.md) | establishes a baseline | wires SuperDiff into `poe_repair/composers/superdiff.py`, matches it to 50 steps at guidance 7.5, and checks with its own 200-against-50 render whether matching broke it | 26 | ⚠️ not started |
+| 28 | [what changes when SuperDiff leaves its own defaults](plans/baselines/05-what-changes-when-superdiff-leaves-its-own-defaults.md) | establishes a baseline | wires SuperDiff into `poe_repair/composers/superdiff.py` and checks an eight-cell grid: two pairs, 200 against 50 steps, its `kappa` blending weight clamped against unclamped | 26 | ⚠️ not started |
 | 29 | [three rules on one amount axis](plans/baselines/06-three-rules-on-one-amount-axis.md) | establishes a baseline | the generalised injection `eps_M + λ·r_t^M`, and the two grids across correction amounts that compare four rows along it | 25, 28 | ⚠️ not started |
 | 30 | [Feynman-Kac correctors: built or cited](plans/ideas/07-feynman-kac-correctors.md) | explores | a full read of arXiv 2503.02819 and a built-or-cited decision, run only if the corrector condition moved anything | 26, 29 | ⚠️ not started |
+| 49 | [does the PoE-trained correction reach SuperDiff](plans/baselines/07-does-the-poe-trained-correction-reach-superdiff.md) | tests the claim | the rank 8, 16 and 32 adapters injected into SuperDiff on every one of its 200 steps at `kappa` 0.5; six seeds-by-λ sheets read against plan 05's no-adapter sheets | 28, and scope 01's steps 38 and 39 for the checkpoints | ⚠️ not started |
+| 50 | [adapters that learn SuperDiff's own residual](plans/baselines/08-adapters-that-learn-superdiffs-own-residual.md) | tests the claim | a SuperDiff trajectory cache at `kappa` 0.5, three trainings against `eps_J − eps_M`, the same sheets; runs only if step 49 says the PoE-trained correction does not transfer | 49 | ⏹ stopped 2026-09-04 at 61k/62k/36k of 100k on the checkpoint strips: separates early, smears with training at λ 1; finals and sweep not run, checkpoints kept |
+| 51 | [twisted SMC on a learned joint-versus-PoE twist](plans/baselines/09-twisted-smc-on-a-learned-joint-vs-poe-twist.md) | tests the claim | a classifier between re-noised Mono and PoE latents as the twist, K particles on the plain PoE score resampled on it, Mono / PoE control / SMC strips to W&B every 10k steps; the one baseline that adds nothing to the score | nothing | 〰️ ran to 100k (job 49853, W&B 3cwrxlw0): inconclusive by its own bar, twist memorised the 120 latents (validation accuracy 0.56); over all 12 particles per checkpoint SMC compose 0.0 at 100k against control 0.0 and Mono 1.0, with 10 detector hits of 132 SMC particles at 40k to 80k, each one fused animal by eye |
+| 55 | [Feynman-Kac steering on a detector reward](plans/baselines/10-feynman-kac-steering-on-a-detector-reward.md) | establishes a baseline | Singhal et al. (arXiv 2501.06848) over the plain PoE score: K particles resampled at five steps on the validated compose scorer's count of the decoded x0-hat, max potential, λ 10; one sheet per pair (cat × dog, butterfly × meadow), seeds 9 to 16, K 4 and 16, against the unweighted control and best of K. Not Skreta et al.'s Feynman-Kac correctors (step 30) | nothing | ⚠️ not started |
 
 Each plan carries its own `## Environment Facts This Plan Depends On` field, its own Figure Catalog
 held to [the figure standard](#the-figure-bar-every-plan-here-is-held-to), and a paired file in `review/`
