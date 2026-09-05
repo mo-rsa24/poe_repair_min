@@ -306,8 +306,18 @@ def picked_c() -> float:
 # ---------------------------------------------------------------------------
 
 
-def cell_json(pair: str, seed: int, k: int) -> Path:
-    return CURVE_CELLS / f"{pair}__seed{seed}__k{k:03d}.json"
+def _ctag(c: float) -> str:
+    return f"c{c:g}".replace(".", "p")
+
+
+def cell_json(pair: str, seed: int, k: int, c: float) -> Path:
+    """One file per (pair, seed, c, k). Files written before c entered the name carry c inside
+    the JSON and are read the same way, so a grid at a second c never collides with the first."""
+    return CURVE_CELLS / f"{pair}__seed{seed}__{_ctag(c)}__k{k:03d}.json"
+
+
+def _cell_files() -> list[Path]:
+    return sorted(CURVE_CELLS.glob("*.json"))
 
 
 def run_grid(pairs, seed: int, ks, c: float, *, smoke: bool = False) -> int:
@@ -317,7 +327,10 @@ def run_grid(pairs, seed: int, ks, c: float, *, smoke: bool = False) -> int:
     for pair in pairs:
         cell = cell_from_slug(pair, seed)
         for k in ks:
-            p = cell_json(pair, seed, k)
+            p = cell_json(pair, seed, k, c)
+            legacy = CURVE_CELLS / f"{pair}__seed{seed}__k{k:03d}.json"
+            if not p.exists() and legacy.exists() and json.loads(legacy.read_text())["c"] == c:
+                legacy.rename(p)
             if p.exists() and not smoke:
                 print(f"[skip] {p.name} exists", flush=True)
                 continue
@@ -344,8 +357,9 @@ def run_grid(pairs, seed: int, ks, c: float, *, smoke: bool = False) -> int:
 
 
 def aggregate_curves() -> dict:
+    """Every measured cell, at every c, into one file; readers select a c."""
     rows, cells = [], []
-    for p in sorted(CURVE_CELLS.glob("*.json")):
+    for p in _cell_files():
         d = json.loads(p.read_text())
         if d["k"] not in GRID_K or d["pair"] not in GRID_PAIRS:
             continue
@@ -358,6 +372,8 @@ def aggregate_curves() -> dict:
                    "x_t^(k); two corrector counts are two trajectories, not one point wiggled twice",
         "grid": {"k": list(GRID_K), "pairs": list(GRID_PAIRS), "seed": GRID_SEED},
         "expected_rows": len(GRID_K) * len(GRID_PAIRS) * 50,
+        "expected_rows_note": "per c; the file holds every c measured and each row carries its c",
+        "c_values": sorted({cl["c"] for cl in cells}),
         "thresholds": {n: globals()[n] for n in (
             "MIN_DROP_FOR_SPLIT", "MIN_REMAINDER_FOR_SPLIT", "MAX_DRIFT_FOR_NULL",
             "MIN_CHAIN_DISPLACEMENT", "MAX_K_INSTABILITY", "MAX_LATENT_NORM_REL", "READ_ZONE_STEPS")},
@@ -377,12 +393,17 @@ def _curve(rows, pair, k, key="ratio") -> np.ndarray:
     return np.array([r[key] for r in sel], dtype=float)
 
 
-def verdict(curves_path: Path = CURVES_JSON, *, quiet: bool = False) -> dict:
+def _rows_at(d: dict, c: float | None) -> tuple[list[dict], float]:
+    c = float(c) if c is not None else picked_c()
+    return [r for r in d["rows"] if float(r["c"]) == c], c
+
+
+def verdict(curves_path: Path = CURVES_JSON, *, c: float | None = None, quiet: bool = False) -> dict:
     d = json.loads(curves_path.read_text())
-    rows = d["rows"]
+    rows, c = _rows_at(d, c)
     n_rows = len(rows)
-    lines = [f"rows: {n_rows} of {d['expected_rows']} expected"]
-    out = {"n_rows": n_rows, "expected_rows": d["expected_rows"]}
+    lines = [f"c = {c}: rows: {n_rows} of {d['expected_rows']} expected"]
+    out = {"c": c, "n_rows": n_rows, "expected_rows": d["expected_rows"]}
     have = {(r["pair"], r["k"]) for r in rows}
     missing = [(p, k) for p in GRID_PAIRS for k in GRID_K if (p, k) not in have]
     if missing:
@@ -469,15 +490,15 @@ def verdict(curves_path: Path = CURVES_JSON, *, quiet: bool = False) -> dict:
     text = "\n".join(lines)
     if not quiet:
         print(text)
-    (OUT / "verdict.json").write_text(json.dumps(out, indent=1))
-    (OUT / "verdict.txt").write_text(text + "\n")
+    (OUT / f"verdict_{_ctag(c)}.json").write_text(json.dumps(out, indent=1))
+    (OUT / f"verdict_{_ctag(c)}.txt").write_text(text + "\n")
     return out
 
 
-def flat_k(curves_path: Path = CURVES_JSON) -> int:
+def flat_k(curves_path: Path = CURVES_JSON, c: float | None = None) -> int:
     """The smallest k on the flat part of the failing pair's curve: its read-zone ratio is
     within MAX_K_INSTABILITY of the largest k's. Plan 27 runs the corrector at this k."""
-    rows = json.loads(curves_path.read_text())["rows"]
+    rows, c = _rows_at(json.loads(curves_path.read_text()), c)
     rz = slice(-READ_ZONE_STEPS, None)
     top = float(_curve(rows, FAILING_PAIR, GRID_K[-1])[rz].mean())
     for k in GRID_K[1:]:
@@ -492,14 +513,15 @@ def flat_k(curves_path: Path = CURVES_JSON) -> int:
 # ---------------------------------------------------------------------------
 
 
-def plot(curves_path: Path = CURVES_JSON, fig_dir: Path = FIG_DIR) -> Path:
+def plot(curves_path: Path = CURVES_JSON, fig_dir: Path = FIG_DIR, c: float | None = None,
+         name: str = FIG_NAME) -> Path:
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
     d = json.loads(curves_path.read_text())
-    rows = d["rows"]
-    v = verdict(curves_path, quiet=True)
+    rows, c = _rows_at(d, c)
+    v = verdict(curves_path, c=c, quiet=True)
     ks = [k for k in GRID_K if any(r["k"] == k for r in rows)]
     cmap = plt.get_cmap("viridis")
     colours = {k: cmap(i / max(len(ks) - 1, 1)) for i, k in enumerate(ks)}
@@ -542,7 +564,7 @@ def plot(curves_path: Path = CURVES_JSON, fig_dir: Path = FIG_DIR) -> Path:
     fig.subplots_adjust(top=0.90, bottom=0.09, left=0.08, right=0.97)
     fig_dir.mkdir(parents=True, exist_ok=True)
     for ext in ("png", "pdf"):
-        fig.savefig(fig_dir / f"{FIG_NAME}.{ext}", dpi=200)
+        fig.savefig(fig_dir / f"{name}.{ext}", dpi=200)
     plt.close(fig)
     side = {
         "drawn_from": str(curves_path), "pairs": list(GRID_PAIRS), "seed": GRID_SEED, "k": ks,
@@ -557,8 +579,8 @@ def plot(curves_path: Path = CURVES_JSON, fig_dir: Path = FIG_DIR) -> Path:
                          "the residual norm is a proxy for the distributional gap rather than the gap itself: the corrector changes where eps_J − eps_PoE is evaluated, not the function"],
         "verdict": v,
     }
-    (fig_dir / f"{FIG_NAME}.json").write_text(json.dumps(side, indent=1))
-    return fig_dir / f"{FIG_NAME}.png"
+    (fig_dir / f"{name}.json").write_text(json.dumps(side, indent=1))
+    return fig_dir / f"{name}.png"
 
 
 # ---------------------------------------------------------------------------
@@ -581,6 +603,7 @@ def main() -> int:
     ap.add_argument("--window", default=None, help="'off', 'all', or 'start,end' (identity check only)")
     ap.add_argument("--steps", type=int, default=None)
     ap.add_argument("--search-c", default=None, help="override SEARCH_C as a comma list (a wider range)")
+    ap.add_argument("--fig-name", default=None, help="--plot: file stem under the mcmc figure folder")
     args = ap.parse_args()
 
     if args.check_identity:
@@ -599,14 +622,14 @@ def main() -> int:
         return run_grid(pairs, args.seed if args.seed is not None else GRID_SEED, ks, c, smoke=args.smoke)
     if args.verdict:
         aggregate_curves()
-        verdict()
+        verdict(c=args.c)
         return 0
     if args.flat_k:
-        print(flat_k())
+        print(flat_k(c=args.c))
         return 0
     if args.plot:
         aggregate_curves()
-        print(plot())
+        print(plot(c=args.c, name=args.fig_name or FIG_NAME))
         return 0
     ap.error("pass one of --check-identity / --step-size-search / --smoke / --grid / --verdict / --plot / --flat-k")
     return 2
