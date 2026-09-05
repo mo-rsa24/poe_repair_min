@@ -1,0 +1,100 @@
+{
+ "drawn_from": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/residual_curves.json",
+ "pairs": [
+  "a_cat__x__a_dog",
+  "a_butterfly__x__a_flower_meadow"
+ ],
+ "seed": 9,
+ "k": [
+  0,
+  1,
+  5,
+  20,
+  100,
+  200
+ ],
+ "c": 30.0,
+ "sampler": "SDXL base, DDIM 50 steps, guidance 7.5, 1024 square, fp16 with float32 norms",
+ "y_top": "\u2016eps_J(x_t^(k)) \u2212 eps_PoE(x_t^(k))\u2016 / \u2016eps_PoE(x_t^(k))\u2016, unitless, at the point the k-step Langevin chain settled to at that level",
+ "y_bottom": "the two norms separately, so a falling ratio can be read as numerator falling or denominator rising",
+ "x": "denoising step index along the k-corrected path; two corrector counts are two trajectories, not one point wiggled twice",
+ "shaded_grey": "steps 0 to 10: the compose-decisive window, where the non-commutation gap and the model gap add and no k separates them",
+ "shaded_green": "the last 5 steps: the read zone, where the sampler's share has vanished by construction and what is left is the model's",
+ "caption_owes": [
+  "the axis is the correction along the k-corrected path rather than along one path",
+  "eps_J is evaluated off-distribution at the settled point, and that is a deliberate choice",
+  "the residual norm is a proxy for the distributional gap rather than the gap itself: the corrector changes where eps_J \u2212 eps_PoE is evaluated, not the function"
+ ],
+ "verdict": {
+  "c": 30.0,
+  "n_rows": 600,
+  "expected_rows": 600,
+  "branch": "inconclusive",
+  "reasons": [
+   "a_cat__x__a_dog: k=100 against k=200 differ by 0.067 of the k=100 read-zone ratio (bar 0.05)",
+   "a_cat__x__a_dog: latent norm reached 1.52x its start (bar 1.5): the chain diverged",
+   "a_butterfly__x__a_flower_meadow: k=100 against k=200 differ by 0.173 of the k=100 read-zone ratio (bar 0.05)",
+   "a_butterfly__x__a_flower_meadow: latent norm reached 1.66x its start (bar 1.5): the chain diverged",
+   "the composing pair's read-zone ratio ROSE with k, from 0.0896 to 0.1110: the joint branch is degrading off-distribution and the measurement is reading itself"
+  ],
+  "k_settled": 200,
+  "k_prev": 100,
+  "stats": {
+   "a_cat__x__a_dog": {
+    "read_zone_ratio_k0": 0.1684794242196997,
+    "read_zone_ratio_k100": 0.12045676869500917,
+    "read_zone_ratio_k200": 0.11242245228712022,
+    "remainder_fraction": 0.6672770447061812,
+    "drop_fraction": 0.3327229552938188,
+    "k_instability": 0.06669875420808816,
+    "median_chain_disp_rel_settled": 1.2569816595155232,
+    "max_latent_norm_rel_settled": 1.5210220037742708,
+    "max_per_step_relative_change": 1.558415387966784,
+    "read_zone_numerator_k0": 37.92123985290527,
+    "read_zone_numerator_k200": 27.874349212646486,
+    "read_zone_denominator_k0": 224.99677429199218,
+    "read_zone_denominator_k200": 277.68101501464844,
+    "read_zone_ratio_by_k": {
+     "0": 0.1684794242196997,
+     "1": 0.11374387696254584,
+     "5": 0.12087182663052343,
+     "20": 0.11109837143559362,
+     "100": 0.12045676869500917,
+     "200": 0.11242245228712022
+    }
+   },
+   "a_butterfly__x__a_flower_meadow": {
+    "read_zone_ratio_k0": 0.08964965189998766,
+    "read_zone_ratio_k100": 0.13425486888560906,
+    "read_zone_ratio_k200": 0.11097634202952873,
+    "remainder_fraction": 1.2378892686982537,
+    "drop_fraction": -0.23788926869825366,
+    "k_instability": 0.17339055968178432,
+    "median_chain_disp_rel_settled": 1.253940183061761,
+    "max_latent_norm_rel_settled": 1.6585064653476589,
+    "max_per_step_relative_change": 6.632848993776672,
+    "read_zone_numerator_k0": 17.788821601867674,
+    "read_zone_numerator_k200": 26.48508186340332,
+    "read_zone_denominator_k0": 201.62855834960936,
+    "read_zone_denominator_k200": 269.4071990966797,
+    "read_zone_ratio_by_k": {
+     "0": 0.08964965189998766,
+     "1": 0.1070509855517721,
+     "5": 0.1342035846957356,
+     "20": 0.16915478829641273,
+     "100": 0.13425486888560906,
+     "200": 0.11097634202952873
+    }
+   }
+  },
+  "thresholds": {
+   "MIN_DROP_FOR_SPLIT": 0.2,
+   "MIN_REMAINDER_FOR_SPLIT": 0.2,
+   "MAX_DRIFT_FOR_NULL": 0.05,
+   "MIN_CHAIN_DISPLACEMENT": 0.05,
+   "MAX_K_INSTABILITY": 0.05,
+   "MAX_LATENT_NORM_REL": 1.5,
+   "READ_ZONE_STEPS": 5
+  }
+ }
+}

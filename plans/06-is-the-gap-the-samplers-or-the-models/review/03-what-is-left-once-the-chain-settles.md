@@ -1,7 +1,10 @@
 # 🧪 Review: does the corrector remove part of the correction and leave part of it?
 
-**Nothing has run yet.** Every question below was written before any corrector existed, so no
-answer here can be chosen after the fact. This file judges
+**The grid has run once, at the step size the search picked (`c = 30`), and fired the inconclusive
+branch on every guard at once: the chain has not settled between `k = 100` and `k = 200`, its
+latent norm passes 1.5× at the largest `k`, and the composing pair's residual rises with `k`. The
+grid is being repeated at `c = 3` and `c = 0.3`.** Every question below was written before any
+corrector existed, so no answer here can be chosen after the fact. This file judges
 [the design for this measurement](../plans/hypothesis/03-what-is-left-once-the-chain-settles.md),
 and its answer
 decides whether section 7 of the paper carries the corrector as a limitation, as an alternative, or
@@ -75,7 +78,8 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
 | The first short run, one pair, one seed, `k ∈ {0,1}` and then `k=5` | Tests the claim | 2026-09-05 16:52 to 17:02, in-session on mscluster85 device 0 (RTX 3090), pids 258072 and 260090, commit 72b8826, at `c=0.035` for timing only | 8.5 min in all | `corrector/logs/smoke.log`; wall time per noise level 1.5 s (`k=0`, 5 UNet evaluations), 2.3 s (`k=1`, 8), 5.3 s (`k=5`, 20) | ✅ within the bar: measured ratios 1.5× and 3.5× against the cost table's 1.6× and 4×, so the branch count is right; one Langevin step costs about 0.76 s on the 3090, so `k=200` on one pair is about 2.1 h there and the whole two-pair grid about 7 h on one 3090 |
-| The `k` grid, 2 pairs × 6 `k` × 50 steps | Tests the claim | not launched | ~670 plain-render equivalents | `corrector/residual_curves.json`, 600 rows | ⚠️ not run |
+| The `k` grid at `c = 30`, 2 pairs × 6 `k` × 50 steps | Tests the claim | 2026-09-05 19:04 to 20:11, `nohup` on mscluster110 device 0 (RTX PRO 6000 Blackwell, `co3_bw`), pids 433699 and 434481, commit 0150704; the composing pair first, then cat × dog, one process each | 67 min for both pairs on that card (`k = 200` takes 16 to 26 min per pair) | `corrector/curves/*__c30__k*.json` (12 cells), aggregated into `corrector/residual_curves.json` with `c = 30` on every row; `corrector/verdict_c30.txt`; figure `mcmc/how-much-of-the-correction-a-corrector-removes-c30.png` | ❓ inconclusive on four guards, see the question below; the composer's final images at this `c` are texture noise from `k = 1` |
+| The `k` grid at `c = 3` and `c = 0.3`, same cells | Tests the claim | 2026-09-05 19:12 on mscluster108 device 1 (the composing pair at `c = 0.3`, `co3`, pid 300147) and from 20:12 on mscluster110 device 0 (the queue `corrector/queue_110_b.sh`: composing pair at 3, cat × dog at 3, cat × dog at 0.3) | ~1 h on the Blackwell card per pair and `c`; ~3 h on the RTX 8000 | the same files keyed by `c`; `verdict_c3.txt`, `verdict_c0p3.txt` | ◑ running |
 
 ## Where the two errors can be told apart, and where they cannot
 
@@ -146,6 +150,21 @@ after the answer is visible shows up in a diff.
       problem. Only the trend across `k` is a result, and only once the curve has flattened.** That
       rule is enforced by `MAX_K_INSTABILITY` in source, which refuses to license a reading, rather
       than by a caption asking the reader to remember it.
+
+      **At `c = 30`, the step size the search picked: ❓ inconclusive**, from `verdict_c30.txt`.
+      Read-zone means over the last five steps, one seed, one trajectory per `k`. Cat × dog:
+      0.1685 at `k = 0`, then 0.1137, 0.1209, 0.1111, 0.1205, 0.1124 at `k = 1, 5, 20, 100, 200`;
+      the numerator fell from 37.9 to 27.9 while the denominator rose from 225 to 278. The
+      composing pair: 0.0896 at `k = 0`, then 0.1071, 0.1342, 0.1692, 0.1343, 0.1110. Four guards
+      failed: `k = 100` against `k = 200` differ by 0.067 (cat × dog) and 0.173 (composing pair) of
+      the `k = 100` value against the 0.05 bar; the latent norm reached 1.52× and 1.66× its start
+      at `k = 200` against the 1.5× bar; and the composing pair's read-zone ratio rose by 24%
+      against the 5% drift bar. The chain moved (median displacement 1.26 on both pairs). The
+      images behind the rows say why: at this step size every `k ≥ 1` render is texture noise
+      (`corrector/search_renders/butterfly_c30_by_k.png`), so the joint branch is evaluated far
+      off the data and its disagreement with the product means nothing. Per the branch's own
+      instruction the step size goes back to step 25, and the grid is repeated at `c = 3` and
+      `c = 0.3`; the verdict below this line is written when those land.
 
 ## Written before the run, answered after
 
