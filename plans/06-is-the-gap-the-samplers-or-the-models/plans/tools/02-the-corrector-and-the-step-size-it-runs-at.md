@@ -367,7 +367,7 @@ parameter.
 ◀ **Needs: [task 1.2](#1--build-the-corrector-composer)**, so a moving chain can be told apart from
 a broken composer.
 
-- [ ] **2.1** Run the multiplier at each of `c ∈ {0.01, 0.035, 0.1, 0.3, 1.0}` at `k=20` on
+- [x] **2.1** Run the multiplier at each of `c ∈ {0.01, 0.035, 0.1, 0.3, 1.0}` at `k=20` on
       `a_cat__x__a_dog` seed 9, where `δ_t = c·β_t`.
 
     ```bash
@@ -380,11 +380,13 @@ a broken composer.
   - Output goes to:
     `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/step_size_search.json`
   - **Done when:** that file exists with five rows, one per `c`.
-- [ ] **2.2** Record per `c`: the median relative displacement `‖x_t^(k) - x_t^(0)‖/‖x_t^(0)‖` over
+  - A pick at the top edge widens the range in place: `--search-c 3.0,10.0` appends rows to the
+    same file, and again with `30.0,100.0,300.0`; the picked `c` is recomputed over every row.
+- [x] **2.2** Record per `c`: the median relative displacement `‖x_t^(k) - x_t^(0)‖/‖x_t^(0)‖` over
       the 50 levels, the maximum latent norm as a multiple of the uncorrected latent's norm, and
       whether the residual ratio rises monotonically with `k`.
   - **Done when:** the five-row table in the review file is filled, every entry populated.
-- [ ] **2.3** Pick the largest `c` that neither stalls (displacement below
+- [x] **2.3** Pick the largest `c` that neither stalls (displacement below
       `MIN_CHAIN_DISPLACEMENT = 0.05`) nor diverges (latent norm past 1.5× the uncorrected latent,
       or a monotone rise in the ratio with `k`). Write the picked value and the whole search table
       into the review file.
@@ -420,7 +422,7 @@ them.
 
 ◀ **Needs: [task 2.2](#2--fix-the-step-size-before-anything-is-read)**, the search table.
 
-- [ ] **3.1** Open the search table Claude writes into
+- [x] **3.1** Open the search table Claude writes into
       [the review file](../../review/02-the-corrector-and-the-step-size-it-runs-at.md).
   - For each `c`, look at the three columns: median displacement, maximum latent norm as a multiple
     of the uncorrected latent, and whether the ratio rose with `k`.
@@ -429,11 +431,11 @@ them.
   - ✅ If the three columns tell that story, the corrector behaves and the pick is meaningful.
   - ❌ If displacement is flat across all five `c` values, the corrector is not being applied at
     all. That is a build bug, not a step-size finding. Go back to task 1.2.
-- [ ] **3.2** Confirm the picked `c` sits in the middle of the usable range rather than at its edge.
+- [x] **3.2** Confirm the picked `c` sits in the middle of the usable range rather than at its edge.
   - A pick at the smallest or largest tested `c` means the range was wrong, and the fix is to try a
     wider range of `c` rather than accept the edge.
   - ❌ If the pick is at an edge, say so and send task 2.1 back with a wider range.
-- [ ] **3.3** Write your verdict in one line into the review file's step-size section: the picked
+- [x] **3.3** Write your verdict in one line into the review file's step-size section: the picked
       `c`, and whether the range was adequate.
   - This is the decision the whole cost of step 26 rides on, and it is the one check the code
     cannot make.
