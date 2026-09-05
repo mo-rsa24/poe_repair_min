@@ -198,8 +198,9 @@ def check_identity(pair: str, seed: int, *, window: str | None, k: int, c: float
 # ---------------------------------------------------------------------------
 
 
-def measured_run(ctx, cell, *, k: int, c: float, probes=(), decode=False):
-    """The composer with the joint observer on. Returns (per_step rows, seconds)."""
+def measured_run(ctx, cell, *, k: int, c: float, probes=(), decode=True):
+    """The composer with the joint observer on. Returns (per_step rows, seconds). The final
+    image is decoded and saved beside the rows so every measured chain can be looked at."""
     t0 = time.time()
     _, out = cmp_lg.run(
         cell, ctx, k=k, c=c, corrector_window=None, measure_residual=True,
@@ -218,8 +219,8 @@ def step_size_search(pair: str, seed: int, *, k: int, cs, out_path: Path) -> int
     probes = tuple(p for p in SEARCH_PROBE_INNER if p < k) + (k,)
     rows = []
     if out_path.exists():
+        # A widened range appends to the table; every row already measured stays.
         rows = json.loads(out_path.read_text()).get("rows", [])
-        rows = [r for r in rows if r["c"] in cs]
     done = {r["c"] for r in rows}
     for c in cs:
         if c in done:
