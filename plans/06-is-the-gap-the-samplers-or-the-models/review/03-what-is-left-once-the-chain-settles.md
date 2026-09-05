@@ -74,7 +74,7 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
-| The first short run, one pair, one seed, `k ∈ {0,1}` | Tests the claim | not launched | ~4 plain-render equivalents | wall time per noise level, checked against the cost table | ⚠️ not run |
+| The first short run, one pair, one seed, `k ∈ {0,1}` and then `k=5` | Tests the claim | 2026-09-05 16:52 to 17:02, in-session on mscluster85 device 0 (RTX 3090), pids 258072 and 260090, commit 72b8826, at `c=0.035` for timing only | 8.5 min in all | `corrector/logs/smoke.log`; wall time per noise level 1.5 s (`k=0`, 5 UNet evaluations), 2.3 s (`k=1`, 8), 5.3 s (`k=5`, 20) | ✅ within the bar: measured ratios 1.5× and 3.5× against the cost table's 1.6× and 4×, so the branch count is right; one Langevin step costs about 0.76 s on the 3090, so `k=200` on one pair is about 2.1 h there and the whole two-pair grid about 7 h on one 3090 |
 | The `k` grid, 2 pairs × 6 `k` × 50 steps | Tests the claim | not launched | ~670 plain-render equivalents | `corrector/residual_curves.json`, 600 rows | ⚠️ not run |
 
 ## Where the two errors can be told apart, and where they cannot
@@ -163,9 +163,13 @@ Navigation: ⬅️ [The question written before the run](#the-question-written-b
       [the free bound](01-the-free-bound-on-the-models-share.md) read off the cached
       renders? Two independent routes to the same quantity that disagree is a finding about one of
       the two measuring tools.
-- [ ] ⚠️ Was the first short run's measured wall time per noise level within 2× of the cost table?
-      Out by more than that means the branch count is wrong and the grid was re-planned before it
-      launched.
+- [x] ✅ Was the first short run's measured wall time per noise level within 2× of the cost table?
+      Yes. Per noise level on the 3090: 1.5 s at `k=0`, 2.3 s at `k=1`, 5.3 s at `k=5`, against
+      5, 8 and 20 UNet evaluations. The measured ratios to `k=0` are 1.5× and 3.5× where the table
+      predicts 1.6× and 4×, so the evaluation count per level is right and the grid was not
+      re-planned. The absolute cost is higher than the table's plain-render equivalents suggest,
+      about 0.76 s per Langevin step, which puts the two-pair grid at roughly 7 hours on one 3090
+      rather than the 670 render-equivalents' 4.5 hours; within the 2× bar.
 
 ## Asked after the result
 

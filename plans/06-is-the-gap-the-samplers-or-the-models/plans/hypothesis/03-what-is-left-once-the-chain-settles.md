@@ -7,7 +7,7 @@ sampler's.
 ## Recommended prompt (after this plan completes)
 
 ```
-/sync-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis-02-what-is-left-once-the-chain-settles.md — <which of the three branches fired>
+/sync-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis/03-what-is-left-once-the-chain-settles.md — <which of the three branches fired>
 ```
 
 ## Recommended skill
@@ -62,7 +62,7 @@ Design only. Verdicts and run state live in
 
 ⬅️ [Previous](#position-in-the-plan-tree) | 📋 [TOC](#table-of-contents) | [Next](#words-this-plan-uses) ➡️
 
-Run the Langevin corrector at every noise level so the latent [settles into the distribution](../../../../../../../goal-setting/learning/sampler-correctors-for-composition/plans/11-stationary-and-detailed-balance.md) the
+Run the [Langevin corrector](../../../../../../../goal-setting/learning/deep-learning/diffusion-models/sampler-correctors-for-composition/plans/21-langevin-dynamics.md) at every noise level so the latent [settles into the distribution](../../../../../../../goal-setting/learning/deep-learning/diffusion-models/sampler-correctors-for-composition/plans/11-stationary-and-detailed-balance.md) the
 product-of-experts score actually describes, then measure what is left of the correction at that
 settled point. The part that goes away when the chain settles belongs to the sampler. The part
 still there at the end of the run belongs to the model.
@@ -75,7 +75,7 @@ still there at the end of the run belongs to the model.
 
 ⬅️ [Previous](#what-this-asks-in-one-line) | 📋 [TOC](#table-of-contents) | [Next](#quick-context-where-you-are) ➡️
 
-**The correction, `r_t`.** The per-step gap `eps_J - eps_PoE` between what the joined prompt
+**The correction, [`r_t`](../../../../context/world/interaction-term.md).** The per-step gap `eps_J - eps_PoE` between what the joined prompt
 predicts and what adding the two separate prompts predicts, both evaluated at the same latent.
 Every result in this project so far is about this quantity.
 
@@ -428,9 +428,14 @@ anywhere, so wall time tracks UNet evaluations directly.
 ### 0. 🧭 Check this plan before working from it
 
 - [ ] **0.1** Check this plan conforms and its instructions are concrete, before acting on it.
-  - Paste: `/verify-plan @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis-02-what-is-left-once-the-chain-settles.md`
+  - Paste: `/verify-plan @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis/03-what-is-left-once-the-chain-settles.md`
   - Done when: the report comes back clean, or its proposals have been applied.
-- [ ] **0.2** Confirm both leak checks from
+- [ ] **0.2** Cross-reference this plan's terms against context/, environment/, runbook/,
+      report/, and any learning journey that names this project, in case a term this plan mentions
+      is already defined or explained somewhere else in the repo.
+  - Paste: `/xref-plan @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis/03-what-is-left-once-the-chain-settles.md`
+  - Done when: the scan comes back with no candidates, or its proposed links have been applied.
+- [ ] **0.3** Confirm both leak checks from
       [step 25](../tools/02-the-corrector-and-the-step-size-it-runs-at.md) passed and a `c` is
       picked.
   - **Done when:** the picked `c` is quoted in this plan's review file, with the instruction-3.3
@@ -444,7 +449,7 @@ anywhere, so wall time tracks UNet evaluations directly.
 ◀ **Needs: [instruction 3.3 of step 25](../tools/02-the-corrector-and-the-step-size-it-runs-at.md#3--read-the-step-size-search-by-eye-before-the-grid-launches)**,
 your signed-off `c`.
 
-- [ ] **1.1** Write `scripts/corrector_residual_curve.py` with the five thresholds as module-level
+- [x] **1.1** Write `scripts/corrector_residual_curve.py` with the five thresholds as module-level
       constants.
 
     ```python
@@ -462,7 +467,13 @@ your signed-off `c`.
     license a reading, not by a sentence asking the reader to remember it.
   - **Done when:** the five constants exist at module level and `--verdict` refuses to print a
     branch when the instability bound is exceeded.
-- [ ] **1.2** The first short run, in-session: one pair, one seed, `k ∈ {0, 1}` only.
+  - Two more constants sit beside the five, because the plan names them in prose:
+    `MAX_LATENT_NORM_REL = 1.5` (the divergence bound from step 25) and `READ_ZONE_STEPS = 5`.
+    `--verdict` prints `inconclusive` with the reason when the instability bound, the
+    displacement floor, the norm bound or the composing-pair control fails, `support` or `null`
+    when their bars are met, and `no branch fired` with the numbers when none of the three
+    covers the result (a rise on the failing pair, or a drop between 0.05 and 0.20).
+- [x] **1.2** The first short run, in-session: one pair, one seed, `k ∈ {0, 1}` only.
 
     ```bash
     PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
@@ -546,10 +557,10 @@ number being folded is one you have looked at.
 ◀ **Needs:** every group above attempted, including the ones that went red.
 
 - [ ] **Capture the failures this plan hit**, while they are still fresh.
-  - Paste: `/ingest-error-pattern --from-run-log @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis-02-what-is-left-once-the-chain-settles.md`
+  - Paste: `/ingest-error-pattern --from-run-log @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis/03-what-is-left-once-the-chain-settles.md`
   - Done when: each failure has a catalog entry, or there were none to record.
 - [ ] **Bring the tree current** with what actually happened.
-  - Paste: `/sync-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis-02-what-is-left-once-the-chain-settles.md — <one line>`
+  - Paste: `/sync-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis/03-what-is-left-once-the-chain-settles.md — <one line>`
   - Done when: statuses, the running order and the Error Matrix match reality.
 
 ▶ **Next: [what has to pass before this runs](#what-has-to-pass-before-this-runs).**
@@ -623,7 +634,7 @@ $PY scripts/corrector_residual_curve.py --verdict     # prints which of the thre
 
 - A null is a pass, not a failure. It selects which of three paragraphs section 7 carries, and all
   three are written in [Why this plan exists](#why-this-plan-exists). Under a null,
-  [step 28](../baselines/05-superdiff-at-this-repos-fifty-steps.md) and
+  [step 28](../baselines/05-what-changes-when-superdiff-leaves-its-own-defaults.md) and
   [step 29](../baselines/06-three-rules-on-one-amount-axis.md) still run, because SuperDiff is a
   published rule a reviewer will ask about either way; they just become a baselines table rather
   than a diagnosis.
@@ -684,17 +695,17 @@ records that the single seed was a deliberate choice rather than an oversight.
 | What changes | Where it has to be reflected |
 |---|---|
 | this plan's verdict | the review file, then [the two literature checks before print](../../../03-does-the-correction-cause-composition/plans/checks/09-two-literature-checks-before-print.md), which currently cite a paper for a claim this makes into a number |
-| this plan's verdict | [step 27](04-does-the-corrector-compose-in-the-same-window.md), [step 28](../baselines/05-superdiff-at-this-repos-fifty-steps.md) and [step 30](../ideas/07-feynman-kac-correctors.md), all waiting on it |
+| this plan's verdict | [step 27](04-does-the-corrector-compose-in-the-same-window.md), [step 28](../baselines/05-what-changes-when-superdiff-leaves-its-own-defaults.md) and [step 30](../ideas/07-feynman-kac-correctors.md), all waiting on it |
 | a figure lands in `mcmc/` | that folder's `README.md` gains an entry naming the algorithm and what produced it, per this repo's artifact rule |
 | the size is measured | [the idea map's claim 2](../../../../artifacts/ideas/which-variable-explains-what-poe-is-missing/IDEA_MAP.md), and its route row is deleted |
 | the plan's status | the scope [MASTER_PLAN.md](../../MASTER_PLAN.md) and the root running order, both by `sync-plan-tree` rather than by hand |
 
 | Step | Command | Triggered by | Outcome |
 |------|---------|--------------|---------|
-| Check the plan | `/verify-plan @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis-02-what-is-left-once-the-chain-settles.md` | **task 0.1**, before any work | Conformance and thin instructions reported |
-| Capture patterns | `/ingest-error-pattern --from-run-log @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis-02-what-is-left-once-the-chain-settles.md` | **the close out**, after any red run | Errors added to catalogs |
+| Check the plan | `/verify-plan @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis/03-what-is-left-once-the-chain-settles.md` | **task 0.1**, before any work | Conformance and thin instructions reported |
+| Capture patterns | `/ingest-error-pattern --from-run-log @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis/03-what-is-left-once-the-chain-settles.md` | **the close out**, after any red run | Errors added to catalogs |
 | Update Error Matrix | `/sync-plan-tree --update-error-matrices` | Auto (by ingest-error-pattern) | This plan file's Error Matrix regenerated |
-| Bring the tree current | `/sync-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis-02-what-is-left-once-the-chain-settles.md` | **the close out** | Statuses, running order and Error Matrix match reality |
+| Bring the tree current | `/sync-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis/03-what-is-left-once-the-chain-settles.md` | **the close out** | Statuses, running order and Error Matrix match reality |
 
 ## Code references
 
