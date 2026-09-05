@@ -1,1 +1,0 @@
-Every tile is hedged: no cell is scored. Rows are training groups and columns are disjoint evaluation pairs, so no cell on the diagonal may be drawn as a claim.

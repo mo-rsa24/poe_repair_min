@@ -298,7 +298,7 @@ read.
 - [ ] **0.1** Check this plan conforms and its instructions are concrete, before acting on it.
   - Paste: `/verify-plan @plans/06-is-the-gap-the-samplers-or-the-models/plans/instrument-01-the-corrector-and-the-step-size-it-runs-at.md`
   - Done when: the report comes back clean, or its proposals have been applied.
-- [ ] **0.2** Confirm nothing else in the tree already measures a corrected residual.
+- [x] **0.2** Confirm nothing else in the tree already measures a corrected residual.
 
     ```bash
     grep -rn "langevin\|corrector" plans/ scripts/ poe_repair/
@@ -316,14 +316,22 @@ read.
 ◀ **Needs: [task 0.2](#0--check-this-plan-before-working-from-it)**, so the build is not
 duplicating something already here.
 
-- [ ] **1.1** Write `poe_repair/composers/poe_langevin.py`.
+- [x] **1.1** Write `poe_repair/composers/poe_langevin.py`.
   - Follows [poe_internal.py](../../../poe_repair/composers/poe_internal.py)'s per-step
-    intervention pattern and the vendored `AnnealedULASampler`.
+    intervention pattern and the vendored `AnnealedULASampler`. The composer wraps the sampler
+    `run_poe_langevin` in `poe_repair/methods/_poe_langevin.py`, the same split as
+    `poe_internal.py` over `methods/_poe_internal.py`.
   - Arguments: `k`, the step-size multiplier `c`, and a `corrector_window` tuple.
+  - The chain latent is kept in float32 while the corrector runs, because `δ_t·s_t` is about
+    1e-4 of the latent and float16 cannot represent that increment; the DDIM step is taken on
+    the float16 latent with the reference sampler's own ops, so `k=0` is `run_cfg_poe` exactly.
+  - The residual read is a pure observer: one extra two-branch call (joint prompt, unconditional)
+    at the settled point, never fed back, so a run measures the same trajectory it would have
+    produced unmeasured.
   - Method name format: `poe_langevin_k<NNN>_c<NNN>`, plus `_w<start>-<end>` when a window is set.
   - **Done when:** the module imports and a `k=0` render completes, producing a file under
     `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/`.
-- [ ] **1.2** The leak check, before any measurement.
+- [x] **1.2** The leak check, before any measurement.
 
     ```bash
     PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
@@ -337,7 +345,7 @@ duplicating something already here.
     corrector logic differs and not the batch shape.
   - **Done when:** the command prints its identity-pass string. A single differing byte is a fail,
     not a rounding note.
-- [ ] **1.3** The second leak check, which the injected-correction window runs never needed.
+- [x] **1.3** The second leak check, which the injected-correction window runs never needed.
 
     ```bash
     PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python

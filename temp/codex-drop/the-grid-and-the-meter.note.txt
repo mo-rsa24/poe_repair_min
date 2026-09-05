@@ -1,1 +1,0 @@
-Exactly one platform is solid, rank 8 at 100k, because that is the only trained artifact that exists. The caption is load-bearing: a claim reads one row or one column, never a diagonal across both.

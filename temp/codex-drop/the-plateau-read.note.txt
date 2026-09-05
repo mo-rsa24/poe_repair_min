@@ -1,1 +1,0 @@
-Both curves are dashed: no plateau has been read yet. The 0.4 line is the pre-registered bar, not a measurement, and the two exits are equally weighted because either answer is a real result.

@@ -1,6 +1,7 @@
 # 🔬 Review: does the corrector change nothing when switched off, and what step size does it run at?
 
-**Nothing has run yet.** Every question below was written before any corrector existed. This file
+**The corrector is built and both leak checks pass byte for byte; the step-size search is the
+open item.** Every question below was written before any corrector existed. This file
 judges [the corrector and step-size design](../plans/tools/02-the-corrector-and-the-step-size-it-runs-at.md).
 Steps 26, 27 and 29 all measure something on the path this composer produces, so a failure recorded
 here blocks all three rather than bounding any of them.
@@ -68,9 +69,9 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
-| Leak check, `k=0` byte-identical to plain product-of-experts | Builds a measuring tool | not launched | 1 render | stdout only | ⚠️ not run |
-| Leak check, `k=200` with the window past the last step | Builds a measuring tool | not launched | 1 render | stdout only | ⚠️ not run |
-| Step-size search, `c ∈ {0.01, 0.035, 0.1, 0.3, 1.0}` at `k=20` | Builds a measuring tool | not launched | ~110 plain-render equivalents | `corrector/step_size_search.json`, and [the search table](#the-step-size-search) | ⚠️ not run |
+| Leak check, `k=0` byte-identical to plain product-of-experts | Builds a measuring tool | 2026-09-05 16:46, in-session on mscluster85 device 0 (RTX 3090), pid 255085, commit 72b8826 | 3 renders (23.7 s each) | `corrector/logs/leak_checks.log` | ✅ passed: `k=0` with a window past the last step is byte-identical to `k=0` with no window, and both are byte-identical to `run_cfg_poe` itself |
+| Leak check, `k=200` with the window past the last step | Builds a measuring tool | 2026-09-05 16:47, same node, device and pid | 2 renders | `corrector/logs/leak_checks.log` | ✅ passed: byte-identical to the `k=0` reference, and the corrector fired at 0 of 50 levels |
+| Step-size search, `c ∈ {0.01, 0.035, 0.1, 0.3, 1.0}` at `k=20` | Builds a measuring tool | 2026-09-05 16:52, `nohup` on mscluster108 device 1 (Quadro RTX 8000), pid 293216, `co3`, commit 72b8826 | ~118 plain-render equivalents (each `c` costs 50 levels × 71 UNet evaluations: 60 for the chain, 5 for the settled read, 6 for the three inner probes) | `corrector/step_size_search.json`, `corrector/logs/step_size_search.log`, and [the search table](#the-step-size-search) | ◑ running |
 
 ## The question written before the run
 
@@ -88,16 +89,27 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 Navigation: ⬅️ [The question written before the run](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#the-step-size-search) ➡️
 
-- [ ] ⚠️ With `k=0`, does the composer reproduce plain product-of-experts byte-identical?
-- [ ] ⚠️ With a corrector window placed past the last step and `k=200`, is the output still
+- [x] ✅ With `k=0`, does the composer reproduce plain product-of-experts byte-identical?
+      Yes, on a_cat×a_dog seed 9 at 50 steps. The reference is the composer at `k=0` with no
+      window; the composer at `k=0` with a window past the last step gives the same latents bit
+      for bit, and so does `run_cfg_poe`, because the composer's per-level call is that sampler's
+      three-branch call op for op (`corrector/logs/leak_checks.log`, commit 72b8826).
+- [x] ✅ With a corrector window placed past the last step and `k=200`, is the output still
       byte-identical? This catches a corrector running outside its window, which the first check
-      cannot see.
+      cannot see. Yes: window (60, 70) at `k=200` is byte-identical to the `k=0` reference, and the
+      run's own per-level record shows the corrector applied at 0 of 50 levels. The Langevin noise
+      generator is never drawn from when a level applies no steps, which is why the two runs can
+      match bit for bit rather than only closely.
 - [ ] ⚠️ Does the picked `c` sit in the middle of the tested range rather than at its edge? A pick
       at the smallest or largest value means the range was wrong, and the fix is to test more
       values of `c` rather than accept the edge.
-- [ ] ⚠️ Does anything else in the tree already measure a corrected residual? The vendored Du et al.
-      code under `composition/reduce_reuse_recycle/` is expected and is a reference rather than a
-      collision.
+- [x] ✅ Does anything else in the tree already measure a corrected residual? No. Outside the
+      vendored Du et al. code, `grep -rn "langevin\|corrector" plans/ scripts/ poe_repair/` hits
+      three things, none a collision: `run_external_corrector_inject` in
+      `poe_repair/methods/_sampling.py`, a learned additive residual corrector from the
+      failure thread, which adds a network's output to the prediction and runs no chain; the
+      `scripts/superdiff/*` files, which only use `corrector/` as this scope's output folder name;
+      and plan files in scopes 01, 03 and 05 that refer to this scope's corrector by name.
 
 ## The step-size search
 
