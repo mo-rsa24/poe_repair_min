@@ -66,7 +66,7 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 |---|---|---|---|---|---|
 | The corrector across ten window columns, 4 seeds × 10 columns | Tests the claim | 2026-09-05 23:18 to 2026-09-06 00:56, `nohup` on mscluster108 device 1 (RTX 8000, `co3`), pid 304312, commit 0150704, `c = 3`, `k = 20` | 40 renders, 1.9 min per window column and 7.6 min per all-50 column on that card, 1.6 h in all, then scored | `corrector/window_curves_mcmc.json`, renders under `corrector/window/pairs/a_cat__x__a_dog/seed_<n>/poe_langevin_k020_c3000[_w<s>-<e>]/`, figure `mcmc/samples-as-a-ten-step-corrector-window-slides.png` with sidecar | ✅ done: 0 of 4 composed in every column |
 | The eight-seed sheet, 2 pairs × 8 seeds × (joint prompt, plain PoE, corrector on all 50 steps) | Tests the claim | not launched | 48 renders, 16 of them at the corrector's `k` | `corrector/sheet_scores.json`, `artifacts/results/is-the-gap-the-samplers-or-the-models/corrector-<pair>-eight-seed-sheet.png` | ⚠️ waiting on step 26's `k` |
-| The tail condition, 2 pairs × 8 seeds × `k ∈ {0, 5, 20}` on the rank-32 λ 1.2 run, corrector on steps 35 to 49 | Tests the claim | not launched | 48 renders; a level inside the window costs `6k + 6` UNet evaluations | `corrector/tail_fidelity.json`, `corrector-on-adapter-tail-<pair>-eight-seed-sheet.png` | ⚠️ waiting on step 25's `c` |
+| The tail condition, 2 pairs × 8 seeds × `k ∈ {0, 5, 20}` on the rank-32 λ 1.2 run, corrector on steps 35 to 49 | Tests the claim | 2026-09-06 00:02 to 02:01, `nohup` on mscluster85 device 0 (RTX 3090, `co3`), pid 321793, commit 0150704, `c = 3`, adapter `lora_step_030050.pt` (210 modules matched, 420 tensors loaded) | 48 renders: 42 s at `k = 0`, 105 s at `k = 5`, 293 s at `k = 20` per render, 2 h in all | `corrector/tail_fidelity.json`, renders under `corrector/tail/<pair>/seed_<n>/`, sheet `corrector-on-adapter-tail-<pair>-eight-seed-sheet.png` | ✅ done: branch **null**, mean sharpness +8% from `k = 0` to `k = 20`, composed 7, 8, 7 of 8 |
 
 ## The question written before the run
 
@@ -95,7 +95,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
       > A null at step 26 means the correction's size came out the same with the corrector running
       > as without it.
 
-- [ ] ⚠️ **Does a corrector on the last fifteen steps sharpen the corrected run without costing
+- [x] ⚪ **Does a corrector on the last fifteen steps sharpen the corrected run without costing
       composition?** The condition is the rank-32 adapter at λ 1.2 on all 50 steps, plus
       `k ∈ {0, 5, 20}` Langevin steps on the corrected prediction inside steps 35 to 49, eight
       held-out seeds of cat × dog, with butterfly × meadow as the control. Sharpness is the
@@ -110,6 +110,19 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
       its composed seeds at `k=20`, since a corrector that breaks what already works licenses no
       fidelity reading, or if sharpness moves non-monotonically (a rise past the band at `k=20`
       with `k=5` below `k=0`). The sampler-share read at step 26 is untouched by this question.
+      **Answer: ⚪ null**, from `tail_fidelity.json` at `c = 3`. Cat × dog, mean Laplacian
+      variance over the 8 seeds: 57.1 at `k = 0`, 61.1 at `k = 5`, 61.7 at `k = 20`, a rise of
+      +8.0% from `k = 0` to `k = 20`, inside the 10% band; medians 37.2, 43.9, 45.4. Per seed,
+      `k = 20` is sharper than `k = 0` on 4 of 8 and `k = 5` on 5 of 8. Composed seeds by the
+      validated instance count: 7, 8, 7 of 8 (seed 11 counts one animal at `k = 0` and three at
+      `k = 20`; seed 10 counts two at `k = 0` and one at `k = 20`), within the one-seed bar. The
+      control pair keeps 8 of 8 at every `k` by its both-concepts read, and its sharpness rises
+      more (506, 568, 726: +44%), which is the meadow's fine texture returning as the chain
+      settles. The chain moved inside the window (median relative displacement 0.36 at `k = 5`
+      and 0.67 at `k = 20` on cat × dog seed 9), so this is a null and not a stalled instrument.
+      Read: corrector steps on the corrected score at low noise neither sharpen the adapter's
+      output past the band nor cost it composition at this budget; they redraw fine detail seed
+      by seed in both directions. The eye read (instruction 4) follows once the sheet is drawn.
 - [ ] ⚠️ **On the eight-seed sheet, what is the compose rate of the corrector on all 50 steps
       against plain PoE and the joint prompt, on both pairs?** Recorded either way; it is the
       read-out every parallel session reports on the same seeds. The one bar: the control pair's
