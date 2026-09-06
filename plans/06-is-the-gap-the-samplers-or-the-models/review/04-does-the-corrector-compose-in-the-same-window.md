@@ -65,7 +65,7 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
 | The corrector across ten window columns, 4 seeds × 10 columns | Tests the claim | 2026-09-05 23:18 to 2026-09-06 00:56, `nohup` on mscluster108 device 1 (RTX 8000, `co3`), pid 304312, commit 0150704, `c = 3`, `k = 20` | 40 renders, 1.9 min per window column and 7.6 min per all-50 column on that card, 1.6 h in all, then scored | `corrector/window_curves_mcmc.json`, renders under `corrector/window/pairs/a_cat__x__a_dog/seed_<n>/poe_langevin_k020_c3000[_w<s>-<e>]/`, figure `mcmc/samples-as-a-ten-step-corrector-window-slides.png` with sidecar | ✅ done: 0 of 4 composed in every column |
-| The eight-seed sheet, 2 pairs × 8 seeds × (joint prompt, plain PoE, corrector on all 50 steps) | Tests the claim | not launched | 48 renders, 16 of them at the corrector's `k` | `corrector/sheet_scores.json`, `artifacts/results/is-the-gap-the-samplers-or-the-models/corrector-<pair>-eight-seed-sheet.png` | ⚠️ waiting on step 26's `k` |
+| The eight-seed sheet, 2 pairs × 8 seeds × (joint prompt, plain PoE, corrector on all 50 steps) | Tests the claim | 2026-09-06 00:56 to 03:14, `nohup` on mscluster108 device 1 (RTX 8000, `co3`), pid 306543, commit 0150704, `c = 3`, `k = 20` | 48 renders, 8.3 min per cell (two references plus one corrector render), 2.3 h | `corrector/sheet_scores.json`, references under `corrector/sheet/references/`, corrector renders under `corrector/sheet/pairs/`, sheets `corrector-<pair>-eight-seed-sheet.png` | ✅ done: cat × dog joint 8, PoE 0, corrector 0 of 8; control pair 8, 8, 8 |
 | The clean tail, 2 pairs × 8 seeds × cutoff `{20, 30}` × `k ∈ {0, 5, 20}`, adapter early then the frozen model, corrector on the frozen score | Tests the claim | 2026-09-06 02:50 | 96 renders, 34 s at `k = 0`, about 60 s at `k = 5`, 150 s at `k = 20` on a 3090 (one call per Langevin step on the frozen score), about 3.2 h on one card | `corrector/clean_tail.json`, renders under `corrector/clean_tail/<pair>/seed_<n>/`, sheets `corrector-clean-tail-<pair>-eight-seed-sheet.png` | ◑ launching |
 | The tail condition, 2 pairs × 8 seeds × `k ∈ {0, 5, 20}` on the rank-32 λ 1.2 run, corrector on steps 35 to 49 | Tests the claim | 2026-09-06 00:02 to 02:01, `nohup` on mscluster85 device 0 (RTX 3090, `co3`), pid 321793, commit 0150704, `c = 3`, adapter `lora_step_030050.pt` (210 modules matched, 420 tensors loaded) | 48 renders: 42 s at `k = 0`, 105 s at `k = 5`, 293 s at `k = 20` per render, 2 h in all | `corrector/tail_fidelity.json`, renders under `corrector/tail/<pair>/seed_<n>/`, sheet `corrector-on-adapter-tail-<pair>-eight-seed-sheet.png` | ✅ done: branch **null**, mean sharpness +8% from `k = 0` to `k = 20`, composed 7, 8, 7 of 8 |
 
@@ -123,7 +123,15 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
       and 0.67 at `k = 20` on cat × dog seed 9), so this is a null and not a stalled instrument.
       Read: corrector steps on the corrected score at low noise neither sharpen the adapter's
       output past the band nor cost it composition at this budget; they redraw fine detail seed
-      by seed in both directions. The eye read (instruction 4) follows once the sheet is drawn.
+      by seed in both directions. **The eye read** (instruction 4, Claude, veto after) on
+      `corrector-on-adapter-tail-cat-dog-eight-seed-sheet.png`: row by row, `k = 20` against
+      `k = 0` is the same picture with fur and edges redrawn, crisper on seeds 9, 12 and 13, the
+      same on 14 and 15, softer on 16, and on seed 10 the cat dissolves into the dog's flank (the
+      count drops from 2 to 1); on seed 11 the adapter's own render already shows two animals the
+      detector counted as one, so its `k = 0` red frame is instrument error. No tile is the clean
+      photograph the joint prompt gives; the softness lives in the adapter's tail and the
+      corrector on that same score keeps it. On the control sheet every tile keeps its
+      butterfly. The number and the eye agree: null.
 - [ ] ⚠️ **Does handing the tail to the frozen model, with or without a corrector on its score,
       return the adapter's renders to plain-PoE sharpness without losing the composition?** The
       conditions: the rank-32 adapter at λ 1.2 on steps `[0, cutoff)` for cutoff 20 and 30, the
@@ -146,11 +154,17 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
       composition and the hand-off is too early. **Null** if no condition moves 0.05 nearer
       while holding composition. **Inconclusive** if the control pair loses two or more
       composed seeds in any condition. Written 2026-09-06 02:50, before the grid ran.
-- [ ] ⚠️ **On the eight-seed sheet, what is the compose rate of the corrector on all 50 steps
-      against plain PoE and the joint prompt, on both pairs?** Recorded either way; it is the
-      read-out every parallel session reports on the same seeds. The one bar: the control pair's
-      corrector column may not lose more than one composed seed against its plain-PoE column,
-      which is the same `FIDELITY_MAX_COMPOSE_LOSS_SEEDS` in source.
+- [x] ✅ **On the eight-seed sheet, what is the compose rate of the corrector on all 50 steps
+      against plain PoE and the joint prompt, on both pairs?** Cat × dog, validated instance
+      count over seeds 9 to 16: joint prompt 8 of 8, plain PoE 0 of 8, PoE plus the corrector
+      (`k = 20`, `c = 3`, every level) 0 of 8; every corrector render counts one animal, with
+      cat and dog both detected in it. The control pair by the both-concepts read: 8, 8, 8 of 8,
+      so the bar holds (no composed seed lost). Read: on the seeds every parallel session reports
+      on, the corrector alone is plain PoE's compose rate exactly, and what it changes is the
+      style, with five of eight cat × dog renders leaving photography for a cartoon or a line
+      drawing (`corrector-cat-dog-eight-seed-sheet.png`). Detector confidence for the butterfly
+      falls on three control seeds (0.94 to 0.73, 0.50 to 0.33, 0.95 to 0.56) while the frame
+      stays green, which is the drift toward an illustration read by the detector.
 
 ## Written before the run, answered after
 

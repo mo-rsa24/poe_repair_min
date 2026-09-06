@@ -643,7 +643,7 @@ def sheet_figures() -> list[Path]:
 
     def draw(tiles, col_titles, name, title, side):
         n_rows, n_cols = len(SHEET_SEEDS), len(col_titles)
-        fig, axes = plt.subplots(n_rows, n_cols, figsize=(1.7 * n_cols, 1.7 * n_rows + 0.7), squeeze=False)
+        fig, axes = plt.subplots(n_rows, n_cols, figsize=(1.7 * n_cols, 1.7 * n_rows + 1.2), squeeze=False)
         for r, seed in enumerate(SHEET_SEEDS):
             for ci, ct in enumerate(col_titles):
                 ax = axes[r][ci]
@@ -657,8 +657,8 @@ def sheet_figures() -> list[Path]:
                     ax.set_title(f"{ct}\n{ax.get_title()}", fontsize=7, pad=3)
                 if ci == 0:
                     ax.set_ylabel(f"seed {seed}", fontsize=8)
-        fig.suptitle(title, fontsize=9)
-        fig.subplots_adjust(top=1 - 0.75 / (1.7 * n_rows + 0.7), bottom=0.01, left=0.04, right=0.995, hspace=0.18, wspace=0.03)
+        fig.suptitle(title, fontsize=9, y=0.995)
+        fig.subplots_adjust(top=1 - 1.1 / (1.7 * n_rows + 1.2), bottom=0.01, left=0.04, right=0.995, hspace=0.18, wspace=0.03)
         out = RESULTS_DIR / f"{name}.png"
         fig.savefig(out, dpi=150); plt.close(fig)
         (RESULTS_DIR / f"{name}.json").write_text(json.dumps(side, indent=1))

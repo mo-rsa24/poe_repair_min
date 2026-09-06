@@ -334,7 +334,7 @@ in parallel.
 for the sheet's `k`, and [step 25's picked `c`](../tools/02-the-corrector-and-the-step-size-it-runs-at.md)
 for both.
 
-- [ ] **3.1** The eight-seed sheet per pair: joint prompt, plain PoE, corrector on all 50 steps.
+- [x] **3.1** The eight-seed sheet per pair: joint prompt, plain PoE, corrector on all 50 steps.
 
     ```bash
     OUT=/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector
@@ -346,7 +346,7 @@ for both.
     embedding.
   - Output goes to: `$OUT/sheet_scores.json`, renders under `$OUT/sheet/`.
   - **Done when:** the file holds 16 rows (2 pairs × 8 seeds), each with three scored tiles.
-- [ ] **3.2** The tail condition: the rank-32 λ 1.2 run with the corrector on steps 35 to 49 only.
+- [x] **3.2** The tail condition: the rank-32 λ 1.2 run with the corrector on steps 35 to 49 only.
 
     ```bash
     ssh <node> 'STAGE=tail GPU=<idx> nohup bash /home-mscluster/mmolefe/Playground/PhD/poe_repair_min/scripts/mechanism_study/run_corrector_curve.sh > '"$OUT"'/logs/tail.log 2>&1 &'
@@ -474,15 +474,15 @@ them.
 ◀ **Needs: [task 3.3](#3--the-eight-seed-sheets-and-the-corrector-on-the-tail-of-the-adapter-run)**,
 the tail sheet.
 
-- [ ] **4.1** Open `artifacts/results/is-the-gap-the-samplers-or-the-models/corrector-on-adapter-tail-cat-dog-eight-seed-sheet.png`.
+- [x] **4.1** Open `artifacts/results/is-the-gap-the-samplers-or-the-models/corrector-on-adapter-tail-cat-dog-eight-seed-sheet.png`.
   - Row by row, compare the `k=0` tile (the adapter alone) with the `k=20` tile: is the `k=20`
     one crisper, the same, or softer, and are both animals still there?
   - The Laplacian variance printed on each tile is the number the branch was judged on; a tile
     the number calls sharper that the eye calls noisier is the case the measure cannot see, and
     it is recorded in the review file as such.
-- [ ] **4.2** Open the butterfly × meadow tail sheet and check nothing that composed at `k=0` has
+- [x] **4.2** Open the butterfly × meadow tail sheet and check nothing that composed at `k=0` has
       lost its butterfly at `k=20`.
-- [ ] **4.3** Write the eye read in one line beside the printed branch in the review file.
+- [x] **4.3** Write the eye read in one line beside the printed branch in the review file.
 - [ ] **4.4** Open `artifacts/results/is-the-gap-the-samplers-or-the-models/corrector-clean-tail-cat-dog-eight-seed-sheet.png`.
   - Row by row, is any clean-tail column both as crisp as the plain-PoE column and still two
     animals? Name the seeds where it is, and the seeds where the hand-off to the frozen model
