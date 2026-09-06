@@ -47,19 +47,19 @@ left in a queue that renumbers itself. A plan's own file carries this same numbe
 | 22 | 07-writing-the-paper/writing-07-the-abstract-written-last | written last, from the spine and the method | ⚠️ | 20, 21 |
 | 23 | [is-the-gap-the-samplers-or-the-models](plans/06-is-the-gap-the-samplers-or-the-models/MASTER_PLAN.md) | how much of the correction is the sampler's and how much the model's, plus three composition rules on one dose axis. Grew into a scope of its own; its seven plans are steps 24 to 30 | ⚠️ its own scope | see 24 to 30 |
 | 24 | 06-is-the-gap-the-samplers-or-the-models/hypothesis-01-the-free-bound-on-the-models-share | the correction's size as the run reaches zero noise, read off cached files. A floor under the model's share for no GPU | ⚠️ |  |
-| 25 | 06-is-the-gap-the-samplers-or-the-models/instrument-01-the-corrector-and-the-step-size-it-runs-at | the Langevin corrector composer, both leak checks, and the step size fixed before any curve is read | ⚠️ |  |
-| 26 | 06-is-the-gap-the-samplers-or-the-models/hypothesis-02-what-is-left-once-the-chain-settles | the gate: the correction's size per step against corrector count k, with the three-way bar in source | ⚠️ | 24, 25 |
-| 27 | 06-is-the-gap-the-samplers-or-the-models/hypothesis-03-does-the-corrector-compose-in-the-same-window | the nine-position window sweep rerun with the corrector in place of the injected correction | ⚠️ | 26 |
-| 28 | 06-is-the-gap-the-samplers-or-the-models/baseline-01-superdiff-at-this-repos-fifty-steps | SuperDiff wired and matched to 50 steps at guidance 7.5, with its own 200-against-50 check | ⚠️ | 26 |
+| 25 | 06-is-the-gap-the-samplers-or-the-models/instrument-01-the-corrector-and-the-step-size-it-runs-at | the Langevin corrector composer, both leak checks, and the step size fixed before any curve is read | ◑ built, leak checks byte-identical, search done to `c = 300`; the pick is provisional because the numeric guards miss what the renders show, and step 26's control decides it |  |
+| 26 | 06-is-the-gap-the-samplers-or-the-models/hypothesis-02-what-is-left-once-the-chain-settles | the gate: the correction's size per step against corrector count k, with the three-way bar in source | ❓ ran at `c = 30`, `3`, `0.3`: inconclusive each time, one seed's scatter exceeds the 5% bars; next action seeds 10 to 12 at `c = 3` | 24, 25 |
+| 27 | 06-is-the-gap-the-samplers-or-the-models/hypothesis-03-does-the-corrector-compose-in-the-same-window | the nine-position window sweep rerun with the corrector in place of the injected correction | ◑ running at `c = 3`, `k = 20` against an inconclusive step 26, with the eight-seed sheets and the tail condition | 26 |
+| 28 | 06-is-the-gap-the-samplers-or-the-models/baseline-01-what-changes-when-superdiff-leaves-its-own-defaults | SuperDiff wired at guidance 7.5, checked on an eight-cell grid crossing step count (200, 50) and its `kappa`-clamp setting (on, off) | ⚠️ | 26 |
 | 29 | 06-is-the-gap-the-samplers-or-the-models/baseline-02-three-rules-on-one-dose-axis | the two dose grids putting product-of-experts, SuperDiff and the corrector on one axis | ⚠️ | 25, 28 |
 | 30 | 06-is-the-gap-the-samplers-or-the-models/idea-01-feynman-kac-correctors-gated | the full read of arXiv 2503.02819 and a built-or-cited decision. Closes unrun if the gate came back null | ⚠️ | 26, 29 |
 | 31 | 01-showcase-the-trained-lora/01-read-the-plateau-curves | the free curve-read that re-scopes how A and B read; informs, does not gate | ⚠️ |  |
 | 32 | 01-showcase-the-trained-lora/02-the-dog-x-dog-null-probe | the null-input control with its baseline identity preflight | ⚠️ |  |
-| 33 | 01-showcase-the-trained-lora/03-the-lora-dose-sweep | the causal dose curve for the shipped LoRA, four control rows | ⚠️ | 32 |
+| 33 | 01-showcase-the-trained-lora/03-the-lora-dose-sweep | the causal dose curve for the shipped LoRA, wrong-seed and shuffled control rows | ✅ | 32 |
 | 34 | 01-showcase-the-trained-lora/04-the-transfer-matrix-figure | group-pooled LoRAs on audited concept-disjoint pairs | ⚠️ |  |
 | 35 | 01-showcase-the-trained-lora/05-assemble-the-showcase-figures | the figure set into paper/iclr/figures under the ledger's standard | ⚠️ | 32, 33, 34 |
 | 36 | 01-showcase-the-trained-lora/06-extend-the-tracking-set | the four adopted curves wired into instrument-02's live logging, smoke-proven | ⚠️ | 31 |
-| 37 | 01-showcase-the-trained-lora/07-experiment-c-lambda-window | lambda-times-window sweep on existing checkpoints; builds the shared injection harness | ⚠️ | 36 |
+| 37 | 01-showcase-the-trained-lora/07-experiment-c-lambda-window | lambda-times-window sweep on existing checkpoints; builds the shared injection harness | ⚠️ grid run + measured, verdict open | 36 (ran ahead of it — see sync note) |
 | 38 | 01-showcase-the-trained-lora/08-experiment-a-resume-to-200k | length axis: rank 8 resumed from 100k to 200k, sbatch on biggpu | ⚠️ | 36 |
 | 39 | 01-showcase-the-trained-lora/09-experiment-b-rank-16-32 | rank axis at 100k: two fresh runs over the SSH idle-node path | ⚠️ | 36 |
 | 40 | 01-showcase-the-trained-lora/10-the-mechanism-follower | h-space and Jacobian reads per broad checkpoint during A and B, ending in interventions | ⚠️ | 38, 39 started |
@@ -71,6 +71,13 @@ left in a queue that renumbers itself. A plan's own file carries this same numbe
 | 46 | 05-when-does-the-outcome-lock-in/03-wire-the-oracle | LCM-SDXL downloaded to /datasets, the adapter with its three asserts, one smoke against a teacher ending | ⚠️ | 44 |
 | 47 | 05-when-does-the-outcome-lock-in/04-calibrate-the-instrument | 240 states, oracle against teacher per family, two bars in code, verdict: adopt, shrink, or fall back | ⚠️ | 46 |
 | 48 | 05-when-does-the-outcome-lock-in/05-the-grid-and-the-figures | both sweeps with stability copies, the speciation table, the three-timestamp figure and the compose-rate curves | ⚠️ | 45, 47 |
+| 52 | 05-when-does-the-outcome-lock-in/06-where-each-condition-lands | cat alone, dog alone, joint prompt, PoE and PoE plus the rank-32 step-30050 correction at λ 1.2 as clouds in DINOv2 space; axis pictures decoded through a representation autoencoder; per-step tracks with a commit step each, first on cat×dog then on the unseen pairs | ◑ cat×dog endpoints, animated tracks and commit steps filed and judged in `report/`; axis pictures and the unseen-pair render open |  |
+| 53 | 05-when-does-the-outcome-lock-in/test-07-what-the-correction-is-made-of | the correction's in-span and orthogonal share against the three predictions PoE already has, per step and seed, with the bar in source; the experts' decoded estimates for seed 15; the rank-32 adapter's output projected the same way; the frame tracks' kinetic energy and which-animal score. Cache only, no render | ◑ four rungs done 2026-09-05 (W&B yb933cr6), bar inconclusive at 0.374 orthogonal share, finding filed in `report/`; close-out (verify-plan, sync) open |  |
+| 53 | 01-showcase-the-trained-lora/14-correct-early-then-clean-up | when the softness enters (sharpness of the saved frames against step, no GPU), then λ 1.2 cut at step 10, decayed to 0 by step 20, a 200-step plain-PoE tail and a re-noise cell, each against the full-window run and plain PoE on cat × dog seeds 9 to 16 plus the butterfly × meadow control | ⚠️ |  |
+| 49 | 06-is-the-gap-the-samplers-or-the-models/baseline-03-does-the-poe-trained-correction-reach-superdiff | the rank 8/16/32 adapters injected into SuperDiff on every step at `kappa` 0.5, six sheets read against the no-adapter ones | ⚠️ | 28, 38, 39 |
+| 50 | 06-is-the-gap-the-samplers-or-the-models/baseline-04-adapters-that-learn-superdiffs-own-residual | a SuperDiff trajectory cache at `kappa` 0.5 and three trainings against `eps_J − eps_M`; runs only if 49 says the correction does not transfer | ⏹ stopped 2026-09-04 at 61k/62k/36k of 100k: the adapters separate early, then smear with training at λ 1; the finals and the sweep were not run | 49 |
+| 51 | 06-is-the-gap-the-samplers-or-the-models/baseline-05-twisted-smc-on-a-learned-joint-vs-poe-twist | a contrastive twist head on the cache, K-particle resampling over the plain PoE score, Mono / PoE control / SMC strips every 10k steps. Selection only, no direction added | 〰️ ran to 100k (job 49853, W&B 3cwrxlw0): inconclusive by its own bar, twist memorised the 120 latents (validation accuracy 0.56); over all 12 particles per checkpoint SMC compose 0.0 at 100k against control 0.0 and Mono 1.0, with 10 detector hits of 132 SMC particles at 40k to 80k, each one fused animal by eye |  |
+| 55 | 06-is-the-gap-the-samplers-or-the-models/baseline-06-feynman-kac-steering-on-a-detector-reward | Feynman-Kac steering (Singhal et al., arXiv 2501.06848) over the plain PoE score with the validated compose scorer's count on the decoded x0-hat as the reward: K 4 and 16, five resample steps, λ 10, cat × dog and butterfly × meadow on seeds 9 to 16, read against the unweighted control and best of K. Selection only, nothing learned, so plan 51's memorisation cannot recur | ◑ running since 2026-09-05 16:59 on mscluster109 device 1 (PID 1856701, W&B `czim1n0w`) |  |
 
 Steps 16 and 18 wait on nothing and need no GPU, so they are what to write while a run cooks.
 Steps 24 and 25 wait on nothing either: 24 needs no GPU at all, and 25 is a build.
@@ -281,6 +288,11 @@ What this project is about in the real world lives in `context/`. Start at
 How to do the recurring things here by hand lives in `runbook/`. Start at
 `runbook/00-INDEX.md`. Check there before writing out a command sequence or click path for
 something done here regularly.
+
+## Report
+What this project found (each question, its verdict, the figure and the statistic that back it)
+lives in `report/`. Start at `report/00-INDEX.md`. Before asserting what a run showed, read the
+finding that owns the question; a plan's result row links its finding rather than restating it.
 
 ## 🖥️ Viewing results (web apps)
 
