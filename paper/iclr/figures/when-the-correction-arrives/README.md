@@ -80,3 +80,14 @@ step 26 (one seed's read-zone ratio scatters more than the 5% bars), so none is 
 candidate; the sidecar carries the branch and every number. Their caption owes three sentences:
 the axis runs along the `k`-corrected path, `eps_J` is evaluated off-distribution on purpose, and
 the residual norm is a proxy for the distributional gap rather than the gap. Filed 2026-09-06.
+
+**mcmc/samples-as-a-ten-step-corrector-window-slides.png** (with `.json` and `.pdf` siblings). The
+corrector arm of slot F4a: cat and dog at seeds 9 to 12, one column per position of a ten-step
+window in which a Langevin corrector (`k = 20` steps per level on the guided PoE score,
+`δ_t = 3·β_t`) acts, plus a tenth column with it on all 50 steps; a green frame where
+`window_curves_mcmc.json` scores the render composed (validated instance count of at least 2),
+red otherwise. No frame is green: 0 of 4 in every column, where the injected `r_t` composes
+3 of 4 at steps 0 to 10. Early windows change the style (a cartoon, a line drawing), late
+windows change almost nothing. Rendered 2026-09-06 by `scripts/corrector_window_sweep.py
+--window-sweep` on mscluster108 and drawn by its `--figures`; `mcmc/` also holds the residual
+curves above, so the split by composition rule stands (`poe/` injected, `mcmc/` corrector).

@@ -273,7 +273,7 @@ be compared at the same moments of the run.
       is already defined or explained somewhere else in the repo.
   - Paste: `/xref-plan @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis/04-does-the-corrector-compose-in-the-same-window.md`
   - Done when: the scan comes back with no candidates, or its proposed links have been applied.
-- [ ] **0.3** Read the existing injected-correction figure and write down the four layout facts this
+- [x] **0.3** Read the existing injected-correction figure and write down the four layout facts this
       figure has to match: the pair, the seeds, the nine window positions, and the exact rule the
       green border encodes.
 
@@ -293,14 +293,14 @@ be compared at the same moments of the run.
 whose curve says which `k` sits on the flat part. Run this plan even if that curve came back flat,
 and record that it was run against a flat curve.
 
-- [ ] **1.1** Recreate the sliding-window grid with the corrector at the `k` on the flat part of
+- [x] **1.1** Recreate the sliding-window grid with the corrector at the `k` on the flat part of
       step 26's curve.
   - `a_cat__x__a_dog` seeds 9 to 12 as rows, the same nine ten-step window positions as columns,
     plus a tenth column with the corrector on for all 50 steps.
   - Output goes to:
     `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window_curves_mcmc.json`
   - **Done when:** that file holds 40 scored renders, counted rather than assumed.
-- [ ] **1.2** Draw the figure.
+- [x] **1.2** Draw the figure.
   - Rows are seeds 9 to 12, columns are the ten positions, each square is the final picture, green
     border where the detector scored composed. Column labels name the window in plain words on the
     axis ("steps 0 to 10") rather than in a legend.
@@ -309,7 +309,7 @@ and record that it was run against a flat curve.
     with its `.json` sidecar recording every render, the seeds, `k`, `c` and the border rule.
   - Add the entry to that folder's `README.md` naming the algorithm and what produced it.
   - **Done when:** the PNG, the sidecar and the README entry all exist.
-- [ ] **1.3** Confirm the timing folder's split by composition rule is intact, so this figure lands
+- [x] **1.3** Confirm the timing folder's split by composition rule is intact, so this figure lands
       where the folder's own README says it should.
 
     ```bash
@@ -399,19 +399,19 @@ them.
 
 ◀ **Needs: [task 1.2](#1--generate-the-ten-window-columns)**, the new figure.
 
-- [ ] **2.1** Open both figures next to each other.
+- [x] **2.1** Open both figures next to each other.
   - `paper/iclr/figures/when-the-correction-arrives/mcmc/samples-as-a-ten-step-corrector-window-slides.png`
   - `paper/iclr/figures/when-the-correction-arrives/poe/samples-as-a-ten-step-window-slides.png`
   - Expected result: two grids with identical rows and columns, differing only in what was switched
     on inside the window.
   - ❌ If the layouts differ in any of the four facts recorded at task 0.3, the comparison is not
     matched. Fix the figure rather than explaining the difference in the caption.
-- [ ] **2.2** Count composed renders per column by eye, on both grids, and note which column peaks
+- [x] **2.2** Count composed renders per column by eye, on both grids, and note which column peaks
       on each.
   - [The timing verdict](../../../03-does-the-correction-cause-composition/review/05-when-in-the-run-it-matters.md)
     records that the detector and the eye disagree on cat and dog often enough that the eye read is
     the one cited. Do both, and cite the eye where they differ.
-- [ ] **2.3** Record in the review file whether the corrector's compose rate peaks in the same
+- [x] **2.3** Record in the review file whether the corrector's compose rate peaks in the same
       window the injected correction does, with the per-column counts beside it.
   - Same window is a strong result: two different mechanisms acting at the same moment.
   - A different window is a stronger one and needs its own paragraph.

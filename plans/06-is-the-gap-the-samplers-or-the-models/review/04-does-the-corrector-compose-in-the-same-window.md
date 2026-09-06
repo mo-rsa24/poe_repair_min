@@ -1,6 +1,9 @@
 # 🧪 Review: does the corrector's compose rate peak in the same window the injected correction does?
 
-**Nothing has run yet.** Every question below was written before any corrector existed. This file
+**The window sweep has run: the corrector composes in no window. Zero of four seeds in every one of
+the ten columns, by the detector and by eye, at `c = 3` and `k = 20`, against an inconclusive
+residual curve at step 26. The eight-seed sheets and the tail condition are still rendering.**
+Every question below was written before any corrector existed. This file
 judges [the corrector window design](../plans/hypothesis/04-does-the-corrector-compose-in-the-same-window.md).
 It is the only thing this scope can say about the compose-decisive early window, because
 [the residual measurement at step 26](03-what-is-left-once-the-chain-settles.md) cannot
@@ -61,7 +64,7 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 
 | Run | Kind | Launched at | Cost | Output | State |
 |---|---|---|---|---|---|
-| The corrector across ten window columns, 4 seeds × 10 columns | Tests the claim | not launched | 40 renders, each decoded and scored | `corrector/window_curves_mcmc.json` and `mcmc/samples-as-a-ten-step-corrector-window-slides.png` | ⚠️ waiting on the threshold at step 26 |
+| The corrector across ten window columns, 4 seeds × 10 columns | Tests the claim | 2026-09-05 23:18 to 2026-09-06 00:56, `nohup` on mscluster108 device 1 (RTX 8000, `co3`), pid 304312, commit 0150704, `c = 3`, `k = 20` | 40 renders, 1.9 min per window column and 7.6 min per all-50 column on that card, 1.6 h in all, then scored | `corrector/window_curves_mcmc.json`, renders under `corrector/window/pairs/a_cat__x__a_dog/seed_<n>/poe_langevin_k020_c3000[_w<s>-<e>]/`, figure `mcmc/samples-as-a-ten-step-corrector-window-slides.png` with sidecar | ✅ done: 0 of 4 composed in every column |
 | The eight-seed sheet, 2 pairs × 8 seeds × (joint prompt, plain PoE, corrector on all 50 steps) | Tests the claim | not launched | 48 renders, 16 of them at the corrector's `k` | `corrector/sheet_scores.json`, `artifacts/results/is-the-gap-the-samplers-or-the-models/corrector-<pair>-eight-seed-sheet.png` | ⚠️ waiting on step 26's `k` |
 | The tail condition, 2 pairs × 8 seeds × `k ∈ {0, 5, 20}` on the rank-32 λ 1.2 run, corrector on steps 35 to 49 | Tests the claim | not launched | 48 renders; a level inside the window costs `6k + 6` UNet evaluations | `corrector/tail_fidelity.json`, `corrector-on-adapter-tail-<pair>-eight-seed-sheet.png` | ⚠️ waiting on step 25's `c` |
 
@@ -69,8 +72,20 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
-- [ ] ⚠️ **Does the corrector's compose rate peak in the same window the injected correction
-      does?** Recorded either way. Same window means two different mechanisms acting at the same
+- [x] ❌ **Does the corrector's compose rate peak in the same window the injected correction
+      does?** It has no peak: 0 of 4 seeds compose in every column, the nine ten-step windows and
+      the all-50 column alike, where the injected correction composes 3 of 4 at steps 0 to 10 and
+      2 of 4 at 5 to 15 on the same seeds (`window_curves.json`). The detector counts one animal
+      in all 40 renders (`n_instances` 1 everywhere, cat and dog both detected at confidence
+      0.88 to 0.95 in every tile, which is the one-fused-animal signature), and the eye agrees on
+      all 40. So a corrector that only settles the latent into the product's own distribution
+      does not do what adding the missing term does, at this compute budget (`k = 20`, 60 extra
+      UNet evaluations per level inside the window). What the early windows do instead is change
+      the style: seed 9 at steps 5 to 15 is a cartoon, seed 11 at 5 to 25 a line drawing, and
+      windows from step 20 on leave plain PoE's picture almost unchanged column to column, the
+      same late-window inertness the injected correction showed. Run against an inconclusive
+      step 26 (its residual curve fired no licensed branch at any step size), which this file
+      says here as the plan asked. Same window means two different mechanisms acting at the same
       moment. A different window is the stronger result and needs its own paragraph. This question
       is answered even if the measurement at step 26 returns a null, because a flat residual curve
       does not imply a flat [compose rate](../../../context/world/compose-rate.md). The corrector can
@@ -105,18 +120,29 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
 
 Navigation: ⬅️ [The question written before the run](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
-- [ ] ⚠️ Does the layout match the injected-correction figure on all four facts, meaning the pair,
-      the seeds, the nine window positions, and the exact rule the green border encodes? A
-      nearly-matched pair of figures is worse than an obviously different one, because a reader
-      compares them anyway.
-- [ ] ⚠️ How many seeds compose per column, by the detector and by eye, for each of the ten columns?
-      The two counts go side by side, with the disagreements named render by render.
-- [ ] ⚠️ Does the all-50 column compose more than the best ten-step window? If a full-run corrector
-      is not better than a well-placed short one, that is a statement about when the corrector's
-      work actually matters.
-- [ ] ⚠️ At which `k` was this run, and where does that `k` sit on step 26's curve? A `k` chosen
-      off the flat part is a compute budget; a `k` chosen off the falling part is a different
-      experiment.
+- [x] ✅ Does the layout match the injected-correction figure on all four facts, meaning the pair,
+      the seeds, the nine window positions, and the exact rule the green border encodes? Yes.
+      The four facts, read off `poe/samples-over-the-window-map.json` and
+      `scripts/window_samples_over_map.py` before rendering: pair `a_cat__x__a_dog`; seeds 9, 10,
+      11, 12 as rows; windows (0,10), (5,15), … (40,50), nine at stride 5 from
+      `window_grid.windows()`; green frame where `compose == 1` in the scored file, which is the
+      validated instance count of at least 2. This figure uses the same four and adds one column,
+      the corrector on all 50 steps, labelled as such. The sidecar names the match.
+- [x] ✅ How many seeds compose per column, by the detector and by eye, for each of the ten columns?
+      Detector: 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 of 4. Eye (Claude's read of the strip, veto after):
+      the same, 0 of 4 in every column; no render shows two bodies, and the closest is seed 12 at
+      steps 0 to 10 (a cat's head on a cushion with a paw that could be read as a second animal's,
+      counted one by both). No disagreement to name.
+- [x] ✅ Does the all-50 column compose more than the best ten-step window? No: 0 of 4 against
+      0 of 4. A corrector on every level is no better than a corrector in any window, and it is
+      the column whose images drift furthest from plain PoE's (a different scene on every seed).
+- [x] ✅ At which `k` was this run, and where does that `k` sit on step 26's curve? `k = 20` at
+      `c = 3`. Step 26's curve licensed no flat part at any `c` (cat × dog's `k = 100` and
+      `k = 200` differ by 21% at `c = 3`), so the `k` is a compute budget chosen for a different
+      reason, said here: it is the largest count at which the settled samples of both pairs are
+      still photographs (from `k = 100` they are flat graphics at this `c`), and it is the count
+      the step-size search ran at. A `k` off a falling part would be a different experiment; this
+      one is off no part, and the caption says so.
 
 ## Asked after the result
 
@@ -129,18 +155,19 @@ written with the answer already visible. Empty until the renders are made.
 
 Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC](#table-of-contents) | [Next](#what-the-write-up-owes) ➡️
 
-- [ ] ⚠️ **Was the comparison fair?** Only the window position varies across columns, and only the
-      mechanism varies between this figure and the injected-correction one. Same pair, same seeds,
-      same 50 DDIM steps, same guidance, same scorer.
-- [ ] ⚠️ **Was the measuring tool sound?** The scorer is the validated instance-count detector, and
-      [the timing verdict](../../03-does-the-correction-cause-composition/review/05-when-in-the-run-it-matters.md)
-      records that it disagrees with the eye on cat and dog often enough that the eye read is the
-      one cited. Both counts are taken here for that reason.
-- [ ] ⚠️ **Did the run respect the environment?** All 40 renders present, saved under `/datasets`
-      with only the finished figure and its sidecar in the repo, launched under `nohup` outside
-      Slurm and harvested by `pgrep` rather than `squeue`. For the tail condition: the adapter
-      stage ran in its own process, so no reference or pure-corrector render was made with the
-      adapter attached.
+- [x] ✅ **Was the comparison fair?** Across the ten columns only the corrector window varies:
+      same pair, same seeds, same cached starting noise, same 50 DDIM steps, guidance 7.5, same
+      `k`, `c` and Langevin noise stream, one device. Between this figure and the injected one,
+      the mechanism is the only difference the design names; the injected runs used the
+      four-branch sampler and these the three-branch one, which changes fp16 rounding and not
+      the trajectory (the composer's `k = 0` is byte-identical to `run_cfg_poe`).
+- [x] ✅ **Was the measuring tool sound?** The validated instance count, run on the launch node,
+      and an eye read of every tile beside it; the two agree on all 40 here, so the usual cat ×
+      dog disagreement did not arise.
+- [x] ✅ **Did the run respect the environment?** 40 renders counted in
+      `window_curves_mcmc.json`, all under `corrector/window/` on `/datasets`, only the figure and
+      sidecar in the repo, launched under `nohup` on mscluster108 device 1 with node, device and
+      PID in the log header, harvested by `pgrep`. No adapter was attached in this process.
 
 ## What the write-up owes
 
@@ -156,11 +183,14 @@ Navigation: ⬅️ [Could the answer be an artefact](#could-the-answer-be-an-art
 
 Navigation: ⬅️ [What the write-up owes](#what-the-write-up-owes) | 📋 [TOC](#table-of-contents) | [Next](#next-step) ➡️
 
-Nothing open. This file has not been run against.
+| What is unresolved | What would settle it | Who or what is blocked by it |
+|---|---|---|
+| whether a corrector composes at a larger compute budget or a step size between 0.3 and 3 | the same ten columns at `k = 100`, or at `c = 0.3`; each is 1.6 h on an RTX 8000 or about 40 min on the Blackwell card. The images at `k ≥ 100` are flat graphics on both pairs at `c = 3`, so the larger budget is expected to change style and not count | nothing; the recorded answer bounds what a training-free corrector does at 60 extra evaluations per level |
 
 ## Next step
 
 Navigation: ⬅️ [Still open](#still-open) | 📋 [TOC](#table-of-contents)
 
-Read the existing injected-correction figure and write down the four layout facts this figure has to
-match, before anything is rendered.
+Harvest the eight-seed sheet (`corrector/sheet_scores.json`) and the tail condition
+(`corrector/tail_fidelity.json`), draw the four sheets with `--figures`, log with `--wandb`, and
+answer the two questions above that still carry ⚠️.

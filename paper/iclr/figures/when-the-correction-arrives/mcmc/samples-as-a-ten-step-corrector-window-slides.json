@@ -1,0 +1,473 @@
+{
+ "drawn_from": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window_curves_mcmc.json",
+ "pair": "a_cat__x__a_dog",
+ "seeds": [
+  9,
+  10,
+  11,
+  12
+ ],
+ "columns": [
+  "0-10",
+  "5-15",
+  "10-20",
+  "15-25",
+  "20-30",
+  "25-35",
+  "30-40",
+  "35-45",
+  "40-50",
+  "all 50"
+ ],
+ "k": 20,
+ "c": 3.0,
+ "green_frame_rule": "compose == 1, i.e. the validated instance count (GroundingDINO 'animal', conf >= 0.30, NMS iou < 0.5) >= 2",
+ "matched_to": "paper/iclr/figures/when-the-correction-arrives/poe/samples-as-a-ten-step-window-slides.png: same pair, same seeds, same nine windows, same border rule; one extra column with the corrector on all 50 steps",
+ "per_column_composed_of_4": {
+  "0-10": 0,
+  "5-15": 0,
+  "10-20": 0,
+  "15-25": 0,
+  "20-30": 0,
+  "25-35": 0,
+  "30-40": 0,
+  "35-45": 0,
+  "40-50": 0,
+  "all 50": 0
+ },
+ "cells": [
+  {
+   "seed": 9,
+   "column": "0-10",
+   "window": [
+    0,
+    10
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_9/poe_langevin_k020_c3000_w0-10/poe_langevin_k020_c3000_w0-10.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 9,
+   "column": "5-15",
+   "window": [
+    5,
+    15
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_9/poe_langevin_k020_c3000_w5-15/poe_langevin_k020_c3000_w5-15.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 9,
+   "column": "10-20",
+   "window": [
+    10,
+    20
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_9/poe_langevin_k020_c3000_w10-20/poe_langevin_k020_c3000_w10-20.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 9,
+   "column": "15-25",
+   "window": [
+    15,
+    25
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_9/poe_langevin_k020_c3000_w15-25/poe_langevin_k020_c3000_w15-25.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 9,
+   "column": "20-30",
+   "window": [
+    20,
+    30
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_9/poe_langevin_k020_c3000_w20-30/poe_langevin_k020_c3000_w20-30.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 9,
+   "column": "25-35",
+   "window": [
+    25,
+    35
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_9/poe_langevin_k020_c3000_w25-35/poe_langevin_k020_c3000_w25-35.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 9,
+   "column": "30-40",
+   "window": [
+    30,
+    40
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_9/poe_langevin_k020_c3000_w30-40/poe_langevin_k020_c3000_w30-40.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 9,
+   "column": "35-45",
+   "window": [
+    35,
+    45
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_9/poe_langevin_k020_c3000_w35-45/poe_langevin_k020_c3000_w35-45.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 9,
+   "column": "40-50",
+   "window": [
+    40,
+    50
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_9/poe_langevin_k020_c3000_w40-50/poe_langevin_k020_c3000_w40-50.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 9,
+   "column": "all 50",
+   "window": null,
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_9/poe_langevin_k020_c3000/poe_langevin_k020_c3000.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 10,
+   "column": "0-10",
+   "window": [
+    0,
+    10
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_10/poe_langevin_k020_c3000_w0-10/poe_langevin_k020_c3000_w0-10.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 10,
+   "column": "5-15",
+   "window": [
+    5,
+    15
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_10/poe_langevin_k020_c3000_w5-15/poe_langevin_k020_c3000_w5-15.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 10,
+   "column": "10-20",
+   "window": [
+    10,
+    20
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_10/poe_langevin_k020_c3000_w10-20/poe_langevin_k020_c3000_w10-20.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 10,
+   "column": "15-25",
+   "window": [
+    15,
+    25
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_10/poe_langevin_k020_c3000_w15-25/poe_langevin_k020_c3000_w15-25.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 10,
+   "column": "20-30",
+   "window": [
+    20,
+    30
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_10/poe_langevin_k020_c3000_w20-30/poe_langevin_k020_c3000_w20-30.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 10,
+   "column": "25-35",
+   "window": [
+    25,
+    35
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_10/poe_langevin_k020_c3000_w25-35/poe_langevin_k020_c3000_w25-35.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 10,
+   "column": "30-40",
+   "window": [
+    30,
+    40
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_10/poe_langevin_k020_c3000_w30-40/poe_langevin_k020_c3000_w30-40.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 10,
+   "column": "35-45",
+   "window": [
+    35,
+    45
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_10/poe_langevin_k020_c3000_w35-45/poe_langevin_k020_c3000_w35-45.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 10,
+   "column": "40-50",
+   "window": [
+    40,
+    50
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_10/poe_langevin_k020_c3000_w40-50/poe_langevin_k020_c3000_w40-50.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 10,
+   "column": "all 50",
+   "window": null,
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_10/poe_langevin_k020_c3000/poe_langevin_k020_c3000.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 11,
+   "column": "0-10",
+   "window": [
+    0,
+    10
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_11/poe_langevin_k020_c3000_w0-10/poe_langevin_k020_c3000_w0-10.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 11,
+   "column": "5-15",
+   "window": [
+    5,
+    15
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_11/poe_langevin_k020_c3000_w5-15/poe_langevin_k020_c3000_w5-15.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 11,
+   "column": "10-20",
+   "window": [
+    10,
+    20
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_11/poe_langevin_k020_c3000_w10-20/poe_langevin_k020_c3000_w10-20.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 11,
+   "column": "15-25",
+   "window": [
+    15,
+    25
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_11/poe_langevin_k020_c3000_w15-25/poe_langevin_k020_c3000_w15-25.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 11,
+   "column": "20-30",
+   "window": [
+    20,
+    30
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_11/poe_langevin_k020_c3000_w20-30/poe_langevin_k020_c3000_w20-30.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 11,
+   "column": "25-35",
+   "window": [
+    25,
+    35
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_11/poe_langevin_k020_c3000_w25-35/poe_langevin_k020_c3000_w25-35.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 11,
+   "column": "30-40",
+   "window": [
+    30,
+    40
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_11/poe_langevin_k020_c3000_w30-40/poe_langevin_k020_c3000_w30-40.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 11,
+   "column": "35-45",
+   "window": [
+    35,
+    45
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_11/poe_langevin_k020_c3000_w35-45/poe_langevin_k020_c3000_w35-45.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 11,
+   "column": "40-50",
+   "window": [
+    40,
+    50
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_11/poe_langevin_k020_c3000_w40-50/poe_langevin_k020_c3000_w40-50.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 11,
+   "column": "all 50",
+   "window": null,
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_11/poe_langevin_k020_c3000/poe_langevin_k020_c3000.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 12,
+   "column": "0-10",
+   "window": [
+    0,
+    10
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_12/poe_langevin_k020_c3000_w0-10/poe_langevin_k020_c3000_w0-10.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 12,
+   "column": "5-15",
+   "window": [
+    5,
+    15
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_12/poe_langevin_k020_c3000_w5-15/poe_langevin_k020_c3000_w5-15.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 12,
+   "column": "10-20",
+   "window": [
+    10,
+    20
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_12/poe_langevin_k020_c3000_w10-20/poe_langevin_k020_c3000_w10-20.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 12,
+   "column": "15-25",
+   "window": [
+    15,
+    25
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_12/poe_langevin_k020_c3000_w15-25/poe_langevin_k020_c3000_w15-25.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 12,
+   "column": "20-30",
+   "window": [
+    20,
+    30
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_12/poe_langevin_k020_c3000_w20-30/poe_langevin_k020_c3000_w20-30.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 12,
+   "column": "25-35",
+   "window": [
+    25,
+    35
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_12/poe_langevin_k020_c3000_w25-35/poe_langevin_k020_c3000_w25-35.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 12,
+   "column": "30-40",
+   "window": [
+    30,
+    40
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_12/poe_langevin_k020_c3000_w30-40/poe_langevin_k020_c3000_w30-40.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 12,
+   "column": "35-45",
+   "window": [
+    35,
+    45
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_12/poe_langevin_k020_c3000_w35-45/poe_langevin_k020_c3000_w35-45.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 12,
+   "column": "40-50",
+   "window": [
+    40,
+    50
+   ],
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_12/poe_langevin_k020_c3000_w40-50/poe_langevin_k020_c3000_w40-50.png",
+   "n_instances": 1,
+   "composed": false
+  },
+  {
+   "seed": 12,
+   "column": "all 50",
+   "window": null,
+   "png": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/window/pairs/a_cat__x__a_dog/seed_12/poe_langevin_k020_c3000/poe_langevin_k020_c3000.png",
+   "n_instances": 1,
+   "composed": false
+  }
+ ],
+ "caption_owes": [
+  "the corrector runs at one k, which is a compute budget rather than a property of the problem",
+  "the green border encodes the detector's verdict, which disagrees with the eye on this pair often enough that the eye count is quoted beside it",
+  "this is a behavioural comparison and not an attribution: at steps 0 to 10 the sampler's and the model's errors cannot be told apart"
+ ]
+}
