@@ -429,7 +429,7 @@ def clean_tail_verdict(rows: list[dict], c: float) -> dict:
         band[pair] = {"plain_poe_mean": float(np.mean(poe_sharp)) if poe_sharp else None,
                       "plain_poe_sd": float(np.std(poe_sharp)) if poe_sharp else None,
                       "n": len(poe_sharp),
-                      "floor": (float(np.mean(poe_sharp) - CLEAN_MIN_BAND_SIGMAS * np.std(poe_sharp)) if poe_sharp else None)}
+                      "median": float(np.median(poe_sharp)) if poe_sharp else None}
         if tail:
             t0 = [r for r in tail["rows"] if r["pair"] == pair and r["k"] == 0]
             dm = [dino_dist_to_mono(Path(r["png"]), pair, r["seed"]) for r in t0]

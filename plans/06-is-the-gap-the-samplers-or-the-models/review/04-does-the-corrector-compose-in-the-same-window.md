@@ -1,9 +1,12 @@
 # 🧪 Review: does the corrector's compose rate peak in the same window the injected correction does?
 
-**The window sweep has run: the corrector composes in no window. Zero of four seeds in every one of
-the ten columns, by the detector and by eye, at `c = 3` and `k = 20`, against an inconclusive
-residual curve at step 26. The eight-seed sheets and the tail condition are still rendering.**
-Every question below was written before any corrector existed. This file
+**Everything has run. The corrector composes in no window (0 of 4 in every column). On the
+eight-seed sheet it is plain PoE's compose rate exactly (0 of 8) and changes the style. On the
+adapter's tail it is a null (sharpness +8%, composition held). The clean tail, the adapter early
+and the frozen model after, is a null at the 0.05 bar too, with the hand-off alone the one lever
+that moves the right way (DINOv2 distance to the joint render 0.472 to 0.434) while the corrector
+on the frozen score moves the wrong way and adds grain. W&B run
+`prime_lab/poe-repair-animals-compose/s61hldbc`.** Every question below was written before any corrector existed. This file
 judges [the corrector window design](../plans/hypothesis/04-does-the-corrector-compose-in-the-same-window.md).
 It is the only thing this scope can say about the compose-decisive early window, because
 [the residual measurement at step 26](03-what-is-left-once-the-chain-settles.md) cannot
@@ -66,7 +69,8 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 |---|---|---|---|---|---|
 | The corrector across ten window columns, 4 seeds × 10 columns | Tests the claim | 2026-09-05 23:18 to 2026-09-06 00:56, `nohup` on mscluster108 device 1 (RTX 8000, `co3`), pid 304312, commit 0150704, `c = 3`, `k = 20` | 40 renders, 1.9 min per window column and 7.6 min per all-50 column on that card, 1.6 h in all, then scored | `corrector/window_curves_mcmc.json`, renders under `corrector/window/pairs/a_cat__x__a_dog/seed_<n>/poe_langevin_k020_c3000[_w<s>-<e>]/`, figure `mcmc/samples-as-a-ten-step-corrector-window-slides.png` with sidecar | ✅ done: 0 of 4 composed in every column |
 | The eight-seed sheet, 2 pairs × 8 seeds × (joint prompt, plain PoE, corrector on all 50 steps) | Tests the claim | 2026-09-06 00:56 to 03:14, `nohup` on mscluster108 device 1 (RTX 8000, `co3`), pid 306543, commit 0150704, `c = 3`, `k = 20` | 48 renders, 8.3 min per cell (two references plus one corrector render), 2.3 h | `corrector/sheet_scores.json`, references under `corrector/sheet/references/`, corrector renders under `corrector/sheet/pairs/`, sheets `corrector-<pair>-eight-seed-sheet.png` | ✅ done: cat × dog joint 8, PoE 0, corrector 0 of 8; control pair 8, 8, 8 |
-| The clean tail, 2 pairs × 8 seeds × cutoff `{20, 30}` × `k ∈ {0, 5, 20}`, adapter early then the frozen model, corrector on the frozen score | Tests the claim | 2026-09-06 02:50 | 96 renders, 34 s at `k = 0`, about 60 s at `k = 5`, 150 s at `k = 20` on a 3090 (one call per Langevin step on the frozen score), about 3.2 h on one card | `corrector/clean_tail.json`, renders under `corrector/clean_tail/<pair>/seed_<n>/`, sheets `corrector-clean-tail-<pair>-eight-seed-sheet.png` | ◑ launching |
+| The clean tail, 2 pairs × 8 seeds × cutoff `{20, 30}` × `k ∈ {0, 5, 20}`, adapter early then the frozen model, corrector on the frozen score | Tests the claim | 2026-09-06 02:42 to 05:05, `nohup` on mscluster85 device 0 (RTX 3090, `co3`), pid 355987, commit 87d6cb2, `c = 3` | 96 renders, 34 s at `k = 0`, about 60 s at `k = 5`, 150 s at `k = 20` on a 3090 (one call per Langevin step on the frozen score), about 3.2 h on one card | `corrector/clean_tail.json`, renders under `corrector/clean_tail/<pair>/seed_<n>/`, sheets `corrector-clean-tail-<pair>-eight-seed-sheet.png` | ✅ done: branch **null**, best gain +0.038 at cutoff 30, `k = 0` |
+| The W&B log of every sheet and sidecar | records | 2026-09-06 05:20, from mscluster85 | one run | `prime_lab/poe-repair-animals-compose/s61hldbc`: six sheets and the two figures as images, every sidecar and verdict as the artifact `scope06-corrector-sidecars` | ✅ |
 | The tail condition, 2 pairs × 8 seeds × `k ∈ {0, 5, 20}` on the rank-32 λ 1.2 run, corrector on steps 35 to 49 | Tests the claim | 2026-09-06 00:02 to 02:01, `nohup` on mscluster85 device 0 (RTX 3090, `co3`), pid 321793, commit 0150704, `c = 3`, adapter `lora_step_030050.pt` (210 modules matched, 420 tensors loaded) | 48 renders: 42 s at `k = 0`, 105 s at `k = 5`, 293 s at `k = 20` per render, 2 h in all | `corrector/tail_fidelity.json`, renders under `corrector/tail/<pair>/seed_<n>/`, sheet `corrector-on-adapter-tail-<pair>-eight-seed-sheet.png` | ✅ done: branch **null**, mean sharpness +8% from `k = 0` to `k = 20`, composed 7, 8, 7 of 8 |
 
 ## The question written before the run
@@ -132,7 +136,7 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
       photograph the joint prompt gives; the softness lives in the adapter's tail and the
       corrector on that same score keeps it. On the control sheet every tile keeps its
       butterfly. The number and the eye agree: null.
-- [ ] ⚠️ **Does handing the tail to the frozen model, with or without a corrector on its score,
+- [x] ⚪ **Does handing the tail to the frozen model, with or without a corrector on its score,
       return the adapter's renders to plain-PoE sharpness without losing the composition?** The
       conditions: the rank-32 adapter at λ 1.2 on steps `[0, cutoff)` for cutoff 20 and 30, the
       frozen model's plain PoE step after, and `k ∈ {0, 5, 20}` Langevin steps on the frozen
@@ -154,6 +158,27 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
       composition and the hand-off is too early. **Null** if no condition moves 0.05 nearer
       while holding composition. **Inconclusive** if the control pair loses two or more
       composed seeds in any condition. Written 2026-09-06 02:50, before the grid ran.
+
+      **Answer: ⚪ null**, from `clean_tail.json`. Cat × dog, 8-seed mean DINOv2 distance to the
+      joint render (adapter alone 0.472, plain PoE 0.643): adapter on steps 0 to 19 then the
+      frozen tail 0.462, 0.467, 0.518 at `k = 0, 5, 20`; adapter on 0 to 29 then the frozen tail
+      0.434, 0.469, 0.490. The best gain is +0.038 at cutoff 30 with no corrector, under the 0.05
+      bar; the corrector on the frozen score moves away from the joint render at `k = 20` (−0.046
+      and −0.018) and raises Laplacian variance from 57 to 112 and 94, which the eye reads as
+      grain. Composed seeds by the validated count: 5, 6, 7 and 6, 7, 7 of 8 against the adapter's
+      7, so `k = 0` at cutoff 20 misses the one-seed bar and the rest hold it. The control pair
+      keeps 8 of 8 in every condition. **The eye read** (instruction 4.4, Claude, veto after):
+      every hand-off tile shows two animals except seed 14, where a child with a dog and a small
+      cat fills the frame in every adapter column; the detector's red frames on seeds 10 and 11 at
+      `k = 0` are one animal hidden behind the other and a cat the counter missed, so the eye's
+      count for cutoff 20, `k = 0` is 7 of 8, not 5. The cutoff-30 hand-off with no corrector is
+      the crispest column on seeds 9, 12, 13 and 16, and the one that looks most like the joint
+      prompt's render; the corrector columns are grainier at `k = 20` on every seed. So the
+      softness the person sees lives in the adapter's low-noise steps, handing those steps to the
+      frozen model removes part of it while keeping the composition, and settling further into
+      the frozen model's distribution with Langevin steps does not help. What would move the
+      0.038 to a real gain is the lever plan 14 of scope 01 already holds: the λ schedule across
+      the hand-off, and the re-noise-and-redenoise tail.
 - [x] ✅ **On the eight-seed sheet, what is the compose rate of the corrector on all 50 steps
       against plain PoE and the joint prompt, on both pairs?** Cat × dog, validated instance
       count over seeds 9 to 16: joint prompt 8 of 8, plain PoE 0 of 8, PoE plus the corrector
@@ -235,12 +260,13 @@ Navigation: ⬅️ [What the write-up owes](#what-the-write-up-owes) | 📋 [TOC
 
 | What is unresolved | What would settle it | Who or what is blocked by it |
 |---|---|---|
+| the clean tail's next lever | the λ schedule across the hand-off (1.2 on steps 0 to 19, linear to 0 by 29) and the re-noise-and-redenoise tail, both in [scope 01's plan 14](../../01-showcase-the-trained-lora/plans/experiments/14-correct-early-then-clean-up.md), judged on the same DINOv2 bar with the same baseline; the hand-off alone reached +0.038 of the 0.05 | the fidelity question; this scope's corrector is not the tool for it |
 | whether a corrector composes at a larger compute budget or a step size between 0.3 and 3 | the same ten columns at `k = 100`, or at `c = 0.3`; each is 1.6 h on an RTX 8000 or about 40 min on the Blackwell card. The images at `k ≥ 100` are flat graphics on both pairs at `c = 3`, so the larger budget is expected to change style and not count | nothing; the recorded answer bounds what a training-free corrector does at 60 extra evaluations per level |
 
 ## Next step
 
 Navigation: ⬅️ [Still open](#still-open) | 📋 [TOC](#table-of-contents)
 
-Harvest the eight-seed sheet (`corrector/sheet_scores.json`) and the tail condition
-(`corrector/tail_fidelity.json`), draw the four sheets with `--figures`, log with `--wandb`, and
-answer the two questions above that still carry ⚠️.
+Nothing left to run here. The fidelity question moves to scope 01's plan 14 with the DINOv2 bar
+and the adapter-alone baseline from this file; the sampler-share question at step 26 waits on
+seeds 10 to 12.

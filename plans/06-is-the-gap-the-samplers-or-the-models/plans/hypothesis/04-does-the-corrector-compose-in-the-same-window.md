@@ -357,7 +357,7 @@ for both.
   - Output goes to: `$OUT/tail_fidelity.json` with the printed branch.
   - **Done when:** the file holds 48 rows and the branch line is one of support, null,
     composition breaks, inconclusive or no branch fired, with the numbers it was judged on.
-- [ ] **3.3** Draw the four sheets, and log everything to W&B.
+- [x] **3.3** Draw the four sheets, and log everything to W&B.
 
     ```bash
     PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
@@ -392,7 +392,7 @@ the latent into the frozen model's low-noise distribution rather than the adapte
 run here with this scope's corrector as the clean-up; that plan's λ schedules and re-noise cell
 stay with it.
 
-- [ ] **5.1** Render the grid: cutoff `∈ {20, 30}` (the adapter on steps `[0, cutoff)` at λ 1.2)
+- [x] **5.1** Render the grid: cutoff `∈ {20, 30}` (the adapter on steps `[0, cutoff)` at λ 1.2)
       by `k ∈ {0, 5, 20}` corrector steps on the frozen score inside steps 35 to 49, both pairs,
       seeds 9 to 16, from the seed's cached noise.
 
@@ -406,7 +406,7 @@ stay with it.
   - Output goes to: `$OUT/clean_tail.json`, renders under `$OUT/clean_tail/`.
   - **Done when:** the file holds 96 rows (2 pairs × 8 seeds × 2 cutoffs × 3 `k`) and prints a
     branch.
-- [ ] **5.2** Draw the sheet per pair and log it.
+- [x] **5.2** Draw the sheet per pair and log it.
 
     ```bash
     PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
@@ -483,7 +483,7 @@ the tail sheet.
 - [x] **4.2** Open the butterfly × meadow tail sheet and check nothing that composed at `k=0` has
       lost its butterfly at `k=20`.
 - [x] **4.3** Write the eye read in one line beside the printed branch in the review file.
-- [ ] **4.4** Open `artifacts/results/is-the-gap-the-samplers-or-the-models/corrector-clean-tail-cat-dog-eight-seed-sheet.png`.
+- [x] **4.4** Open `artifacts/results/is-the-gap-the-samplers-or-the-models/corrector-clean-tail-cat-dog-eight-seed-sheet.png`.
   - Row by row, is any clean-tail column both as crisp as the plain-PoE column and still two
     animals? Name the seeds where it is, and the seeds where the hand-off to the frozen model
     lost an animal.
