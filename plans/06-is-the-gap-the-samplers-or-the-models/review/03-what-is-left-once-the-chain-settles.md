@@ -1,9 +1,13 @@
 # 🧪 Review: does the corrector remove part of the correction and leave part of it?
 
-**The grid has run once, at the step size the search picked (`c = 30`), and fired the inconclusive
-branch on every guard at once: the chain has not settled between `k = 100` and `k = 200`, its
-latent norm passes 1.5× at the largest `k`, and the composing pair's residual rises with `k`. The
-grid is being repeated at `c = 3` and `c = 0.3`.** Every question below was written before any
+**The grid has run at three step sizes (`c = 30`, the search's pick; then `3` and `0.3`), and every
+one fires the inconclusive branch. The chain moves and, on the composing pair, settles; on cat × dog
+the `k = 100` and `k = 200` read-zone ratios never agree within the 5% bar (they differ by 7%, 21%
+and 38%), and the composing pair's ratio rises with `k` at two of the three step sizes. The cause is
+named below: one seed gives one trajectory per `k`, and the read-zone ratio of one trajectory
+scatters by 15% across devices and by 30% to 70% across `k`, so the 5% bars cannot be met at one
+seed whatever the answer is. The support-shaped numbers exist (cat × dog drops 18% to 36% at
+`k = 200` at every `c`) and are not licensed.** Every question below was written before any
 corrector existed, so no answer here can be chosen after the fact. This file judges
 [the design for this measurement](../plans/hypothesis/03-what-is-left-once-the-chain-settles.md),
 and its answer
@@ -79,7 +83,8 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 |---|---|---|---|---|---|
 | The first short run, one pair, one seed, `k ∈ {0,1}` and then `k=5` | Tests the claim | 2026-09-05 16:52 to 17:02, in-session on mscluster85 device 0 (RTX 3090), pids 258072 and 260090, commit 72b8826, at `c=0.035` for timing only | 8.5 min in all | `corrector/logs/smoke.log`; wall time per noise level 1.5 s (`k=0`, 5 UNet evaluations), 2.3 s (`k=1`, 8), 5.3 s (`k=5`, 20) | ✅ within the bar: measured ratios 1.5× and 3.5× against the cost table's 1.6× and 4×, so the branch count is right; one Langevin step costs about 0.76 s on the 3090, so `k=200` on one pair is about 2.1 h there and the whole two-pair grid about 7 h on one 3090 |
 | The `k` grid at `c = 30`, 2 pairs × 6 `k` × 50 steps | Tests the claim | 2026-09-05 19:04 to 20:11, `nohup` on mscluster110 device 0 (RTX PRO 6000 Blackwell, `co3_bw`), pids 433699 and 434481, commit 0150704; the composing pair first, then cat × dog, one process each | 67 min for both pairs on that card (`k = 200` takes 16 to 26 min per pair) | `corrector/curves/*__c30__k*.json` (12 cells), aggregated into `corrector/residual_curves.json` with `c = 30` on every row; `corrector/verdict_c30.txt`; figure `mcmc/how-much-of-the-correction-a-corrector-removes-c30.png` | ❓ inconclusive on four guards, see the question below; the composer's final images at this `c` are texture noise from `k = 1` |
-| The `k` grid at `c = 3` and `c = 0.3`, same cells | Tests the claim | 2026-09-05 19:12 on mscluster108 device 1 (the composing pair at `c = 0.3`, `co3`, pid 300147) and from 20:12 on mscluster110 device 0 (the queue `corrector/queue_110_b.sh`: composing pair at 3, cat × dog at 3, cat × dog at 0.3) | ~1 h on the Blackwell card per pair and `c`; ~3 h on the RTX 8000 | the same files keyed by `c`; `verdict_c3.txt`, `verdict_c0p3.txt` | ◑ running |
+| The `k` grid at `c = 0.3`, same cells | Tests the claim | 2026-09-05 19:12 to 23:16, mscluster108 device 1 (RTX 8000, `co3`): the composing pair (pid 300147) then cat × dog (pid 302364), commit 0150704 | 4 h on that card | `corrector/curves/*__c0p3__k*.json`, `verdict_c0p3.txt`, figure `mcmc/how-much-of-the-correction-a-corrector-removes-c0p3.png` | ❓ inconclusive: cat × dog's `k = 100` and `k = 200` differ by 38%; the composing pair rises 13% |
+| The `k` grid at `c = 3`, same cells | Tests the claim | 2026-09-05 20:14 to 2026-09-06 00:01, mscluster85 device 0 (RTX 3090, `co3`): the composing pair (pid 297556) then cat × dog (pid 309606); the Blackwell card was taken by another user before its queue reached these | 3.8 h on that card | `corrector/curves/*__c3__k*.json`, `verdict_c3.txt`, figure `mcmc/how-much-of-the-correction-a-corrector-removes-c3.png` | ❓ inconclusive: cat × dog's `k = 100` and `k = 200` differ by 21%; the composing pair passes (falls 10%) |
 
 ## Where the two errors can be told apart, and where they cannot
 
@@ -164,24 +169,85 @@ after the answer is visible shows up in a diff.
       (`corrector/search_renders/butterfly_c30_by_k.png`), so the joint branch is evaluated far
       off the data and its disagreement with the product means nothing. Per the branch's own
       instruction the step size goes back to step 25, and the grid is repeated at `c = 3` and
-      `c = 0.3`; the verdict below this line is written when those land.
+      `c = 0.3`.
+
+      **At `c = 3` and `c = 0.3`: ❓ inconclusive both times**, from `verdict_c3.txt` and
+      `verdict_c0p3.txt`. Read-zone means over the last five steps, one seed, one trajectory
+      per `k`, every cell of one pair and `c` on one device:
+
+      | `c` | pair | `k = 0` | 1 | 5 | 20 | 100 | 200 | `k`=100 vs 200 | control at 200 vs 0 | median chain displacement at 200 |
+      |---|---|---|---|---|---|---|---|---|---|---|
+      | 0.3 | cat × dog | 0.180 | 0.145 | 0.125 | 0.141 | 0.186 | 0.115 | 38% | | 0.66 |
+      | 0.3 | butterfly × meadow | 0.092 | 0.094 | 0.092 | 0.093 | 0.105 | 0.104 | 1.1% | +13% | 0.64 |
+      | 3 | cat × dog | 0.153 | 0.138 | 0.261 | 0.203 | 0.103 | 0.125 | 21% | | 1.16 |
+      | 3 | butterfly × meadow | 0.097 | 0.095 | 0.099 | 0.105 | 0.090 | 0.086 | 3.5% | −10% | 1.02 |
+      | 30 | cat × dog | 0.169 | 0.114 | 0.121 | 0.111 | 0.121 | 0.112 | 6.7% | | 1.26 |
+      | 30 | butterfly × meadow | 0.090 | 0.107 | 0.134 | 0.169 | 0.134 | 0.111 | 17% | +24% | 1.25 |
+
+      The guards that fired: at `c = 0.3`, cat × dog not settled (38%) and the control rising
+      (13%); at `c = 3`, cat × dog not settled (21%) with the control passing; at `c = 30`, both
+      pairs not settled, both past the 1.5× norm bound at `k = 200`, and the control rising. The
+      latent norm stayed within 1.02× at `c = 3` and 1.01× at `c = 0.3`.
+
+      **What the numbers would have said if licensed.** At `k = 200` cat × dog's read-zone
+      ratio sits 36%, 18% and 33% under its `k = 0` value at `c = 0.3`, `3` and `30`, with 64%,
+      82% and 67% still there: the support shape (a drop of at least 20% with at least 20% left)
+      at every step size. At `c = 0.3` the drop is the numerator's: `‖eps_J − eps_PoE‖` falls from
+      40.8 to 23.9 while `‖eps_PoE‖` moves from 226 to 211. None of it is a result, because the
+      same pair's `k = 100` value is 0.186, above `k = 0`, and one trajectory decides each number.
+
+      **Why one seed cannot meet these bars.** The `k = 0` cell alone, the plain PoE run with no
+      chain, reads 0.153 on the RTX 3090, 0.169 on the RTX PRO 6000 and 0.180 on the RTX 8000 for
+      cat × dog: a 15% spread from fp16 arithmetic across cards over 50 steps. Across `k` at one
+      `c` the same pair swings by 30% to 70% between neighbouring counts. The bars are 5% (drift,
+      instability) and 20% (split). A pre-registered rule with bars inside the instrument's own
+      scatter returns inconclusive whatever the answer, and that is the finding of this run: the
+      residual ratio at the settled point is a per-trajectory quantity and needs seeds before a
+      trend across `k` can be read. The composing pair scatters less (its ratio is 0.09 to 0.17
+      and its curve across `k` is flatter), which is why it settles at `c ≤ 3` and cat × dog does
+      not.
+
+      **What the pictures add.** Every measured chain saved its final image
+      (`corrector/pairs/<pair>/seed_9/poe_langevin_k<k>_c<c>/`, strips in
+      `corrector/search_renders/`). At `c ≤ 3` both pairs keep a coherent photograph through
+      `k = 20`; from `k = 100` the settled sample drifts from a photograph toward an illustration
+      (a painted butterfly, a dog in sunglasses, then a flat graphic at `c = 3`), with the latent
+      norm never above 1.02×. At `c = 30` every `k ≥ 1` image is texture noise. On cat × dog the
+      corrector never produces two animals at any `k` or `c`. So what the chain settles into is
+      a different kind of image from the joint prompt's, and the joint branch's disagreement
+      with that image is what a rising ratio on the composing pair reads. The early window
+      (steps 0 to 10) is where all six curves of a panel lie on top of each other, and it is the
+      window this measurement cannot attribute by construction.
 
 ## Written before the run, answered after
 
 Navigation: ⬅️ [The question written before the run](#the-question-written-before-the-run) | 📋 [TOC](#table-of-contents) | [Next](#asked-after-the-result) ➡️
 
-- [ ] ⚠️ Did the numerator `‖eps_J - eps_PoE‖` fall, or did the denominator `‖eps_PoE‖` rise? The
-      ratio alone cannot say, and both are recorded for this reason.
-- [ ] ⚠️ Did the chain actually move? The median relative displacement per `(k, t)` against the
-      minimum written in source.
-- [ ] ⚠️ Did it equilibrate? `k=100` against `k=200`, curve on curve.
-- [ ] ⚠️ Does the pair that composes by default behave differently from the pair that blends? If
-      both curves rise with `k`, the rise is the joint branch degrading off-distribution and the
-      measurement is measuring itself.
-- [ ] ⚠️ How does the measured remainder at the last steps compare with
+- [x] 🟡 Did the numerator `‖eps_J - eps_PoE‖` fall, or did the denominator `‖eps_PoE‖` rise? On
+      cat × dog the numerator fell at every `c` (read-zone means, `k = 0` to `k = 200`: 40.8 to
+      23.9 at `c = 0.3`, 34.3 to 28.1 at `c = 3`, 37.9 to 27.9 at `c = 30`), and the denominator
+      held at `c ≤ 3` (226 to 211, 224 to 230) but rose 23% at `c = 30` (225 to 278), so at the
+      search's step size a quarter of the ratio's fall is the denominator. On the composing pair
+      both rose at `c = 0.3` and `c = 30`. 🟡 because none of these trajectories is licensed.
+- [x] ✅ Did the chain actually move? Yes at every `c`: median relative displacement within a
+      level at `k = 200` is 0.64 to 0.66 at `c = 0.3`, 1.02 to 1.16 at `c = 3`, 1.25 to 1.26 at
+      `c = 30`, all far above the 0.05 floor. The instrument moves; that is not the problem.
+- [x] ❌ Did it equilibrate? The composing pair did at `c ≤ 3` (`k = 100` against `k = 200` differ
+      by 1.1% and 3.5%). Cat × dog did not at any `c` (38%, 21%, 6.7% against the 5% bar), and its
+      curve across `k` is not monotone at any `c`, so the disagreement is scatter rather than a
+      chain still falling. Curve on curve, the `k = 100` and `k = 200` lines cross each other all
+      along the run on the cat × dog panels.
+- [x] 🟡 Does the pair that composes by default behave differently from the pair that blends? At
+      `k = 200` cat × dog falls at every `c` (−36%, −18%, −33%) while the composing pair rises at
+      `c = 0.3` (+13%) and `c = 30` (+24%) and falls at `c = 3` (−10%). Different at `c = 3`,
+      opposite at the other two, and in every case within the scatter one seed produces. The
+      composing pair's images say what its ratio is measuring: at `k ≥ 100` the settled sample is
+      an illustration rather than a photograph, and the joint branch disagrees with that.
+- [x] ⚠️ How does the measured remainder at the last steps compare with
       [the free bound](01-the-free-bound-on-the-models-share.md) read off the cached
-      renders? Two independent routes to the same quantity that disagree is a finding about one of
-      the two measuring tools.
+      renders? Unanswerable this sitting: step 24 has not run, and no remainder here is licensed
+      to compare against it. Two independent routes to the same quantity that disagree is a
+      finding about one of the two measuring tools.
 - [x] ✅ Was the first short run's measured wall time per noise level within 2× of the cost table?
       Yes. Per noise level on the 3090: 1.5 s at `k=0`, 2.3 s at `k=1`, 5.3 s at `k=5`, against
       5, 8 and 20 UNet evaluations. The measured ratios to `k=0` are 1.5× and 3.5× where the table
@@ -195,25 +261,45 @@ Navigation: ⬅️ [The question written before the run](#the-question-written-b
 Navigation: ⬅️ [Written before the run](#written-before-the-run-answered-after) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
 **Nothing here may ever become a pre-registered threshold**, because anything written here is
-written with the answer already visible. Empty until the grid runs.
+written with the answer already visible.
+
+- The read-zone ratio of a single trajectory scatters by more than the bars. Three devices give
+  three `k = 0` values for cat × dog (0.153, 0.169, 0.180), so a per-pair comparison across `k`
+  is only fair on one device, which every grid above respected, and a 5% bar needs seeds.
+- On cat × dog the mid-run ratio (steps 10 to 45) at `c = 3`, `k = 100` and `k = 200` sits near
+  0.1, far under `k = 0`'s 0.2 to 0.4, and the curves rejoin in the read zone. The chain changes
+  the middle of the run more than its end, which is the opposite of what the design expected
+  (the sampler's share was to vanish at low noise). Read as a hint, not a result.
+- The settled sample's drift from photograph to illustration with `k` is the one observation
+  every `c` and both pairs agree on, and no bar was written for it. It says the product of the
+  two diffused marginals has a different typical image from the joint prompt's, in style before
+  content, which is a statement about the model's share that the ratio was never going to make.
+- The images behind the numbers are the check the code cannot make. Every `k ≥ 1` image at
+  `c = 30` is texture noise, while its numbers are as tidy as the others'.
 
 ## Could the answer be an artefact
 
 Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC](#table-of-contents) | [Next](#what-the-write-up-owes) ➡️
 
-- [ ] ⚠️ **Was the comparison fair?** Only `k` varies across the curves. Same pair, same seed, same
-      50 DDIM steps, same guidance, same step size, same starting latent.
-- [ ] ⚠️ **Was the measuring tool sound?** The two leak checks from
-      [step 25](02-the-corrector-and-the-step-size-it-runs-at.md), the displacement
-      column, and the flattening in `k`. Any one of them failing voids the reading.
-- [ ] ⚠️ **Is the quantity what the caption says it is?** The residual norm at the settled point is
-      a proxy for the distributional gap rather than the gap itself. The corrector does not change
-      the function `eps_J - eps_PoE`; it changes where that function is evaluated. And at high noise
-      what remains is the non-commutation gap plus the model gap, so only the last steps attribute.
-      Both sentences belong in the caption and neither may be dropped for space.
-- [ ] ⚠️ **Did the run respect the environment?** All 600 rows present, output under `/datasets`,
-      norms upcast to fp32 from fp16 before they were taken, launched under `nohup` outside Slurm
-      and harvested by `pgrep` rather than `squeue`.
+- [x] ✅ **Was the comparison fair?** Within one `c` and one pair only `k` varies: same seed, same
+      50 DDIM steps, same guidance 7.5, same step size, the same cached starting latent, the same
+      Langevin noise stream, and one device for every `k`. Across pairs the device differs at
+      `c = 0.3` (both on the RTX 8000) and `c = 3` (both on the 3090) only by the order they ran.
+- [x] ❌ **Was the measuring tool sound?** The leak checks pass and the displacement column shows
+      the chain moving; the flattening in `k` fails on cat × dog at every `c`. So the instrument
+      is inert when off and moves when on, and its read-out at one seed is too noisy for the bars
+      written for it. That is the reason the branch is inconclusive and not a null.
+- [x] ✅ **Is the quantity what the caption says it is?** Every figure's sidecar carries the three
+      sentences: the axis is the correction along the `k`-corrected path; `eps_J` is evaluated
+      off-distribution at the settled point on purpose; the residual norm is a proxy for the
+      distributional gap, since the corrector moves where `eps_J − eps_PoE` is evaluated and not
+      the function. The images add the fourth: what the settled point looks like.
+- [x] ✅ **Did the run respect the environment?** 600 rows per `c`, three times, counted by
+      `--verdict`; every file under `corrector/` on `/datasets`; every norm float32; every run
+      under `nohup` on a shared device with node, device and PID in its log header, harvested by
+      `pgrep`; the launch script refused two devices that another user's process took between
+      the check and the launch (the 3090 at 20:12, the Blackwell card at 20:14), which is the
+      guard doing its job.
 
 ## What the write-up owes
 
@@ -235,12 +321,14 @@ Navigation: ⬅️ [What the write-up owes](#what-the-write-up-owes) | 📋 [TOC
 | What is unresolved | What would settle it | Who or what is blocked by it |
 |---|---|---|
 | whether the early window's correction is the sampler's or the model's | nothing in this scope. The two are inseparable at high noise by construction. A different design would be needed, and none is currently known | the strongest version of the timing paragraph. The weaker version, which this scope supports, is that a corrector does or does not reproduce the timing behaviour |
-| whether one seed is enough for this curve | a second seed, at the cost of the whole grid again. Deferred until the two pairs are seen to agree or disagree | nothing yet. This file records the single seed as a choice |
+| whether one seed is enough for this curve | it is not: the scatter of one trajectory's read-zone ratio (15% across devices at `k = 0`, 30% to 70% across `k`) is larger than every bar. The named next action is seeds 10, 11 and 12 at `c = 3` (the one step size whose composing-pair control passes) and `k ∈ {0, 20, 100, 200}`, both pairs: about 110 min per seed and pair on a 3090, 11 hours in all, or under 2 hours on the RTX PRO 6000 when it is free. Then the same three-way threshold on the seed-mean curve, bars unchanged | step 26's verdict, step 21's mechanism paragraph, and steps 28 to 30 as a diagnosis rather than a baselines table |
+| which step size the scope proceeds at | `c = 3`, by the rule written in [step 25's review](02-the-corrector-and-the-step-size-it-runs-at.md): the largest `c` whose composing-pair curve does not rise past 5% of its `k = 0` value at `k = 200` (30 rises 24%, 0.3 rises 13%, 3 falls 10%). Its settled samples at `k ≥ 100` are flat graphics, so plan 27 runs it at `k = 20`, the last count whose images are photographs on both pairs, and says so | plan 27's runs, which use it |
+| a figure under the canonical name `how-much-of-the-correction-a-corrector-removes.png` | a licensed reading. Until then the three `c`-suffixed figures stand, none in the main text | the Figure Catalog row in the design |
 
 ## Next step
 
 Navigation: ⬅️ [Still open](#still-open) | 📋 [TOC](#table-of-contents)
 
-Confirm both leak checks passed and a `c` is picked at
-[step 25](02-the-corrector-and-the-step-size-it-runs-at.md), then make the first short
-run before committing 670 plain-render equivalents to the grid.
+Run seeds 10 to 12 at `c = 3` when a fast device is free, then `--verdict --c 3` on the seed-mean
+curve with the bars unchanged. Plan 27 runs in the meantime at `c = 3`, `k = 20`, recorded there as
+run against an inconclusive curve.

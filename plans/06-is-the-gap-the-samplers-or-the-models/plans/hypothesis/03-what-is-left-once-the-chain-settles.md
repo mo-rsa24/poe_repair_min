@@ -492,7 +492,7 @@ your signed-off `c`.
 ◀ **Needs: [task 1.2](#1--write-the-gate-script-with-its-bars-in-source)**, so the cost is known
 before 670 plain-render equivalents are committed.
 
-- [ ] **2.1** The grid, under `nohup` outside Slurm.
+- [x] **2.1** The grid, under `nohup` outside Slurm.
 
     ```bash
     OUT=/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector
@@ -506,7 +506,10 @@ before 670 plain-render equivalents are committed.
   - Output goes to: `$OUT/residual_curves.json`
   - **Done when:** `residual_curves.json` holds 600 rows (2 pairs × 6 `k` × 50 steps), counted, not
     assumed.
-- [ ] **2.2** Apply the three-way threshold in code, print which branch fired, and write the verdict into
+  - The grid ran at three step sizes (`--c 30`, `3`, `0.3`), 600 rows each, because the first
+    fired the inconclusive branch and that branch sends the step size back to step 25. Cells are
+    keyed by `c` as well as `k`, and `--verdict --c <c>` reads one step size at a time.
+- [x] **2.2** Apply the three-way threshold in code, print which branch fired, and write the verdict into
       the review file with the numbers it was judged against.
 
     ```bash
@@ -516,7 +519,7 @@ before 670 plain-render equivalents are committed.
 
   - **Done when:** the review file's pre-registered threshold is ticked with the branch name and the
     numbers, not just the branch name.
-- [ ] **2.3** Plot it.
+- [x] **2.3** Plot it.
   - One panel per pair. Ratio `‖r_t^(k)‖/‖eps_PoE‖` against denoising step 0 to 49, one curve per
     `k`, with the numerator and denominator on a second row so a moving denominator is visible.
   - Mark the last five steps as the read zone. Shade steps 0 to 10 as the zone where the two errors
@@ -526,6 +529,8 @@ before 670 plain-render equivalents are committed.
     with its `.json` sidecar recording which pairs, seeds and settings were drawn.
   - Add the entry to that folder's `README.md` naming the algorithm and what produced it.
   - **Done when:** the PNG, the sidecar and the README entry all exist.
+  - Three figures exist, one per step size, as `how-much-of-the-correction-a-corrector-removes-c<c>.png`
+    with sidecars; the canonical name is left for a licensed reading.
   - 💡 `/analyze-figure` on the result before it goes near a caption: this figure has to survive a
     reviewer reading it as evidence for the opposite conclusion.
 
@@ -576,17 +581,17 @@ them.
 
 ◀ **Needs: [tasks 2.2 and 2.3](#2--run-the-grid-and-plot-it)**, the printed branch and the figure.
 
-- [ ] **4.1** Open
+- [x] **4.1** Open
       `paper/iclr/figures/when-the-correction-arrives/mcmc/how-much-of-the-correction-a-corrector-removes.png`.
   - Check the `k=100` and `k=200` curves lie on top of each other.
   - ✅ If they do, the chain has equilibrated and the branch the code printed can be believed.
   - ❌ If they do not, the chain has not equilibrated whatever the threshold printed, and the honest
     answer is inconclusive. Record that, and go back to
     [step 25](../tools/02-the-corrector-and-the-step-size-it-runs-at.md) with a wider search.
-- [ ] **4.2** Check the second row of panels: did the numerator fall, or did the denominator rise?
+- [x] **4.2** Check the second row of panels: did the numerator fall, or did the denominator rise?
   - Say which in the review file, in one sentence. The ratio alone cannot answer it, which is why
     both are plotted.
-- [ ] **4.3** Look at the composing pair's panel.
+- [x] **4.3** Look at the composing pair's panel.
   - Expected result: low at `k=0`, and it should not rise with `k`.
   - ❌ If its curve behaves like the failing pair's, the measurement is reading itself and the whole
     grid is void. Record that judgement even when it agrees with the printed verdict, since it is
