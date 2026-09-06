@@ -1,0 +1,96 @@
+{
+ "drawn_from": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/residual_curves.json",
+ "pairs": [
+  "a_cat__x__a_dog",
+  "a_butterfly__x__a_flower_meadow"
+ ],
+ "seed": 9,
+ "k": [
+  0,
+  1,
+  5,
+  20,
+  100,
+  200
+ ],
+ "c": 3.0,
+ "sampler": "SDXL base, DDIM 50 steps, guidance 7.5, 1024 square, fp16 with float32 norms",
+ "y_top": "\u2016eps_J(x_t^(k)) \u2212 eps_PoE(x_t^(k))\u2016 / \u2016eps_PoE(x_t^(k))\u2016, unitless, at the point the k-step Langevin chain settled to at that level",
+ "y_bottom": "the two norms separately, so a falling ratio can be read as numerator falling or denominator rising",
+ "x": "denoising step index along the k-corrected path; two corrector counts are two trajectories, not one point wiggled twice",
+ "shaded_grey": "steps 0 to 10: the compose-decisive window, where the non-commutation gap and the model gap add and no k separates them",
+ "shaded_green": "the last 5 steps: the read zone, where the sampler's share has vanished by construction and what is left is the model's",
+ "caption_owes": [
+  "the axis is the correction along the k-corrected path rather than along one path",
+  "eps_J is evaluated off-distribution at the settled point, and that is a deliberate choice",
+  "the residual norm is a proxy for the distributional gap rather than the gap itself: the corrector changes where eps_J \u2212 eps_PoE is evaluated, not the function"
+ ],
+ "verdict": {
+  "c": 3.0,
+  "n_rows": 600,
+  "expected_rows": 600,
+  "branch": "inconclusive",
+  "reasons": [
+   "a_cat__x__a_dog: k=100 against k=200 differ by 0.215 of the k=100 read-zone ratio (bar 0.05)"
+  ],
+  "k_settled": 200,
+  "k_prev": 100,
+  "stats": {
+   "a_cat__x__a_dog": {
+    "read_zone_ratio_k0": 0.1531926190791406,
+    "read_zone_ratio_k100": 0.10320367887831458,
+    "read_zone_ratio_k200": 0.12539644747098566,
+    "remainder_fraction": 0.8185541067497827,
+    "drop_fraction": 0.18144589325021732,
+    "k_instability": 0.21503854158957003,
+    "median_chain_disp_rel_settled": 1.1604487967264623,
+    "max_latent_norm_rel_settled": 1.0200313971291075,
+    "max_per_step_relative_change": 3.340140902745066,
+    "read_zone_numerator_k0": 34.3358699798584,
+    "read_zone_numerator_k200": 28.120271682739258,
+    "read_zone_denominator_k0": 224.1180206298828,
+    "read_zone_denominator_k200": 229.5381286621094,
+    "read_zone_ratio_by_k": {
+     "0": 0.1531926190791406,
+     "1": 0.13836025778940592,
+     "5": 0.26083034756287155,
+     "20": 0.2030590039593588,
+     "100": 0.10320367887831458,
+     "200": 0.12539644747098566
+    }
+   },
+   "a_butterfly__x__a_flower_meadow": {
+    "read_zone_ratio_k0": 0.09647229717594889,
+    "read_zone_ratio_k100": 0.0895048935424082,
+    "read_zone_ratio_k200": 0.08636045701237663,
+    "remainder_fraction": 0.895184001422398,
+    "drop_fraction": 0.10481599857760204,
+    "k_instability": 0.03513144818770957,
+    "median_chain_disp_rel_settled": 1.021180728119175,
+    "max_latent_norm_rel_settled": 1.0211093628319199,
+    "max_per_step_relative_change": 3.9871748586307265,
+    "read_zone_numerator_k0": 19.222997665405273,
+    "read_zone_numerator_k200": 19.872553253173827,
+    "read_zone_denominator_k0": 201.9716552734375,
+    "read_zone_denominator_k200": 238.3154266357422,
+    "read_zone_ratio_by_k": {
+     "0": 0.09647229717594889,
+     "1": 0.09462789686769582,
+     "5": 0.09936692611302081,
+     "20": 0.10506315240264304,
+     "100": 0.0895048935424082,
+     "200": 0.08636045701237663
+    }
+   }
+  },
+  "thresholds": {
+   "MIN_DROP_FOR_SPLIT": 0.2,
+   "MIN_REMAINDER_FOR_SPLIT": 0.2,
+   "MAX_DRIFT_FOR_NULL": 0.05,
+   "MIN_CHAIN_DISPLACEMENT": 0.05,
+   "MAX_K_INSTABILITY": 0.05,
+   "MAX_LATENT_NORM_REL": 1.5,
+   "READ_ZONE_STEPS": 5
+  }
+ }
+}

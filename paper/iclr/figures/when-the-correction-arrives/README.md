@@ -67,3 +67,16 @@ The two coverage grids are `scripts/longer_correction_grid.py` and `scripts/late
 at their default cat-and-dog seed 12, confirmed by matching their couch scene to the window
 map's seed 12 row. Which script rendered the sliding strip and the per-pair population map is
 still to be confirmed before a caption cites a path.
+
+**mcmc/how-much-of-the-correction-a-corrector-removes-c30.png, -c3.png, -c0p3.png** (with `.json`
+siblings). The residual ratio `‖eps_J − eps_PoE‖ / ‖eps_PoE‖` at the point a `k`-step Langevin
+chain on the product-of-experts score settled to, against denoising step, one curve per
+`k ∈ {0, 1, 5, 20, 100, 200}`, one panel per pair (a cat × a dog left, a butterfly × a flower
+meadow right), the two norms on a second row; grey shading is steps 0 to 10, where the sampler's
+and the model's errors cannot be told apart, green is the last five steps, the read zone. One
+figure per step size `δ_t = c·β_t`, seed 9, drawn by `scripts/corrector_residual_curve.py --plot`
+from `corrector/residual_curves.json`. Every one printed the inconclusive branch of scope 06's
+step 26 (one seed's read-zone ratio scatters more than the 5% bars), so none is a main-text
+candidate; the sidecar carries the branch and every number. Their caption owes three sentences:
+the axis runs along the `k`-corrected path, `eps_J` is evaluated off-distribution on purpose, and
+the residual norm is a proxy for the distributional gap rather than the gap. Filed 2026-09-06.
