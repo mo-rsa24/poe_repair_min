@@ -129,17 +129,23 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
       conditions: the rank-32 adapter at λ 1.2 on steps `[0, cutoff)` for cutoff 20 and 30, the
       frozen model's plain PoE step after, and `k ∈ {0, 5, 20}` Langevin steps on the frozen
       score inside steps 35 to 49; both pairs, seeds 9 to 16. Baseline: the adapter alone on all
-      50 steps (7 of 8 composed, mean sharpness 57.1, from the tail run). Target: the plain-PoE
-      references' sharpness over the same seeds, mean minus one standard deviation (computed
-      from the sheet's `poe.png` renders and written into `clean_tail.json`). Thresholds in
-      `scripts/corrector_window_sweep.py`: `CLEAN_MIN_BAND_SIGMAS = 1.0`,
-      `CLEAN_MAX_COMPOSE_LOSS_SEEDS = 1`. **Support** if at least one condition's mean sharpness
-      reaches the floor with its composed count within one seed of the baseline and the control
-      pair's within one seed of its own. **Composition breaks** if a condition reaches the band
-      only by losing two or more composed seeds: the softness is the price of composition and
-      the hand-off is too early. **Null** if no condition reaches the floor while holding
-      composition. **Inconclusive** if the control pair loses two or more composed seeds in any
-      condition. Written 2026-09-06 02:45, before the grid ran.
+      50 steps (7 of 8 composed, from the tail run). The primary read is the DINOv2 ViT-S/14
+      cosine distance between a render and the seed's joint-prompt render, the compose
+      scorer's own embedder, lower being nearer the clean image the adapter is meant to reach;
+      Laplacian-variance sharpness is reported beside it as a secondary read only, because on
+      the plain-PoE references it is heavy-tailed (cat × dog seeds 11, 14 and 15 render grainy
+      at 275 to 499 against about 15 elsewhere, mean 152 ± 183 over the 8 seeds, measured at
+      02:40 before this grid ran), so a band built from it cannot separate conditions.
+      Thresholds in `scripts/corrector_window_sweep.py`: `CLEAN_MIN_MONO_GAIN = 0.05` (the
+      8-seed mean distance must fall by at least 0.05 against the adapter-alone run, the size
+      the training-longer finding read as a real move between checkpoints) and
+      `CLEAN_MAX_COMPOSE_LOSS_SEEDS = 1`. **Support** if at least one condition moves at least
+      0.05 nearer the joint render with its composed count within one seed of the baseline and
+      the control pair's within one seed of its own. **Composition breaks** if a condition moves
+      nearer only by losing two or more composed seeds: the softness is the price of
+      composition and the hand-off is too early. **Null** if no condition moves 0.05 nearer
+      while holding composition. **Inconclusive** if the control pair loses two or more
+      composed seeds in any condition. Written 2026-09-06 02:50, before the grid ran.
 - [ ] ⚠️ **On the eight-seed sheet, what is the compose rate of the corrector on all 50 steps
       against plain PoE and the joint prompt, on both pairs?** Recorded either way; it is the
       read-out every parallel session reports on the same seeds. The one bar: the control pair's

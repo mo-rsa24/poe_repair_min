@@ -91,8 +91,13 @@ FIDELITY_MAX_COMPOSE_LOSS_SEEDS = 1  # composed seeds at k=20 may fall by at mos
 CLEAN_TAIL_CUTOFFS = (20, 30)            # the adapter is on for steps [0, cutoff)
 CLEAN_TAIL_K = (0, 5, 20)                # corrector steps on the frozen score inside TAIL_WINDOW
 CLEAN_TAIL_SCORE = "frozen"
-CLEAN_MIN_BAND_SIGMAS = 1.0              # support: mean sharpness >= mean(plain PoE) - 1 SD over the 8 seeds
+CLEAN_MIN_MONO_GAIN = 0.05               # support: mean DINOv2 cosine distance to the seed's joint-prompt render
+                                         # falls by at least this much against the adapter-alone run (8-seed means;
+                                         # the size the training-longer finding read as a real move)
 CLEAN_MAX_COMPOSE_LOSS_SEEDS = 1         # composed seeds may fall by at most one from the adapter-alone run
+# Laplacian variance stays a reported secondary read: on the plain-PoE references it is heavy-tailed
+# (cat x dog seeds 11, 14, 15 render grainy at 275 to 499 against about 15 elsewhere), so a band
+# built from it cannot separate conditions. Measured 2026-09-06 02:40, before this grid ran.
 
 OUT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector")
 SEARCH_JSON = OUT / "step_size_search.json"
@@ -155,6 +160,23 @@ def _dev():
 def laplacian_var(png: Path) -> float:
     from lambda_window_grid import _laplacian_var
     return float(_laplacian_var(png))
+
+
+_EMB = None
+
+
+def dino_dist_to_mono(png: Path, pair: str, seed: int) -> float | None:
+    """DINOv2 ViT-S/14 cosine distance between a render and the seed's joint-prompt render,
+    the compose scorer's own embedder; lower is nearer the clean image."""
+    global _EMB
+    from poe_repair.experiments.compose_scorer_validation.scorer import _Embedders, _cosine_distance
+    mono = OUT / "sheet" / "references" / pair / f"seed_{seed}" / "mono.png"
+    if not mono.exists():
+        return None
+    if _EMB is None:
+        _EMB = _Embedders(device=_dev())
+    e = _EMB.dino([png, mono])
+    return float(_cosine_distance(e[0], e[1]))
 
 
 def score_png(png: Path, pair: str) -> dict:
@@ -380,6 +402,7 @@ def clean_tail(c: float) -> int:
     for r in rows:
         r.update(score_png(Path(r["png"]), r["pair"]))
         r["sharpness_laplacian_var"] = laplacian_var(Path(r["png"]))
+        r["dino_dist_to_mono"] = dino_dist_to_mono(Path(r["png"]), r["pair"], r["seed"])
     result = clean_tail_verdict(rows, c)
     CLEAN_JSON.write_text(json.dumps(result, indent=1))
     print(json.dumps({k_: v for k_, v in result.items() if k_ in ("branch", "reasons", "band", "summary")}, indent=1), flush=True)
@@ -409,53 +432,68 @@ def clean_tail_verdict(rows: list[dict], c: float) -> dict:
                       "floor": (float(np.mean(poe_sharp) - CLEAN_MIN_BAND_SIGMAS * np.std(poe_sharp)) if poe_sharp else None)}
         if tail:
             t0 = [r for r in tail["rows"] if r["pair"] == pair and r["k"] == 0]
+            dm = [dino_dist_to_mono(Path(r["png"]), pair, r["seed"]) for r in t0]
+            dm = [x for x in dm if x is not None]
             base[pair] = {"composed_of_8": sum(int(r["composed"]) for r in t0),
                           "mean_sharpness_laplacian_var": float(np.mean([r["sharpness_laplacian_var"] for r in t0])) if t0 else None,
+                          "mean_dino_dist_to_mono": float(np.mean(dm)) if dm else None,
                           "source": "tail_fidelity.json, k=0 (the adapter alone on all 50 steps)"}
+        pp = []
+        if sheet:
+            for r in sheet["rows"]:
+                if r["pair"] == pair:
+                    v = dino_dist_to_mono(Path(r["poe"]), pair, r["seed"])
+                    if v is not None:
+                        pp.append(v)
+        band[pair]["plain_poe_mean_dino_dist_to_mono"] = float(np.mean(pp)) if pp else None
     summary = {}
     for pair in PAIRS:
         summary[pair] = {}
         for cutoff in CLEAN_TAIL_CUTOFFS:
             for k in CLEAN_TAIL_K:
                 pr = [r for r in rows if r["pair"] == pair and r["cutoff"] == cutoff and r["k"] == k]
+                dm = [r["dino_dist_to_mono"] for r in pr if r.get("dino_dist_to_mono") is not None]
                 summary[pair][f"cutoff{cutoff}_k{k}"] = {
                     "composed_of_8": sum(int(r["composed"]) for r in pr), "n": len(pr),
+                    "mean_dino_dist_to_mono": float(np.mean(dm)) if dm else None,
                     "mean_sharpness_laplacian_var": float(np.mean([r["sharpness_laplacian_var"] for r in pr])) if pr else None,
                     "median_sharpness_laplacian_var": float(np.median([r["sharpness_laplacian_var"] for r in pr])) if pr else None,
                 }
-    fl = band[FAILING_PAIR]["floor"]; b = base.get(FAILING_PAIR, {})
+    b = base.get(FAILING_PAIR, {}); b0 = b.get("mean_dino_dist_to_mono")
     supp, breaks = [], []
     for name, v in summary[FAILING_PAIR].items():
-        in_band = fl is not None and v["mean_sharpness_laplacian_var"] is not None and v["mean_sharpness_laplacian_var"] >= fl
+        gain = (b0 - v["mean_dino_dist_to_mono"]) if (b0 is not None and v["mean_dino_dist_to_mono"] is not None) else None
+        nearer = gain is not None and gain >= CLEAN_MIN_MONO_GAIN
         loss = (b.get("composed_of_8", 0) - v["composed_of_8"]) if b else None
         ctrl = summary[COMPOSING_PAIR][name]["composed_of_8"]
         ctrl_base = base.get(COMPOSING_PAIR, {}).get("composed_of_8", 8)
-        v["reaches_plain_poe_band"] = bool(in_band); v["compose_loss_vs_adapter_alone"] = loss
-        v["control_compose_loss"] = ctrl_base - ctrl
-        if in_band and loss is not None and loss <= CLEAN_MAX_COMPOSE_LOSS_SEEDS and (ctrl_base - ctrl) <= CLEAN_MAX_COMPOSE_LOSS_SEEDS:
+        v["mono_gain_vs_adapter_alone"] = gain; v["nearer_the_joint_render"] = bool(nearer)
+        v["compose_loss_vs_adapter_alone"] = loss; v["control_compose_loss"] = ctrl_base - ctrl
+        if nearer and loss is not None and loss <= CLEAN_MAX_COMPOSE_LOSS_SEEDS and (ctrl_base - ctrl) <= CLEAN_MAX_COMPOSE_LOSS_SEEDS:
             supp.append(name)
-        elif in_band and loss is not None and loss > CLEAN_MAX_COMPOSE_LOSS_SEEDS:
+        elif nearer and loss is not None and loss > CLEAN_MAX_COMPOSE_LOSS_SEEDS:
             breaks.append(name)
     ctrl_fail = [n for n, v in summary[FAILING_PAIR].items() if v["control_compose_loss"] > CLEAN_MAX_COMPOSE_LOSS_SEEDS]
-    if fl is None or not b:
-        branch, reasons = "not ready", ["the plain-PoE band or the adapter-alone baseline is missing"]
+    if b0 is None or not b:
+        branch, reasons = "not ready", ["the adapter-alone baseline or the joint-prompt references are missing"]
     elif supp:
-        branch = "support"; reasons = [f"{n}: sharpness {summary[FAILING_PAIR][n]['mean_sharpness_laplacian_var']:.1f} reaches the plain-PoE floor {fl:.1f} with composed {summary[FAILING_PAIR][n]['composed_of_8']} of 8 against the adapter's {b['composed_of_8']}" for n in supp]
+        branch = "support"; reasons = [f"{n}: DINOv2 distance to the joint render {summary[FAILING_PAIR][n]['mean_dino_dist_to_mono']:.3f} against the adapter's {b0:.3f} (gain {summary[FAILING_PAIR][n]['mono_gain_vs_adapter_alone']:+.3f}, bar {CLEAN_MIN_MONO_GAIN}) with composed {summary[FAILING_PAIR][n]['composed_of_8']} of 8 against the adapter's {b['composed_of_8']}" for n in supp]
     elif breaks:
-        branch = "composition breaks"; reasons = [f"{n}: reaches the band but loses {summary[FAILING_PAIR][n]['compose_loss_vs_adapter_alone']} composed seeds" for n in breaks]
+        branch = "composition breaks"; reasons = [f"{n}: nearer the joint render but loses {summary[FAILING_PAIR][n]['compose_loss_vs_adapter_alone']} composed seeds" for n in breaks]
     elif ctrl_fail:
         branch = "inconclusive"; reasons = [f"{n}: the control pair lost {summary[FAILING_PAIR][n]['control_compose_loss']} composed seeds" for n in ctrl_fail]
     else:
-        branch = "null"; reasons = [f"no condition reaches the plain-PoE floor {fl:.1f}; best mean sharpness "
-                                    f"{max(v['mean_sharpness_laplacian_var'] for v in summary[FAILING_PAIR].values()):.1f} "
-                                    f"against the adapter's {b['mean_sharpness_laplacian_var']:.1f}"]
+        best = max(summary[FAILING_PAIR].items(), key=lambda kv: kv[1]["mono_gain_vs_adapter_alone"] or -1)
+        branch = "null"; reasons = [f"no condition moves at least {CLEAN_MIN_MONO_GAIN} nearer the joint render while holding composition; best gain "
+                                    f"{best[1]['mono_gain_vs_adapter_alone']:+.3f} at {best[0]} (adapter alone {b0:.3f})"]
     return {
         "condition": f"rank-{ADAPTER_RANK} adapter at step 30050, lambda {TAIL_LAMBDA} on steps [0, cutoff), the frozen model's plain PoE step after, "
                      f"plus k Langevin steps on the FROZEN score inside steps {TAIL_WINDOW[0]} to {TAIL_WINDOW[1] - 1}",
         "checkpoint": str(ADAPTER_CHECKPOINT), "c": c, "cutoffs": list(CLEAN_TAIL_CUTOFFS), "k": list(CLEAN_TAIL_K),
         "window": list(TAIL_WINDOW), "lambda": TAIL_LAMBDA, "seeds": list(SHEET_SEEDS),
-        "thresholds": {"CLEAN_MIN_BAND_SIGMAS": CLEAN_MIN_BAND_SIGMAS, "CLEAN_MAX_COMPOSE_LOSS_SEEDS": CLEAN_MAX_COMPOSE_LOSS_SEEDS},
-        "sharpness": "Laplacian variance of the greyscale 1024x1024 render; higher is sharper",
+        "thresholds": {"CLEAN_MIN_MONO_GAIN": CLEAN_MIN_MONO_GAIN, "CLEAN_MAX_COMPOSE_LOSS_SEEDS": CLEAN_MAX_COMPOSE_LOSS_SEEDS},
+        "primary_read": "DINOv2 ViT-S/14 cosine distance between the render and the seed's joint-prompt render (the compose scorer's embedder); lower is nearer the clean image",
+        "sharpness": "Laplacian variance of the greyscale 1024x1024 render, a secondary read; on the plain-PoE references it is heavy-tailed and cannot set a band",
         "band": band, "baseline_adapter_alone": base, "branch": branch, "reasons": reasons,
         "summary": summary, "rows": rows, "host": _host(),
     }
@@ -691,12 +729,13 @@ def sheet_figures() -> list[Path]:
                                                      "label": f"{r['n_instances']} inst · sharp {r['sharpness_laplacian_var']:.0f}"}
             for r in (x for x in t["rows"] if x["pair"] == pair):
                 ct = titles[3 + CLEAN_TAIL_CUTOFFS.index(r["cutoff"]) * len(CLEAN_TAIL_K) + CLEAN_TAIL_K.index(r["k"])]
+                dd = r.get("dino_dist_to_mono")
                 tiles[(r["seed"], ct)] = {"png": r["png"], "composed": r["composed"],
-                                          "label": f"{r['n_instances']} inst · sharp {r['sharpness_laplacian_var']:.0f}"}
-            s_ = t["summary"][pair]; bd = t["band"][pair]
-            counts = " · ".join(f"{n}: {v['composed_of_8']} of 8, sharp {v['mean_sharpness_laplacian_var']:.0f}" for n, v in s_.items())
+                                          "label": f"{r['n_instances']} inst · d(joint) {dd:.2f} · sharp {r['sharpness_laplacian_var']:.0f}" if dd is not None else f"{r['n_instances']} inst · sharp {r['sharpness_laplacian_var']:.0f}"}
+            s_ = t["summary"][pair]; bd = t["band"][pair]; bs = t["baseline_adapter_alone"].get(pair, {})
+            counts = " · ".join(f"{n}: {v['composed_of_8']} of 8, d(joint) {v['mean_dino_dist_to_mono']:.3f}" for n, v in s_.items() if v.get('mean_dino_dist_to_mono') is not None)
             draw(tiles, titles, f"corrector-clean-tail-{short[pair]}-eight-seed-sheet",
-                 f"{pair.replace('__x__', ' × ').replace('_', ' ')}: plain-PoE sharpness band mean {bd['plain_poe_mean']:.0f} ± {bd['plain_poe_sd']:.0f}; printed branch \"{t['branch']}\"\n{counts}",
+                 f"{pair.replace('__x__', ' × ').replace('_', ' ')}: DINOv2 distance to the joint render, adapter alone {bs.get('mean_dino_dist_to_mono', float('nan')):.3f}, plain PoE {bd.get('plain_poe_mean_dino_dist_to_mono', float('nan')):.3f}; printed branch \"{t['branch']}\"\n{counts}",
                  {"drawn_from": [str(CLEAN_JSON), str(SHEET_JSON), str(TAIL_JSON)], "pair": pair, "seeds": list(SHEET_SEEDS),
                   "columns": titles, "condition": t["condition"], "c": t["c"], "thresholds": t["thresholds"],
                   "band": bd, "baseline_adapter_alone": t["baseline_adapter_alone"].get(pair), "branch": t["branch"],
