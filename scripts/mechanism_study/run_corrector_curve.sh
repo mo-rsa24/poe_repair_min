@@ -9,6 +9,7 @@
 #   STAGE=window  GPU=1 bash ...                                # plan 27: the ten window columns
 #   STAGE=sheet   GPU=1 bash ...                                # plan 27: the eight-seed triptych sheets
 #   STAGE=tail    GPU=1 bash ...                                # plan 27: corrector on the last 15 steps of the adapter run
+#   STAGE=clean   GPU=1 bash ...                                # plan 27: adapter early, frozen tail, corrector on the frozen score
 #
 # Launch from the session node with every path absolute:
 #   ssh mscluster108 'STAGE=grid GPU=1 nohup bash /home-mscluster/mmolefe/Playground/PhD/poe_repair_min/scripts/mechanism_study/run_corrector_curve.sh > /datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/grid.log 2>&1 &'
@@ -53,6 +54,7 @@ case "$STAGE" in
   window) "$PY" scripts/corrector_window_sweep.py --window-sweep $EXTRA ;;
   sheet)  "$PY" scripts/corrector_window_sweep.py --sheet $EXTRA ;;
   tail)   "$PY" scripts/corrector_window_sweep.py --tail $EXTRA ;;
+  clean)  "$PY" scripts/corrector_window_sweep.py --clean-tail $EXTRA ;;
   *) echo "unknown STAGE=$STAGE" >&2; exit 5 ;;
 esac
 

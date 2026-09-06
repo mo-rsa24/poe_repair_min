@@ -19,6 +19,11 @@ process with a pure-corrector stage):
     --tail           both pairs, seeds 9 to 16, the rank-32 λ 1.2 run with k ∈ {0, 5, 20}
                      corrector steps on steps 35 to 49 only. Writes tail_fidelity.json with
                      compose and Laplacian-variance sharpness per render and the verdict.
+    --clean-tail     the fidelity fix under test: the adapter on steps [0, cutoff) only, the
+                     frozen model's plain PoE step after, and k corrector steps on the frozen
+                     score inside steps 35 to 49; cutoff ∈ {20, 30}, k ∈ {0, 5, 20}. Bar: mean
+                     sharpness back inside the plain-PoE seed band (mean minus one SD) with
+                     composition within one seed of the adapter-alone run. Writes clean_tail.json.
     --figures        the sliding-window strip matched to the injected-correction figure,
                      and one sheet per pair per condition, each with a .json sidecar.
     --wandb          log every sheet and sidecar that exists to W&B and print the run id.
@@ -79,12 +84,23 @@ ADAPTER_RANK = 32
 FIDELITY_MIN_SHARPNESS_RISE = 0.10   # mean Laplacian variance at k=20 must be at least 10% above k=0
 FIDELITY_MAX_COMPOSE_LOSS_SEEDS = 1  # composed seeds at k=20 may fall by at most one from k=0
 
+# The clean-tail conditions (plan 04, task group 5): the adapter only on the early steps that
+# set the composition, the frozen model's own PoE step after that, and a corrector on the
+# frozen score at low noise. The bar is session B's: sharpness back inside the plain-PoE seed
+# band while composition holds within one seed.
+CLEAN_TAIL_CUTOFFS = (20, 30)            # the adapter is on for steps [0, cutoff)
+CLEAN_TAIL_K = (0, 5, 20)                # corrector steps on the frozen score inside TAIL_WINDOW
+CLEAN_TAIL_SCORE = "frozen"
+CLEAN_MIN_BAND_SIGMAS = 1.0              # support: mean sharpness >= mean(plain PoE) - 1 SD over the 8 seeds
+CLEAN_MAX_COMPOSE_LOSS_SEEDS = 1         # composed seeds may fall by at most one from the adapter-alone run
+
 OUT = Path("/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector")
 SEARCH_JSON = OUT / "step_size_search.json"
 CURVES_JSON = OUT / "residual_curves.json"
 WINDOW_JSON = OUT / "window_curves_mcmc.json"
 SHEET_JSON = OUT / "sheet_scores.json"
 TAIL_JSON = OUT / "tail_fidelity.json"
+CLEAN_JSON = OUT / "clean_tail.json"
 FIG_DIR = REPO / "paper/iclr/figures/when-the-correction-arrives/mcmc"
 STRIP_NAME = "samples-as-a-ten-step-corrector-window-slides"
 RESULTS_DIR = REPO / "artifacts/results/is-the-gap-the-samplers-or-the-models"
@@ -318,6 +334,133 @@ def tail(c: float) -> int:
     return 0
 
 
+def clean_tail(c: float) -> int:
+    """Adapter λ 1.2 on steps [0, cutoff), the frozen model's plain PoE step after, and k
+    corrector steps on the frozen score inside TAIL_WINDOW. Baseline: the adapter on all 50
+    steps (the tail stage's k=0 render, reused). Target band: the plain-PoE references' sharpness."""
+    _disk_guard(OUT)
+    import lambda_boundary_probe as lbp
+    from poe_repair.methods._poe_langevin import run_lora_langevin_windowed_poe
+
+    ctx = make_ctx()
+    lbp.LORA_RANK = lbp.LORA_ALPHA = ADAPTER_RANK
+    info = lbp._attach_and_load_lora(ctx.models["unet"], ADAPTER_CHECKPOINT)
+    print(f"clean tail: adapter rank {ADAPTER_RANK} attached, n_matched={info['n_matched']} "
+          f"checkpoint_step={info['checkpoint_step']}; c={c} host={_host()}", flush=True)
+    rows = []
+    for pair in PAIRS:
+        for seed in SHEET_SEEDS:
+            cell = cell_from_slug(pair, seed)
+            init_latents, euler_sigma = init_latents_for_cell(cell, ctx)
+            emb = encode_pair(cell, ctx)
+            for cutoff in CLEAN_TAIL_CUTOFFS:
+                for k in CLEAN_TAIL_K:
+                    d = OUT / "clean_tail" / pair / f"seed_{seed}"
+                    d.mkdir(parents=True, exist_ok=True)
+                    png = d / f"lambda_{TAIL_LAMBDA}_on0-{cutoff}_k{k:03d}_{CLEAN_TAIL_SCORE}_w{TAIL_WINDOW[0]}-{TAIL_WINDOW[1]}.png"
+                    t0 = time.time()
+                    if not png.exists():
+                        out = run_lora_langevin_windowed_poe(
+                            init_latents=init_latents, models=ctx.models, scheduler=ctx.scheduler,
+                            seq_a=emb["seq_a"], pool_a=emb["pool_a"], seq_b=emb["seq_b"], pool_b=emb["pool_b"],
+                            seq_e=emb["seq_e"], pool_e=emb["pool_e"],
+                            guidance_scale=ctx.guidance_scale, num_inference_steps=ctx.num_inference_steps,
+                            height=cell.height, width=cell.width, euler_init_noise_sigma=euler_sigma,
+                            device=ctx.device, dtype=ctx.dtype,
+                            lambda_value=TAIL_LAMBDA, k=k, c=c, corrector_window=TAIL_WINDOW,
+                            noise_seed=seed, lora_adapter_name=lbp.LORA_ADAPTER_NAME,
+                            lambda_window=(0, cutoff), corrector_score=CLEAN_TAIL_SCORE,
+                        )
+                        write_decoded_image(out.image, png)
+                        del out
+                        gc.collect(); torch.cuda.empty_cache()
+                    rows.append({"pair": pair, "seed": seed, "cutoff": cutoff, "k": k, "png": str(png),
+                                 "seconds": round(time.time() - t0, 1)})
+                    print(f"[{time.strftime('%H:%M:%S')}] {pair} seed {seed} cutoff {cutoff} k={k} ({time.time() - t0:.0f}s)", flush=True)
+    for r in rows:
+        r.update(score_png(Path(r["png"]), r["pair"]))
+        r["sharpness_laplacian_var"] = laplacian_var(Path(r["png"]))
+    result = clean_tail_verdict(rows, c)
+    CLEAN_JSON.write_text(json.dumps(result, indent=1))
+    print(json.dumps({k_: v for k_, v in result.items() if k_ in ("branch", "reasons", "band", "summary")}, indent=1), flush=True)
+    return 0
+
+
+def clean_tail_verdict(rows: list[dict], c: float) -> dict:
+    """Baseline and band come from files the earlier stages wrote: the adapter-alone renders in
+    tail_fidelity.json (k=0) and the plain-PoE references in sheet_scores.json."""
+    tail = json.loads(TAIL_JSON.read_text()) if TAIL_JSON.exists() else None
+    sheet = json.loads(SHEET_JSON.read_text()) if SHEET_JSON.exists() else None
+    band, base = {}, {}
+    for pair in PAIRS:
+        poe_sharp = []
+        if sheet:
+            for r in sheet["rows"]:
+                if r["pair"] == pair:
+                    poe_sharp.append(laplacian_var(Path(r["poe"])))
+        else:
+            for seed in SHEET_SEEDS:
+                q = OUT / "sheet" / "pairs" / pair / f"seed_{seed}" / "poe" / "poe.png"
+                if q.exists():
+                    poe_sharp.append(laplacian_var(q))
+        band[pair] = {"plain_poe_mean": float(np.mean(poe_sharp)) if poe_sharp else None,
+                      "plain_poe_sd": float(np.std(poe_sharp)) if poe_sharp else None,
+                      "n": len(poe_sharp),
+                      "floor": (float(np.mean(poe_sharp) - CLEAN_MIN_BAND_SIGMAS * np.std(poe_sharp)) if poe_sharp else None)}
+        if tail:
+            t0 = [r for r in tail["rows"] if r["pair"] == pair and r["k"] == 0]
+            base[pair] = {"composed_of_8": sum(int(r["composed"]) for r in t0),
+                          "mean_sharpness_laplacian_var": float(np.mean([r["sharpness_laplacian_var"] for r in t0])) if t0 else None,
+                          "source": "tail_fidelity.json, k=0 (the adapter alone on all 50 steps)"}
+    summary = {}
+    for pair in PAIRS:
+        summary[pair] = {}
+        for cutoff in CLEAN_TAIL_CUTOFFS:
+            for k in CLEAN_TAIL_K:
+                pr = [r for r in rows if r["pair"] == pair and r["cutoff"] == cutoff and r["k"] == k]
+                summary[pair][f"cutoff{cutoff}_k{k}"] = {
+                    "composed_of_8": sum(int(r["composed"]) for r in pr), "n": len(pr),
+                    "mean_sharpness_laplacian_var": float(np.mean([r["sharpness_laplacian_var"] for r in pr])) if pr else None,
+                    "median_sharpness_laplacian_var": float(np.median([r["sharpness_laplacian_var"] for r in pr])) if pr else None,
+                }
+    fl = band[FAILING_PAIR]["floor"]; b = base.get(FAILING_PAIR, {})
+    supp, breaks = [], []
+    for name, v in summary[FAILING_PAIR].items():
+        in_band = fl is not None and v["mean_sharpness_laplacian_var"] is not None and v["mean_sharpness_laplacian_var"] >= fl
+        loss = (b.get("composed_of_8", 0) - v["composed_of_8"]) if b else None
+        ctrl = summary[COMPOSING_PAIR][name]["composed_of_8"]
+        ctrl_base = base.get(COMPOSING_PAIR, {}).get("composed_of_8", 8)
+        v["reaches_plain_poe_band"] = bool(in_band); v["compose_loss_vs_adapter_alone"] = loss
+        v["control_compose_loss"] = ctrl_base - ctrl
+        if in_band and loss is not None and loss <= CLEAN_MAX_COMPOSE_LOSS_SEEDS and (ctrl_base - ctrl) <= CLEAN_MAX_COMPOSE_LOSS_SEEDS:
+            supp.append(name)
+        elif in_band and loss is not None and loss > CLEAN_MAX_COMPOSE_LOSS_SEEDS:
+            breaks.append(name)
+    ctrl_fail = [n for n, v in summary[FAILING_PAIR].items() if v["control_compose_loss"] > CLEAN_MAX_COMPOSE_LOSS_SEEDS]
+    if fl is None or not b:
+        branch, reasons = "not ready", ["the plain-PoE band or the adapter-alone baseline is missing"]
+    elif supp:
+        branch = "support"; reasons = [f"{n}: sharpness {summary[FAILING_PAIR][n]['mean_sharpness_laplacian_var']:.1f} reaches the plain-PoE floor {fl:.1f} with composed {summary[FAILING_PAIR][n]['composed_of_8']} of 8 against the adapter's {b['composed_of_8']}" for n in supp]
+    elif breaks:
+        branch = "composition breaks"; reasons = [f"{n}: reaches the band but loses {summary[FAILING_PAIR][n]['compose_loss_vs_adapter_alone']} composed seeds" for n in breaks]
+    elif ctrl_fail:
+        branch = "inconclusive"; reasons = [f"{n}: the control pair lost {summary[FAILING_PAIR][n]['control_compose_loss']} composed seeds" for n in ctrl_fail]
+    else:
+        branch = "null"; reasons = [f"no condition reaches the plain-PoE floor {fl:.1f}; best mean sharpness "
+                                    f"{max(v['mean_sharpness_laplacian_var'] for v in summary[FAILING_PAIR].values()):.1f} "
+                                    f"against the adapter's {b['mean_sharpness_laplacian_var']:.1f}"]
+    return {
+        "condition": f"rank-{ADAPTER_RANK} adapter at step 30050, lambda {TAIL_LAMBDA} on steps [0, cutoff), the frozen model's plain PoE step after, "
+                     f"plus k Langevin steps on the FROZEN score inside steps {TAIL_WINDOW[0]} to {TAIL_WINDOW[1] - 1}",
+        "checkpoint": str(ADAPTER_CHECKPOINT), "c": c, "cutoffs": list(CLEAN_TAIL_CUTOFFS), "k": list(CLEAN_TAIL_K),
+        "window": list(TAIL_WINDOW), "lambda": TAIL_LAMBDA, "seeds": list(SHEET_SEEDS),
+        "thresholds": {"CLEAN_MIN_BAND_SIGMAS": CLEAN_MIN_BAND_SIGMAS, "CLEAN_MAX_COMPOSE_LOSS_SEEDS": CLEAN_MAX_COMPOSE_LOSS_SEEDS},
+        "sharpness": "Laplacian variance of the greyscale 1024x1024 render; higher is sharper",
+        "band": band, "baseline_adapter_alone": base, "branch": branch, "reasons": reasons,
+        "summary": summary, "rows": rows, "host": _host(),
+    }
+
+
 def tail_verdict(rows: list[dict], c: float) -> dict:
     summary = {}
     for pair in PAIRS:
@@ -526,6 +669,39 @@ def sheet_figures() -> list[Path]:
                   "condition": t["condition"], "c": t["c"], "thresholds": t["thresholds"], "branch": t["branch"], "reasons": t["reasons"],
                   "summary": s, "sharpness": t["sharpness"],
                   "tiles": [{k_: r[k_] for k_ in ("seed", "k", "png", "n_instances", "composed", "sharpness_laplacian_var", "concept_conf")} for r in t["rows"] if r["pair"] == pair]})
+    if CLEAN_JSON.exists():
+        t = json.loads(CLEAN_JSON.read_text())
+        d = json.loads(SHEET_JSON.read_text()) if SHEET_JSON.exists() else None
+        tf = json.loads(TAIL_JSON.read_text()) if TAIL_JSON.exists() else None
+        for pair in PAIRS:
+            tiles = {}
+            titles = ["joint prompt", "plain PoE", f"adapter λ{TAIL_LAMBDA} all 50"]
+            for cutoff in CLEAN_TAIL_CUTOFFS:
+                for k in CLEAN_TAIL_K:
+                    titles.append(f"adapter on 0-{cutoff - 1}\n+ k={k} frozen-score\ncorrector 35-49")
+            if d:
+                for r in (x for x in d["rows"] if x["pair"] == pair):
+                    for col, ct in zip(("mono", "poe"), titles[:2]):
+                        sc = r[f"{col}_score"]
+                        tiles[(r["seed"], ct)] = {"png": r[col], "composed": sc["composed"],
+                                                  "label": f"{sc['n_instances']} inst · sharp {laplacian_var(Path(r[col])):.0f}"}
+            if tf:
+                for r in (x for x in tf["rows"] if x["pair"] == pair and x["k"] == 0):
+                    tiles[(r["seed"], titles[2])] = {"png": r["png"], "composed": r["composed"],
+                                                     "label": f"{r['n_instances']} inst · sharp {r['sharpness_laplacian_var']:.0f}"}
+            for r in (x for x in t["rows"] if x["pair"] == pair):
+                ct = titles[3 + CLEAN_TAIL_CUTOFFS.index(r["cutoff"]) * len(CLEAN_TAIL_K) + CLEAN_TAIL_K.index(r["k"])]
+                tiles[(r["seed"], ct)] = {"png": r["png"], "composed": r["composed"],
+                                          "label": f"{r['n_instances']} inst · sharp {r['sharpness_laplacian_var']:.0f}"}
+            s_ = t["summary"][pair]; bd = t["band"][pair]
+            counts = " · ".join(f"{n}: {v['composed_of_8']} of 8, sharp {v['mean_sharpness_laplacian_var']:.0f}" for n, v in s_.items())
+            draw(tiles, titles, f"corrector-clean-tail-{short[pair]}-eight-seed-sheet",
+                 f"{pair.replace('__x__', ' × ').replace('_', ' ')}: plain-PoE sharpness band mean {bd['plain_poe_mean']:.0f} ± {bd['plain_poe_sd']:.0f}; printed branch \"{t['branch']}\"\n{counts}",
+                 {"drawn_from": [str(CLEAN_JSON), str(SHEET_JSON), str(TAIL_JSON)], "pair": pair, "seeds": list(SHEET_SEEDS),
+                  "columns": titles, "condition": t["condition"], "c": t["c"], "thresholds": t["thresholds"],
+                  "band": bd, "baseline_adapter_alone": t["baseline_adapter_alone"].get(pair), "branch": t["branch"],
+                  "reasons": t["reasons"], "summary": s_, "sharpness": t["sharpness"],
+                  "tiles": [{k_: r[k_] for k_ in ("seed", "cutoff", "k", "png", "n_instances", "composed", "sharpness_laplacian_var", "concept_conf")} for r in t["rows"] if r["pair"] == pair]})
     return outs
 
 
@@ -544,7 +720,7 @@ def log_wandb() -> str:
     if imgs:
         run.log(imgs)
     art = wandb.Artifact("scope06-corrector-sidecars", type="results")
-    for p in [SEARCH_JSON, CURVES_JSON, WINDOW_JSON, SHEET_JSON, TAIL_JSON, OUT / "verdict.json"] + \
+    for p in [SEARCH_JSON, CURVES_JSON, WINDOW_JSON, SHEET_JSON, TAIL_JSON, CLEAN_JSON] + sorted(OUT.glob("verdict_c*.json")) + \
              sorted(RESULTS_DIR.glob("corrector-*eight-seed-sheet.json")) + sorted(FIG_DIR.glob("*.json")):
         if p.exists():
             art.add_file(str(p), name=p.name)
@@ -554,6 +730,8 @@ def log_wandb() -> str:
         summ["sheet"] = json.loads(SHEET_JSON.read_text())["summary"]
     if TAIL_JSON.exists():
         t = json.loads(TAIL_JSON.read_text()); summ["tail"] = {"branch": t["branch"], "summary": t["summary"]}
+    if CLEAN_JSON.exists():
+        t = json.loads(CLEAN_JSON.read_text()); summ["clean_tail"] = {"branch": t["branch"], "summary": t["summary"], "band": t["band"]}
     if WINDOW_JSON.exists():
         summ["window"] = json.loads(WINDOW_JSON.read_text())["per_column"]
     if (OUT / "verdict.json").exists():
@@ -571,6 +749,7 @@ def main() -> int:
     ap.add_argument("--window-sweep", action="store_true")
     ap.add_argument("--sheet", action="store_true")
     ap.add_argument("--tail", action="store_true")
+    ap.add_argument("--clean-tail", action="store_true", help="adapter early, frozen tail, corrector on the frozen score")
     ap.add_argument("--figures", action="store_true")
     ap.add_argument("--wandb", action="store_true")
     ap.add_argument("--k", type=int, default=None, help="corrector count; default: the flat-part k from residual_curves.json")
@@ -585,6 +764,8 @@ def main() -> int:
             sheet(k, c)
     if args.tail:
         tail(c)
+    if args.clean_tail:
+        clean_tail(c)
     if args.figures:
         if WINDOW_JSON.exists():
             print(strip_figure())
@@ -592,7 +773,7 @@ def main() -> int:
             print(p)
     if args.wandb:
         log_wandb()
-    if not any([args.window_sweep, args.sheet, args.tail, args.figures, args.wandb]):
+    if not any([args.window_sweep, args.sheet, args.tail, args.clean_tail, args.figures, args.wandb]):
         ap.error("pass at least one stage")
     return 0
 

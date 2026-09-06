@@ -102,3 +102,14 @@ untouched. Its thresholds went into `scripts/corrector_window_sweep.py` as named
 plan 04's review file before any of it ran. Plan 04's environment facts gained the adapter
 checkpoint and the note that the control pair's seeds 13 to 16 start from the from-seed draw the
 cache equals.
+
+## 2026-09-06
+Added task group 5 to `hypothesis/04-does-the-corrector-compose-in-the-same-window.md` and a
+matching pre-registered question in its review file: the clean tail, where the rank-32 adapter
+runs only on steps 0 to 19 or 0 to 29, the frozen model's plain PoE step takes over after, and
+the corrector, when on, settles the latent on the frozen score at steps 35 to 49. Asked because
+the tail condition in group 3 came back null (sharpness +8%, inside the band), so the corrector on
+the corrected score does not remove the adapter's softness, and the question the person actually
+has is how to get the adapter's renders crisp. The bar is session B's: sharpness back inside the
+plain-PoE seed band with composition within one seed. It overlaps scope 01's plan 14 on purpose;
+that plan keeps the λ schedules and the re-noise cell, this group carries the corrector variant.

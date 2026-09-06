@@ -279,6 +279,8 @@ def run_lora_langevin_windowed_poe(
     corrector_window: tuple[int, int] | None,
     noise_seed: int = 0,
     lora_adapter_name: str = "lora",
+    lambda_window: tuple[int, int] | None = None,
+    corrector_score: str = "corrected",
 ) -> SamplerOutputs:
     """The rank-32 corrected run with ``k`` Langevin steps inside ``corrector_window``.
 
@@ -289,9 +291,18 @@ def run_lora_langevin_windowed_poe(
     chain settles into the distribution the corrected model describes, not plain
     product-of-experts. With ``k = 0`` this is the adapter-alone run, op for op.
 
-    One Langevin step costs two three-branch UNet calls (frozen and adapter), so a
-    level inside the window costs ``6k + 6`` UNet evaluations.
+    Two switches for the clean-tail conditions. ``lambda_window`` restricts the adapter
+    to a half-open step range: outside it λ is 0 and the adapter forward is skipped, so
+    the step is the frozen model's plain PoE step. ``corrector_score`` picks the Langevin
+    drift: ``"corrected"`` (the default, the λ-corrected prediction) or ``"frozen"`` (the
+    frozen model's PoE prediction, so the chain settles into the frozen model's own
+    low-noise distribution whatever the adapter did earlier).
+
+    One Langevin step costs two three-branch UNet calls (frozen and adapter) when the
+    drift is corrected and the adapter is on, one call otherwise.
     """
+    if corrector_score not in ("corrected", "frozen"):
+        raise ValueError(f"corrector_score must be 'corrected' or 'frozen', got {corrector_score!r}")
     scheduler.set_timesteps(num_inference_steps)
     latents = (init_latents / euler_init_noise_sigma).to(device=device, dtype=dtype)
     tracker = LatentTrajectoryCollector(
@@ -319,13 +330,19 @@ def run_lora_langevin_windowed_poe(
         eps_b = guided_eps(eps_b_raw, eps_uncond, guidance_scale)
         return poe_eps(eps_a, eps_b, eps_uncond)
 
-    def corrected_forward(x16: torch.Tensor, timestep) -> tuple[torch.Tensor, float]:
+    def corrected_forward(x16: torch.Tensor, timestep, adapter_on: bool) -> tuple[torch.Tensor, float]:
         _adapter_disable(unet)
         eps_frozen = three_branch(x16, timestep)
+        if not adapter_on:
+            return eps_frozen, 0.0
         _adapter_enable(unet, lora_adapter_name)
         eps_lora = three_branch(x16, timestep)
         delta_hat = eps_lora - eps_frozen
         return eps_frozen + float(lambda_value) * delta_hat, _norm(delta_hat)
+
+    def frozen_forward(x16: torch.Tensor, timestep) -> torch.Tensor:
+        _adapter_disable(unet)
+        return three_branch(x16, timestep)
 
     per_step: list[dict] = []
     delta_norm_per_step: list[float] = []
@@ -335,16 +352,20 @@ def run_lora_langevin_windowed_poe(
         beta_t = float(scheduler.betas[t_int].item())
         sigma_t = math.sqrt(max(1.0 - float(alpha_bar_t.item()), 1e-12))
         n_inner = int(k) if corrector_active(step_index, corrector_window) else 0
+        adapter_on = corrector_active(step_index, lambda_window) and float(lambda_value) != 0.0
         delta = float(c) * beta_t
         x_start32 = latents.float()
         start_norm = _norm(x_start32)
         row = {"step_index": int(step_index), "timestep": t_int, "k_applied": n_inner,
-               "delta_t": delta if n_inner > 0 else 0.0}
+               "adapter_on": bool(adapter_on), "delta_t": delta if n_inner > 0 else 0.0}
         if n_inner > 0:
             x32 = x_start32.clone()
             noise_std = math.sqrt(2.0 * delta)
             for _ in range(n_inner):
-                eps_t, _dn = corrected_forward(x32.to(dtype), timestep)
+                if corrector_score == "frozen":
+                    eps_t = frozen_forward(x32.to(dtype), timestep)
+                else:
+                    eps_t, _dn = corrected_forward(x32.to(dtype), timestep, adapter_on)
                 score = -eps_t.float() / sigma_t
                 z = torch.randn(x32.shape, generator=gen, device=device, dtype=torch.float32)
                 x32 = x32 + delta * score + noise_std * z
@@ -354,7 +375,7 @@ def run_lora_langevin_windowed_poe(
         else:
             row["chain_disp_rel"] = 0.0
             row["latent_norm_rel"] = 1.0
-        eps_t, dn = corrected_forward(latents, timestep)
+        eps_t, dn = corrected_forward(latents, timestep, adapter_on)
         delta_norm_per_step.append(dn)
         per_step.append(row)
         x0 = tweedie_mean(latents, alpha_bar_t, eps_t)
@@ -373,6 +394,11 @@ def run_lora_langevin_windowed_poe(
         latents=latents, image=image, tracker=tracker,
         extras={
             "lambda_value": float(lambda_value), "k": int(k), "c": float(c),
+            "lambda_window": (
+                None if lambda_window is None
+                else [int(lambda_window[0]), int(lambda_window[1])]
+            ),
+            "corrector_score": corrector_score,
             "corrector_window": (
                 None if corrector_window is None
                 else [int(corrector_window[0]), int(corrector_window[1])]

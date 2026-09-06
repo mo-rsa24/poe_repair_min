@@ -373,7 +373,55 @@ for both.
     file carries the W&B run id.
 
 ▶ **Next: [instruction 4.1](#4--read-the-tail-sheet-by-eye)**, the sharpness read only an eye can
-confirm.
+confirm, and [task 5.1](#5--the-clean-tail-the-adapter-early-the-frozen-model-after) once the
+tail condition has returned its branch.
+
+### 5. 🧹 The clean tail: the adapter early, the frozen model after
+
+◀ **Needs: [task 3.2](#3--the-eight-seed-sheets-and-the-corrector-on-the-tail-of-the-adapter-run)**,
+whose `k = 0` renders are this group's baseline, and task 3.1's plain-PoE renders, which set its
+target band.
+
+The softness of the adapter's renders is the goal here, and the tail condition in group 3 showed
+the corrector on the corrected score does not remove it (sharpness +8%, inside the band). This
+group changes what the tail is: the adapter sets the composition on the early steps only, the
+frozen model's own plain-PoE step takes over after a cutoff, and the corrector, when on, settles
+the latent into the frozen model's low-noise distribution rather than the adapter's. It is the
+"correct early, then clean up" idea of
+[scope 01's plan 14](../../../01-showcase-the-trained-lora/plans/experiments/14-correct-early-then-clean-up.md),
+run here with this scope's corrector as the clean-up; that plan's λ schedules and re-noise cell
+stay with it.
+
+- [ ] **5.1** Render the grid: cutoff `∈ {20, 30}` (the adapter on steps `[0, cutoff)` at λ 1.2)
+      by `k ∈ {0, 5, 20}` corrector steps on the frozen score inside steps 35 to 49, both pairs,
+      seeds 9 to 16, from the seed's cached noise.
+
+    ```bash
+    OUT=/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector
+    ssh <node> 'STAGE=clean GPU=<idx> EXTRA="--c 3" nohup bash /home-mscluster/mmolefe/Playground/PhD/poe_repair_min/scripts/mechanism_study/run_corrector_curve.sh > '"$OUT"'/logs/clean_tail.log 2>&1 &'
+    ```
+
+  - The cutoffs bracket where the corrected run commits (median step 15, range up to 35 in
+    [where each condition lands](../../../../report/when-does-the-outcome-lock-in/where-does-each-condition-land.md)).
+  - Output goes to: `$OUT/clean_tail.json`, renders under `$OUT/clean_tail/`.
+  - **Done when:** the file holds 96 rows (2 pairs × 8 seeds × 2 cutoffs × 3 `k`) and prints a
+    branch.
+- [ ] **5.2** Draw the sheet per pair and log it.
+
+    ```bash
+    PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
+    $PY scripts/corrector_window_sweep.py --figures --wandb
+    ```
+
+  - Sheets to `artifacts/results/is-the-gap-the-samplers-or-the-models/corrector-clean-tail-<pair>-eight-seed-sheet.png`:
+    rows seeds 9 to 16, columns the joint prompt, plain PoE, the adapter alone, then the six
+    conditions, each tile with its count and sharpness; sidecar with the band, the baseline and
+    the branch.
+  - **Done when:** both PNGs, sidecars and README entries exist and the review file carries the
+    W&B run id.
+
+▶ **Next: [instruction 4.4](#4--read-the-tail-sheet-by-eye)**, the eye read of the clean-tail
+sheet.
 
 ### Close out. 🔄 Record what this plan taught
 
@@ -435,6 +483,11 @@ the tail sheet.
 - [ ] **4.2** Open the butterfly × meadow tail sheet and check nothing that composed at `k=0` has
       lost its butterfly at `k=20`.
 - [ ] **4.3** Write the eye read in one line beside the printed branch in the review file.
+- [ ] **4.4** Open `artifacts/results/is-the-gap-the-samplers-or-the-models/corrector-clean-tail-cat-dog-eight-seed-sheet.png`.
+  - Row by row, is any clean-tail column both as crisp as the plain-PoE column and still two
+    animals? Name the seeds where it is, and the seeds where the hand-off to the frozen model
+    lost an animal.
+  - Write the read in one line beside the printed branch in the review file.
 
 ▶ **Next: [the close out](#close-out--record-what-this-plan-taught)**.
 
@@ -494,6 +547,7 @@ None. This scope carries no `diagram-prompts.md`, so there is no illustrated map
 |---|---|---|---|---|---|
 | `artifacts/results/is-the-gap-the-samplers-or-the-models/corrector-<pair>-eight-seed-sheet.png`, one per pair | — | rows are the held-out seeds 9 to 16, columns the joint prompt, plain PoE, and the corrector on all 50 steps at the flat-part `k`; frame colour is the scorer's verdict; the compose count per column is in the title and the sidecar | `scripts/corrector_window_sweep.py --figures` | ⏳ | **The read-out every parallel session shares.** Sidecar `.json` carries every tile's score, `k`, `c` and the sampler settings. For the control pair the frame is the unvalidated both-concepts read, said on the sheet |
 | `artifacts/results/is-the-gap-the-samplers-or-the-models/corrector-on-adapter-tail-<pair>-eight-seed-sheet.png`, one per pair | — | rows seeds 9 to 16, columns the joint prompt, plain PoE, the rank-32 λ 1.2 adapter alone, then the adapter plus `k=5` and `k=20` corrector steps on steps 35 to 49; each tile carries its instance count and its Laplacian variance | `scripts/corrector_window_sweep.py --figures` | ⏳ | **The fidelity read.** Sidecar carries the branch, the thresholds and every number. Main text only if the branch is support |
+| `artifacts/results/is-the-gap-the-samplers-or-the-models/corrector-clean-tail-<pair>-eight-seed-sheet.png`, one per pair | — | rows seeds 9 to 16; columns the joint prompt, plain PoE, the adapter alone on all 50 steps, then the adapter on steps 0 to 19 or 0 to 29 followed by the frozen model, with 0, 5 or 20 corrector steps on the frozen score in steps 35 to 49; each tile carries its instance count and Laplacian variance | `scripts/corrector_window_sweep.py --figures` | ⏳ | **The fidelity fix under test.** Sidecar carries the plain-PoE band, the adapter-alone baseline, the thresholds and the branch. Main text only if the branch is support |
 | `mcmc/samples-as-a-ten-step-corrector-window-slides.png` | — | rows are seeds 9 to 12, columns are the nine ten-step window positions plus a corrector-on-all-50 column, each square is the final generated picture, green border where the detector scored it as two separate animals | the driver at task 1.1 | ⏳ | **Main text, only if it differs from the injected-correction version.** If the behaviour is identical, one sentence of prose beside the existing figure covers it. Sidecar `.json` records every render, the seeds, `k`, `c` and the border rule |
 
 **Two sentences this figure's caption owes.** The corrector runs at one `k`, which is a compute

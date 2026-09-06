@@ -66,6 +66,7 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 |---|---|---|---|---|---|
 | The corrector across ten window columns, 4 seeds × 10 columns | Tests the claim | 2026-09-05 23:18 to 2026-09-06 00:56, `nohup` on mscluster108 device 1 (RTX 8000, `co3`), pid 304312, commit 0150704, `c = 3`, `k = 20` | 40 renders, 1.9 min per window column and 7.6 min per all-50 column on that card, 1.6 h in all, then scored | `corrector/window_curves_mcmc.json`, renders under `corrector/window/pairs/a_cat__x__a_dog/seed_<n>/poe_langevin_k020_c3000[_w<s>-<e>]/`, figure `mcmc/samples-as-a-ten-step-corrector-window-slides.png` with sidecar | ✅ done: 0 of 4 composed in every column |
 | The eight-seed sheet, 2 pairs × 8 seeds × (joint prompt, plain PoE, corrector on all 50 steps) | Tests the claim | not launched | 48 renders, 16 of them at the corrector's `k` | `corrector/sheet_scores.json`, `artifacts/results/is-the-gap-the-samplers-or-the-models/corrector-<pair>-eight-seed-sheet.png` | ⚠️ waiting on step 26's `k` |
+| The clean tail, 2 pairs × 8 seeds × cutoff `{20, 30}` × `k ∈ {0, 5, 20}`, adapter early then the frozen model, corrector on the frozen score | Tests the claim | 2026-09-06 02:50 | 96 renders, 34 s at `k = 0`, about 60 s at `k = 5`, 150 s at `k = 20` on a 3090 (one call per Langevin step on the frozen score), about 3.2 h on one card | `corrector/clean_tail.json`, renders under `corrector/clean_tail/<pair>/seed_<n>/`, sheets `corrector-clean-tail-<pair>-eight-seed-sheet.png` | ◑ launching |
 | The tail condition, 2 pairs × 8 seeds × `k ∈ {0, 5, 20}` on the rank-32 λ 1.2 run, corrector on steps 35 to 49 | Tests the claim | 2026-09-06 00:02 to 02:01, `nohup` on mscluster85 device 0 (RTX 3090, `co3`), pid 321793, commit 0150704, `c = 3`, adapter `lora_step_030050.pt` (210 modules matched, 420 tensors loaded) | 48 renders: 42 s at `k = 0`, 105 s at `k = 5`, 293 s at `k = 20` per render, 2 h in all | `corrector/tail_fidelity.json`, renders under `corrector/tail/<pair>/seed_<n>/`, sheet `corrector-on-adapter-tail-<pair>-eight-seed-sheet.png` | ✅ done: branch **null**, mean sharpness +8% from `k = 0` to `k = 20`, composed 7, 8, 7 of 8 |
 
 ## The question written before the run
@@ -123,6 +124,22 @@ Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#writ
       Read: corrector steps on the corrected score at low noise neither sharpen the adapter's
       output past the band nor cost it composition at this budget; they redraw fine detail seed
       by seed in both directions. The eye read (instruction 4) follows once the sheet is drawn.
+- [ ] ⚠️ **Does handing the tail to the frozen model, with or without a corrector on its score,
+      return the adapter's renders to plain-PoE sharpness without losing the composition?** The
+      conditions: the rank-32 adapter at λ 1.2 on steps `[0, cutoff)` for cutoff 20 and 30, the
+      frozen model's plain PoE step after, and `k ∈ {0, 5, 20}` Langevin steps on the frozen
+      score inside steps 35 to 49; both pairs, seeds 9 to 16. Baseline: the adapter alone on all
+      50 steps (7 of 8 composed, mean sharpness 57.1, from the tail run). Target: the plain-PoE
+      references' sharpness over the same seeds, mean minus one standard deviation (computed
+      from the sheet's `poe.png` renders and written into `clean_tail.json`). Thresholds in
+      `scripts/corrector_window_sweep.py`: `CLEAN_MIN_BAND_SIGMAS = 1.0`,
+      `CLEAN_MAX_COMPOSE_LOSS_SEEDS = 1`. **Support** if at least one condition's mean sharpness
+      reaches the floor with its composed count within one seed of the baseline and the control
+      pair's within one seed of its own. **Composition breaks** if a condition reaches the band
+      only by losing two or more composed seeds: the softness is the price of composition and
+      the hand-off is too early. **Null** if no condition reaches the floor while holding
+      composition. **Inconclusive** if the control pair loses two or more composed seeds in any
+      condition. Written 2026-09-06 02:45, before the grid ran.
 - [ ] ⚠️ **On the eight-seed sheet, what is the compose rate of the corrector on all 50 steps
       against plain PoE and the joint prompt, on both pairs?** Recorded either way; it is the
       read-out every parallel session reports on the same seeds. The one bar: the control pair's
