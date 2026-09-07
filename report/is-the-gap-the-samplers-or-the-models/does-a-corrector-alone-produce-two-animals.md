@@ -3,10 +3,10 @@
 **The claim**
 
 No. Twenty corrector steps at every one of the 50 noise levels leave cat × dog at exactly plain
-product-of-experts' compose rate, zero of eight held-out seeds, and every one of the forty
+[product-of-experts](../../context/world/poe-composition.md)' [compose rate](../../context/world/compose-rate.md), zero of eight held-out seeds, and every one of the forty
 renders from a sliding ten-step corrector window is one animal too.
 
-What the corrector does change is the kind of picture. Five of the eight settled renders leave
+What the corrector does change is the kind of picture. Five of the eight [settled](../../../../../goal-setting/learning/deep-learning/diffusion-models/sampler-correctors-for-composition/plans/11-stationary-and-detailed-balance.md) renders leave
 photography for a cartoon or a line drawing, and the detector's confidence on the control pair's
 butterfly falls while its verdict stays green.
 
@@ -126,7 +126,7 @@ Navigation: ⬅️ [Previous](#what-this-cannot-tell-you) | 📋 [TOC](#table-of
 | The renders | `corrector/window/pairs/a_cat__x__a_dog/seed_<n>/`, `corrector/sheet/` and `corrector/pairs/`, all under `/datasets` | verified |
 | The injected correction's own window numbers | [the timing verdict](../../plans/03-does-the-correction-cause-composition/review/05-when-in-the-run-it-matters.md), quoted not re-run | verified |
 | The runs | step 27 of the running order: the window sweep on mscluster108 device 1 (1.6 h) and the sheet on the same device (2.3 h), 2026-09-05 to 06, commit 0150704; W&B `prime_lab/poe-repair-animals-compose/s61hldbc`; tables in [the review file](../../plans/06-is-the-gap-the-samplers-or-the-models/review/04-does-the-corrector-compose-in-the-same-window.md) | verified |
-| Regenerate with | `scripts/mechanism_study/run_corrector_curve.sh` with `STAGE=window` then `STAGE=sheet`, then `scripts/corrector_window_sweep.py --figures`, per [decide where a run goes](../../runbook/running-things-on-the-cluster/launching-and-harvesting-a-run.md#1-decide-where-a-run-goes) | |
+| Regenerate with | recipes 4 and 5 of [running the Langevin corrector](../../runbook/running-things-on-the-cluster/running-the-langevin-corrector.md): the sliding corrector window, then the eight-seed sheets | |
 
 ## Depends on
 

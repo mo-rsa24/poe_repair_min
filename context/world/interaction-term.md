@@ -128,3 +128,8 @@ Navigation: ⬅️ [What people get wrong](#what-people-get-wrong) | 📋 [TOC](
 | Its measured per-step and final values for one run | Read directly, `data/pilot/seed_42/a_cat__x__a_dog/summary.json` | 2026-08-24 |
 | The window-vs-commitment-step finding | Read in `report/experiments-log.md`, EXP-01 and EXP-04 | 2026-08-24 |
 | The word "oracle" in older plan files, and what it names here | Read in `plans/standing/retrofit-poe-repair-min.md`, "Words this uses" | 2026-08-24 |
+
+## Cross-references
+
+- The mention of **a sum of scores** (the log-space identity behind linear score composition) in [the scene map for the Gaussian score's base case](../../../../../goal-setting/learning/deep-learning/diffusion-models/poe-composition-diffusion/artifacts/drips/gaussian-score-base-case/SCENE_MAP.md) (relevance match).
+- The mention of **the correction** in [the finding "does a Langevin corrector remove part of the correction"](../../report/is-the-gap-the-samplers-or-the-models/does-a-langevin-corrector-remove-part-of-the-correction.md), which measures its size at the point a Markov chain settled to.

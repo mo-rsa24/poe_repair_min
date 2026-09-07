@@ -14,8 +14,8 @@ reference` repointed from `docs/ENVIRONMENT.md` to this folder. Nothing in the s
 entries was reworded beyond that repointing; `poe-disk-001` is new, added this sitting from a
 failure already documented in the project's own `CLAUDE.md` but not previously catalogued here.
 
-**Last updated:** 2026-08-24
-**Total entries:** 7
+**Last updated:** 2026-09-01
+**Total entries:** 10
 **Seed entries from:** step-09 (three-live-curves-while-training), plus one added during this
 folder's migration
 
@@ -111,6 +111,41 @@ Check [hpc/nodes.md](hpc/nodes.md) for which partitions and nodes carry which GP
 
 ---
 
+#### Entry ID: poe-mem-002
+**Name:** `_Embedders()` instantiated with no device defaults to CPU, and DINOv2's xformers
+attention kernel does not support CPU
+
+**Symptom:** `NotImplementedError: No operator found for memory_efficient_attention_forward`,
+the trace running through `dinov2/layers/attention.py` and `xformers/ops/fmha/dispatch.py`,
+listing every dispatched backend as unsupported for `device=cpu`, `dtype=torch.float32`.
+
+**Root cause:** `poe_repair.experiments.compose_scorer_validation.scorer._Embedders.__init__`
+defaults `device` to `torch.device("cpu")` when the caller passes none. Its `.dino()` method
+loads DINOv2 via `xformers`-accelerated attention, whose available kernels
+(`fa2F@v2.5.7-pt`, `cutlassF-pt`) only support `device=cuda` with `dtype` in
+`{float16, bfloat16}` — CPU + float32 has no matching operator, so the forward pass raises
+instead of falling back to eager attention.
+
+**Solution:** Always pass `device=torch.device("cuda")` (or the run's actual device) explicitly
+when constructing `_Embedders`; never rely on its CPU default on a GPU job. `.clip()` on the
+same class tolerates CPU fine (CLIP's attention path doesn't route through xformers the same
+way), which makes this easy to miss until `.dino()` is called.
+
+**First discovered:** poe_repair_min, `scripts/showcase/lambda_window_grid.py`, plan 07 of
+`01-showcase-the-trained-lora` (slurm job 48608)
+
+**Affects steps:** any step calling `_Embedders()` on a GPU node
+(`poe_repair/experiments/cross_pair_lora_pooling/train_pooled.py` and
+`poe_repair/experiments/compose_scorer_validation/validate.py` also construct it — worth
+checking both pass `device` explicitly)
+
+**Category:** 🟡 warning
+
+**Environment reference:** none yet; belongs beside `_Embedders` in
+`poe_repair/experiments/compose_scorer_validation/scorer.py`, not yet documented there.
+
+---
+
 ### LoRA and correction dynamics
 
 #### Entry ID: poe-lora-001
@@ -167,6 +202,95 @@ invalidation; not yet written)
 
 ---
 
+#### Entry ID: poe-lora-003
+**Name:** A control condition run through a different sampler than the condition it's compared
+against, so the comparison mixes two axes
+
+**Symptom:** A "should do nothing" control (wrong-seed or shuffled correction) shows a compose
+rate, or an AUC, well *above* the real condition it is supposed to be a null for — the opposite
+of what a size-matched control should ever do.
+
+**Root cause:** `run_lora_residual_inject_masked` (the masked sampler `composition_mode="with_prompt"`
+uses) runs its off-window steps as a single adapter-off forward on the *unconditional* (empty
+prompt) branch only. `run_constant_residual_inject`, the project's existing precomputed-residual
+injector, runs full PoE on the real prompt at *every* step, including off-window ones, whether or
+not that step has an injected residual. Routing the real condition through the first function and
+a control through the second changes the injection source *and* the off-window sampling at the
+same time, so any gap between them cannot be attributed to the injection source alone. In
+`scripts/showcase/lora_dose_sweep.py`'s first attempt (slurm job 48596, plan 03 of
+`01-showcase-the-trained-lora`), this produced AUC 0.734 and 0.875 for two controls against 0.203
+for the real condition, tripping the plan's own "a control rises above luck" fail criterion — as
+a comparison-fairness artefact, not a result.
+
+**Solution:** When a control needs to inject a *different* Δ̂ than the one a masked sampler would
+compute live, extend that same sampler to accept an externally-supplied per-step residual
+(`run_lora_residual_inject_masked`'s `external_delta_by_step` parameter) rather than switching to
+a differently-behaved sampler. Every condition in a comparison must run through the identical
+sampler function and window/composition-mode configuration, differing only in the one axis under
+test. Before trusting a control result, ask whether it was even possible for it to differ from
+the real condition in more than the intended way — if a different code path was used, this is not
+provable from the numbers alone.
+
+**First discovered:** poe_repair_min, `scripts/showcase/lora_dose_sweep.py`, plan 03 of
+`01-showcase-the-trained-lora` (slurm job 48596 → corrected in job 48619)
+
+**Also seen:** plan 07's own λ-window grid (`scripts/showcase/lambda_window_grid.py`, jobs
+48607-48611) hit the same root cause in a different guise: the plan's pre-registered λ=0
+identity check compared a `run_lora_residual_inject_masked`-style render against `poe.png`
+(rendered with full guided PoE at all 50 steps), and the off-window unguided-only branch gave a
+DINOv2 distance of 0.43 to that reference (should be small). Confirms the "affects steps"
+prediction below. Fixed the same way this entry's Solution describes in spirit — not by
+supplying an external residual, but by writing a sampler whose off-window steps run the same
+full guided-PoE forward as on-window steps, adapter disabled, so λ=0 matches the baseline by
+construction (`run_lora_residual_inject_windowed_poe`, same file). After the fix, all 5 cells'
+identity checks passed (largest distance 0.13, down from 0.43).
+
+**Affects steps:** any step building a new control condition against an existing masked or
+windowed sampler, not just this one (step 07, the λ-and-window series, has the same shape)
+
+**Category:** 🔴 critical
+
+**Environment reference:** none yet; the fairness principle belongs beside the sampler functions
+in `poe_repair/methods/_sampling.py`, not yet documented there.
+
+---
+
+#### Entry ID: poe-lora-004
+**Name:** A hand-written sampler function omits `@torch.no_grad()`, OOMing on the very first
+forward pass
+
+**Symptom:** `torch.OutOfMemoryError: CUDA out of memory` on the second UNet forward of the
+first denoising step (23.5 of 24GB already in use before that call), even though an
+identically-shaped forward pass in an existing, working sampler function completes fine.
+
+**Root cause:** Every inference-only sampler in `poe_repair/methods/_sampling.py` (there are
+nine of them) is decorated `@torch.no_grad()`. A new sampler written by copying that file's
+per-step pattern (three-branch forward, `guided_eps`, `poe_eps`, `ddim_prev_from_x0_eps`) but
+typed out fresh, not copy-pasted whole, can silently drop the decorator. Without it, every UNet
+forward builds and retains a full autograd graph; at SDXL's size and batch=3, two forward passes
+in the same step (a frozen pass plus an adapter-on pass) exhausts a 24GB card before the loop
+even reaches its second step.
+
+**Solution:** Any new inference-only sampler function must carry `@torch.no_grad()` (or run
+inside a `with torch.no_grad():` block). Before trusting an OOM as a genuine memory-budget
+problem, check whether the failing function has the decorator that every sibling function in the
+same module already carries — a missing decorator produces an OOM trace that looks identical to
+a real capacity problem.
+
+**First discovered:** poe_repair_min, `scripts/showcase/lambda_window_grid.py`
+(`run_lora_residual_inject_windowed_poe`), plan 07 of `01-showcase-the-trained-lora` (slurm job
+48610)
+
+**Affects steps:** any step writing a new sampler function against this codebase's
+`poe_repair/methods/_sampling.py` conventions rather than calling an existing one
+
+**Category:** 🟡 warning
+
+**Environment reference:** none yet; belongs beside the sampler functions in
+`poe_repair/methods/_sampling.py`.
+
+---
+
 ### Launching runs
 
 #### Entry ID: poe-launch-001
@@ -203,6 +327,59 @@ and step-11's runs across many settings)
 
 ---
 
+#### Entry ID: poe-launch-002
+**Name:** A device passes the pre-launch guard but is in a hardware fault state — the process hangs producing nothing, no error
+
+**Symptom:** A training process starts, loads models, encodes prompts, and logs "training
+plan: target=N epochs" — then produces zero epoch progress for many minutes, while an
+identical launch on a different node reaches its first epoch in under a minute. No exception,
+no traceback, no OOM: the process just sits there. A second form (`mscluster111`, 2026-09-05): the
+process does not hang but runs on the CPU, because `torch.cuda.is_available()` returns `False` on
+the faulted device while `nvidia-smi` still lists it. A 16-second sampler run then takes about
+15 minutes, files keep appearing, and nothing in the log says why. A third form (`bigbatch`
+nodes `mscluster44`, `mscluster45` and `mscluster65`, 2026-09-06): the node sits `idle` in
+`sinfo`, and the first `nvidia-smi` call in the job prints `Unable to determine the device handle
+for GPU0: 0000:17:00.0: Unknown Error` and exits, so a job that guards on `nvidia-smi` fails in
+one second and a job that does not would run on the CPU. Idle `bigbatch` nodes are idle for a
+reason often enough that a one-second probe job before the real one is worth it.
+
+**Root cause:** The device's pre-launch `nvidia-smi --query-gpu=memory.used` guard (the
+`>1024MiB in use` check) only catches a device already busy with another process. It does not
+catch a device in a hardware/driver fault state. `nvidia-smi` on the same device mid-hang
+reported `temperature.gpu=[GPU requires reset]` and `utilization.gpu=[N/A]` — a fault state
+distinct from "idle" (which reads `0 %`) and distinct from "busy" (which reads a real
+percentage and real memory use). The guard's `<1024MiB` check passes a faulted device just as
+readily as a healthy idle one, because a fault reports near-zero memory too.
+
+**Solution:** After the memory guard, also check that `utilization.gpu` and `temperature.gpu`
+return numeric values, not `[N/A]` / `[GPU requires reset]`:
+```bash
+nvidia-smi --query-gpu=utilization.gpu,temperature.gpu --format=csv,noheader -i <idx>
+```
+A row containing `[N/A]` or `[GPU requires reset]` means the device is faulted, not free — do
+not launch there even though the memory-used guard alone would pass it. A launch script should
+also run `python -c 'import torch, sys; sys.exit(0 if torch.cuda.is_available() else 7)'` under
+the pinned `CUDA_VISIBLE_DEVICES` before starting real work, which catches the CPU-fallback form. If a launch is already
+hung with this symptom (progress log lines stop appearing well past the point comparable runs
+on other nodes reach their first checkpoint), `kill -9` the process and relaunch on a different
+device; the faulted GPU itself needs a reset only an administrator or a node reboot can do, no
+user-level recovery exists.
+
+**First discovered:** poe_repair_min, 01-showcase-the-trained-lora, the experiment A/B timing
+smoke run: `mscluster111` device 0 (an RTX PRO 6000 Blackwell node, confirmed free by the
+memory guard at launch) produced zero epoch progress for 9+ minutes while identical-config runs
+on `mscluster106` and `mscluster108` (RTX 8000) both logged their first epoch within a minute.
+
+**Affects steps:** any shared-device SSH launch (`execution-protocol.md`'s step 3), on any node,
+since the fault is per-device hardware state, not tied to this project's code.
+
+**Category:** 🔴 blocking (for the affected launch; the fix is routine once recognized)
+
+**Environment reference:** [hpc/execution-protocol.md](hpc/execution-protocol.md),
+[hpc/nodes.md](hpc/nodes.md)
+
+---
+
 ### Disk and output paths
 
 #### Entry ID: poe-disk-001
@@ -236,3 +413,7 @@ the per-setting output of a run across many settings)
 **Environment reference:** [storage.md](storage.md)
 
 ---
+
+## Cross-references
+
+- The instrument finding in [the corrector's step-size review](../plans/06-is-the-gap-the-samplers-or-the-models/review/02-the-corrector-and-the-step-size-it-runs-at.md): a Langevin step size can pass both numeric divergence guards while its renders are texture noise, because the latent norm cannot rise until the Euler step stops contracting. The picture is rung 3 of [the finding](../report/is-the-gap-the-samplers-or-the-models/does-a-langevin-corrector-remove-part-of-the-correction.md).

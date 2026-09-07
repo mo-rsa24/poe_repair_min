@@ -41,7 +41,7 @@ alone, with 5 steps in between and the composed count within
 more composed seeds are lost. Inconclusive if the control pair loses two or more.
 
 For the clean tail: the primary read is the cosine distance between a render and that seed's
-joint-prompt render in the compose scorer's own DINOv2 embedding, lower being nearer the picture
+joint-prompt render in the [compose scorer](../../context/world/compose-rate.md)'s own DINOv2 embedding, lower being nearer the picture
 the adapter is trying to reach. Support if a condition moves at least `CLEAN_MIN_MONO_GAIN = 0.05`
 nearer than the adapter alone with composition within one seed. Laplacian variance is reported
 beside it as a secondary read only, because on the plain-PoE references it is heavy-tailed (mean
@@ -143,7 +143,7 @@ Navigation: ⬅️ [Previous](#what-this-cannot-tell-you) | 📋 [TOC](#table-of
 | The adapter | rank 32, step 30050, `/datasets/mmolefe/poe_repair_min/outputs/showcase/phase1_r32_100k/checkpoints/lora_step_030050.pt`, 210 modules matched and 420 tensors loaded at attach | verified |
 | The eye reads | recorded in [the review file](../../plans/06-is-the-gap-the-samplers-or-the-models/review/04-does-the-corrector-compose-in-the-same-window.md), Claude with veto after | stated |
 | The runs | task group 3 and task group 5 of step 27, on mscluster85 device 0, 2026-09-06, commits 87d6cb2 and af7eae6; W&B `prime_lab/poe-repair-animals-compose/s61hldbc` | verified |
-| Regenerate with | `scripts/mechanism_study/run_corrector_curve.sh` with `STAGE=tail` and `STAGE=clean`, then `scripts/corrector_window_sweep.py --figures --wandb`; the adapter stage runs in its own process, per [the windowed sampler note](../../environment/known-failures.md) | |
+| Regenerate with | recipes 5 and 6 of [running the Langevin corrector](../../runbook/running-things-on-the-cluster/running-the-langevin-corrector.md); the adapter stage runs in its own process, per [the windowed sampler note](../../environment/known-failures.md) | |
 
 ## Depends on
 

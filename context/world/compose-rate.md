@@ -117,3 +117,8 @@ Navigation: ⬅️ [What people get wrong](#what-people-get-wrong) | 📋 [TOC](
 | The scorer's true-error bound at λ=1 | Read in `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md` | 2026-08-24 |
 | The two example images | Read directly, `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/{01-both-there,02-two-of-one}/` | 2026-08-24 |
 | The scorer-trust standing effort | Read in `MASTER_PLAN.md`, background experiment table | 2026-08-24 |
+
+## Cross-references
+
+- The mention of **compose rate** in [the finding "does a corrector alone produce two animals"](../../report/is-the-gap-the-samplers-or-the-models/does-a-corrector-alone-produce-two-animals.md).
+- The mention of **the compose scorer** in [the finding "can a corrector or a clean tail sharpen the adapter's renders"](../../report/is-the-gap-the-samplers-or-the-models/can-a-corrector-or-a-clean-tail-sharpen-the-adapters-renders.md), whose primary read is a distance in that scorer's own embedding.

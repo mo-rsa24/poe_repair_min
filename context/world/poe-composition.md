@@ -107,3 +107,9 @@ Navigation: ⬅️ [What people get wrong](#what-people-get-wrong) | 📋 [TOC](
 | Mono is the joint-prompt cheat, used only as the target | Read in `MASTER_PLAN.md`, Glossary | 2026-08-24 |
 | The two example images | Read directly, `data/pilot/seed_42/a_cat__x__a_dog/{poe,monolithic}.png` | 2026-08-24 |
 | The full-strength shortcut risk and its fix | Read in `context/research-guidelines.md` | 2026-08-24 |
+
+## Cross-references
+
+- The mention of **a product of experts** (composing SDXL as an additive combination of two expert predictions) in [the scene map for the Gaussian score's base case](../../../../../goal-setting/learning/deep-learning/diffusion-models/poe-composition-diffusion/artifacts/drips/gaussian-score-base-case/SCENE_MAP.md) (relevance match).
+- The mention of **product-of-experts** in [the finding "does a Langevin corrector remove part of the correction"](../../report/is-the-gap-the-samplers-or-the-models/does-a-langevin-corrector-remove-part-of-the-correction.md).
+- The mention of **product-of-experts** in [the finding "does a corrector alone produce two animals"](../../report/is-the-gap-the-samplers-or-the-models/does-a-corrector-alone-produce-two-animals.md).

@@ -2,9 +2,9 @@
 
 **The claim**
 
-A Langevin corrector was built on the product-of-experts score and run to 200 corrector steps at
+A [Langevin corrector](../../../../../goal-setting/learning/deep-learning/diffusion-models/sampler-correctors-for-composition/plans/21-langevin-dynamics.md) was built on the [product-of-experts](../../context/world/poe-composition.md) score and run to 200 corrector steps at
 every one of the 50 noise levels, at three step sizes, on the pair that blends and the pair that
-composes. It cannot say how much of the correction belongs to the sampler.
+composes. It cannot say how much of [the correction](../../context/world/interaction-term.md) belongs to the sampler.
 
 The reason is the instrument, not the science. One seed gives one trajectory per corrector count,
 and that trajectory's read-out scatters by more than the bars it is judged against: the same
@@ -52,7 +52,7 @@ Navigation: ⬅️ [Previous](#what-would-have-counted) | 📋 [TOC](#table-of-c
 
 ![The correction's size against denoising step, one curve per corrector count, one panel per pair, with the two norms on a second row](../../artifacts/results/is-the-gap-the-samplers-or-the-models/corrector-residual-curves-c3.png)
 *y is the correction's size relative to the product-of-experts prediction at the point the chain
-settled to, x is the denoising step, one curve per corrector count, cat × dog left and butterfly ×
+[settled](../../../../../goal-setting/learning/deep-learning/diffusion-models/sampler-correctors-for-composition/plans/11-stationary-and-detailed-balance.md) to, x is the denoising step, one curve per corrector count, cat × dog left and butterfly ×
 meadow right. What to notice: on the left panel the 100-step and 200-step curves cross each other
 all the way along, and every curve collapses onto every other inside the grey band at steps 0 to 10.*
 
@@ -147,7 +147,7 @@ Navigation: ⬅️ [Previous](#what-this-cannot-tell-you) | 📋 [TOC](#table-of
 | The corrector is inert when switched off | `corrector/logs/leak_checks.log`, 2026-09-05: 0 corrector steps and 200 corrector steps with the window past the last step both byte-identical to the reference sampler | verified |
 | The renders behind rungs 3 and 4 | `corrector/pairs/<pair>/seed_9/poe_langevin_k<count>_c<multiplier>/`, one per measured chain | verified |
 | The runs | steps 25 and 26 of the running order, on mscluster108 device 1, mscluster110 device 0 and mscluster85 device 0, 2026-09-05 to 06, commit 0150704; the tables are in [the step-size review](../../plans/06-is-the-gap-the-samplers-or-the-models/review/02-the-corrector-and-the-step-size-it-runs-at.md) and [the chain review](../../plans/06-is-the-gap-the-samplers-or-the-models/review/03-what-is-left-once-the-chain-settles.md) | verified |
-| Regenerate with | `scripts/mechanism_study/run_corrector_curve.sh` with `STAGE=search`, `STAGE=grid`, then `scripts/corrector_residual_curve.py --verdict --c <multiplier>`, per [decide where a run goes](../../runbook/running-things-on-the-cluster/launching-and-harvesting-a-run.md#1-decide-where-a-run-goes) | |
+| Regenerate with | recipes 1 to 3 of [running the Langevin corrector](../../runbook/running-things-on-the-cluster/running-the-langevin-corrector.md): the leak checks, the step-size search, then the corrector-count grid and its verdict | |
 
 ## Depends on
 
