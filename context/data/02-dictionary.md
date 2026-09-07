@@ -16,6 +16,8 @@ Every example is a real value read directly from a file in this repository, labe
 - [`n_instances`](#n_instances)
 - [`label` / `truth`](#label-truth)
 - [`fail_rate` / `compose_rate`](#fail_rate-compose_rate)
+- [`which_animal` / `both_ness` / `off_plane_norm`](#which_animal-both_ness-off_plane_norm)
+- [`commit_step` / `fork_step`](#commit_step-fork_step)
 
 ### `pair_slug`
 
@@ -263,3 +265,62 @@ evaluated, or when reporting a success rather than a failure.
 **Watch out** a rate printed alone hides the scorer's own uncertainty; see
 [world/compose-rate.md § What people get wrong](../world/compose-rate.md#what-people-get-wrong)
 for the measured bound (87% to 94% true rate behind one 94% headline) ⚠️
+
+### `which_animal` / `both_ness` / `off_plane_norm`
+
+**What it means in the world** ✅
+
+The two coordinates of one render on the cloud axes, and how much of its embedding the plane
+misses. `which_animal` says how far a render sits from the cat-alone cloud toward the dog-alone
+cloud. `both_ness` says how far it sits from the midpoint of those two clouds toward where the
+joint prompt "a cat and a dog" ends up. `off_plane_norm` is the length of what is left of the
+embedding after both coordinates are removed.
+
+**Example** `both_ness = 0.4714` (example, PoE + 1.2 × correction, seed 12, from
+`artifacts/results/where-does-each-condition-land/cat-x-dog-in-dino-space.json`, `points[].cloud_axes`)
+
+**Type and shape** three floats per render; `which_animal` roughly `-0.6` to `0.6`, `both_ness`
+roughly `-0.2` to `0.7`, `off_plane_norm` `0` to `1`, all in DINOv2 cosine units (the embedding is
+unit length)
+
+**Where it comes from** DINOv2 ViT-S/14 class-token embeddings of the finished renders, projected
+onto two unit vectors built from the three single-prompt clouds' centroids; written by
+`scripts/showcase/where_each_condition_lands_plot.py` and, per step, by
+`where_each_condition_lands_frames_embed.py` into the scene's `public/data.json`
+
+**Stands for** a property of one render (or one saved step of one run) relative to the
+single-prompt references of the same pair and seeds
+
+**Watch out** the axes are built from the clouds they measure, so the joint cloud sits high by
+construction; the read is where PoE and the corrected run fall relative to it. Both coordinates
+together keep well under half of each embedding (`off_plane_norm` about `0.8`), so they are a
+summary, not a distance. A global embedding reads a fused face as "both", which is why the
+instance count, not this axis, is the validated compose rule ⚠️
+
+### `commit_step` / `fork_step`
+
+**What it means in the world** ✅
+
+`commit_step` is the denoising step after which a run's running estimate of its finished image
+stops changing on the `both_ness` axis: the step where the outcome, one animal or two, is
+settled. `fork_step` is the step at which the PoE run and the corrected run of the same seed
+first sit visibly apart in the plane.
+
+**Example** `commit_step = 15` (example, PoE + 1.2 × correction, median over seeds 9 to 16, from
+`artifacts/results/where-does-each-condition-land/commit-and-fork-steps.json`, `summary`)
+
+**Type and shape** integers in `0` to `50`, one per (run, seed); only the 14 saved steps
+(`0, 2, 5, 8, 10, 15, 20, 25, 30, 35, 40, 45, 49, 50`) are possible values
+
+**Where it comes from** the per-step `both_ness` tracks in the scene's `public/data.json`, read
+by `scripts/showcase/where_each_condition_lands_dynamics.py` with `COMMIT_TOL = 0.10` (first
+saved step after which `both_ness` stays within 0.10 of its final value) and
+`FORK_MIN_DIST = 0.05` (first saved step at which the two runs are further apart than 0.05)
+
+**Stands for** a property of one run on one seed; the medians in `summary` are properties of a
+condition over the eight held-out seeds
+
+**Watch out** both thresholds were chosen after the curves existed, so these are reads, not
+verdicts; a commit between two saved steps is invisible; a run whose `both_ness` never rises
+reads `commit_step = 0` even if its picture changes animal, as seed 15's PoE run does ⚠️
+

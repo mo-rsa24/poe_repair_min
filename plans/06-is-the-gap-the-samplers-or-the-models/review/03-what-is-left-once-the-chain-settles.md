@@ -332,3 +332,8 @@ Navigation: ⬅️ [Still open](#still-open) | 📋 [TOC](#table-of-contents)
 Run seeds 10 to 12 at `c = 3` when a fast device is free, then `--verdict --c 3` on the seed-mean
 curve with the bars unchanged. Plan 27 runs in the meantime at `c = 3`, `k = 20`, recorded there as
 run against an inconclusive curve.
+
+## Cross-references
+
+- The finding built from this verdict: [does a Langevin corrector remove part of the correction](../../../report/is-the-gap-the-samplers-or-the-models/does-a-langevin-corrector-remove-part-of-the-correction.md).
+- The recipe that reruns the grid and prints the branch: [running the Langevin corrector](../../../runbook/running-things-on-the-cluster/running-the-langevin-corrector.md).

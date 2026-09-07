@@ -113,3 +113,7 @@ Navigation: ⬅️ [What people get wrong](#what-people-get-wrong) | 📋 [TOC](
 | The deployable-artefact framing | Read in `MASTER_PLAN.md`, Expected Outcome | 2026-08-24 |
 | The single-pair-transfer confound and its downgrade | Read in `context/research-guidelines.md` and `report/experiments-log.md` | 2026-08-24 |
 | `arm` value `lora_residual_inject` | Read in `README.md`'s repo layout, `poe_repair/methods/_sampling.py` listing | 2026-08-24 |
+
+## Cross-references
+
+- The mention of **the softness of the corrected render** (what the adapter costs in fidelity, and two attempts to remove it) in [can a corrector or a clean tail sharpen the adapter's renders](../../report/is-the-gap-the-samplers-or-the-models/can-a-corrector-or-a-clean-tail-sharpen-the-adapters-renders.md) (relevance match).

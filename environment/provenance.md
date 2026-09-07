@@ -14,10 +14,11 @@ person nor a run this sitting.
 | Partition table (nodes, time limits) for `biggpu`, `bigbatch`, `batch`, `stampede`, `gpuexpress` | `hpc/nodes.md` | verified | `sinfo -o "%P %a %l %D"`, live, 2026-08-24 (re-confirms a 2026-08-04 check) |
 | `sinfo` GRES column reads `(null)` for every partition | `hpc/nodes.md`, `overview.md` | verified | `sinfo -o "%P %N %G"`, live, 2026-08-24 |
 | `mscluster106`: 2x Quadro RTX 8000, 49GB each | `hpc/nodes.md` | verified | `nvidia-smi` over SSH, 2026-08-19 |
-| `mscluster110`: Blackwell-class | `hpc/nodes.md` | stated | not machine-verified |
+| `mscluster108`: 2x Quadro RTX 8000, 49GB each; `mscluster109`: 2x RTX A6000, 49GB each; `mscluster110`/`111`/`112`: 1x RTX PRO 6000 Blackwell, ~96GB each | `hpc/nodes.md` | verified | `nvidia-smi` over SSH on all six live nodes, 2026-09-01 |
 | `co3` python resolves to `python3.10` at the stated absolute path | `hpc/nodes.md`, `overview.md` | verified | `ls -la`, live, 2026-08-24 |
 | Env list under `~/miniforge3/envs/` (13 environments including `co3`, `co3_bw`, `superdiff`) | `hpc/nodes.md` | verified | `ls`, live, 2026-08-24 |
-| `co3_bw`'s exact purpose versus `co3` | `hpc/nodes.md` | inferred | seen only as a launcher reference in one plan file; not checked this sitting |
+| `co3_bw`'s exact purpose versus `co3` | `hpc/nodes.md` | verified | live, 2026-09-05: a `co3` launch on `mscluster110` (Blackwell) died with a CUDA error inside a minute; the same script under `co3_bw` rendered 24 images in 10 minutes |
+| `mscluster111`'s card unusable from torch (`is_available()` False, `utilization.gpu=[N/A]`) | `hpc/nodes.md`, `known-failures.md` | verified | live over SSH, 2026-09-05: one 16-second sampling took 15 minutes on the CPU before the run was killed |
 | `superdiff` exists for SuperDiff work if `co3` dependencies conflict | `hpc/nodes.md` | stated | not re-verified this sitting |
 | Shared-device path and its safety rules | `hpc/execution-protocol.md` | verified | live over SSH on `mscluster106`, 2026-08-19: GPU 1 at 1MiB/0% while GPU 0 carried another user's 8GB process; a torch matmul from `co3_bw` on GPU 1 succeeded without touching GPU 0 |
 | SSH launch line must use absolute paths (`poe-launch-001`) | `hpc/execution-protocol.md`, `known-failures.md` | verified | reproduced three times, 2026-08-19, launching the first short run on `mscluster106` |

@@ -102,3 +102,7 @@ Navigation: ⬅️ [What this project does about it](#what-this-project-does-abo
 | The headline compose rate needs a stated bound, not a bare number | Read in `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md` | 2026-08-24 |
 | The interaction term is the gap the fix targets | Read in `paper/iclr/iclr2027_conference.tex`, abstract | 2026-08-24 |
 | The reach question (one pair vs group vs whole taxonomy) is the open question | Read in `MASTER_PLAN.md`, Mission and Objectives | 2026-08-24 |
+
+## Cross-references
+
+- The mention of **what this journey composes later** (the log-space sum-of-scores identity) in [the scene map for the Gaussian score's base case](../../../../../goal-setting/learning/deep-learning/diffusion-models/poe-composition-diffusion/artifacts/drips/gaussian-score-base-case/SCENE_MAP.md) (relevance match).

@@ -252,3 +252,8 @@ Navigation: ⬅️ [Still open](#still-open) | 📋 [TOC](#table-of-contents)
 
 Run the two leak checks. Neither costs more than one render, and a failure in either stops the scope
 before 670 plain-render equivalents are spent on a composer that is not inert.
+
+## Cross-references
+
+- The finding built from this verdict: [does a Langevin corrector remove part of the correction](../../../report/is-the-gap-the-samplers-or-the-models/does-a-langevin-corrector-remove-part-of-the-correction.md), which carries the search table's picture and the instrument finding about the divergence guards.
+- The recipe that reruns the leak checks and the search: [running the Langevin corrector](../../../runbook/running-things-on-the-cluster/running-the-langevin-corrector.md).

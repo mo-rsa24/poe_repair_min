@@ -270,3 +270,8 @@ Navigation: ⬅️ [Still open](#still-open) | 📋 [TOC](#table-of-contents)
 Nothing left to run here. The fidelity question moves to scope 01's plan 14 with the DINOv2 bar
 and the adapter-alone baseline from this file; the sampler-share question at step 26 waits on
 seeds 10 to 12.
+
+## Cross-references
+
+- The two findings built from this verdict: [does a corrector alone produce two animals](../../../report/is-the-gap-the-samplers-or-the-models/does-a-corrector-alone-produce-two-animals.md) and [can a corrector or a clean tail sharpen the adapter's renders](../../../report/is-the-gap-the-samplers-or-the-models/can-a-corrector-or-a-clean-tail-sharpen-the-adapters-renders.md).
+- The recipe that reruns the window sweep, the sheets and the two tails: [running the Langevin corrector](../../../runbook/running-things-on-the-cluster/running-the-langevin-corrector.md).

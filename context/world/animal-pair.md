@@ -122,3 +122,7 @@ Navigation: ⬅️ [What people get wrong](#what-people-get-wrong) | 📋 [TOC](
 | The butterfly control pair and the animal-pair boundary | Read in `plans/standing/retrofit-poe-repair-min.md`, "Words this uses" | 2026-08-24 |
 | The six-group taxonomy and its representative pairs | Read in `artifacts/plans/archived/phases/09-lora-taxonomy-single-seed.md` | 2026-08-24 |
 | Pair vs seed, which is the harder test | Read in `MASTER_PLAN.md`, Glossary | 2026-08-24 |
+
+## Cross-references
+
+- The mention of **the pair that composes by default** (a butterfly and a flower meadow, used as the control a corrector must not break) in [does a corrector alone produce two animals](../../report/is-the-gap-the-samplers-or-the-models/does-a-corrector-alone-produce-two-animals.md) (relevance match).

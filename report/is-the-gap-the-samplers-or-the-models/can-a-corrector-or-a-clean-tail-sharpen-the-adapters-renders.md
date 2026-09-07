@@ -34,7 +34,7 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#1-the-corrector-on-the-adap
 Two questions, each with its thresholds as named constants in
 `scripts/corrector_window_sweep.py` before its grid ran.
 
-For the corrector on the adapter's tail: support if the mean Laplacian variance over the eight
+For the corrector on the adapter's tail: support if the mean [Laplacian variance](does-searching-over-the-noise-sharpen-the-corrected-render.md) over the eight
 seeds at 20 corrector steps is at least `FIDELITY_MIN_SHARPNESS_RISE = 0.10` above the adapter
 alone, with 5 steps in between and the composed count within
 `FIDELITY_MAX_COMPOSE_LOSS_SEEDS = 1` seed. Null inside that band. Composition breaks if two or

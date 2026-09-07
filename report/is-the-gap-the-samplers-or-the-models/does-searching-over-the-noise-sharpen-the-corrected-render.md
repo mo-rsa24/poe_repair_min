@@ -188,3 +188,7 @@ Navigation: ⬅️ [Previous](#depends-on) | 📋 [TOC](#table-of-contents)
 - [ ] The correction's effect on the composing pair (illustration style, lost butterfly on 4 of 8
       by count) is a finding about the adapter, not the search, and belongs beside the transfer
       results.
+
+## Cross-references
+
+- The mention of **Laplacian variance as a sharpness read**, and of its disagreement with the eye on this pair, in [can a corrector or a clean tail sharpen the adapter's renders](can-a-corrector-or-a-clean-tail-sharpen-the-adapters-renders.md) (relevance match): that finding measured the same band on the plain-PoE references and demoted it to a secondary read.

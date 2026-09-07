@@ -12,18 +12,19 @@ to touch.
 | The moment | Read this | Because |
 |---|---|---|
 | submit a job, or write an `sbatch` header | [hpc/nodes.md](hpc/nodes.md) | partitions differ in GPU model and time limit, and `sinfo` cannot tell you which node has a GPU: asking for the wrong one queues silently |
+| estimate how long a training run will take, before launching it | [hpc/throughput.md](hpc/throughput.md) | real measured step time, checkpoint-save time, and eval-pass time, by GPU model and rank — a guess here has cost real GPU-hours before |
 | decide whether to submit or SSH into a shared device | [hpc/execution-protocol.md](hpc/execution-protocol.md) | "run an experiment" is a six-step decision here, not one action, and the shared-device path has mandatory safety rules |
 | launch anything over SSH onto a node this session is not on | [hpc/execution-protocol.md](hpc/execution-protocol.md) | a relative path in the launch line resolves against `$HOME`, not the repo, and the failure is silent (`poe-launch-001`) |
 | read or write project data, or add a disk guard to a job script | [storage.md](storage.md) | two filesystems, different quotas, no automatic mirroring, and a guard that checks the wrong mount has already caused a real loss (`poe-disk-001`) |
 | build or edit the paper | [paper.md](paper.md) | no system LaTeX exists here; the extension's default recipe fails outright, and a recent config change to fix that is unverified |
-| hit an error that looks like it has happened before | [known-failures.md](known-failures.md) | seven catalogued patterns with symptom, root cause, and solution, so a failure is not re-diagnosed from scratch |
+| hit an error that looks like it has happened before | [known-failures.md](known-failures.md) | eight catalogued patterns with symptom, root cause, and solution, so a failure is not re-diagnosed from scratch |
 | want to know how sure a fact in this folder actually is | [provenance.md](provenance.md) | every fact is marked verified, stated, or inferred, and several were re-checked live on 2026-08-24 |
 
 ## The systems
 
 | Folder | What you operate there | Leaves |
 |---|---|---|
-| [hpc/](hpc) | the cluster: partitions, nodes, GPUs, the launch protocol | 2 |
+| [hpc/](hpc) | the cluster: partitions, nodes, GPUs, the launch protocol, measured throughput | 3 |
 | [storage.md](storage.md) | the two filesystems, sizes, and the disk-guard rule | 1 (flat, no second leaf yet) |
 | [paper.md](paper.md) | the LaTeX build for `paper/iclr/` | 1 (flat, no second leaf yet) |
 
@@ -36,9 +37,6 @@ catalog is [known-failures.md](known-failures.md).
   "Build LaTeX project" work without manually picking the `tectonic` recipe.** Deliberately
   untested this sitting, because testing means running a build, which writes a PDF outside this
   folder's scope. See [paper.md](paper.md).
-- **`co3_bw`'s exact difference from `co3`.** Confirmed to exist (`ls`, 2026-08-24) and referenced
-  by at least one launcher, but nobody has checked what specifically it changes. See
-  [hpc/nodes.md](hpc/nodes.md).
 - **Whether every job script's disk guard now reads the same resolved root as its output path,**
   after the `paths.resolve()` commits. Not re-audited this sitting. See `poe-disk-001` in
   [known-failures.md](known-failures.md).

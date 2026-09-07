@@ -17,7 +17,7 @@ and which do something else.
 |---|---|
 | [design](../plans/baselines/06-three-rules-on-one-amount-axis.md) | the generalised injection, the two grids, and the two traps handled in advance |
 | **this file** | **the verdict: not yet run** |
-| [the SuperDiff verdict](05-superdiff-at-this-repos-fifty-steps.md) | whether the SuperDiff row is a fair one |
+| [the SuperDiff verdict](05-what-changes-when-superdiff-leaves-its-own-defaults.md) | whether the SuperDiff row is a fair one |
 | [the corrector's verdict](02-the-corrector-and-the-step-size-it-runs-at.md) | the `k` and `c` the two corrector rows run at |
 | [the step 26 verdict](03-what-is-left-once-the-chain-settles.md) | whether these grids illustrate a diagnosis or are a baselines table |
 
@@ -114,7 +114,7 @@ Navigation: ⬅️ [Asked after the result](#asked-after-the-result) | 📋 [TOC
 - [ ] ⚠️ **Was the comparison fair?** Two things could break it and both are known in advance.
       Rows deliver different absolute amounts at the same `λ` because `‖r_t^M‖` differs per row,
       which is answered by the label or by matching the amounts. And the SuperDiff row is only fair
-      if [its parity check](05-superdiff-at-this-repos-fifty-steps.md) passed; if it did
+      if [its parity check](05-what-changes-when-superdiff-leaves-its-own-defaults.md) passed; if it did
       not, that sentence is in the caption.
 - [ ] ⚠️ **Was the measuring tool sound?** The `λ=0` identity check per row, and the validated
       instance-count detector read over these renders and no others, with the eye count beside it.
@@ -131,7 +131,7 @@ Navigation: ⬅️ [Could the answer be an artefact](#could-the-answer-be-an-art
 | any column read across rows | whether the rows delivered matched absolute amounts or matched fractions, since `λ` is a fraction of each row's own correction |
 | the not-an-identity renders | that they are expected rather than failed, because the chain has moved off the joint trajectory, and that this is what makes the `λ=1` column a classifier |
 | the corrector rows | the `k` and the `c` they ran at, both of which are compute-budget choices rather than properties of the method |
-| the SuperDiff row | the step-count parity verdict from [its own review](05-superdiff-at-this-repos-fifty-steps.md) |
+| the SuperDiff row | the step-count parity verdict from [its own review](05-what-changes-when-superdiff-leaves-its-own-defaults.md) |
 
 ## Still open
 
