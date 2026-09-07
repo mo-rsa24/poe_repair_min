@@ -161,6 +161,7 @@ Navigation: ⬅️ [Previous](#where-this-came-from) | 📋 [TOC](#table-of-cont
   device: [the cluster nodes](../../environment/hpc/nodes.md)
 - Why the grid ran outside Slurm and was harvested with `pgrep`:
   [the execution protocol](../../environment/hpc/execution-protocol.md)
+- Each picture, read one at a time: [the corrector figures, what these pictures mean](../../artifacts/results/is-the-gap-the-samplers-or-the-models/figure-explainer-the-langevin-corrector.md)
 
 ## Still open
 

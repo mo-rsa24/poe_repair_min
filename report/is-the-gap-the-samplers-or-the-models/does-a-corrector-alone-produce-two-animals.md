@@ -140,6 +140,7 @@ Navigation: ⬅️ [Previous](#where-this-came-from) | 📋 [TOC](#table-of-cont
   [the animal pair](../../context/world/animal-pair.md)
 - Why the runs are invisible to the scheduler:
   [the execution protocol](../../environment/hpc/execution-protocol.md)
+- Each picture, read one at a time: [the corrector figures, what these pictures mean](../../artifacts/results/is-the-gap-the-samplers-or-the-models/figure-explainer-the-langevin-corrector.md)
 
 ## Still open
 

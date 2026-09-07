@@ -157,6 +157,7 @@ Navigation: ⬅️ [Previous](#where-this-came-from) | 📋 [TOC](#table-of-cont
   [does training longer keep improving the held-out fix](../does-training-longer-help-the-pooled-lora/does-training-longer-keep-improving-the-held-out-fix.md)
 - Why an adapter render and a reference render never share a process:
   [the known failures catalog](../../environment/known-failures.md)
+- Each picture, read one at a time: [the corrector figures, what these pictures mean](../../artifacts/results/is-the-gap-the-samplers-or-the-models/figure-explainer-the-langevin-corrector.md)
 
 ## Still open
 
