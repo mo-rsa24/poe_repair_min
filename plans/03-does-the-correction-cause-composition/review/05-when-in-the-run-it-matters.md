@@ -225,4 +225,4 @@ band, then build F4.
 
 ## Cross-references
 
-- The mention of **the nine window positions and their compose rates**, rerun with a Langevin corrector in place of the injected correction, in [does a corrector alone produce two animals](../../report/is-the-gap-the-samplers-or-the-models/does-a-corrector-alone-produce-two-animals.md): no column composes, against 0.656 here at steps 0 to 10.
+- The mention of **the nine window positions and their compose rates**, rerun with a Langevin corrector in place of the injected correction, in [does a corrector alone produce two animals](../../../report/is-the-gap-the-samplers-or-the-models/does-a-corrector-alone-produce-two-animals.md): no column composes, against 0.656 here at steps 0 to 10.
