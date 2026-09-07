@@ -92,8 +92,8 @@ every figure obeying the ledger's one standard.
 2. Dog x dog test judged against its pre-registration.
 3. Tracking set extended, and a first short run proving the wiring, before any launch.
 4. A, B, C run; verdicts against their pre-registered thresholds in review files.
-5. Compose rate against the multiplier on the adapter's correction, with the four control rows,
-   AUC beside the cached correction's 0.387-vs-0.023.
+5. Compose rate against the multiplier on the adapter's correction, with the wrong-seed and
+   shuffled control rows, AUC beside the cached correction's 0.387-vs-0.023.
 6. Counted joint-prompt figure: three bars per pair, a strip of repaired renders as anecdote.
 7. Transfer matrix at the group-pooled, concept-disjoint tier.
 8. Mechanism interventions' verdict on the causal caption.
@@ -114,7 +114,7 @@ question answered by measurement rather than by re-training folklore.
 2. Every showcase figure in `paper/iclr/figures/` carries a sidecar naming space, metric and
    mode per the ledger; wording rules obeyed (no "outperforms SDXL").
 3. ⚠️ W&B panels captured during runs via the wandb and Playwright MCPs and filed into the places
-   `runbook/reading-a-training-run.md` keeps for screenshots, with healthy-shape captions
+   `runbook/looking-at-what-a-run-produced/reading-a-training-run.md` keeps for screenshots, with healthy-shape captions
    [inferred, owner: session at launch/harvest time]
 4. Non-animal scorer re-validation verdict recorded; tier-three captions opened or declined.
 5. The scope has a recall gallery: run `/recap-plan-tree @plans/01-showcase-the-trained-lora/MASTER_PLAN.md`
@@ -125,23 +125,33 @@ question answered by measurement rather than by re-training folklore.
 
 ## Plans
 Numbering is per-folder, not the running order (that lives in the root table, rows 31 to 43).
-All thirteen plans are written. Assembly (05) runs last despite its number.
+All sixteen plans are written. Assembly (05) runs last despite its number.
 
 | # | Plan | What it does | Status |
 |---|---|---|---|
 | 01 | [01-read-where-the-curves-flatten](plans/reading/01-read-where-the-curves-flatten.md) | the free read that re-scopes A and B; it informs them, nothing waits on it | ⚠️ written |
 | 02 | [02-the-dog-x-dog-same-prompt-check](plans/tests/02-the-dog-x-dog-same-prompt-check.md) | the pre-registered same-prompt check | ⚠️ written |
-| 03 | [03-the-correction-amount-series](plans/tests/03-the-correction-amount-series.md) | lambda on the learned correction, four controls; shares one runner with 07 and 02 | ⚠️ written |
+| 03 | [03-the-correction-amount-series](plans/tests/03-the-correction-amount-series.md) | lambda on the learned correction, wrong-seed and shuffled controls; shares one runner with 07 and 02 | ✅ done: real AUC 0.203, both controls at the luck floor (review file) |
 | 04 | [04-the-transfer-matrix-figure](plans/figures/04-the-transfer-matrix-figure.md) | group-pooled, concept-disjoint tier | ⚠️ written |
 | 05 | [05-assemble-the-showcase-figures](plans/figures/05-assemble-the-showcase-figures.md) | the wall, under the standard; closes the scope | ⚠️ written |
 | 06 | [06-extend-the-tracking-set](plans/tools/06-extend-the-tracking-set.md) | the `instrument-02` curves plus four more, before any launch | ⚠️ written |
-| 07 | [07-experiment-c-lambda-window](plans/experiments/07-experiment-c-lambda-window.md) | injection run across values, on existing checkpoints, in-session | ⚠️ written |
+| 07 | [07-experiment-c-lambda-window](plans/experiments/07-experiment-c-lambda-window.md) | injection run across values, on existing checkpoints, in-session | ⚠️ in progress (grid run + measured, verdict open) |
 | 08 | [08-experiment-a-resume-to-200k](plans/experiments/08-experiment-a-resume-to-200k.md) | length axis: rank 8 from 100k to 200k, sbatch on biggpu | ⚠️ written |
 | 09 | [09-experiment-b-rank-16-32](plans/experiments/09-experiment-b-rank-16-32.md) | rank axis at 100k, two idle nodes over SSH | ⚠️ written |
 | 10 | [10-the-checkpoint-watcher](plans/tests/10-the-checkpoint-watcher.md) | the checkpoint watcher: h-space + Jacobian per broad checkpoint, off-device, ends in interventions | ⚠️ written |
 | 11 | [11-the-counted-joint-prompt-figure](plans/figures/11-the-counted-joint-prompt-figure.md) | score mono renders; three bars per pair + repair strip | ⚠️ written |
 | 12 | [12-close-f8a-and-the-best-case-panel](plans/figures/12-close-f8a-and-the-best-case-panel.md) | score 70k-100k samples; the panel showing what the cached correction can reach at best (reconciles with figure-01 next door) | ⚠️ written |
 | 13 | [13-revalidate-the-scorer-off-animals](plans/tools/13-revalidate-the-scorer-off-animals.md) | opens tier-three captions | ⚠️ written |
+| 14 | [14-correct-early-then-clean-up](plans/experiments/14-correct-early-then-clean-up.md) | when the softness enters, then a λ schedule, a 200-step tail and a re-noise cell against the full-window run; cat × dog plus the butterfly × meadow control | ⚠️ written |
+| 15 | [15-keep-the-correction-on-the-manifold](plans/experiments/15-keep-the-correction-on-the-manifold.md) | the normal share of each correction per cached step, then the adapter run with the off-manifold part of its correction dropped, against the adapter alone; cat × dog plus the butterfly × meadow control | ✅ both questions answered: the adapter's correction is no more off-manifold than the target's (ratio 0.985), and dropping the measured part moves the render away from the joint image (null) |
+| 15 | [15-experiment-d-weight-decay](plans/experiments/15-experiment-d-weight-decay.md) | the rank-32 run again with AdamW weight decay 0.1, nothing else changed; asks whether the late loss of fidelity is the weights growing without bound, and whether the best checkpoint moves at all | ◑ in flight since 2026-09-06 (`phase1_r32_wd0.1_100k`, mscluster109 device 0) |
+| 19 | [19-does-a-stochastic-sampler-sharpen-the-corrected-render](plans/experiments/19-does-a-stochastic-sampler-sharpen-the-corrected-render.md) | the rank-32 step-30050 correction at λ 1.2 rendered at DDIM eta 0, 0.5 and 1 on one shared noise path per seed, beside Mono and plain PoE at each eta; asks whether fresh noise each step returns sharpness and fidelity with the two animals kept | ◑ in flight since 2026-09-06 03:05 (Slurm job 50338, mscluster46) |
+| 20 | [20-an-ema-of-the-adapter-weights](plans/experiments/20-an-ema-of-the-adapter-weights.md) | experiment D's run again to 40k with an EMA of the LoRA weights saved beside the raw ones; raw against EMA at the same step on the 8-seed grid | ◑ in flight since 2026-09-06 03:14 (Slurm job 50343, mscluster75, `phase1_r32_wd0.1_ema0.999_40k`) |
+| 21 | [21-give-each-branch-its-partners-embedding](plans/experiments/21-give-each-branch-its-partners-embedding.md) | each single-prompt branch receives the pooled embedding of the other prompt; asks whether the early held-out fit rises from 0.925 toward the training pairs' 0.985 | ⚠️ written, waits on 15 and 20 for the regularisation setting it trains on |
+| 22 | [22-charge-the-adapter-for-its-energy](plans/experiments/22-charge-the-adapter-for-its-energy.md) | the rank-32 adapter resumed from its shipped 30,050 checkpoint for 10,000 steps with a running cost on the control energy of its own correction (β 0 control, 0.01, 0.05), one axis; the free read from the cache first (82% of the true correction's energy falls after step 20); then the 8-seed grid, the frames, the on-policy energy-against-mismatch read and one readout run per arm | ⚪ null (W&B `2cfdtdnl`): at 40,050 the price cut the adapter's on-policy energy 27% with the fit kept and moved the renders toward plain PoE (drift −0.054 control, −0.003 at β 0.01, +0.019 at β 0.05; 7, 6, 6 of 8 compose); the adapter already spends half the true correction's energy, so the haze is not excess energy; the free read stands (82% of the true correction's energy falls after step 20) |
+| 16 | [16-experiment-e-train-on-the-clean-estimate-residual](plans/experiments/16-experiment-e-train-on-the-clean-estimate-residual.md) | the rank-32 run again with the loss weighted by (1 − ᾱ)/ᾱ clipped at 22, so the error is measured between clean estimates and steps 0 to 10 carry 65% of it; 40k steps, the 30k and 40k grids read against the baseline's 30,050 on drift, compose count and contrast, with the frames, the DINOv2 landing figure and per-seed strips Mono, PoE, baseline, new | ◑ code and readout smoke-tested 2026-09-06; the run waits for a free biggpu device (poller on the session node) |
+| 16 | [16-search-the-noise-in-the-commit-window](plans/experiments/16-search-the-noise-in-the-commit-window.md) | the injected noise searched at steps 8 to 25 of the corrected eta-1 run on a count-gated fidelity reward, paired sharpness against the unsearched control; cat × dog plus the butterfly × meadow control | ⚪ null on the bar: sharper on 3 of 8, animals kept 8 of 8; eta 1 alone is the larger effect (review file) |
+| 23 | [23-three-inference-time-fixes-for-the-soft-corrected-render](plans/experiments/23-three-inference-time-fixes-for-the-soft-corrected-render.md) | the rank-32 step-30050 correction at λ 1.2 with three published guidance fixes in the DDIM step (CFG++ re-noising with the PoE prediction, APG's drop of the part parallel to PoE, the PoE norm kept), each against plan 14's full-window render of the same seed; per-seed strips Mono, PoE, full window, three fixes; the per-step parallel share and norm ratio of the correction recorded on every render | ⚪ null (W&B `2bbd7npp`): APG and norm kept compose 8 of 8 but are sharper on 2 of 8 seeds; CFG++ as ported leaves the prompt (d(Mono) 0.89 against plain PoE's 0.64) and its sharpness is a poster's edges; the correction shortens PoE's prediction by only 1 to 3 percent |
 
 ## Environment Context
 `environment/00-INDEX.md`: the execution protocol (idle-node order, shared-device path, admin
