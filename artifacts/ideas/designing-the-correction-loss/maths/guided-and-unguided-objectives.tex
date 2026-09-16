@@ -1,0 +1,517 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\emergencystretch=4em
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+
+\newcommand{\eps}{\varepsilon}
+\newcommand{\epsth}{\eps_\theta}
+\newcommand{\epsfr}{\eps_{\bar\theta}}
+\newcommand{\xs}{x_\sigma}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\cnull}{\varnothing}
+\newcommand{\pmi}{\mathrm{pmi}}
+
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}[proposition]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[proposition]{Remark}
+
+\title{The guided objective the repository trains and the unguided one the board writes,\\
+reconciled in one notation}
+\author{poe\_repair\_min, thread off \texttt{designing-the-correction-loss}}
+\date{2026-09-16}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The trainer fits a guided composition to a guided joint-prompt target at $w = 7.5$; the
+supervisor's board writes the same fit with no guidance anywhere. The two agree exactly when the
+adapted null branch equals the frozen one, and diverge in proportion to the null branch's drift,
+amplified by $(w-1)$. Measured on the four thirty-thousand-step arms, the amplified drift term is
+$67$ times the entire guided residual in the unanchored run and $0.95$ times it in the anchored
+one, so the plain adapter provably does \emph{not} solve the unguided problem while the anchored
+one is merely not ruled out. The document also settles that no assignment of three branch
+functions can match the joint target without moving the single-concept branches, names the three
+candidate protection terms and which one to add, and gives one cached-data probe for the
+off-policy gap.
+\end{abstract}
+
+\tableofcontents
+
+\section{Setup, and one notation for both objectives}
+
+\paragraph{Companion document.}
+This document does not re-derive the additive skeleton, the gauge proposition, or the step-0
+floor. Those are in \texttt{correction-loss-variants.tex} beside this file and are used here by
+reference.
+
+\paragraph{States, branches, frozen and adapted.}
+Write $\xs$ for a noised latent at scale $\sigma$, $\epsth(\xs,\sigma,c)$ for the adapted
+noise prediction and $\epsfr$ for the frozen one. Fix a state and a pair $(c_1,c_2)$ and set
+\begin{equation}
+  u \;:=\; \epsth(\xs,\sigma,\cnull), \qquad
+  \bar u \;:=\; \epsfr(\xs,\sigma,\cnull), \qquad
+  \delta \;:=\; u - \bar u ,
+  \label{eq:coords}
+\end{equation}
+with $a := \epsth(\xs,\sigma,c_1)$, $b := \epsth(\xs,\sigma,c_2)$, and $\eps_J :=
+\epsfr(\xs,\sigma,c_{1\wedge 2})$ the frozen joint-prompt prediction read from cache. The
+unguided composition and its guided form are
+\begin{equation}
+  T \;=\; a + b - u , \qquad
+  T^{(w)} \;=\; u + w(a-u) + w(b-u) \;=\; w\,T - (w-1)\,u ,
+  \label{eq:compose}
+\end{equation}
+implemented as \texttt{poe\_eps} and \texttt{guided\_eps}
+(\texttt{poe\_repair/\_sdxl/metrics.py:12--17}) and combined at
+\texttt{trainer.py:331--332} with $w = 7.5$. The target is guided against the \emph{frozen}
+null, $J^{(w)} := \bar u + w(\eps_J - \bar u) = w\,\eps_J - (w-1)\,\bar u$
+(\texttt{trainer.py:388}).
+
+\paragraph{The two objectives.}
+\begin{align}
+  \mathcal{L}_A &\;=\; \norm{\,T^{(w)} - J^{(w)}\,}^2
+  \qquad\text{(the repository, \texttt{trainer.py:450--453})},
+  \label{eq:LA}\\
+  \mathcal{L}_{B2} &\;=\; \norm{\,T - \eps_J\,}^2
+  \qquad\text{(the board, mono-as-target variant)},
+  \label{eq:LB2}\\
+  \mathcal{L}_{B1} &\;=\; \norm{\,z - \big(a + b - u\big)\,}^2,
+  \quad x \sim p_{\mathrm{co}},\ \xs = x + \sigma z
+  \qquad\text{(the board, data-as-target variant)}.
+  \label{eq:LB1}
+\end{align}
+Write $\Delta := T - \eps_J$ for the unguided residual, so $\mathcal{L}_{B2} = \norm{\Delta}^2$.
+All three carry a per-level weight $\lambda(\sigma)$; the runs discussed here use
+$\lambda \equiv 1$ (\texttt{loss\_eps} equals \texttt{loss\_fit} to five figures on every arm),
+so every number below is in one unit, the per-element mean square of a noise-space tensor.
+
+\paragraph{The identity this document turns on.}
+From \eqref{eq:compose},
+\begin{equation}
+  \boxed{\;T^{(w)} - J^{(w)} \;=\; w\,\Delta \;-\; (w-1)\,\delta\;}
+  \label{eq:key}
+\end{equation}
+so
+\begin{equation}
+  \mathcal{L}_A \;=\; w^2\,\mathcal{L}_{B2}
+  \;-\; 2w(w-1)\,\langle \Delta, \delta\rangle
+  \;+\; (w-1)^2 \norm{\delta}^2 .
+  \label{eq:expand}
+\end{equation}
+At initialisation the adapter is zero, $\delta = 0$, and $\mathcal{L}_A = w^2 \mathcal{L}_{B2}$
+exactly; the numerical check on one cached cell returned $56.2500$ against $w^2 = 56.25$.
+Everything that follows is about the two terms that switch on when $\delta$ moves.
+
+\paragraph{The runs these numbers come from.}
+Four arms under
+\texttt{/datasets/mmolefe/poe\_repair\_min/}\allowbreak\texttt{outputs/correction\_loss\_variants/}, each rank $16$,
+$30{,}000$ optimizer steps, denoising steps $0$ to $25$, $1024^2$, $w = 7.5$, pair
+\texttt{a cat} $\times$ \texttt{a dog}. They differ in \texttt{branch\_prompt\_style}
+(\texttt{plain}, \texttt{plurality}, \texttt{connective}) and, for the fourth,
+\texttt{null\_anchor} $ = 10.0$ against $0.0$ elsewhere (verified in each arm's
+\texttt{config.json}).
+
+\section{Objective 1: is matching the unguided composition to the mono prediction well posed?}
+
+\subsection{The density reading is false, and it is false exactly where the project works}
+
+\begin{proposition}[What exact matching would demand]
+\label{prop:pmi}
+Suppose the three branches were the true scores of $p(x\mid c_1)$, $p(x\mid c_2)$ and $p(x)$, and
+the target were the true score of $p(x \mid c_1, c_2)$. Then
+\begin{equation}
+  \Delta \;=\; \sigma \nabla_x \Big[\log \tfrac{p(c_1,c_2\mid x)}{p(c_1\mid x)p(c_2\mid x)}\Big]
+  \;=\; \sigma \nabla_x\, \pmi_x(c_1;c_2),
+\end{equation}
+so $\Delta \equiv 0$ if and only if the pointwise mutual information between the two concepts
+given the image is constant in $x$. Conditional independence given $x$ is sufficient but not
+necessary; a constant offset is invisible to the score.
+\end{proposition}
+\begin{proof}
+Bayes on each of the three conditionals turns the ratio
+$p(x\mid c_1,c_2)\big/\!\left[p(x\mid c_1)p(x\mid c_2)/p(x)\right]$ into
+$\exp(\pmi_x - \pmi)$, with $\pmi$ the prior-level term, free of $x$. Take $\log$ and
+$\nabla_x$; the prior term drops. The sign convention matches this project's
+\[
+  r_t \;=\; -\sigma_t \nabla_{x_t}\log\!\left[\frac{p(c_1,c_2\mid x_t)}{p(c_1\mid x_t)\,p(c_2\mid x_t)}\right]
+\]
+in \texttt{artifacts/notes/interaction-term-as-pmi-gradient/}.
+\end{proof}
+
+\paragraph{Why that condition cannot hold here.}
+$\pmi_x$ is near zero on an image showing a cat and a dog as separate objects (both posteriors
+near one, the joint posterior near one) and strongly negative on a chimera (both single-concept
+posteriors moderate, the conjunction posterior low). The gradient of $\pmi_x$ is therefore
+nonzero precisely on the region of state space where composition fails, which is the region the
+adapter is trained on. \emph{Confidence: the derivation is confident; the claim about the two
+posteriors' behaviour is a statement about the scorer's own semantics and is likely but
+unverified, since no run has measured $p(c_1,c_2\mid x)$ against $p(c_1\mid x)p(c_2\mid x)$ on
+this pool.}
+
+\subsection{So what is actually being asked of the three branches}
+
+The regression does not ask the model to make two concepts independent, and it cannot: the network
+does not touch $p(x \mid c_1, c_2)$. What it asks is narrower and should be stated that way in the
+paper:
+
+\begin{quote}
+Find three functions $a(\cdot,c_1)$, $b(\cdot,c_2)$, $u(\cdot)$, each reading one prompt, whose
+fixed linear combination $a+b-u$ reproduces a fourth function, $\epsfr(\cdot,c_{1\wedge2})$, on the
+state distribution of plain product-of-experts sampling trajectories.
+\end{quote}
+
+Three separate things are being conflated when this is described as removing an independence
+assumption. The target is the model's joint-\emph{prompt} branch, not the true joint density; the
+joint prompt string is not the conjunction event (this is unstated premise A of the pressure-test
+note, and it is the first thing a reviewer will find); and the fit is over one state distribution,
+not over $\R^d$.
+
+\subsection{A solution exists, and it cannot leave the single-concept branches alone}
+
+\begin{proposition}[No damage-free solution]
+\label{prop:damage}
+If every branch keeps its frozen value, $a = \epsfr(\cdot,c_1)$, $b = \epsfr(\cdot,c_2)$,
+$u = \bar u$, then $\Delta = \epsfr(c_1)+\epsfr(c_2)-\bar u - \eps_J$, which is the cached
+correction the project calls $r_t$ and is nonzero by construction. Hence any $\theta$ with
+$\Delta = 0$ moves at least one branch off its frozen value.
+\end{proposition}
+
+This is a tautology, and it is worth writing down because it converts objective 1 from a yes/no
+question into a magnitude question: not \emph{can} single-concept behaviour survive, but \emph{how
+far must each branch move}. Writing $\phi_i$ for the per-concept displacement and $m$ for the shared
+one, the additive skeleton of the companion document requires $m + \phi_i + \phi_j = \Delta_{ij}$
+at each state, and the step-0 fit already on disk says such a $\phi$ exists to within
+\begin{center}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+ & in-sample & held out & shuffled ceiling & algebraic control \\
+\midrule
+seed 1, 1003 pairs, 294 concepts & $0.0280$ & $0.0884$ & $0.2166$ & $0.00022$ \\
+seed 2, 1010 pairs, 299 concepts & $0.0249$ & $0.0772$ & $0.2329$ & $0.00014$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+as a fraction of the correction's squared energy. The in-sample and held-out columns are
+the five-fold split of \texttt{additive\_transfer\_step0.json}, fitted and evaluated on the same
+folds. The shuffled ceiling and the algebraic control are from the all-pairs fit in
+\texttt{additive\_floor\_step0.json}, whose own in-sample floor is $0.0315$ and $0.0278$. Both
+files sit under \texttt{outputs/idea\_probes/}. The held-out column is the one that licenses the approach: per-concept
+functions fitted on $80\%$ of pairs predict the remaining $20\%$ to within $8\%$ of the correction,
+so the residual is genuinely per-concept and not pair memorisation.
+
+\paragraph{The number this section needs and does not have.}
+The size of the damage, $\norm{\phi_i}$ relative to the branch's own guidance signal
+$\norm{\epsfr(\cdot,c_i) - \bar u}$, at step 0. The fit that produces $\phi$ is already computed
+inside \texttt{scripts/idea\_probes/additive\_floor\_step0.py}; it solves for the per-concept
+factors and then discards them, reporting only the residual. Recording
+$\norm{\phi_i}/\norm{\epsfr(c_i)-\bar u}$ per concept is one added line and no new forward passes.
+Until that number exists, ``the correction is small'' is a claim about the residual, not about the
+distortion. \emph{Confidence: family-only on the magnitude; confident that the quantity is
+computable from what is on disk.}
+
+\paragraph{Verdict on objective 1.}
+Well posed as a regression, not well posed as a density statement. A solution exists and is
+reachable by per-concept functions (held-out $8\%$), and it necessarily moves the single-concept
+branches; the independence reading should not appear in the paper. The saving grace is
+distributional rather than algebraic: the branches are only constrained on pair-trajectory states,
+so single-concept behaviour is untouched \emph{off} those states, neither damaged nor protected.
+That is the same fact as objective 4 read from the other side.
+
+\section{Objective 2: does the null anchor make the guided and unguided objectives agree?}
+
+\subsection{The exact statement, which is about freezing and not about anchoring}
+
+\begin{proposition}[Hard freeze gives identity at every $w$]
+\label{prop:freeze}
+If the null branch is held at its frozen value as a \emph{function} of $\theta$, that is
+$u(\theta) \equiv \bar u$ so $\partial u/\partial\theta = 0$, then by \eqref{eq:key}
+$\mathcal{L}_A = w^2\,\mathcal{L}_{B2}$ and $\nabla_\theta \mathcal{L}_A =
+w^2\,\nabla_\theta \mathcal{L}_{B2}$, identically in $\theta$ and for every $w$. The guidance
+weight becomes a constant loss scale, absorbable into the learning rate, and one trained adapter is
+simultaneously optimal unguided and at $w = 7.5$.
+\end{proposition}
+
+\begin{corollary}[The freeze is free in capacity]
+By the gauge proposition of the companion document, a free null branch and a frozen one reach
+exactly the same set of composed predictions $T$. So freezing costs nothing in the unguided
+problem, removes the sampler-amplified unidentified direction, and drops the null forward from the
+training step (the frozen $\eps_\cnull$ is already cached as \texttt{eps\_uncond}), cutting the
+$3K$-wide forward at \texttt{trainer.py:440--450} to $2K$.
+\end{corollary}
+
+\begin{remark}[This is a claim about a hard freeze, and the repository implements a soft penalty]
+\texttt{trainer.py:496--503} adds $\mu\norm{\delta}^2$ with $\mu = 10$ on the anchored arm. That
+leaves $\delta \neq 0$, so Proposition~\ref{prop:freeze} does not apply and the cross term and the
+quadratic term of \eqref{eq:expand} both survive. Whether they matter is an empirical question with
+an answer already logged.
+\end{remark}
+
+\subsection{Where it breaks, measured}
+
+Both \texttt{loss\_fit} ($=\mathcal{L}_A$) and \texttt{loss\_null\_anchor} ($=\norm{\delta}^2$) are
+logged in the same units, per-element mean square, at the same step (\texttt{trainer.py:505--514}).
+The amplified drift term of \eqref{eq:expand} is therefore $(w-1)^2 \times
+\texttt{loss\_null\_anchor} = 42.25 \times \texttt{loss\_null\_anchor}$, directly comparable to
+\texttt{loss\_fit}. At step $30{,}000$:
+
+\begin{center}
+\begin{tabular}{lrrrr}
+\toprule
+arm & $\mu$ & $\mathcal{L}_A$ & $(w-1)^2\norm{\delta}^2$ & ratio \\
+\midrule
+\texttt{plain}      & $0$    & $4.9\times10^{-4}$ & $3.30\times10^{-2}$ & $67.3$ \\
+\texttt{plurality}  & $0$    & $6.0\times10^{-4}$ & $2.32\times10^{-2}$ & $38.7$ \\
+\texttt{connective} & $0$    & $5.0\times10^{-4}$ & $3.34\times10^{-2}$ & $66.8$ \\
+\texttt{anchor}     & $10$   & $8.9\times10^{-4}$ & $8.45\times10^{-4}$ & $\mathbf{0.95}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Reading the unanchored rows.}
+A ratio of $67$ says the null drift's contribution to the guided residual is sixty-seven times the
+whole guided residual. The two terms of \eqref{eq:key} are therefore cancelling: $w\Delta$ is large
+and $(w-1)\delta$ is large and they nearly annihilate. That is the gauge degeneracy behaving exactly
+as predicted, not a coincidence. By $\norm{w\Delta} \ge \norm{(w-1)\delta} - \norm{T^{(w)}-J^{(w)}}$,
+\begin{equation}
+  \mathcal{L}_{B2}^{\ \texttt{plain}} \in [4.52\times10^{-4},\ 7.38\times10^{-4}],
+  \qquad
+  \mathcal{L}_A/w^2 = 8.71\times10^{-6},
+  \label{eq:plainbracket}
+\end{equation}
+so the plain arm's unguided loss is between $52$ and $85$ times $\mathcal{L}_A/w^2$. \textbf{The
+plain adapter is a certificate of failure on the unguided problem}: whatever it learned, it did not
+learn a composition that works at $w=1$. \emph{Confidence: confident. The bracket is a triangle
+inequality on two logged quantities in matching units; nothing is assumed.}
+
+\paragraph{Reading the anchored row.}
+The same bracket for the anchored arm is $\mathcal{L}_{B2} \in [1.0\times10^{-8},\
+6.2\times10^{-5}]$ against $\mathcal{L}_A/w^2 = 1.58\times10^{-5}$, a ratio bracket of
+$[0.0007,\ 3.9]$. It contains $1$. So the anchor takes the divergence from certified to
+undetermined, and no more than that. At $\mu = 10$ the drift's amplified contribution is still the
+same size as the entire residual it perturbs, which is the honest version of the claim.
+
+\paragraph{The number that would settle it.}
+$\norm{\Delta}^2$ logged directly, as a per-element mean square, beside \texttt{loss\_fit}. Both
+$T$ (unguided) and $\eps_J$ (cached raw) are in hand at \texttt{trainer.py:450--453} before the
+guided forms are built, so this is one line under \texttt{no\_grad} and no extra forward pass. With
+$\mathcal{L}_{B2}$ logged, \eqref{eq:expand} gives the cross term by subtraction and the question
+stops being a bracket.
+
+\paragraph{Verdict on objective 2.}
+The claim is right in direction and, as implemented, not established. Driving $\delta$ to zero does
+make the two objectives agree at every $w$, and the correct way to do it is to freeze the null
+branch rather than penalise its drift: the freeze is exact, costs no capacity, and saves a third of
+the training forward. The soft anchor at $\mu = 10$ reduces the amplified drift term by a factor of
+$39$ but leaves it at parity with the residual, so a single anchored adapter being correct at both
+$w = 1$ and $w = 7.5$ is currently unfalsified rather than shown.
+
+\begin{remark}[The freeze must be matched at sampling time]
+The adapter is LoRA on cross-attention projections, so it modifies the null branch too: the empty
+prompt still produces keys and values. Training with a frozen null while sampling with an adapted
+null is a train-test mismatch that reintroduces exactly the direction the freeze removed. The
+sampler must run its $\cnull$ forward with the adapter detached. This repository has already paid
+for the general version of this mistake once, in a windowed sampler that left the adapter enabled
+while rendering its own references.
+\end{remark}
+
+\section{Objective 3: the three candidate single-concept protections}
+
+\paragraph{(i) The null anchor, implemented.}
+$\mu \norm{\epsth(\cnull) - \epsfr(\cnull)}^2$ on pair-trajectory states, \texttt{trainer.py:496}.
+Free, because $\epsfr(\cnull)$ is cached. \textbf{It is not single-concept protection and should
+not be described as such.} Its job is gauge-fixing, per Section 3; it constrains one branch, the one
+that carries no concept.
+
+\paragraph{(ii) The board's data term.}
+$\E_{x \sim p_{\mathrm{single}},\,z}\norm{z/\sigma - s_\theta(x+\sigma z,\sigma,c_{\mathrm{dog}})}^2$.
+This anchors the dog branch to the \emph{true} data score at states drawn from noised real dog
+images. Two consequences follow from that word ``true''. It is a fine-tuning term, not a
+preservation term: where the frozen model was already wrong about dogs, this moves the branch to a
+third place, neither frozen nor current. And it needs real single-concept images, which is a much
+weaker data requirement than $\mathcal{L}_{B1}$'s (one concept per image, not two in one image):
+the Open Images coverage probe matched $83$ of $317$ pool concepts exactly, so this term is
+reachable for roughly a quarter of the vocabulary and unreachable for the rest.
+
+\paragraph{(iii) The board's frozen-versus-trained term.}
+$\norm{\epsfr(\cdot,c_{\mathrm{dog}}) - \epsth(\cdot,c_{\mathrm{dog}})}^2$. This is function-space
+distillation of the model onto itself, and it is the null anchor generalised from $c = \cnull$ to
+$c = c_i$. It needs no images at all, only states, and the states are a free choice. That freedom is
+the whole design question, because:
+
+\begin{proposition}[Applying (iii) on the training states cancels the fit]
+\label{prop:conflict}
+On pair-trajectory states, the fit requires $\phi_i \neq 0$ (Proposition~\ref{prop:damage}) and
+(iii) penalises $\norm{\phi_i}^2$. In the limit of a large weight, all three branches are pinned to
+frozen, $T = \bar T$, and the correction is identically zero. So (iii) evaluated where the fit lives
+does not protect single-concept behaviour; it prices the correction.
+\end{proposition}
+
+\paragraph{Recommendation: (iii), on single-concept trajectory states.}
+Build a small cache of states from single-prompt sampling runs (one branch per step, no pair, no
+training), and evaluate (iii) there. This separates the two jobs cleanly: correct the composition
+where pairs go, preserve the model where a single concept goes. The costs are one sampling run per
+protected concept, once, and one extra adapted forward per training step per protected concept; the
+frozen prediction at those states is cached alongside, exactly as \texttt{eps\_uncond} is today, so
+the penalty side is free at train time.
+
+Ranking, with reasons rather than a tie-break: (iii) on single-concept states is the only one of the
+three that both targets the concept branches and does not fight the fit. (i) is worth keeping
+regardless, because it does a different job (gauge), and Section 3 recommends replacing it with the
+stronger hard freeze. (ii) is a different project: it improves the model against data rather than
+preserving it, and it is available for a quarter of the vocabulary.
+
+\paragraph{What would show (iii) is doing something, and what would show it is too strong.}
+Sweep its weight. The correction's size \texttt{delta\_hat\_norm} against the target's
+\texttt{delta\_target\_norm} ($45.12$ on these cells) reads the price; the pair compose rate on the
+held-out seeds reads whether the price was worth paying; a single-concept render set scored by the
+same instance-count scorer reads what was bought. \emph{Confidence: likely but verify. The conflict
+of Proposition~\ref{prop:conflict} is a derivation; that single-concept trajectory states are
+sufficiently disjoint from pair-trajectory states to make the separation real is a conjecture, and
+it is testable for free by measuring the distance between the two state clouds at each step.}
+
+\section{Objective 4: what the objective does not guarantee off the cached trajectories}
+
+\paragraph{What it does guarantee.}
+Every cached $\xs$ came from a plain product-of-experts sampling run with no adapter. So the fit is a
+statement in $L^2(\rho_{\mathrm{PoE}})$: the composed prediction is close to the target in mean
+square under the state distribution that plain PoE visits, at denoising steps $0$ to $25$ and at the
+seeds and pairs in the cache. Nothing more. In particular it says nothing at states the adapter
+itself reaches, and the adapter changes the trajectory from the first step it acts on, so those are
+never the same states after step $0$.
+
+\paragraph{What that costs.}
+This is behaviour cloning under distribution shift, and it fails the standard way: per-step error
+compounds along the rollout, because each step's state error feeds the next step's prediction error.
+A bound on the fit at cached states does not bound the deviation at the end of a fifty-step
+trajectory. \emph{Confidence: confident on the structure, family-only on the magnitude here, since
+no measurement in this repository isolates the compounding term.}
+
+\paragraph{One piece of evidence already on disk, and what it is not.}
+\texttt{scripts/}\allowbreak\texttt{trajectory\_divergence.py} measures, per step, the CLIP and DINOv2 cosine distance
+between decoded frames of the correction-on and correction-off trajectories. The curves separate
+early: steepest rise at step $5$ or $6$ in three of the cat-dog cells, later (steps $22$ to $23$)
+in others. Its output is \texttt{divergence.json}, written under the interaction-term
+outputs in \texttt{cache\_analyses/}\allowbreak\texttt{trajectory\_divergence/}. This is
+the oracle correction, not the trained adapter, so it bounds the question from a neighbouring
+direction rather than answering it: it says a correction of this kind moves the trajectory to a
+visibly different place well inside the trained window.
+
+\subsection{The probe: one-step-off-trajectory loss}
+
+Uses only the existing cache, one trained checkpoint, no training and no rendering.
+
+\begin{enumerate}
+  \item For each cached step $k \in \{0,\dots,25\}$ and each cached cell, run the trained adapter's
+    three branches at the cached $x_k$, compose at $w = 7.5$, and take one DDIM step to get
+    $x'_{k+1}$. The cached $x_{k+1}$ is the plain-PoE successor of the same state.
+  \item \textbf{Coverage, at zero forward cost.} Report
+    $d_k = \norm{x'_{k+1} - x_{k+1}}$ against $s_k$, the standard deviation of the cached $x_{k+1}$
+    across the eight seeds of that pair. $d_k \ll s_k$ means the cached cloud already covers where
+    the adapter goes in one step.
+  \item \textbf{The loss gap.} Evaluate $\mathcal{L}_A$ at $x'_{k+1}$ and at $x_{k+1}$. The
+    displaced state needs a fresh frozen joint-prompt forward, since the cached $\eps_J$ is keyed to
+    the cached state: one frozen forward per probe state, a few hundred in total, minutes on one
+    card.
+  \item \textbf{The bar, written here before the run.} If
+    $\mathcal{L}_A(x'_{k+1}) \le 2\,\mathcal{L}_A(x_{k+1})$ at every $k$ in the trained window, the
+    fit survives one step of its own drift and off-policy shift is not the binding problem. If the
+    ratio exceeds $2$ anywhere in the window, the training distribution must be refreshed against the
+    adapter (re-cache with the adapter attached, iterated), and no amount of further training on the
+    frozen cache will fix it.
+\end{enumerate}
+
+Only step 3 costs a forward pass; steps 1 and 2 are tensor arithmetic on cached data. The bar belongs
+in the script's source before the number exists, matching this repository's convention for
+\texttt{MIN\_MEDIAN\_RATIO}.
+
+\section{Objective 5: is \texorpdfstring{$\mathcal{L}_{B1}$}{the data-target objective} reachable here?}
+
+\paragraph{Verdict: no, and not for lack of effort in the search.}
+$\mathcal{L}_{B1}$ needs $p_{\mathrm{co}}$, real images with both concepts present as separate
+objects. This repository holds no real image data: \texttt{data/pilot/} is SDXL output and no dataset
+loader exists in \texttt{poe\_repair/} or \texttt{scripts/}. Against Open Images' $601$ boxable
+classes, $83$ of $317$ pool concepts match exactly and $11$ of $1146$ pairs have at least one
+co-occurring validation image (\texttt{outputs/idea\_probes/openimages\_coverage.json}).
+
+The eleven are the finding, not the shortage. They are whale with dolphin, swan with duck, owl with
+falcon, turtle with tortoise: pairs that share a habitat, look alike, and already sit in the easy
+tail of the additive fit. The mechanism is not an accident of one corpus. A pair has co-occurrence
+photographs because the two things genuinely turn up together, and that same co-occurrence in the
+training corpus is why the model already composes them. The data is abundant exactly where it is not
+needed and absent exactly where it is. \emph{Confidence: confident for Open Images, which is
+measured; likely but verify as a general statement about photographic corpora, since only one corpus
+has been checked.}
+
+\paragraph{The nearest reachable objective, first choice: $\mathcal{L}_{B2}$, which is already running.}
+Up to the $w^2$ factor and the null drift of Section 3, the board's mono-target variant \emph{is} what
+the repository trains. Freezing the null branch closes the gap exactly (Proposition~\ref{prop:freeze}),
+at which point the board's second variant and the repository's objective are the same objective and
+the disagreement dissolves. Nothing new is needed.
+
+\paragraph{Second choice, and the one worth designing: a rejection-sampled corpus from the model itself.}
+Replace $p_{\mathrm{co}}$ with the model's own samples that pass a composition filter. This is
+reachable today: searching eight nearby initial noises composes $8$ of $8$ on the cat-dog held-out
+seeds where the adapter alone composes $6$ of $8$, by the validated instance count
+(\texttt{report/is-the-gap-the-samplers-or-the-models/}\allowbreak
+\texttt{does-searching-over-the-noise-sharpen-the-corrected-render.md}). Images in which both
+animals appear as separate objects can therefore be manufactured for pairs that fail. The corpus becomes noised real-ish images from
+the model's own successful tail, and $\mathcal{L}_{B1}$ runs on it unchanged.
+
+Two things make this more than self-distillation with extra steps. The current target is known to be
+unreliable: scope 08 drops training cells whose joint target shows the wrong animals, and names
+``whether a better teacher than the joint prompt would beat all of this'' as its own follow-on
+(\texttt{plans/08-improve-the-rank-32-pooled-adapter/}\allowbreak\texttt{review/04-the-parent-and-the-four-children.md},
+lines 39 and 147). A filtered sample set is a teacher that is right by construction where the joint
+prompt is wrong. Against that, the filter is the risk: this project's validated instance-count scorer
+counts instances and cannot tell a cat beside a dog from two dogs, so the corpus needs the second
+head that reads which two animals are present, or it trains the composition toward a density of
+duplicated single concepts. \emph{Confidence: likely but verify. The compose counts are measured; that
+a filtered corpus trains better than the joint-prompt target is a conjecture and is the experiment,
+not the premise.}
+
+\paragraph{Third, unsettled: caption retrieval over a web-scale corpus.}
+Filtered by the same scorer. It needs no fixed class vocabulary, which is what eliminated Open Images.
+This remains the open check of the idea map's claim 6 and nothing here settles it.
+
+\section{The four verdicts}
+
+\begin{enumerate}
+  \item \textbf{Unguided-to-mono target.} Well posed as a regression, not as a density statement.
+    Asking $a+b-u = \eps_J$ asks for $\nabla_x \pmi_x(c_1;c_2) = 0$, which is false exactly where
+    composition fails, so the adapter is not learning independence; it is fitting three
+    single-prompt functions to reproduce a fourth under a fixed linear rule on one state
+    distribution. A solution exists (held-out per-concept residual $8\%$ of the correction at step
+    0) and provably moves the single-concept branches. \emph{Confident.}
+  \item \textbf{Null anchor and the two objectives.} A \emph{hard freeze} of the null branch makes
+    $\mathcal{L}_A = w^2 \mathcal{L}_{B2}$ identically at every $w$, costs no capacity, and saves a
+    third of the training forward. The implemented \emph{soft} anchor does not: at $\mu = 10$ the
+    amplified drift is still $0.95$ times the entire residual, against $67$ times unanchored. The
+    plain arm is certified not to solve the unguided problem ($52$ to $85$ times worse); the
+    anchored arm is undetermined. \emph{Confident on the derivation and on both measured ratios.}
+  \item \textbf{Single-concept protection.} Add the frozen-versus-trained term, evaluated on states
+    from single-concept sampling trajectories rather than on the pair trajectories, where it would
+    only price the correction it is meant to coexist with. Keep the null constraint as a gauge fix
+    and upgrade it to a freeze; it was never single-concept protection. The data term is a different
+    project and reaches a quarter of the vocabulary. \emph{Likely but verify.}
+  \item \textbf{Off-policy.} The one-step-off-trajectory probe of Section 5: take one adapted DDIM
+    step from each cached state, compare the fit loss there against at the cached successor, with the
+    bar at a factor of $2$ written into the script first. Coverage against the cross-seed spread of
+    cached states is the free precursor and costs no forward passes at all.
+\end{enumerate}
+
+\paragraph{The two one-line instrumentation changes this document asks for.}
+Log $\norm{\Delta}^2$ beside \texttt{loss\_fit} (\texttt{trainer.py:450--453}), and record the
+per-concept factor norms the step-0 additive probe already solves for and throws away
+(\texttt{scripts/idea\_probes/additive\_floor\_step0.py}). Neither costs a forward pass, and the
+first turns Section 3's bracket into an equality.
+
+\end{document}

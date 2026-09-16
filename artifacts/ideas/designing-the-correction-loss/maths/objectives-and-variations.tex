@@ -1,0 +1,376 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\emergencystretch=4em
+\setlist{nosep,leftmargin=1.3em}
+
+\newcommand{\eps}{\varepsilon}
+\newcommand{\shape}[1]{\texttt{(#1)}}
+\newcommand{\B}[1]{\textbf{#1}}
+\newcommand{\LL}{\mathcal{L}}
+\newcommand{\sq}[1]{\Big\lVert #1 \Big\rVert^2}
+\newcommand{\readit}[1]{\par\smallskip\noindent\textit{Read it.} #1}
+
+\title{How the corrector is trained, and every way we could change it}
+\author{poe\_repair\_min}
+\date{2026-09-16}
+
+\begin{document}
+\maketitle
+\vspace{-1.5em}
+
+\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
+Section~1 walks one training step with the real tensor shapes. Section~2 is the same step as four
+equations. Section~3 says what is frozen. Section~4 lists what we can change. Section~5 writes the
+loss out in full for every variation, one per block, with the code change, what to expect and the
+tradeoff.}}
+
+\section{One training step, concretely}
+
+\subsection*{What is on disk}
+Sampling was run once per (pair, seed) with no adapter, and every denoising step was recorded.
+Per step the cache holds five tensors, each \shape{1, 4, 128, 128} in float32 on CPU:
+
+\begin{center}
+\small
+\begin{tabular}{ll}
+\toprule
+\texttt{x\_t} & the noisy latent at this step \\
+\texttt{eps\_a\_raw} & what the frozen model predicts given \texttt{"a cat"} \\
+\texttt{eps\_b\_raw} & \dots given \texttt{"a dog"} \\
+\texttt{eps\_uncond} & \dots given the empty prompt \\
+\texttt{eps\_j\_raw} & \dots given \texttt{"a cat and a dog"}. This is the target \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Four channels at $128\times128$, because a $1024^2$ image is a $128^2$ latent. One sample is
+$D = 4\times128\times128 = 65{,}536$ numbers. A cell of $50$ steps is about $250$\,MB.
+
+\subsection*{The step}
+Take $K$ cached entries. They may come from different steps, seeds and pairs.
+
+\begin{enumerate}
+\item \B{Build the input.} Repeat each \texttt{x\_t} three times and stack:
+  \shape{3K, 4, 128, 128}. The three copies will be run against three different prompts.
+\item \B{Build the conditioning.} Three prompt embeddings, \texttt{"a cat"}, \texttt{"a dog"},
+  empty, each \shape{1, 77, 2048}, concatenated to \shape{3, 77, 2048} and tiled to
+  \shape{3K, 77, 2048}. Pooled vectors likewise, \shape{3, 1280} to \shape{3K, 1280}. Timesteps
+  \shape{3K}, each sample's $t$ repeated three times.
+\item \B{One forward pass} through the adapted model. Output \shape{3K, 4, 128, 128}, cast to fp32
+  at once because fp16 cancellation destroys the gradient.
+\item \B{Split.} Reshape to \shape{K, 3, 4, 128, 128} and take the three slices: the cat branch
+  $a$, the dog branch $b$, the empty branch $u$, each \shape{K, 4, 128, 128}.
+\item \B{Compose.} Combine the three into one prediction, \shape{K, 4, 128, 128}. This is the only
+  place the three branches meet.
+\item \B{Compare to the target}, which is built from cache and never from the adapted model.
+  Subtract, square, average over the $65{,}536$ numbers to get \shape{K}, then average over the
+  batch to get one number.
+\end{enumerate}
+
+\section{The same step, as maths}
+
+\begin{align}
+  T &= a + b - u
+  &&\text{compose, dial off}
+  \label{eq:T}\\
+  T^{(w)} &= u + w(a-u) + w(b-u) \;=\; w\,T - (w-1)\,u
+  &&\text{compose, dial at } w = 7.5
+  \label{eq:Tw}\\
+  \text{target} &= \bar u + w(\bar\eps_J - \bar u)
+  &&\text{the same dial, on cached tensors}
+  \label{eq:tgt}\\
+  \LL &= \frac{1}{K}\sum_k \frac{1}{D}\,\sq{T^{(w)}_k - \text{target}_k}
+  &&\text{the loss}
+  \label{eq:L}
+\end{align}
+
+\B{The dial is inside the loss, not outside it.} Both sides are dialled. Setting $w=1$ in
+\eqref{eq:Tw} gives back \eqref{eq:T}.
+
+\B{The empty branch is read twice.} The right-hand form of \eqref{eq:Tw} shows it: once inside the
+composition, once alone at $-(w-1) = -6.5$.
+
+\B{The composition rule is blind to one move, and the dialled loss is not.}
+Add the same tensor $v$ to $a$ and to $u$. Then
+\begin{equation}
+  T \;\mapsto\; T, \qquad\qquad
+  T^{(w)} \;\mapsto\; T^{(w)} - (w-1)\,v .
+  \label{eq:gauge}
+\end{equation}
+The undialled composition does not move at all. The dialled one moves by $-(w-1)v = -6.5v$, and
+so does the dialled loss, because its target is built from the cached $\bar u$ and does not follow.
+
+That asymmetry is the problem, and it is worse than blindness. \textbf{The dialled loss can lower
+itself by moving the empty branch without making the composition any better.} It is a cheap way to
+cancel error that buys nothing at $w=1$. Every variation below either removes the move or leaves
+it available.
+
+\section{What is frozen}
+
+\begin{center}
+\small
+\begin{tabular}{ll}
+\toprule
+frozen & the entire UNet, both text encoders, the VAE \\
+trainable & LoRA factors on $210$ cross-attention projections \\
+that is & $9{,}912{,}320$ parameters of $2{,}577{,}376{,}004$, or $0.38\%$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The adapter sits on shared weights, so \B{it changes all three branches at once}. There is no
+separate cat adapter. ``Freezing a branch'' therefore does not mean freezing weights. It means not
+running that branch through the adapted model and reading the cached frozen tensor instead. That
+costs nothing: the tensor is already loaded.
+
+\section{What we can change}
+
+\begin{enumerate}
+\item \B{The target} in \eqref{eq:tgt}: the model's own joint-prompt prediction, the noise added to
+  a real photo, or something else.
+\item \B{The dial}: $w = 7.5$ or $w = 1$.
+\item \B{Which branches are adapted}: any of $a$, $b$, $u$ can come from cache instead.
+\item \B{An extra term} added to \eqref{eq:L}, holding some branch near a reference.
+\item \B{The branch prompts}: \texttt{"a cat"} could be \texttt{"a cat and"}.
+\end{enumerate}
+
+\section{Every variation, written out}
+\label{sec:vars}
+
+\paragraph{The one convention that makes these readable.}
+\B{A bar means the tensor came from the cache}, computed once by the frozen model. No bar means it
+came out of this step's forward pass, with the adapter attached. So:
+\begin{center}
+\small
+\begin{tabular}{ll@{\qquad}ll}
+\toprule
+$a$ & adapted cat branch & $\bar a$ & cached cat branch \\
+$b$ & adapted dog branch & $\bar b$ & cached dog branch \\
+$u$ & adapted empty branch & $\bar u$ & cached empty branch \\
+ & & $\bar\eps_J$ & cached joint-prompt prediction, the target \\
+\bottomrule
+\end{tabular}
+\end{center}
+Every $\LL$ below is averaged over the batch and over the $65{,}536$ numbers per sample, exactly as
+in \eqref{eq:L}. That averaging is dropped from the display to keep the equations short.
+
+\subsection*{V0: what runs today}
+\begin{equation}
+  \LL_{V0} \;=\; \sq{\;\underbrace{u + w(a-u) + w(b-u)}_{\text{all three adapted}}
+  \;-\;\underbrace{\big[\bar u + w(\bar\eps_J - \bar u)\big]}_{\text{all cached}}\;}
+\end{equation}
+\readit{Three adapted branches on the left, the cached target on the right, the same dial on both.
+Note that $\bar u$ appears on the right and $u$ on the left: the target uses the frozen empty
+branch, the composition uses the adapted one.}
+
+\noindent\B{Expect} \quad it trains and the loss falls; four arms ran to $30{,}000$ steps.\\
+\B{Tradeoff} \quad the move of \eqref{eq:gauge} is available, and the loss has an incentive to take
+it: shifting $u$ cancels error at $w = 7.5$ while doing nothing for the composition at $w = 1$.
+
+\subsection*{V0a: fine the empty branch for moving}
+\begin{equation}
+  \LL_{V0a} \;=\; \LL_{V0} \;+\; \mu\,\sq{\,u - \bar u\,}, \qquad \mu = 10
+\end{equation}
+\readit{The same loss, plus a penalty on how far the adapted empty branch has moved from the cached
+one.}
+
+\noindent\B{Code} \quad already there, \texttt{trainer.py:496--503}. Free, since $\bar u$ is
+cached.\\
+\B{Expect} \quad much less drift. It ran, and it does.\\
+\B{Tradeoff} \quad a fine is not a ban. What is left of the drift is still multiplied by 6.5, and
+that residue can be the size of the whole rest of the error.
+
+\subsection*{V1: freeze the empty branch}
+\begin{equation}
+  \LL_{V1} \;=\; \sq{\;\underbrace{\bar u + w(a-\bar u) + w(b-\bar u)}_{\text{only } a,b \text{ adapted}}
+  \;-\;\big[\bar u + w(\bar\eps_J - \bar u)\big]\;}
+  \label{eq:V1}
+\end{equation}
+Expand and the $\bar u$ terms cancel:
+\begin{equation}
+  \LL_{V1} \;=\; w^2\,\sq{\;\big(a + b - \bar u\big) \;-\; \bar\eps_J\;}
+  \label{eq:V1b}
+\end{equation}
+\readit{Replace $u$ by $\bar u$ everywhere. The dial then factors out completely, leaving $w^2$
+times a loss with no dial in it. That $w^2$ is a constant; the learning rate absorbs it. So
+\eqref{eq:V1b} is the board's objective, and V1 is the change that makes ours equal to it.}
+
+\noindent\B{Code} \quad one substitution at \texttt{trainer.py:450}, then drop the third row of the
+batch: input becomes \shape{2K, 4, 128, 128}. \B{The sampler must also detach the adapter for its
+empty-prompt pass}, or training and sampling disagree.\\
+\B{Expect} \quad the same composed predictions as V0. Freeing the empty branch buys nothing:
+anything it was doing, the two concept branches can do instead. So no capacity is given up and the
+move of \eqref{eq:gauge} is removed outright, not merely priced. One adapter then works at every guidance
+setting.\\
+\B{Tradeoff} \quad none found. Cheaper by a third, exact where V0a is approximate. The one risk is
+the sampler mismatch, a mistake this repo has made before.
+
+\subsection*{V2: hold the empty branch at a plurality prompt}
+\begin{equation}
+  \LL_{V2} \;=\; \LL_{V0} \;+\; \mu\,\sq{\,u \;-\; \bar\eps(\texttt{"two animals"})\,}
+\end{equation}
+\readit{V0a with one symbol changed on the right of the penalty. Instead of pulling the empty
+branch back to ``no prompt at all'', pull it toward ``a picture with two things in it''.}
+
+\noindent\B{Code} \quad cache one extra tensor per step, then repoint \texttt{trainer.py:497}. It
+also lifts a guard: the trainer refuses the anchor with rewritten branch prompts today, because the
+only cached reference is the empty prompt's (\texttt{train\_pooled.py:315--321}).\\
+\B{Expect} \quad the only variation that both pins the empty branch and moves what the
+composition divides by, from ``all pictures'' to ``two-object pictures''. In density terms it is
+the only one that reaches the clean two-object product.\\
+\B{Tradeoff} \quad the frozen prediction for the \emph{string} \texttt{"two animals"} is not the
+same as a proper two-object reference, and how close they are is unchecked. The cache also grows
+about 20\%.
+
+\subsection*{V3: adapt only the empty branch}
+\begin{equation}
+  \LL_{V3} \;=\; \sq{\;\underbrace{u + w(\bar a-u) + w(\bar b-u)}_{\text{only } u \text{ adapted}}
+  \;-\;\big[\bar u + w(\bar\eps_J - \bar u)\big]\;}
+\end{equation}
+\readit{The mirror of V1: bars on the concept branches, none on the empty one. The only free thing
+in the whole loss is $u$, one tensor per picture, shared by every pair.}
+
+\noindent\B{Code} \quad input drops to \shape{K, 4, 128, 128}. The cheapest arm by far.\\
+\B{Expect} \quad mostly failure, for two reasons. One free tensor shared across all pairs can only
+remove the part of the correction common to all pairs, and that part is small and early. And
+changing only what you divide by amounts to dividing by the probability the picture has two objects
+in it, which rewards the fused animal rather than punishing it.\\
+\B{Tradeoff} \quad cheap enough to run for the record, not worth expecting anything from.
+
+\subsection*{V4: the board's version, dial off, all three adapted}
+\begin{equation}
+  \LL_{V4} \;=\; \sq{\;\big(a + b - u\big) \;-\; \bar\eps_J\;}
+\end{equation}
+\readit{The dial is gone from both sides. Compare with \eqref{eq:V1b}: the only difference is $u$
+against $\bar u$.}
+
+\noindent\B{Code} \quad one argument.\\
+\B{Expect} \quad with the empty branch also frozen this \emph{is} V1, differing by the constant
+$w^2$. With it free, this and V0 are genuinely different objectives and neither implies the other,
+because the term they differ by is exactly the drift $u - \bar u$ scaled by $w-1$.\\
+\B{Tradeoff} \quad on its own it fixes nothing. V1 is what makes the dial irrelevant, not $w=1$.
+
+\subsection*{V5: the board's version with real photographs}
+\begin{equation}
+  \LL_{V5} \;=\; \mathbb{E}_{\,x \sim p_{\text{co}},\; z \sim \mathcal{N}(0,I)}\;
+  \sq{\;z \;-\; \big(a + b - u\big)\;},
+  \qquad x_t = x + \sigma_t z
+\end{equation}
+\readit{The target is no longer the model. Take a real photograph $x$ holding both animals as
+separate objects, add known noise $z$, and ask the composition to predict the noise you added. The
+branches are evaluated at that noised photograph, not at a cached latent, so the cache plays no part
+at all.}
+
+\noindent\B{Code} \quad needs a dataset loader and a corpus $p_{\text{co}}$. Neither exists here;
+the only images in this repository are SDXL output.\\
+\B{Expect} \quad blocked, structurally rather than for a missing download. Almost no pair in this
+pool has photographs with both animals, and those that do are look-alike pairs. A pair has such
+photos because the two things genuinely co-occur, which is also why the model already composes
+them. The data is plentiful where it is not needed.\\
+\B{Tradeoff} \quad not applicable until a corpus exists.
+
+\subsection*{V6: a better teacher}
+\begin{equation}
+  \LL_{V6} \;=\; \mathbb{E}_{\,x \sim p_{\text{filtered}},\; z}\;
+  \sq{\;z \;-\; \big(a + b - u\big)\;}
+\end{equation}
+\readit{V5 with one symbol changed underneath the expectation. The corpus is now the model's own
+renders that passed a composition filter, instead of photographs.}
+
+\noindent\B{Code} \quad a render-and-filter pass per pair, then the same loss as V5.\\
+\B{Expect} \quad the current target is known to be unreliable; one scope already drops training
+cells whose joint-prompt target shows the wrong animals. A filtered sample set is right by
+construction exactly where the joint prompt is wrong.\\
+\B{Tradeoff} \quad the filter is the risk. The validated scorer counts instances and cannot tell a
+cat beside a dog from two dogs, so the corpus needs a second head reading which animals are present.
+Without it, this trains toward pictures of the same animal twice. It also changes the target, so
+comparisons against V0 stop being clean.
+
+\subsection*{V7: protect single-concept behaviour}
+\begin{equation}
+  \LL_{V7} \;=\; \big(\text{any loss above}\big)
+  \;+\; \nu\,\mathbb{E}_{\,x_t \,\sim\, \text{single-prompt runs}}\;
+  \sq{\;\eps_\theta(x_t,t,c_1) \;-\; \bar\eps(x_t,t,c_1)\;}
+\end{equation}
+\readit{An extra penalty holding the adapted cat branch near the frozen cat branch. The states come
+from sampling runs with a single prompt, not from pair runs, and that choice is the whole design.}
+
+\noindent\B{Code} \quad needs a small new cache: states from single-prompt runs plus the frozen
+branch output there. Then one extra forward per protected concept per step.\\
+\B{Expect} \quad matching the target \emph{requires} the concept branches to move, so this is a
+price on the correction rather than a free safeguard. At the pair states it would cancel the fit
+outright. At single-concept states it should not, but only if the branch moves differently in the
+two places.\\
+\B{Tradeoff} \quad it may be actively wrong. If the concept branches are moving because they are
+learning the two-object conditioning, this pulls them back from the thing we want. Measure first.
+
+\subsection*{On rewriting the branch prompts}
+Three arms ran with the concept prompts changed to \texttt{"a cat and"} against a null of
+\texttt{"and"}, and to \texttt{"a cat, two animals"} against a null of \texttt{"two animals"}. In
+the equations above that changes which string $a$, $b$ and $u$ were conditioned on, and nothing
+else. Renaming a prompt renames a free tensor, so all three reach the same set of composed
+predictions; they differ in where training starts, not in where it can end. Their fit losses came
+out within 20\% of each other, which is what that predicts. Changing the prompts also invalidates
+the cached branch tensors, so it is not free.
+
+\section{All of it in one table}
+
+\begin{center}
+\small
+\begin{tabular}{c l l l c l}
+\toprule
+\# & composition & target & extra term & batch & status \\
+\midrule
+V0  & $u + w(a{-}u) + w(b{-}u)$              & $\bar u + w(\bar\eps_J{-}\bar u)$ & --                        & $3K$ & 4 arms run \\
+V0a & same                                    & same                              & $\mu\lVert u-\bar u\rVert^2$ & $3K$ & run \\
+V1  & $\bar u + w(a{-}\bar u) + w(b{-}\bar u)$& same                              & --                        & $2K$ & \B{not run} \\
+V2  & same as V0                              & same                              & $\mu\lVert u-\bar\eps_{\text{pl}}\rVert^2$ & $3K$ & \B{not run} \\
+V3  & $u + w(\bar a{-}u) + w(\bar b{-}u)$     & same                              & --                        & $K$  & not run \\
+V4  & $a + b - u$                             & $\bar\eps_J$                      & --                        & $3K$ & $=$ V1 if $u$ frozen \\
+V5  & $a + b - u$                             & $z$, real photo                   & --                        & $3K$ & blocked \\
+V6  & $a + b - u$                             & $z$, filtered render              & --                        & $3K$ & not run \\
+V7  & any                                     & any                               & $\nu\lVert \eps_\theta(c_1)-\bar\eps(c_1)\rVert^2$ & $+1$ & not run \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Four things not to forget}
+
+\begin{enumerate}
+\item $a+b-u$ is unchanged by adding the same $v$ to $a$ and to $u$; $T^{(w)}$ changes by
+  $-(w-1)v$. So the undialled losses cannot see that move and the dialled ones can \emph{use} it,
+  to cancel error without improving the composition.
+\item Freeing the empty branch buys no predictions. It only decides how the answer is split up.
+\item Whatever is frozen in training must be frozen in sampling.
+\item The branch prompts fix the cache. Change them and the cached branch tensors are wrong.
+\end{enumerate}
+
+\section{What to do, in order}
+
+\begin{enumerate}
+\item Log $\lVert (a+b-u) - \bar\eps_J\rVert^2$ next to the loss. One line, no forward pass. It says
+  whether the loss took the cheap move of \eqref{eq:gauge} instead of fixing the composition.
+\item \B{V1.} Cheaper, exact, and it removes the dial from the problem.
+\item Two reads against adapters already on disk, neither needing training: does what the adapter
+  added to the cat branch point the same way as what the word \texttt{"and"} adds, and is that
+  addition the same thing for every concept.
+\item \B{V2}, compared against V1.
+\item \B{V7}, only if read 3 says the concept branches move differently at pair states and at
+  single-concept states.
+\item \B{V6} last, because it changes the target.
+\end{enumerate}
+
+\paragraph{The numbers behind the claims.}
+Deliberately not in here. Two files in this folder carry them.
+\texttt{guided-and-unguided-objectives.tex} has the measured drift per arm and what it does to the
+loss, the held-out fit, the corpus count and the off-policy probe.
+\texttt{correction-loss-variants.tex} has the derivations: why freeing the empty branch buys
+nothing, and why renaming prompts changes nothing.
+
+\end{document}

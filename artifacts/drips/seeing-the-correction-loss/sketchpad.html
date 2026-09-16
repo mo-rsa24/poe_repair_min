@@ -1,0 +1,1517 @@
+<title>Two Legs, One Loss</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<style>
+:root{
+  --paper:#F5F7F3; --ink:#161A17; --ink-soft:#4A544C; --ink-faint:#7C867E;
+  --rule:#D6DED3; --panel:#FFFFFF; --panel-2:#EDF1EA;
+  --latent:#3C7A4C; --latent-fill:#DCEBDF;
+  --unet:#3F72B0; --unet-fill:#DCE7F4;
+  --attn:#D9822B; --attn-fill:#FAE8D2;
+  --frozen:#707E88; --frozen-fill:#E3E8EB;
+  --hot:#B33A2B; --txt:#7A5AA8; --txt-fill:#EBE3F5;
+  --shadow:0 1px 2px rgba(22,26,23,.06), 0 6px 18px rgba(22,26,23,.05);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F1411; --ink:#E8EDE7; --ink-soft:#A8B3AA; --ink-faint:#78837A;
+    --rule:#28302A; --panel:#161C18; --panel-2:#1D2520;
+    --latent:#6FBF84; --latent-fill:#1C2A20;
+    --unet:#79A8E0; --unet-fill:#18222F;
+    --attn:#EFA85C; --attn-fill:#2B2013;
+    --frozen:#8D9BA5; --frozen-fill:#1E2529;
+    --hot:#E4705E; --txt:#B79BE0; --txt-fill:#231B33;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 6px 20px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1411; --ink:#E8EDE7; --ink-soft:#A8B3AA; --ink-faint:#78837A;
+  --rule:#28302A; --panel:#161C18; --panel-2:#1D2520;
+  --latent:#6FBF84; --latent-fill:#1C2A20;
+  --unet:#79A8E0; --unet-fill:#18222F;
+  --attn:#EFA85C; --attn-fill:#2B2013;
+  --frozen:#8D9BA5; --frozen-fill:#1E2529;
+  --hot:#E4705E; --txt:#B79BE0; --txt-fill:#231B33;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 6px 20px rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+  font-size:16px; line-height:1.5;
+  height:100svh; overflow:hidden; display:flex; flex-direction:column;
+}
+
+/* ---------- top bar ---------- */
+.top{
+  flex:none; display:flex; align-items:baseline; gap:18px; flex-wrap:wrap;
+  padding:11px 26px; border-bottom:1px solid var(--rule); background:var(--panel-2);
+}
+.top h1{
+  font-family:Spectral,Georgia,serif; font-weight:600; font-size:23px;
+  margin:0; letter-spacing:-.01em; white-space:nowrap;
+}
+.top .tag{
+  font-weight:600; letter-spacing:.07em; text-transform:uppercase;
+  font-size:10.5px; color:var(--hot); white-space:nowrap;
+}
+.top .note{font-size:13px; color:var(--ink-soft); flex:1; min-width:200px}
+
+/* ---------- stepper ---------- */
+.stepbar{
+  flex:none; display:flex; gap:6px; flex-wrap:wrap; align-items:center;
+  padding:9px 26px; border-bottom:1px solid var(--rule);
+}
+.stepbar button{
+  font:500 13px/1 "IBM Plex Sans",sans-serif; color:var(--ink-soft);
+  background:transparent; border:1px solid transparent; border-radius:2px;
+  padding:8px 12px; cursor:pointer; transition:background .18s, color .18s, border-color .18s;
+}
+.stepbar button:hover{background:var(--panel-2); color:var(--ink)}
+.stepbar button[aria-current="true"]{background:var(--ink); color:var(--paper); border-color:var(--ink)}
+.stepbar button:focus-visible{outline:2px solid var(--attn); outline-offset:2px}
+.nav button{border-color:var(--rule)}
+.nav{display:flex; gap:4px; margin-right:8px}
+
+/* ---------- main split ---------- */
+main{flex:1; min-height:0; display:flex; gap:0}
+.figpane{
+  flex:1.75; min-width:0; min-height:0; display:flex; align-items:center;
+  padding:6px 10px 10px 18px;
+}
+.figpane svg{width:100%; height:100%; display:block}
+.rail{
+  flex:1; min-width:450px; max-width:660px; min-height:0; overflow-y:auto;
+  border-left:1px solid var(--rule); padding:16px 26px 24px; background:var(--panel);
+}
+
+.caption{
+  font-family:Spectral,Georgia,serif; font-size:19.5px; line-height:1.42;
+  margin:0 0 18px; color:var(--ink);
+}
+.caption em{font-style:italic; color:var(--hot); font-weight:600}
+
+.node{transition:opacity .45s ease}
+.node[data-off="1"]{opacity:0; pointer-events:none}
+text{font-family:"IBM Plex Sans",sans-serif}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+.hit{cursor:pointer}
+.glow{filter:drop-shadow(0 0 8px var(--attn))}
+
+/* ---------- math in the rail ---------- */
+.eq{
+  border-left:3px solid var(--frozen); padding:0 0 0 13px; margin:0 0 16px;
+  transition:opacity .4s ease;
+}
+.eq.legB{border-left-color:var(--attn)}
+.eq.loss{border-left-color:var(--hot)}
+.eq[hidden]{display:none}
+.eq h3{
+  margin:0 0 6px; font:600 10.5px/1 "IBM Plex Sans",sans-serif;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint);
+}
+.eqline{font-size:20px; display:flex; flex-wrap:wrap; align-items:center; gap:1px; line-height:1.9}
+.grp{display:inline-flex; align-items:center; gap:1px; white-space:nowrap}
+.eqline{align-items:flex-start}
+.braced{display:inline-flex; flex-direction:column; align-items:stretch; margin:0 2px}
+.braced > .grp{justify-content:center}
+.bsvg{width:100%; height:8px; color:var(--ink-faint); margin-top:1px; display:block}
+.blab{font:400 10.5px/1.25 "IBM Plex Sans",sans-serif; color:var(--ink-faint);
+  text-align:center; margin-top:3px; white-space:nowrap}
+.braced.hotb .bsvg{color:var(--hot)} .braced.hotb .blab{color:var(--hot)}
+.braced.fzb  .bsvg{color:var(--frozen)} .braced.fzb  .blab{color:var(--frozen)}
+.braced.adb  .bsvg{color:var(--attn)} .braced.adb  .blab{color:var(--attn)}
+.t{padding:2px 4px; border-radius:2px; cursor:pointer; transition:background .18s, box-shadow .18s}
+.t:hover,.t.lit{background:var(--attn-fill); box-shadow:inset 0 0 0 1px var(--attn)}
+.t.frozen:hover,.t.frozen.lit{background:var(--frozen-fill); box-shadow:inset 0 0 0 1px var(--frozen)}
+.op{color:var(--ink-soft); padding:0 2px}
+.eqlab{font:600 9.5px/1 "IBM Plex Sans",sans-serif; letter-spacing:.11em;
+  text-transform:uppercase; color:var(--ink-faint); margin:2px 0 5px}
+.eqline.full{font-size:15.5px; line-height:1.8}
+.why{
+  display:flex; align-items:center; gap:8px; margin:11px 0 9px;
+  font-size:12.5px; color:var(--hot); font-style:italic;
+}
+.why::before{content:"↓"; font-style:normal; font-weight:600; font-size:15px}
+.t.cancel{opacity:.4; position:relative}
+.t.cancel::after{
+  content:""; position:absolute; left:1px; right:1px; top:48%;
+  height:1.6px; background:var(--hot); transform:rotate(-9deg); pointer-events:none;
+}
+.t.mark{box-shadow:inset 0 -2.5px 0 var(--attn)}
+.note{margin:7px 0 0; font-size:13px; color:var(--ink-soft); line-height:1.45}
+
+.legend{display:flex; flex-direction:column; gap:7px; margin:20px 0 0; font-size:12.5px; color:var(--ink-soft)}
+.legend span{display:flex; gap:8px; align-items:center}
+.sw{width:12px; height:12px; border-radius:2px; border:1.5px solid; flex:none}
+.sw.fr{background:var(--frozen-fill); border-color:var(--frozen)}
+.sw.ad{background:var(--attn-fill); border-color:var(--attn)}
+
+/* ---------- drill panel ---------- */
+.drill[hidden]{display:none}
+.drill h3{margin:0 0 4px; font-family:Spectral,Georgia,serif; font-size:19px; font-weight:600}
+.drill .prov{font-size:11.5px; color:var(--latent); font-weight:600; letter-spacing:.04em; margin:0 0 12px}
+.drill table{width:100%; border-collapse:collapse; font-size:13px; font-variant-numeric:tabular-nums; margin:0 0 14px}
+.drill td{padding:4px 6px 4px 0; border-bottom:1px solid var(--rule); vertical-align:top}
+.drill td:first-child{color:var(--ink-soft); white-space:nowrap}
+.drill td:last-child{font-family:"IBM Plex Mono",monospace; text-align:right; white-space:nowrap}
+.drill p{font-size:13.5px; color:var(--ink-soft); margin:0 0 10px; line-height:1.5}
+.back{
+  font:500 12px/1 "IBM Plex Sans",sans-serif; color:var(--ink-soft);
+  background:transparent; border:1px solid var(--rule); border-radius:2px;
+  padding:7px 11px; cursor:pointer; margin-bottom:14px;
+}
+.back:hover{background:var(--panel-2); color:var(--ink)}
+.todo{
+  margin-top:6px; padding:10px 12px; background:var(--panel-2);
+  border-left:3px solid var(--hot); font-size:13px; color:var(--ink-soft); line-height:1.45;
+}
+
+.figcol{flex:1.28; min-width:0; min-height:0; display:flex; flex-direction:column}
+.figpane{flex:1; min-width:0; min-height:0; display:flex; align-items:center; padding:4px 10px 0 18px}
+.figpane svg{width:100%; height:100%; display:block}
+.varbar{
+  flex:none; display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+  padding:10px 18px 12px; border-top:1px solid var(--rule);
+}
+.vlab{font:600 10px/1 "IBM Plex Sans",sans-serif; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--ink-faint)}
+.vpills{display:flex; gap:7px; flex-wrap:wrap}
+.vpills button{
+  font:600 14px/1 "IBM Plex Sans",sans-serif; color:var(--ink-soft);
+  background:var(--panel); border:1.5px solid var(--rule); border-radius:22px;
+  padding:10px 18px; cursor:pointer;
+  transition:background .2s, color .2s, border-color .2s, transform .12s;
+}
+.vpills button:hover{border-color:var(--attn); color:var(--ink); transform:translateY(-1px)}
+.vpills button[aria-current="true"]{background:var(--attn); color:var(--paper); border-color:var(--attn)}
+.vpills button:focus-visible{outline:2px solid var(--attn); outline-offset:2px}
+.vpills button small{display:block; font-weight:400; font-size:10.5px; opacity:.8; margin-top:3px}
+
+@keyframes pulseIn{
+  0%{opacity:.15; transform:scale(.96)}
+  60%{opacity:1; transform:scale(1.02)}
+  100%{opacity:1; transform:scale(1)}
+}
+.changed{animation:pulseIn .55s ease-out both; transform-box:fill-box; transform-origin:center}
+@media (prefers-reduced-motion:reduce){ .changed{animation:none} }
+
+/* ---------- modal ---------- */
+.modal[hidden]{display:none}
+.modal{
+  position:fixed; inset:0; z-index:50; display:flex; flex-direction:column;
+  background:var(--paper);
+}
+.modal .mhead{
+  flex:none; display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+  padding:12px 26px; border-bottom:1px solid var(--rule); background:var(--panel-2);
+}
+.modal .mhead h2{
+  font-family:Spectral,Georgia,serif; font-weight:600; font-size:21px; margin:0;
+}
+.modal .prov{
+  font-size:11.5px; font-weight:500; letter-spacing:.02em;
+  font-family:"IBM Plex Mono",monospace;
+  color:var(--latent); border:1px solid var(--latent); border-radius:2px; padding:3px 8px;
+}
+.modal .mspace{flex:1}
+.modal .mclose{
+  font:500 13px/1 "IBM Plex Sans",sans-serif; color:var(--ink-soft);
+  background:transparent; border:1px solid var(--rule); border-radius:2px;
+  padding:9px 13px; cursor:pointer;
+}
+.modal .mclose:hover{background:var(--panel); color:var(--ink)}
+.mbody{flex:1; min-height:0; display:flex; flex-direction:column; padding:14px 26px 0}
+.mstage{flex:1; min-height:0; display:flex; align-items:center; justify-content:center}
+.mstage svg{width:100%; height:100%; max-height:100%; display:block}
+.mcap{
+  flex:none; font-family:Spectral,Georgia,serif; font-size:19px; line-height:1.4;
+  margin:10px 0 0; min-height:2.8em; max-width:88ch;
+}
+.mcap b{font-weight:600; color:var(--hot)}
+.mfoot{
+  flex:none; display:flex; gap:7px; align-items:center; flex-wrap:wrap;
+  padding:12px 26px 16px; border-top:1px solid var(--rule); margin-top:10px;
+}
+.mfoot button{
+  font:500 12.5px/1 "IBM Plex Sans",sans-serif; color:var(--ink-soft);
+  background:transparent; border:1px solid var(--rule); border-radius:2px;
+  padding:8px 12px; cursor:pointer; transition:background .18s,color .18s;
+}
+.mfoot button:hover{background:var(--panel-2); color:var(--ink)}
+.mfoot button[aria-current="true"]{background:var(--ink); color:var(--paper); border-color:var(--ink)}
+.mfoot button:disabled{opacity:.35; cursor:default}
+.pillset{display:inline-flex; align-items:center; gap:5px; margin-left:16px}
+.pillset b{font:600 10px/1 "IBM Plex Sans",sans-serif; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--ink-faint); margin-right:3px}
+.pill{font:500 12.5px/1 "IBM Plex Sans",sans-serif !important; padding:7px 13px !important;
+  border-radius:20px !important; border:1px solid var(--rule) !important}
+.pill[aria-current="true"]{background:var(--attn) !important; color:var(--paper) !important;
+  border-color:var(--attn) !important}
+.mfoot button:focus-visible{outline:2px solid var(--attn); outline-offset:2px}
+.mfoot .dots{display:flex; gap:6px; margin-left:8px}
+.owed{
+  padding:9px 12px; background:var(--panel-2); border-left:3px solid var(--hot);
+  font-size:12.5px; color:var(--ink-soft); line-height:1.45; max-width:70ch;
+}
+.wctl{display:flex; align-items:center; gap:12px; font-size:13.5px; color:var(--ink-soft)}
+.wctl input[type=range]{width:220px; accent-color:var(--attn)}
+.wctl b{color:var(--ink); font-family:"IBM Plex Mono",monospace; font-size:15px}
+
+/* sweeping highlight, pure CSS so there is no timer to leak */
+@keyframes sweepY{ 0%{transform:translateY(0)} 100%{transform:translateY(var(--sweep,240px))} }
+.sweeper{animation:sweepY 3.4s cubic-bezier(.4,0,.6,1) infinite alternate}
+@media (prefers-reduced-motion:reduce){ .sweeper{animation:none} }
+
+@media (max-height:600px), (max-width:820px){
+  body{height:auto; overflow:auto}
+  main{flex-direction:column}
+  .figpane{padding:14px}
+  .figpane svg{height:auto}
+  .rail{max-width:none; border-left:0; border-top:1px solid var(--rule)}
+}
+@media (prefers-reduced-motion:reduce){ .node,.eq{transition:none} }
+</style>
+
+<div class="top">
+  <h1>Two legs, one loss</h1>
+  <span class="tag">poe_repair_min</span>
+  <span class="note">The target leg is a disk read. The composition leg is a live forward pass. Pick a variation below. Four things open: the <b>latent space</b> header, the <b>Q/KV</b> blocks, the <b>empty prompt</b>, and the <b>loss</b>.</span>
+</div>
+
+<div class="stepbar" role="group" aria-label="Reveal steps">
+  <div class="nav">
+    <button id="prev" aria-label="Previous step">←</button>
+    <button id="next" aria-label="Next step">→</button>
+  </div>
+  <button data-s="0">the prompts</button>
+  <button data-s="1">leg A: look it up</button>
+  <button data-s="2">leg B: one pass</button>
+  <button data-s="3">three scores</button>
+  <button data-s="4">guidance, both sides</button>
+  <button data-s="5">the loss</button>
+</div>
+
+<main>
+<div class="figcol">
+  <div class="figpane" id="figstage"></div>
+  <div class="varbar" role="group" aria-label="Variation">
+    <span class="vlab">variation</span>
+    <span class="vpills" id="vpills"></span>
+  </div>
+</div>
+
+<aside class="rail">
+  <div id="mainRail">
+    <p class="caption" id="cap"></p>
+    <div class="eq" id="boxV">
+      <h3 id="veqTitle"></h3>
+      <div class="eqlab">written out in full</div>
+      <div class="eqline full" id="veqFull"></div>
+      <div class="why" id="vwhy"></div>
+      <div class="eqlab" id="vsimplab">what it collapses to</div>
+      <div class="eqline" id="veqSimp"></div>
+      <p class="note" id="vnote"></p>
+    </div>
+    <div class="legend">
+      <span><i class="sw fr"></i> read from cache · frozen · no gradient</span>
+      <span><i class="sw ad"></i> computed now · adapter attached</span>
+    </div>
+  </div>
+</aside>
+</main>
+
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="mtitle">
+  <div class="mhead">
+    <h2 id="mtitle"></h2>
+    <span class="prov" id="mprov"></span>
+    <span class="mspace"></span>
+    <button class="mclose" id="mclose">close ✕</button>
+  </div>
+  <div class="mbody">
+    <div class="mstage" id="mstage"></div>
+    <p class="mcap" id="mcap"></p>
+  </div>
+  <div class="mfoot">
+    <button id="mprev">← back</button>
+    <button id="mnext">next →</button>
+    <span class="dots" id="mdots"></span>
+    <span class="mspace"></span>
+    <span id="mextra"></span>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  function tex(s){ try { return katex.renderToString(s,{output:"mathml",throwOnError:false}); } catch(e){ return s; } }
+  function term(t,bind,frozen){ return '<span class="t'+(frozen?' frozen':'')+'" data-bind="'+bind+'" tabindex="0">'+tex(t)+'</span>'; }
+  function op(s){ return '<span class="op">'+tex(s)+'</span>'; }
+
+  function all(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); }
+  function lightOn(k){
+    all('[data-bind="'+k+'"]').forEach(function(n){
+      if(n.tagName.toLowerCase()==="g") n.classList.add("glow"); else n.classList.add("lit");
+    });
+  }
+  function lightOff(){
+    all(".glow").forEach(function(n){ n.classList.remove("glow"); });
+    all(".lit").forEach(function(n){ n.classList.remove("lit"); });
+  }
+  /* delegated, because the picture and the equation are redrawn on every change */
+  function nearestBind(el){
+    while(el && el !== document){
+      if(el.getAttribute && el.getAttribute("data-bind")) return el.getAttribute("data-bind");
+      el = el.parentNode;
+    }
+    return null;
+  }
+  document.addEventListener("mouseover",function(e){ var k=nearestBind(e.target); if(k) lightOn(k); });
+  document.addEventListener("mouseout", function(e){ if(nearestBind(e.target)) lightOff(); });
+  document.addEventListener("focusin",  function(e){ var k=nearestBind(e.target); if(k) lightOn(k); });
+  document.addEventListener("focusout", lightOff);
+
+  /* ================= modal engine ================= */
+  var VB = '0 0 940 350';
+  function svg(inner){ return '<svg viewBox="'+VB+'" preserveAspectRatio="xMidYMid meet">'+inner+'</svg>'; }
+  function R(x,y,w,h,st,fi,extra){
+    return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="2" fill="'+fi+'" stroke="'+st+
+           '" stroke-width="1.3"'+(extra||'')+'/>';
+  }
+  function T(x,y,t,size,fill,anc,weight){
+    return '<text x="'+x+'" y="'+y+'" font-size="'+(size||12)+'" fill="'+(fill||'var(--ink-soft)')+
+           '" text-anchor="'+(anc||'start')+'"'+(weight?' font-weight="'+weight+'"':'')+'>'+t+'</text>';
+  }
+  function M(x,y,t){ return '<text x="'+x+'" y="'+y+'" font-size="11.5" font-family="IBM Plex Mono,monospace" fill="var(--ink-soft)">'+t+'</text>'; }
+  function AR(x1,y1,x2,y2,c){
+    return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+(c||'var(--ink-soft)')+
+           '" stroke-width="1.5" marker-end="url(#ar)"/>';
+  }
+  var DEFS = '<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="var(--ink-soft)"/></marker></defs>';
+
+  /* rows of faint lines inside a matrix box, so it reads as a matrix */
+  function ruled(x,y,w,h,n,c){
+    var o='', i, gap=h/n;
+    for(i=1;i<n;i++) o+='<line x1="'+x+'" y1="'+(y+i*gap).toFixed(1)+'" x2="'+(x+w)+'" y2="'+(y+i*gap).toFixed(1)+'" stroke="'+c+'" stroke-width="0.5" opacity=".35"/>';
+    return o;
+  }
+  function celled(x,y,w,h,n,c){
+    var o='', i, gap=w/n;
+    for(i=1;i<n;i++) o+='<line x1="'+(x+i*gap).toFixed(1)+'" y1="'+y+'" x2="'+(x+i*gap).toFixed(1)+'" y2="'+(y+h)+'" stroke="'+c+'" stroke-width="0.5" opacity=".35"/>';
+    return o;
+  }
+  /* a labelled matrix: real shape bold above, drawn note faint below */
+  function MAT(x,y,w,h,shape,name,st,fi,rows){
+    return R(x,y,w,h,st,fi) + ruled(x,y,w,h,rows||6,st) +
+      T(x+w/2, y-16, name, 12.5, st, 'middle', 600) +
+      T(x+w/2, y-4, shape, 11.5, 'var(--ink-soft)', 'middle');
+  }
+
+  var TXT='var(--txt)', TXTF='var(--txt-fill)', UN='var(--unet)', UNF='var(--unet-fill)',
+      AT='var(--attn)', ATF='var(--attn-fill)', HOT='var(--hot)', INK='var(--ink)';
+
+  /* ---------- modal A: inside one Q/KV block ---------- */
+  var ATTN = [
+  { cap:'A prompt is not words to the model. It is <b>77 slots</b>, always, however short the sentence. "a cat" fills three of them and pads the rest.',
+    draw:function(){
+      var o=DEFS, i, x0=206, cw=25, gap=3, n=16;
+      o+=R(26,150,128,38,TXT,TXTF)+T(90,174,'"a cat"',15,INK,'middle');
+      o+=AR(162,169,198,169,TXT);
+      for(i=0;i<n;i++){
+        var x=x0+i*(cw+gap), on=i<3;
+        o+=R(x,152,cw,34,on?TXT:'var(--rule)',on?TXTF:'var(--panel)');
+      }
+      var stripEnd=x0+n*(cw+gap);
+      o+=T(stripEnd+5,177,'…',18,'var(--ink-faint)');
+      o+=T(x0,142,'77 slots',12.5,TXT,'start',600);
+      o+=M(x0,208,'49406    320    2368    then 49407, seventy-four more times');
+      var bx=690, by=58, bw=68, bh=232, h1=bh*768/2048;
+      o+='<path d="M'+(x0+cw)+',152 L'+bx+','+by+' M'+(x0+cw)+',186 L'+bx+','+(by+bh)+
+         '" stroke="'+TXT+'" stroke-width="1" stroke-dasharray="4 3" opacity=".5" fill="none"/>';
+      o+=T(bx+bw/2,by-28,'one slot becomes',12.5,TXT,'middle',600);
+      o+=T(bx+bw/2,by-12,'2048 numbers',11.5,'var(--ink-soft)','middle');
+      o+=R(bx,by,bw,h1,TXT,TXTF)+T(bx+bw/2,by+h1/2+5,'768',13,INK,'middle');
+      o+=R(bx,by+h1,bw,bh-h1,TXT,TXTF)+T(bx+bw/2,by+h1+(bh-h1)/2+5,'1280',13,INK,'middle');
+      o+=T(bx+bw+11,by+h1/2+4,'CLIP-L',11.5,'var(--ink-soft)');
+      o+=T(bx+bw+11,by+h1+(bh-h1)/2+4,'OpenCLIP bigG',11.5,'var(--ink-soft)');
+      o+=T(60,250,'Two text encoders read the same',13,'var(--ink-soft)');
+      o+=T(60,270,'sentence and their outputs are',13,'var(--ink-soft)');
+      o+=T(60,290,'stacked, not added.',13,'var(--ink-soft)');
+      return o;
+    }},
+  { cap:'The picture is not a picture either. The 64×64 latent grid is <b>unrolled into 4096 rows</b>, one per patch.',
+    draw:function(){
+      var o=DEFS,i,j;
+      o+=R(60,70,208,208,UN,UNF)+celled(60,70,208,208,8,UN)+ruled(60,70,208,208,8,UN);
+      o+=R(60+3*26,70+4*26,26,26,UN,UN);
+      o+=T(164,58,'the latent',12.5,UN,'middle',600)+T(164,296,'64 × 64 patches',12,'var(--ink-soft)','middle');
+      o+=T(164,312,'drawn as 8 × 8',11,'var(--ink-faint)','middle');
+      o+=AR(290,174,360,174,UN);
+      o+=MAT(400,60,92,230,'4096 × 640','unrolled',UN,UNF,12);
+      o+=R(400,60+4*19,92,19,UN,UN);
+      o+=AR(500,145,560,145,UN);
+      o+=T(578,140,'one row per patch,',13,'var(--ink-soft)');
+      o+=T(578,158,'640 numbers each',13,'var(--ink-soft)');
+      o+=T(578,186,'the order is lost here,',12,'var(--ink-faint)');
+      o+=T(578,202,'position comes back later',12,'var(--ink-faint)');
+      return o;
+    }},
+  { cap:'Three projections. The latent becomes the <b>questions</b>. The text becomes the <b>keys</b> and the <b>answers</b>. All three weight matrices are where the adapter lives.',
+    draw:function(){
+      var o=DEFS;
+      function row(y,inX,inW,inH,inShape,inName,inC,inF,wName,outShape,outH){
+        var r='';
+        r+=MAT(inX,y,inW,inH,inShape,inName,inC,inF,5);
+        r+=T(inX+inW+16,y+inH/2+5,'·',18,'var(--ink-soft)');
+        r+=MAT(inX+inW+34,y,62,inH,'','',AT,ATF,4);
+        r+=T(inX+inW+65,y+inH/2+5,wName,12.5,AT,'middle',600);
+        r+='<circle cx="'+(inX+inW+88)+'" cy="'+(y+8)+'" r="5" fill="'+AT+'"/>';
+        r+=T(inX+inW+112,y+inH/2+5,'=',16,'var(--ink-soft)');
+        r+=MAT(inX+inW+134,y,84,outH,outShape,'',inC,inF,4);
+        return r;
+      }
+      o+=row(58,60,96,58,'4096 × 640','latent',UN,UNF,'W_Q','Q  4096 × 640',58);
+      o+=row(160,60,96,30,'77 × 2048','text',TXT,TXTF,'W_K','K  77 × 640',30);
+      o+=row(250,60,96,30,'77 × 2048','text',TXT,TXTF,'W_V','V  77 × 640',30);
+      o+='<circle cx="700" cy="40" r="5" fill="'+AT+'"/>';
+      o+=T(714,45,'the adapter is on these three, and nothing else',12.5,AT);
+      o+=T(714,66,'to_q · to_k · to_v, on cross-attention only',11.5,'var(--ink-faint)');
+      return o;
+    }},
+  { cap:'Every patch scores every word. Multiply and you get one number for each <b>(patch, word)</b> pair: a table 4096 tall and 77 wide.',
+    draw:function(){
+      var o=DEFS;
+      o+=MAT(392,42,168,56,'640 × 77','Kᵀ',TXT,TXTF,3);
+      o+=MAT(200,112,168,196,'4096 × 640','Q',UN,UNF,10);
+      o+=MAT(392,112,168,196,'4096 × 77','scores',AT,ATF,10);
+      o+='<g class="sweeper" style="--sweep:170px">';
+      o+=R(200,114,168,18,UN,UN,' opacity=".55"');
+      o+=R(392,114,168,18,AT,AT,' opacity=".55"');
+      o+='</g>';
+      o+=T(300,118,'×',17,'var(--ink-soft)','middle');
+      o+=T(378,216,'=',17,'var(--ink-soft)','middle');
+      o+=T(600,150,'one lit row =',13,'var(--ink-soft)');
+      o+=T(600,170,'one patch asking',13,INK,'start',600);
+      o+=T(600,190,'all 77 slots at once',13,'var(--ink-soft)');
+      o+=T(600,222,'20 heads do this in parallel',11.5,'var(--ink-faint)');
+      o+=T(600,238,'at the 32×32 blocks, 10 at 64×64',11.5,'var(--ink-faint)');
+      return o;
+    }},
+  { cap:'Softmax turns one row of raw scores into a <b>share-out</b>: 77 weights that add to exactly one. Measured on the real trace, the row sums came back 1.000.',
+    draw:function(){
+      var o=DEFS,i;
+      var raw=[.22,.15,.86,.31,.12,.18,.09,.14,.11,.16,.10,.13,.08,.12,.09,.11,.07,.10];
+      var sum=0; for(i=0;i<raw.length;i++) sum+=raw[i];
+      for(i=0;i<raw.length;i++){
+        var x=70+i*30, h=raw[i]*90;
+        o+=R(x,120-h,22,h,AT,i===2?AT:ATF);
+      }
+      o+=T(70,138,'raw scores, one row',12,'var(--ink-soft)');
+      o+=T(70,40,'this patch, all 77 slots',12.5,INK,'start',600);
+      o+=AR(300,160,300,196,AT);
+      o+=T(316,182,'softmax',13,AT,'start',600);
+      for(i=0;i<raw.length;i++){
+        var x2=70+i*30, h2=(raw[i]/sum)*300;
+        o+=R(x2,310-h2,22,h2,AT,i===2?AT:ATF);
+      }
+      o+=T(70,328,'shares, adding to 1.000 ✓',12,'var(--latent)');
+      o+=T(626,300,'the tall one is the word "cat"',12.5,INK);
+      o+=T(626,318,'this patch is listening to it',12,'var(--ink-soft)');
+      return o;
+    }},
+  { cap:'Finally the shares are spent. Each patch pulls a <b>blend of the value rows</b>, weighted by how much it listened. That blend is what gets written back into the picture.',
+    draw:function(){
+      var o=DEFS,i;
+      o+=MAT(40,70,210,26,'1 × 77','one row of shares',AT,ATF,1);
+      o+=celled(40,70,210,26,14,AT);
+      o+=T(268,89,'·',18,'var(--ink-soft)');
+      o+=MAT(288,60,130,46,'77 × 640','V',TXT,TXTF,4);
+      o+=T(432,89,'=',16,'var(--ink-soft)');
+      o+=MAT(452,70,168,26,'1 × 640','what this patch gets',UN,UNF,1);
+      o+=R(60,178,148,148,UN,UNF)+celled(60,178,148,148,8,UN)+ruled(60,178,148,148,8,UN);
+      o+=R(60+3*18.5,178+4*18.5,18.5,18.5,AT,AT);
+      o+=T(134,344,'back onto the 64 × 64 grid',11.5,'var(--ink-soft)','middle');
+      o+=AR(216,252,264,252,AT);
+      o+=R(276,232,96,38,TXT,TXTF)+T(324,256,'"cat"',14,INK,'middle');
+      o+=T(396,250,'this patch listened mostly to one word,',13,'var(--ink-soft)');
+      o+=T(396,270,'so it gets that word’s answer',13,'var(--ink-soft)');
+      o+=T(396,300,'70 blocks do this, every step, every branch',12,'var(--ink-faint)');
+      return o;
+    }}
+  ];
+
+  /* ---------- modal B: the empty prompt ---------- */
+  var wVal = 7.5, gaugeV = 0;
+  var EMPTY = [
+  { cap:'The empty prompt is not zero and it is not a special token. It is <b>""</b> through the same tokeniser, and it comes out the same shape as any other prompt.',
+    draw:function(){
+      var o=DEFS,i,cw=25,gap=3,x0=250;
+      function strip(y,n,label,ids){
+        var r=T(60,y+22,label,14,INK,'start',600),i;
+        for(i=0;i<17;i++){
+          var x=x0+i*(cw+gap), on=i<n;
+          r+=R(x,y,cw,34,on?TXT:'var(--rule)',on?TXTF:'var(--panel)');
+        }
+        r+=T(x0+17*(cw+gap)+6,y+24,'…',16,'var(--ink-faint)');
+        r+=M(x0,y+50,ids);
+        return r;
+      }
+      o+=strip(70,3,'"a cat"','49406, 320, 2368, 49407, 49407 …');
+      o+=strip(190,1,'""','49406, 49407, 49407, 49407, 49407 …');
+      o+=T(x0,56,'77 slots',12,TXT,'start',600);
+      o+=T(60,300,'Same length. Same 77 × 2048 coming out. One is a sentence about a cat;',13,'var(--ink-soft)');
+      o+=T(60,320,'the other is a sentence with no words in it. The model has an opinion about both.',13,'var(--ink-soft)');
+      return o;
+    }},
+  { cap:'So what does it draw? Not mush. A finished painting with <b>no subject in it</b>: a circle of limbs and fur that never resolves into an animal.',
+    draw:function(){
+      var o=DEFS;
+      o+='<image href="empty.jpg" x="330" y="26" width="290" height="290" preserveAspectRatio="xMidYMid slice"/>';
+      o+=R(330,26,290,290,TXT,'none');
+      o+=T(475,340,'"" at guidance 1, seed 9, 50 steps',12.5,'var(--ink-soft)','middle');
+      o+=T(60,60,'The model always draws something.',14,INK,'start',600);
+      o+=T(60,84,'With no words it draws its average of',13,'var(--ink-soft)');
+      o+=T(60,104,'everything it has ever seen, which for',13,'var(--ink-soft)');
+      o+=T(60,124,'SDXL is a painterly tondo full of bodies.',13,'var(--ink-soft)');
+      o+=T(60,164,'Guidance cannot change this picture.',13.5,HOT,'start',600);
+      o+=T(60,188,'The dial scales the gap between the',13,'var(--ink-soft)');
+      o+=T(60,208,'prompt and the empty prompt, and here',13,'var(--ink-soft)');
+      o+=T(60,228,'they are the same thing, so the gap is',13,'var(--ink-soft)');
+      o+=T(60,248,'zero at every w.',13,'var(--ink-soft)');
+      o+=T(660,80,'This is the picture the',13,'var(--ink-soft)');
+      o+=T(660,100,'composition subtracts',13,INK,'start',600);
+      o+=T(660,120,'once, and the sampler',13,'var(--ink-soft)');
+      o+=T(660,140,'reads a second time.',13,'var(--ink-soft)');
+      return o;
+    }},
+  { cap:'Now the same seed with one word added. The cat does not replace the painting, it <b>resolves inside it</b>: same circle, same palette, same ochre clumps in the corners.',
+    draw:function(){
+      var o=DEFS;
+      o+='<image href="empty.jpg" x="40" y="40" width="250" height="250"/>';
+      o+=R(40,40,250,250,TXT,'none');
+      o+=T(165,308,'""',14,INK,'middle',600);
+      o+=T(165,328,'no words',11.5,'var(--ink-soft)','middle');
+      o+=T(322,170,'+ "cat"',14,AT,'middle',600);
+      o+=AR(300,178,352,178,AT);
+      o+='<image href="cat_w1.jpg" x="362" y="40" width="250" height="250"/>';
+      o+=R(362,40,250,250,AT,'none');
+      o+=T(487,308,'"a cat", guidance 1',14,INK,'middle',600);
+      o+=T(487,328,'the same dial as the left',11.5,'var(--ink-soft)','middle');
+      o+=T(648,70,'The control that matters:',13,INK,'start',600);
+      o+=T(648,92,'at guidance 1 a real prompt',13,'var(--ink-soft)');
+      o+=T(648,112,'still gives a clean cat. So the',13,'var(--ink-soft)');
+      o+=T(648,132,'swirl on the left is not a',13,'var(--ink-soft)');
+      o+=T(648,152,'low-guidance artefact. It is',13,'var(--ink-soft)');
+      o+=T(648,172,'what no words looks like.',13,'var(--ink-soft)');
+      o+=T(648,212,'The difference between',13,HOT,'start',600);
+      o+=T(648,232,'these two images is exactly',13,HOT);
+      o+=T(648,252,'what the word is worth.',13,HOT);
+      o+=T(648,286,'That difference is the thing',12,'var(--ink-faint)');
+      o+=T(648,302,'guidance multiplies.',12,'var(--ink-faint)');
+      return o;
+    }},
+  { cap:'And this is what multiplying it by 7.5 does. The scaffold is <b>thrown away</b>: the border goes, the tondo flattens, the colour saturates. That is the dial the loss is trained at.',
+    draw:function(){
+      var o=DEFS;
+      o+='<image href="cat_w1.jpg" x="40" y="40" width="250" height="250"/>';
+      o+=R(40,40,250,250,AT,'none');
+      o+=T(165,308,'guidance 1',14,INK,'middle',600);
+      o+=T(322,162,'× 7.5',14,HOT,'middle',600);
+      o+=AR(300,178,352,178,HOT);
+      o+='<image href="cat_w75.jpg" x="362" y="40" width="250" height="250"/>';
+      o+=R(362,40,250,250,HOT,'none');
+      o+=T(487,308,'guidance 7.5',14,INK,'middle',600);
+      o+=T(487,328,'what this project renders at',11.5,'var(--ink-soft)','middle');
+      o+=T(648,80,'Same seed, same word,',13,'var(--ink-soft)');
+      o+=T(648,100,'same fifty steps.',13,'var(--ink-soft)');
+      o+=T(648,134,'Everything that survived',13,INK,'start',600);
+      o+=T(648,154,'from the empty picture is',13,INK);
+      o+=T(648,174,'gone: the painted border,',13,INK);
+      o+=T(648,194,'the grey wash, the corners.',13,INK);
+      o+=T(648,232,'Guidance does not sharpen',12.5,'var(--ink-soft)');
+      o+=T(648,250,'the cat. It walks away from',12.5,'var(--ink-soft)');
+      o+=T(648,268,'the empty branch, hard.',12.5,'var(--ink-soft)');
+      return o;
+    }},
+  { cap:'So the empty branch is the scaffold every render is built on. Expand the composition and it carries the <b>biggest coefficient of the three</b>, and it is negative. Drag the dial.',
+    draw:function(){
+      var o=DEFS, cx=300, u=-(2*wVal-1), sc=13;
+      function bar(y,v,name,col){
+        var w=Math.abs(v)*sc, x=v>=0?cx:cx-w;
+        return R(x,y,w,30,col,col+'')+T(cx-14,y+21,name,15,INK,'end',600)+
+               T(v>=0?(cx+w+10):(cx-w-10), y+21, (v>=0?'+':'')+v.toFixed(1), 13.5, col, v>=0?'start':'end', 600);
+      }
+      o+='<line x1="'+cx+'" y1="40" x2="'+cx+'" y2="250" stroke="var(--rule)" stroke-width="1"/>';
+      o+=bar(60,wVal,'a',AT);
+      o+=bar(110,wVal,'b',AT);
+      o+=bar(160,u,'u','var(--frozen)');
+      o+=T(60,40,'how much each branch counts in the final prediction',12.5,'var(--ink-soft)');
+      o+=T(60,290,'Move u on its own and the picture moves '+Math.abs(u).toFixed(1)+'×. The loss sees that.',13,'var(--ink-soft)');
+      o+=T(60,312,'Move u and a together by the same amount and the picture still moves '+(wVal-1).toFixed(1)+'×.',13,INK,'start',600);
+      o+=T(60,332,'The composition a + b − u does not move. The dialled loss does. Next panel.',13,HOT,'start',600);
+      return o;
+    }},
+  { cap:'And here is the move the two objectives <b>disagree</b> about. Add the same tensor to the cat branch and to the empty branch, and drag it.',
+    draw:function(){
+      /* real state: seed 9, step 5, from the cached predictions */
+      var dlt=1.81, W=wVal, v=gaugeV;
+      var undialled = dlt;                       /* a + b − u never moves */
+      var dialled   = Math.abs(W*dlt - (W-1)*v); /* target keeps the cached u, so it does not follow */
+      var maxBar=W*dlt;
+      var o=DEFS, X0=90, BW=440;
+      function bar(y,val,max,c,lab,sub){
+        var w=Math.max(2,(val/max)*BW);
+        return R(X0,y,BW,34,'var(--rule)','var(--panel)')+R(X0,y,w,34,c,c)
+             + T(X0,y-8,lab,12.5,c,'start',600)
+             + T(X0+BW+14,y+23,val.toFixed(2),15,c,'start',600)
+             + T(X0,y+52,sub,11.5,'var(--ink-soft)','start');
+      }
+      o+=bar(52,undialled,maxBar,AT,'the composition’s own error,  ‖(a + b − u) − ε̄J‖',
+             'what the board’s objective measures. Drag all you like: it does not move.');
+      o+=bar(150,dialled,maxBar,HOT,'the dialled loss,  ‖T⁽ʷ⁾ − target‖',
+             'what this repository trains. It falls as you drag.');
+      /* the slider position, and the moment of embarrassment */
+      var vz=(W*dlt)/(W-1);
+      o+=T(X0,244,'you have added  v = '+v.toFixed(2),13,INK,'start',600);
+      o+=T(X0,266,'the sampled prediction has moved '+((W-1)*v).toFixed(2),12.5,'var(--ink-soft)','start');
+      if(dialled<0.02){
+        o+=R(X0,284,BW+118,58,HOT,'var(--panel)');
+        o+=T(X0+16,308,'The dialled loss is now zero.',14,HOT,'start',600);
+        o+=T(X0+16,330,'The composition is exactly as wrong as when you started.',13,INK,'start');
+      } else {
+        o+=T(X0,306,'keep dragging to v = '+vz.toFixed(2)+' and the dialled loss reaches zero,',13,'var(--ink-soft)','start');
+        o+=T(X0,328,'with the composition still '+dlt.toFixed(2)+' away from the target.',13,'var(--ink-soft)','start');
+      }
+      var KX=660;
+      o+=T(KX,86,'Why they disagree',13.5,INK,'start',600);
+      o+=T(KX,112,'a + b − u  is unchanged by this move.',12.5,AT,'start');
+      o+=T(KX,134,'T⁽ʷ⁾ moves by −(w−1)v, because the',12.5,HOT,'start');
+      o+=T(KX,152,'empty branch is read a second time,',12.5,HOT,'start');
+      o+=T(KX,170,'and the target keeps the cached ū.',12.5,HOT,'start');
+      o+=T(KX,206,'So the dialled loss has a cheap way to',12.5,INK,'start',600);
+      o+=T(KX,224,'fall that fixes nothing.',12.5,INK,'start',600);
+      o+=T(KX,258,'V1 removes the move: with ū frozen',12.5,UN,'start');
+      o+=T(KX,276,'there is nothing left to shift.',12.5,UN,'start');
+      o+=T(KX,312,'‖Δ‖ = 1.81 is measured, seed 9 step 5,',11.5,'var(--ink-faint)','start');
+      o+=T(KX,328,'in-plane part. v is taken along Δ, the',11.5,'var(--ink-faint)','start');
+      o+=T(KX,344,'direction that cancels fastest.',11.5,'var(--ink-faint)','start');
+      return o;
+    }},
+  { cap:'So fine it for moving. A penalty is just a <b>soft freeze</b>, and mu is only how hard you press. Three settings have a name; two have been run.',
+    draw:function(){
+      var o=DEFS, i;
+      var COL=[{x:210,mu:'\u03bc = 0',nm:'V0',fit:4.9e-4,drift:3.30e-2,run:true},
+               {x:460,mu:'\u03bc = 10',nm:'V0a',fit:8.9e-4,drift:8.45e-4,run:true},
+               {x:710,mu:'\u03bc \u2192 \u221e',nm:'V1',fit:null,drift:0,run:false}];
+      function ymap(v){ return 62 + ((-1.4 - Math.log10(v))/2.1)*196; }
+      o+='<line x1="120" y1="58" x2="120" y2="266" stroke="var(--rule)" stroke-width="1"/>';
+      o+='<line x1="120" y1="266" x2="820" y2="266" stroke="var(--rule)" stroke-width="1"/>';
+      [[1e-2,'10\u207b\u00b2'],[1e-3,'10\u207b\u00b3']].forEach(function(t){
+        o+='<line x1="120" y1="'+ymap(t[0]).toFixed(1)+'" x2="820" y2="'+ymap(t[0]).toFixed(1)+
+           '" stroke="var(--rule)" stroke-width="0.7" stroke-dasharray="3 4"/>';
+        o+=T(112,ymap(t[0])+4,t[1],11,'var(--ink-faint)','end');
+      });
+      var dp='', fp='';
+      COL.forEach(function(c){
+        o+=T(c.x,288,c.mu,13,INK,'middle',600);
+        o+=T(c.x,306,c.nm,12,'var(--ink-soft)','middle');
+        o+=T(c.x,324,c.run?'measured':'not run',10.5,c.run?'var(--latent)':HOT,'middle',600);
+        if(c.drift>0){ dp+=c.x+','+ymap(c.drift).toFixed(1)+' '; }
+        if(c.fit){ fp+=c.x+','+ymap(c.fit).toFixed(1)+' '; }
+      });
+      o+='<polyline points="'+dp+'" fill="none" stroke="'+HOT+'" stroke-width="2"/>';
+      o+='<polyline points="'+fp+'" fill="none" stroke="'+AT+'" stroke-width="2"/>';
+      COL.forEach(function(c){
+        if(c.drift>0) o+='<circle cx="'+c.x+'" cy="'+ymap(c.drift).toFixed(1)+'" r="6" fill="'+HOT+'"/>';
+        if(c.fit)     o+='<circle cx="'+c.x+'" cy="'+ymap(c.fit).toFixed(1)+'" r="6" fill="'+AT+'"/>';
+      });
+      o+='<line x1="710" y1="238" x2="710" y2="262" stroke="'+HOT+'" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#ar)"/>';
+      o+=T(722,258,'exactly 0',11.5,HOT,'start',600);
+      o+='<circle cx="710" cy="'+ymap(8.9e-4).toFixed(1)+'" r="6" fill="none" stroke="'+AT+
+         '" stroke-width="1.6" stroke-dasharray="3 2"/>';
+      o+=T(722,ymap(8.9e-4)+4,'?',13,AT,'start',600);
+      o+=T(140,ymap(3.30e-2)+4,'drift, amplified by 6.5',12.5,HOT,'start',600);
+      o+=T(140,ymap(4.9e-4)+16,'fit error',12.5,AT,'start',600);
+      o+=T(120,44,'both on the same log scale, per-element mean square',11.5,'var(--ink-faint)');
+      return o;
+    }}
+  ];
+
+
+  /* ================= the nine variations, and the drawing they drive ================= */
+  var FZ='var(--frozen)', FZF='var(--frozen-fill)';
+  function disk(cx,cy,c,f,r){
+    r=r||16;
+    return '<ellipse cx="'+cx+'" cy="'+(cy-11)+'" rx="'+r+'" ry="5" fill="'+f+'" stroke="'+c+'" stroke-width="1.3"/>'+
+           '<path d="M'+(cx-r)+','+(cy-11)+' v14 a'+r+',5 0 0 0 '+(2*r)+',0 v-14" fill="'+f+'" stroke="'+c+'" stroke-width="1.3"/>';
+  }
+  var VARS=[
+   {id:'V0', sub:'today',        u:'unet', ab:'unet', dial:'both',    tether:null,
+    note:'Three adapted branches against a cached target. Nothing stops the empty branch wandering.'},
+   {id:'V0a',sub:'fine it',      u:'unet', ab:'unet', dial:'both',    tether:{to:'ū',c:FZ},
+    note:'A penalty pulls the adapted empty branch back toward the cached one. The drift fell 39×; the fit error nearly doubled.'},
+   {id:'V1', sub:'freeze it',    u:'disk', ab:'unet', dial:'cancels', tether:null,
+    note:'The empty branch comes off the disk. One fewer forward, and the dial cancels out of the loss entirely.'},
+   {id:'V2', sub:'plural anchor',u:'unet', ab:'unet', dial:'both',    tether:{to:'ε̄pl',c:'var(--txt)'},
+    note:'The same fine, but the reference is the frozen prediction for "two animals" instead of the empty prompt.'},
+   {id:'V3', sub:'only ∅',       u:'unet', ab:'disk', dial:'both',    tether:null,
+    note:'The concept branches come off the disk. One free tensor, shared by every pair. Expected to fail.'},
+   {id:'V4', sub:'no dial',      u:'unet', ab:'unet', dial:'none',    tether:null,
+    note:'Guidance removed from both sides. Differs from V0 by exactly the drift, scaled by w−1.'},
+   {id:'V5', sub:'real photos',  u:'unet', ab:'unet', dial:'none',    tether:null, target:'photo',
+    note:'The target stops being the model: a real photo with both animals, noised. Blocked, no corpus exists here.'},
+   {id:'V6', sub:'better teacher',u:'unet',ab:'unet', dial:'none',    tether:null, target:'render',
+    note:'Same shape as V5, but the corpus is the model’s own renders that passed a composition filter.'},
+   {id:'V7', sub:'protect',      u:'unet', ab:'unet', dial:'both',    tether:{to:'ε̄(cat)',c:AT,on:0},
+    note:'An extra penalty holds the cat branch near its frozen self, at states from single-prompt runs.'}
+  ];
+
+  /* per-variation loss: written out in full, and what it collapses to.
+     token = [tex, bind, frozen?, mark?]   mark: 'cancel' | 'mark'            */
+  var o_=function(x){return [x,'op'];},
+      U=['u','u'], UB=['\\bar u','u',1], A=['a','a'], B=['b','b'],
+      AB=['\\bar a','a',1], BB=['\\bar b','b',1], EJ=['\\bar\\varepsilon_J','ej',1],
+      W=['w','cfgB'], WA=['w','cfgA'];
+  function cx(tok,mk){ return [tok[0],tok[1],tok[2],mk]; }
+
+  function BR(lab,tone){ return ['@brace',lab,tone||'']; }
+  var ENDB=['@end',''];
+
+  function fullGuided(aT,bT,uT,uMark,leftLab){
+    return [o_('\\big\\lVert'),
+      BR(leftLab||'all three adapted','adb'),
+        uMark?cx(uT,uMark):uT,o_('+'),W,o_('('),aT,o_('-'),uT,o_(')'),
+        o_('+'),W,o_('('),bT,o_('-'),uT,o_(')'),
+      ENDB, o_('-'),
+      BR('all cached','fzb'),
+        o_('\\big['),uMark?cx(UB,uMark):UB,o_('+'),WA,o_('('),EJ,o_('-'),UB,o_(')'),o_('\\big]'),
+      ENDB, o_('\\big\\rVert^2')];
+  }
+  function simpGuided(aT,bT,uT){
+    return [o_('\\big\\lVert'),
+      BR('w × the undialled error','adb'),
+        W,o_('('),aT,o_('+'),bT,o_('-'),uT,o_('-'),EJ,o_(')'),
+      ENDB, o_('-'),
+      BR('the drift, amplified','hotb'),
+        cx(['(w-1)','cfgB'],'mark'),o_('('),cx(uT,'mark'),o_('-'),cx(UB,'mark'),o_(')'),
+      ENDB, o_('\\big\\rVert^2')];
+  }
+  function fine(ref,lab){
+    return [o_('+'),
+      BR(lab||'the fine','hotb'),
+        cx(['\\mu','cfgB'],'mark'),o_('\\big\\lVert'),cx(U,'mark'),o_('-'),cx(ref,'mark'),o_('\\big\\rVert^2'),
+      ENDB];
+  }
+  function plainComp(uT){
+    return [o_('\\big\\lVert'),
+      BR('the composition','adb'), o_('('),A,o_('+'),B,o_('-'),uT,o_(')'), ENDB,
+      o_('-'),BR('cached target','fzb'),EJ,ENDB,o_('\\big\\rVert^2')];
+  }
+  var EPL=['\\bar\\varepsilon_{\\text{pl}}','ej',1];
+
+  var LOSS={
+   V0 :{full:fullGuided(A,B,U), simp:simpGuided(A,B,U),
+        why:'group the dial out front',
+        note:'The guided error is w times the undialled error, minus (w−1) times how far the empty branch drifted. Everything below is a different way of dealing with that second term.'},
+   V0a:{full:fullGuided(A,B,U).concat(fine(UB)), simp:simpGuided(A,B,U).concat(fine(UB)),
+        why:'same grouping, plus the fine',
+        note:'The drift now appears twice: amplified by (w−1) inside the error, and fined directly on the end. The fine cut it 39×, and the fit error nearly doubled.'},
+   V1 :{full:fullGuided(A,B,UB,'cancel','only a, b adapted'),
+        simp:[cx(['w^2','cfgB'],'mark'),o_('\\big\\lVert'),
+              BR('the undialled error, and nothing else','adb'),
+                o_('('),A,o_('+'),B,o_('-'),UB,o_(')'),o_('-'),EJ,
+              ENDB,o_('\\big\\rVert^2')],
+        why:'ū now sits on both sides, so it cancels and the dial factors out',
+        note:'The drift term is gone, not shrunk: there is nothing left to drift. w² is a constant the learning rate absorbs, so this is the board’s objective exactly, and it is right at every dial setting.'},
+   V2 :{full:fullGuided(A,B,U).concat(fine(EPL,'the fine, toward plurality')),
+        simp:simpGuided(A,B,U).concat(fine(EPL,'the fine, toward plurality')),
+        why:'same as V0a, one symbol different',
+        note:'The fine pulls toward the frozen prediction for "two animals" instead of for no prompt at all. That one symbol is the whole difference between V2 and V0a.'},
+   V3 :{full:fullGuided(AB,BB,U,null,'only u adapted'), simp:simpGuided(AB,BB,U),
+        why:'group the dial out front, as in V0',
+        note:'The same shape as V0, but bars on the concept branches: only the empty branch is free now, one tensor shared by every pair.'},
+   V4 :{full:plainComp(U), simp:null, why:'',
+        note:'Already at its simplest: this is V0 with the dial at 1. Compare it with V1’s collapsed form — the only difference is u against ū, and that difference is the drift.'},
+   V5 :{full:[o_('\\mathbb{E}_{x,z}'),o_('\\big\\lVert'),
+              BR('the noise that was added','fzb'),['z','ej'],ENDB,o_('-'),
+              BR('the composition','adb'),o_('('),A,o_('+'),B,o_('-'),U,o_(')'),ENDB,o_('\\big\\rVert^2')],
+        simp:null, why:'',
+        note:'Already at its simplest. The target stops being the model: predict the noise that was added to a real photograph. Blocked here, because no such corpus exists.'},
+   V6 :{full:[o_('\\mathbb{E}_{x,z}'),o_('\\big\\lVert'),
+              BR('the noise that was added','fzb'),['z','ej'],ENDB,o_('-'),
+              BR('the composition','adb'),o_('('),A,o_('+'),B,o_('-'),U,o_(')'),ENDB,o_('\\big\\rVert^2')],
+        simp:null, why:'',
+        note:'The same equation as V5. Only the corpus underneath the expectation changes: the model’s own renders that passed a composition filter.'},
+   V7 :{full:fullGuided(A,B,U).concat([o_('+'),
+          BR('holds the cat branch near frozen','hotb'),
+            cx(['\\nu','cfgB'],'mark'),o_('\\big\\lVert'),
+            cx(['\\varepsilon_\\theta(c_1)','a'],'mark'),o_('-'),cx(['\\bar\\varepsilon(c_1)','a',1],'mark'),
+            o_('\\big\\rVert^2'),
+          ENDB]),
+        simp:null, why:'',
+        note:'Any loss above, plus a penalty holding the cat branch near its frozen self, at states from single-prompt runs. It may be actively wrong: the concept branches are supposed to move.'}
+  };
+  function lossFor(v){ return LOSS[v.id] || LOSS.V0; }
+
+  function drawMain(v,st){
+    var o=DEFS, BY=[176,240,304], RC=[195,259,323], i,
+        pr=['"a cat"','"a dog"','""  (empty)'], nmv=['a','b','u'],
+        src=[v.ab,v.ab,v.u], tgt=v.target||'disk';
+
+    o+='<rect x="16" y="12" width="1028" height="416" rx="9" fill="var(--latent-fill)" stroke="var(--latent)" stroke-width="1.6"/>';
+    o+='<g class="hit" data-bind="disk" tabindex="0" role="button">'+
+       R(28,20,300,22,'var(--latent)','none',' stroke-dasharray="4 3" opacity=".55"')+
+       T(34,35,'LATENT SPACE · 4 × 128 × 128',13,'var(--latent)','start',600)+'</g>';
+
+    /* ---- leg A ---- */
+    o+=T(36,62,'LEG A · THE TARGET',11.5,FZ,'start',600);
+    if(tgt==='disk'){
+      o+='<g class="hit" data-bind="pj">'+R(36,70,196,40,FZ,'var(--panel)')+
+         T(134,95,'"a cat and a dog"',14.5,INK,'middle')+'</g>';
+    } else {
+      o+=R(36,70,196,40,'var(--txt)','var(--txt-fill)')+
+         T(134,88,tgt==='photo'?'a real photograph':'a filtered render',13,INK,'middle')+
+         T(134,104,tgt==='photo'?'both animals, separate':'the model’s own, it passed',10.5,'var(--ink-soft)','middle');
+    }
+    if(st>=1){
+      if(tgt==='disk'){
+        o+=AR(238,90,290,90,FZ)+disk(330,97,FZ,FZF)+AR(370,90,418,90,FZ)+
+           T(330,124,'written once, no adapter',11.5,FZ,'middle');
+        o+='<g class="hit" data-bind="ej">'+R(422,72,70,36,FZ,FZF)+
+           T(457,96,'ε̄J',17,INK,'middle')+'</g>';
+      } else {
+        o+=AR(238,90,300,90,'var(--txt)')+
+           R(306,72,96,36,'var(--txt)','var(--txt-fill)')+T(354,95,'+ noise z',13,INK,'middle')+
+           AR(408,90,418,90,'var(--txt)')+
+           '<g data-bind="ej">'+R(422,72,70,36,'var(--txt)','var(--txt-fill)')+
+           T(457,96,'z',17,INK,'middle')+'</g>'+
+           T(354,124,'the cache plays no part',11.5,'var(--txt)','middle');
+      }
+    }
+
+    /* ---- leg B prompts ---- */
+    o+=T(36,166,'LEG B · THE COMPOSITION',11.5,AT,'start',600);
+    for(i=0;i<3;i++){
+      var door=(i===2);
+      o+='<g class="hit" data-bind="'+(door?'pu':(i?'pb':'pa'))+'"'+(door?' tabindex="0" role="button"':'')+'>';
+      o+=R(36,BY[i],140,38,AT,'var(--panel)',door?' stroke-dasharray="5 3"':'');
+      o+=T(106,BY[i]+24,pr[i],14.5,door?'var(--ink-faint)':INK,'middle');
+      if(door) o+=T(106,BY[i]+56,'click to look inside →',11,AT,'middle',600);
+      o+='</g>';
+    }
+
+    /* ---- where each branch comes from ---- */
+    if(st>=2){
+      var live=[]; for(i=0;i<3;i++) if(src[i]==='unet') live.push(i);
+      if(live.length){
+        var top=BY[live[0]]-4, bot=BY[live[live.length-1]]+42;
+        /* never let it collapse: a trapezoid shorter than its own shear inverts */
+        if(bot-top < 96){
+          var c=(top+bot)/2; top=c-48; bot=c+48;
+          /* and never let it swallow a row that no longer goes through it */
+          for(i=0;i<3;i++) if(src[i]==='disk'){
+            if(RC[i] < c && RC[i] > top-16) top = RC[i]+16;
+            if(RC[i] > c && RC[i] < bot+16) bot = RC[i]-16;
+          }
+        }
+        var mid=(top+bot)/2, sh=Math.min(34,Math.max(12,(bot-top-28)/2));
+        o+='<g class="hit" data-bind="unet">';
+        o+='<path d="M296,'+top+' L376,'+(top+sh)+' L376,'+(bot-sh)+' L296,'+bot+' Z" fill="var(--unet-fill)" stroke="'+UN+'" stroke-width="1.6"/>';
+        o+='<path d="M470,'+top+' L390,'+(top+sh)+' L390,'+(bot-sh)+' L470,'+bot+' Z" fill="var(--unet-fill)" stroke="'+UN+'" stroke-width="1.6"/>';
+        o+='</g>';
+        o+='<g class="hit" data-bind="attn" tabindex="0" role="button">';
+        [306,344,396,434].forEach(function(x){
+          o+=R(x,mid-26,26,30,AT,ATF)+T(x+13,mid-14,'Q',9,AT,'middle')+T(x+13,mid-1,'KV',9,AT,'middle');
+        });
+        o+='</g>';
+        /* park the labels on whichever side of the shape no frozen wire is using */
+        var below=true;
+        for(i=0;i<3;i++) if(src[i]==='disk' && RC[i]>bot-10 && RC[i]<bot+70) below=false;
+        var l1 = below ? bot+18 : top-30, l2 = below ? bot+34 : top-14;
+        o+=T(383,l1,'one U-Net ε θ  ·  ('+live.length+'K, 4, 128, 128)',12,UN,'middle',600);
+        o+=T(383,l2,'click to look inside →',11,AT,'middle',600);
+        live.forEach(function(k){ o+=AR(180,RC[k],292,RC[k],AT); });
+      }
+      for(i=0;i<3;i++) if(src[i]==='disk'){
+        o+=AR(180,RC[i],292,RC[i],FZ)+disk(330,RC[i]+7,FZ,FZF)+AR(370,RC[i],562,RC[i],FZ);
+      }
+    }
+
+    /* ---- the branch outputs ---- */
+    if(st>=3){
+      for(i=0;i<3;i++){
+        var fz=(src[i]==='disk'), c=fz?FZ:AT, f=fz?FZF:ATF;
+        if(!fz) o+=AR(474,RC[i],562,RC[i],AT);
+        o+='<g class="hit" data-bind="'+nmv[i]+'">'+R(566,RC[i]-18,58,36,c,f)+
+           T(595,RC[i]+6,(fz?'&#772;':'')+nmv[i],18,INK,'middle')+'</g>';
+      }
+      o+=T(595,398,'(K, 4, 128, 128) each',11,'var(--ink-soft)','middle');
+      if(v.tether){
+        var ty=RC[v.tether.on===0?0:2];
+        o+='<path d="M595,'+(ty+20)+' C595,'+(ty+58)+' 700,'+(ty+58)+' 700,'+(ty+40)+'" fill="none" stroke="'+
+           v.tether.c+'" stroke-width="1.8" stroke-dasharray="5 3"/>';
+        o+=R(668,ty+4,64,36,v.tether.c,FZF)+T(700,ty+28,v.tether.to,14,INK,'middle');
+        o+=T(740,ty+26,'held near this',11,v.tether.c,'start',600);
+      }
+    }
+
+    /* ---- guidance, and the handoff into the loss ---- */
+    var hand=null;
+    if(st>=4){
+      if(v.dial==='both'){
+        o+=AR(496,90,652,90,FZ);
+        o+='<g class="hit" data-bind="cfgA">'+R(658,66,170,48,FZ,FZF)+
+           T(743,86,'guidance, w = 7.5',12.5,INK,'middle',600)+
+           T(743,103,'against cached ū',11.5,'var(--ink-soft)','middle')+'</g>';
+        for(i=0;i<3;i++) o+=AR(628,RC[i],652,[230,254,278][i],AT);
+        o+='<g class="hit" data-bind="cfgB">'+R(658,218,170,82,AT,ATF)+
+           T(743,242,'guidance, w = 7.5',12.5,INK,'middle',600)+
+           T(743,259,'on each expert,',11.5,'var(--ink-soft)','middle')+
+           T(743,274,'against '+(v.u==='disk'?'cached ū':'adapted u'),11.5,'var(--ink-soft)','middle')+
+           T(743,291,'then add, subtract once',11.5,AT,'middle',600)+'</g>';
+        hand={ax:828,ay:90,bx:828,by:259,one:false};
+      } else if(v.dial==='cancels'){
+        o+='<path d="M496,90 C576,90 576,158 646,158" fill="none" stroke="'+FZ+'" stroke-width="1.6" marker-end="url(#ar)"/>';
+        var ey=[168,192,216];
+        for(i=0;i<3;i++)
+          o+='<path d="M628,'+RC[i]+' C642,'+RC[i]+' 634,'+ey[i]+' 646,'+ey[i]+'" fill="none" stroke="'+AT+'" stroke-width="1.5" marker-end="url(#ar)"/>';
+        o+='<g data-bind="cfgB">'+R(652,130,188,100,HOT,'none',' stroke-dasharray="7 4"')+
+           T(746,163,'both dials cancel',14,HOT,'middle',600)+
+           T(746,186,'leaving w² outside',12,'var(--ink-soft)','middle')+
+           T(746,206,'the same loss at every w',11,'var(--ink-soft)','middle')+'</g>';
+        hand={ax:840,ay:180,bx:840,by:180,one:true};
+      } else {
+        o+=R(660,140,172,62,'var(--rule)','none',' stroke-dasharray="5 4"');
+        o+=T(746,168,'no dial',14,'var(--ink-faint)','middle',600);
+        o+=T(746,188,'both sides raw',11.5,'var(--ink-faint)','middle');
+        for(i=0;i<3;i++)
+          o+='<path d="M628,'+RC[i]+' C660,'+RC[i]+' 640,259 676,259" fill="none" stroke="'+AT+'" stroke-width="1.5"/>';
+        o+='<circle cx="680" cy="259" r="4.5" fill="'+AT+'"/>';
+        o+=T(680,282,'a + b − u',11.5,AT,'middle',600);
+        hand={ax:492,ay:90,bx:684,by:259,one:false};
+      }
+    }
+
+    /* ---- the loss ---- */
+    if(st>=5 && hand){
+      if(hand.one){
+        o+=AR(hand.ax,hand.ay,910,179,HOT);
+      } else {
+        o+='<path d="M'+hand.ax+','+hand.ay+' C878,'+hand.ay+' 878,166 910,166" fill="none" stroke="'+FZ+'" stroke-width="1.6" marker-end="url(#ar)"/>';
+        o+='<path d="M'+hand.bx+','+hand.by+' C878,'+hand.by+' 878,192 910,192" fill="none" stroke="'+AT+'" stroke-width="1.6" marker-end="url(#ar)"/>';
+      }
+      o+='<g class="hit" data-bind="loss">';
+      o+='<circle cx="936" cy="179" r="22" fill="var(--panel)" stroke="'+HOT+'" stroke-width="1.8"/>';
+      o+=T(936,186,'−',19,HOT,'middle');
+      o+=R(884,218,104,44,HOT,'var(--panel)')+T(936,239,'‖ · ‖²',15,INK,'middle')+
+         T(936,254,'mean over 65,536',10.5,'var(--ink-soft)','middle');
+      o+='<line x1="936" y1="201" x2="936" y2="214" stroke="'+HOT+'" stroke-width="1.6" marker-end="url(#ar)"/>';
+      o+='</g>'+T(936,284,'one number',13,HOT,'middle',600);
+    }
+    return o;
+  }
+
+
+  /* ================= the plane PoE lives in ================= */
+  var PLANE = {"pair":"a_cat__x__a_dog","w":7.5,"seeds":{"9":[{"s":0,"t":981,"a":[0.941,0.0],"b":[0.452,1.037],"j":[0.433,0.498],"T":[1.393,1.037],"o":0.409,"q":0.1215,"nj":0.777,"na":0.941},{"s":1,"t":961,"a":[1.387,-0.0],"b":[0.725,1.272],"j":[0.817,0.705],"T":[2.111,1.272],"o":0.499,"q":0.1109,"nj":1.189,"na":1.387},{"s":2,"t":941,"a":[2.032,0.0],"b":[1.201,1.9],"j":[1.075,1.067],"T":[3.233,1.9],"o":0.939,"q":0.1415,"nj":1.782,"na":2.032},{"s":3,"t":921,"a":[2.129,-0.0],"b":[-0.382,1.652],"j":[0.219,1.067],"T":[1.747,1.652],"o":1.102,"q":0.312,"nj":1.55,"na":2.129},{"s":5,"t":881,"a":[2.475,0.0],"b":[-1.139,1.965],"j":[1.463,0.233],"T":[1.336,1.965],"o":1.145,"q":0.3029,"nj":1.872,"na":2.475},{"s":7,"t":841,"a":[3.76,0.0],"b":[-1.47,2.03],"j":[2.845,0.082],"T":[2.291,2.03],"o":1.001,"q":0.1963,"nj":3.017,"na":3.76},{"s":10,"t":781,"a":[1.071,0.0],"b":[-1.652,6.328],"j":[0.625,0.194],"T":[-0.581,6.328],"o":0.748,"q":0.0141,"nj":0.994,"na":1.071},{"s":15,"t":681,"a":[7.782,-0.0],"b":[-0.816,1.864],"j":[1.06,0.465],"T":[6.966,1.864],"o":1.69,"q":0.0719,"nj":2.048,"na":7.782},{"s":20,"t":581,"a":[2.881,-0.0],"b":[-4.49,9.55],"j":[0.64,0.161],"T":[-1.61,9.55],"o":1.508,"q":0.0238,"nj":1.646,"na":2.881},{"s":25,"t":481,"a":[9.634,-0.0],"b":[-1.223,2.265],"j":[0.849,0.603],"T":[8.411,2.265],"o":2.106,"q":0.0689,"nj":2.35,"na":9.634},{"s":30,"t":381,"a":[13.085,0.0],"b":[-2.327,3.504],"j":[1.268,0.122],"T":[10.758,3.504],"o":2.748,"q":0.0692,"nj":3.029,"na":13.085},{"s":40,"t":181,"a":[12.441,-0.0],"b":[-4.303,5.007],"j":[-0.621,0.985],"T":[8.138,5.007],"o":2.31,"q":0.0543,"nj":2.587,"na":12.441},{"s":49,"t":1,"a":[2.772,-0.0],"b":[0.856,3.308],"j":[1.179,1.451],"T":[3.629,3.308],"o":1.751,"q":0.2449,"nj":2.561,"na":2.772}],"10":[{"s":0,"t":981,"a":[1.02,0.0],"b":[1.16,2.296],"j":[0.654,0.115],"T":[2.18,2.296],"o":0.656,"q":0.0573,"nj":0.933,"na":1.02},{"s":1,"t":961,"a":[1.338,0.0],"b":[1.34,2.312],"j":[1.951,0.929],"T":[2.679,2.312],"o":0.973,"q":0.2792,"nj":2.37,"na":1.338},{"s":2,"t":941,"a":[1.592,-0.0],"b":[1.68,2.484],"j":[1.824,1.372],"T":[3.272,2.484],"o":1.294,"q":0.3345,"nj":2.624,"na":1.592},{"s":3,"t":921,"a":[1.637,0.0],"b":[-0.075,2.409],"j":[0.545,0.949],"T":[1.562,2.409],"o":1.338,"q":0.361,"nj":1.728,"na":1.637},{"s":5,"t":881,"a":[3.424,0.0],"b":[-0.492,2.211],"j":[0.746,0.632],"T":[2.932,2.211],"o":1.694,"q":0.2831,"nj":1.956,"na":3.424},{"s":7,"t":841,"a":[5.308,0.0],"b":[-1.214,2.544],"j":[1.543,0.009],"T":[4.094,2.544],"o":1.985,"q":0.2336,"nj":2.515,"na":5.308},{"s":10,"t":781,"a":[3.784,0.0],"b":[-2.455,5.429],"j":[1.227,-0.112],"T":[1.329,5.429],"o":1.463,"q":0.0652,"nj":1.913,"na":3.784},{"s":15,"t":681,"a":[2.447,0.0],"b":[-2.293,10.64],"j":[1.007,0.426],"T":[0.153,10.64],"o":1.565,"q":0.0228,"nj":1.909,"na":2.447},{"s":20,"t":581,"a":[15.028,0.0],"b":[-1.289,2.928],"j":[1.192,-0.318],"T":[13.739,2.928],"o":2.857,"q":0.0463,"nj":3.112,"na":15.028},{"s":25,"t":481,"a":[8.334,0.0],"b":[-7.748,11.87],"j":[1.51,-0.137],"T":[0.586,11.87],"o":1.931,"q":0.0251,"nj":2.455,"na":8.334},{"s":30,"t":381,"a":[13.208,0.0],"b":[-5.595,10.771],"j":[3.826,-0.481],"T":[7.613,10.771],"o":2.999,"q":0.06,"nj":4.885,"na":13.208},{"s":40,"t":181,"a":[10.055,0.0],"b":[-5.691,9.21],"j":[2.25,-0.089],"T":[4.364,9.21],"o":2.971,"q":0.0884,"nj":3.728,"na":10.055},{"s":49,"t":1,"a":[3.249,-0.0],"b":[0.174,3.273],"j":[1.749,0.913],"T":[3.424,3.273],"o":1.845,"q":0.2891,"nj":2.701,"na":3.249}],"11":[{"s":0,"t":981,"a":[1.454,-0.0],"b":[0.82,0.826],"j":[0.658,0.61],"T":[2.274,0.826],"o":0.468,"q":0.0761,"nj":1.012,"na":1.454},{"s":1,"t":961,"a":[1.585,0.0],"b":[0.453,1.061],"j":[0.605,1.016],"T":[2.038,1.061],"o":0.763,"q":0.2207,"nj":1.407,"na":1.585},{"s":2,"t":941,"a":[1.672,-0.0],"b":[0.441,0.747],"j":[0.172,0.591],"T":[2.113,0.747],"o":0.895,"q":0.1743,"nj":1.086,"na":1.672},{"s":3,"t":921,"a":[0.9,-0.0],"b":[-0.016,0.827],"j":[0.092,1.028],"T":[0.884,0.827],"o":0.802,"q":0.4905,"nj":1.307,"na":0.9},{"s":5,"t":881,"a":[1.111,-0.0],"b":[0.008,0.895],"j":[0.443,1.015],"T":[1.119,0.895],"o":1.061,"q":0.7046,"nj":1.534,"na":1.111},{"s":7,"t":841,"a":[1.02,-0.0],"b":[-0.207,1.188],"j":[0.396,0.667],"T":[0.812,1.188],"o":0.97,"q":0.6792,"nj":1.242,"na":1.02},{"s":10,"t":781,"a":[1.431,-0.0],"b":[-0.581,1.443],"j":[0.698,0.396],"T":[0.85,1.443],"o":0.734,"q":0.3254,"nj":1.088,"na":1.431},{"s":15,"t":681,"a":[2.082,-0.0],"b":[-1.277,2.109],"j":[1.338,0.241],"T":[0.805,2.109],"o":0.936,"q":0.1884,"nj":1.651,"na":2.082},{"s":20,"t":581,"a":[4.183,0.0],"b":[-0.689,3.341],"j":[3.414,0.257],"T":[3.493,3.341],"o":1.574,"q":0.2066,"nj":3.768,"na":4.183},{"s":25,"t":481,"a":[3.152,-0.0],"b":[-1.88,3.889],"j":[0.157,0.724],"T":[1.272,3.889],"o":1.31,"q":0.1322,"nj":1.505,"na":3.152},{"s":30,"t":381,"a":[3.573,0.0],"b":[-1.624,3.527],"j":[0.975,0.223],"T":[1.949,3.527],"o":1.404,"q":0.1424,"nj":1.724,"na":3.573},{"s":40,"t":181,"a":[5.108,0.0],"b":[-2.449,2.971],"j":[0.723,1.168],"T":[2.658,2.971],"o":1.408,"q":0.2208,"nj":1.967,"na":5.108},{"s":49,"t":1,"a":[2.669,-0.0],"b":[2.091,1.796],"j":[2.028,0.645],"T":[4.759,1.796],"o":1.966,"q":0.3055,"nj":2.897,"na":2.669}],"12":[{"s":0,"t":981,"a":[1.101,0.0],"b":[0.681,0.962],"j":[1.021,0.99],"T":[1.783,0.962],"o":0.834,"q":0.5449,"nj":1.649,"na":1.101},{"s":1,"t":961,"a":[1.475,-0.0],"b":[0.985,0.994],"j":[1.481,0.929],"T":[2.46,0.994],"o":0.96,"q":0.4892,"nj":1.994,"na":1.475},{"s":2,"t":941,"a":[1.903,-0.0],"b":[1.252,1.471],"j":[1.488,0.834],"T":[3.154,1.471],"o":1.2,"q":0.3118,"nj":2.086,"na":1.903},{"s":3,"t":921,"a":[2.425,-0.0],"b":[0.543,1.927],"j":[0.599,0.485],"T":[2.968,1.927],"o":1.53,"q":0.2334,"nj":1.713,"na":2.425},{"s":5,"t":881,"a":[2.585,-0.0],"b":[-1.347,3.874],"j":[-0.661,1.552],"T":[1.239,3.874],"o":2.607,"q":0.4302,"nj":3.105,"na":2.585},{"s":7,"t":841,"a":[1.47,0.0],"b":[-1.018,4.231],"j":[-0.282,1.717],"T":[0.452,4.231],"o":2.67,"q":0.5096,"nj":3.187,"na":1.47},{"s":10,"t":781,"a":[3.641,0.0],"b":[-2.16,6.008],"j":[-0.93,2.204],"T":[1.481,6.008],"o":3.392,"q":0.362,"nj":4.15,"na":3.641},{"s":15,"t":681,"a":[4.7,-0.0],"b":[-4.067,6.153],"j":[-1.851,2.77],"T":[0.633,6.153],"o":3.221,"q":0.3706,"nj":4.634,"na":4.7},{"s":20,"t":581,"a":[10.323,0.0],"b":[-1.022,3.207],"j":[0.491,-0.383],"T":[9.301,3.207],"o":2.052,"q":0.0444,"nj":2.144,"na":10.323},{"s":25,"t":481,"a":[7.7,0.0],"b":[-4.846,9.403],"j":[-2.298,3.182],"T":[2.854,9.403],"o":3.37,"q":0.1483,"nj":5.173,"na":7.7},{"s":30,"t":381,"a":[14.643,-0.0],"b":[-2.745,4.493],"j":[0.122,0.697],"T":[11.898,4.493],"o":2.722,"q":0.0462,"nj":2.812,"na":14.643},{"s":40,"t":181,"a":[12.523,0.0],"b":[-7.464,9.462],"j":[-0.469,1.098],"T":[5.059,9.462],"o":2.716,"q":0.0684,"nj":2.967,"na":12.523},{"s":49,"t":1,"a":[3.551,0.0],"b":[-0.835,4.3],"j":[1.134,1.546],"T":[2.716,4.3],"o":1.883,"q":0.26,"nj":2.687,"na":3.551}],"13":[{"s":0,"t":981,"a":[0.993,0.0],"b":[0.717,0.743],"j":[0.814,0.663],"T":[1.709,0.743],"o":0.646,"q":0.341,"nj":1.233,"na":0.993},{"s":1,"t":961,"a":[1.396,0.0],"b":[1.261,0.742],"j":[1.048,0.393],"T":[2.657,0.742],"o":0.898,"q":0.2292,"nj":1.435,"na":1.396},{"s":2,"t":941,"a":[1.818,0.0],"b":[1.623,0.96],"j":[1.66,0.306],"T":[3.441,0.96],"o":0.687,"q":0.116,"nj":1.823,"na":1.818},{"s":3,"t":921,"a":[1.471,0.0],"b":[0.044,0.774],"j":[0.63,-0.032],"T":[1.515,0.774],"o":1.116,"q":0.4648,"nj":1.282,"na":1.471},{"s":5,"t":881,"a":[1.985,-0.0],"b":[-0.6,1.177],"j":[1.027,0.338],"T":[1.385,1.177],"o":1.556,"q":0.7443,"nj":1.895,"na":1.985},{"s":7,"t":841,"a":[1.944,0.0],"b":[-1.068,2.17],"j":[1.193,0.467],"T":[0.876,2.17],"o":1.662,"q":0.4793,"nj":2.098,"na":1.944},{"s":10,"t":781,"a":[3.122,-0.0],"b":[-1.815,2.853],"j":[1.886,-0.111],"T":[1.307,2.853],"o":2.147,"q":0.3358,"nj":2.86,"na":3.122},{"s":15,"t":681,"a":[5.882,0.0],"b":[-0.735,2.151],"j":[1.115,0.094],"T":[5.147,2.151],"o":2.057,"q":0.1712,"nj":2.342,"na":5.882},{"s":20,"t":581,"a":[3.498,0.0],"b":[-3.577,7.574],"j":[1.848,0.023],"T":[-0.079,7.574],"o":1.583,"q":0.0396,"nj":2.433,"na":3.498},{"s":25,"t":481,"a":[9.917,0.0],"b":[-1.668,3.129],"j":[4.244,-0.582],"T":[8.249,3.129],"o":2.923,"q":0.2228,"nj":5.186,"na":9.917},{"s":30,"t":381,"a":[3.356,0.0],"b":[-5.038,11.274],"j":[1.499,0.012],"T":[-1.682,11.274],"o":1.687,"q":0.0204,"nj":2.257,"na":3.356},{"s":40,"t":181,"a":[4.993,0.0],"b":[-7.162,10.387],"j":[2.551,0.201],"T":[-2.169,10.387],"o":1.676,"q":0.0218,"nj":3.059,"na":4.993},{"s":49,"t":1,"a":[3.989,-0.0],"b":[-0.002,2.797],"j":[1.866,0.695],"T":[3.987,2.797],"o":1.76,"q":0.2578,"nj":2.657,"na":3.989}],"14":[{"s":0,"t":981,"a":[0.838,0.0],"b":[0.807,0.651],"j":[0.638,-0.165],"T":[1.645,0.651],"o":0.681,"q":0.2164,"nj":0.948,"na":0.838},{"s":1,"t":961,"a":[0.894,-0.0],"b":[0.696,0.96],"j":[0.969,0.162],"T":[1.59,0.96],"o":0.75,"q":0.3548,"nj":1.236,"na":0.894},{"s":2,"t":941,"a":[0.874,-0.0],"b":[0.415,1.301],"j":[0.758,0.333],"T":[1.289,1.301],"o":0.857,"q":0.3758,"nj":1.192,"na":0.874},{"s":3,"t":921,"a":[1.291,0.0],"b":[0.295,1.767],"j":[0.558,0.861],"T":[1.586,1.767],"o":1.039,"q":0.3651,"nj":1.46,"na":1.291},{"s":5,"t":881,"a":[2.231,0.0],"b":[0.38,1.481],"j":[1.174,1.127],"T":[2.611,1.481],"o":1.303,"q":0.4368,"nj":2.085,"na":2.231},{"s":7,"t":841,"a":[2.484,-0.0],"b":[-0.165,1.797],"j":[0.46,1.538],"T":[2.319,1.797],"o":1.639,"q":0.4327,"nj":2.294,"na":2.484},{"s":10,"t":781,"a":[3.361,0.0],"b":[-1.709,2.819],"j":[0.461,0.794],"T":[1.652,2.819],"o":2.31,"q":0.4915,"nj":2.486,"na":3.361},{"s":15,"t":681,"a":[2.092,-0.0],"b":[-2.972,6.711],"j":[0.8,0.31],"T":[-0.88,6.711],"o":2.767,"q":0.1488,"nj":2.897,"na":2.092},{"s":20,"t":581,"a":[11.049,0.0],"b":[-0.721,2.928],"j":[1.389,0.263],"T":[10.328,2.928],"o":4.101,"q":0.162,"nj":4.337,"na":11.049},{"s":25,"t":481,"a":[4.425,0.0],"b":[-4.019,10.893],"j":[-0.308,0.882],"T":[0.406,10.893],"o":4.223,"q":0.1504,"nj":4.325,"na":4.425},{"s":30,"t":381,"a":[11.737,0.0],"b":[-2.093,4.007],"j":[0.351,0.166],"T":[9.644,4.007],"o":2.191,"q":0.0453,"nj":2.225,"na":11.737},{"s":40,"t":181,"a":[3.686,0.0],"b":[-3.881,5.372],"j":[-0.821,1.526],"T":[-0.195,5.372],"o":2.059,"q":0.2183,"nj":2.691,"na":3.686},{"s":49,"t":1,"a":[2.59,-0.0],"b":[1.244,2.424],"j":[1.552,0.864],"T":[3.833,2.424],"o":1.787,"q":0.2948,"nj":2.52,"na":2.59}],"15":[{"s":0,"t":981,"a":[1.365,0.0],"b":[0.831,0.558],"j":[0.806,0.601],"T":[2.196,0.558],"o":0.632,"q":0.1711,"nj":1.188,"na":1.365},{"s":1,"t":961,"a":[1.652,0.0],"b":[0.814,0.748],"j":[0.623,0.526],"T":[2.466,0.748],"o":1.132,"q":0.271,"nj":1.395,"na":1.652},{"s":2,"t":941,"a":[2.051,-0.0],"b":[1.033,0.947],"j":[0.685,0.423],"T":[3.084,0.947],"o":1.424,"q":0.2516,"nj":1.636,"na":2.051},{"s":3,"t":921,"a":[1.121,0.0],"b":[0.097,1.129],"j":[0.289,0.767],"T":[1.218,1.129],"o":1.164,"q":0.5771,"nj":1.424,"na":1.121},{"s":5,"t":881,"a":[1.522,0.0],"b":[-0.306,1.295],"j":[0.314,0.699],"T":[1.216,1.295],"o":0.998,"q":0.4602,"nj":1.258,"na":1.522},{"s":7,"t":841,"a":[2.128,-0.0],"b":[-0.685,2.11],"j":[0.451,0.34],"T":[1.443,2.11],"o":1.166,"q":0.2483,"nj":1.296,"na":2.128},{"s":10,"t":781,"a":[2.972,-0.0],"b":[-1.334,3.18],"j":[1.41,0.415],"T":[1.638,3.18],"o":1.365,"q":0.195,"nj":2.006,"na":2.972},{"s":15,"t":681,"a":[8.611,0.0],"b":[-0.406,3.054],"j":[0.55,0.427],"T":[8.205,3.054],"o":1.647,"q":0.0398,"nj":1.788,"na":8.611},{"s":20,"t":581,"a":[12.06,0.0],"b":[-0.579,3.06],"j":[0.978,0.277],"T":[11.482,3.06],"o":2.259,"q":0.0414,"nj":2.478,"na":12.06},{"s":25,"t":481,"a":[10.648,-0.0],"b":[-2.054,6.682],"j":[0.003,0.743],"T":[8.594,6.682],"o":2.67,"q":0.0613,"nj":2.771,"na":10.648},{"s":30,"t":381,"a":[10.724,0.0],"b":[-4.214,9.111],"j":[-1.159,1.286],"T":[6.51,9.111],"o":2.972,"q":0.0686,"nj":3.44,"na":10.724},{"s":40,"t":181,"a":[11.388,0.0],"b":[-5.507,6.995],"j":[-1.584,1.512],"T":[5.88,6.995],"o":2.772,"q":0.0822,"nj":3.533,"na":11.388},{"s":49,"t":1,"a":[2.343,0.0],"b":[1.17,2.09],"j":[1.318,0.752],"T":[3.513,2.09],"o":1.643,"q":0.2898,"nj":2.236,"na":2.343}],"16":[{"s":0,"t":981,"a":[1.063,0.0],"b":[0.899,0.417],"j":[1.886,0.662],"T":[1.962,0.417],"o":0.852,"q":0.9167,"nj":2.172,"na":1.063},{"s":1,"t":961,"a":[0.892,-0.0],"b":[0.557,0.747],"j":[0.973,0.984],"T":[1.449,0.747],"o":0.677,"q":0.6181,"nj":1.541,"na":0.892},{"s":2,"t":941,"a":[1.123,0.0],"b":[0.525,0.79],"j":[1.034,0.853],"T":[1.648,0.79],"o":0.731,"q":0.5836,"nj":1.526,"na":1.123},{"s":3,"t":921,"a":[1.438,0.0],"b":[0.668,0.892],"j":[1.395,0.707],"T":[2.106,0.892],"o":0.78,"q":0.5297,"nj":1.748,"na":1.438},{"s":5,"t":881,"a":[1.441,-0.0],"b":[0.405,0.873],"j":[1.521,0.413],"T":[1.847,0.873],"o":0.873,"q":0.706,"nj":1.802,"na":1.441},{"s":7,"t":841,"a":[1.501,-0.0],"b":[0.107,0.97],"j":[1.294,0.547],"T":[1.608,0.97],"o":0.807,"q":0.7012,"nj":1.62,"na":1.501},{"s":10,"t":781,"a":[1.636,0.0],"b":[-0.473,1.092],"j":[0.285,0.121],"T":[1.163,1.092],"o":1.392,"q":0.5306,"nj":1.426,"na":1.636},{"s":15,"t":681,"a":[3.892,0.0],"b":[-1.372,2.641],"j":[0.884,0.061],"T":[2.52,2.641],"o":2.498,"q":0.4007,"nj":2.651,"na":3.892},{"s":20,"t":581,"a":[1.545,-0.0],"b":[-1.023,7.591],"j":[0.189,1.22],"T":[0.521,7.591],"o":2.508,"q":0.1339,"nj":2.796,"na":1.545},{"s":25,"t":481,"a":[8.202,-0.0],"b":[-0.493,2.4],"j":[0.416,0.983],"T":[7.709,2.4],"o":2.25,"q":0.084,"nj":2.49,"na":8.202},{"s":30,"t":381,"a":[4.032,-0.0],"b":[-0.474,1.771],"j":[0.717,0.954],"T":[3.558,1.771],"o":1.564,"q":0.2186,"nj":1.967,"na":4.032},{"s":40,"t":181,"a":[3.689,0.0],"b":[-1.214,2.059],"j":[0.471,0.833],"T":[2.474,2.059],"o":1.304,"q":0.2357,"nj":1.618,"na":3.689},{"s":49,"t":1,"a":[2.636,0.0],"b":[1.487,2.17],"j":[1.364,0.87],"T":[4.123,2.17],"o":1.687,"q":0.2344,"nj":2.338,"na":2.636}]}};
+  var plSeed='9', plIdx=0;
+
+  function planeFrame(){
+    var rows=PLANE.seeds[plSeed], r=rows[Math.min(plIdx,rows.length-1)];
+    var P={u:[0,0], a:r.a, b:r.b, T:r.T, j:r.j};
+    var keys=['u','a','b','T','j'], i;
+    /* fit every participant, with room for its tag */
+    var xs=keys.map(function(k){return P[k][0];}), ys=keys.map(function(k){return P[k][1];});
+    var x0=Math.min.apply(null,xs), x1=Math.max.apply(null,xs),
+        y0=Math.min.apply(null,ys), y1=Math.max.apply(null,ys);
+    var pad=Math.max(x1-x0,y1-y0)*0.20+0.4;
+    x0-=pad; x1+=pad; y0-=pad; y1+=pad;
+    var PX=[86,556], PY=[52,392];
+    var sc=Math.min((PX[1]-PX[0])/(x1-x0), (PY[1]-PY[0])/(y1-y0));
+    var cx=(PX[0]+PX[1])/2-((x0+x1)/2)*sc, cy=(PY[0]+PY[1])/2+((y0+y1)/2)*sc;
+    function X(v){ return cx+v*sc; } function Y(v){ return cy-v*sc; }
+    function pt(k){ return [X(P[k][0]), Y(P[k][1])]; }
+
+    var o=DEFS;
+    o+=R(PX[0]-10,PY[0]-10,PX[1]-PX[0]+20,PY[1]-PY[0]+20,'var(--rule)','var(--panel)');
+    /* axes through u */
+    o+='<line x1="'+PX[0]+'" y1="'+Y(0)+'" x2="'+PX[1]+'" y2="'+Y(0)+'" stroke="var(--rule)" stroke-width="1"/>';
+    o+='<line x1="'+X(0)+'" y1="'+PY[0]+'" x2="'+X(0)+'" y2="'+PY[1]+'" stroke="var(--rule)" stroke-width="1"/>';
+    o+=T(PX[1]-4,Y(0)-8,'toward cat →',10.5,'var(--ink-faint)','end');
+    o+=T(X(0)+8,PY[0]+4,'↑ toward dog, the part that is not cat',10.5,'var(--ink-faint)','start');
+
+    var pa=pt('a'), pb=pt('b'), pT=pt('T'), pj=pt('j'), pu=pt('u');
+    /* the parallelogram that makes T */
+    o+='<path d="M'+pa[0]+','+pa[1]+' L'+pT[0]+','+pT[1]+' L'+pb[0]+','+pb[1]+
+       '" fill="none" stroke="'+AT+'" stroke-width="1" stroke-dasharray="3 3" opacity=".5"/>';
+    /* the two expert arrows */
+    o+=AR(pu[0],pu[1],pa[0],pa[1],AT)+AR(pu[0],pu[1],pb[0],pb[1],AT);
+    /* the in-plane part of the correction */
+    o+='<line x1="'+pT[0]+'" y1="'+pT[1]+'" x2="'+pj[0]+'" y2="'+pj[1]+
+       '" stroke="'+HOT+'" stroke-width="1.6" stroke-dasharray="5 3"/>';
+
+    function dot(p,c,tag,dx,dy){
+      return '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="5.5" fill="'+c+'" stroke="var(--panel)" stroke-width="1.5"/>'
+           + T(p[0]+dx,p[1]+dy,tag,13,c,dx<0?'end':'start',600);
+    }
+    /* tags pushed away from the middle of the cloud, so they cannot sit on each other */
+    var mx=(pa[0]+pb[0]+pT[0]+pj[0]+pu[0])/5, my=(pa[1]+pb[1]+pT[1]+pj[1]+pu[1])/5;
+    function off(p){ var dx=p[0]-mx, dy=p[1]-my, n=Math.hypot(dx,dy)||1;
+                     return [dx/n*19, dy/n*19+4]; }
+    [[pu,FZ,'u'],[pa,AT,'a'],[pb,AT,'b'],[pT,HOT,'a + b − u'],[pj,'var(--txt)','ε̄J']].forEach(function(q){
+      var d=off(q[0]); o+=dot(q[0],q[1],q[2],d[0],d[1]);
+    });
+
+    /* everything else in one column, so nothing can collide with anything */
+    var KX=600, ky=64;
+    function key(c,tag,txt){
+      var g='<circle cx="'+(KX+6)+'" cy="'+(ky-4)+'" r="5.5" fill="'+c+'"/>'
+          + T(KX+20,ky,tag,12.5,c,'start',600) + T(KX+108,ky,txt,12,'var(--ink-soft)','start');
+      ky+=25; return g;
+    }
+    o+=key(FZ,'u','the empty branch, the origin');
+    o+=key(AT,'a','the cat branch');
+    o+=key(AT,'b','the dog branch');
+    o+=key(HOT,'a + b − u','what PoE steps with');
+    o+=key('var(--txt)','ε̄J','the joint prediction, flattened');
+
+    ky+=8;
+    o+='<line x1="'+KX+'" y1="'+ky+'" x2="1040" y2="'+ky+'" stroke="var(--rule)" stroke-width="1"/>';
+    ky+=24;
+    o+=T(KX,ky,'step '+r.s+'   ·   timestep '+r.t+'   ·   seed '+plSeed,13,INK,'start',600); ky+=24;
+    o+=T(KX,ky,'‖a − u‖ = '+r.na.toFixed(1)+'   ·   ‖ε̄J − u‖ = '+r.nj.toFixed(1)+
+        '   ·   ‖a + b − u‖ = '+Math.hypot(r.T[0],r.T[1]).toFixed(1),12,'var(--ink-soft)','start'); ky+=19;
+    o+=T(KX,ky,'the red dashed line is the part a re-weighting could have supplied',11.5,HOT,'start'); ky+=28;
+
+    /* out of the plane: a flat bar, no fake 3-D */
+    o+='<line x1="'+KX+'" y1="'+ky+'" x2="1040" y2="'+ky+'" stroke="var(--rule)" stroke-width="1"/>';
+    ky+=26;
+    o+=T(KX,ky,'out of the plane',12.5,'var(--txt)','start',600);
+    o+=T(KX+120,ky,'where no re-weighting can reach',11,'var(--ink-faint)','start'); ky+=20;
+    var maxO=1; rows.forEach(function(q){ if(q.o>maxO) maxO=q.o; });
+    var BW=Math.max(4,(r.o/maxO)*330);
+    o+='<line x1="'+KX+'" y1="'+(ky-4)+'" x2="'+KX+'" y2="'+(ky+26)+'" stroke="var(--rule)" stroke-width="2"/>';
+    o+=R(KX+2,ky,BW,22,'var(--txt)','var(--txt-fill)');
+    o+=T(KX+BW+12,ky+16,r.o.toFixed(2),12.5,'var(--txt)','start',600); ky+=44;
+    o+=T(KX,ky,'that is '+(r.q*100).toFixed(1)+'% of the correction, this step',12,'var(--txt)','start',600);
+    return o;
+  }
+
+  /* ---- derived, in the browser, from the same coordinates ---- */
+  function med(v){ v=v.slice().sort(function(x,y){return x-y;}); var n=v.length;
+    return n%2 ? v[(n-1)/2] : (v[n/2-1]+v[n/2])/2; }
+  function perStep(fn){
+    var ks=Object.keys(PLANE.seeds), n=PLANE.seeds[ks[0]].length, out=[], i;
+    for(i=0;i<n;i++){
+      var vals=[];
+      ks.forEach(function(k){ var v=fn(PLANE.seeds[k][i]); if(v!=null && isFinite(v)) vals.push(v); });
+      out.push({s:PLANE.seeds[ks[0]][i].s, v:vals.length?med(vals):null});
+    }
+    return out;
+  }
+  function angleOf(r){
+    var A=r.a,B=r.b, c=(A[0]*B[0]+A[1]*B[1])/(Math.hypot(A[0],A[1])*Math.hypot(B[0],B[1])+1e-12);
+    return Math.acos(Math.max(-1,Math.min(1,c)))*180/Math.PI;
+  }
+  function weightsOf(r){
+    var A=r.a,B=r.b,J=r.j,W=PLANE.w, det=A[0]*B[1]-A[1]*B[0];
+    if(Math.abs(det)<1e-9) return null;
+    return [ (W*J[0]*B[1]-W*J[1]*B[0])/det, (-W*J[0]*A[1]+W*J[1]*A[0])/det ];
+  }
+
+  /* a small line chart, shared by both derived frames */
+  function chart(series, opts){
+    var PX=[110,900], PY=[70,330], o='', i;
+    var xs=series[0].pts.map(function(p){return p.s;});
+    var lo=opts.lo, hi=opts.hi;
+    function X(i){ return PX[0]+ i/(xs.length-1)*(PX[1]-PX[0]); }
+    function Y(v){ return PY[1]- (v-lo)/(hi-lo)*(PY[1]-PY[0]); }
+    o+='<line x1="'+PX[0]+'" y1="'+PY[1]+'" x2="'+PX[1]+'" y2="'+PY[1]+'" stroke="var(--rule)" stroke-width="1.2"/>';
+    o+='<line x1="'+PX[0]+'" y1="'+PY[0]+'" x2="'+PX[0]+'" y2="'+PY[1]+'" stroke="var(--rule)" stroke-width="1.2"/>';
+    (opts.rules||[]).forEach(function(rr){
+      o+='<line x1="'+PX[0]+'" y1="'+Y(rr.v)+'" x2="'+PX[1]+'" y2="'+Y(rr.v)+
+         '" stroke="'+rr.c+'" stroke-width="1.2" stroke-dasharray="6 4"/>';
+      o+=T(PX[1]+8,Y(rr.v)+4,rr.lab,11.5,rr.c,'start',600);
+    });
+    xs.forEach(function(sv,i){ if(i%2===0) o+=T(X(i),PY[1]+18,String(sv),10.5,'var(--ink-faint)','middle'); });
+    o+=T((PX[0]+PX[1])/2,PY[1]+38,'denoising step',12,'var(--ink-soft)','middle');
+    o+=T(PX[0]-10,PY[0]-14,opts.ylab,12,'var(--ink-soft)','start');
+    series.forEach(function(se){
+      var d=''; se.pts.forEach(function(p,i){ if(p.v==null) return; d+=(d?' L':'M')+X(i)+','+Y(p.v); });
+      o+='<path d="'+d+'" fill="none" stroke="'+se.c+'" stroke-width="2.2"/>';
+      se.pts.forEach(function(p,i){ if(p.v!=null) o+='<circle cx="'+X(i)+'" cy="'+Y(p.v)+'" r="3.4" fill="'+se.c+'"/>'; });
+      var last=se.pts[se.pts.length-1];
+      o+=T(PX[1]+8, Y(last.v)+4, se.lab, 12, se.c, 'start', 600);
+    });
+    /* where the plane frame is parked */
+    o+='<line x1="'+X(plIdx)+'" y1="'+PY[0]+'" x2="'+X(plIdx)+'" y2="'+PY[1]+
+       '" stroke="'+HOT+'" stroke-width="1.4" opacity=".55"/>';
+    o+=T(X(plIdx),PY[0]-6,'you are here',10.5,HOT,'middle',600);
+    return o;
+  }
+
+  function angleFrame(){
+    var pts=perStep(angleOf);
+    var o=DEFS+chart([{pts:pts,c:AT,lab:'angle'}],
+      {lo:0,hi:140,ylab:'angle between the cat and dog directions, degrees',
+       rules:[{v:90,c:'var(--ink-faint)',lab:'90°'}]});
+    o+=T(110,372,'Below 90° the two experts point partly the same way, so adding them compounds.',13,'var(--ink-soft)','start');
+    o+=T(110,394,'Above 90° they oppose, so adding them cancels. The crossover is around step 3.',13,INK,'start',600);
+    o+=T(110,420,'Median over the eight held-out seeds. Measured from the cached predictions.',11.5,'var(--ink-faint)','start');
+    return o;
+  }
+
+  function weightFrame(){
+    var al=perStep(function(r){var w=weightsOf(r);return w?w[0]:null;});
+    var be=perStep(function(r){var w=weightsOf(r);return w?w[1]:null;});
+    var o=DEFS+chart([{pts:al,c:AT,lab:'α, cat'},{pts:be,c:'var(--txt)',lab:'β, dog'}],
+      {lo:0,hi:8,ylab:'the weight each expert would need',
+       rules:[{v:PLANE.w,c:HOT,lab:'7.5, what PoE uses'}]});
+    o+=T(110,372,'Solve α(a−u) + β(b−u) = the guided joint, exactly, in the plane.',13,'var(--ink-soft)','start');
+    o+=T(110,394,'The answer is 2 to 4, never 7.5, and the two are not equal: early the dog branch',13,INK,'start',600);
+    o+=T(110,414,'needs three times the cat branch, and by step 10 that has inverted.',13,INK,'start',600);
+    o+=T(110,440,'Median over the eight held-out seeds.',11.5,'var(--ink-faint)','start');
+    return o;
+  }
+
+  /* ---- where the trained adapter lands, in the same frozen frame ---- */
+  var ADAPT = {"step":30000,"seeds":{"9":[{"s":0,"a":[0.01,-0.019],"b":[-0.103,0.498],"u":[-0.107,0.496],"T":[0.013,-0.018],"o":1.04},{"s":1,"a":[0.047,-0.111],"b":[-0.073,0.523],"u":[-0.238,0.325],"T":[0.211,0.087],"o":1.243},{"s":2,"a":[-0.171,0.038],"b":[-0.12,0.793],"u":[-0.577,0.294],"T":[0.286,0.536],"o":1.317},{"s":3,"a":[0.574,-0.193],"b":[-0.272,0.31],"u":[-0.136,-0.065],"T":[0.437,0.182],"o":2.878},{"s":5,"a":[0.898,-0.284],"b":[-0.786,0.485],"u":[-0.394,-0.184],"T":[0.506,0.386],"o":3.067},{"s":7,"a":[1.833,-0.57],"b":[-0.803,0.375],"u":[-0.149,-0.492],"T":[1.179,0.297],"o":3.213},{"s":10,"a":[-0.911,1.414],"b":[-2.023,3.733],"u":[-1.583,1.57],"T":[-1.35,3.577],"o":3.853},{"s":15,"a":[4.316,-0.57],"b":[1.104,0.419],"u":[1.862,-0.532],"T":[3.558,0.382],"o":4.616},{"s":20,"a":[0.111,1.644],"b":[-3.142,6.599],"u":[-1.067,2.261],"T":[-1.964,5.983],"o":5.508},{"s":25,"a":[5.272,-0.218],"b":[1.675,0.995],"u":[2.882,-0.006],"T":[4.065,0.783],"o":6.244},{"s":30,"a":[7.248,-0.214],"b":[1.32,1.856],"u":[3.417,0.173],"T":[5.152,1.469],"o":7.201},{"s":40,"a":[6.248,-0.216],"b":[-0.446,3.12],"u":[2.633,0.635],"T":[3.169,2.27],"o":8.624},{"s":49,"a":[0.681,-0.929],"b":[-0.104,0.836],"u":[-1.142,-1.386],"T":[1.719,1.292],"o":17.299}],"10":[{"s":0,"a":[-0.298,0.45],"b":[-0.158,0.775],"u":[-0.347,0.791],"T":[-0.108,0.434],"o":1.079},{"s":1,"a":[1.352,0.188],"b":[1.462,0.678],"u":[0.909,0.187],"T":[1.905,0.679],"o":1.331},{"s":2,"a":[1.246,0.197],"b":[1.285,0.818],"u":[0.878,0.182],"T":[1.653,0.833],"o":1.484},{"s":3,"a":[0.656,-0.334],"b":[0.227,0.575],"u":[0.252,-0.262],"T":[0.631,0.503],"o":1.549},{"s":5,"a":[1.198,-0.77],"b":[0.037,0.385],"u":[0.342,-0.635],"T":[0.893,0.25],"o":1.9},{"s":7,"a":[2.93,-0.193],"b":[-0.168,1.176],"u":[0.726,0.041],"T":[2.036,0.942],"o":2.524},{"s":10,"a":[0.424,0.985],"b":[-1.719,3.794],"u":[-0.65,1.468],"T":[-0.645,3.311],"o":3.322},{"s":15,"a":[0.004,3.199],"b":[-1.759,6.397],"u":[-0.843,3.54],"T":[-0.912,6.056],"o":4.688},{"s":20,"a":[5.889,-0.542],"b":[1.134,1.605],"u":[2.067,0.486],"T":[4.956,0.576],"o":6.155},{"s":25,"a":[2.141,1.382],"b":[-5.852,8.647],"u":[-1.98,2.681],"T":[-1.732,7.348],"o":6.966},{"s":30,"a":[5.787,1.079],"b":[-2.726,7.079],"u":[0.225,2.14],"T":[2.836,6.018],"o":8.64},{"s":40,"a":[4.438,0.559],"b":[-2.659,5.54],"u":[0.52,1.287],"T":[1.26,4.811],"o":10.954},{"s":49,"a":[2.553,1.071],"b":[1.098,2.605],"u":[0.766,0.677],"T":[2.885,2.999],"o":17.591}],"11":[{"s":0,"a":[-0.527,0.688],"b":[-0.614,0.942],"u":[-0.896,0.859],"T":[-0.245,0.771],"o":0.881},{"s":1,"a":[-1.258,0.013],"b":[-1.229,0.216],"u":[-1.694,-0.304],"T":[-0.792,0.534],"o":1.31},{"s":2,"a":[-0.85,0.505],"b":[-1.038,0.631],"u":[-1.017,0.334],"T":[-0.871,0.802],"o":2.218},{"s":3,"a":[-1.382,0.963],"b":[-1.571,1.206],"u":[-1.728,0.758],"T":[-1.225,1.411],"o":2.641},{"s":5,"a":[-0.916,1.174],"b":[-1.208,1.507],"u":[-1.341,1.136],"T":[-0.782,1.545],"o":3.105},{"s":7,"a":[-0.42,1.621],"b":[-0.836,2.037],"u":[-0.795,1.689],"T":[-0.46,1.968],"o":3.488},{"s":10,"a":[-0.272,1.569],"b":[-0.961,2.094],"u":[-0.823,1.633],"T":[-0.41,2.03],"o":3.779},{"s":15,"a":[-0.705,-0.018],"b":[-1.791,0.952],"u":[-1.517,0.041],"T":[-0.978,0.893],"o":4.374},{"s":20,"a":[1.295,-0.755],"b":[-0.04,1.007],"u":[0.391,-0.709],"T":[0.865,0.961],"o":5.439},{"s":25,"a":[1.817,-0.057],"b":[-0.446,2.068],"u":[0.766,-0.081],"T":[0.605,2.093],"o":6.395},{"s":30,"a":[1.38,0.238],"b":[-0.689,2.1],"u":[0.247,0.306],"T":[0.444,2.032],"o":7.226},{"s":40,"a":[3.083,0.344],"b":[-0.362,1.712],"u":[1.246,0.288],"T":[1.475,1.768],"o":9.769},{"s":49,"a":[0.11,-1.598],"b":[-0.323,-0.203],"u":[-2.382,-2.064],"T":[2.17,0.263],"o":15.347}],"12":[{"s":0,"a":[0.474,0.339],"b":[0.445,0.897],"u":[0.184,0.402],"T":[0.736,0.833],"o":0.903},{"s":1,"a":[0.35,0.42],"b":[0.399,0.919],"u":[0.02,0.428],"T":[0.73,0.912],"o":1.003},{"s":2,"a":[0.193,0.368],"b":[0.209,0.794],"u":[-0.282,0.229],"T":[0.684,0.933],"o":1.224},{"s":3,"a":[0.154,-0.098],"b":[-0.26,0.432],"u":[-0.393,-0.154],"T":[0.287,0.488],"o":1.535},{"s":5,"a":[0.702,0.42],"b":[-1.211,2.252],"u":[-0.586,0.647],"T":[0.078,2.025],"o":2.447},{"s":7,"a":[-0.04,1.547],"b":[-1.053,3.272],"u":[-0.651,1.706],"T":[-0.442,3.113],"o":2.513},{"s":10,"a":[0.474,0.825],"b":[-2.01,2.217],"u":[-1.211,1.121],"T":[-0.325,1.921],"o":3.545},{"s":15,"a":[0.808,1.633],"b":[-2.734,5.294],"u":[-0.869,2.586],"T":[-1.057,4.342],"o":4.603},{"s":20,"a":[3.244,0.746],"b":[1.106,2.781],"u":[2.016,1.211],"T":[2.335,2.317],"o":5.707},{"s":25,"a":[0.695,1.698],"b":[-2.998,7.115],"u":[-0.467,2.497],"T":[-1.836,6.317],"o":6.458},{"s":30,"a":[4.604,-0.597],"b":[0.026,2.462],"u":[2.188,0.184],"T":[2.441,1.681],"o":7.391},{"s":40,"a":[3.803,0.153],"b":[-4.986,5.707],"u":[-0.678,0.903],"T":[-0.506,4.957],"o":9.762},{"s":49,"a":[1.674,1.798],"b":[-0.42,3.851],"u":[-0.328,1.446],"T":[1.582,4.203],"o":17.539}],"13":[{"s":0,"a":[0.227,0.29],"b":[0.123,0.826],"u":[-0.128,0.438],"T":[0.478,0.679],"o":1.204},{"s":1,"a":[0.165,0.292],"b":[0.241,0.724],"u":[-0.189,0.427],"T":[0.595,0.589],"o":1.363},{"s":2,"a":[0.162,0.187],"b":[0.201,0.553],"u":[-0.528,0.185],"T":[0.891,0.555],"o":1.372},{"s":3,"a":[-0.012,-0.01],"b":[-0.543,0.38],"u":[-0.582,0.078],"T":[0.027,0.292],"o":2.347},{"s":5,"a":[0.775,0.753],"b":[-0.176,1.351],"u":[0.016,0.846],"T":[0.583,1.258],"o":3.145},{"s":7,"a":[0.892,1.122],"b":[-0.127,2.224],"u":[0.166,1.253],"T":[0.598,2.093],"o":3.275},{"s":10,"a":[1.689,0.349],"b":[-0.578,1.859],"u":[0.453,0.537],"T":[0.658,1.671],"o":3.769},{"s":15,"a":[3.511,0.312],"b":[0.913,1.228],"u":[1.444,0.299],"T":[2.98,1.241],"o":4.868},{"s":20,"a":[1.206,1.035],"b":[-2.309,5.701],"u":[-0.432,1.331],"T":[-0.671,5.406],"o":5.597},{"s":25,"a":[5.887,0.133],"b":[0.287,2.02],"u":[1.446,0.459],"T":[4.728,1.694],"o":6.538},{"s":30,"a":[0.45,2.347],"b":[-3.704,7.902],"u":[-1.163,2.643],"T":[-2.091,7.606],"o":7.64},{"s":40,"a":[0.862,2.216],"b":[-5.39,7.734],"u":[-1.679,2.602],"T":[-2.849,7.348],"o":9.766},{"s":49,"a":[2.423,1.076],"b":[0.338,2.579],"u":[0.177,0.743],"T":[2.584,2.911],"o":16.913}],"14":[{"s":0,"a":[-0.775,-0.163],"b":[-0.667,0.1],"u":[-0.996,0.027],"T":[-0.445,-0.091],"o":1.348},{"s":1,"a":[-0.256,-1.152],"b":[-0.291,-1.086],"u":[-0.705,-1.214],"T":[0.159,-1.024],"o":1.679},{"s":2,"a":[-0.091,-0.354],"b":[-0.182,-0.181],"u":[-0.457,-0.344],"T":[0.184,-0.191],"o":2.408},{"s":3,"a":[0.374,0.306],"b":[0.058,0.809],"u":[-0.067,0.273],"T":[0.498,0.842],"o":2.891},{"s":5,"a":[0.379,0.494],"b":[-0.174,1.067],"u":[-0.58,0.335],"T":[0.785,1.226],"o":3.183},{"s":7,"a":[0.652,0.99],"b":[-0.279,1.734],"u":[-0.259,0.921],"T":[0.632,1.804],"o":3.4},{"s":10,"a":[0.625,0.661],"b":[-1.571,2.211],"u":[-0.852,0.948],"T":[-0.094,1.925],"o":3.953},{"s":15,"a":[-0.433,1.589],"b":[-2.705,4.837],"u":[-1.477,1.855],"T":[-1.66,4.571],"o":5.206},{"s":20,"a":[5.068,0.15],"b":[1.498,1.447],"u":[2.25,0.519],"T":[4.316,1.078],"o":7.813},{"s":25,"a":[1.507,1.515],"b":[-2.482,7.441],"u":[-0.63,2.596],"T":[-0.346,6.361],"o":7.963},{"s":30,"a":[5.326,-0.585],"b":[0.737,2.265],"u":[2.27,0.423],"T":[3.793,1.258],"o":8.372},{"s":40,"a":[1.749,1.712],"b":[-2.234,3.28],"u":[-0.536,1.942],"T":[0.051,3.05],"o":10.189},{"s":49,"a":[1.791,-0.534],"b":[0.928,0.94],"u":[-0.114,-0.685],"T":[2.833,1.091],"o":17.055}],"15":[{"s":0,"a":[-0.518,0.538],"b":[-0.649,0.679],"u":[-1.17,0.504],"T":[0.003,0.714],"o":1.437},{"s":1,"a":[-0.376,0.532],"b":[-0.412,0.613],"u":[-0.67,0.474],"T":[-0.118,0.671],"o":2.204},{"s":2,"a":[-0.026,0.494],"b":[-0.171,0.574],"u":[-0.54,0.399],"T":[0.342,0.67],"o":2.865},{"s":3,"a":[-0.358,1.055],"b":[-0.629,1.374],"u":[-0.704,1.068],"T":[-0.283,1.362],"o":3.1},{"s":5,"a":[-0.314,1.037],"b":[-0.966,1.398],"u":[-0.845,1.111],"T":[-0.434,1.324],"o":3.326},{"s":7,"a":[-0.248,0.927],"b":[-1.302,1.619],"u":[-0.997,1.21],"T":[-0.553,1.335],"o":3.595},{"s":10,"a":[-0.256,0.405],"b":[-1.521,1.678],"u":[-1.163,0.504],"T":[-0.615,1.579],"o":4.241},{"s":15,"a":[2.809,0.154],"b":[0.907,1.711],"u":[1.595,0.565],"T":[2.121,1.3],"o":5.473},{"s":20,"a":[4.025,-0.019],"b":[1.569,1.691],"u":[2.41,0.443],"T":[3.184,1.228],"o":6.5},{"s":25,"a":[3.62,0.619],"b":[0.582,4.343],"u":[2.095,1.177],"T":[2.106,3.784],"o":7.367},{"s":30,"a":[2.686,0.027],"b":[-1.455,4.186],"u":[1.246,0.496],"T":[-0.015,3.717],"o":8.318},{"s":40,"a":[5.2,0.187],"b":[-1.207,3.33],"u":[2.195,0.599],"T":[1.797,2.918],"o":10.674},{"s":49,"a":[2.139,0.122],"b":[1.485,1.404],"u":[0.562,-0.104],"T":[3.062,1.63],"o":15.608}],"16":[{"s":0,"a":[1.516,0.823],"b":[1.529,1.025],"u":[0.82,0.821],"T":[2.224,1.027],"o":1.447},{"s":1,"a":[0.258,0.89],"b":[0.175,1.256],"u":[-0.114,0.951],"T":[0.546,1.195],"o":1.025},{"s":2,"a":[0.276,0.628],"b":[0.097,1.044],"u":[-0.152,0.739],"T":[0.525,0.933],"o":1.083},{"s":3,"a":[0.564,0.435],"b":[0.285,0.906],"u":[-0.046,0.608],"T":[0.894,0.733],"o":1.186},{"s":5,"a":[0.041,0.032],"b":[-0.369,0.501],"u":[-0.612,0.087],"T":[0.283,0.447],"o":1.465},{"s":7,"a":[-0.415,-0.394],"b":[-0.916,0.194],"u":[-0.996,-0.246],"T":[-0.334,0.045],"o":2.034},{"s":10,"a":[-0.374,-0.445],"b":[-1.246,0.095],"u":[-1.043,-0.358],"T":[-0.577,0.008],"o":3.263},{"s":15,"a":[1.437,0.173],"b":[-1.01,1.608],"u":[-0.268,0.351],"T":[0.695,1.43],"o":4.317},{"s":20,"a":[-0.504,2.389],"b":[-1.488,3.918],"u":[-1.205,2.459],"T":[-0.787,3.848],"o":5.406},{"s":25,"a":[3.235,0.161],"b":[1.176,1.367],"u":[1.679,0.577],"T":[2.733,0.952],"o":6.366},{"s":30,"a":[2.542,-0.099],"b":[0.679,0.558],"u":[1.032,-0.062],"T":[2.19,0.521],"o":7.135},{"s":40,"a":[1.618,0.575],"b":[-0.943,1.651],"u":[-0.453,0.762],"T":[1.128,1.464],"o":8.785},{"s":49,"a":[-0.188,0.091],"b":[-0.725,1.52],"u":[-2.388,-0.024],"T":[1.475,1.635],"o":15.993}]}};
+  function adapterFrame(){
+    var fr=PLANE.seeds[plSeed][plIdx], ad=ADAPT.seeds[plSeed][plIdx];
+    var P={u:[0,0], a:fr.a, b:fr.b, T:fr.T, j:fr.j,
+           au:ad.u, aa:ad.a, ab:ad.b, aT:ad.T};
+    var ks=Object.keys(P), xs=ks.map(function(k){return P[k][0];}), ys=ks.map(function(k){return P[k][1];});
+    var x0=Math.min.apply(null,xs),x1=Math.max.apply(null,xs),
+        y0=Math.min.apply(null,ys),y1=Math.max.apply(null,ys);
+    var pad=Math.max(x1-x0,y1-y0)*0.20+0.4; x0-=pad;x1+=pad;y0-=pad;y1+=pad;
+    var PX=[86,556], PY=[52,392];
+    var sc=Math.min((PX[1]-PX[0])/(x1-x0),(PY[1]-PY[0])/(y1-y0));
+    var cx=(PX[0]+PX[1])/2-((x0+x1)/2)*sc, cy=(PY[0]+PY[1])/2+((y0+y1)/2)*sc;
+    function X(v){return cx+v*sc;} function Y(v){return cy-v*sc;}
+    function pt(k){return [X(P[k][0]),Y(P[k][1])];}
+
+    var o=DEFS;
+    o+=R(PX[0]-10,PY[0]-10,PX[1]-PX[0]+20,PY[1]-PY[0]+20,'var(--rule)','var(--panel)');
+    o+='<line x1="'+PX[0]+'" y1="'+Y(0)+'" x2="'+PX[1]+'" y2="'+Y(0)+'" stroke="var(--rule)" stroke-width="1"/>';
+    o+='<line x1="'+X(0)+'" y1="'+PY[0]+'" x2="'+X(0)+'" y2="'+PY[1]+'" stroke="var(--rule)" stroke-width="1"/>';
+
+    var pT=pt('T'), pj=pt('j'), pu=pt('u'), paT=pt('aT');
+    /* frozen, faint */
+    ['a','b'].forEach(function(k){ var q=pt(k);
+      o+='<line x1="'+pu[0]+'" y1="'+pu[1]+'" x2="'+q[0]+'" y2="'+q[1]+'" stroke="'+AT+'" stroke-width="1.2" opacity=".35"/>';
+      o+='<circle cx="'+q[0]+'" cy="'+q[1]+'" r="4" fill="'+AT+'" opacity=".35"/>'; });
+    o+='<circle cx="'+pT[0]+'" cy="'+pT[1]+'" r="6" fill="'+HOT+'" opacity=".35"/>';
+    o+=T(pT[0]+10,pT[1]-8,'frozen a + b − u',11.5,HOT,'start');
+    /* the move the adapter makes */
+    o+='<path d="M'+pT[0]+','+pT[1]+' L'+paT[0]+','+paT[1]+'" stroke="'+UN+'" stroke-width="2.2" marker-end="url(#ar)"/>';
+    o+='<circle cx="'+paT[0]+'" cy="'+paT[1]+'" r="7" fill="'+UN+'" stroke="var(--panel)" stroke-width="1.5"/>';
+    o+=T(paT[0]+12,paT[1]+18,'with the adapter',12,UN,'start',600);
+    /* the target */
+    o+='<circle cx="'+pj[0]+'" cy="'+pj[1]+'" r="6" fill="var(--txt)" stroke="var(--panel)" stroke-width="1.5"/>';
+    o+=T(pj[0]+12,pj[1]-8,'ε̄J, the target',12,'var(--txt)','start',600);
+    o+='<circle cx="'+pu[0]+'" cy="'+pu[1]+'" r="5" fill="'+FZ+'"/>'+T(pu[0]-8,pu[1]+18,'u',12.5,FZ,'end',600);
+
+    /* the readouts, one column, measured */
+    function hyp(p,q){ return Math.hypot(p[0]-(q?q[0]:0), p[1]-(q?q[1]:0)); }
+    var KX=600, ky=70;
+    o+=T(KX,ky,'the adapter at 30,000 steps, V0',13.5,UN,'start',600); ky+=30;
+    function row(lab,before,after,c){
+      var g=T(KX,ky,lab,12,'var(--ink-soft)','start')
+          + T(KX+250,ky,before.toFixed(2),12.5,'var(--ink-faint)','end',600)
+          + T(KX+282,ky,'→',12,'var(--ink-faint)','middle')
+          + T(KX+360,ky,after.toFixed(2),13,c,'end',600);
+      ky+=26; return g;
+    }
+    o+=row('how far the composition reaches', hyp(fr.T), hyp(ad.T), UN);
+    o+=row('distance to the target', hyp(fr.T,fr.j), hyp(ad.T,fr.j), UN);
+    ky+=6;
+    o+=T(KX,ky,'the empty branch drifted '+Math.hypot(ad.u[0],ad.u[1]).toFixed(2),12,FZ,'start'); ky+=22;
+    o+=T(KX,ky,'out of the plane: '+ad.o.toFixed(2),12,'var(--txt)','start',600); ky+=30;
+    o+='<line x1="'+KX+'" y1="'+ky+'" x2="1040" y2="'+ky+'" stroke="var(--rule)" stroke-width="1"/>'; ky+=26;
+    o+=T(KX,ky,'It pulls the composition in, toward the weights',13,INK,'start',600); ky+=20;
+    o+=T(KX,ky,'the previous frame said were right, and it leaves',13,INK,'start',600); ky+=20;
+    o+=T(KX,ky,'the plane to do the rest.',13,INK,'start',600); ky+=28;
+    o+=T(KX,ky,'Frozen points are faint. The blue arrow is the move.',11.5,'var(--ink-faint)','start'); ky+=16;
+    o+=T(KX,ky,'Same frozen frame as the first panel, seed '+plSeed+', step '+fr.s+'.',11.5,'var(--ink-faint)','start');
+    return o;
+  }
+  var PLANE_STEPS=[
+    {cap:'', draw:planeFrame},
+    {cap:'', draw:angleFrame},
+    {cap:'', draw:weightFrame},
+    {cap:'', draw:adapterFrame}
+  ];
+
+
+
+  /* ---- claims 1 and 5: what is on disk, and what can move ---- */
+  var DISK=[
+  { cap:'Before any training, sampling was run once per pair and seed with <b>no adapter</b>, and every denoising step was written down.',
+    draw:function(){
+      var o=DEFS, names=[['x_t','the noisy latent at this step',UN],
+        ['eps_a_raw','what the frozen model predicts given "a cat"',AT],
+        ['eps_b_raw','… given "a dog"',AT],
+        ['eps_uncond','… given the empty prompt',FZ],
+        ['eps_j_raw','… given "a cat and a dog". This is the target',FZ]], i;
+      o+=T(60,44,'one cached step holds five tensors',13.5,INK,'start',600);
+      for(i=0;i<5;i++){
+        var y=70+i*52, c=names[i][2];
+        o+=R(60,y,26,38,c,c==FZ?FZF:ATF)+R(70,y-6,26,38,c,c==FZ?FZF:ATF)+R(80,y-12,26,38,c,'var(--panel)');
+        o+=T(124,y+14,names[i][0],13,c,'start',600);
+        o+=T(124,y+30,names[i][1],11.5,'var(--ink-soft)','start');
+        o+=T(470,y+22,'(1, 4, 128, 128)',12,'var(--ink-faint)','start');
+      }
+      var KX=640;
+      o+=T(KX,60,'why 4 × 128 × 128',13,INK,'start',600);
+      o+=T(KX,84,'a 1024 × 1024 image is an 8× smaller,',12.5,'var(--ink-soft)','start');
+      o+=T(KX,104,'4-channel latent. The VAE map in this repo',12.5,'var(--ink-soft)','start');
+      o+=T(KX,124,'traces that, so it is not redrawn here.',12.5,'var(--ink-soft)','start');
+      o+=T(KX,166,'4 × 128 × 128  =  65,536 numbers',13.5,UN,'start',600);
+      o+=T(KX,190,'per tensor, per step',11.5,'var(--ink-faint)','start');
+      o+=T(KX,228,'50 steps  ≈  250 MB',13.5,UN,'start',600);
+      o+=T(KX,252,'for one pair at one seed',11.5,'var(--ink-faint)','start');
+      o+=R(KX,278,340,58,FZ,'var(--panel)');
+      o+=T(KX+14,302,'None of this is recomputed at train time.',12.5,FZ,'start',600);
+      o+=T(KX+14,322,'It is read off the disk, every step.',12.5,'var(--ink-soft)','start');
+      return o;
+    }},
+  { cap:'And almost nothing is trainable. The adapter is <b>0.38%</b> of the weights, all of it on cross-attention.',
+    draw:function(){
+      var o=DEFS, BX=70, BW=560, BY=90;
+      o+=T(BX,64,'every weight in the model',13,'var(--ink-soft)','start');
+      o+=R(BX,BY,BW,52,FZ,FZF);
+      var w=Math.max(3,BW*9912320/2577376004);
+      o+=R(BX,BY,w,52,AT,AT);
+      o+=T(BX,BY+76,'2,577,376,004 frozen',13,FZ,'start',600);
+      o+=T(BX,BY+96,'the whole U-Net, both text encoders, the VAE',11.5,'var(--ink-soft)','start');
+      o+='<line x1="'+(BX+w)+'" y1="'+(BY+52)+'" x2="'+(BX+w+40)+'" y2="'+(BY+140)+'" stroke="'+AT+'" stroke-width="1.2"/>';
+      o+=T(BX+w+46,BY+146,'9,912,320 trainable  ·  0.38%',13,AT,'start',600);
+      o+=T(BX+w+46,BY+166,'LoRA on 210 cross-attention projections',11.5,'var(--ink-soft)','start');
+      o+=T(BX+w+46,BY+184,'to_q · to_k · to_v, on attn2 only',11.5,'var(--ink-faint)','start');
+      var KX=660;
+      o+=T(KX,64,'what that means for “frozen”',13,INK,'start',600);
+      o+=T(KX,92,'The adapter sits on shared weights, so it',12.5,'var(--ink-soft)','start');
+      o+=T(KX,112,'changes all three branches at once. There',12.5,'var(--ink-soft)','start');
+      o+=T(KX,132,'is no separate cat adapter.',12.5,'var(--ink-soft)','start');
+      o+=T(KX,172,'So freezing a branch is not freezing',12.5,INK,'start',600);
+      o+=T(KX,192,'weights. It is not running that branch',12.5,INK,'start',600);
+      o+=T(KX,212,'through the model at all, and reading',12.5,INK,'start',600);
+      o+=T(KX,232,'the cached tensor instead.',12.5,INK,'start',600);
+      o+=T(KX,272,'Which costs nothing: it is already loaded.',12.5,AT,'start',600);
+      o+=T(KX,310,'That is why V1 and V3 are cheaper, not',11.5,'var(--ink-faint)','start');
+      o+=T(KX,326,'more expensive, than what runs today.',11.5,'var(--ink-faint)','start');
+      return o;
+    }}
+  ];
+
+  /* ---------- modal driver ---------- */
+  var MOD={attn:{title:'Inside one Q/KV block',prov:'measured · real forward trace of SDXL base 1.0',steps:ATTN},
+           empty:{title:'The empty prompt',prov:'measured · tokeniser + trace',steps:EMPTY},
+           disk:{title:'What is on disk, and what can move',prov:'measured · the cache and the adapter’s own attach record',steps:DISK},
+           plane:{title:'The plane product-of-experts lives in',prov:'measured · cached predictions, cat × dog, held-out seeds',steps:PLANE_STEPS}};
+  function stepsOf(k){ var st=MOD[k].steps; return typeof st==='function'?st():st; }
+  var modal=document.getElementById("modal"), mStage=document.getElementById("mstage"),
+      mCap=document.getElementById("mcap"), mDots=document.getElementById("mdots"),
+      mExtra=document.getElementById("mextra");
+  var cur=null, ci=0, lastFocus=null;
+
+  function paint(){
+    var ST=stepsOf(cur); if(ci>=ST.length) ci=ST.length-1; var st=ST[ci];
+    mStage.innerHTML=svg(st.draw());
+    mCap.innerHTML=st.cap;
+    mDots.innerHTML=ST.map(function(_,i){
+      return '<button data-i="'+i+'" aria-current="'+(i===ci)+'">'+(i+1)+'</button>';
+    }).join("");
+    Array.prototype.forEach.call(mDots.children,function(b){
+      b.addEventListener("click",function(){ ci=+b.getAttribute("data-i"); paint(); });
+    });
+    if(cur==="plane" && (ci===0||ci===3)){
+      var rows=PLANE.seeds[plSeed];
+      mExtra.innerHTML =
+        '<span class="pillset"><b>seed</b>'+
+        Object.keys(PLANE.seeds).map(function(k){
+          return '<button class="pill" data-ps="'+k+'" aria-current="'+(k===plSeed)+'">'+k+'</button>';
+        }).join("")+'</span>'+
+        '<span class="wctl">denoising step <input type="range" id="plS" min="0" max="'+(rows.length-1)+
+        '" step="1" value="'+plIdx+'"> <b id="plV">'+rows[plIdx].s+'</b></span>';
+      Array.prototype.forEach.call(mExtra.querySelectorAll("[data-ps]"),function(b){
+        b.addEventListener("click",function(){ plSeed=b.getAttribute("data-ps");
+          plIdx=Math.min(plIdx,PLANE.seeds[plSeed].length-1); paint(); });
+      });
+      var ps=document.getElementById("plS");
+      ps.addEventListener("input",function(){
+        plIdx=+ps.value; document.getElementById("plV").textContent=PLANE.seeds[plSeed][plIdx].s;
+        mStage.innerHTML=svg(ci===3?adapterFrame():planeFrame());
+      });
+    } else if(cur==="vars"){
+      mExtra.innerHTML =
+        '<span class="pillset"><b>design</b>'+
+        '<button class="pill" data-d="shared" aria-current="'+(design==="shared")+'">shared clock</button>'+
+        '<button class="pill" data-d="bespoke" aria-current="'+(design==="bespoke")+'">bespoke</button>'+
+        '</span><span class="pillset"><b>variation</b>'+
+        '<button class="pill" data-v="v0a" aria-current="'+(vsel==="v0a")+'">V0a</button>'+
+        '<button class="pill" data-v="v1" aria-current="'+(vsel==="v1")+'">V1</button>'+
+        '</span>';
+      Array.prototype.forEach.call(mExtra.querySelectorAll("[data-d]"),function(b){
+        b.addEventListener("click",function(){ design=b.getAttribute("data-d"); paint(); });
+      });
+      Array.prototype.forEach.call(mExtra.querySelectorAll("[data-v]"),function(b){
+        b.addEventListener("click",function(){ vsel=b.getAttribute("data-v"); paint(); });
+      });
+    } else if(cur==="empty" && ci===5){
+      mExtra.innerHTML='<span class="wctl">add the same tensor to a and u '+
+        '<input type="range" id="gV" min="0" max="2.6" step="0.02" value="'+gaugeV+'"> '+
+        '<b id="gVv">'+gaugeV.toFixed(2)+'</b></span>';
+      var gs=document.getElementById("gV");
+      gs.addEventListener("input",function(){
+        gaugeV=parseFloat(gs.value); document.getElementById("gVv").textContent=gaugeV.toFixed(2);
+        mStage.innerHTML=svg(stepsOf(cur)[ci].draw());
+      });
+    } else if(cur==="empty" && ci===2){
+      mExtra.innerHTML='<span class="wctl">guidance dial <input type="range" id="wS" min="1" max="12" step="0.5" value="'+wVal+'"> <b id="wV">'+wVal.toFixed(1)+'</b></span>';
+      var sl=document.getElementById("wS");
+      sl.addEventListener("input",function(){
+        wVal=parseFloat(sl.value); document.getElementById("wV").textContent=wVal.toFixed(1);
+        mStage.innerHTML=svg(MOD[cur].steps[2].draw());
+      });
+    } else mExtra.innerHTML='';
+    if(cur==="vars"){
+      document.getElementById("mtitle").textContent =
+        VSPEC[vsel].name + ': ' + VSPEC[vsel].blurb +
+        '   ·   ' + (design==="shared" ? "shared clock" : "its own arc");
+      document.getElementById("mprov").textContent = VSPEC[vsel].eq;
+    }
+    document.getElementById("mprev").disabled = ci===0;
+    document.getElementById("mnext").disabled = ci===ST.length-1;
+  }
+  function openModal(which){
+    lastFocus=document.activeElement; cur=which; ci=0;
+    document.getElementById("mtitle").textContent=MOD[which].title;
+    document.getElementById("mprov").textContent=MOD[which].prov;
+    modal.hidden=false; paint(); document.getElementById("mclose").focus();
+  }
+  function on2(id,ev,fn){ var n=document.getElementById(id); if(n) n.addEventListener(ev,fn); }
+  function closeDrill(){ if(!modal.hidden){ modal.hidden=true; if(lastFocus) lastFocus.focus(); } }
+  on2("mclose","click",closeDrill);
+  on2("mprev","click",function(){ if(ci>0){ci--;paint();} });
+  on2("mnext","click",function(){ if(ci<stepsOf(cur).length-1){ci++;paint();} });
+  document.addEventListener("keydown",function(e){
+    if(modal.hidden) return;
+    if(e.key==="Escape") closeDrill();
+    if(e.key==="ArrowRight" && ci<stepsOf(cur).length-1){ ci++; paint(); }
+    if(e.key==="ArrowLeft" && ci>0){ ci--; paint(); }
+  });
+  function on(id,ev,fn){ var n=document.getElementById(id); if(n) n.addEventListener(ev,fn); }
+
+  /* ================= the main view ================= */
+  var CAPS=[
+    'Two legs start the same way: some text. <em>"a cat and a dog"</em> on one side, and <em>"a cat"</em>, <em>"a dog"</em> and the empty string on the other.',
+    'Leg A is a <em>lookup</em>. That prediction was made once, with no adapter, and written to disk.',
+    '<em>Where does each branch come from?</em> This is the step the variations disagree on. Watch the wires and the batch width.',
+    'The branch outputs. A bar over a letter means it came off the disk with no gradient.',
+    'Guidance. Most variations dial both sides; one cancels it, some have none at all.',
+    'Subtract, square, average. One number, and only the adapted branches feel the gradient.'
+  ];
+  var MAX=CAPS.length-1, s=0, vi=0, prev=null;
+  var cap=document.getElementById("cap"), btns=all(".stepbar button[data-s]");
+  var stage=document.getElementById("figstage"), pills=document.getElementById("vpills");
+  var veqFull=document.getElementById("veqFull"), veqSimp=document.getElementById("veqSimp"),
+      vwhy=document.getElementById("vwhy"), simpLab=document.getElementById("vsimplab"),
+      vnote=document.getElementById("vnote"), veqT=document.getElementById("veqTitle");
+
+  pills.innerHTML = VARS.map(function(v,i){
+    return '<button data-v="'+i+'" aria-current="'+(i===0)+'">'+v.id+'<small>'+v.sub+'</small></button>';
+  }).join("");
+  Array.prototype.forEach.call(pills.children,function(b){
+    b.addEventListener("click",function(){ prev=VARS[vi]; vi=+b.getAttribute("data-v"); render(true); });
+  });
+
+  function bsvg(){
+    return '<svg class="bsvg" viewBox="0 0 100 8" preserveAspectRatio="none" aria-hidden="true">'
+         + '<path d="M0,0 C0,4 2,4 5,4 L45,4 C48,4 50,5.5 50,8 C50,5.5 52,4 55,4 L95,4 C98,4 100,4 100,0"'
+         + ' fill="none" stroke="currentColor" stroke-width="1.1" vector-effect="non-scaling-stroke"/></svg>';
+  }
+  function one(t){
+    if(t[1]==='op') return op(t[0]);
+    var cls='t'+(t[2]?' frozen':'')+(t[3]?' '+t[3]:'');
+    return '<span class="'+cls+'" data-bind="'+t[1]+'" tabindex="0">'+tex(t[0])+'</span>';
+  }
+  /* braces are drawn, not typeset, so every symbol under one keeps its own link to the picture */
+  function toks(arr){
+    var out='', i, t, inBrace=false, buf='', lab='', tone='';
+    for(i=0;i<arr.length;i++){
+      t=arr[i];
+      if(t[0]==='@brace'){ inBrace=true; buf=''; lab=t[1]; tone=t[2]||''; continue; }
+      if(t[0]==='@end'){
+        out += '<span class="braced '+tone+'"><span class="grp">'+buf+'</span>'+bsvg()+
+               '<span class="blab">'+lab+'</span></span>';
+        inBrace=false; continue;
+      }
+      if(inBrace) buf += one(t); else out += one(t);
+    }
+    if(inBrace) out += '<span class="grp">'+buf+'</span>';
+    return out;
+  }
+  function paintEq(v){
+    var L=lossFor(v);
+    veqT.textContent = v.id + ' · ' + v.sub;
+    veqFull.innerHTML = toks(L.full);
+    if(L.simp){
+      vwhy.hidden=false; vwhy.textContent=L.why;
+      simpLab.hidden=false; veqSimp.hidden=false;
+      veqSimp.innerHTML = toks(L.simp);
+    } else {
+      vwhy.hidden=true; simpLab.hidden=true; veqSimp.hidden=true;
+    }
+    vnote.textContent = L.note;
+  }
+
+  function render(varChanged){
+    var v=VARS[vi];
+    stage.innerHTML = '<svg viewBox="0 0 1060 470" preserveAspectRatio="xMidYMid meet" role="img" aria-label="the training step">'
+                    + drawMain(v,s) + '</svg>';
+    if(varChanged && prev){
+      /* pulse only what this variation actually moved */
+      var keys=[];
+      if(prev.u!==v.u) keys.push('u','unet');
+      if(prev.ab!==v.ab) keys.push('a','b','unet');
+      if(prev.dial!==v.dial) keys.push('cfgA','cfgB');
+      if((prev.target||'disk')!==(v.target||'disk')) keys.push('pj','ej');
+      if(!!prev.tether !== !!v.tether || (v.tether&&prev.tether&&prev.tether.to!==v.tether.to)) keys.push('u');
+      keys.forEach(function(k){
+        all('#figstage [data-bind="'+k+'"]').forEach(function(n){ n.classList.add("changed"); });
+      });
+    }
+    cap.innerHTML=CAPS[s];
+    paintEq(v);
+    btns.forEach(function(b){ b.setAttribute("aria-current", parseInt(b.getAttribute("data-s"),10)===s ? "true":"false"); });
+    Array.prototype.forEach.call(pills.children,function(b){
+      b.setAttribute("aria-current", +b.getAttribute("data-v")===vi ? "true":"false");
+    });
+  }
+
+  btns.forEach(function(b){ b.addEventListener("click",function(){ s=parseInt(b.getAttribute("data-s"),10); closeDrill(); render(); }); });
+  on2("prev","click",function(){ s=Math.max(0,s-1); render(); });
+  on2("next","click",function(){ s=Math.min(MAX,s+1); render(); });
+  document.addEventListener("keydown",function(e){
+    if(e.target && /INPUT|TEXTAREA/.test(e.target.tagName)) return;
+    if(modal && !modal.hidden) return;
+    if(e.key==="ArrowRight"){ s=Math.min(MAX,s+1); render(); }
+    if(e.key==="ArrowLeft"){ s=Math.max(0,s-1); render(); }
+    if(e.key==="ArrowDown"){ prev=VARS[vi]; vi=Math.min(VARS.length-1,vi+1); render(true); }
+    if(e.key==="ArrowUp"){ prev=VARS[vi]; vi=Math.max(0,vi-1); render(true); }
+  });
+
+  /* the two doors, delegated so they survive every redraw */
+  stage.addEventListener("click",function(e){
+    var k=nearestBind(e.target);
+    if(k==="attn") openModal("attn");
+    if(k==="pu")   openModal("empty");
+    if(k==="loss") openModal("plane");
+    if(k==="disk") openModal("disk");
+  });
+  render();
+})();
+</script>

@@ -1,0 +1,498 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+
+\newcommand{\eps}{\varepsilon}
+\newcommand{\epsth}{\eps_\theta}
+\newcommand{\epsfr}{\eps_{\bar\theta}}
+\newcommand{\xs}{x_\sigma}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\cnull}{\varnothing}
+\newcommand{\cpl}{c_{\mathrm{pl}}}
+
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}[proposition]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[proposition]{Remark}
+
+\title{Four correction losses for product-of-experts composition,\\ written in one notation}
+\author{poe\_repair\_min, thread off \texttt{designing-the-correction-loss} claim 4}
+\date{2026-09-12}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Four proposed training objectives for the SDXL product-of-experts corrector are written in a
+single notation so they can be compared as mathematics rather than as descriptions. The
+comparison reduces to one fact: all four sit inside the same additive family
+$T = u + f_i + f_j$, so at a state that does not identify the pair they share one least-squares
+floor, and two of the four are strict subfamilies with a strictly worse floor. The document
+also settles whether the plurality-conditioned composition is the score of a density (it is),
+what that density is, whether prompt concatenation is well defined on SDXL's two text encoders
+(only at the string level), and what the objective costs per step (less than the objective it
+replaces).
+\end{abstract}
+
+\tableofcontents
+
+\section{Setup and conventions}
+
+\paragraph{The forward process.}
+Write $x \sim p_{\mathrm{data}}$ for a clean latent, $z \sim \mathcal{N}(0,I)$, and
+$\xs = x + \sigma z$ for the noised state at scale $\sigma$. The network
+$\epsth(\xs,\sigma,c)$ predicts noise. Frozen (pre-adapter) weights are written $\bar\theta$,
+so $\epsfr$ is the base SDXL prediction and $\epsth$ the adapted one.
+
+\paragraph{Score and noise conventions, and one sign to check.}
+The two spellings are related by
+\begin{equation}
+  \nabla_{\xs} \log p_\sigma(\xs) \;=\; -\,\frac{1}{\sigma}\,\E[\,z \mid \xs\,],
+  \qquad\text{so}\qquad
+  s_\theta(\xs,\sigma,c) \;:=\; \nabla \log p_\sigma(\xs \mid c) \;\approx\; -\frac{\epsth}{\sigma}.
+  \label{eq:convention}
+\end{equation}
+The score-space and noise-space losses
+\begin{equation*}
+  \norm{\tfrac{z}{\sigma} - (s_1 + s_2 - s_0)}^2
+  \qquad\text{and}\qquad
+  \sigma^{-2}\norm{z - (\eps_1 + \eps_2 - \eps_0)}^2
+\end{equation*}
+agree \emph{only if} the symbol $s$ denotes $\eps/\sigma$, minus the score of
+\eqref{eq:convention}. With
+$s$ read as the score itself the signs invert. The two forms differ by $\sigma^{-2}$, which is
+absorbed into the per-level weight $\lambda(\sigma)$ below, so nothing downstream depends on
+the choice. Everything from here on is in noise space.
+
+\paragraph{The composition rule and guidance.}
+The composed prediction and the guided sampler step are
+\begin{equation}
+  T \;=\; \eps_1 + \eps_2 - \eps_\cnull,
+  \qquad
+  T^{(w)} \;=\; \eps_\cnull + w(\eps_1 - \eps_\cnull) + w(\eps_2 - \eps_\cnull),
+  \label{eq:compose}
+\end{equation}
+implemented as \texttt{poe\_eps} and \texttt{guided\_eps} in
+\texttt{poe\_repair/\_sdxl/metrics.py:12--17} and combined in
+\texttt{poe\_repair/experiments/one\_pair\_one\_seed/trainer.py:331--333} at $w = 7.5$.
+Setting $w = 1$ in $T^{(w)}$ returns $T$, so guidance is a dial on one expression.
+
+\paragraph{Branch coordinates.}
+Fix a state. Write
+\begin{equation}
+  u \;:=\; \epsth(\xs,\sigma,\cnull),
+  \qquad
+  f_i \;:=\; \epsth(\xs,\sigma,c_i) - u,
+  \label{eq:coords}
+\end{equation}
+so that, for the pair $(i,j)$,
+\begin{equation}
+  T_{ij} \;=\; u + f_i + f_j,
+  \qquad
+  T^{(w)}_{ij} \;=\; u + w\,(f_i + f_j)
+  \;=\; w(\eps_i + \eps_j) - (2w-1)\,u .
+  \label{eq:Tij}
+\end{equation}
+The right-hand form of \eqref{eq:Tij} records that the null branch is read twice at inference,
+with net coefficient $-(2w-1) = -14$ at $w = 7.5$, against $-1$ in the unguided $T$.
+
+\paragraph{The per-level weight.}
+Every variant carries an optional weight $\lambda(\sigma)$ averaged over $L$ levels. This maps
+onto \texttt{\_loss\_weights} at \texttt{trainer.py:128--151}, which implements
+$\lambda_{\eps} \equiv 1$ and $\lambda_{x_0} = \min\!\big((1-\bar\alpha_t)/\bar\alpha_t,\,
+\mathrm{cap}\big)$ normalised to unit mean over the DDIM grid. It plays no role in the
+comparison below, since it multiplies every variant identically.
+
+\section{The objective being replaced, and the objective proposed}
+
+\paragraph{Today: distillation onto the model's own joint-prompt branch.}
+\begin{equation}
+  \mathcal{L}_{\mathrm{distill}}
+  \;=\;
+  \E_{(\xs,\sigma)\sim \text{cache}}\,
+  \lambda(\sigma)\,
+  \norm{\,T^{(w)}_{ij}[\theta] \;-\; \epsfr^{(w)}(\xs,\sigma,c_{i\wedge j})\,}^2 ,
+  \label{eq:distill}
+\end{equation}
+with $c_{i\wedge j}$ the literal joint string \texttt{"a cat and a dog"} produced by
+\texttt{joint\_prompt} and the states $\xs$ drawn from cached PoE sampling trajectories.
+
+\paragraph{Proposed: denoising score matching against co-occurrence data.}
+\begin{equation}
+  \boxed{\;
+  \mathcal{L}_{\mathrm{DSM}}
+  \;=\;
+  \frac{1}{L}\sum_{\ell=1}^{L} \lambda(\sigma_\ell)\;
+  \E_{\substack{x \sim p_{\mathrm{co}}\\ z \sim \mathcal{N}(0,I)}}
+  \norm{\,z \;-\; \big[\,\epsth(\xs,\sigma_\ell,c_1) + \epsth(\xs,\sigma_\ell,c_2)
+  - \epsth(\xs,\sigma_\ell,\cnull)\,\big]\,}^2 \;}
+  \label{eq:dsm}
+\end{equation}
+where $p_{\mathrm{co}}$ is a distribution over real images in which both concepts appear as
+separate objects.
+
+\begin{proposition}[What \eqref{eq:dsm} fits]
+\label{prop:minimiser}
+For each $\sigma$, the unconstrained minimiser of $\E\norm{z - g(\xs)}^2$ over measurable $g$
+is $g^\star(\xs) = \E[z \mid \xs] = -\sigma \nabla \log p_{\mathrm{co},\sigma}(\xs)$. Over a
+constrained family $\mathcal{F}$ of achievable composed predictions, the minimiser is the
+$L^2(p_{\mathrm{co},\sigma})$ projection of $g^\star$ onto $\mathcal{F}$.
+\end{proposition}
+
+\begin{remark}
+This is the part of the proposal that is doing real work, and it is not the change of target
+images. The composed field of \eqref{eq:compose} is the score of a product at $\sigma = 0$
+only; the score of a noised product is not the sum of noised scores, which is Du et al.'s
+objection to composed sampling (arXiv:2302.11552). Objective \eqref{eq:dsm} regresses at every
+$\sigma_\ell$ separately, so it fits the composition \emph{at each noise level} instead of
+assuming it transports from clean data.
+\end{remark}
+
+\section{The four variants}
+
+All four share the target $z$, the weight $\lambda(\sigma)$, and the expectation of
+\eqref{eq:dsm}. They differ in what is conditioned on and what is free. Write $\bar\theta$ for
+a frozen branch.
+
+\paragraph{(a) Plain: three adapted branches.}
+\begin{equation}
+  T^{(a)}_{ij} \;=\; \epsth(\xs,\sigma,c_i) + \epsth(\xs,\sigma,c_j) - \epsth(\xs,\sigma,\cnull)
+  \;=\; u + f_i + f_j .
+  \label{eq:va}
+\end{equation}
+
+\paragraph{(b) Plurality-conditioned base measure.}
+With $\cpl$ a plurality phrase and $\oplus$ string concatenation before encoding
+(Section~\ref{sec:concat}),
+\begin{equation}
+  T^{(b)}_{ij} \;=\; \epsth(\xs,\sigma,c_i \oplus \cpl) + \epsth(\xs,\sigma,c_j \oplus \cpl)
+  - \epsth(\xs,\sigma,\cpl)
+  \;=\; u_{\mathrm{pl}} + g_i + g_j ,
+  \label{eq:vb}
+\end{equation}
+where $u_{\mathrm{pl}} := \epsth(\xs,\sigma,\cpl)$ and
+$g_i := \epsth(\xs,\sigma,c_i \oplus \cpl) - u_{\mathrm{pl}}$.
+
+\paragraph{(c) Null-only adapter.}
+Concept branches and the target frozen, one adapted base:
+\begin{equation}
+  T^{(c)}_{ij} \;=\; \epsfr(\xs,\sigma,c_i) + \epsfr(\xs,\sigma,c_j) - \epsth(\xs,\sigma,\cpl)
+  \;=\; \bar u + \bar f_i + \bar f_j \;-\; \delta ,
+  \label{eq:vc}
+\end{equation}
+with $\delta := \epsth(\xs,\sigma,\cpl) - \epsfr(\xs,\sigma,\cnull)$.
+The free object is the single vector field $\delta$, shared by every pair.
+
+\paragraph{(d) Connective adapter.} Two inequivalent readings.
+\begin{align}
+  \text{(d-lora)}\quad
+  T^{(d\ell)}_{ij} &\;=\; \epsth(\xs,\sigma,\text{``}c_i\ \mathrm{and}\text{''})
+  + \epsth(\xs,\sigma,\text{``}c_j\ \mathrm{and}\text{''})
+  - \epsth(\xs,\sigma,\text{``and''}),
+  \label{eq:vdl}\\[2pt]
+  \text{(d-tok)}\quad
+  T^{(dt)}_{ij} &\;=\; \epsfr(\xs,\sigma,[c_i, v]) + \epsfr(\xs,\sigma,[c_j, v])
+  - \epsfr(\xs,\sigma,[v]),
+  \qquad v \in \R^{d_{\mathrm{text}}} \text{ free}.
+  \label{eq:vdt}
+\end{align}
+In \eqref{eq:vdl} the free parameters are LoRA factors on the cross-attention projections,
+which act on every token's key and value, so the adapter is not localised to the word
+\emph{and}; only the branch prompts change. In \eqref{eq:vdt} the free parameter is a single
+learned token embedding $v$ inserted into all three prompts, with the network frozen, which is
+the Textual Inversion parameterisation (arXiv:2208.01618). These are different families and
+must not share a row.
+
+\section{The common skeleton, and why capacity does not separate (a), (b) and (d-lora)}
+
+\paragraph{Every variant is additive in the two concepts.}
+Each of \eqref{eq:va}--\eqref{eq:vdt} has the form
+\begin{equation}
+  T_{ij} \;=\; m \;+\; \phi_i \;+\; \phi_j
+  \label{eq:additive}
+\end{equation}
+for some shared $m$ and some per-concept $\phi$. This is forced by the architecture rather than
+chosen: each branch is conditioned on one concept, and the combination rule \eqref{eq:compose}
+is a fixed linear map with no term reading both concepts. Equation~\eqref{eq:additive} is a
+two-way model with no interaction.
+
+\paragraph{Gauge freedom.}
+\begin{proposition}[The additive parameterisation is not identified]
+\label{prop:gauge}
+Fix a state and let $G$ be the graph on concepts with an edge per trained pair. The
+reparameterisation $m \mapsto m + c$, $\phi_i \mapsto \phi_i + a_i$ leaves every $T_{ij}$ in
+\eqref{eq:additive} unchanged if and only if $a_i + a_j + c = 0$ for every edge $(i,j)$. On a
+connected component that is not bipartite the only solutions are $a_i \equiv -c/2$, a
+one-dimensional family per component; on a bipartite component there is one extra dimension
+($a \equiv \alpha$ on one side, $\beta$ on the other, $\alpha + \beta + c = 0$).
+\end{proposition}
+
+\begin{corollary}[Freeing the null branch buys no predictions]
+\label{cor:null}
+Taking $c = 2a$, $a_i \equiv -a$ in Proposition~\ref{prop:gauge} shows that the set
+$\{\,m + \phi_i + \phi_j : m \text{ free},\ \phi \text{ free}\,\}$ equals
+$\{\,m_0 + \phi_i + \phi_j : m_0 \text{ fixed},\ \phi \text{ free}\,\}$. A free null branch and
+a frozen one reach exactly the same composed predictions.
+\end{corollary}
+
+\begin{remark}[The gauge direction is the guidance-blind direction]
+The move $u \mapsto u + \delta$, $\eps_1 \mapsto \eps_1 + \delta$ is the case $a_1 = 0$,
+$a_2 = -\delta$, $c = \delta$ of Proposition~\ref{prop:gauge}. It leaves the loss exactly
+invariant, and by \eqref{eq:Tij} it moves the sampled output by $-(w-1)\delta$. The
+unidentified direction of the additive fit and the amplified direction of the sampler are the
+same direction. Any variant is therefore incomplete without one of the three fixes already on
+the table (frozen null in the guidance term, an anchor penalty
+$\mu\norm{\epsth(\cnull) - \epsfr(\cnull)}^2$, or explicit per-concept deltas).
+\end{remark}
+
+\paragraph{Consequence for the comparison.}
+The reachable set \eqref{eq:additive} at a fixed state depends on the prompts only through
+which vector is called $\phi_i$. Renaming the branch prompt from \texttt{"a dog"} to
+\texttt{"a dog, two animals"} to \texttt{"dog and"} renames a free vector. So, whenever the
+per-concept functions are unconstrained, variants (a), (b) and (d-lora) have \emph{identical}
+reachable sets, hence identical optima for \eqref{eq:dsm}. They differ in initialisation and in
+conditioning number, not in capacity.
+
+\section{The step-0 floor}
+\label{sec:floor}
+
+\paragraph{Why step 0 is exactly analysable.}
+At the first sampling step the cached latent is bit-identical across every cell sharing a seed,
+and so are the branch predictions: $\eps_\cnull$ is one tensor for all cells, and
+$\eps(\text{``a baboon''})$ is the same tensor in every pair containing a baboon (verified, max
+absolute difference $0.0$). So at that single state every per-concept adapter collapses to one
+vector per concept, whatever its capacity, and \eqref{eq:additive} becomes a finite-dimensional
+least-squares problem with no capacity assumption anywhere.
+
+\paragraph{The floor.}
+Let $E$ be the set of trained pairs, $y_{ij} \in \R^{d}$ the per-cell target at that state
+($d = 4 \times 128 \times 128$ for SDXL at $1024^2$), and
+\begin{equation}
+  \boxed{\;
+  R \;:=\; \min_{m,\ \phi_1,\dots,\phi_n}\ \sum_{(i,j)\in E}
+  \norm{\,y_{ij} - m - \phi_i - \phi_j\,}^2 \;}
+  \label{eq:floor}
+\end{equation}
+$R$ is a hard lower bound on the training loss of any variant whose free functions are
+per-concept, at that state, with no assumption about the adapter's rank or architecture.
+
+\begin{proposition}[$R$ is supported on the 2-core]
+\label{prop:core}
+If concept $i$ has degree $1$ in $G$, with unique edge $(i,j)$, then $\phi_i$ can be chosen to
+fit that cell exactly and the edge contributes $0$ to \eqref{eq:floor}. Iterating, $R$ equals
+the same minimum computed on the 2-core of $G$ (the maximal subgraph with minimum degree $2$).
+\end{proposition}
+
+\begin{remark}[Two cautions before the number is quoted]
+With $1003$ cells over $294$ concepts (median degree $4$), the fit spends $294$ of $1003$
+degrees of freedom, so an in-sample $R$ is deflated twice over: once by
+Proposition~\ref{prop:core}, and once by the ordinary degrees-of-freedom count
+($|E| - \mathrm{rank}$ residual dimensions per coordinate). The quantity to report is the
+\emph{held-out} version: fit $(m,\phi)$ on a subset of pairs, evaluate on pairs excluded from
+the fit. That is also the quantity the unseen-pair question actually asks.
+\end{remark}
+
+\paragraph{Per-variant floors.}
+Write $\Delta_{ij} := y_{ij} - \big(\bar u + \bar f_i + \bar f_j\big)$ for the correction the
+frozen composition still needs, and $\bar\Delta$ for its mean over cells.
+\begin{align}
+  R^{(a)} = R^{(b)} = R^{(d\ell)} &\;=\; R ,
+  \label{eq:eqfloors}\\
+  R^{(c)} &\;=\; \min_{\delta} \sum_{(i,j)\in E} \norm{\Delta_{ij} - \delta}^2
+  \;=\; \sum_{(i,j)\in E} \norm{\Delta_{ij} - \bar\Delta}^2 ,
+  \label{eq:cfloor}\\
+  R^{(dt)} &\;=\; \min_{v \in \R^{d_\mathrm{text}}} \sum_{(i,j)\in E}
+  \norm{\,y_{ij} - T^{(dt)}_{ij}(v)\,}^2 .
+  \label{eq:dtfloor}
+\end{align}
+Line \eqref{eq:eqfloors} is Corollary~\ref{cor:null} plus the renaming argument;
+\eqref{eq:cfloor} is a fit by one shared vector, minimised by the mean; \eqref{eq:dtfloor} has
+no closed form. Both \eqref{eq:cfloor} and \eqref{eq:dtfloor} are minima over strict subfamilies of
+\eqref{eq:additive}, so $R \le R^{(c)}$ and $R \le R^{(dt)}$. Neither $R^{(c)}$ nor $R^{(dt)}$
+dominates the other: (c) is free in $\R^d$ but frozen in the concept branches, (d-tok) is free
+only along the image of the text encoder but moves all three branches.
+
+\paragraph{What the floor says about (c), against measurements already taken.}
+By \eqref{eq:cfloor}, the fraction of correction energy (c) can remove is
+$\norm{\bar\Delta}^2 / \E\norm{\Delta}^2$, the \emph{cross-pair} shared share at a common
+state. The project's $19.6\%$ figure is not this quantity: it is cross-seed within one pair
+(\texttt{scripts/rt\_shared\_component.py}, steps 0--2), and runs of the same pair should agree
+more than runs of different pairs, so it is an upper bound at best. The matching measurement is
+the D3b row, same noise and different prompt, which reads $+0.302$ over the first three steps
+and $+0.006$ over steps 10--49; as an energy share that is of order $9\%$ early and nothing
+late. The dose sweep then tested a shared correction directly (\texttt{mean\_others},
+norm-matched, 128 cells) and scored AUC $0.059$ against the oracle's $0.387$ and a control band
+reaching $0.047$. So $R^{(c)}$ is not merely worse than $R$; the variant it bounds has already
+been close to falsified by measurement.
+
+\paragraph{What would escape the floor.}
+Nothing in (a)--(d). Escaping \eqref{eq:additive} requires either a read-out that sees both
+concept embeddings at once,
+\begin{equation}
+  T_{ij} \;=\; u + f_i + f_j + h(e_i, e_j, \xs, \sigma),
+  \qquad h \text{ symmetric, } h \not\equiv \text{additive},
+  \label{eq:escape}
+\end{equation}
+which costs the property that the adapter never sees a joint prompt, or a sampler-side
+correction (MCMC or Feynman-Kac), which is outside this family entirely.
+
+\section{Is the plurality-conditioned composition the score of a density?}
+
+\begin{proposition}
+\label{prop:density}
+$\;$Let $S(x) := \nabla \log p(x \mid c_1, \cpl) + \nabla \log p(x \mid c_2, \cpl) -
+\nabla \log p(x \mid \cpl)$. Then $S = \nabla \log q$ with
+\begin{equation}
+  q(x) \;\propto\; \frac{p(x \mid c_1, \cpl)\; p(x \mid c_2, \cpl)}{p(x \mid \cpl)},
+  \label{eq:q}
+\end{equation}
+provided $Z = \int p(x\mid c_1,\cpl)p(x\mid c_2,\cpl)/p(x\mid\cpl)\,dx < \infty$.
+\end{proposition}
+\begin{proof}
+A sum and difference of gradients of logarithms is the gradient of the logarithm of the
+corresponding product and quotient. Normalisability is the only extra condition.
+\end{proof}
+
+\paragraph{What the change of base measure actually assumes.}
+By Bayes,
+\begin{equation}
+  p(x \mid c_1, c_2, \cpl)
+  \;=\; \frac{p(x\mid c_1,\cpl)\,p(x\mid c_2,\cpl)}{p(x\mid \cpl)}
+  \cdot \underbrace{\frac{p(c_1,c_2 \mid x,\cpl)}{p(c_1\mid x,\cpl)\,p(c_2 \mid x,\cpl)}
+  \cdot \frac{p(c_1\mid\cpl)p(c_2\mid\cpl)}{p(c_1,c_2\mid\cpl)}}_{\text{the interaction term}},
+  \label{eq:bayes}
+\end{equation}
+so $q$ of \eqref{eq:q} is the exact posterior when $c_1 \perp c_2 \mid (x, \cpl)$. That is
+strictly weaker than the unconditional independence the current composition assumes, and weaker
+in the direction that matters: it only has to hold among images that already contain two
+separate objects, which is where the chimera mode has been conditioned away. The correction
+term in \eqref{eq:bayes} is the plurality-conditioned version of the pointwise mutual
+information whose gradient is $r_t$ in this project's own notation.
+
+\paragraph{Two limits on that argument.}
+First, Proposition~\ref{prop:density} is a clean-data statement. At $\sigma > 0$ the score of
+the noised $q$ is not $S$ diffused, so an exact (b) composition is the score of $q$ only at
+$\sigma = 0$. Objective \eqref{eq:dsm} sidesteps this by regressing per level
+(Proposition~\ref{prop:minimiser}), for (a) as much as for (b). Second, the DSM optimum is the
+projection of $\nabla \log p_{\mathrm{co},\sigma}$ onto the family, not $q$. So (b)'s density
+argument justifies its inductive bias and its starting point, not its optimum, and by
+\eqref{eq:eqfloors} its optimum coincides with (a)'s.
+
+\section{Is \texorpdfstring{$c \oplus \cpl$}{prompt concatenation} well defined on SDXL?}
+\label{sec:concat}
+
+\texttt{encode\_prompt\_sdxl} (\texttt{poe\_repair/\_sdxl/runtime.py:176--211}) tokenises the
+whole prompt to a fixed $77$ positions in both tokenizers with \texttt{padding="max\_length"},
+takes \texttt{hidden\_states[-2]} from each encoder, and concatenates them on the channel axis:
+\begin{equation}
+  \mathrm{enc}(p) = \Big(\underbrace{[\,h^{(1)}_{-2}(p) \,\Vert\, h^{(2)}_{-2}(p)\,]}
+  _{\in\,\R^{77\times 2048}},\ \underbrace{\mathrm{pool}^{(2)}(p)}_{\in\,\R^{1280}}\Big).
+\end{equation}
+Consequently:
+\begin{itemize}
+  \item \textbf{Embedding addition is not the operation.}
+    $\mathrm{enc}(p_1) + \mathrm{enc}(p_2)$ aligns token slot $k$ of one prompt onto slot $k$
+    of the other and sums sixty-odd padding and EOS embeddings, producing a sequence no string
+    maps to. The pooled vector is worse: it is a single summary of one string, fed to the
+    time-embedding path through \texttt{added\_cond\_kwargs["text\_embeds"]}, and a sum of two
+    summaries summarises nothing.
+  \item \textbf{String concatenation before tokenisation is the operation}, and it is well
+    defined: $c \oplus \cpl$ means one string (\texttt{"a dog, two animals"}) encoded once. The
+    $77$-token budget is nowhere near binding for these prompts.
+\end{itemize}
+The same reading applies to (d): \texttt{"dog and"} is a string, and the LoRA in \eqref{eq:vdl}
+is not localised to its last token.
+
+\paragraph{Cache consequence.}
+The cached branch tensors \texttt{eps\_a\_raw}, \texttt{eps\_b\_raw}, \texttt{eps\_uncond} are
+keyed on the current prompts. Variants (b) and (d) change those prompts and invalidate them;
+(a) and (c) do not.
+
+\section{Feasibility}
+
+\paragraph{Cost per training step is lower than the objective it replaces.}
+Both \eqref{eq:distill} and \eqref{eq:dsm} need three adapted UNet forwards per sample. The
+distillation target additionally needs the frozen joint-prompt prediction (today read from
+cache, which is why the cache exists). The DSM target is $z$, which is free. So per step,
+\eqref{eq:dsm} is strictly cheaper and removes a cache dependency.
+
+\paragraph{Target noise is smallest exactly where the correction lives.}
+Since $z = (\xs - x)/\sigma$,
+\begin{equation}
+  \mathrm{Var}[\,z \mid \xs\,] \;=\; \frac{1}{\sigma^2}\,\mathrm{Var}[\,x \mid \xs\,]
+  \;\xrightarrow[\ \sigma \to \infty\ ]{}\; \frac{\mathrm{Var}_{p_{\mathrm{co}}}[x]}{\sigma^2}
+  \;\to\; 0 ,
+  \label{eq:targetnoise}
+\end{equation}
+while at $\sigma \to 0$ it stays $O(1)$ per coordinate. The regression target is therefore
+\emph{least} noisy at large $\sigma$, which is the first few sampling steps, which is the
+window this project has measured the correction to occupy. Gradient variance is the usual
+objection to DSM against a distillation target, and \eqref{eq:targetnoise} says the objection
+is weakest in the only window that matters. \emph{Confidence: the limits are exact; the
+magnitude at the $\sigma$ values of the DDIM grid used here is unverified.}
+
+\paragraph{The binding constraint is the data, not the loss.}
+$p_{\mathrm{co}}$ does not exist in this repository. It requires real images with both concepts
+present as separate objects, over a $294$-concept vocabulary whose pairs were selected to be
+confusable species. Every cached $\xs$ is a PoE sampling-trajectory latent rather than a noised
+real image, so no existing cache is the substrate for \eqref{eq:dsm} under any variant.
+
+\paragraph{Does the floor transfer to the new objective?}
+Not as a bit-exact identity. Step-0 exactness relies on one shared cached latent; under
+\eqref{eq:dsm}, $z$ is drawn per sample, so states differ across cells even at large $\sigma$.
+What survives is the statistical version: as $\sigma$ grows the noised distributions overlap,
+so one $\phi_i$ must serve every pair containing concept $i$, and \eqref{eq:additive} binds in
+the limit. Separately, the irreducible term $\E\norm{z - \E[z\mid\xs]}^2$ is
+\emph{family-independent}, so it cancels from every difference of floors. Comparisons between
+variants under \eqref{eq:dsm} are therefore meaningful even though the absolute loss is not.
+
+\paragraph{Summary table.}
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+Variant & Free objects at one state & Floor & Reuses current prompt cache \\
+\midrule
+(a) plain        & $\{\phi_i\}_{i=1}^{n}$, $m$        & $R$                 & yes \\
+(b) plurality    & $\{\phi_i\}_{i=1}^{n}$, $m$        & $R$ (equal to (a))  & no \\
+(c) null-only    & one $\delta \in \R^d$              & $R^{(c)} \ge R$     & yes \\
+(d-lora)         & $\{\phi_i\}_{i=1}^{n}$, $m$        & $R$ (equal to (a))  & no \\
+(d-tok)          & one $v \in \R^{d_\mathrm{text}}$   & $R^{(dt)} \ge R$    & no \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Recommendation, and the number that would overturn it}
+
+Train (a) with the null branch anchored,
+\begin{equation}
+  \mathcal{L} \;=\; \mathcal{L}_{\mathrm{DSM}}
+  \;+\; \mu \, \E\,\norm{\,\epsth(\xs,\sigma,\cnull) - \epsfr(\xs,\sigma,\cnull)\,}^2 ,
+  \label{eq:recommended}
+\end{equation}
+the anchor fixing the gauge of Proposition~\ref{prop:gauge} at no extra forward pass. (a)
+changes exactly one axis from the current setup (the target), so its comparison against the
+existing distillation run is clean; every other variant changes the target and the conditioning
+together. By \eqref{eq:eqfloors} the other three cannot beat it on capacity: two tie, two are
+strictly smaller.
+
+\paragraph{The overturning measurement.}
+Compute the held-out-pair version of \eqref{eq:floor} at step 0 against the existing cached
+targets, as a fraction of the correction energy,
+\begin{equation}
+  \rho \;:=\; \frac{R_{\text{held-out}}}{\sum_{(i,j)} \norm{\Delta_{ij}}^2},
+  \qquad
+  \text{support if } \rho < 0.5,\quad \text{kill if } \rho \ge 0.5,
+  \label{eq:bar}
+\end{equation}
+with the bar written into the script before the number is produced. If $\rho$ is large, no
+per-concept variant can reach the target however it is trained, and the work belongs on the
+sampler side or on the interaction read-out \eqref{eq:escape}. This uses only the existing
+cache and the existing target, so it costs no GPU time beyond reading tensors.
+
+\end{document}

@@ -1,0 +1,555 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\emergencystretch=4em
+
+\newcommand{\eps}{\varepsilon}
+\newcommand{\epsth}{\eps_\theta}
+\newcommand{\epsfr}{\bar\eps}
+\newcommand{\xt}{x_t}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\cnull}{\varnothing}
+
+\title{What we train, what the board writes,\\ and the avenues between them}
+\author{poe\_repair\_min, thread off \texttt{designing-the-correction-loss}}
+\date{2026-09-16}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Three training objectives for the product-of-experts corrector, written in one notation and
+compared as mathematics: the one running in this repository, and the two on the board. They sit on
+three independent axes, and separating those axes is most of the work, because two settings that
+look like different experiments turn out to be the same experiment written twice. The document
+then asks what each objective is really requesting in density terms, what the adapter would have to
+have learned for the request to be a reasonable one, and which avenues follow. Measured numbers are
+deliberately not repeated here; they live in the two companion documents named at the end.
+\end{abstract}
+
+\tableofcontents
+
+\section{Notation, once}
+\label{sec:words}
+
+\paragraph{The three branches.}
+At denoising step $t$ the network is run three times on the same noisy latent $\xt$: once given the
+first prompt, once given the second, once given nothing at all.
+\begin{equation}
+  a \;=\; \epsth(\xt,t,c_1), \qquad
+  b \;=\; \epsth(\xt,t,c_2), \qquad
+  u \;=\; \epsth(\xt,t,\cnull).
+\end{equation}
+Call them the \textbf{cat branch}, the \textbf{dog branch} and the \textbf{empty branch}. A bar
+means the adapter is off, so $\epsfr(\cdot,c)$ is the base model and $\bar u$ is its empty branch.
+
+\paragraph{What the adapter adds.}
+\begin{equation}
+  \phi_1 \;=\; a - \epsfr(\xt,t,c_1), \qquad
+  \phi_2 \;=\; b - \epsfr(\xt,t,c_2), \qquad
+  m \;=\; u - \bar u .
+  \label{eq:changes}
+\end{equation}
+$\phi_1$ is the \textbf{cat change}, different for every concept. $m$ is the \textbf{shared
+change}, the same whichever pair is being trained. These three are the only things training moves.
+
+\paragraph{The composition rule and the guidance dial.}
+\begin{equation}
+  T \;=\; a + b - u,
+  \qquad
+  T^{(w)} \;=\; u + w(a-u) + w(b-u) \;=\; w\,T - (w-1)\,u .
+  \label{eq:compose}
+\end{equation}
+Setting $w=1$ returns $T$, so these are one expression at two dial settings
+(\texttt{metrics.py:12--17}, combined in \texttt{trainer.py:331--332} at $w = 7.5$). The right-hand form is the one to remember: \textbf{the empty branch is read twice},
+once inside the composition and once on its own with coefficient $-(w-1)$.
+
+\paragraph{The target.}
+$\eps_J = \epsfr(\xt,t,c_{1\wedge2})$ is what the frozen model predicts when handed the single
+joint string \texttt{"a cat and a dog"}. It is read from cache, never recomputed.
+
+\paragraph{Noise space and score space.}
+\begin{equation}
+  \eps(\xt,t,c) \;=\; -\sigma_t \, \nabla_{\xt} \log p_t(\xt \mid c),
+  \label{eq:bridge}
+\end{equation}
+so adding and subtracting branches is multiplying and dividing densities. The board writes its
+losses in score space with a $1/\sigma_t$ on the target; the two spellings differ by $\sigma_t^{-2}$,
+which folds into the per-level weight and changes nothing that follows. Everything below is in
+noise space.
+
+\paragraph{One event.}
+$A$ is the event \emph{this picture contains two separate objects}. So $p(x)$ is
+\textbf{all pictures} and $p(x \mid A)$ is \textbf{two-thing pictures}.
+
+\section{The three objectives}
+
+\paragraph{A, what this repository trains.}
+\begin{equation}
+  \boxed{\;
+  \mathcal{L}_A \;=\; \E\;\norm{\;
+  \underbrace{T^{(w)}}_{\text{composed, dial at }7.5}
+  \;-\;
+  \underbrace{\big[\bar u + w(\eps_J - \bar u)\big]}_{\text{joint prompt, dial at }7.5}
+  \;}^2
+  \;}
+  \label{eq:LA}
+\end{equation}
+Run the adapted model three times, combine, and make the answer match what the frozen model would
+have said if simply asked for both animals at once. Both sides carry the dial. One arm adds
+$\mu\norm{m}^2$, the \emph{null anchor}, which fines the empty branch for moving
+(\texttt{trainer.py:496--503}).
+
+\paragraph{B2, the board with the mono target.}
+\begin{equation}
+  \boxed{\;
+  \mathcal{L}_{B2} \;=\; \E\;\norm{\;\eps_J \;-\; T\;}^2
+  \;}
+  \label{eq:LB2}
+\end{equation}
+Same target, no dial anywhere. The board's note beside it: \emph{we assume mono works, PoE must
+learn to copy mono.}
+
+\paragraph{B1, the board with the data target.}
+\begin{equation}
+  \boxed{\;
+  \mathcal{L}_{B1} \;=\; \E_{\,x \sim p_{\mathrm{co}},\; z}\;\norm{\;z \;-\; T\;}^2 ,
+  \qquad \xt = \text{noised } x
+  \;}
+  \label{eq:LB1}
+\end{equation}
+Take a real photograph in which both concepts appear as separate objects, add noise $z$, and ask the
+composition to predict the noise you added. $p_{\mathrm{co}}$ is that corpus.
+
+\paragraph{The board's two protection terms.}
+They are not the same thing, and the difference matters later.
+\begin{align}
+  \text{(P2)}\quad &\text{pull a branch toward the \emph{true} score of real single-concept images,}
+  \label{eq:P2}\\
+  \text{(P3)}\quad &\text{pull a branch toward \emph{the frozen model's own} prediction for that
+  concept.}
+  \label{eq:P3}
+\end{align}
+Neither is implemented. The null anchor is (P3) with the empty prompt in place of a concept prompt,
+which is why the two are easy to confuse.
+
+\section{Three axes, and only one of them is a real choice between A and B}
+\label{sec:axes}
+
+\begin{center}
+\small
+\begin{tabular}{p{0.16\textwidth} p{0.36\textwidth} p{0.40\textwidth}}
+\toprule
+axis & settings & who fixes it \\
+\midrule
+the target & $\eps_J$, or $z$, or something else & A and B2 pick $\eps_J$, B1 picks $z$ \\
+the dial & $w = 1$ or $w = 7.5$ & A picks $7.5$, B1 and B2 pick $1$ \\
+the freeze pattern & which of $a$, $b$, $u$ carry the adapter & \textbf{nobody: free in all three} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The third row is the point of this table. The freeze pattern is not part of B1 and not part of A.
+It crosses every target, so anything learned about it under one target transfers to the others.
+
+A and B2 differ on the dial alone. Section~\ref{sec:dial} shows that difference is exactly one term,
+and Section~\ref{sec:freeze} shows the freeze pattern can delete it.
+
+\section{The dial: one identity}
+\label{sec:dial}
+
+Substitute \eqref{eq:compose} into \eqref{eq:LA}. Everything cancels but two terms:
+\begin{equation}
+  \boxed{\;
+  T^{(w)} - \big[\bar u + w(\eps_J - \bar u)\big]
+  \;=\; w\,\big(T - \eps_J\big) \;-\; (w-1)\,m
+  \;}
+  \label{eq:key}
+\end{equation}
+so, writing $\Delta = T - \eps_J$ for B2's own error,
+\begin{equation}
+  \mathcal{L}_A \;=\; w^2\,\mathcal{L}_{B2}
+  \;-\; 2w(w-1)\,\langle \Delta, m\rangle
+  \;+\; (w-1)^2\,\norm{m}^2 .
+  \label{eq:expand}
+\end{equation}
+
+Read it in three steps. At the start of training the adapter is zero, so $m = 0$, the last two terms
+vanish, and the two objectives are one objective differing by a constant factor $w^2$.
+
+Then the empty branch begins to move. Adding the same vector $v$ to a concept branch and to the
+empty branch leaves $a+b-u$ untouched, so $\mathcal{L}_{B2}$ is exactly invariant along that
+direction. $\mathcal{L}_A$ is not: its composition shifts by $-(w-1)v$ while its target, built from
+the cached $\bar u$, stays put.
+
+So the two objectives disagree about whether that move is progress. \textbf{The dialled loss can
+lower itself by shifting the empty branch, while the undialled one records nothing.} Whether the
+runs actually took that shortcut is a measurement, and it has been made; see
+Section~\ref{sec:numbers}.
+
+\section{What each objective is actually asking for}
+\label{sec:asking}
+
+\paragraph{Before training.}
+Put the frozen branches through \eqref{eq:bridge}:
+\begin{equation}
+  \bar T \;=\; -\sigma_t \nabla \log\!\left[\frac{p(x\mid c_1)\,p(x\mid c_2)}{p(x)}\right],
+  \qquad
+  q_0(x) \;\propto\; \frac{p(x\mid c_1)\,p(x\mid c_2)}{p(x)}
+  \;\propto\; p(x)\;p(c_1\mid x)\;p(c_2\mid x),
+  \label{eq:q0}
+\end{equation}
+the last step by Bayes on each conditional. The right-hand form explains the failure. Sampling
+$q_0$ means finding something that looks like a real image and that a cat detector \emph{and} a dog
+detector both score highly. One fused animal scores well on both across the whole frame; a genuine
+two-animal scene gives each detector only part of it. The peak of $q_0$ sits on the fused animal.
+
+\paragraph{One correction of tense, worth making before the paper does not.}
+Equation~\eqref{eq:q0} describes $\bar T$, the composition \emph{before} training. The trained
+composition is not converging on $q_0$; it is converging on $T = \eps_J$. Stating the fused-animal
+argument as a property of the trained adapter is the version a reviewer will catch.
+
+\paragraph{What matching $\eps_J$ demands.}
+Bayes gives the exact posterior and the error in one line:
+\begin{equation}
+  p(x \mid c_1, c_2) \;=\; q_0(x)\cdot R(x),
+  \qquad
+  R(x) \;=\; \frac{p(c_1,c_2\mid x)}{p(c_1\mid x)\,p(c_2\mid x)}\times(\text{constant in }x).
+  \label{eq:R}
+\end{equation}
+So $a + b - u = \eps_J$ asks for $\nabla_x \log R(x) = 0$: the two concepts must tell you nothing
+about each other once you have seen the picture. That is false, and it is false worst at a fused
+animal, where both single-concept posteriors are high and the joint one is low, which is exactly
+where the training states are.
+
+\paragraph{So say the narrower thing.}
+The adapter cannot make two concepts independent, because nothing it does touches
+$p(x\mid c_1,c_2)$. It fits three single-prompt functions so that one fixed piece of arithmetic
+reproduces a fourth function, on one distribution of states. Two consequences follow, and both are
+useful. Matching the target \emph{requires} the branches to move, since frozen branches give the
+frozen composition by definition. And the required movement turns out to be per-concept, which is
+what makes any of this trainable at all.
+
+\section{The plurality reading: what the adapter would have to have learned}
+\label{sec:plurality}
+
+Nothing is written into the prompt. The claim is that $\phi_1$, $\phi_2$ and $m$ are precisely what
+turns each branch into its two-thing-picture version:
+\begin{equation}
+  \text{(H)}\qquad
+  a = -\sigma_t \nabla \log p_t(x\mid c_1, A),
+  \quad
+  b = -\sigma_t \nabla \log p_t(x\mid c_2, A),
+  \quad
+  u = -\sigma_t \nabla \log p_t(x\mid A).
+  \label{eq:H}
+\end{equation}
+
+\paragraph{What follows at once.}
+\begin{equation}
+  T \;=\; a+b-u \;=\; -\sigma_t \nabla \log\!\left[
+  \frac{p(x\mid c_1,A)\,p(x\mid c_2,A)}{p(x\mid A)}\right],
+  \qquad
+  q(x) \;\propto\; \frac{p(x\mid c_1,A)\,p(x\mid c_2,A)}{p(x\mid A)} .
+  \label{eq:q}
+\end{equation}
+
+\paragraph{Why that is a smaller ask.}
+Rerun \eqref{eq:R} with $A$ carried through:
+\begin{equation}
+  p(x\mid c_1,c_2,A) \;=\; q(x)\cdot R_A(x),
+  \qquad
+  R_A(x) \;=\; \frac{p(c_1,c_2\mid x,A)}{p(c_1\mid x,A)\,p(c_2\mid x,A)}\times(\text{constant}).
+  \label{eq:RA}
+\end{equation}
+Same shape as \eqref{eq:R}. What changed is the range of $x$ over which the flatness must hold.
+$R$ swings hardest at a fused animal; conditioning on $A$ takes fused animals out of the range.
+\textbf{The independence is asked only among pictures that already have two objects in them}, which
+is a far weaker thing to require and it is required where it is plausible.
+
+\emph{The last sentence is a conjecture, not a derivation.} Nothing has measured $R_A$ against $R$
+on this pool. It is measurable.
+
+\paragraph{The catch, and it is a real one.}
+The loss only ever sees $a+b-u$. Shift the shared change into the concept changes and the total is
+unchanged, so training does not decide how the ``and'' is split between the empty branch and the
+concept branches. It decides only the sum. That does not make (H) wrong; it means (H) needs either
+a rule that pins the split or a measurement that survives the split being loose.
+
+\section{Which branches to free}
+\label{sec:freeze}
+
+Write switches $\mathbf{1}_a,\mathbf{1}_b,\mathbf{1}_u \in \{0,1\}$:
+\begin{equation}
+  T \;=\; \bar T \;+\; \mathbf{1}_a \phi_1 \;+\; \mathbf{1}_b \phi_2 \;-\; \mathbf{1}_u\, m .
+  \label{eq:switches}
+\end{equation}
+
+\paragraph{Eight settings, four families.}
+$m$ is a function of the picture alone, while $\phi_i$ is a function of the picture \emph{and} the
+concept, so $\phi_i - m$ is still a legal per-concept function. Whenever at least one concept
+branch is free, the shared change can be absorbed into it and the empty branch's switch changes
+nothing:
+\begin{equation}
+  \{a,b,u\} = \{a,b\}, \qquad
+  \{a,u\} = \{a\}, \qquad
+  \{b,u\} = \{b\},
+  \label{eq:collapse}
+\end{equation}
+and $\{a\}$ equals $\{b\}$ up to which concept is labelled first. The families nest, and the
+least-squares floor runs the other way:
+\begin{equation}
+  \{u\} \;\subseteq\; \{a\} \;\subseteq\; \{a,b\} \;=\; \{a,b,u\},
+  \qquad
+  R^{\{u\}} \;\ge\; R^{\{a\}} \;\ge\; R .
+\end{equation}
+
+\begin{center}
+\small
+\begin{tabular}{p{0.19\textwidth} p{0.18\textwidth} c p{0.40\textwidth}}
+\toprule
+family & free objects & forwards & note \\
+\midrule
+$\{a,b\}$, $u$ frozen & $\phi_1,\phi_2$ & $2$ & the full family, split pinned \\
+$\{a,b,u\}$ & $\phi_1,\phi_2,m$ & $3$ & the same answers, split loose. What runs today \\
+$\{a\}$ & $\phi_1$ & $2$ & only one concept may move; no reason to want it \\
+$\{u\}$ & $m$ & $1$ & the shared change alone; see Section~\ref{sec:three} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+So the whole permutation is three experiments, of which two are worth running. Freezing is cheap
+because it is not freezing weights: all branches share the same adapted weights, so frozen means
+reading a cached frozen tensor, which costs no forward pass.
+
+\paragraph{Two rules that apply to every pattern.}
+Whatever is frozen in training must be frozen in sampling. The adapter sits on cross-attention
+projections and touches every branch, so training with a frozen empty branch while the sampler runs
+all three adapted puts the amplified direction straight back.
+
+And with $m = 0$, equation \eqref{eq:key} loses its second term outright, so
+$\mathcal{L}_A = w^2 \mathcal{L}_{B2}$ identically, at every $w$, in value and in gradient.
+\textbf{Freezing the empty branch is what makes A and B2 the same objective.} The dial becomes a
+constant that folds into the learning rate, and one adapter is correct at every dial setting.
+
+\section{Three ways to place the plurality, and what each gives}
+\label{sec:three}
+
+Take (H) seriously and ask where the two-thing conditioning is allowed to live.
+
+\paragraph{Only in the empty branch.}
+Freeze the concept branches, let the adapter move only $u$, and suppose it succeeds:
+\begin{equation}
+  q_c(x) \;\propto\; \frac{p(x\mid c_1)\,p(x\mid c_2)}{p(x\mid A)}
+  \;=\; q_0(x)\,\frac{p(x)}{p(x\mid A)}
+  \;\propto\; \frac{q_0(x)}{p(A\mid x)} ,
+  \label{eq:qc}
+\end{equation}
+using $p(x\mid A) = p(A\mid x)\,p(x)/p(A)$. You end up \emph{dividing} by the probability that the
+picture has two objects in it. A fused animal has small $p(A\mid x)$, so it is boosted; a genuine
+two-animal scene has $p(A\mid x)\approx 1$ and is left alone. \textbf{Swapping the denominator alone
+does not fix the fused animal, it rewards it.} The direction is wrong, not merely weak.
+
+\paragraph{Only in the concept branches.}
+Freeze the empty branch, so $m=0$, and let $a$ and $b$ take their values from \eqref{eq:H}:
+\begin{equation}
+  q_{\mathrm{freeze}}(x) \;\propto\;
+  \frac{p(x\mid c_1,A)\,p(x\mid c_2,A)}{p(x)}
+  \;=\; q(x)\,\frac{p(x\mid A)}{p(x)}
+  \;\propto\; q(x)\,p(A\mid x) .
+  \label{eq:qfreeze}
+\end{equation}
+The two-thing product, \emph{multiplied} by the probability the picture is a two-thing picture. The
+exact mirror of \eqref{eq:qc}, factor upstairs instead of downstairs, leaning toward two-object
+pictures instead of away from them.
+
+\paragraph{In all three, as (H) writes it.} You get $q$ itself.
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+plurality only in the empty branch & $q_0 \,/\, p(A\mid x)$ \quad rewards fused animals \\
+plurality only in the concept branches & $q \cdot p(A\mid x)$ \quad rewards two-thing pictures \\
+plurality in all three & $q$ \quad the two-thing product, clean \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Being fair about the middle row.}
+$p(A\mid x)$ is a bias. You are not sampling the two-thing posterior, you are sampling it tilted
+once further toward plurality. That is the same shape as guidance, which already tilts hard. It is
+a bias in the direction wanted, and it is a bias.
+
+\paragraph{And the middle row is the one that is cheap.}
+It is the freeze of Section~\ref{sec:freeze}: two forwards instead of three, the dial removed from
+the problem, and the split pinned. The clean bottom row needs the empty branch to move, which
+reopens the direction the sampler amplifies, unless the move is supervised rather than left to
+drift. That is the avenue in Section~\ref{sec:avenues} called \emph{anchor to plurality}.
+
+\section{Where B1 stands, and what it does not need}
+
+B1 differs from B2 on one axis only, the target. Everything in
+Sections~\ref{sec:asking} to~\ref{sec:three} is about the composition and the branches, so it holds
+for B1 unchanged.
+
+What B1 needs that the others do not is $p_{\mathrm{co}}$: real photographs containing both concepts
+as separate objects. This repository has no real image data at all. The coverage question was
+measured against an annotated corpus and the answer was that almost no pair in this pool has such
+images, and the few that do are look-alike pairs.
+
+The reason is structural rather than a shortage. \textbf{A pair has co-occurrence photographs
+because the two things genuinely turn up together, and that same co-occurrence in the model's
+training data is why the model already composes them.} The data is abundant where it is not needed
+and absent where it is. Any photographic corpus should behave the same way, though only one has
+been checked.
+
+So B1's shape is reachable; B1's corpus is not. The shape survives if the corpus is replaced, which
+is the avenue called \emph{a better teacher}.
+
+\section{The avenues}
+\label{sec:avenues}
+
+\begin{center}
+\small
+\begin{tabular}{p{0.17\textwidth} p{0.29\textwidth} p{0.215\textwidth} p{0.235\textwidth}}
+\toprule
+ & what changes & what it buys & what would kill it \\
+\midrule
+freeze the empty branch &
+$m = 0$, by construction rather than by a fine &
+A and B2 become one objective at every dial setting; one fewer forward &
+nothing known \\[3pt]
+anchor to plurality &
+hold $u$ to the frozen prediction for a plurality phrase, not for the empty prompt &
+the clean $q$ with the split still pinned &
+a plurality \emph{string}'s prediction may be a poor stand-in for $p(x\mid A)$ \\[3pt]
+protect the concepts &
+add (P3) on states from single-concept runs, not pair runs &
+bounded damage to single-concept behaviour &
+it opposes (H) unless the concept change depends on where it is measured \\[3pt]
+a better teacher &
+keep B1's shape, replace $p_{\mathrm{co}}$ with the model's own filtered successes &
+a target that is right where the joint prompt is wrong &
+the filter cannot tell two animals from one animal twice \\[3pt]
+refresh the states &
+re-record the cache with the adapter attached, and iterate &
+the fit holds where the adapter actually goes &
+the off-policy gap turns out to be small \\[3pt]
+leave the family &
+a read-out seeing both concepts, or a sampler-side correction &
+escapes the additive ceiling &
+the additive ceiling is not what is binding \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection*{Freeze the empty branch}
+The first move, because it is exact where the current fine is approximate, it costs less than what
+runs now, and it removes an axis from the problem. By \eqref{eq:collapse} it gives up no reachable
+predictions. By \eqref{eq:qfreeze} it does not cost the plurality reading either; it decides where
+the plurality has to live.
+
+\subsection*{Anchor to plurality}
+Hold the empty branch to the frozen model's answer for a plurality phrase instead of for the empty
+prompt. This pins the split, so the amplified direction stays controlled, \emph{and} puts the base
+measure on two-thing pictures rather than waiting for drift to arrive there. It costs one cached
+tensor. It also supplies a reference the code currently refuses to guess: the trainer rejects the
+anchor together with a non-plain branch style, because the only cached frozen reference is the one
+for the empty prompt and anchoring against the wrong reference is worse than not anchoring
+(\texttt{train\_pooled.py:315--321}).
+
+The honest caveat: a frozen prediction for the string \texttt{"two animals"} is a prediction for a
+string, not the score of $p(x \mid A)$, and how close those are is unchecked.
+
+\subsection*{Protect the concepts}
+Three candidates, one recommendation. The null anchor already in the code is not single-concept
+protection: it constrains the one branch that carries no concept, and its job is pinning the split.
+(P2) pulls a branch toward the truth rather than toward where it started, which is fine-tuning, not
+preservation, and it needs real single-concept images. (P3) needs no images, only states, and the
+choice of states is the whole design.
+
+Applied on the pair states, (P3) opposes the fit directly, because the fit requires those branches
+to move there. Push it hard and all three branches pin to frozen and the correction goes to zero.
+So apply it on states from single-concept runs instead: correct the model where pairs go, preserve
+it where a single concept goes.
+
+\paragraph{One condition, and it is not optional.}
+Under (H), this term pulls the concept branches back from the very thing they are supposed to
+become. The two goals survive together only if $\phi_1$ is large where pairs go and small where a
+single concept goes. Settle that before the term goes near a training run, not after.
+
+\subsection*{A better teacher}
+Keep the shape of \eqref{eq:LB1} and replace $p_{\mathrm{co}}$ with the model's own samples that
+pass a composition filter. The reason to want it is that the current teacher is known to be
+unreliable: the scope that trains the pooled adapter already drops training cells whose joint target
+shows the wrong animals, and names a better teacher than the joint prompt as its own follow-on. A
+filtered sample set is right by construction exactly where the joint prompt is wrong.
+
+The risk is the filter. The validated scorer counts instances and cannot tell a cat beside a dog
+from two dogs, so the corpus needs a second head reading which two animals are present, or the
+objective trains toward a density of duplicated single concepts.
+
+\subsection*{Refresh the states}
+Every cached state came from a plain product-of-experts run with no adapter. With the adapter on,
+the trajectory leaves those states on the first step it acts, and errors compound along a rollout.
+The answer, if it is needed, is to re-record with the adapter attached and iterate. Whether it is
+needed is a cheap read, not an assumption: take one adapted step from a cached state and compare the
+loss where you land against the loss at the cached successor.
+
+\subsection*{Leave the family}
+Every objective above has the shape $T = m + \phi_1 + \phi_2$, one shared piece plus one per
+concept, forced by each branch reading one prompt under a fixed combination rule. Escaping it means
+a read-out that sees both concept embeddings at once, which costs the property that the adapter
+never sees a joint prompt, or a correction on the sampler side. Neither is earned while the
+per-concept fit is still doing well.
+
+\section{What would decide between them}
+
+Three reads, none of which needs training, all against adapters already on disk.
+
+\paragraph{Does the cat change point where the word points?}
+Compare $\phi_1$, what the adapter added to the cat branch, against what the word adds with no
+adapter anywhere: the frozen model's answer for \texttt{"a cat and"} minus its answer for
+\texttt{"a cat"}. Report the cosine. The control is the same quantity against another concept's word
+direction and against an unrelated word, so a meaningless number can be recognised. Beating the
+control supports (H); sitting inside it says the adapter learned something real that is not the
+``and''.
+
+Run at two sets of states, pair runs and single-concept runs, this is also what decides whether
+\emph{protect the concepts} is safe.
+
+\paragraph{Is the change the same thing for every concept?}
+If ``and'' is one learned thing, the per-concept changes share a component. Split $\{\phi_i\}$ into
+their mean plus a residual and report the mean's share of the energy. This costs nothing: the
+existing step-$0$ probe already solves for $\phi$ and then discards it.
+
+\paragraph{Did the prompt version and the plain version land in the same place?}
+Writing plurality into the prompt has already been run, twice, at full length: once with
+\texttt{"a cat and"} against a null of \texttt{"and"}, once with \texttt{", two animals"} against a
+null of \texttt{"two animals"}. By \eqref{eq:collapse} the plain setup can express whatever those
+express. Whether training actually found the same place is a fact about optimisation, and it is
+unmeasured. Compare the adapted plain branch for \texttt{"a cat"} against the adapted connective
+branch for \texttt{"a cat and"} at the same state.
+
+\section{Where the numbers are}
+\label{sec:numbers}
+
+Deliberately not repeated here. Two companion documents in this folder carry them with their
+sources:
+
+\begin{itemize}
+  \item \texttt{guided-and-unguided-objectives.tex}: how large the shared change actually grew on
+    each trained arm, what that does to \eqref{eq:expand}, and the bracket it puts on
+    $\mathcal{L}_{B2}$ for the plain and anchored runs. Also the held-out per-concept fit, the
+    corpus coverage count, and the probe for the off-policy gap with its bar.
+  \item \texttt{correction-loss-variants.tex}: the additive skeleton and why the branch prompts can
+    be renamed without changing what is reachable, the step-$0$ floor, and the measurements that
+    bear on the shared change acting alone.
+\end{itemize}
+
+\end{document}
