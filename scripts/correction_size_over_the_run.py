@@ -22,6 +22,7 @@ point that way.
 
     python scripts/correction_size_over_the_run.py                  # the two-row figure, seed 42 on top
     python scripts/correction_size_over_the_run.py --top-seed 4     # a different sample on top
+    python scripts/correction_size_over_the_run.py --no-curves      # one sample each, no curves
     python scripts/correction_size_over_the_run.py --images-only    # all three seeds, images, no curves
 """
 
@@ -132,6 +133,10 @@ def main() -> int:
                     help="which sample sits above the curves. The curves use all seeds.")
     ap.add_argument("--images-only", action="store_true",
                     help="all three seeds as images, no curves. The earlier layout.")
+    ap.add_argument("--no-curves", action="store_true",
+                    help="one sample per column and no curves, the two-image figure. "
+                         "Says the rule composes one pair and blends another, and "
+                         "makes no claim about the size of the correction.")
     ap.add_argument("--out-dir", type=Path, default=FIG_DIR)
     ap.add_argument("--name", default=None)
     args = ap.parse_args()
@@ -139,17 +144,23 @@ def main() -> int:
     if args.top_seed not in SEEDS:
         raise SystemExit(f"seed {args.top_seed} is not one of {SEEDS}")
 
-    panel_w = (FIG_W - SIDE_L - SIDE_R - GUTTER) / 2
+    bare = args.images_only or args.no_curves
+    image_seeds = SEEDS if args.images_only else (args.top_seed,)
 
-    if args.images_only:
-        fig_h = HEADER + panel_w * len(SEEDS)
+    # Nothing sits left of the images once the curves are gone, so the gutter kept for
+    # the y tick labels becomes white space the two panels are pushed off centre by.
+    side_l = 0.02 if bare else SIDE_L
+    panel_w = (FIG_W - side_l - SIDE_R - GUTTER) / 2
+
+    if bare:
+        fig_h = HEADER + panel_w * len(image_seeds)
     else:
         fig_h = HEADER + panel_w + ROW_GAP + CURVE_H + AXIS_PAD
 
     fig = plt.figure(figsize=(FIG_W, fig_h), facecolor=PAPER)
 
     curves = {}
-    if not args.images_only:
+    if not bare:
         for pair, _, _ in COLUMNS:
             per_seed = np.stack([curve(pair, s) for s in SEEDS])
             curves[pair] = per_seed
@@ -161,15 +172,14 @@ def main() -> int:
         ylim = (0.0, float(stacked.max()) * 1.08)
 
     for ci, (pair, title, reading) in enumerate(COLUMNS):
-        x0 = (SIDE_L + ci * (panel_w + GUTTER)) / FIG_W
+        x0 = (side_l + ci * (panel_w + GUTTER)) / FIG_W
         fig.text(x0 + (panel_w / FIG_W) / 2, 1 - 0.11 / fig_h, title,
                  ha="center", va="top", fontsize=TITLE_PT, family="serif", color=INK)
         fig.text(x0 + (panel_w / FIG_W) / 2, 1 - 0.25 / fig_h, reading,
                  ha="center", va="top", fontsize=SUB_PT, family="serif",
                  color=INK, style="italic")
 
-        img_seeds = SEEDS if args.images_only else (args.top_seed,)
-        for ri, seed in enumerate(img_seeds):
+        for ri, seed in enumerate(image_seeds):
             src = panel_png(pair, seed)
             print(f"{pair} seed {seed}: {src}")
             y0 = (fig_h - HEADER - (ri + 1) * panel_w) / fig_h
@@ -182,7 +192,7 @@ def main() -> int:
                     ha="left", va="top", fontsize=CHIP_PT, family="serif", color=INK,
                     bbox=dict(facecolor=PAPER, edgecolor="none", pad=1.4, alpha=0.88))
 
-        if not args.images_only:
+        if not bare:
             per_seed = curves[pair]
             cy = AXIS_PAD / fig_h
             ax = fig.add_axes([x0, cy, panel_w / FIG_W, CURVE_H / fig_h])
@@ -197,7 +207,7 @@ def main() -> int:
         print(f"wrote {out}")
     plt.close(fig)
 
-    if not args.images_only:
+    if not bare:
         side = args.out_dir / f"{name}.json"
         side.write_text(json.dumps({
             "measure": "||r_t|| / ||eps_PoE||, per denoising step, fp16 upcast to float32",
