@@ -3,7 +3,7 @@
 Five pictures of the machinery every variation shares, and a capstone that puts them on one page.
 The switch, where the nine objectives differ, is the one that carries the scope.
 
-10 prompts · 6 rendered · 4 waiting
+10 prompts · 7 rendered · 3 waiting
 
 Three pieces depict machinery that exists and are marked `[built]`. Two depict things this scope
 creates and are marked `[planned]`, drawn hedged, with their prompts saying so in plain words rather
@@ -628,7 +628,7 @@ The same cast with the order of work drawn over it. Four stages and a route map,
 whenever the plan set changes, never patched. History in `diagrams/process-versions/`.
 
 ### Prompt 1 (Process): Fix the instruments before measuring anything
-[planned] ⏳ not rendered
+[planned] 🖼️ rendered 2026-09-19 as `diagrams/corrloss-p01-fix-the-instruments-first.png`
 Save as: `diagrams/corrloss-p01-fix-the-instruments-first.png`
 
 ```
