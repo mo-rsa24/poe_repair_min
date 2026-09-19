@@ -3,7 +3,7 @@
 Five pictures of the machinery every variation shares, and a capstone that puts them on one page.
 The switch, where the nine objectives differ, is the one that carries the scope.
 
-10 prompts · 7 rendered · 3 waiting
+10 prompts · 8 rendered · 2 waiting
 
 Three pieces depict machinery that exists and are marked `[built]`. Two depict things this scope
 creates and are marked `[planned]`, drawn hedged, with their prompts saying so in plain words rather
@@ -696,7 +696,7 @@ returns to the specific change rather than to the start. The ratio leaves the ga
 it.
 
 ### Prompt 2 (Process): Read what is already on the disk
-[planned] ⏳ not rendered
+[planned] 🖼️ rendered 2026-09-19 as `diagrams/corrloss-p02-read-what-is-already-there.png`
 Save as: `diagrams/corrloss-p02-read-what-is-already-there.png`
 
 ```
