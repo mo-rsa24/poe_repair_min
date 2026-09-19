@@ -3,7 +3,7 @@
 Five pictures of the machinery every variation shares, and a capstone that puts them on one page.
 The switch, where the nine objectives differ, is the one that carries the scope.
 
-10 prompts · 2 rendered · 8 waiting
+10 prompts · 3 rendered · 7 waiting
 
 Three pieces depict machinery that exists and are marked `[built]`. Two depict things this scope
 creates and are marked `[planned]`, drawn hedged, with their prompts saying so in plain words rather
@@ -277,7 +277,7 @@ output lines leave the same body. The adapter blocks sit on the network, never o
 or the output lines.
 
 ### Prompt 3 (Subject): The two legs of the loss, and the fine
-[built] ⏳ not rendered
+[built] 🖼️ rendered 2026-09-19 as `diagrams/corrloss-03-two-legs-and-the-fine.png`
 Save as: `diagrams/corrloss-03-two-legs-and-the-fine.png`
 
 ```
