@@ -3,7 +3,7 @@
 Five pictures of the machinery every variation shares, and a capstone that puts them on one page.
 The switch, where the nine objectives differ, is the one that carries the scope.
 
-10 prompts · 8 rendered · 2 waiting
+10 prompts · 9 rendered · 1 waiting
 
 Three pieces depict machinery that exists and are marked `[built]`. Two depict things this scope
 creates and are marked `[planned]`, drawn hedged, with their prompts saying so in plain words rather
@@ -765,7 +765,7 @@ Faithfulness note: no training appears anywhere in this picture. The shuffle key
 read after the labels, never before, and the picture shows that ordering rather than stating it.
 
 ### Prompt 3 (Process): Change one thing, and prove the two halves agree first
-[planned] ⏳ not rendered
+[planned] 🖼️ rendered 2026-09-19 as `diagrams/corrloss-p03-prove-they-agree-first.png`
 Save as: `diagrams/corrloss-p03-prove-they-agree-first.png`
 
 ```
