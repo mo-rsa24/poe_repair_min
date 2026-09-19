@@ -3,7 +3,7 @@
 Five pictures of the machinery every variation shares, and a capstone that puts them on one page.
 The switch, where the nine objectives differ, is the one that carries the scope.
 
-10 prompts · 4 rendered · 6 waiting
+10 prompts · 5 rendered · 5 waiting
 
 Three pieces depict machinery that exists and are marked `[built]`. Two depict things this scope
 creates and are marked `[planned]`, drawn hedged, with their prompts saying so in plain words rather
@@ -458,7 +458,7 @@ the machine where it acts and nowhere else; the guidance weight is the only one 
 places, the combination and the target.
 
 ### Prompt 5 (Subject): A checkpoint and a picture at the same moment
-[planned] ⏳ not rendered
+[planned] 🖼️ rendered 2026-09-19 as `diagrams/corrloss-05-checkpoint-and-picture-together.png`
 Save as: `diagrams/corrloss-05-checkpoint-and-picture-together.png`
 
 ```
