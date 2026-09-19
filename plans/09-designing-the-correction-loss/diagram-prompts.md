@@ -3,7 +3,7 @@
 Five pictures of the machinery every variation shares, and a capstone that puts them on one page.
 The switch, where the nine objectives differ, is the one that carries the scope.
 
-10 prompts · 3 rendered · 7 waiting
+10 prompts · 4 rendered · 6 waiting
 
 Three pieces depict machinery that exists and are marked `[built]`. Two depict things this scope
 creates and are marked `[planned]`, drawn hedged, with their prompts saying so in plain words rather
@@ -376,7 +376,7 @@ result joins the number and never enters the subtraction. Every line on the uppe
 as carrying no gradient; every line on the lower track and the fine is marked as carrying one.
 
 ### Prompt 4 (Subject): The four places the nine objectives differ
-[planned] ⏳ not rendered
+[planned] 🖼️ rendered 2026-09-19 as `diagrams/corrloss-04-the-four-places-they-differ.png`
 Save as: `diagrams/corrloss-04-the-four-places-they-differ.png`
 
 ```
