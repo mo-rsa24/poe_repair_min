@@ -3,7 +3,7 @@
 Five pictures of the machinery every variation shares, and a capstone that puts them on one page.
 The switch, where the nine objectives differ, is the one that carries the scope.
 
-10 prompts · 5 rendered · 5 waiting
+10 prompts · 6 rendered · 4 waiting
 
 Three pieces depict machinery that exists and are marked `[built]`. Two depict things this scope
 creates and are marked `[planned]`, drawn hedged, with their prompts saying so in plain words rather
@@ -536,7 +536,7 @@ The whole pairing is drawn as planned rather than built, and the picture says in
 checkpoints are currently saved four times less often than strips.
 
 ### Subject capstone: From a frozen cache to one page per objective
-[planned] ⏳ not rendered
+[planned] 🖼️ rendered 2026-09-19 as `diagrams/corrloss-capstone-cache-to-one-page-per-objective.png`
 Save as: `diagrams/corrloss-capstone-cache-to-one-page-per-objective.png`
 
 ```
