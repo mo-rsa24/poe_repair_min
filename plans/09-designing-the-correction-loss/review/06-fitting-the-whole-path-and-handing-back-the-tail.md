@@ -54,6 +54,8 @@ Navigation: ⬅️ [Previous](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 | Run | What it is for | When, where, W&B | Outcome |
 |---|---|---|---|
 | Task 1.1, `scripts/shrinkage_per_step.py`, both checkpoints, eight held-out seeds, all 50 steps | tests the premise the plan was built on | 2026-09-20 07:11 to 07:18, `mscluster106` device 1, Quadro RTX 8000, no W&B | 800 rows into `shrinkage-per-step.json`. The premise as first written is falsified and a different failure is measured in its place |
+| The hand-off sweep, `scripts/clean_tail_k_sweep.py`, three checkpoints, six cut points, ten cells | tests the claim | 2026-09-19 22:27 to 23:24, `mscluster109` device 1, RTX A6000, no W&B | null on the two rank-32 checkpoints, composition broken on the rank-16 one. Scored against the joint-prompt reference, which is not the standard this project judges by |
+| `scripts/push_brightness_bias.py`, `pool43-all50` at 40,000, seed 9, all 50 steps | tests whether the haze is a brightness shift | 2026-09-20, `mscluster106` device 1 | 50 rows. The adapter adds about 1 to 3% of a brightness offset against a push of size 0.08 to 0.28, which cannot lift blacks from 14 to 40. Not the cause. The same run measured the contrast of the picture each composition aims at, which is the cause |
 
 ## The question written before the run
 
@@ -86,7 +88,12 @@ Navigation: ⬅️ [Previous](#the-question-written-before-the-run) | 📋 [TOC]
 
 Navigation: ⬅️ [Previous](#written-before-the-run-answered-after) | 📋 [TOC](#table-of-contents) | [Next](#could-the-answer-be-an-artefact) ➡️
 
-Left empty on purpose. Questions raised by the result go here, marked as such, and never above.
+Raised by the result, never asked before it.
+
+- [x] **Is the haze a brightness shift the adapter adds?** No. On `a_cat__x__a_dog` seed 9 the target's darkest pixel sits at 14 on a 0-to-255 scale and the adapter's at 40, so the blacks are lifted, which is what haze is. But the adapter's push averages +0.0026 on the brightness channel where the needed push averages +0.0052, a gap of about 1 to 3% of a push whose size is 0.08 to 0.28. It is not laying a grey wash over the picture.
+- [x] **Is the haze a loss of contrast in the picture the composition aims at?** Yes, and it happens at the start. Comparing the picture the frozen composition heads for against the one the adapted composition heads for, on `pool43-all50` at 40,000, seed 9: the adapter cuts that contrast by 56% over steps 0 to 9, 47% over 10 to 19, 31% over 20 to 29, 13% over 30 to 39 and 1% over 40 to 49, and it lowers contrast on 45 of the 50 steps. **This explains the hand-off sweep's null**: by step 25 the flattening has already happened, so handing the tail back finishes a flat picture faithfully.
+- [ ] ⚠️ **Is the flatness the objective or generalisation?** Both, roughly evenly. Contrast against each cell's own target on `pool43-all50` at 40,000: lion x meerkat -12% and typewriter x cactus -14% on pairs it trained on, cat x dog seed 9 -28% and elephant x penguin seed 10 -22% on pairs it did not. The objective leaves contrast on the table where it had every chance, and the gap doubles on unseen pairs. Four cells, so this wants more before it is quoted.
+- [ ] ⚠️ **Does the flatness hold across seeds at all?** No, and this is the finding that limits every number above. `an_elephant__x__a_penguin` seed 09 renders as an engraved plate at every checkpoint from 1,250 to 60,000 while seed 10 is photographic at every one, same run and same weights. Cat and dog seeds 4 and 6 at `pool43-all50` 40,000 are sharp and composed. Any figure that averages over cells describes none of them.
 
 ## Could the answer be an artefact
 
@@ -109,6 +116,9 @@ Navigation: ⬅️ [Previous](#what-the-write-up-owes) | 📋 [TOC](#table-of-co
 
 - [ ] ⚠️ **Why did three rank-32 runs die within five minutes of each other on 2026-09-17?** Nothing has read those logs. It blocks any rank-32 confirmation run, here and elsewhere in the scope.
 - [ ] ⚠️ **What measure separates a well-formed pair of animals from two animal-shaped things attached to one body?** The instance count reads 1.000 through `a_cat__x__a_dog` seed 09's collapse at step 60,000. Not this plan's question, and it limits what any verdict here can claim.
+- [ ] ⚠️ **The fidelity bar in this file is not the standard the project judges by.** It scores how near a render is to the joint prompt's own picture. For a held-out pair the joint prompt is not available at inference and is not a target; the judgement is whether the picture plainly shows both concepts and looks good. Every null recorded against that bar, here and in the five inference-time fixes, answers a question nobody asked. The renders exist and have not been looked at.
+- [ ] ⚠️ **Which data an adapter trained on decides whether it composes or whether it draws well, and the two run opposite.** On `a_cat__x__a_dog` seed 1, every adapter trained on the original 88 cells over 11 look-alike animal pairs puts two animals in the picture and every one of them is dark and muddy; every adapter trained on the broader 43-, 54-, 72- and 182-cell pools draws a bright sharp picture with one animal in it. Fourteen adapters, one seed. Filed under `artifacts/results/composing-unseen-pairs/`.
+- [ ] ⚠️ **Four of the broader-pool adapters invent a human in a cat-and-dog picture.** `pool43-early25`, `pool43-all50-orth3`, `v54d_P` and `v54d_C1_allseeds`, all at 30,000 to 40,000 steps, on `a_cat__x__a_dog` seed 1. No plan or report mentions this.
 
 ## Next step
 

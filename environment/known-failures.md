@@ -14,8 +14,8 @@ reference` repointed from `docs/ENVIRONMENT.md` to this folder. Nothing in the s
 entries was reworded beyond that repointing; `poe-disk-001` is new, added this sitting from a
 failure already documented in the project's own `CLAUDE.md` but not previously catalogued here.
 
-**Last updated:** 2026-09-01
-**Total entries:** 10
+**Last updated:** 2026-09-20
+**Total entries:** 11
 **Seed entries from:** step-09 (three-live-curves-while-training), plus one added during this
 folder's migration
 
@@ -291,6 +291,32 @@ a real capacity problem.
 
 ---
 
+#### Entry ID: poe-lora-005
+**Name:** A pooled adapter trained on the broader cell pools draws a person into a picture of two
+animals
+
+**Symptom:** A rank-32 adapter renders `a_cat__x__a_dog` and the picture contains a human, usually
+crouching beside a single animal, on a seed where the same prompt pair without the adapter draws
+one fused cat-dog creature and no person. The detector's instance count does not flag it, because
+a person is not one of the animal queries.
+
+**Root cause:** Not established. It is reproducible and it tracks the training pool rather than the
+objective: on `a_cat__x__a_dog` seed 1, four adapters do it (`pool43-early25` and
+`pool43-all50-orth3` at 40,000, `v54d_P` and `v54d_C1_allseeds` at 30,000) and every adapter
+trained on the original 88-cell pool over 11 look-alike animal pairs does not, at matched steps.
+The broader pools carry object pairs and scene pairs the original did not, so a prompt-driven
+prior toward a photographed scene with a person in it is the first thing to check.
+
+**Solution:** None yet. Until there is one, a figure using a broader-pool adapter is read by eye
+before it is used, because no scorer in this repository reports an extra person. Recorded 2026-09-20
+from the fourteen-adapter sheet at
+`artifacts/results/composing-unseen-pairs/`, which renders one seed through every adapter this
+project has trained.
+
+**Environment reference:** none; this is a model behaviour rather than a system fact.
+
+---
+
 ### Launching runs
 
 #### Entry ID: poe-launch-001
@@ -411,6 +437,61 @@ the per-setting output of a run across many settings)
 **Category:** 🔴 critical
 
 **Environment reference:** [storage.md](storage.md)
+
+---
+
+### Training data and splits
+
+#### Entry ID: poe-data-001
+**Name:** A cell named in `--cells` is loaded from the held-out split without a warning
+
+**Symptom:** None. The run launches, trains, and reports normal losses. `dataset_meta.json`
+records `split: None` for every cell, so nothing afterwards can say which split a cell came
+from, and a contaminated run is indistinguishable from a clean one in W&B.
+
+**Root cause:** `CellPath.from_root` at
+[training_cache.py:63](../poe_repair/training_cache.py) resolves `split=None` by searching
+`["heldout", "train"]` in that order, so a cell present in both directories is taken from
+`heldout/`. [train_pooled.py:434](../poe_repair/experiments/cross_pair_lora_pooling/train_pooled.py)
+calls `resolve_cells(pair, seeds)` with no `split` argument, so every training cell is
+resolved held-out-first. The cache holds 12 cells across 4 pairs
+(`a_lion__x__a_dog` seeds 1, 2, 4, 6, 8; `a_cat__x__a_lion` seeds 1 to 4;
+`a_dog__x__a_horse` seeds 1 and 3; `a_butterfly__x__a_flower_meadow` seed 4) that sit in both
+directories and would be taken from `heldout/`.
+
+**Solution:**
+- Pass `split="train"` explicitly from `train_pooled.py`, so a cell that is missing from
+  `train/` raises instead of silently falling back.
+- Record the resolved split per cell in `dataset_meta.json`, which today writes `None`, so a
+  finished run can be audited without re-deriving the lookup.
+- Until both land, check a pool before launching:
+  ```bash
+  python3 -c "
+  import json, pathlib
+  T = pathlib.Path('/datasets/mmolefe/poe_repair_min/artifacts/caches/training_cache')
+  d = json.load(open('artifacts/_shared/cross_pair_pool_configs/cells_v54.json'))
+  bad = [(p, s) for p, seeds in d.items() for s in seeds
+         if (T / 'heldout' / p / f'seed_{s}' / 'meta.json').exists()]
+  print('cells that would resolve to heldout:', len(bad), bad[:10])
+  "
+  ```
+  Expect `0`. Anything above zero is a cell the adapter would train on and then be scored
+  against.
+
+**First discovered:** poe_repair_min, 2026-09-16, traced from the plan-09 walk rather than from
+a failed run. No run has hit it: every cell of `cells_v54`, `cells_v55` and `cells_v57_animals`
+resolves to `train/`, and the training seeds (1 to 8, 17 to 19) and held-out seeds (9 to 16) are
+disjoint.
+
+**Affects steps:** step 71 onward, every plan in
+[designing the correction loss](../plans/09-designing-the-correction-loss/MASTER_PLAN.md) that
+launches a run, and any future pool built by hand rather than from `seed_pool.train_pool`. Both
+solutions above are owned by
+[task 1.5 of the instrument fixes](../plans/09-designing-the-correction-loss/plans/tools/01-the-three-instrument-fixes.md).
+
+**Category:** 🔴 critical
+
+**Environment reference:** [storage.md](storage.md) for where the cache lives
 
 ---
 

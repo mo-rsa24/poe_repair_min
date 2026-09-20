@@ -134,8 +134,20 @@ it is background and never plan content.
         └────────────────────────────────────────────────────┘
 ```
 
+<a href="diagrams/corrloss-capstone-cache-to-one-page-per-objective.png"><img src="diagrams/corrloss-capstone-cache-to-one-page-per-objective.png" width="800" alt="A case of five coloured cubes labelled 'written once, frozen'. Three of them feed one U-Net labelled 'one U-Net, one pass', with 'adapter here, 210 sites' bracketed under its middle. Its three outputs, a red, a green and a purple cube, go into two boxes each headed 'guidance, w = 7.5', one subtracting and one summing, which meet at a minus sign and a box reading 'one number'. Top right, 'same machine, four settings' holds four panels wired by coloured leads to a three-by-three grid headed 'nine objectives, two built', with two green 'built' tiles and seven purple 'planned' ones. Along the bottom, 'every 2,500 steps' runs a row of paired checkpoint-and-strip icons into a stack of pages headed 'one page per objective'."></a>
+
+*The same machinery as the block above: the frozen cache, the single pass with the adapter at 210
+sites, the two guidance legs meeting at one number, the four-setting switch over nine objectives,
+and the checkpoint strip ending in one page per objective.*
+
 Everything above the switch is machinery shared by all nine objectives. Everything below it is the
 filing. The switch is the scope.
+
+The same machinery is walkable in [the correction-loss scene](https://claude.ai/code/artifact/ae96d471-01cd-4764-b79d-41da5053230c),
+which carries what this diagram does not: the two legs drawn with every symbol bound to its box both
+ways, the frozen and trainable modules coloured apart on the real counts (210 modules, 9,912,320 of
+2,577,376,004 parameters), and all nine variations placed side by side with any two pickable for
+comparison.
 
 ## The nine variations
 
@@ -164,14 +176,15 @@ One table, and it is the only place the set is listed. Equations, code changes a
 `artifacts/_shared/cross_pair_pool_configs/`. Roughly one seed per pair, which buys pairs at the
 cost of seeds per pair, and that is the right trade for a claim about composing two concepts
 rather than two animals. It is the only pool this scope trains on. `00`'s five runs used 88 cells
-over 11 look-alike animal pairs and are read as history, never as a comparison.
+over 11 look-alike [animal pairs](../../context/world/animal-pair.md#what-an-animal-pair-is) and
+are read as history, never as a comparison.
 
 **Eight of its 43 cells need [task 1.5](plans/tools/01-the-three-instrument-fixes.md) first.**
 `a_typewriter__x__a_cactus` seeds 1 to 8 sit in both the `train/` and `heldout/` cache
 directories, and the cell lookup takes the held-out copy when no split is named. The two copies
 are byte-identical so nothing is contaminated in substance, but until the trainer names its split
 a run records 8 training cells as held-out. Full entry:
-[the held-out-first cache lookup](../../environment/known-failures.md).
+[the held-out-first cache lookup](../../environment/known-failures.md#entry-id-poe-data-001).
 
 **Rank 16 carries the comparison between variations, at steps 0 to 25.** That is the lineage on
 disk and the only one where runs finish. `01`, `03`, `06` and `06a` all reached 30,000 steps, while
@@ -391,7 +404,8 @@ No concept this scope names is uncovered by the learning tree.
 ⬅️ [Previous](#learning-coverage) | 📋 [TOC](#table-of-contents) | [Next](#process-diagram) ➡️
 
 See [this scope's illustrated map](diagram-prompts.md): the system as connected image prompts, both
-lanes. Ten prompts, none rendered. Process history lives in `diagrams/process-versions/`.
+lanes. Ten prompts, all ten rendered into `diagrams/`. Process history lives in
+`diagrams/process-versions/`.
 
 ## Process Diagram
 

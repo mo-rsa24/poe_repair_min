@@ -336,8 +336,8 @@ The review questions are in [the review file](../../review/03-the-v0a-read.md).
 
 | Figure | Lane | What it shows | Status |
 |---|---|---|---|
-| corrloss-03-two-legs-and-the-fine | subject | the two legs of the loss and the fine that this plan judges | opened at task 3.1, so the page's equation and the picture agree |
-| corrloss-04-the-four-places-they-differ | subject | one machine, four settings, nine objectives | opened at task 3.2, to place the prompt-rewrite finding on the right setting |
+| [corrloss-03-two-legs-and-the-fine](../../diagrams/corrloss-03-two-legs-and-the-fine.png) | subject | the two legs of the loss and the fine that this plan judges | 🖼️ rendered · opened at task 3.1, so the page's equation and the picture agree |
+| [corrloss-04-the-four-places-they-differ](../../diagrams/corrloss-04-the-four-places-they-differ.png) | subject | one machine, four settings, nine objectives | 🖼️ rendered · opened at task 3.2, to place the prompt-rewrite finding on the right setting |
 
 **Generated during plan execution**
 

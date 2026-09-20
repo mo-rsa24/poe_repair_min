@@ -333,8 +333,8 @@ Task 1.1 and task 2.1 both fail quietly, which is why they are named here.
 
 | Figure | Lane | What it shows | Status |
 |---|---|---|---|
-| corrloss-01-what-was-written-to-disk-once | subject | the cache this plan adds a second path beside | opened at task 1.3, so the new path's shape is drawn against the old one |
-| corrloss-04-the-four-places-they-differ | subject | one machine, four settings; this plan moves the target setting | opened at task 0.2 |
+| [corrloss-01-what-was-written-to-disk-once](../../diagrams/corrloss-01-what-was-written-to-disk-once.png) | subject | the cache this plan adds a second path beside | 🖼️ rendered · opened at task 1.3, so the new path's shape is drawn against the old one |
+| [corrloss-04-the-four-places-they-differ](../../diagrams/corrloss-04-the-four-places-they-differ.png) | subject | one machine, four settings; this plan moves the target setting | 🖼️ rendered · opened at task 0.2 |
 
 **Generated during plan execution**
 

@@ -281,6 +281,8 @@ def run_lora_langevin_windowed_poe(
     lora_adapter_name: str = "lora",
     lambda_window: tuple[int, int] | None = None,
     corrector_score: str = "corrected",
+    lora_adapter_name_late: str | None = None,
+    adapter_switch_at: int | None = None,
 ) -> SamplerOutputs:
     """The rank-32 corrected run with ``k`` Langevin steps inside ``corrector_window``.
 
@@ -297,6 +299,13 @@ def run_lora_langevin_windowed_poe(
     drift: ``"corrected"`` (the default, the λ-corrected prediction) or ``"frozen"`` (the
     frozen model's PoE prediction, so the chain settles into the frozen model's own
     low-noise distribution whatever the adapter did earlier).
+
+    A third switch hands the run from one adapter to another part-way through. Attach both
+    under different names, pass the second as ``lora_adapter_name_late`` and the step it takes
+    over as ``adapter_switch_at``, and the first draws steps ``[0, switch)`` while the second
+    draws ``[switch, end)``. Composition is decided in the early steps and the picture is
+    finished in the late ones, so this lets one adapter do each job. Leave both at ``None`` and
+    a single adapter runs the whole path, unchanged.
 
     One Langevin step costs two three-branch UNet calls (frozen and adapter) when the
     drift is corrected and the adapter is on, one call otherwise.
@@ -330,12 +339,19 @@ def run_lora_langevin_windowed_poe(
         eps_b = guided_eps(eps_b_raw, eps_uncond, guidance_scale)
         return poe_eps(eps_a, eps_b, eps_uncond)
 
-    def corrected_forward(x16: torch.Tensor, timestep, adapter_on: bool) -> tuple[torch.Tensor, float]:
+    def adapter_for(step_index: int) -> str:
+        """Which attached adapter draws this step."""
+        if lora_adapter_name_late is None or adapter_switch_at is None:
+            return lora_adapter_name
+        return lora_adapter_name if step_index < int(adapter_switch_at) else lora_adapter_name_late
+
+    def corrected_forward(x16: torch.Tensor, timestep, adapter_on: bool,
+                          step_index: int = 0) -> tuple[torch.Tensor, float]:
         _adapter_disable(unet)
         eps_frozen = three_branch(x16, timestep)
         if not adapter_on:
             return eps_frozen, 0.0
-        _adapter_enable(unet, lora_adapter_name)
+        _adapter_enable(unet, adapter_for(step_index))
         eps_lora = three_branch(x16, timestep)
         delta_hat = eps_lora - eps_frozen
         return eps_frozen + float(lambda_value) * delta_hat, _norm(delta_hat)
@@ -357,7 +373,8 @@ def run_lora_langevin_windowed_poe(
         x_start32 = latents.float()
         start_norm = _norm(x_start32)
         row = {"step_index": int(step_index), "timestep": t_int, "k_applied": n_inner,
-               "adapter_on": bool(adapter_on), "delta_t": delta if n_inner > 0 else 0.0}
+               "adapter_on": bool(adapter_on), "delta_t": delta if n_inner > 0 else 0.0,
+               "adapter_name": adapter_for(step_index) if adapter_on else None}
         if n_inner > 0:
             x32 = x_start32.clone()
             noise_std = math.sqrt(2.0 * delta)
@@ -365,7 +382,7 @@ def run_lora_langevin_windowed_poe(
                 if corrector_score == "frozen":
                     eps_t = frozen_forward(x32.to(dtype), timestep)
                 else:
-                    eps_t, _dn = corrected_forward(x32.to(dtype), timestep, adapter_on)
+                    eps_t, _dn = corrected_forward(x32.to(dtype), timestep, adapter_on, step_index)
                 score = -eps_t.float() / sigma_t
                 z = torch.randn(x32.shape, generator=gen, device=device, dtype=torch.float32)
                 x32 = x32 + delta * score + noise_std * z
@@ -375,7 +392,7 @@ def run_lora_langevin_windowed_poe(
         else:
             row["chain_disp_rel"] = 0.0
             row["latent_norm_rel"] = 1.0
-        eps_t, dn = corrected_forward(latents, timestep, adapter_on)
+        eps_t, dn = corrected_forward(latents, timestep, adapter_on, step_index)
         delta_norm_per_step.append(dn)
         per_step.append(row)
         x0 = tweedie_mean(latents, alpha_bar_t, eps_t)

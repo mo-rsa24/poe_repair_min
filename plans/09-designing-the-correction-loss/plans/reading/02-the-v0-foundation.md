@@ -330,9 +330,9 @@ The review questions are in [the review file](../../review/02-the-v0-foundation.
 
 | Figure | Lane | What it shows | Status |
 |---|---|---|---|
-| corrloss-01-what-was-written-to-disk-once | subject | the cache's five tensors per entry | opened at task 2.1, to check the json's fields against what the cache holds |
-| corrloss-05-checkpoint-and-picture-together | subject | a checkpoint and a render at the same step | opened at task 2.5, to check the strip's layout against it |
-| corrloss-capstone-cache-to-one-page-per-objective | subject | the whole system, ending at one page per objective | opened at task 3.1, since this plan writes the first of those pages |
+| [corrloss-01-what-was-written-to-disk-once](../../diagrams/corrloss-01-what-was-written-to-disk-once.png) | subject | the cache's five tensors per entry | 🖼️ rendered · opened at task 2.1, to check the json's fields against what the cache holds |
+| [corrloss-05-checkpoint-and-picture-together](../../diagrams/corrloss-05-checkpoint-and-picture-together.png) | subject | a checkpoint and a render at the same step | 🖼️ rendered · opened at task 2.5, to check the strip's layout against it |
+| [corrloss-capstone-cache-to-one-page-per-objective](../../diagrams/corrloss-capstone-cache-to-one-page-per-objective.png) | subject | the whole system, ending at one page per objective | 🖼️ rendered · opened at task 3.1, since this plan writes the first of those pages |
 
 **Generated during plan execution**
 

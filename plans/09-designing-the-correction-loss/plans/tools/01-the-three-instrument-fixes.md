@@ -313,8 +313,8 @@ The review questions are in [the review file](../../review/01-the-three-instrume
 
 | Figure | Lane | What it shows | Status |
 |---|---|---|---|
-| corrloss-03-two-legs-and-the-fine | subject | the two legs of the loss and every place the empty branch is read | opened beside the code at task 1.1, to check the composition being added matches the picture |
-| corrloss-05-checkpoint-and-picture-together | subject | a checkpoint and a render written at the same step | opened at instruction 3.1, to check the smoke run's output matches it |
+| [corrloss-03-two-legs-and-the-fine](../../diagrams/corrloss-03-two-legs-and-the-fine.png) | subject | the two legs of the loss and every place the empty branch is read | 🖼️ rendered · opened beside the code at task 1.1, to check the composition being added matches the picture |
+| [corrloss-05-checkpoint-and-picture-together](../../diagrams/corrloss-05-checkpoint-and-picture-together.png) | subject | a checkpoint and a render written at the same step | 🖼️ rendered · opened at instruction 3.1, to check the smoke run's output matches it |
 | corrloss-process-01 | process | the four stages of this scope, this plan being the first | opened at task 0.1 |
 
 **Generated during plan execution**

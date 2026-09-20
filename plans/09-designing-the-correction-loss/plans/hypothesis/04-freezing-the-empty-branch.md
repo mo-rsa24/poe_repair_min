@@ -381,9 +381,9 @@ The review questions are in [the review file](../../review/04-freezing-the-empty
 
 | Figure | Lane | What it shows | Status |
 |---|---|---|---|
-| corrloss-02-one-pass-three-prompts | subject | one network, three prompts, three answers | opened at task 2.2, to check which row of the batch is being dropped |
-| corrloss-03-two-legs-and-the-fine | subject | every place the empty branch is read | opened at task 1.1, since the check is about exactly those readings |
-| corrloss-04-the-four-places-they-differ | subject | one machine, four settings | opened at task 2.1, to confirm this change touches only one setting |
+| [corrloss-02-one-pass-three-prompts](../../diagrams/corrloss-02-one-pass-three-prompts.png) | subject | one network, three prompts, three answers | 🖼️ rendered · opened at task 2.2, to check which row of the batch is being dropped |
+| [corrloss-03-two-legs-and-the-fine](../../diagrams/corrloss-03-two-legs-and-the-fine.png) | subject | every place the empty branch is read | 🖼️ rendered · opened at task 1.1, since the check is about exactly those readings |
+| [corrloss-04-the-four-places-they-differ](../../diagrams/corrloss-04-the-four-places-they-differ.png) | subject | one machine, four settings | 🖼️ rendered · opened at task 2.1, to confirm this change touches only one setting |
 
 **Generated during plan execution**
 
