@@ -219,12 +219,14 @@ For Claude to execute.
   - Assert it in the test task 1.1 builds, rather than rewriting working code
   - Produces: one assertion, not one switch
   - ✓ verified by inspection 2026-09-19: `trainer.py:543` reads `_eps_u_for_compose = eps_uncond_frozen.float() if _freeze_null else eps_uncond_l`, and `eps_uncond_frozen` is built at 425 from the cache entry's own `eu` inside the no-grad cache loop, so under `--freeze-null` the composition reads the cache and not the adapted model. `v1_freeze_null_r16_s0_25/config.json` records `freeze_null: true` and `no_dial: false`. The four `r16_s0_25_*` runs predate the flag and carry none of these keys, so a config read from those is empty rather than false. The assertion is still owed: task 1.1's test file does not exist yet, so this is an inspection and not a run.
-- [ ] 2.2 **Drop the third row of the batch**
-  - The input becomes `(2K, 4, 128, 128)` and the reshape at line 446 becomes `(K, 2, ...)`
+- [x] 2.2 **Drop the third row of the batch**
+  - The input becomes `(2K, 4, 128, 128)` and the reshape at line 489 becomes `(K, 2, ...)`
   - Produces: a forward pass a third smaller
-- [ ] 2.3 **Confirm the sampler detaches the adapter for its empty-prompt pass**
-  - `_inline_sampling.py:55-58` already threads `freeze_null` into the sampler for this reason
+  - ✓ verified by inspection 2026-09-20, not yet by a run: the branch count is decided once at `trainer.py:378-379` as `_drop_null_row = _freeze_null and not _render_teacher`, and carried through the latent tile (424), the per-sample timesteps (461), the prompt and pooled embeddings (467, 471), the time-id batch (476) and the reshape (489). The task predicted two lines; it is seven, because two readers of the adapted empty branch are unconditional and would raise `IndexError` on a two-row batch: the undialled diagnostic at 560 and the null-anchor drift at 605. Both are satisfied by `eps_uncond_l = eps_uncond_frozen.float() if _drop_null_row else noise[:, 2]` at 496, which makes the drift zero by construction rather than by penalty. V6 is excluded from the narrowing because its frozen branch comes from a second adapter-off forward over the same batch and needs all three rows. The run proof is task 2.4.
+- [x] 2.3 **Confirm the sampler detaches the adapter for its empty-prompt pass**
+  - `_inline_sampling.py:58,73,96` already threads `freeze_null` into the sampler for this reason
   - Produces: task 1.1's test covering the sampler path too
+  - ✓ verified by inspection 2026-09-20: `_sampling.py:822` calls `_adapter_disable()` before the frozen three-branch forward, so `eps_uncond_f` is the empty-prompt answer with the adapter off; `_sampling.py:855` selects it under `freeze_null`. Sampling therefore reads the same un-adapted empty branch the trainer composes against, which is the agreement this plan's one named risk is about. It costs no extra forward pass: that branch is already computed for `eps_poe_frozen`. The test itself is still owed, because task 1.1 was skipped; this is an inspection of both paths, not a test covering them.
 
 - [x] 2.3b **Make `--no-dial` honour `--freeze-null`**
   - The branch at `trainer.py:532-533` composes with `eps_uncond_l`, the adapted null, and never reads `_freeze_null`. Its own help text claims that with `--freeze-null` it is V1 up to the constant `w²`, and it is not
