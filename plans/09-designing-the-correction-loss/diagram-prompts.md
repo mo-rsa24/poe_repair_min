@@ -3,7 +3,7 @@
 Five pictures of the machinery every variation shares, and a capstone that puts them on one page.
 The switch, where the nine objectives differ, is the one that carries the scope.
 
-10 prompts · 9 rendered · 1 waiting
+10 prompts · 10 rendered
 
 Three pieces depict machinery that exists and are marked `[built]`. Two depict things this scope
 creates and are marked `[planned]`, drawn hedged, with their prompts saying so in plain words rather
@@ -839,7 +839,7 @@ in the check must differ, and the picture says that a check whose two renders ma
 check rather than a passing one.
 
 ### Process capstone: One route from an unmeasured objective to one that is named
-[planned] ⏳ not rendered
+[planned] 🖼️ rendered 2026-09-20 as `diagrams/corrloss-process-capstone-unmeasured-to-named.png`
 Save as: `diagrams/corrloss-process-capstone-unmeasured-to-named.png`
 
 ```
