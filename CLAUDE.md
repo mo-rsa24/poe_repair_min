@@ -41,6 +41,24 @@ it, and do not proceed on a plausible assumption. An unanswered question costs o
 wrong assumption costs a run, plus the time to work out why it failed. Saying "I don't know how
 this runs here" is a correct and useful answer.
 
+## Two checkouts, one launch path
+
+The repo is checked out twice: on the laptop at `/home/molef/PhD/poe_repair_min`, where code is
+written, and on mscluster at `/home-mscluster/mmolefe/Playground/PhD/poe_repair_min`, where it
+runs. GitHub carries commits between them. From the laptop checkout, every cluster action goes
+through `scripts/cluster.sh`:
+
+- `scripts/cluster.sh run "sbatch scripts/<job>.sbatch"` commits nothing on its own. It pushes
+  the current branch, fast-forwards the cluster checkout to it, then runs the command from the
+  cluster repo root. Commit first; it refuses to run with uncommitted tracked changes.
+- `scripts/cluster.sh jobs` shows `squeue` for this user; `scripts/cluster.sh sh "<cmd>"` runs a
+  command there without syncing (tailing a log, reading an output).
+- `scripts/cluster.sh pull <path>` rsyncs a git-ignored output folder back through mscluster84,
+  skipping model weights.
+
+If the cluster checkout cannot fast-forward (someone committed on the cluster side), the script
+stops. Reconcile the two with `/reconcile-machines` rather than merging on the login node.
+
 ## Context
 
 What this project is about in the real world (why PoE composition on SDXL fails, what a chimera,
