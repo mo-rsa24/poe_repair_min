@@ -95,8 +95,9 @@ MAX_FILES_SCANNED = 4000  # output trees hold hundreds of thousands of images
 def newest_mtime(path):
     """Newest mtime under path, or None if it does not exist.
 
-    Capped: a cache directory can hold 100k files and the answer does not get
-    truer after the first few thousand.
+    Reads directory mtimes, not file mtimes: a directory's mtime moves whenever
+    a file is written into it, and one stat per directory on /datasets costs
+    what one stat per file cost on a tree of 100k images (201 s for check 2).
     """
     if path in _MTIME_CACHE:
         return _MTIME_CACHE[path]
@@ -107,12 +108,11 @@ def newest_mtime(path):
         else:
             newest, seen = 0.0, 0
             for dirpath, dirnames, filenames in os.walk(path):
-                for fn in filenames:
-                    try:
-                        newest = max(newest, os.path.getmtime(os.path.join(dirpath, fn)))
-                    except OSError:
-                        continue
-                    seen += 1
+                try:
+                    newest = max(newest, os.path.getmtime(dirpath))
+                except OSError:
+                    continue
+                seen += 1
                 if seen > MAX_FILES_SCANNED:
                     break
             result = newest or None
@@ -137,12 +137,45 @@ def check_stale(files, live):
     return hits
 
 
+_COMMIT_TIME = None
+
+
+def _commit_time_table(files):
+    """Last commit time for every given file, from one git log pass.
+
+    One `git log -1` per file costs a subprocess each, and on a network mount
+    that is ~160ms apiece. Walking the log once over the same pathspec answers
+    all of them together.
+    """
+    rel_paths = [os.path.relpath(f, REPO) for f in files]
+    table = {}
+    try:
+        out = subprocess.run(
+            ["git", "-C", REPO, "log", "--format=@%ct", "--name-only", "--"] + rel_paths,
+            capture_output=True, text=True, timeout=120,
+        ).stdout
+        stamp = None
+        for line in out.splitlines():
+            if line.startswith("@"):
+                stamp = float(line[1:])
+            elif line.strip() and stamp is not None:
+                table.setdefault(line, stamp)
+    except Exception:
+        pass
+    return table
+
+
 def last_commit_time(path):
     """When this plan file was last committed. Falls back to mtime if untracked.
 
     Commit time, not mtime, because editing a plan for any reason resets mtime
     and would hide every unharvested result underneath it.
     """
+    if _COMMIT_TIME is not None:
+        hit = _COMMIT_TIME.get(os.path.relpath(path, REPO))
+        if hit:
+            return hit
+        return os.path.getmtime(path)
     try:
         out = subprocess.run(
             ["git", "-C", REPO, "log", "-1", "--format=%ct", "--", path],
@@ -155,7 +188,54 @@ def last_commit_time(path):
     return os.path.getmtime(path)
 
 
+def newest_mtime(path):
+    """Newest mtime under path, or None if it does not exist.
+
+    Reads directory mtimes, not file mtimes: a directory's mtime moves whenever
+    a file is written into it, and one stat per directory on /datasets costs
+    what one stat per file cost on a tree of 100k images (201 s for check 2).
+    """
+    if path in _MTIME_CACHE:
+        return _MTIME_CACHE[path]
+    result = None
+    if os.path.exists(path):
+        if os.path.isfile(path):
+            result = os.path.getmtime(path)
+        else:
+            newest, seen = 0.0, 0
+            for dirpath, dirnames, filenames in os.walk(path):
+                try:
+                    newest = max(newest, os.path.getmtime(dirpath))
+                except OSError:
+                    continue
+                seen += 1
+                if seen > MAX_FILES_SCANNED:
+                    break
+            result = newest or None
+    _MTIME_CACHE[path] = result
+    return result
+
+
+def check_stale(files, live):
+    hits = []
+    blob = " ".join(live)
+    for path in files:
+        for n, line in enumerate(open(path, errors="replace"), 1):
+            if not IN_FLIGHT.search(line):
+                continue
+            if "[x]" in line:  # already closed out
+                continue
+            # If any live job or process shares a word with the line, believe it.
+            words = {w for w in re.findall(r"[\w.]{6,}", line) if not w.isdigit()}
+            if any(w in blob for w in words):
+                continue
+            hits.append((path, n, line.strip()[:110]))
+    return hits
+
+
 def check_unharvested(files):
+    global _COMMIT_TIME
+    _COMMIT_TIME = _commit_time_table(files)
     hits = []
     for path in files:
         text = open(path, errors="replace").read()

@@ -3,6 +3,12 @@
 **Nothing has run yet.** This file judges [the design](../plans/reading/01-basins-by-hand.md); answers land
 here and nowhere else. Questions below were written at design time, before any number existed.
 
+**Orientation (task 1.1).** Both cached pair-and-seed runs the design names are confirmed present
+on disk: `outputs/veracity/pairs/a_cat__x__a_dog/seed_4/teacher_residual_const_lam000/latent_trajectory.pt`
+(the failure pair) and `outputs/veracity/pairs/a_butterfly__x__a_flower_meadow/seed_4/teacher_residual_const_lam000/latent_trajectory.pt`
+(the success pair), both under `/datasets/mmolefe/poe_repair_min/`. Each also carries a
+`residuals/step_NNN.pt` per denoise step (50 each), which is what `perturb_finish.py` reads.
+
 ## Recommended prompt (when the run lands)
 
 ```
@@ -60,11 +66,17 @@ Navigation: ⬅️ [Run kind](#run-kind) | 📋 [TOC](#table-of-contents) | [Nex
 
 Navigation: ⬅️ [Runs](#runs) | 📋 [TOC](#table-of-contents) | [Next](#written-before-the-run-answered-after) ➡️
 
-- [ ] ⚠️ At step 40, do both nudged endings agree with the unnudged one, with both relative
-      latent distances under `REL_ENDING_DIST_MAX` (the constant in
-      `scripts/commitment/perturb_finish.py`), while the step-5 endings were free to differ?
-      This is the deciding question because agreement late plus freedom early is exactly what
-      basins with a ridge predict, and its failure kills the scope at the cost of one afternoon.
+- [ ] ⚠️ At step 40, for `a_cat__x__a_dog` (the failure pair), do both nudged endings agree
+      with the unnudged one, with both relative latent distances under
+      `REL_ENDING_DIST_MAX`, while the step-5 endings were free to differ? This is the
+      deciding question: its failure kills the scope's premise for the pair everything
+      downstream is built around, at the cost of one afternoon.
+- [ ] ⚠️ At step 40, for `a_butterfly__x__a_flower_meadow` (the success pair, already
+      composes without correction), does the same agreement hold? This is the
+      discriminating question: agreement on both pairs says basin structure is a general
+      property of the composed DDIM sampler, independent of composition quality; agreement
+      only on the failure pair says something else is going on and is worth its own note,
+      not grounds to stop.
 
 ## Written before the run, answered after
 
@@ -106,7 +118,7 @@ Navigation: ⬅️ [Could the answer be an artefact](#could-the-answer-be-an-art
 
 | What the paper says | What it owes alongside it |
 |---|---|
-| the composed flow has basins with an unstable ridge | one pair-and-seed run, three steps: the claim's population is that single run until plan 05 widens it |
+| the composed flow has basins with an unstable ridge | two pair-and-seed runs, one failure pair and one success pair, three steps each: the claim's population is these two runs until plan 05 widens it |
 
 ## Still open
 

@@ -298,3 +298,56 @@ Verified after: zero dangling links anywhere in the repo point at an old filenam
 order and every scope's own table were rewritten to the new paths, `plan_pulse.py` reports the same
 findings as before the move (JARGON at 0, the same three unjudged review files under their new
 names), and the ticked-task count held at 142 throughout.
+
+## 2026-09-05: findings grouped by research question, runbook themes grouped by activity
+
+The report folder gained its first question group, per `REPORT_FORMAT.md`'s rule that a group
+earns a folder at two findings; the runbook passed four themes and gained its first two
+activity groups, per `RUNBOOK_FORMAT.md`. Every inbound link was rewritten in the same pass.
+
+| Old | New |
+|---|---|
+| `report/is-the-held-out-gap-a-fit-a-drift-or-a-pair-problem.md` | `report/does-the-fix-reach-unseen-pairs/is-the-held-out-gap-a-fit-a-drift-or-a-pair-problem.md` |
+| `report/does-interaction-strength-predict-which-pairs-blend.md` | `report/does-the-fix-reach-unseen-pairs/does-interaction-strength-predict-which-pairs-blend.md` |
+| `runbook/launching-and-harvesting-a-run.md` | `runbook/running-things-on-the-cluster/launching-and-harvesting-a-run.md` |
+| `runbook/reproducing-where-each-condition-lands.md` | `runbook/running-things-on-the-cluster/reproducing-where-each-condition-lands.md` |
+| `runbook/reading-a-training-run.md` | `runbook/looking-at-what-a-run-produced/reading-a-training-run.md` |
+| `runbook/showing-a-scene-in-the-local-browser.md` | `runbook/looking-at-what-a-run-produced/showing-a-scene-in-the-local-browser.md` |
+| `report/does-selecting-among-poe-proposals-compose.md` | `report/is-the-gap-the-samplers-or-the-models/does-selecting-among-poe-proposals-compose.md` | 2026-09-05, joined by the three SuperDiff findings, so the group earned its folder |
+| `report/where-does-each-condition-land.md` | `report/when-does-the-outcome-lock-in/where-does-each-condition-land.md` |
+
+## Adapter-fix figures and flags (2026-09-10)
+
+The renders and figures under
+`artifacts/results/does-the-adapters-render-settle-as-training-proceeds/` were named five different
+ways, and the same quantity was called dose, step size, λ and regime in different places. One
+vocabulary now, defined in that folder's README: **the adapter**, **its correction**, **the flip**,
+**a fix**, **strength**.
+
+Figures are `<fix>-<what varies>[-<seed if not 10>].png`.
+
+| Old | New |
+|---|---|
+| `cat-dog-checkpoint-flips.png` | `no-fix-every-checkpoint.png` |
+| `cat-dog-seed09-flips-large.png` | `no-fix-every-checkpoint-seed09.png` |
+| `aae-on-plain-poe-seeds-9-10.png` | `cat-boost-on-poe-alone.png` |
+| `excite-cat-dose-ladder-seed10.png` | `cat-boost-strengths.png` |
+| `separate-dose-ladder-seed09.png` | `push-apart-strengths-seed09.png` |
+| `seed10-separate-across-checkpoints.png` | `push-apart-every-checkpoint.png` |
+| `co3-with-residual-dose-ladder-seed10.png` | `co3-settings.png` |
+| `lambda-dial-seeds-9-16.png` | `more-correction-every-seed.png` |
+| `lambda-collapse-check-seeds-9-16.png` | `more-correction-scene-check.png` |
+| `seed10-corrections-across-checkpoints.png` | `every-fix-every-checkpoint.png` |
+| `seed10-flips-with-co3-reference-row.png` | `co3-every-checkpoint.png` |
+| `seed10-flips-with-co3-renoise-row.png` | `co3-fixed-every-checkpoint.png` |
+| `seed10-flips-with-excite-cat-row.png` | `cat-boost-every-checkpoint.png` |
+| `seed10-flips-with-excite-cat-row_dose_<n>.png` | `cat-boost-<n>-every-checkpoint.png` |
+
+`guide_lora_attention.py` flags follow the same words. The old spellings still work, so earlier
+commands and the render directories they wrote keep resolving.
+
+| Old flag | New flag |
+|---|---|
+| `--loss none\|excite_cat\|excite_dog\|excite_both\|separate` | `--fix no-fix\|cat-boost\|dog-boost\|both-boost\|push-apart` |
+| `--step-size` | `--strength` |
+| `--lambda-value` | `--correction` |

@@ -15,11 +15,11 @@ sample.
 ## What is here
 
 ```
-01-both-there            12   both requested animals are present, no argument
-02-two-of-one             1   two of the same animal, scored as a success. A real error
-03-cannot-call            5   I cannot decide, and a reader might reasonably disagree with me
-04-look-alike-by-design  12   the two animals are near-identical, so nobody can call it
-05-scored-failure         2   scored as a failure (one animal). Correctly, in both cases
+both-animals-there          12   both requested animals are present, no argument
+two-of-the-same-animal       1   two of the same animal, scored as a success. A real error
+cannot-decide                5   I cannot decide, and a reader might reasonably disagree with me
+the-two-animals-look-alike  12   the two animals are near-identical, so nobody can call it
+scored-as-a-failure          2   scored as a failure (one animal). Correctly, in both cases
 ```
 
 30 of the 32 were scored `compose`, which is the 94%.
@@ -30,24 +30,35 @@ including the path each image was copied from.
 
 ## What each folder means, and what to look for
 
-**01-both-there.** Open `a_cat__x__a_dog_seed9_n2.png`: a tabby cat sitting beside a white
+**both-animals-there.** `a_cat__x__a_dog_seed9_n2.png`: a tabby cat sitting beside a white
 labrador. That is what a correct success looks like.
 
-**02-two-of-one.** One file: `a_cat__x__a_dog_seed10_n2.png`. Two dog muzzles, two black noses,
-no cat. The detector counted two animals and was right; the composition failed and was recorded as
-a success. This is the error the 94% contains.
+![](both-animals-there/a_cat__x__a_dog_seed9_n2.png)
 
-**03-cannot-call.** Two white waterfowl where one should be a goose and one a swan. Two pinnipeds
+**two-of-the-same-animal.** One file: `a_cat__x__a_dog_seed10_n2.png`. Two dog muzzles, two black
+noses, no cat. The detector counted two animals and was right; the composition failed and was
+recorded as a success. This is the error the 94% contains.
+
+![](two-of-the-same-animal/a_cat__x__a_dog_seed10_n2.png)
+
+**cannot-decide.** Two white waterfowl where one should be a goose and one a swan. Two pinnipeds
 where one should have tusks and does not clearly. Two brown raptors. If you can call these, your
 call beats mine and the counts above should move.
 
-**04-look-alike-by-design.** A leopard and a jaguar are both spotted big cats. A cow and a buffalo
-are both dark bovines. A frog and a toad are both green amphibians. The pool chose these pairs
-**because** they blend, which is the same property that makes "are both concepts present" impossible
-to check afterwards. No better detector fixes this: the question has no answer from the image alone.
+![](cannot-decide/a_seal__x__a_walrus_seed10_n2.png)
 
-**05-scored-failure.** `an_elephant__x__a_penguin_seed9_n1.png` is two elephants and no penguin,
+**the-two-animals-look-alike.** A leopard and a jaguar are both spotted big cats. A cow and a
+buffalo are both dark bovines. A frog and a toad are both green amphibians. The pool chose these
+pairs **because** they blend, which is the same property that makes "are both concepts present"
+impossible to check afterwards. No better detector fixes this: the question has no answer from the
+image alone.
+
+![](the-two-animals-look-alike/a_leopard__x__a_jaguar_seed10_n2.png)
+
+**scored-as-a-failure.** `an_elephant__x__a_penguin_seed9_n1.png` is two elephants and no penguin,
 scored as a failure because the detector merged them into one box. Right answer, wrong reason.
+
+![](scored-as-a-failure/an_elephant__x__a_penguin_seed9_n1.png)
 
 ## What this changes
 
@@ -56,11 +67,22 @@ One definite error in 30. Five more I cannot call. So the true rate at λ=1 sits
 that size rather than hedging vaguely.
 
 It also settles a proposal against itself: querying the detector per concept ("cat", then "dog")
-would decide the 5 cells in `03-cannot-call` and would be no better than guessing on the 12 in
-`04-look-alike-by-design`. Not worth building.
+would decide the 5 cells in `cannot-decide` and would be no better than guessing on the 12 in
+`the-two-animals-look-alike`. Not worth building.
 
 ## Provenance
 
 Copies, not moves: the originals stay under `outputs/interaction_term/dose/pairs/`, because
 `scripts/plot_dose_curves.py` scores from there and moving them would break the curve. Rebuild this
 folder from `calls.json`, which records every source path.
+
+## Where it came from and what judged it
+
+Sorted by hand from the λ=1 row of `outputs/interaction_term/dose/pairs/`. The band this set
+produces is read directly in [the world entry on compose rate](../../../../context/world/compose-rate.md)
+and is the input the labelling pass in
+[the three-state labelled set](../../../../plans/02-can-we-trust-the-compose-rate/plans/tools/04-the-three-state-labelled-set.md)
+is required to reproduce at 90% agreement before its own automated rate is trusted; that plan's
+[review file](../../../../plans/02-can-we-trust-the-compose-rate/review/04-the-three-state-labelled-set.md)
+also carries an open task to correct the printed band from 87%-94% to 75%-94% once that pass runs,
+so the number in "What this changes" above reflects the hand audit only, not that later pass.

@@ -53,6 +53,8 @@ RIGHT_PAD = 0.06
 BOTTOM_PAD = 0.08
 ROW_AXIS_TITLE = "corrected window"
 COL_AXIS_TITLE = "picture decoded after step"
+TITLE_RESERVE = 0.24          # width inside the gutter kept for the rotated title
+BARE_GUTTER = 0.38            # bare panels carry row labels only, so no title reserve
 
 CHUNKS = [(i, i + 10) for i in range(0, wg.NUM_STEPS, 10)]  # (0,10) .. (40,50)
 
@@ -98,6 +100,17 @@ def main() -> int:
     ap.add_argument("--out-dir", type=Path, default=FIG_DIR)
     ap.add_argument("--name", default=FIG_NAME)
     ap.add_argument("--seed", type=int, default=SEED)
+    ap.add_argument("--dpi", type=int, default=300,
+                    help="resolution the sample thumbnails are embedded at, in both "
+                         "the png and the pdf; the pdf used to fall back to "
+                         "matplotlib's default 100 and arrive at 44x44 per cell")
+    ap.add_argument("--bare", action="store_true",
+                    help="omit the shared column-axis title, for panels composed "
+                         "side by side under one caption")
+    ap.add_argument("--panel-width", type=float, default=None, metavar="IN",
+                    help="draw at this finished width in inches, sizing the cells "
+                         "to fill it, so the panel is placed 1:1 downstream and "
+                         "label point sizes survive onto the page")
     args = ap.parse_args()
 
     rows = wg.suffix_windows()
@@ -108,17 +121,23 @@ def main() -> int:
         raise SystemExit(f"seed {seed} missing cells: {missing}")
 
     nrow, ncol = len(rows), len(CHUNKS)
-    fig_w = LEFT_GUTTER + ncol * CELL + RIGHT_PAD
-    fig_h = TOP_BAND + nrow * CELL + BOTTOM_PAD
+    gutter, top_band, cell, reserve = LEFT_GUTTER, TOP_BAND, CELL, TITLE_RESERVE
+    if args.bare:
+        top_band -= 0.24
+        gutter, reserve = BARE_GUTTER, 0.0
+    if args.panel_width is not None:
+        cell = (args.panel_width - gutter - RIGHT_PAD) / ncol
+    fig_w = gutter + ncol * cell + RIGHT_PAD
+    fig_h = top_band + nrow * cell + BOTTOM_PAD
     fig = plt.figure(figsize=(fig_w, fig_h))
 
     for i, row_win in enumerate(rows):
         row_label = "off" if row_win[0] >= wg.NUM_STEPS else f"{row_win[0]}–50"
         for j, chunk in enumerate(CHUNKS):
             ax = fig.add_axes([
-                (LEFT_GUTTER + j * CELL) / fig_w,
-                (BOTTOM_PAD + (nrow - 1 - i) * CELL) / fig_h,
-                CELL / fig_w, CELL / fig_h,
+                (gutter + j * cell) / fig_w,
+                (BOTTOM_PAD + (nrow - 1 - i) * cell) / fig_h,
+                cell / fig_w, cell / fig_h,
             ])
             ax.imshow(plt.imread(frame_png(seed, *row_win, chunk[1])))
             ax.set_xticks([]); ax.set_yticks([])
@@ -127,32 +146,38 @@ def main() -> int:
                 sp.set_linewidth(2.2 if corrected else 0.5)
                 sp.set_color(CORRECTED_EDGE if corrected else PLAIN_EDGE)
 
-        ax_lab = fig.add_axes([0.24 / fig_w, (BOTTOM_PAD + (nrow - 1 - i) * CELL) / fig_h,
-                               (LEFT_GUTTER - 0.24) / fig_w, CELL / fig_h])
+        ax_lab = fig.add_axes([reserve / fig_w, (BOTTOM_PAD + (nrow - 1 - i) * cell) / fig_h,
+                               (gutter - reserve) / fig_w, cell / fig_h])
         ax_lab.axis("off")
         ax_lab.text(0.92, 0.5, row_label, ha="right",
                     va="center", fontsize=8, family="serif", color=INK)
 
-    fig.text(0.10 / fig_w, BOTTOM_PAD / fig_h + (nrow * CELL / fig_h) / 2,
-             ROW_AXIS_TITLE, ha="center", va="center", rotation=90,
-             fontsize=8, family="serif", color=INK)
+    if not args.bare:
+        fig.text(0.10 / fig_w, BOTTOM_PAD / fig_h + (nrow * cell / fig_h) / 2,
+                 ROW_AXIS_TITLE, ha="center", va="center", rotation=90,
+                 fontsize=8, family="serif", color=INK)
 
     for j, chunk in enumerate(CHUNKS):
-        ax_top = fig.add_axes([(LEFT_GUTTER + j * CELL) / fig_w,
-                               (BOTTOM_PAD + nrow * CELL) / fig_h,
-                               CELL / fig_w, 0.22 / fig_h])
+        ax_top = fig.add_axes([(gutter + j * cell) / fig_w,
+                               (BOTTOM_PAD + nrow * cell) / fig_h,
+                               cell / fig_w, 0.22 / fig_h])
         ax_top.axis("off")
         ax_top.text(0.5, 0.05, str(chunk[1]), ha="center", va="bottom",
                     fontsize=8, family="serif", color=INK)
 
-    fig.text(LEFT_GUTTER / fig_w + (ncol * CELL / fig_w) / 2, 1 - 0.10 / fig_h,
-             COL_AXIS_TITLE, ha="center", va="top",
-             fontsize=8, family="serif", color=INK)
+    if not args.bare:
+        fig.text(gutter / fig_w + (ncol * cell / fig_w) / 2, 1 - 0.10 / fig_h,
+                 COL_AXIS_TITLE, ha="center", va="top",
+                 fontsize=8, family="serif", color=INK)
 
     args.out_dir.mkdir(parents=True, exist_ok=True)
     out = args.out_dir / f"{args.name}.png"
-    fig.savefig(out, dpi=300)
-    fig.savefig(out.with_suffix(".pdf"))
+    fig.savefig(out, dpi=args.dpi)
+    fig.savefig(out.with_suffix(".pdf"), dpi=args.dpi)
+    # svg is the one Inkscape reads without argument: it carries the labels as
+    # vector and each thumbnail as a base64 png, so neither importer has to
+    # decode a pdf image stream.
+    fig.savefig(out.with_suffix(".svg"), dpi=args.dpi)
     plt.close(fig)
     print(f"grid       {nrow} rows x {ncol} step-columns, seed {seed}")
     print(f"size       {fig_w:.2f} x {fig_h:.2f} in")

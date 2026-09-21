@@ -1,0 +1,104 @@
+a_baboon__x__a_gazelle:
+  prompt_a: a baboon
+  prompt_b: a gazelle
+  joint_prompt: a baboon and a gazelle
+a_bear__x__a_boar:
+  prompt_a: a bear
+  prompt_b: a boar
+  joint_prompt: a bear and a boar
+a_bear__x__a_heron:
+  prompt_a: a bear
+  prompt_b: a heron
+  joint_prompt: a bear and a heron
+a_bear__x__a_salmon:
+  prompt_a: a bear
+  prompt_b: a salmon
+  joint_prompt: a bear and a salmon
+a_bear__x__a_squirrel:
+  prompt_a: a bear
+  prompt_b: a squirrel
+  joint_prompt: a bear and a squirrel
+a_beaver__x__a_raccoon:
+  prompt_a: a beaver
+  prompt_b: a raccoon
+  joint_prompt: a beaver and a raccoon
+a_deer__x__a_hedgehog:
+  prompt_a: a deer
+  prompt_b: a hedgehog
+  joint_prompt: a deer and a hedgehog
+a_deer__x__a_heron:
+  prompt_a: a deer
+  prompt_b: a heron
+  joint_prompt: a deer and a heron
+a_deer__x__a_wolf:
+  prompt_a: a deer
+  prompt_b: a wolf
+  joint_prompt: a deer and a wolf
+a_donkey__x__a_rooster:
+  prompt_a: a donkey
+  prompt_b: a rooster
+  joint_prompt: a donkey and a rooster
+a_giraffe__x__a_hyena:
+  prompt_a: a giraffe
+  prompt_b: a hyena
+  joint_prompt: a giraffe and a hyena
+a_giraffe__x__a_lion:
+  prompt_a: a giraffe
+  prompt_b: a lion
+  joint_prompt: a giraffe and a lion
+a_giraffe__x__a_zebra:
+  prompt_a: a giraffe
+  prompt_b: a zebra
+  joint_prompt: a giraffe and a zebra
+a_giraffe__x__an_ostrich:
+  prompt_a: a giraffe
+  prompt_b: an ostrich
+  joint_prompt: a giraffe and an ostrich
+a_gorilla__x__a_chimpanzee:
+  prompt_a: a gorilla
+  prompt_b: a chimpanzee
+  joint_prompt: a gorilla and a chimpanzee
+a_horse__x__a_pig:
+  prompt_a: a horse
+  prompt_b: a pig
+  joint_prompt: a horse and a pig
+a_horse__x__a_sheep:
+  prompt_a: a horse
+  prompt_b: a sheep
+  joint_prompt: a horse and a sheep
+a_lion__x__a_meerkat:
+  prompt_a: a lion
+  prompt_b: a meerkat
+  joint_prompt: a lion and a meerkat
+a_lion__x__an_oryx:
+  prompt_a: a lion
+  prompt_b: an oryx
+  joint_prompt: a lion and an oryx
+a_peacock__x__a_pig:
+  prompt_a: a peacock
+  prompt_b: a pig
+  joint_prompt: a peacock and a pig
+a_peacock__x__a_sheep:
+  prompt_a: a peacock
+  prompt_b: a sheep
+  joint_prompt: a peacock and a sheep
+a_raccoon__x__a_salmon:
+  prompt_a: a raccoon
+  prompt_b: a salmon
+  joint_prompt: a raccoon and a salmon
+a_wolf__x__a_husky:
+  prompt_a: a wolf
+  prompt_b: a husky
+  joint_prompt: a wolf and a husky
+an_impala__x__a_jackal:
+  prompt_a: an impala
+  prompt_b: a jackal
+  joint_prompt: an impala and a jackal
+a_cat__x__a_dog:
+  prompt_a: a cat
+  prompt_b: a dog
+  joint_prompt: a cat and a dog
+an_elephant__x__a_penguin:
+  prompt_a: an elephant
+  prompt_b: a penguin
+  joint_prompt: an elephant and a penguin

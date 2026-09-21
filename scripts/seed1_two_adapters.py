@@ -72,11 +72,19 @@ def render() -> None:
             lora_adapter_name="early", lambda_window=(0, 50), corrector_score="frozen",
             lora_adapter_name_late="late", adapter_switch_at=sw,
         )
-        # The handover has to have happened where its name says, or the tile is mislabelled.
+        # Two checks, and the second is the one that matters. The first says the code chose the
+        # label it was told to choose. The second says an adapter actually changed the prediction:
+        # the sampler enables an adapter inside a try/except, so a refused switch looks identical
+        # to a successful one and renders the frozen model under an adapter's name.
         names = [r.get("adapter_name") for r in res.extras["per_step"]]
         n_early = sum(1 for n in names if n == "early")
         if n_early != sw:
             raise SystemExit(f"switch {sw}: the early adapter drew {n_early} steps, not {sw}")
+        moved = [d for d in res.extras.get("delta_norm_per_step", []) if d > 1e-6]
+        if len(moved) == 0:
+            raise SystemExit(
+                f"switch {sw}: every step's correction was zero, so no adapter took effect and "
+                f"this is the frozen model's picture. Check that set_adapter accepted the name.")
         out.parent.mkdir(parents=True, exist_ok=True)
         write_decoded_image(res.image, out)
         del res; gc.collect(); torch.cuda.empty_cache()

@@ -283,16 +283,25 @@ def lora_state_dict(unet: torch.nn.Module) -> dict[str, torch.Tensor]:
     return out
 
 
-def load_lora_state(unet: torch.nn.Module, state: dict[str, torch.Tensor]) -> None:
+def load_lora_state(unet: torch.nn.Module, state: dict[str, torch.Tensor]) -> int:
     """Inverse of ``lora_state_dict``. Tensors are placed on the matching
-    module's device/dtype."""
+    module's device/dtype.
+
+    Returns how many tensors were actually copied. A key that names no parameter is skipped,
+    which is what happens when the checkpoint was saved under one adapter name and the model
+    carries another: every key misses, nothing is written, and the adapter stays at its zero
+    initialisation. The count is the only thing that tells those two cases apart, so callers
+    report it rather than the size of the file."""
     own_params = dict(unet.named_parameters())
+    copied = 0
     with torch.no_grad():
         for name, t in state.items():
             if name not in own_params:
                 continue
             p = own_params[name]
             p.copy_(t.to(device=p.device, dtype=p.dtype))
+            copied += 1
+    return copied
 
 
 # ---------------------------------------------------------------------------
@@ -615,7 +624,43 @@ def _train_one_step(
     null_anchor_mu = float(getattr(cfg, "null_anchor", 0.0))
     null_drift = eps_uncond_l - eps_uncond_frozen.float()
     loss_null_anchor = (null_drift ** 2).mean(dim=(1, 2, 3)).mean()
+    # The contrast term (scope 09). The haze in the corrected renders is a contrast collapse over
+    # the first ten steps: the picture the composition is heading for is measurably narrower in
+    # grey levels than the frozen one, most of all at the start. This charges the adapter for that
+    # narrowing and never for widening, so it can always add contrast for free.
+    #
+    # Two deliberate choices. The spread is read on the predicted clean picture, not on the noise
+    # prediction, because added high-frequency grain would raise the spread of the noise while
+    # making the picture worse, and the edge-counting sharpness measure this project uses would
+    # reward that rather than catch it. And it is a ratio, not a difference: the Tweedie scale
+    # 1/sqrt(abar) is about seven times larger at step 0 than at step 10, so a difference of
+    # standard deviations would silently weight the first step seven times the last. The measured
+    # quantity is a percentage narrower, which is what the ratio form expresses.
+    # Always measured, charged only when nu > 0. A run cannot tell us how far it flattens the
+    # picture if the number only exists once it is being punished for it, and the two standard
+    # deviations cost a multiply-add over the batch, so every run reports its own shrink.
+    contrast_nu = float(getattr(cfg, "contrast_weight", 0.0))
+    _ab = scheduler.alphas_cumprod.to(eps_poe_lora.device)[
+        torch.tensor(timestep_per_sample, device=eps_poe_lora.device, dtype=torch.long)
+    ].float().view(-1, 1, 1, 1)
+    _xt_k = latent_input_3K.view(K, n_branches, *latent_input_3K.shape[1:])[:, 0].float()
+
+    def _x0_of(eps):
+        return (_xt_k - (1.0 - _ab).sqrt() * eps) / _ab.sqrt().clamp_min(1e-8)
+
+    # When nothing is being charged the term is a pure diagnostic, so it is built without a graph:
+    # an unused graph would pin activations for no reason and change nothing about the gradients.
+    with torch.set_grad_enabled(contrast_nu > 0.0):
+        sd_lora = _x0_of(eps_poe_lora).std(dim=(1, 2, 3))
+    with torch.no_grad():
+        sd_frozen = _x0_of(eps_poe_frozen.float()).std(dim=(1, 2, 3))
+    shrink = torch.relu(1.0 - sd_lora / sd_frozen.clamp_min(1e-8))
+    loss_contrast = (shrink ** 2).mean()
+    contrast_shrink_mean = float(shrink.detach().mean().item())
+
     loss = loss_fit
+    if contrast_nu > 0.0:
+        loss = loss + contrast_nu * loss_contrast
     if energy_beta > 0.0:
         loss = loss + energy_beta * loss_energy
     if null_anchor_mu > 0.0:
@@ -626,6 +671,12 @@ def _train_one_step(
         # Diagnostic, never in `loss`: see task 1.1 of the four instrument fixes.
         "loss_undialled": float(loss_undialled.item()),
         "loss_energy": float(loss_energy.detach().item()),
+        "loss_contrast": float(loss_contrast.detach().item()),
+        "contrast_weight": contrast_nu,
+        # The fraction narrower the adapter's clean estimate is than the frozen one, averaged over
+        # the batch. 0 means it is no narrower. This is the quantity the term charges for, so it is
+        # the one to watch: it should fall, and the renders must be read by eye alongside it.
+        "contrast_shrink": contrast_shrink_mean,
         "energy_penalty_beta": energy_beta,
         "energy_weight_mean": float(energy_w.mean().item()),
         "loss_null_anchor": float(loss_null_anchor.detach().item()),
@@ -798,6 +849,13 @@ def train_epoch(
                     "train/loss_null_anchor": info.get("loss_null_anchor", 0.0),
                     "train/null_anchor_mu": info.get("null_anchor_mu", 0.0),
                     "train/null_drift_norm": info.get("null_drift_norm", 0.0),
+                    # How much narrower, as a fraction, the clean picture the composition is
+                    # heading for is than the frozen one, and the charge for it. Logged at nu = 0
+                    # too, for the same reason the drift is: it is the quantity the contrast term
+                    # exists to remove, so every run should say how much of it it has.
+                    "train/contrast_shrink": info.get("contrast_shrink", 0.0),
+                    "train/loss_contrast": info.get("loss_contrast", 0.0),
+                    "train/contrast_weight": info.get("contrast_weight", 0.0),
                 }
             )
 

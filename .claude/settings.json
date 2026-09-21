@@ -127,7 +127,16 @@
       "Bash(grep -n \"^#\\\\{1,3\\\\} \\\\|^| \" /home-mscluster/mmolefe/.claude/EXPERIMENT_CONVENTIONS.md)",
       "Bash(node --check check.js)",
       "Bash(/usr/bin/env python3 -)",
-      "Bash(/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -c ' *)"
+      "Bash(/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -c ' *)",
+      "Bash(/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python scripts/showcase/where_each_condition_lands_dynamics.py)",
+      "WebFetch(domain:api.fxtwitter.com)",
+      "Bash(grep -v \"^\\\\s*$\")",
+      "Bash(/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python scripts/twisted_smc/report_figures.py)",
+      "Bash(grep -n \"^## \" ~/.claude/REPORT_FORMAT.md; echo ....; sed -n '/^## The folder shape/,/^## /p' ~/.claude/REPORT_FORMAT.md | grep -v \"^\\\\s*$\"; echo ....; sed -n '/different from the results folder/,/^## /p' ~/.claude/REPORT_FORMAT.md | grep -v \"^\\\\s*$\" | head -40)",
+      "Bash(sed -n '/^## Cutting the question groups/,/^## The index file/p' ~/.claude/REPORT_FORMAT.md | grep -v \"^\\\\s*$\"; echo ....; sed -n '/^## What does not belong in a report/,/^## Building/p' ~/.claude/REPORT_FORMAT.md | grep -v \"^\\\\s*$\"; echo ....; sed -n '/^## What a report is not/,/^## The folder shape/p' ~/.claude/REPORT_FORMAT.md | grep -v \"^\\\\s*$\" | head -30)",
+      "Bash(sed -i 's/    ax2.text\\(xs\\\\[-1\\\\], CHANCE \\\\* 1.15, \"chance: 0.69\", color=INK2, fontsize=9, ha=\"right\"\\)/    ax2.text\\(xs[0], CHANCE * 1.15, \"chance: 0.69\", color=INK2, fontsize=9, ha=\"left\"\\)/' scripts/twisted_smc/report_figures.py)",
+      "Bash(mkdir -p artifacts/notes/from-an-x-post-to-a-twisted-smc-baseline)",
+      "Bash(/home-mscluster/mmolefe/miniforge3/envs/co3_bw/bin/python -c ' *)"
     ],
     "additionalDirectories": [
       "/home-mscluster/mmolefe/.claude/skills/unattended",
@@ -141,8 +150,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd \"$CLAUDE_PROJECT_DIR\" && timeout 90 python3 scripts/plan_pulse.py --brief && cd \"$CLAUDE_PROJECT_DIR\" && timeout 90 python3 scripts/plan_pulse.py --checks=1,2,6 2>/dev/null || true",
-            "timeout": 120
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && timeout 10 python3 scripts/plan_pulse.py --brief; cd \"$CLAUDE_PROJECT_DIR\" && timeout 25 python3 scripts/plan_pulse.py --checks=1,6 2>/dev/null || true",
+            "timeout": 30
           }
         ]
       }

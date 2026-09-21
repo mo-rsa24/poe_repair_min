@@ -115,6 +115,9 @@ def train_epoch_multi_pair(
             optimizer.step()
 
         loss_val = float(loss.detach().item())
+        # The bucket curves and the kill criteria read the unweighted noise-space MSE, so they
+        # stay comparable across runs whatever --loss-space the optimiser stepped on.
+        loss_eps_val = float(info.get("loss_eps", loss_val))
         # Attribute loss to whichever bucket dominates the batch.
         bucket_counts = {"early": 0, "commit": 0, "late": 0}
         for e in entries:
@@ -124,8 +127,8 @@ def train_epoch_multi_pair(
             )] += 1
         bucket = max(bucket_counts, key=bucket_counts.get)
         state.bucket_loss_running[bucket] = (
-            0.95 * state.bucket_loss_running[bucket] + 0.05 * loss_val
-            if state.bucket_count_running[bucket] > 0 else loss_val
+            0.95 * state.bucket_loss_running[bucket] + 0.05 * loss_eps_val
+            if state.bucket_count_running[bucket] > 0 else loss_eps_val
         )
         state.bucket_count_running[bucket] += 1
         state.optimizer_step += 1
@@ -133,6 +136,15 @@ def train_epoch_multi_pair(
         if logger_callback is not None:
             logger_callback({
                 "train/loss": loss_val,
+                "train/loss_eps": loss_eps_val,
+                "train/loss_weight_mean": float(info.get("loss_weight_mean", 1.0)),
+                "train/loss_fit": float(info.get("loss_fit", loss_val)),
+                # Diagnostic only, never in the gradient: the three adapted branches summed at
+                # weight 1 against the raw cached joint prediction. Task 1.1 of the four
+                # instrument fixes. NaN on a trainer that does not compute it.
+                "train/loss_undialled": float(info.get("loss_undialled", float("nan"))),
+                "train/loss_energy": float(info.get("loss_energy", 0.0)),
+                "train/energy_penalty_beta": float(info.get("energy_penalty_beta", 0.0)),
                 "train/loss_bucket/early": state.bucket_loss_running["early"],
                 "train/loss_bucket/commit": state.bucket_loss_running["commit"],
                 "train/loss_bucket/late": state.bucket_loss_running["late"],
@@ -143,6 +155,16 @@ def train_epoch_multi_pair(
                 "train/optimizer_step": state.optimizer_step,
                 "train/delta_target_norm": info["delta_target_norm"],
                 "train/delta_hat_norm": info["delta_hat_norm"],
+                # The share of the batch's error outside the two experts' own plane, and the weight
+                # charged on it. Logged every step so a collapsed projection is visible at once.
+                "train/orth_weight": info.get("orth_weight", 1.0),
+                "train/orth_frac": info.get("orth_frac", float("nan")),
+                # The null branch's drift from its frozen counterpart, and the anchor that
+                # penalises it. Logged at mu = 0 too, because the drift is what the sampler
+                # amplifies by (w - 1): an unanchored run still needs to show it.
+                "train/loss_null_anchor": float(info.get("loss_null_anchor", 0.0)),
+                "train/null_anchor_mu": float(info.get("null_anchor_mu", 0.0)),
+                "train/null_drift_norm": float(info.get("null_drift_norm", 0.0)),
                 "train/source_pair": pair,
                 "train/source_seeds": [int(e.source_seed) for e in entries],
             })

@@ -1,0 +1,103 @@
+{
+  "a_bear__x__a_boar": [
+    1
+  ],
+  "a_bear__x__a_heron": [
+    1
+  ],
+  "a_beaver__x__a_raccoon": [
+    1
+  ],
+  "a_beaver__x__a_woodpecker": [
+    1
+  ],
+  "a_birdcage__x__a_hay_bale": [
+    1,
+    2
+  ],
+  "a_buffalo__x__a_hippo": [
+    26,
+    35
+  ],
+  "a_cactus__x__a_cooler_box": [
+    1,
+    2
+  ],
+  "a_chicken__x__a_rabbit": [
+    2
+  ],
+  "a_coat_rack__x__a_potted_plant": [
+    1,
+    2
+  ],
+  "a_deer__x__a_heron": [
+    2
+  ],
+  "a_deer__x__a_wolf": [
+    2
+  ],
+  "a_donkey__x__a_duck": [
+    1
+  ],
+  "a_donkey__x__a_rooster": [
+    2
+  ],
+  "a_giraffe__x__a_hyena": [
+    1
+  ],
+  "a_giraffe__x__a_zebra": [
+    1
+  ],
+  "a_giraffe__x__an_ostrich": [
+    2
+  ],
+  "a_gorilla__x__a_chimpanzee": [
+    2
+  ],
+  "a_hay_bale__x__an_ukulele": [
+    1,
+    2
+  ],
+  "a_horse__x__a_pig": [
+    6
+  ],
+  "a_horse__x__a_sheep": [
+    3
+  ],
+  "a_langur__x__a_peacock": [
+    1
+  ],
+  "a_lion__x__a_meerkat": [
+    18
+  ],
+  "a_lion__x__an_oryx": [
+    8
+  ],
+  "a_peacock__x__a_pig": [
+    2
+  ],
+  "a_rocking_chair__x__a_cactus": [
+    1,
+    2
+  ],
+  "a_typewriter__x__a_cactus": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "an_accordion__x__a_scarecrow": [
+    1,
+    2
+  ],
+  "an_emu__x__a_koala": [
+    1
+  ],
+  "an_impala__x__a_jackal": [
+    2
+  ]
+}

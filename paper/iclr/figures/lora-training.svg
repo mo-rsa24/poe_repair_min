@@ -1,0 +1,219 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1780" height="985" viewBox="0 0 1780 985" font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
+<defs>
+  <marker id="ar" markerWidth="9" markerHeight="9" refX="7.5" refY="3" orient="auto"><path d="M0,0 L7.5,3 L0,6 z" fill="#444"/></marker>
+  <marker id="arB" markerWidth="9" markerHeight="9" refX="7.5" refY="3" orient="auto"><path d="M0,0 L7.5,3 L0,6 z" fill="#1f5fa8"/></marker>
+  <marker id="arG" markerWidth="9" markerHeight="9" refX="7.5" refY="3" orient="auto"><path d="M0,0 L7.5,3 L0,6 z" fill="#1a7a4c"/></marker>
+  <marker id="arO" markerWidth="9" markerHeight="9" refX="7.5" refY="3" orient="auto"><path d="M0,0 L7.5,3 L0,6 z" fill="#d2600a"/></marker>
+  <marker id="arBig" markerWidth="10" markerHeight="10" refX="8" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 z" fill="#8b95a1"/></marker>
+</defs>
+<style>
+  .t   {font-size:15px; fill:#111}
+  .sm  {font-size:13px; fill:#333}
+  .xs  {font-size:11.5px; fill:#666}
+  .hd  {font-size:16.5px; fill:#111; font-weight:bold}
+  .row {font-size:19px; fill:#111; font-weight:bold}
+  .eq  {font-size:15.5px; fill:#111}
+  .box {fill:#fff; stroke:#9aa3ad; stroke-width:1.4}
+  .frz {fill:#eef1f5; stroke:#8b95a1; stroke-width:1.4}
+  .lora{fill:#fdece0; stroke:#d2600a; stroke-width:1.8}
+  .poe {fill:#eaf1fa; stroke:#1f5fa8; stroke-width:1.6}
+  .mon {fill:#e9f5ee; stroke:#1a7a4c; stroke-width:1.6}
+  .pan {fill:none; stroke:#d5dae0; stroke-width:1.2; stroke-dasharray:5 4}
+  .ln  {stroke:#444; stroke-width:1.5; fill:none; marker-end:url(#ar)}
+  .lnB {stroke:#1f5fa8; stroke-width:1.8; fill:none; marker-end:url(#arB)}
+  .lnG {stroke:#1a7a4c; stroke-width:1.8; fill:none; marker-end:url(#arG)}
+  .lnO {stroke:#d2600a; stroke-width:1.8; fill:none; marker-end:url(#arO)}
+  .lnP {stroke:#8b95a1; stroke-width:2.4; fill:none; marker-end:url(#arBig)}
+  .dash{stroke:#8b95a1; stroke-width:1.4; fill:none; stroke-dasharray:4 3}
+</style>
+<rect x="0" y="0" width="1780" height="985" fill="#ffffff"/>
+
+<!-- ROW A -->
+<text x="40" y="34" class="row">(a)  what the adapter is trained on</text>
+<line x1="40" y1="44" x2="1740" y2="44" stroke="#111" stroke-width="1.2"/>
+
+<!-- A1 -->
+<text x="40" y="76" class="hd">1 · one pair, four prompts</text>
+<rect x="52" y="96" width="288" height="200" rx="7" class="box" fill="#f7f8fa"/>
+<rect x="46" y="90" width="288" height="200" rx="7" class="box" fill="#fbfcfd"/>
+<rect x="40" y="84" width="288" height="200" rx="7" class="box"/>
+<text x="56" y="108" class="sm" fill="#111" font-weight="bold">cat × dog</text>
+<text x="146" y="108" class="xs">one pair from the pool</text>
+<rect x="56" y="118" width="144" height="26" rx="4" class="poe"/><text x="66" y="136" class="t">"a cat"</text>
+<text x="210" y="136" class="xs">expert A</text>
+<rect x="56" y="150" width="144" height="26" rx="4" class="poe"/><text x="66" y="168" class="t">"a dog"</text>
+<text x="210" y="168" class="xs">expert B</text>
+<rect x="56" y="182" width="144" height="26" rx="4" class="mon"/><text x="66" y="200" class="t">"a cat and a dog"</text>
+<text x="210" y="200" class="xs">joint prompt</text>
+<rect x="56" y="214" width="144" height="26" rx="4" class="frz"/><text x="66" y="232" class="t">""   (empty)</text>
+<text x="210" y="232" class="xs">unconditional</text>
+<text x="56" y="258" class="xs">One empty prompt, shared. It guides all</text>
+<text x="56" y="273" class="xs">three (classifier-free guidance, w = 7.5).</text>
+<path d="M340,190 L366,190" class="lnP"/>
+
+<!-- A2 -->
+<text x="380" y="76" class="hd">2 · one reverse step</text>
+<rect x="380" y="84" width="256" height="200" rx="7" class="pan"/>
+<rect x="470" y="98" width="80" height="28" rx="4" class="box"/>
+<text x="492" y="117" class="t">x</text><text x="502" y="122" class="xs">t</text><text x="514" y="117" class="t">, t</text>
+<path d="M510,126 L510,140" class="ln"/>
+<rect x="394" y="142" width="228" height="52" rx="6" class="frz"/>
+<text x="508" y="164" class="t" text-anchor="middle" font-weight="bold">SDXL UNet</text>
+<text x="508" y="182" class="xs" text-anchor="middle">frozen · no gradients</text>
+<path d="M508,194 L508,210" class="ln"/>
+<rect x="394" y="214" width="52" height="28" rx="4" class="poe"/><text x="404" y="233" class="t">ε</text><text x="414" y="238" class="xs">cat</text>
+<rect x="452" y="214" width="52" height="28" rx="4" class="poe"/><text x="462" y="233" class="t">ε</text><text x="472" y="238" class="xs">dog</text>
+<rect x="510" y="214" width="58" height="28" rx="4" class="mon"/><text x="520" y="233" class="t">ε</text><text x="530" y="238" class="xs">joint</text>
+<rect x="574" y="214" width="48" height="28" rx="4" class="frz"/><text x="586" y="233" class="t">ε</text><text x="596" y="238" class="xs">∅</text>
+<text x="394" y="262" class="xs">Four prompts in, four predictions out.</text>
+<text x="394" y="277" class="xs">This repeats at every one of the 50 DDIM steps.</text>
+<path d="M636,190 L662,190" class="lnP"/>
+
+<!-- A3 -->
+<text x="676" y="76" class="hd">3 · two ways to predict the same step</text>
+<rect x="676" y="84" width="434" height="200" rx="7" class="pan"/>
+<rect x="690" y="100" width="232" height="54" rx="6" class="poe"/>
+<text x="702" y="122" class="t" fill="#1f5fa8" font-weight="bold">PoE</text>
+<text x="746" y="122" class="eq">= ε</text><text x="770" y="127" class="xs">cat</text><text x="790" y="122" class="eq">+ ε</text><text x="814" y="127" class="xs">dog</text><text x="837" y="122" class="eq">− ε</text><text x="861" y="127" class="xs">∅</text>
+<text x="702" y="143" class="xs">what two separate prompts give you</text>
+<rect x="690" y="176" width="232" height="54" rx="6" class="mon"/>
+<text x="702" y="198" class="t" fill="#1a7a4c" font-weight="bold">Mono</text>
+<text x="758" y="198" class="eq">= ε</text><text x="782" y="203" class="xs">joint</text>
+<text x="702" y="219" class="xs">what the joint prompt gives you</text>
+<path d="M922,127 C938,127 940,152 954,152" class="lnB"/>
+<path d="M922,203 C938,203 940,178 954,178" class="lnG"/>
+<circle cx="970" cy="165" r="14" fill="#fff" stroke="#444" stroke-width="1.6"/>
+<text x="970" y="171" class="eq" text-anchor="middle">−</text>
+<path d="M984,165 L1000,165" class="lnO"/>
+<rect x="1002" y="140" width="96" height="50" rx="6" class="lora"/>
+<text x="1014" y="162" class="t" fill="#d2600a" font-weight="bold">r</text><text x="1023" y="167" class="xs" fill="#d2600a">t</text>
+<text x="1014" y="180" class="xs">= Mono − PoE</text>
+<text x="690" y="256" class="xs">The residual is the part of the score that product-of-experts</text>
+<text x="690" y="271" class="xs">cannot produce on its own. One trajectory gives 50 of them.</text>
+<path d="M1110,190 L1136,190" class="lnP"/>
+
+<!-- A4 -->
+<text x="1150" y="76" class="hd">4 · what the adapter is fit to</text>
+<rect x="1150" y="84" width="590" height="200" rx="7" class="pan"/>
+<rect x="1166" y="100" width="130" height="26" rx="4" class="poe"/><text x="1176" y="118" class="t">"a cat"</text>
+<rect x="1166" y="132" width="130" height="26" rx="4" class="poe"/><text x="1176" y="150" class="t">"a dog"</text>
+<rect x="1166" y="164" width="130" height="26" rx="4" class="frz"/><text x="1176" y="182" class="t">""   (empty)</text>
+<text x="1166" y="206" class="xs">the joint prompt is not run here</text>
+<path d="M1296,145 L1318,145" class="ln"/>
+<rect x="1320" y="112" width="122" height="66" rx="6" class="lora"/>
+<text x="1381" y="134" class="t" text-anchor="middle" font-weight="bold">SDXL UNet</text>
+<text x="1381" y="152" class="xs" text-anchor="middle" fill="#d2600a" font-weight="bold">adapter ON</text>
+<text x="1381" y="168" class="xs" text-anchor="middle">base still frozen</text>
+<path d="M1442,132 C1454,132 1454,122 1466,122" class="lnO"/>
+<rect x="1468" y="100" width="206" height="44" rx="6" class="poe"/>
+<text x="1478" y="120" class="eq">PoE</text><text x="1508" y="125" class="xs">adapter on</text>
+<text x="1478" y="137" class="xs">same combine rule</text>
+<rect x="1468" y="164" width="206" height="44" rx="6" class="mon"/>
+<text x="1478" y="184" class="eq">ε</text><text x="1488" y="189" class="xs">joint</text><text x="1528" y="184" class="xs">read from the cache</text>
+<text x="1478" y="201" class="xs">the target · not recomputed</text>
+<path d="M1571,162 L1571,146" class="dash"/>
+<text x="1166" y="240" class="eq" fill="#d2600a" font-weight="bold">minimise  ‖ PoE</text><text x="1300" y="245" class="xs" fill="#d2600a">adapter on</text><text x="1372" y="240" class="eq" fill="#d2600a" font-weight="bold">−  ε</text><text x="1404" y="245" class="xs" fill="#d2600a">joint</text><text x="1432" y="240" class="eq" fill="#d2600a" font-weight="bold">‖²</text>
+<text x="1166" y="262" class="xs">Gradients reach the adapter and nothing else.</text>
+<text x="1166" y="277" class="xs">Closing this gap is the same as supplying the residual of panel 3.</text>
+
+<!-- ROW B -->
+<text x="40" y="344" class="row">(b)  where the adapter sits inside SDXL</text>
+<line x1="40" y1="354" x2="1740" y2="354" stroke="#111" stroke-width="1.2"/>
+
+<!-- B1 -->
+<text x="40" y="388" class="hd">5 · the UNet, block by block</text>
+<rect x="40" y="400" width="450" height="336" rx="7" class="pan"/>
+<rect x="62" y="424" width="176" height="42" rx="5" class="frz"/>
+<text x="72" y="443" class="t">DownBlock2D</text><text x="72" y="458" class="xs">320 ch · no attention</text>
+<rect x="62" y="476" width="176" height="46" rx="5" class="lora"/>
+<text x="72" y="495" class="t">CrossAttnDown</text><text x="72" y="510" class="xs">640 ch · 4 attn blocks</text>
+<rect x="62" y="532" width="176" height="46" rx="5" class="lora"/>
+<text x="72" y="551" class="t">CrossAttnDown</text><text x="72" y="566" class="xs">1280 ch · 20 attn blocks</text>
+<rect x="122" y="594" width="246" height="44" rx="5" class="lora"/>
+<text x="134" y="613" class="t">mid block</text><text x="134" y="628" class="xs">1280 ch · 10 attn blocks</text>
+<rect x="292" y="532" width="176" height="46" rx="5" class="lora"/>
+<text x="302" y="551" class="t">CrossAttnUp</text><text x="302" y="566" class="xs">1280 ch · 30 attn blocks</text>
+<rect x="292" y="476" width="176" height="46" rx="5" class="lora"/>
+<text x="302" y="495" class="t">CrossAttnUp</text><text x="302" y="510" class="xs">640 ch · 6 attn blocks</text>
+<rect x="292" y="424" width="176" height="42" rx="5" class="frz"/>
+<text x="302" y="443" class="t">UpBlock2D</text><text x="302" y="458" class="xs">320 ch · no attention</text>
+<path d="M150,466 L150,474" class="ln"/>
+<path d="M150,522 L150,530" class="ln"/>
+<path d="M150,578 L150,590" class="ln"/>
+<path d="M368,616 L380,616 L380,582" class="ln"/>
+<path d="M380,532 L380,524" class="ln"/>
+<path d="M380,476 L380,468" class="ln"/>
+<path d="M238,442 L288,442" class="dash"/>
+<path d="M238,496 L288,496" class="dash"/>
+<path d="M238,552 L288,552" class="dash"/>
+<text x="263" y="416" class="xs" text-anchor="middle">skip connections</text>
+<rect x="62" y="658" width="406" height="28" rx="4" fill="#fff7f0" stroke="#d2600a" stroke-width="1.4"/>
+<text x="74" y="677" class="sm" fill="#d2600a">orange carries the adapter · grey is untouched</text>
+<text x="62" y="706" class="xs">70 cross-attention blocks in total. The two plain resolution</text>
+<text x="62" y="722" class="xs">blocks have no attention, so they carry nothing.</text>
+
+<!-- B2 -->
+<text x="520" y="388" class="hd">6 · one transformer block</text>
+<rect x="520" y="400" width="380" height="336" rx="7" class="pan"/>
+<rect x="580" y="424" width="300" height="42" rx="5" class="frz"/>
+<text x="596" y="443" class="t">attn1: self-attention</text><text x="596" y="458" class="xs">latent attends to itself · frozen</text>
+<rect x="580" y="486" width="300" height="96" rx="5" class="lora"/>
+<text x="596" y="507" class="t" font-weight="bold">attn2: cross-attention</text>
+<text x="596" y="525" class="xs">latent attends to the text embedding</text>
+<text x="596" y="548" class="sm" fill="#d2600a" font-weight="bold">the only place the adapter goes</text>
+<text x="596" y="568" class="xs">70 of these across the UNet</text>
+<rect x="580" y="602" width="300" height="42" rx="5" class="frz"/>
+<text x="596" y="621" class="t">feed-forward</text><text x="596" y="636" class="xs">frozen</text>
+<path d="M730,466 L730,484" class="ln"/>
+<path d="M730,582 L730,600" class="ln"/>
+<rect x="596" y="664" width="150" height="30" rx="4" class="box" fill="#f2f6fb"/>
+<text x="608" y="684" class="sm">text embedding</text>
+<path d="M596,679 L556,679 L556,534 L578,534" class="lnO"/>
+<text x="520" y="716" class="xs">The prompt enters the UNet only through attn2.</text>
+<text x="520" y="732" class="xs">That is why the correction is learned there.</text>
+
+<!-- B3 -->
+<text x="930" y="388" class="hd">7 · inside one cross-attention, exactly</text>
+<rect x="930" y="400" width="810" height="336" rx="7" class="pan"/>
+<rect x="952" y="428" width="112" height="28" rx="4" class="box" fill="#f2f6fb"/><text x="964" y="447" class="sm">latent  x</text>
+<rect x="952" y="570" width="112" height="28" rx="4" class="box" fill="#f2f6fb"/><text x="964" y="589" class="sm">text  c</text>
+<rect x="1106" y="422" width="224" height="44" rx="5" class="lora"/>
+<text x="1118" y="440" class="t" font-weight="bold">to_q</text><text x="1174" y="440" class="sm" fill="#d2600a">W frozen  +  B·A trained</text>
+<text x="1118" y="457" class="xs">query projection</text>
+<rect x="1106" y="478" width="224" height="44" rx="5" class="lora"/>
+<text x="1118" y="496" class="t" font-weight="bold">to_k</text><text x="1174" y="496" class="sm" fill="#d2600a">W frozen  +  B·A trained</text>
+<text x="1118" y="513" class="xs">key projection</text>
+<rect x="1106" y="534" width="224" height="44" rx="5" class="lora"/>
+<text x="1118" y="552" class="t" font-weight="bold">to_v</text><text x="1174" y="552" class="sm" fill="#d2600a">W frozen  +  B·A trained</text>
+<text x="1118" y="569" class="xs">value projection</text>
+<path d="M1064,442 L1104,442" class="ln"/>
+<path d="M1064,580 L1086,580 L1086,500 L1104,500" class="ln"/>
+<path d="M1064,584 L1080,584 L1080,556 L1104,556" class="ln"/>
+<rect x="1378" y="452" width="120" height="96" rx="5" class="frz"/>
+<text x="1438" y="492" class="t" text-anchor="middle">softmax</text>
+<text x="1438" y="510" class="t" text-anchor="middle">attention</text>
+<text x="1438" y="530" class="xs" text-anchor="middle">frozen</text>
+<path d="M1330,444 L1354,444 L1354,478 L1376,478" class="ln"/>
+<path d="M1330,500 L1376,500" class="ln"/>
+<path d="M1330,556 L1354,556 L1354,522 L1376,522" class="ln"/>
+<rect x="1546" y="478" width="140" height="44" rx="5" class="frz"/>
+<text x="1616" y="497" class="t" text-anchor="middle">to_out</text>
+<text x="1616" y="514" class="xs" text-anchor="middle">frozen · no adapter</text>
+<path d="M1498,500 L1544,500" class="ln"/>
+<rect x="952" y="612" width="768" height="54" rx="5" fill="#fff7f0" stroke="#d2600a" stroke-width="1.4"/>
+<text x="968" y="634" class="eq">every adapted projection computes     h   =   W x   +   (α / r) · B A x</text>
+<text x="968" y="656" class="xs">A is r × d,   B is d × r,   with r = 8 in the single-pair runs and r = 32 in the pooled run.</text>
+<text x="952" y="690" class="xs">W, and every other weight in the UNet, is frozen. Only A and B receive gradients.</text>
+<text x="952" y="708" class="xs">70 cross-attention blocks × 3 projections = 210 adapted layers.</text>
+<text x="952" y="726" class="xs">Trainable parameters: 4 956 160 at rank 8, 19 824 640 at rank 32.</text>
+
+<!-- CAPTION -->
+<line x1="40" y1="774" x2="1740" y2="774" stroke="#d5dae0" stroke-width="1.2"/>
+<text x="40" y="802" class="sm"><tspan font-weight="bold">Training the composition adapter.</tspan> (a) For one concept pair, four prompts are encoded and run through the frozen SDXL UNet at every one of the 50 DDIM steps. The two</text>
+<text x="40" y="824" class="sm">single-concept predictions combine into the product-of-experts prediction; the joint prompt gives the Mono prediction in one pass. Their difference is the residual, the part of the</text>
+<text x="40" y="846" class="sm">score that product-of-experts structurally cannot supply. The adapter is trained so that the product-of-experts prediction, computed with the adapter enabled on the two</text>
+<text x="40" y="868" class="sm">single-concept prompts and the empty prompt, lands on the cached joint prediction. At sample time no joint prompt is needed.</text>
+<text x="40" y="898" class="sm">(b) The adapter is a rank-r LoRA on the query, key and value projections of every cross-attention block, the only route by which the text prompt enters the UNet. Self-attention,</text>
+<text x="40" y="920" class="sm">the output projection, the feed-forward layers and the two attention-free resolution blocks are left untouched.</text>
+<text x="40" y="950" class="xs">All ε are classifier-free-guided at w = 7.5 using the single shared empty-prompt prediction.</text>
+</svg>

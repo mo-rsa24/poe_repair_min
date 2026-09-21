@@ -99,7 +99,7 @@ by the user, recorded here so neither session re-litigates it:
   reference sweep. The rename never happens while the other session is writing.
 - References that currently look stale on purpose, because they anticipate the rename-back:
   the root `MASTER_PLAN.md` running-order rows 31 to 35, the parent scope's Sub-Scopes entry,
-  and `runbook/reading-a-training-run.md` line 8, all naming `showcase-the-trained-lora`.
+  and `runbook/looking-at-what-a-run-produced/reading-a-training-run.md` line 8, all naming `showcase-the-trained-lora`.
 - Done 2026-08-29, after 20 quiet minutes: the scope renamed back, references swept
   (root running order, parent Sub-Scopes, scope-internal paths and title). The drips folder
   `artifacts/drips/showcase-the-trained-adapter/` keeps its name; it is the walk's working

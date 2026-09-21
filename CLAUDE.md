@@ -85,6 +85,18 @@ Before writing out a sequence of commands or click paths for something done here
 check whether a recipe already exists. If one does and it is now wrong, fix the recipe rather
 than answering around it.
 
+## Report
+
+What this project found (each question, its verdict, the figure and the statistic that back it)
+lives in `report/`. Start at `report/00-INDEX.md`, which lists every question with its verdict
+and headline number. The older files beside it are pre-registrations, a log and an evidence
+register, not findings.
+
+Before asserting what this project showed, read the finding that owns the question. If no
+finding exists, say the question is unanswered rather than reconstructing a verdict from chat
+memory or from a results file alone. A misremembered verdict gets built on, and it is worse than
+an admitted gap.
+
 ## Where to look first
 
 The root [MASTER_PLAN.md](MASTER_PLAN.md) opens with `## Where things stand`, a snapshot of what
@@ -105,9 +117,9 @@ through `context/00-INDEX.md`), and `report/` for pre-registrations, instrument 
 results summaries per `~/.claude/EXPERIMENT_CONVENTIONS.md`. Both are staples here; neither is a
 filing mistake.
 
-## Two folders under `artifacts/` that are not one of the eight kinds
+## Six folders under `artifacts/` that are not one of the eight kinds
 
-Both are declared here so no census reports them, and neither may be moved.
+All six are declared here so no census reports them, and none may be moved.
 
 `artifacts/_shared/cross_pair_pool_configs/` holds the pair, prompt and seed pool YAMLs that
 define which cells an experiment runs over. It is config the code reads, not an artifact: the
@@ -119,6 +131,17 @@ re-run or discard call had not been made. It is not junk: `results-archive/` ins
 early findings the repository `README.md` cites nine times, so the front door depends on it. The
 dispositions are owned by the parked `artifact-reconciliation` scope, which is where an emptying
 pass would start, and until that scope resumes the pen stays as it is.
+
+`artifacts/caches/` holds run bytes a script reads back rather than a person looks at: the
+training cache and the manifold cache, hard-coded at `poe_repair/paths.py:153-154` as
+`TRAINING_CACHE` and `MANIFOLD_CACHE`. It stays gitignored and outside the eight kinds because
+nothing in it is evidence; it is memoization other runs depend on.
+
+`artifacts/rung2-survive-noise/`, `artifacts/rung3-group-wise/` and `artifacts/rung4-scale/`
+hold the per-pair, per-seed evidence cells for the causal-experiment ladder's three later rungs,
+hard-coded at `poe_repair/paths.py:137,144-145` as `HELD_OUT_SEEDS`, `WITHIN_GROUP` and
+`ALL_GROUPS`. Each is too large to fold into a single `artifacts/results/` grouping without
+drowning it, so the rung stays its own top-level tree, gitignored like `results/`.
 
 ## Root files this repo adds to the list no check reports
 

@@ -20,8 +20,8 @@ the image that state would finish as, without stepping the rest of the way.
 **(a) Is the endpoint from an off-manifold PoE state well-defined enough for the endpoint
 predictor to mean something?** Yes. The learned field is defined on the whole latent space, so a
 deterministic flow assigns every state exactly one endpoint, and endpoints cluster into modes.
-Near [the fold where nearby states land in different endings](../../../../../goal-setting/learning/speciation-before-divergence/plans/08-caustic-as-fold.md) the label is unstable, and that instability is itself the commitment
-signal. What is being read is the base guided flow's map from a state to [where each state would finish](../../../../../goal-setting/learning/speciation-before-divergence/plans/09-endpoint-map-and-consistency-condition.md), so the read is a counterfactual finish:
+Near [the fold where nearby states land in different endings](../../../../../goal-setting/learning/deep-learning/diffusion-models/speciation-before-divergence/plans/08-caustic-as-fold.md) the label is unstable, and that instability is itself the commitment
+signal. What is being read is the base guided flow's map from a state to [where each state would finish](../../../../../goal-setting/learning/deep-learning/diffusion-models/speciation-before-divergence/plans/09-endpoint-map-and-consistency-condition.md), so the read is a counterfactual finish:
 the image the plain guided model would land on if composing stopped at this step. Trust off
 distribution is measurable against the teacher, never assumable.
 
@@ -104,6 +104,48 @@ difference flips the outcome.
 **The commitment tests are reads, never causal claims.** The causal side of the correction is
 owned by the existing experiments showing that more correction gives more composition, and the
 new figures do not re-claim it.
+
+## Decisions behind the landing figures (plan 06)
+
+**Endpoints are read in the compose scorer's image space, and the noisy-latent plane is kept
+for timing only.** PCA over SDXL latents behaves like pixel PCA (the repo's shared plane keeps a
+quarter of the variance and shows bundles, not animals), so "where does a run land" is measured
+in DINOv2 space, where single animals and pairs separate, and "when do paths separate" stays in
+the latent plane. The alternative, one plane for both questions, was rejected because the latent
+plane cannot say what an endpoint is.
+
+**Diffusion Explorer's idioms are borrowed; nothing of it is ported.** Helbling and Chau's tool
+(arXiv 2507.01178) runs 2D toy models in the browser and cannot take SDXL; its precomputed
+trajectories, single time slider, and arrows on the current sample are rebuilt over this repo's
+cache instead. The forkable alternative was rejected because its state model is in-browser
+training, none of which is ours.
+
+**Axis pictures come from a representation autoencoder, and only after a chimera survives
+reconstruction.** Walking a principal component in DINOv2 space and decoding through the
+`nyu-visionx` DINOv2-B decoder (Zheng et al. 2025) labels an axis with pictures instead of a
+legend. Every decoded frame is captioned as a reconstruction, and a known chimera render is
+reconstructed first: if the decoder cleans it into one animal, decoded frames may label axes and
+may never stand in for a PoE output.
+
+**The nearest-centroid bar stays failed; both-ness is the candidate bar for the next pair.** The
+first run on cat × dog failed the pre-registered nearest-centroid criterion because each cloud is
+as wide as its gap to the joint cloud. The supervised "both-ness" projection separated the PoE
+and corrected bands cleanly, but it was read after the result, so it is recorded as post-hoc in
+the review file and becomes the pre-registered bar only for the unseen-pair render, not
+retroactively for cat × dog.
+
+**Eight seeds show where things land; a separation claim waits for about 32.** The figure is
+presented as a look, with the full-space centroid distances in the sidecar, and no overlap claim
+is made from it.
+
+**Both-ness is rejected as a cross-pair measuring tool; the instance count stays the rule.** On
+the eight held-out pairs the both-ness bar came back null (5 of 7 counted pairs overlap), while
+the instance count on the same images read the correction composing on every pair. The axis is
+built from each pair's own clouds, and when the two animals look alike a picture of two of them
+embeds beside a picture of one, so the axis has nothing to measure. The plane stays as a look
+for one pair at a time; any cross-pair verdict is judged on the instance count, and a
+coordinate-valued replacement (the count axis decoded in the axis pictures, fixed once and
+applied to every pair) would need its own pre-registered bar first.
 
 ## Build order, thin end-to-end slices
 

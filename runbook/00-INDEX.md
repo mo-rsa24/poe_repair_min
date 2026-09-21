@@ -1,7 +1,7 @@
 # Runbook: poe_repair_min
 
-How to do the recurring things here by hand: checking the plan tree's state, and launching or
-harvesting a run on the cluster. Built 2026-08-24 during stage 5 of the retrofit pass, from
+How to do the recurring things here by hand: checking the plan tree's state, launching or
+harvesting a run on the cluster, and moving manuscript edits between this repo and Overleaf. Built 2026-08-24 during stage 5 of the retrofit pass, from
 `CLAUDE.md`'s own conventions section and `environment/hpc/`, not from a full excavation
 dialogue (this sitting has no interactive user to walk one with). More themes get added the
 next time something recurring happens by hand and isn't here yet.
@@ -41,6 +41,17 @@ next time something recurring happens by hand and isn't here yet.
 | Redraw the endpoint figures and the sidecar behind the landing finding | [reproducing-where-each-condition-lands.md §2](running-things-on-the-cluster/reproducing-where-each-condition-lands.md#2-make-the-endpoint-figures-and-their-sidecar) |
 | Rebuild the animated "where each condition lands" page (Diffusion Explorer's UI over our frames) and open it | [reproducing-where-each-condition-lands.md §3](running-things-on-the-cluster/reproducing-where-each-condition-lands.md#3-embed-the-frames-and-export-the-pages-data), then [§4](running-things-on-the-cluster/reproducing-where-each-condition-lands.md#4-build-the-page-from-diffusion-explorers-ui-and-open-it) |
 | Show that page on a laptop with no cluster tunnel | [reproducing-where-each-condition-lands.md §5](running-things-on-the-cluster/reproducing-where-each-condition-lands.md#5-open-the-built-page-on-a-laptop-with-no-cluster-tunnel) |
+| Build the two-panel correction-window figure the paper uses | [making-the-papers-figures/composing-a-two-panel-figure-in-inkscape.md (opening)](making-the-papers-figures/composing-a-two-panel-figure-in-inkscape.md#read-this-before-you-start) |
+| Draw a grid panel at the exact width it will occupy on the page | [making-the-papers-figures/composing-a-two-panel-figure-in-inkscape.md §1](making-the-papers-figures/composing-a-two-panel-figure-in-inkscape.md#1-make-the-panels) |
+| Put two panels side by side under one caption in Inkscape | [making-the-papers-figures/composing-a-two-panel-figure-in-inkscape.md §3](making-the-papers-figures/composing-a-two-panel-figure-in-inkscape.md#3-set-the-page-size-first-before-anything-else) to [§7](making-the-papers-figures/composing-a-two-panel-figure-in-inkscape.md#7-tidy-up-before-exporting) |
+| Export an Inkscape figure as a PDF that renders correctly in the ICLR template | [making-the-papers-figures/composing-a-two-panel-figure-in-inkscape.md §8](making-the-papers-figures/composing-a-two-panel-figure-in-inkscape.md#8-export-the-pdf) |
+| Place a finished figure in the paper without ruining its label sizes | [making-the-papers-figures/composing-a-two-panel-figure-in-inkscape.md §9](making-the-papers-figures/composing-a-two-panel-figure-in-inkscape.md#9-put-it-in-the-paper) |
+| Compose two panels with LaTeX and skip Inkscape entirely | [making-the-papers-figures/composing-a-two-panel-figure-in-inkscape.md §10](making-the-papers-figures/composing-a-two-panel-figure-in-inkscape.md#10-the-latex-only-route-if-you-skip-inkscape) |
+| Get what I typed in the Overleaf editor into the repo | [syncing-the-paper-with-overleaf.md §1](syncing-the-paper-with-overleaf.md#1-pull-your-overleaf-edits-into-the-repo) |
+| See what an `Update on Overleaf.` commit actually changed | [syncing-the-paper-with-overleaf.md §2](syncing-the-paper-with-overleaf.md#2-read-what-came-down-before-you-commit-it) |
+| Push a repo-side edit up to Overleaf without deleting files from the project | [syncing-the-paper-with-overleaf.md §3](syncing-the-paper-with-overleaf.md#3-️-send-a-repo-side-edit-back-up-to-overleaf) |
+| Rebuild the zip that starts a fresh Overleaf project | [syncing-the-paper-with-overleaf.md §4](syncing-the-paper-with-overleaf.md#4-rebuild-the-upload-zip-instead) |
+| Remember which of the three copies of the paper is which | [syncing-the-paper-with-overleaf.md (where the paper lives)](syncing-the-paper-with-overleaf.md#where-the-paper-lives) |
 
 ## Themes
 
@@ -65,11 +76,18 @@ straight at the recipe that answers it.
 | [reading-a-training-run.md](looking-at-what-a-run-produced/reading-a-training-run.md) | W&B: the curves and the tracking set a training run writes | 3 |
 | [showing-a-scene-in-the-local-browser.md](looking-at-what-a-run-produced/showing-a-scene-in-the-local-browser.md) | A static server on the node and the tunnel from the laptop | 2 |
 
+**Making the paper's figures**
+
+| File | One place, one purpose | Recipes |
+|---|---|---|
+| [composing-a-two-panel-figure-in-inkscape.md](making-the-papers-figures/composing-a-two-panel-figure-in-inkscape.md) | A laptop with Inkscape: draw panels at final size, compose them under one caption, export a PDF the ICLR template places at 1:1 | 10 (1 `ran`, 9 `unverified`) |
+
 **Flat, no group yet**
 
 | File | One place, one purpose | Recipes |
 |---|---|---|
 | [checking-the-plan-tree.md](checking-the-plan-tree.md) | The repo on the session node: the plan-tree state check | 1 |
+| [syncing-the-paper-with-overleaf.md](syncing-the-paper-with-overleaf.md) | The repo and the Overleaf clone beside it: moving manuscript edits between the two, and the zip route | 4 (2 `ran`, 2 `unverified`) |
 
 ## Still open
 

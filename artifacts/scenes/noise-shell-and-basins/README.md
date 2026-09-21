@@ -17,7 +17,7 @@ reader can operate.
 **depends on** nothing outside this folder.
 
 See it from a laptop by serving the scenes folder in tmux and forwarding the port, per
-[the runbook's showing-a-scene recipes](../../../runbook/showing-a-scene-in-the-local-browser.md).
+[the runbook's showing-a-scene recipes](../../../runbook/looking-at-what-a-run-produced/showing-a-scene-in-the-local-browser.md).
 
 ## What is on the page
 
@@ -53,3 +53,7 @@ closed disclosure repeats all of this beside the numbers.
 **verified** `node --check` passed on the script block; no browser exists on this cluster, so
 the layout was not eyeballed in one. Report collisions or overflow and they can be fixed and
 republished to the same URL.
+
+## Cross-references
+
+- The mention of **level set** in [the scene map for the Gaussian score's base case](../../../../../../goal-setting/learning/deep-learning/diffusion-models/poe-composition-diffusion/artifacts/drips/gaussian-score-base-case/SCENE_MAP.md), piece 1a-4a-ii, "The ring's reach along u₁" (relevance match). Same primitive as this scene's contour cartoon, argued in the opposite regime: the scene map builds the low-dimension, anisotropic Σ-shaped ellipse; this scene shows that same contour-ring intuition failing once the dimension is high enough that mass concentrates on a shell instead.

@@ -83,7 +83,35 @@ compose verdicts agree. The 50-step DDIM sampler runs at η 0 with pinned initia
 training cache, so there is no sampling noise to average over. Mark: stated from the session
 record for the cross-device number; the same-device identity is verified from the two folders.
 
+## 5. On the checkpoint the showcase figures use, raising λ changes the scene rather than the count
+
+![Rank 32 at 30050: eight held-out seeds, the joint prompt then λ 0, 1.0, 1.2, 1.3, 1.5 and 2.0, correction on all 50 steps](../../artifacts/results/does-training-longer-help-the-pooled-lora/grid-rank32-30050-full-window-lambda-sweep.png)
+*Rows are seeds 9 to 16, columns run from the joint-prompt render to λ 2.0. What to notice: seed
+10's two close-up dogs become a distant desert shack with two thumbnail-sized animals from λ 1.3
+onward, and at λ 2.0 seeds 9, 11 and 15 change medium, from photograph or pencil sketch to
+coloured illustration.*
+
+**The number.** Seeds the instance-count scorer calls two animals, of 8, correction on all 50
+steps, λ 0 / 1.0 / 1.2 / 1.3 / 1.5 / 2.0: 0 / 7 / 6 / 6 / 7 / 6. The strict cat-and-dog count is
+identical at every λ. DINOv2 drift, where negative means the render sits nearer the joint-prompt
+image: +0.531 / −0.122 / −0.162 / −0.134 / −0.135 / −0.124. Five seeds (9, 12, 13, 15, 16)
+compose at every λ from 1.0 up; seed 10 stops composing from 1.3, seed 11 fails only at 1.2, and
+seed 14 composes only at 1.5. From
+`/datasets/mmolefe/poe_repair_min/outputs/showcase/lambda_boundary_probe_r32_030050/results.json`,
+fields `rows[].compose`, `rows[].cat_and_dog` and `rows[].drift.dino.drift`, written by
+`scripts/showcase/lambda_boundary_probe.py` on 2026-09-06.
+
+**The second number.** The largest per-step correction norm the sampler applied, averaged over
+seeds, falls as λ rises: 60.4 at λ 1.0, 51.4 at 1.2, 47.8 at 1.3, 44.8 at 1.5, 31.5 at 2.0
+(`rows[].max_delta_norm`, same file). The adapter is reading a trajectory that λ has already
+moved, so a larger multiplier does not produce a proportionally larger correction.
+
 ## What this cannot tell you
+
+**The count is blind to the scene change.** Seed 10 still has two animals at λ 1.3 and above,
+but they are thumbnail-sized in a wide shot and the detector stops counting them, so the drop
+from 7 to 6 at those settings reads as a composition failure when the grid shows a framing
+change. Any λ conclusion drawn from the count alone inherits this.
 
 **One pair, eight seeds.** Every count here is cat x dog. The other seven held-out pairs were
 scored only by the 2-cell tracking set during training and by the fit read in
@@ -106,6 +134,8 @@ up overshoots rather than pushes further. That is an inference, not a result.
 |---|---|---|
 | Compose and strict counts per checkpoint, λ and window | `results.json` in the eleven probe folders named in rungs 1 to 3, read 2026-09-05 into `compose-count-vs-lambda-by-checkpoint.png` | verified |
 | The grids | `grid_full_window.png` in the same folders, resized copies in `artifacts/results/does-training-longer-help-the-pooled-lora/` | verified |
+| Rung 5's counts, drift and correction norms | `/datasets/mmolefe/poe_repair_min/outputs/showcase/lambda_boundary_probe_r32_030050/results.json`, run and read 2026-09-06 on mscluster106 device 1 | verified |
+| Rung 5's scene and medium changes | read off `grid-rank32-30050-full-window-lambda-sweep.png` | verified |
 | Same-device determinism | `determinism_repeat_1/`, `determinism_repeat_2/`, `logs/determinism_repeat.log` | verified |
 | Cross-device pixel difference | session record, 2026-09-02 | stated |
 | The checkpoints | rank 8: `artifacts/results/does-the-fix-reach-unseen-pairs/pooled_lora/phase1_r8_100k/checkpoints/lora_step_030000.pt` and `/datasets/mmolefe/poe_repair_min/outputs/showcase/phase1_r8_450k/checkpoints/`; rank 16 and 32: `phase1_r16_100k/checkpoints/`, `phase1_r32_100k/checkpoints/` under the same outputs root | verified |
@@ -123,3 +153,5 @@ up overshoots rather than pushes further. That is an inference, not a result.
 - [ ] The cross-device pixel difference is quoted from the session, not from a file on disk.
 - [ ] The strict cat-and-dog read has no validation set of its own.
 - [ ] Seed 14's target is two cats in the cache; whether a re-cached target composes is untested.
+- [ ] The scene and medium changes above λ 1.3 in rung 5 are read off the grid by eye. Nothing
+      measures them, so there is no number saying how far the framing moves per unit of λ.

@@ -97,7 +97,7 @@ action and is actually a several-step decision.
 ## Skill wiring
 
 `/run-experiment` drives GPU tasks. Every experiment logs to W&B, including the qualitative
-Mono vs PoE vs LoRA triptych panels, so `/analyze-run` can go back over runs later. `/execute-plan-tree`
+Mono vs PoE vs LoRA triptych panels, so `/analyze-run` can go back over runs later. `/drip-execute-plan --auto`
 may run tasks unattended, using each plan's pre-registered falsification rules and
 `/demonstrate` checkpoints as its stop conditions.
 

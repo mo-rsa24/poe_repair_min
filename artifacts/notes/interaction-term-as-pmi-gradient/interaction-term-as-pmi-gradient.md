@@ -361,3 +361,7 @@ empirical work rather than a novelty claim that will not hold.
 - [Feynman-Kac Correctors in Diffusion, arXiv 2503.02819](https://arxiv.org/pdf/2503.02819)
 - [SuperDiff, arXiv 2412.17762](https://arxiv.org/abs/2412.17762)
 - [Product of Experts for Visual Generation, arXiv 2506.08894](https://arxiv.org/html/2506.08894v1)
+
+## Cross-references
+
+- The mention of **Σ⁻¹u** (the covariance identity and the score-form identity, claims 1 and 2 above) in [the scene map for the Gaussian score's base case](../../../../../../goal-setting/learning/deep-learning/diffusion-models/poe-composition-diffusion/artifacts/drips/gaussian-score-base-case/SCENE_MAP.md), piece 1a-4d, "Σ⁻¹ beside Σ" (relevance match).

@@ -47,12 +47,24 @@
 
 ⬅️ [Previous](#position-in-the-plan-tree) | 📋 [TOC](#table-of-contents) | [Next](#considerations) ➡️
 
-**The measuring tool:** one tracking set, the fixed list of images and curves saved at every checkpoint, frozen before experiments A and B launch, rendered every 10k steps, logged to W&B. It extends the wiring built in `instrument-02` and nothing else (ledger: additions must be computable from what the tracking set already renders or records, so training cost does not grow).
-
-**Contents (ledger, fixed):** the four F9 renders (held-out pairs, seed 9), the repaired render of cat × dog seed 1, [compose rate](../../../../context/world/compose-rate.md) over the held-out pool (8 pairs × 8 seeds), direction-cosine and fraction-of-distance-reached (already wired), plus four additions: learned-vs-actual cosine at every recorded sampling step, teacher-forced (the pooled trainer records the learned delta at all sampling steps, `train_pooled.py`'s `record_delta_at_steps=list(range(...))`; report per window bucket, early/commit/late, with steps 7, 15, 22 as named representatives); DINOv2/CLIP embedding drift (distance-to-mono minus distance-to-poe per render); spectral share of learned deltas at a fixed bucket, labelled diagnostic; and the divergence-step profile of ‖r̂‖ across the 50 steps (closed-loop, labelled so).
+**The measuring tool:** one tracking set, the fixed list of images and curves saved at every checkpoint, frozen before experiments A and B launch, rendered every 10k steps, logged to W&B. It extends the wiring built in `instrument-02` and nothing else: every addition must be computable from tensors the eval hook already holds, so training cost does not grow.
 
 > Held-out means the pairs were never shown during training, so the number says how well the
 > adapter does on animals it has not seen.
+
+**The proof, fixed before launch:** all seven metric families below log at least one non-null value on a one-epoch smoke run, and the manifest hash appears in that run's W&B config. Either missing means the wiring is broken; A and B do not start until this is fixed and the smoke run repeats clean.
+
+**Already wired, from `instrument-02`:**
+- The four F9 renders (held-out pairs, seed 9).
+- The repaired render of cat × dog, seed 1.
+- Held-out [compose rate](../../../../context/world/compose-rate.md) over the 8-pair × 8-seed pool.
+- Direction-cosine and fraction-of-distance-reached.
+
+**Four additions this plan wires in:**
+- **Learned-vs-actual cosine**, teacher-forced at every recorded sampling step (`train_pooled.py`'s `record_delta_at_steps=list(range(...))`), reported per window bucket (early, commit, late) with steps 7, 15, 22 named as representatives.
+- **DINOv2/CLIP embedding drift**: distance-to-mono minus distance-to-poe, per render.
+- **Spectral share** of learned deltas at a fixed bucket, labelled diagnostic.
+- **Divergence-step profile** of ‖r̂‖ across the 50 steps, closed-loop, labelled so.
 
 **Associated materials:**
 - **Review questions:** [../review/06-extend-the-tracking-set.md](../../review/06-extend-the-tracking-set.md)
@@ -134,7 +146,7 @@ Serves goal 3 (tracking set extended, and proven by a short run, before any laun
 
 ### 0. ✅ Verify this plan first
 
-- [ ] **0.1 Run the following prompt: `/verify-plan plans/01-showcase-the-trained-lora/plans/06-extend-the-tracking-set.md`**
+- [ ] **0.1 Run the following prompt: `/verify-plan plans/01-showcase-the-trained-lora/plans/tools/06-extend-the-tracking-set.md`**
 
 ▶ **Next: [task 1.1](#1--wire-and-freeze)**.
 
@@ -159,7 +171,7 @@ Serves goal 3 (tracking set extended, and proven by a short run, before any laun
 
 2.1 **Open the short run** (project above, newest run). Charts tab, search `eval/tracking/`. ✅ all four new families present with non-null points, and the three curves from `instrument-02` still log; ❌ any family missing or all-null: stop, fix, run the short one again.
 
-2.2 **Capture the panel** into the place `runbook/reading-a-training-run.md` keeps for screenshots (wandb MCP or Playwright MCP per that runbook page), with a one-line healthy-shape caption.
+2.2 **Capture the panel** into the place `runbook/looking-at-what-a-run-produced/reading-a-training-run.md` keeps for screenshots (wandb MCP or Playwright MCP per that runbook page), with a one-line healthy-shape caption.
 
 2.3 **Record the verdict** in the [review file](../../review/06-extend-the-tracking-set.md).
 
@@ -200,6 +212,13 @@ Serves goal 3 (tracking set extended, and proven by a short run, before any laun
 | tracking_set.json | — | the frozen manifest (sidecar) | task 1.2 | ⏳ |
 | short-run panel screenshot | process | the seven families logging, healthy shape | instruction 2.2 | ⏳ |
 
+#### Organization workflow
+
+1. Generate pending items (none owed for this plan).
+2. Execute the plan (task 1.2 freezes `tracking_set.json`; task 1.3 runs the smoke that proves it).
+3. Organize outputs: file the short-run screenshot beside the review file's Runs table entry.
+4. Link the finished manifest and screenshot above once they land.
+
 ---
 
 ## Orchestration: keeping catalogs and plan files in sync
@@ -239,7 +258,7 @@ Serves goal 3 (tracking set extended, and proven by a short run, before any laun
 ▶ Paste to run this plan (nothing trains until this passes):
 
 ```
-Execute plans/01-showcase-the-trained-lora/plans/06-extend-the-tracking-set.md: wire the four curves, freeze tracking_set.json, then the 1-epoch short run with --wandb-mode online (never dry mode, it disables W&B); report the four eval/tracking/ families.
+Execute plans/01-showcase-the-trained-lora/plans/tools/06-extend-the-tracking-set.md: wire the four curves, freeze tracking_set.json, then the 1-epoch short run with --wandb-mode online (never dry mode, it disables W&B); report the four eval/tracking/ families.
 ```
 
 ---

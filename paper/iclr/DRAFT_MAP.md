@@ -12,13 +12,13 @@
 | Step | Section | State | Figures it owns |
 |------|---------|-------|-----------------|
 | — | [Abstract](#-abstract) | candidate 3 adopted into the tex | none |
-| 1 | [Introduction](#1--introduction) | settled and compiled | F1 |
-| 2 | [Background and Related Work](#2--background-and-related-work) | ¶1a and ¶1b compiled; machinery paragraphs (¶2 diffusion, ¶3 score, ¶4 guidance, ¶5 close) not walked | none |
+| **1 (current)** | **[Introduction](#1--introduction)** | **refine pass open 2026-09-20: 34 sentences walked for faults, 24 marked, nothing edited yet** | **F1** |
+| 2 | [Background and Related Work](#2--background-and-related-work) | compiled in full: ¶1a, ¶1b, then ¶2 to ¶5 with run-in heads, build passed 2026-09-03 | none |
 | **3 (done)** | **[Missing Implications: The Plurality Term](#3--missing-implications-the-plurality-term)** | **six paragraphs placed and compiled; probability-space blocks in Appendix `app:poe-derivation`** | **F1b** |
-| **4 (current)** | **[Restoring the Plurality Term Restores Composition](#4--restoring-the-plurality-term-restores-composition)** | **main text compiled (4.1, 4.7 the coverage grids, 4.4 with figure, 4.6); the 4.5 slot open on the size-curve check** | **`fig:window-extends`, `fig:window-starts-later`, then `fig:window-map` last in the tex; the strength grids staged in Extras; F3 pending; F5 demoted to prose** |
+| 4 | [Restoring the Plurality Term Restores Composition](#4--restoring-the-plurality-term-restores-composition) | main text compiled (4.1, 4.7 the coverage grids, 4.4 with figure, 4.6); the 4.5 slot open on the size-curve check | `fig:window-extends`, `fig:window-starts-later`, then `fig:window-map` last in the tex; the strength grids staged in Extras; F3 pending; F5 demoted to prose |
 | 5 | [Learning the Plurality Term](#5--learning-the-plurality-term) | ¶5.1 to ¶5.5 compiled with F9 placed; ¶5.6 numbers await the rescore | F9 placed, F10 awaiting render; F8a, F8b owed to ¶5.6; F8 reserved; F6, F7, F7a staged in Extras |
-| 6 | [Discussion](#6--discussion) | not walked, bare heading in the tex | none |
-| 7 | [Conclusion](#7--conclusion) | not walked, bare heading in the tex | none |
+| 6 | [Discussion](#6--discussion) | five paragraphs compiled 2026-09-10; ¶6.3 parked, two caveats owed to ¶6.4 | F7 owed a slot; ¶6.1 compiled without referencing it |
+| 7 | [Conclusion](#7--conclusion) | **compiled 2026-09-10, build passed, 12 pages; the spine clause left unwritten** | **none** |
 
 ## Table of contents
 
@@ -47,13 +47,15 @@ composition fails and what fixes it.
 
 **Where the walk is**
 
-Section 3, the plurality term, is compiled and in the tex. Six paragraphs placed, build passing,
-no overfull lines. The walk is open at section 4, which has a heading and no prose.
+Every section is compiled, ¶5.6's numbers excepted. The walk is open at section 1, the
+Introduction, in refine mode: its 34 sentences have been read off the page and diagnosed, 24 carry
+a named fault, and no sentence has been touched. The fault table is in the Introduction's own
+entry.
 
 **What the next compile will land**
 
-Section 4's first paragraph, once the section is broken into paragraphs and walked. Nothing is
-queued behind it.
+¶6.1, what the adapter changes inside the model and the cap on that claim, once its sentences are
+walked and placed. ¶5.6's numbers are queued separately behind the rescore.
 
 ## How this manuscript is written
 
@@ -62,6 +64,22 @@ Navigation: ⬅️ [Quick context](#quick-context-where-you-are) | 📋 [TOC](#t
 Applies to every section, not only the one being drafted.
 
 **Short sentences, one idea each.**
+
+**The caption reads the picture, the paragraph says what it means.** A caption carries the claim
+sentence, the setup (pair, seed, what a row and a column are) and how to read the panels. The
+paragraph carries the interpretation and how the result serves the section's argument, and it
+never narrates panels. A paragraph that describes columns is a caption that has escaped, and the
+fix is to move it back rather than to shorten it.
+
+**A figure sits below the paragraph that argues from it wherever the page allows.** Figures 2 and
+3 are pinned with `[H]` from the `float` package. Figure 4 uses `[!b]` with the float declared
+after its paragraph. Figure 5 closes section 4 with `[H]`, declared after the joint-prompt closing
+sentence and before the section 5 heading, because a bottom float there lands after the heading
+instead. The rule behind both: leaving `t` in the specifier lets
+LaTeX back-fill the top of the page, and declaring the float before the paragraph puts the picture
+ahead of the section heading. Figures 1 and 6 are too tall for the space their paragraphs leave,
+and both `[H]` and `[!b]` move them further from their reference, so they stay ordinary floats. Any change to caption length
+moves floats, so rebuild and check placement and page count before calling a caption edit done.
 
 **No dash used as punctuation between clauses, and no colon inside a sentence.** Rewrite with a
 comma, a full stop, or parentheses.
@@ -254,7 +272,7 @@ before the failure is admitted.
 
 - [x] **c2.1** T2I diffusion models render complex multi-concept scenes with high fidelity from a single prompt, the joint prompt staged here as the reference case. Two sentences: capability, then the cat-and-dog reference case
 - [x] **c2.2** known compositional weaknesses, fused with the scale remedy. "Such as" carries the list; no verdict word on the models
-- [x] **c2.3** placed as two sentences, promise first then product of experts as the standard tool. The logical-conjunction gloss was cut by the user's edit
+- [x] **c2.3** placed as two sentences, promise first then [product of experts](/home-mscluster/mmolefe/goal-setting/learning/deep-learning/diffusion-models/poe-composition-diffusion/plans/07-poe-factorisation-and-normaliser.md) as the standard tool. The logical-conjunction gloss was cut by the user's edit
 - [x] **c2.4** placed. Dependence stated then instantiated on both measured pairs (butterfly x meadow composes, cat x dog blends). Takes the pair contrast that move 6 was holding
 - [x] **c2.5** placed and pinned: scoping concession, then the definition, then the name. "As its own object" chosen over "independently" to stay inside what the instance-count scorer supports
 - [x] **c2.6** placed as two sentences: conflicting pairs defined (contention kept descriptive), then the inference. "The same text-to-image model" asserts the one-network identity for the first time, which is what licenses blaming the combination
@@ -443,10 +461,10 @@ not backed by this repo's runs.
 **No numbers appear in any candidate**, because the agreed text carries none. Nothing here waits
 on a review file.
 
-### 1. ✅ Introduction
+### 1. ✍️ Introduction (reopened 2026-09-10, prose pass on ¶2.1)
 
 **Terms this paper has, and the one it must not invent.** The introduction defines joint
-prompting (also called Mono) and inference-time composition. Those two, plus product-of-experts
+prompting (also called [Mono](../../context/world/poe-composition.md)) and inference-time composition. Those two, plus product-of-experts
 sampling, are the only names for the settings. "The composed setting" was used loosely during the
 walk and is not a defined term, so it does not appear in the manuscript.
 
@@ -462,11 +480,157 @@ the labelled equation `eq:poe-composition` at
 [iclr2027_conference.tex:106](iclr2027_conference.tex#L106), which is not equation 1. The
 unstarred align block above it consumes numbers 1 to 4, so prose refers to the rule with
 `\eqref` and never with a hand-written number. Home notation set here: noise prediction epsilon_theta, the score relation stated inline,
-and r_t named as the gap later sections define.
+and [`r_t`](../../context/world/interaction-term.md) named as the gap later sections define.
 
-- [x] **2.1** scenes are compositional
+**Refine pass opened 2026-09-20.** ← current
+
+All 34 sentences of the introduction plus the three contribution bullets were read off the page and
+diagnosed. 24 carry a named fault, 13 are clean, nothing has been edited. Nothing reaches the tex
+until a paragraph's sentences are settled and `compile` shows the diff, so every `was:` line owed to
+an edit is still unwritten.
+
+**Three faults are named here for the first time**, added to the skill's list in this pass.
+
+*Dangling antecedent.* A definite reference whose referent was deleted or never stated. Tell: the
+reader cannot point at the noun. Row 22 is the live case.
+
+*Said twice.* The same fact asserted in two places, each copy individually load-bearing so neither
+reads as decoration. Tell: delete one and nothing is lost. Distinct from decoration, which is one
+copy that was never needed.
+
+*Source unattached.* The claim has a register row and no `\citep` on it. Distinct from a claim past
+its evidence, where the source does not exist.
+
+*Off-spine.* The passage argues a compositional failure this paper does not study. Tell: it does not
+trace to the spine's line for section 1.
+
+| # | The sentence, first words | Fault | What it costs |
+|---|---|---|---|
+| 1 | Natural images usually depict several objects | clean | |
+| 2 | A cat may sit beside a dog | clean | the five-to-three join is the 2026-09-10 decision, left alone |
+| 3 | The model must also place them, so a cup | off-spine, rule-of-three tail | the paragraph closes on relational placement (above, underneath, merged), which the paper never studies; its failure is co-presence. The reader is aimed at the wrong problem and has to re-aim at ¶2.4 |
+| 4 | Recently, text-to-image diffusion models have demonstrated | machine tell | `Recently` plus `remarkable ability` is survey boilerplate, and `Recent` opens rows 4 and 6 both |
+| 5 | Much of this progress has been driven | gerund tail, false-precision quantifier | `enabling these models to` bolts an interpretation on; `a broad range of` stands where a number or nothing belongs |
+| 6 | Recent work has shown that these models | decoration | physical structure is never used again in the paper; the register's own cap on this row (structure, not dynamics) makes it narrower still |
+| 7 | Despite this progress, they remain unreliable | false-precision quantifier, duplicate key | `several forms of` for a list of three that follows it; `huang2025t2icompbench` is cited twice inside one sentence |
+| 8 | Many specific concept compositions also remain rare | clean | the paragraph's hinge into inference-time composition |
+| 9 | In text-to-image diffusion models, the conditioning signal | term before thing, said twice | queued piece 1 from 2026-09-10, still unresolved: `$(c)$` is a bracketed symbol with no job here, `typically derived` hedges, `denoising network` is a third name for what §2 calls epsilon_theta. §2 ¶2 states conditioning again |
+| 10 | Models such as Stable Diffusion condition | decoration | nothing later depends on this sentence; it repeats row 9 with a name attached |
+| 11 | For example, one model conditioned on a cat and a dog | clean | `one model` and `the whole request` are load-bearing, inverted by ¶2.4 |
+| 12 | We call this setting joint prompting, or Mono | clean | Mono is earned by the notation decision above |
+| 13 | We contrast this with inference-time composition | clean | |
+| 14 | For example, one model may be conditioned | clean | |
+| 15 | Their predictions are then combined | clean | PoE defined at first use |
+| 16 | Unlike joint prompting, the composed model | clean | |
+| 17 | In practice, this setting often fails to preserve | said twice | rows 17 and 18 are one fact in two sentences |
+| 18 | Instead, the composition can collapse into a single entangled | term drift | `entangled or hybrid` hedges between two names; the paper elsewhere says blended animal, and the repo says chimera. Four names for one thing |
+| 19 | The property lost in this collapse is what we call plurality | apposition chain | `property` twice in one sentence, the definition stacked on the naming |
+| 20 | We study this gap between joint generation | doubled verb, term drift | `study and investigate` is one act; `joint generation` is a fourth name for joint prompting |
+| 21 | In diffusion models, the noise prediction is a scaled negative score | said twice | this is `eq:score` in §2 ¶3, stated there properly with its own label |
+| 22 | The assumption then gives the product-of-experts composition rule | dangling antecedent | the only sentence naming an assumption was deleted 2026-09-10. Also the equation ends on a comma and no sentence completes it |
+| 23 | This linear composition is exact only when | source unattached, hedge | `bradley2025mechanisms` owns exactly this claim per the register and appears only in Figure 1's caption. `truly` adds nothing to `conditionally independent` |
+| 24 | Natural concepts, however, interact through appearance | rule-of-three list, uncited | three matched items because three sounds complete, and no source for any of them |
+| 25 | The gap between what the true joint model would predict | apposition chain | the noun is re-described through a trailing aside |
+| 26 | In our setting it is narrowed to plurality | rule-of-three tail, said twice | `measure, understand, and learn to correct` is the contributions list in miniature, twelve lines above the contributions list. Plurality was already named at row 19 |
+| 27 | To make this concrete, consider two visually similar concepts | scaffolding, colon reveal | `To make this concrete` is framing; the colon stages the payload instead of saying it |
+| 28 | When prompted jointly, a single model trained on both | claim past the evidence | stated as what the model does. F1's own register row says the joint reference is two dogs on seeds 10 and 13 and ambiguous on 14 and 15, and the eval-reference finding puts cat x dog wrong on 4 of 8 held-out seeds. True at seed 12, not in general |
+| 29 | When the same two concepts are composed using product-of-experts | clean, figure placed late | the only reference to Figure 1, five paragraphs after the float is declared |
+| 30 | This failure is not incidental; it reflects a systematic gap | machine tell, punctuation | contrast frame, nobody claimed the smaller thing; semicolon doing a clause separator's work; `throughout this paper` is a significance tail |
+| 31 | Understanding and fixing this gap matters because | significance inflation, uncited | `the practical path forward for generative models` is an unsourced claim about the field |
+| 32 | As the space of possible concept combinations grows | clean | `du2024compositional`'s second use in the section, which is the redundancy rather than the sentence |
+| 33 | Composition methods that work reliably, even for concept pairs | colon reveal, echo | the clause after the colon restates the clause before it, `reliably` and `reliable` inside one sentence, `unlock a new mode` inflates |
+| 34 | This paper traces a specific failure in one composition method | said twice | the contributions list follows two lines later and says it with specifics |
+| C1 | We define the plurality term | clean | |
+| C2 | We show the plurality term is the signal | punctuation, weak verb | semicolon as clause separator; `do not have this effect` where the control result has a number |
+| C3 | We learn a lightweight correction that transfers | source unattached, number owed | LoRA has no bib entry anywhere in the paper. No number appears in the whole introduction; the held-out rate lives in a review file and is owed here |
+
+**Cross-cutting findings from the same pass.**
+
+*Figure 1 is declared before ¶2.1 and first cited in ¶2.5.* Five paragraphs of separation, and the
+reader meets the equation at ¶2.4 before the picture of the failure it explains. Either the float
+moves down or the citation moves up, and the `order` question below decides which.
+
+*Figure 1's caption argues.* 110 words, and the middle of it derives why the product peaks between
+two separated modes, which is ¶2.4's job and §3's job. The map's own rule is that the caption reads
+the picture and the paragraph says what it means.
+
+*Figure 1's register row is stale.* The tex includes
+`where-the-product-lands-on-the-manifold-seed12-surface.png`, a 1.6 MB PNG rendered 2026-09-17. The
+F1 row in [figures.md](figures.md) still names `-seed12-print.pdf` and the `--layout print` command,
+and still describes the X on the saddle and the dashed distance the current render does not carry.
+The row needs re-reading against the file before any caption claim is judged against it.
+
+*The introduction carries two paragraphs of machinery that later sections derive properly.* ¶2.4's
+score relation is `eq:score` in §2 ¶3, and `eq:poe-composition` is re-derived line for line in §3.
+Cutting the score sentence and keeping only the rule is the largest simplicity move available.
+Mechanical consequence: `eq:poe-composition`'s label is referenced by `\eqref` from §2 ¶4 and §3
+¶1, so the label moves with the equation rather than being deleted.
+
+*Citation counts.* Twelve keys in the section, four of them used twice. `huang2025t2icompbench`
+twice inside one sentence, `du2024compositional` twice across ¶2.2 and ¶2.6, `liu2022compositional`
+twice, and `bradley2025mechanisms` only inside the caption while row 23 asserts its claim in the
+body. One key missing entirely: LoRA.
+
+*Order.* The reader currently meets the failure in this sequence: scene, progress, joint prompting,
+composition and plurality, the score relation, the composition rule, the interaction term, the cat
+and dog, why it matters. The picture of the cat and the dog sits on page one throughout. Running
+the concrete failure straight after ¶2.4, before any equation, is the resequencing `order` would
+propose.
+
+- [x] **2.1** scenes are compositional (prose pass 2026-09-10, five sentences to three, compiled)
+
+**¶2.1 assembled draft, all three sentences placed 2026-09-10.** The paragraph goes from five
+sentences to three. Old sentences 2 and 3 join on a `so`, and old sentences 4 and 5 join the same
+way, which puts the requirement and its failure modes in one breath instead of two.
+
+> Natural images usually depict several objects that appear together and interact as part of a
+> coherent scene. A cat may sit beside a dog, or a cup may rest on a table, so generating such a
+> scene takes more than producing each object correctly. The model must also place them, so a cup
+> described as resting on a table sits on the tabletop rather than floating above it, appearing
+> underneath it, or merging into its surface.
+
+**The cat/dog example is deliberately left unpaid here.** Sentence 2 names it and sentence 3 uses
+the cup instead. It gets its payoff in ¶2.5 with Figure 1, which is where the paper's running
+example belongs.
+
 - [x] **2.2** models scale, compositional reasoning stays brittle
-- [x] **2.3** joint prompting against inference-time composition
+- [x] **2.3** joint prompting against inference-time composition (naming pair reworked and compiled 2026-09-10; sentences 1 and 2 still carry the queued-piece-1 problems)
+
+**Three pieces queued in this pass, raised 2026-09-10.**
+
+1. ¶2.3 sentences 1 and 2, [tex:100](iclr2027_conference.tex#L100). `$(c)$` is smuggled in as a
+   bracketed symbol with no job in the introduction, `typically derived` hedges what this paper
+   fixes, and `denoising network` is a third name for what section 2 later calls
+   $\epsilon_\theta$. Set aside 2026-09-10, the tex still reads as it did.
+2. ¶2.3 sentences 3 and 4. The name arrives before the example. Swap them, so the cat-and-dog
+   prompt is shown and then called joint prompting. Placed and compiled 2026-09-10.
+3. ¶2.4a, [tex:104](iclr2027_conference.tex#L104), the independence sentence. Resolved by
+   deletion 2026-09-10: the whole paragraph is commented out in the tex, so the stub and the
+   throwforward to section 3 are both gone from the introduction. The assumption is still stated
+   and derived in section 3.
+
+**The deletion leaves a dangling antecedent at [tex:106](iclr2027_conference.tex#L106).** That
+paragraph reads "The assumption then gives the product-of-experts composition rule", and the only
+sentence naming an assumption was the deleted one. Open, no candidate accepted, and it is row 22 of
+the 2026-09-20 fault table below.
+
+**¶2.3 assembled draft, the naming pair placed 2026-09-10.** The example now comes before the
+name, and the paragraph ends by saying what Mono is for, which is the fact `r_t` at
+[tex:113](iclr2027_conference.tex#L113) depends on. Sentence 2's tail is trimmed because the
+example restates it one comma later. Sentences 1 and 2 are otherwise untouched, queued piece 1
+was set aside.
+
+> In text-to-image diffusion models, the conditioning signal $(c)$ is typically derived from a
+> text prompt and used to guide the reverse process. Models such as Stable Diffusion
+> \citep{rombach2022high} condition the denoising network on these text representations. For
+> example, one model conditioned on \textit{``a cat and a dog''} handles the whole request,
+> placing both animals in the same scene. We call this setting \textbf{joint prompting}, or
+> \textbf{Mono}, and it is the reference the rest of this paper measures against.
+
+**`one model` and `the whole request` are load-bearing.** ¶2.4 inverts both when it says the
+concepts are represented by separate models. Rewording either one breaks the contrast.
+
+
 - [x] **2.4** the composition rule, `eq:poe-composition`, and r_t named
 - [x] **2.5** the concrete failure on cat times dog, with Figure 1
 - [x] **2.6** why this matters
@@ -476,7 +640,7 @@ and r_t named as the gap later sections define.
 
 ### 2. 📚 Background and Related Work
 
-State: not walked, a bare heading in the tex. One section now, not two. Its single claim, from
+State: compiled in full on 2026-09-03, six paragraphs, build passed. Its single claim, from
 [SPINE.md](SPINE.md): combining several of one network's own noise predictions linearly is already
 standard practice, and the composition methods that extend it build on the independence assumption
 without testing it.
@@ -484,19 +648,22 @@ without testing it.
 Its paragraphs are numbered **§2 ¶1** to **§2 ¶3**, not 2.1 to 2.3, because those labels belong to
 the introduction's seven paragraphs.
 
-Six paragraphs. ¶1 frames the section and ¶6 closes it on the gap, so the section reads as an
-argument rather than a recap. ¶6 is the claim paragraph, not an extra.
+Six paragraphs as compiled: ¶1a (what composing by product means, and the question it begs),
+¶1b (the survey of methods that keep the product as the target), then the machinery under
+run-in heads, ¶2 Diffusion models, ¶3 Noise predictions are scores, ¶4 Classifier-free
+guidance, and ¶5 the unheaded close on the independence assumption, handing section 3 its
+object. Four labelled equations: `eq:forward`, `eq:objective`, `eq:score`, `eq:cfg`.
 
 - [x] **§2 ¶1a** what composing by product means, and the question it begs. Six sentences, all
-      placed, not yet compiled. The arc: the target named (the product), what the
-      product favors (images every expert accepts at once), what a prompt intends (distinct
+      placed, compiled 2026-08-27. The arc: the target named (the product), what the
+      product favors (images every [expert](../../context/world/poe-composition.md) accepts at once), what a prompt intends (distinct
       objects co-occurring in one scene), and the open question, whether the product encodes that
       co-occurrence. The question must stay a question; section 3 answers it, and Figure 1's
       caption already draws the same contrast. The question is ours, uncited by design: the RRR
       check (2026-08-27, quotes on 2302.11552's row) confirmed Du treats the product as the
       correct target and never asks it. One cite gap left: Hinton's PoE origin, unregistered,
       would sit on the product-semantics sentence.
-- [x] **§2 ¶1b** the survey. Five sentences, all placed, not yet compiled. The opener with its
+- [x] **§2 ¶1b** the survey. Five sentences, all placed, compiled 2026-08-27. The opener with its
       three-key citep (CO3, FactorDiff, the distillation LoRA), direct addition (Liu), the
       mismatch proof and its Markov chain correction (Du), the sharper correctors (Zhang's
       annealed importance sampling, the Skreta pair's sequential Monte Carlo), and the seam, which
@@ -534,9 +701,107 @@ argument rather than a recap. ¶6 is the claim paragraph, not an extra.
   **¶1b is fully placed**, five sentences (the gap sentence cut as redundant with the opener).
 
   **Placed so far (¶2):** "A diffusion model generates an image by starting from pure Gaussian
-  noise and removing noise step by step. Between an image $x_0$ and pure noise $x_T$ sits a fixed
-  sequence of increasingly noised versions, produced by adding Gaussian noise one step at a time
-  \citep{sohldickstein2015deep, ho2020denoising}."
+  noise and removing noise step by step. A fixed process turns an image $x_0$ into pure noise
+  $x_T$, adding Gaussian noise one step at a time to produce the intermediate versions
+  $x_1, \dots, x_{T-1}$ \citep{sohldickstein2015deep, ho2020denoising}. Since each step's noise
+  is independent and Gaussian, the whole chain from $x_0$ to any $x_t$ collapses into one jump,
+
+  \begin{equation}
+  x_t = \sqrt{\bar\alpha_t}\, x_0 + \sqrt{1-\bar\alpha_t}\,\epsilon, \qquad \epsilon \sim \mathcal{N}(0, I),
+  \label{eq:forward}
+  \end{equation}
+
+  with $\bar\alpha_t = \prod_{s\le t}\alpha_s$ the accumulated product of the per-step noise
+  levels. A network $\epsilon_\theta(x_t, t \mid c)$ is trained to predict which noise $\epsilon$
+  was added at step $t$, given the noisy latent $x_t$ and a conditioning prompt $c$,
+
+  \begin{equation}
+  \mathcal{L} = \mathbb{E}\,\lVert \epsilon - \epsilon_\theta(x_t, t \mid c) \rVert^2.
+  \label{eq:objective}
+  \end{equation}"
+
+  **Equation B placed as a numbered `equation` environment**, `\label{eq:objective}`, verb set to
+  "predict" (candidate B's verb) inside candidate B's framing, dropping the "learned half is the
+  reverse" contrast sentence: the fixed/learned pairing with equation A is left implicit rather
+  than stated outright, by choosing B over the merged A/B option.
+
+  **Placed so far (¶3):** "A network that predicts the added noise is also estimating the score
+  of the noised data distribution, the gradient of its log density
+  \citep{song2021scorebased}. The noise prediction is the score scaled by the noise level,
+
+  \begin{equation}
+  \epsilon_\theta(x_t, t \mid c) = -\sigma_t\, \nabla_{x_t} \log p_\theta(x_t \mid c),
+  \label{eq:score}
+  \end{equation}
+
+  where $\sigma_t = \sqrt{1-\bar\alpha_t}$ \citep{dhariwal2021diffusion}."
+
+  **The identity placed in line 96's orientation**, epsilon on the left, so the introduction's
+  inline relation and this display read symbol for symbol with $\sigma_t$ now defined. It is
+  Dhariwal and Nichol's section 4.2 equation 11 rearranged, the same identity; a reviewer checking
+  the source will see the rearrangement. The frame is the shortest of three offered (D3): no
+  pointer back to `eq:forward`, trusting the reader to recognise $\sqrt{1-\bar\alpha_t}$ from one
+  paragraph earlier. Cite closes the sentence.
+
+  **¶3 is fully placed**, two sentences and `eq:score`, awaiting ¶4 and ¶5 before compile.
+
+  **Placed so far (¶4):** "Classifier-free guidance trains a single network as both a conditional
+  and an unconditional model, by replacing the prompt with a null token on a fraction of the
+  training steps, and at every sampling step combines the two predictions it produces
+  \citep{ho2022classifier},
+
+  \begin{equation}
+  \hat\epsilon(x_t, t \mid c) = \epsilon_\theta(x_t, t) + w\,\big[\,\epsilon_\theta(x_t, t \mid c) - \epsilon_\theta(x_t, t)\,\big].
+  \label{eq:cfg}
+  \end{equation}
+
+  Raising $w$ trades sample diversity for fidelity to the prompt. The composition rule in
+  \eqref{eq:poe-composition} combines one conditional prediction per concept with the same
+  unconditional one."
+
+  **¶4 is fully placed**, three sentences and `eq:cfg`, awaiting ¶5 before compile.
+
+  **Placed so far (¶5):** "The combination in \eqref{eq:poe-composition} samples from a
+  composition of the concepts' conditional marginals under the assumption that the concepts are
+  statistically independent given the image. \citet{bradley2025mechanisms} study when linear
+  score combination provably achieves the intended composition, whether reverse-diffusion
+  sampling can then generate it, and the conditions under which it fails.
+  \citet{gaudi2025coind} show that standard conditional diffusion models violate the independence
+  assumption even when every attribute composition is observed in training, more severely when
+  only a subset is, and enforce the assumption during training by minimising the Fisher
+  divergence between the model's joint conditional and the product of its single-concept
+  conditionals. The next section measures what that failure removes from a pretrained model."
+
+  Compiled with "joint conditional and the product of its single-concept conditionals" in place
+  of the validated "joint and marginal distributions": CoInD's "marginals" are the conditionals
+  $p(X \mid C_i)$, a usage the paper itself calls non-standard on its p.2, so the sentence states
+  what the word denotes (their eqs. 9 and 11, p.6) rather than importing a usage a reader without
+  their glossary would misread.
+
+  **¶5 is fully placed**, four sentences. The sketched gap sentence ("a model that was not trained
+  to satisfy the assumption is what every method above composes, and on such a model the size of
+  its failure has not been measured") was cut: after sentences 2 and 3 the reader supplies the gap
+  unaided, and its one load-bearing word, that the setting is a pretrained model, moved into the
+  baton sentence in three words. The cut also removed the "measured / measures" echo across the
+  last two sentences.
+
+  Sentence 3 is source-checked, one location per clause on the register row: Table 1, p.5 for
+  the full-support and subset clauses, eq. (9) and eq. (11), p.6 for the Fisher-divergence clause,
+  Algorithm 1, p.21 and appendix D.3, p.22 for the sampler being untouched at inference. Every
+  word is licensed, with one reading carried: the paper's "marginals" are the conditionals
+  p(X|C_i), declared non-standard on its p.2, and the sentence's "marginal distributions"
+  inherits that usage.
+
+  Kept as the third statement of the assumption on purpose: it binds ¶4's last sentence to the
+  assumption by name, in CoInD's own form, so sentences 2 and 3 have an antecedent.
+
+  Sentence 1 chosen over the score-matching version (D): the author preferred the plain
+  "also estimating" statement to naming denoising score matching on first use. Its original tail,
+  "up to a scaling factor set by the noise level", was trimmed after the identity placed, because
+  the identity's lead-in says the same thing; the scaling now enters once, in sentence 2.
+
+  **Equation A placed as a numbered `equation` environment**, `\label{eq:forward}`, matching the
+  paper's existing convention for `eq:poe-composition`.
 
   The Du sentence is proof-backed (RRR section 4, eqs. 11-12, Figure 2, verbatim quotes on the
   register row), honouring the condition attached when the expert-definition sentence was placed.
@@ -574,32 +839,60 @@ argument rather than a recap. ¶6 is the claim paragraph, not an extra.
 
 **Section 2 carries its equations.** Decided in the walk: the reader needs the material to follow
 the paper, so ¶2 to ¶4 each state their standard result as an equation or align block, not as
-prose with a citation. ¶2 the forward process and the noise-prediction objective, ¶3 the
+prose with a citation. ¶2 the [forward process](/home-mscluster/mmolefe/goal-setting/learning/deep-learning/diffusion-models/sampler-correctors-for-composition/plans/06-the-forward-process.md) and the noise-prediction objective, ¶3 the
 noise-to-score identity in full (the introduction's line 96 states it inline and compressed; this
 is where it is stated properly, per `dhariwal2021diffusion` section 4.2 equation 11), ¶4 the
 guidance rule. The `step` control walks them one equation per round.
-- [ ] **§2 ¶2** diffusion, five pieces sketched, walking sentence 1. Generation stated as
-      noise-to-image, training's forward process as image-to-noise with `x_0`, `x_t`, `T` named in
-      prose, the closed-form jump (eq A) defining `alphabar_t` because ¶3's identity needs it, the
-      noise-prediction objective (eq B), and a closer tying the outputs back to ¶1b's survey. The
-      per-step Gaussian is deliberately absent (nothing downstream uses it), and condition
-      dropping is ¶4's. Cites `sohldickstein2015deep` and `ho2020denoising` on the forward-process
-      sentence.
-- [ ] **§2 ¶3** the score view. Why the network's output is a scaled score, and why that is what
-      licenses adding two predictions together at all. It may not restate the noise-to-score
-      relation, which is already at [iclr2027_conference.tex:96](iclr2027_conference.tex#L96) where
-      `eq:poe-composition` first needs it. Cites `song2021scorebased` for the score-matching framing
-      and `dhariwal2021diffusion` for the identity itself, section 4.2 equation 11.
-- [ ] **§2 ¶4** classifier-free guidance. Condition dropping gives one network two predictions, and
-      guidance combines them linearly. This is the first linear combination in the paper, and
-      section 3's align block 3.2b leans on it. Cites `ho2022classifier`.
-- [ ] **§2 ¶5** close, and the section's claim, now formally stateable because ¶2 to ¶4 built the
-      machinery. The linear combination is exact only under conditional independence, Bradley
-      2502.04549 states the condition and names the failure modes, CoInD 2503.01145 shows training
-      does not produce the property and fixes it in the loss, and no one tests it at inference.
-      Ends handing section 3 the assumption. Does not restate the contribution bullets at
-      [iclr2027_conference.tex:117-123](iclr2027_conference.tex#L117-L123). CO3 2509.25940 moved to
-      ¶1's survey or the baseline discussion; it no longer sits here.
+- [x] **§2 ¶2** diffusion, four sentences, compiled 2026-09-03. Generation stated as
+      noise-to-image, the fixed forward process with `x_0`, `x_t`, `T` named in prose, the
+      closed-form jump (`eq:forward`) defining `alphabar_t` because ¶3's identity needs it, the
+      noise-prediction objective (`eq:objective`). No closer: cut as an unnecessary bridge
+      sentence: ¶3 opens by picking up $\epsilon_\theta$ directly. The per-step Gaussian is
+      deliberately absent as a standalone equation (nothing downstream indexes it; it survives
+      only inside `eq:forward`'s derivation clause), and condition dropping is ¶4's. Cites
+      `sohldickstein2015deep` and `ho2020denoising`.
+- [x] **§2 ¶3** the score view, two sentences and one display, compiled 2026-09-03. No closer: the sketched additivity sentence (score of a product is the sum of the scores, and its $t>0$ caveat) was cut because section 3's align block 3.2b derives that step one move per line, which is the paragraph that first needs it, and Du's caveat already sits cited in ¶1b. ¶3 ends on `eq:score`, as ¶2 ends on `eq:objective`. The network trained
+      in `eq:objective` is a scaled score, `song2021scorebased` for the framing; the identity
+      itself pins line 96's undefined $\sigma_t$ to $\sqrt{1-\bar\alpha_t}$ from `eq:forward`,
+      `dhariwal2021diffusion` section 4.2 equation 11; then why a score licenses addition at all
+      (log turns products into sums, gradient distributes), which is what section 3's derivation
+      assumes the reader already believes. It completes line 96's relation rather than restating
+      it. **Label check done**: `eq:score` is free to take. The appendix's own `\ref{eq:score}`
+      at line 347 is inside the fully commented-out placeholder Proposition block, not active tex,
+      so there is no live collision. Placing this equation as `eq:score` costs nothing.
+- [x] **§2 ¶4** [classifier-free guidance](/home-mscluster/mmolefe/goal-setting/learning/deep-learning/diffusion-models/poe-composition-diffusion/plans/02-cfg-as-base-plus-omega-difference.md), three sentences and one display, compiled 2026-09-03. Written in
+      Ho and Salimans' own framing, from their abstract fetched verbatim 2026-09-03: a single
+      network jointly trained as conditional and unconditional model (the null-token mechanism
+      kept as a subordinate clause, a body-level detail the tex already relies on at line 239),
+      the two predictions combined at every sampling step (`eq:cfg`, in 3.2b's exact notation),
+      raising $w$ trades diversity for fidelity, and `eq:poe-composition` described as one
+      conditional prediction per concept combined with the same unconditional one. No "push",
+      "extrapolate" or "guidance weight": none is on their page. Bare $\hat\epsilon$ kept; it
+      shares the symbol with 3.2b's weighted form, and the arguments ($\mid c$ here, none there)
+      disambiguate. No number for $w$, no dropout rate. Defines the null-prompt prediction
+      $\epsilon_\theta(x_t,t)$ that `eq:poe-composition` has used unexplained since line 99. Cites
+      `ho2022classifier`.
+
+  **Done in the ¶2 to ¶5 compile**: section 3's "attaching a weight $w_i$ to each push" became
+  "to each conditional term", since ¶4 never introduces "push".
+
+  **Guidance-weight convention, so 6.5 and 7.5 stop looking like a discrepancy.** The runs use
+  diffusers' `guidance_scale` $s = 7.5$ (`poe_repair/config.py:15` and every experiment config),
+  which multiplies the conditional term in $(1-s)\,\epsilon_u + s\,\epsilon_c$. The push form
+  this section and 3.2b write, $\epsilon_u + w\,[\epsilon_c - \epsilon_u]$, has $w = s - 1 = 6.5$.
+  The map's "$w = 6.5$" lines and the code's 7.5 describe the same runs. The manuscript quotes
+  neither in section 2; the value belongs to the appendix's run configuration, stated with its
+  convention.
+- [x] **§2 ¶5** the close, four sentences, all placed and source-checked (the sketched gap
+      sentence cut, see the placed block). The assumption in CoInD's words tied to the manuscript's, Bradley's three
+      questions in his order (cited for the questions, since the condition and failure modes are
+      body-level and the words "chimera" and "collapse" are this project's glosses), CoInD's
+      finding and Fisher-divergence fix in their sequence, the gap (neither examines a pretrained
+      model at inference), and the baton to section 3. No numbers. It must not restate the
+      assumption a third time beyond sentence 1 (lines 94 and 103 already do); `cut1` is the live
+      alternative. The eqref-tie loose line is absorbed (sentence 1 carries `eq:poe-composition`,
+      sentence 5 the tracing) and has been dropped. Cites `bradley2025mechanisms`,
+      `gaudi2025coind`, both resolving.
 
   **The survey in ¶1 may not say the experts are one network.** 2506.08894 formalises the product
   across heterogeneous experts and 2412.17762 superposes different models. One network under two
@@ -619,7 +912,7 @@ counting fill those placeholders. Section 2 stating them again would duplicate l
 **The section's claim already has its source.** The independence assumption, and the fact that
 composition methods build on it without testing it, comes from Bradley et al.,
 [arXiv 2502.04549](https://arxiv.org/abs/2502.04549), which states the condition under which
-linear score addition is exact and separates two failure modes: the wrong target (a chimera) and
+linear score addition is exact and separates two failure modes: the wrong target (a [chimera](../../context/world/chimera.md)) and
 a non-smooth path (collapse). It is registered, it has a bib entry (`bradley2025mechanisms`), and
 2.1 is written against it. CoInD ([arXiv 2503.01145](https://arxiv.org/abs/2503.01145)) sits beside
 it as the training-time counterpart, the paper that checked whether training actually produces the
@@ -776,9 +1069,20 @@ the eps_true block of 3.6e, and the two labelled display equations of 3.3.
   the pair does not fuse merely because the two animals look alike, so 3.4 may not attribute the
   failure to visual similarity.
 - [x] **3.5** how r_t is obtained in practice, and the boundary of that proxy. Complete, six
-      sentences placed across five slots.
-  - [x] 3.5.1 In practice both predictions come from one pass of the network per denoising step,
-        evaluated on the first concept, the second concept, the joint prompt, and no prompt.
+      sentences placed across five slots, closing on the pair 3.5.5 and 3.5.6.
+  - [x] 3.5.5 Every term in r_t is one network's own output at the state the sampler has
+        reached, so the missing piece can be measured on any run without knowing the true joint
+        distribution. The paragraph's payoff: what the reader now has.
+  - [x] 3.5.6 Restoring it can therefore only recover what joint prompting already does, which is
+        the behaviour inference-time composition is trying to reproduce. The cap on 3.5.5, and it
+        absorbs the earlier closer that stated the purpose separately, so the boundary is stated
+        twice in the paragraph rather than three times.
+  - [x] 3.5.1 The composed prediction and the joint prediction are built from the same four
+        conditional evaluations at every denoising step: the first concept, the second, the joint
+        prompt, and no prompt. The two predictions stay the grammatical subject and the four
+        evaluations arrive as a list, so the reader never counts two against four. The sentence
+        is definitional, about where the two quantities come from, so it does not open on an
+        implementation note.
         "Four-branch pass" is the code's word for how the four conditionings are batched into one
         UNet call and does not appear in the manuscript.
   - [x] 3.5.2 Both are read at the same noisy latent, the one the corrected sampler is currently
@@ -1051,7 +1355,7 @@ it without that prompt). The trajectory-separation move was cut, reasons recorde
     the full statement living in section 3 and in the closer.
 
   ¶4.1 is fully placed at three sentences, ready for compile.
-- [~] **4.2** absorbed by decision: compose rate is not a proposed definition, it is an
+- [~] **4.2** absorbed by decision: [compose rate](../../context/world/compose-rate.md) is not a proposed definition, it is an
       off-the-shelf detector counting animals, manually verified, and with samples this small the
       count could have been done manually. It gets one or two sentences inside 4.3, not a
       paragraph. The full treatment (definition, validation, the boxes image) lives in Extras.
@@ -1064,7 +1368,7 @@ it without that prompt). The trajectory-separation move was cut, reasons recorde
       caption. The compiled s4 differs from the placed wording per the cold read: "In every
       pair we measured, the correction is at its smallest, relative to that pair's typical
       per-step size, in the steps where it matters, so size does not explain the timing."
-      Scoped to "we measured" because elephant and penguin, one of the window's eight pairs,
+      Scoped to "we measured" because elephant and penguin, one of the [window](../../context/world/interaction-term.md)'s eight pairs,
       is in neither size set; verifying it from cached trajectories would license the wider
       claim. Original walking note follows, kept for the sentence record: sketch minted, walking
       sentence 1 of 5. Figure decided: the stacked pair, the sliding-window sample strip (cat
@@ -1405,7 +1709,7 @@ judged on whether they leave a hole.
       a single adapter on every pair together to learn the correction rule that restores the
       plurality lost during composition.*
 
-      The zoom is deliberate: model in ¶5.1, adapter here, rank-8 cross-attention LoRA in ¶5.3.
+      The zoom is deliberate: model in ¶5.1, adapter here, rank-8 cross-attention [LoRA](../../context/world/lora-corrector.md) in ¶5.3.
       "Residuals" is the right level of description; the four-branch storage detail lives in
       the appendix. The earlier procedure sentences (four stored predictions, branch list) are
       superseded and stay in [Loose lines](#loose-lines). **The trajectory boundary sentence is
@@ -1600,26 +1904,104 @@ either gets rebuilt against a norm-matched floor or it is cut, and that decision
 F9 sits in ¶5.6 beside F8a and F8b, since section 5 carries its own results. The schematic it was
 once weighed against is F10, which ¶5.2 carries as well, so the two are not alternatives.
 
-### 6. 📝 Discussion
+### 6. ✅ Discussion (five paragraphs compiled 2026-09-10)
 
-- [ ] **6.1** not yet broken into paragraphs
-- [ ] **6.2** the drift between the clean image and the noisy state, moved here from section 3.
-      Also carries the training-trajectory boundary re-homed from ¶5.2: the adapter's training
-      states all lie on uncorrected runs, a corrected run leaves them at its first corrected
-      step, so at inference the model produces corrections at states it never saw in training.
-      The independence assumption is stated over the clean image x and used at every noisy latent
-      x_t. Those are different assumptions and the derivation carries neither to the other.
-      Writing p(c_i | x_t) as an integral over the denoising posterior makes the gap exact: it is
-      a covariance between the two concepts' posteriors under p(x_0 | x_t), which vanishes as
-      t goes to 0. Blocked on the routed pressure-test for that identity.
+State: walk opened 2026-09-03, reopened 2026-09-10. Six-paragraph break adopted. From 6.2 the
+grain is the paragraph, not the sentence, at the author's instruction. The spine line
+caps every paragraph: where the fix holds, and where the paper's own checks found it does not
+extend as cleanly as the headline result suggests. Sources per paragraph are named on the line.
 
-◀ **Needs:** the mechanism and limitations plan, writing-06, which has not started.
+- [x] **6.1** what the adapter changes inside the model, capped. **Placed 2026-09-10, takeaway
+      first, awaiting compile.** Six sentences: composition does not fail on attention; what a
+      token's key and value each determine; the two maps recorded per token against plain
+      composition; attention holds still while written content moves; the control pair does the
+      same; the correction acts on what words write, which locates it without explaining the
+      repair. No number appears in the prose, by decision, so F7 carries the ratio and ¶6.1 cannot
+      compile before F7 has a slot. Source:
+      [hypothesis-07 review](../../plans/03-does-the-correction-cause-composition/review/07-what-the-fix-changes-inside-the-model.md).
+      Owed to F7's caption: the pattern-versus-scale point (the update dims the content map by
+      about a quarter, so the comparison strips uniform scale), and the narrower sentence the
+      review requires.
 
-### 7. 📝 Conclusion
+- [x] **6.2** what this buys. **Placed 2026-09-10, awaiting compile.** Six sentences: a
+      joint-prompt correction is not a fix; the adapter removes the requirement; trained once on
+      cached residuals, produces the correction from the two concept prompts and the state; the
+      base model stays frozen so a domain holds low-rank matrices rather than a retrained model;
+      pairs outside the pool are corrected too, so what is held is the rule and not a stored
+      correction; it matters most where joint data does not exist. Carries no outperforms claim,
+      blocked as below. Sources:
+      the [transfer review](../../plans/04-does-the-fix-reach-unseen-pairs/review/03-does-one-pooled-fix-transfer-at-all.md)
+      and [is the held-out gap a fit, a drift, or a pair problem](../../report/does-the-fix-reach-unseen-pairs/is-the-held-out-gap-a-fit-a-drift-or-a-pair-problem.md).
 
-- [ ] **7.1** not yet broken into paragraphs
+- [ ] **6.3** PARKED 2026-09-10 as a loose block, may merge into 6.2 or 6.4. what the results do not license. Section 4's correction is computed from the joint
+      prompt, so that demonstration is not joint-prompt-free; interior lambda amounts are
+      off-policy while the endpoints are exact; the transfer number carries its checkpoint (step
+      60000 is the best read, training ran to 100000); and no pair that composes reliably without
+      correction has been verified over seeds, so do-no-harm is unproven. Sources:
+      [writing-06](../../plans/07-writing-the-paper/plans/writing/06-mechanism-and-limitations.md),
+      the [transfer review](../../plans/04-does-the-fix-reach-unseen-pairs/review/03-does-one-pooled-fix-transfer-at-all.md),
+      the [pair-pool review](../../plans/04-does-the-fix-reach-unseen-pairs/review/01-the-clean-pair-pool.md)
+      and the [strength review](../../plans/03-does-the-correction-cause-composition/review/03-more-correction-more-composition.md).
+- [x] **6.4** training is unstable and the errors compound. **Placed 2026-09-10, awaiting
+      compile.** Eight sentences in three moves: the decay past the best checkpoint with the
+      weights growing and the loss flat, showing only on held-out pairs so nothing in the training
+      loss says when to stop; the trajectory mismatch, every training state on an uncorrected run
+      while a corrected run leaves that trajectory at its first corrected step, the error feeding
+      forward; and the inheritance, a correction over two frozen experts that fixes neither their
+      own failures nor the product's. A split into instability and fragility was offered and
+      declined. Sources:
+      [does training longer keep improving the held-out fix](../../report/does-training-longer-help-the-pooled-lora/does-training-longer-keep-improving-the-held-out-fix.md),
+      and the loose line 5.2 s3, now absorbed here and deletable from Loose lines once ¶6.4
+      compiles.
 
-◀ **Needs:** everything above.
+- [x] **6.5** what the size of the correction does not tell us. **Placed 2026-09-10, awaiting
+      compile.** Six sentences: how much and when are measurable but not predictable; the size at
+      the deciding step does not say whether the run switches outcome; no way to follow the
+      correction's direction across a run; it differs step to step and across starting noise, so
+      there is no path and no per-step rule; what we know came from sweeping; enough for a
+      correction that works, not for one that can be steered. Sources:
+      [what is the correction made of](../../report/when-does-the-outcome-lock-in/what-is-the-correction-made-of.md),
+      the null on more-correction-more-composition in the
+      [strength review](../../plans/03-does-the-correction-cause-composition/review/03-more-correction-more-composition.md),
+      and the cross-seed direction reads.
+
+- [x] **6.6** the close, forward-looking. **Placed 2026-09-10, awaiting compile.** Seven
+      sentences: what the paper leaves is a correction we can produce but not control; two
+      directions; the sampler, built to carry the correction during the run rather than receive
+      it; the term itself, since two animals that must both be present is one relation among
+      several; sorting the interaction term by the relation its concepts stand in is what allows
+      composition in the wild; neither direction asks for a larger model, which hands to section 7.
+      **Owed to ¶6.4:** the two caveats displaced from this paragraph, the earliest-window
+      ambiguity (the best window measured is also the earliest measured) and the fact that nothing
+      separates sampler error from model error. Both are still owed to the reader and are not in
+      any placed paragraph yet. Novelty wording on the timing claim stays blocked on
+      [checks-09](../../plans/03-does-the-correction-cause-composition/plans/checks/09-two-literature-checks-before-print.md);
+      nothing placed claims novelty, so only the word "first" is unavailable.
+
+▶ **Next: section 7**, once 6.6 compiles.
+
+◀ **Needs:** the writing-06 plan's verdicts. The mechanism verdict exists (replicated, capped);
+the two literature-check verdicts do not, so only the novelty wording waits on them.
+
+### 7. ✅ Conclusion (compiled 2026-09-10)
+
+State: one paragraph, adopted with section 6's break. Opens after 6.6 in the same session.
+
+- [x] **7.1** **Compiled 2026-09-10, build passed with tectonic, 12 pages.** Seven sentences:
+      the independence assumption; the dropped term and what it does in this case; measurable,
+      causal, learnable from the two concept prompts and transferable; what that changes in
+      practice; joint data is rarely available and the correction carries to pairs that lack it;
+      where capability might come from; small models with a learned correction between them
+      weighed against one larger model, named as the experiment we would like to see run. The
+      spine's sampler clause is **not** written, per the flag below. The break as proposed: the one paragraph: the failure is a missing, learnable, transferable plurality term,
+      and the prospect it opens is composing several small models rather than training one larger
+      one. Its numbers sentence stays blocked while 5.6's numbers are unfilled. **Flag for the
+      spine:** the spine's clause "not from an unfixable property of the sampling procedure" is
+      not tested by any run in the paper (scope 06 is at zero, and the mechanism walk's finding is
+      that nothing separates sampler error from model error). The clause is drafted only if the
+      spine line is revised or the evidence lands; raised in round 1 of this walk and still open.
+
+◀ **Needs:** 5.6's numbers, and a decision on the spine clause above.
 
 ## Loose lines
 
@@ -1630,10 +2012,8 @@ placed or explicitly dropped.
 
 | Anchor | The line | What is unresolved |
 |---|---|---|
-| §2 ¶1b eqref tie | Their combination rule is the one written in `\eqref{eq:poe-composition}`, whose failure this paper traces. | Held loose; its home is now ¶5's close, absorbed into "the combination rule is exact only under independence". Backed by the map's record that 3.2 and 3.6 follow Liu's derivation line for line. |
-| §2 ¶2 eq A | The sequence admits a closed form at any step, $x_t = \sqrt{\bar\alpha_t}\, x_0 + \sqrt{1-\bar\alpha_t}\,\epsilon$ with $\epsilon \sim \mathcal{N}(0, I)$, labelled `eq:forward`, where $\bar\alpha_t$ is the cumulative noise schedule, decreasing from one toward zero, and nothing in it is learned. | **Walking, candidate offered, not yet placed.** Licensed by Gaussian steps composing into one Gaussian jump. Defines `alphabar_t` for ¶3's identity; `predicted_x0.py:34` reads the same quantity as `alphas_cumprod`. The per-step Gaussian is deliberately omitted. |
-| §2 ¶2 eq B | The learned half is the reverse. A network $\epsilon_\theta(x_t, t, c)$ receives the noisy latent, the step, and a conditioning prompt $c$, and is trained to recover the added noise, $\mathcal{L} = \mathbb{E}\,\lVert \epsilon - \epsilon_\theta(x_t, t, c) \rVert^2$. | Sketched, not walked. |
-| §2 ¶2 closer | The predictions the methods of the previous paragraph add are exactly these outputs, evaluated at the same noisy latent under different prompts. | Sketched, not walked. Ties ¶2 back to ¶1b and sets ¶3's question. |
+| section 4 timing | The eight-pair window-sweep grid (`fig:how-often-the-correction-lands`) is commented out in the tex, and the per-seed grid `fig:where-the-correction-lands` carries the timing argument alone. | Whether the sweep's counts need to come back somewhere, since the paragraph now states the every-pair result with only the one-pair grid beside it. |
+| section 4 timing | ~~Correcting on every step gives poor results, so only an early correction should be applied.~~ | **Not written: the evidence goes the other way.** The filed window experiment (report/does-training-longer-help-the-pooled-lora/which-checkpoint-composes-best-and-does-more-correction-help.md, verified 2026-09-05) has the adapter composing 7 of 8 held-out seeds on all fifty steps and at most 4 to 5 of 8 restricted to steps 0 to 9, and Figure 4(a) has every from-step-0 row ending with two animals. W&B `6xc2l8ix` is the rank-32 pooled training run, not a window experiment. What is written instead is sufficiency: the early steps are enough and plain composition carries the rest. |
 | candidate 3 | A single prompt naming several concepts can impose a particular kind of compositionality on a text-to-image model, in which all of them appear together in one scene. | Placed as the old c3.1, then the arc it opened was abandoned for show-then-name. Kept in case a compositionality-first framing is wanted elsewhere; drop it if candidate 3 compiles without it. |
 | 4.1 | The full forward-process paragraph, drafted whole before the walk moved to sentences: reversing a fixed corruption process, latent space named once, the per-step Gaussian, the closed-form jump with its reparametrisation, and the point that none of it is learned. | It was drafted as a paragraph rather than sentence by sentence. Re-walk it as 4.1.1 to 4.1.3 and place each one. |
 | end of section 4 | The correction we injected comes from the joint prompt, which is exactly what composition is denied, and the next section learns to produce it without that prompt. | The boundary sentence that keeps sections 4 and 5 distinct under the shared plurality banner. Place it as section 4's closing sentence, wording revisable if the strength grid graduates from Extras. |
@@ -1647,6 +2027,8 @@ placed or explicitly dropped.
 | 5.1 closer | The constraint applies only at inference, so the correction can be measured in advance, while the joint prompt is still available. | Was placed as the section's opening, unplaced by decision: as an opening it was a promise with nothing behind it. It is now the sentence ¶5.1's argument arrives at, and it hands directly to ¶5.2's recording. |
 | 5.2 s3 | The recorded states lie on the uncorrected trajectory, which is not the trajectory a corrected sampler follows. | ¶5.2's boundary. Open: whether it belongs here, in ¶5.4 beside the injection, or in the Discussion. It may not be dropped. |
 | discussion | Collecting terms in the guided composed prediction gives (1 - 2w) on the unconditional prediction, which is -14 at w = 6.5. Composing two guided experts pushes much harder away from the unconditional prediction than guiding one expert does. The derivation in 3.2 sharpens this: the probability chain licenses w_i = 1 and nothing above it produces the weights at all, so every experiment in this paper runs a sampler seven and a half times away from the composition the maths gives, before any independence question is raised. | No experiment in this paper measures it, so it cannot sit in section 3 as a cause. It belongs in the discussion as an open observation, or nowhere. |
+| 6.3 | The four-limit block: Section 4's correction comes from the joint prompt so that half is not a runnable method; the strength dial is exact only at its ends; transfer is reported at the best-reading checkpoint rather than at the end of training; and no pair that composes on its own has been checked across seeds with the correction applied, so do-no-harm is unproven. | **Parked 2026-09-10.** Reads as restatement on its own and its payoff did not land. Merge candidates: the first limit into 6.2 (which already argues the joint prompt is denied), the checkpoint limit into 6.4 (which owns the decay), the do-no-harm limit into 6.5 or 6.6. It may not be dropped; every limit in it is owed to the reader somewhere. |
+| F1 caption | **Placed 2026-09-10, awaiting compile.** Four sentences: the claim sentence, the four-conditionings setup, the multiply-adds-scores mechanism, and the satisfies-both-experts outcome citing `bradley2025mechanisms`. | The compiled caption's height definition is dropped from the caption and owed to the figure as an axis label, a change to `scripts/where_poe_lands_on_the_manifold.py`. Section 2 line 240 makes the satisfies-both-at-once argument with the same citation, by a different route; keep the two wordings distinct. |
 
 ## Blocked pieces
 
@@ -1657,7 +2039,9 @@ Navigation: ⬅️ [Loose lines](#loose-lines) | 📋 [TOC](#table-of-contents) 
 | 3.6, whether the mutual-information form of the plurality term is novel | the identity itself is two lines of Bayes and is checkable inline; whether anyone has written it before is not | the routed `/pressure-test` returning its novelty verdict. Correctness does not block the walk. |
 | 5.1 learning the residual | F9's provenance. The checkpoint step, the seed and the sampler settings behind its six rows are recorded nowhere, and the image does not mark which four rows are held out and which two are trained on | those five facts supplied, then the grid rebuilt as a figure with a sidecar. F6 no longer blocks this piece, having moved to Extras |
 | 5.6 the results | F8 is reserved, its leave-one-pair-out sweep has not run | that run finishing. F8a and F8b are built, so the paragraph is not fully blocked. |
-| 6.1 discussion | the mechanism and limitations plan, writing-06 | that plan starting |
+| 6.2's outperforms slot | no finding compares the adapter against a competing method | a baseline named and run, or the claim cut |
+| 6.6's novelty wording on timing | the two literature checks in checks-09 | those checks returning |
+| 7.1's spine clause | no run separates sampler error from model error | scope 06 running, or the spine line revised |
 | 7.1 conclusion | every section above | those sections landing |
 
 ## Sessions
@@ -1671,19 +2055,23 @@ One session owns a piece at a time.
 | section-3-citations | walk | the citation pass, intro through section 3 | closed 2026-08-27, compiled, build passed | 15 tex hunks, 7 bib entries, bibliography commands restored; CoInD deferred to related work; ordering defect (3.6 before 3.3) left on the record |
 | main | walk | section 4 | closed 2026-08-27, main text compiled (4.1, 4.4 with `fig:window-map`, 4.6) | the compiled section; the 4.5 slot and Extras left open |
 | section-5-method | sibling | section 5, Learning the Plurality Term | open, four-paragraph break adopted, no sentence walked | placed paragraphs, compiled |
-| section-2-background | sibling | section 2, Background and Related Work | open; ¶1a and ¶1b compiled into the tex, machinery paragraphs ¶2 to ¶5 not walked | ¶1a+¶1b returned; the rest to come |
+| section-6-7 | walk | sections 6 and 7, Discussion then Conclusion | open, six-paragraph break adopted 2026-09-10, walking 6.1 | placed paragraphs, compiled; the spine flag on section 7's clause |
+| section-2-background | sibling | section 2, Background and Related Work | closed 2026-09-03: six paragraphs compiled, build passed; two routes out still open (reconstruct-prompt for the writing templates; the heading decision was taken, heads on) | ¶1a to ¶5 in the tex |
 
 ### Routes out of the section 2 walk
 
 | Route | Serves | Where the result lands | State |
 |---|---|---|---|
-| /paper-scout, the four foundational slots (forward and reverse process, score-based modelling, classifier-free guidance, and whether the sampler needs its own citation) | §2 ¶2, ¶3 and ¶4 | six rows appended to [the reading register](../../plans/standing/literature/reading-register.md), five entries appended to [iclr2027_conference.bib](iclr2027_conference.bib), and [the selection file](../../../../../goal-setting/learning/poe-derivation-foundations/paper-scout/selection-2026-08-27.md) | returned and integrated. Ran inside this session at the author's instruction. Slot 2 split in two, since the score-matching framing and the noise-to-score identity are different claims in different papers. Slot 4 answered yes, and the citation was routed to the methods section rather than to section 2 |
+| /paper-scout, the four foundational slots (forward and reverse process, score-based modelling, classifier-free guidance, and whether the sampler needs its own citation) | §2 ¶2, ¶3 and ¶4 | six rows appended to [the reading register](../../plans/standing/literature/reading-register.md), five entries appended to [iclr2027_conference.bib](iclr2027_conference.bib), and [the selection file](../../../../../goal-setting/learning/deep-learning/diffusion-models/poe-derivation-foundations/paper-scout/selection-2026-08-27.md) | returned and integrated. Ran inside this session at the author's instruction. Slot 2 split in two, since the score-matching framing and the noise-to-score identity are different claims in different papers. Slot 4 answered yes, and the citation was routed to the methods section rather than to section 2 |
+| /reconstruct-prompt, provisional destination drip-idea (it may re-route to skill-creator, author-role or restyle): two writing templates extracted once and made invocable. First, the plain-prose template, the house register (CLAUDE.md's writing-style block, plain-speak's eight moves, the 60 per-skill "Output style" blocks, PLAN_TREE_FORMAT.md's link rules, the machine-prose tells). Second, the paper-writing template, the "sources' own framing" move demonstrated in this walk on ¶1b, ¶4 and ¶5 and recorded on register rows 2302.11552, 2207.12598, 2502.04549, 2503.01145. The prompt carries the framing's procedure in full and this chat's rejected constructions as its negative examples | the manuscript's voice, reproducible in a fresh session; the drift of 60 copied style blocks | a reconstructed prompt to review, then whichever skill it names; if built, profiles under `~/.claude/skills/restyle/references/styles/` and an extraction procedure | emitted 2026-09-03 (corrected same day), not yet run |
+| /pressure-test (the author's pick; the deciding question is whether the job is validating a sentence against its source or judging novelty, and if the former, the prompt says so and pressure-test may hand it to a plain source check), on ¶5 sentence 3: locate each of its three CoInD claims in arXiv 2503.01145 with section, equation, table and page, confirm the wording is theirs, and return the references for the register row | ¶5 sentence 3's three clauses and the register row for 2503.01145 | a per-clause verdict with page references, pasted back here with `integrate`; the references written onto the register row | returned and integrated 2026-09-03 (run by a parallel session): every clause located, references on the register row and in the source-check note under ¶5's placed block; one reading carried, the paper's non-standard "marginals" |
 
 ### Routes out of the section 5 walk
 
 | Route | Serves | Where the result lands | State |
 |---|---|---|---|
 | diagram, subject lane, "the joined prompt is only a target" | ¶5.2, the architectural figure | Prompt 4a in [the scope's illustrated map](../../plans/diagram-prompts.md), rendered by hand in ChatGPT and saved back beside the manuscript | emitted, awaiting the rendered image |
+| diagram, subject lane, two zooms into the adapter: "where the adapter hooks" (4b: the three cross-attention projections the LoRA targets, the two encoders into key and value, the pooled path into the time node, one three-branch forward per step) and "what the adapter is trained to match" (4c: the adapted PoE combination against the cached joined-prompt target under MSE, the equals with the residual match, the gradient into the chip only, λ = 1 as the return) | ¶5.2 and ¶5.3, and any reader asking where the LoRA sits | Prompts 4b and 4c in [the project map](../../plans/diagram-prompts.md), every placement read from code and marked built, not rendered | rendered 2026-09-03: both passed the pixel check and the vision read on their second attempt (4b: the three formula labels and the guide wiring corrected by a raster edit in the same Codex session; 4c: the two subtract-node labels swapped to match their inputs and the sibling's light style restored). Saved to `plans/diagrams/where-the-adapter-hooks.png` and `plans/diagrams/what-the-adapter-is-trained-to-match.png`; no document carries a slot for either yet, so nothing was embedded |
 | candidate-abstract-1 | sibling | abstract candidate 1 | open, sketched, walking c1.1 | `abstract_candidate_01.tex`, compiled |
 | candidate-abstract-2 | sibling | abstract candidate 2 | closed, compiled, build passed | `abstract_candidate_02.tex` |
 | candidate-abstract-3 | sibling | abstract candidate 3 | done, compiled, build passed | `abstract_candidate_03.tex` |
@@ -1700,7 +2088,7 @@ the walk; a row is deleted only then.
 | small-multiples check, one panel per pair from the cached curves | the shared-size-curve beat's verdict, and where the beat lives | `artifacts/results/does-every-pair-share-one-size-curve/` | out; local session `d9fd58b8` (resume with `claude --resume d9fd58b8-d4bf-4b0f-978c-510da1315914`), mid-build as of 2026-08-26 morning, nothing on disk yet |
 | /design-figure, the dial figure (grid of rendered images, lambda as a fraction of r_t) | the ratio-and-dial piece | [the dial-figure design note](section-4-dial-figure-design.md) | returned and integrated; the chosen rebuild now targets the Extras grid, the dial-strip alternative is ¶4.4's qualitative candidate |
 | /pressure-test, arXiv 2502.04549 against this paper's CLIP-based difficulty and instrument reads | beat 8's scope, and the open why-text-anchoring-works row in hypothesis-05 | chat text in its session; return package pasted back here | to be launched |
-| /drip-idea, the mechanism question (which variable, isolated and varied over the denoising run, explains what PoE composition is missing), reconstructed from the smoothness-vs-failure grid and the training-caption story | the section's figure test, and what mechanism figure if any enters the main text | [the idea map](../../artifacts/ideas/which-variable-explains-what-poe-is-missing/IDEA_MAP.md), seven claims each carrying a mark | parked mid-walk as of 2026-08-26, nothing settled by a run yet. Beat 8 stays a prose mention until claim 3 (linear score addition has a step-wise signature separating a blending pair from a composing pair) has a verdict, and claims 4 and 5 are instruments with nothing to instrument if it fails. The walk's larger finding is aimed at the discussion rather than at this section's figures: `r_t` is sampler error plus model error added together, per Du et al. [arXiv 2302.11552](https://arxiv.org/abs/2302.11552), nothing here separates them, and this section's timing result is also what a sampler artifact looks like. Three checks outstanding, all reading cached output with no sampling and no queue |
+| /drip-idea, the mechanism question (which variable, isolated and varied over the denoising run, explains what [PoE composition](../../context/world/poe-composition.md) is missing), reconstructed from the smoothness-vs-failure grid and the training-caption story | the section's figure test, and what mechanism figure if any enters the main text | [the idea map](../../artifacts/ideas/which-variable-explains-what-poe-is-missing/IDEA_MAP.md), seven claims each carrying a mark | parked mid-walk as of 2026-08-26, nothing settled by a run yet. Beat 8 stays a prose mention until claim 3 (linear score addition has a step-wise signature separating a blending pair from a composing pair) has a verdict, and claims 4 and 5 are instruments with nothing to instrument if it fails. The walk's larger finding is aimed at the discussion rather than at this section's figures: `r_t` is sampler error plus model error added together, per Du et al. [arXiv 2302.11552](https://arxiv.org/abs/2302.11552), nothing here separates them, and this section's timing result is also what a sampler artifact looks like. Three checks outstanding, all reading cached output with no sampling and no queue |
 | /frame-hypothesis, the guidance-weight control (does raising w compose, with qualitative grids over the run) | the controls decision in the dose paragraph | a scoped experiment plan, or a feasibility no | to be launched |
 
 ## Open citations
@@ -1754,8 +2142,9 @@ pretrained model failing a negated prompt, and the word "exponential" does not a
 record), `conwell2024relations`, `du2024compositional`, `zhang2025product` and `dutta2026steer`,
 appended by the citation pass. No literal `(cite)` or author-year placeholder remains between the
 abstract and the end of section 3. `\bibliography` and `\bibliographystyle` are live. Registered
-papers still without entries are the ones no compiled sentence cites yet, among them CoInD
-(2503.01145), whose entry is owed to the related-work walk with its deferred attribution.
+papers still without entries are the ones no compiled sentence cites yet. CoInD's
+(`gaudi2025coind`, full author names fetched from the abs page 2026-09-03) was added for section
+2's close, so ¶5 compiles against a resolving key.
 
 **One bib entry has no register row.** `saharia2022photorealistic` is in the bib and the
 introduction names Saharia et al. in prose at [line 88](iclr2027_conference.tex#L88), with no row in
@@ -1793,6 +2182,7 @@ Navigation: ⬅️ [Figures](#figures-this-draft-leans-on) | 📋 [TOC](#table-o
 
 | Paragraph | Landed at | Build |
 |---|---|---|
+| ¶6.1, ¶6.2, ¶6.4, ¶6.5, ¶6.6 and ¶7.1, the whole Discussion and Conclusion, plus `\label{sec:conclusion}` | [iclr2027_conference.tex](iclr2027_conference.tex), replacing the two bare headings | passed with tectonic, 12 pages, PDF 30.7 MiB. No new errors, no undefined references; the underfull vbox and bbl hbox warnings are pre-existing. **¶6.3 was parked and is not in the file**, so the do-no-harm limit and the best-reading-checkpoint choice are currently unsaid anywhere in the paper. Two caveats are owed to ¶6.4, the earliest-window ambiguity and the sampler-versus-model entanglement. No number appears in either section, by decision, so F7 carries ¶6.1 and still has no slot. |
 | 2.1 to 2.7, the whole introduction | [iclr2027_conference.tex:84-130](iclr2027_conference.tex#L84-L130) | passed |
 | candidate abstract 1, one paragraph | [abstract_candidate_01.tex](abstract_candidate_01.tex) | passed with tectonic, PDF 17.5 KiB |
 | the six-change pass after the first compile | across the file | passed, PDF 2.10 MiB, **no overfull lines left**. Removed every `&&\text{...}` annotation column from every align block, which was also what fixed the three overfull lines. Deleted the Problem Setting and Background section. Emptied Related Work, Methodology, Benchmark Design and Experiments, Discussion and Conclusion to bare headings. **Two undefined references remain**, `eq:score` and `eq:adaptation` at line 282 in the appendix's placeholder Proposition, because the equations they point at lived in the sections that were emptied. |
@@ -1801,8 +2191,14 @@ Navigation: ⬅️ [Figures](#figures-this-draft-leans-on) | 📋 [TOC](#table-o
 | 5.1 to 5.5, the whole method half of section 5, plus the F9 figure (`fig:adapter-samples`) and its talk-over paragraph | [iclr2027_conference.tex:212-241](iclr2027_conference.tex#L212-L241), between `\label{sec:method}` and the Discussion | passed with tectonic, PDF 6.61 MiB, no overfull lines, no undefined references, only the four pre-existing TU/ptm font-shape warnings. ¶5.6's numbers half stays out pending the rescore. |
 | 4.1, section 4's opening paragraph, plus the trim of section 3's duplicate ceiling sentence | [iclr2027_conference.tex:216-219](iclr2027_conference.tex#L216-L219) | passed with tectonic, PDF 2.10 MiB, no overfull lines, the two pre-existing underfull vbox warnings at lines 125 and 384 unchanged |
 | §2 ¶1a and ¶1b, the whole positioning pair, plus seven bib entries (du2023reduce, skreta2024superdiff, skreta2025feynman, huang2026factordiff, wang2026testtime; zhang2025product and dutta2026steer arrived from the parallel bib pass and my duplicates were removed) | [iclr2027_conference.tex:127-131](iclr2027_conference.tex#L127-L131), after `\label{sec:background}` | passed with tectonic, PDF 3.66 MiB, no overfull lines, every citation resolved. The two pre-existing underfull vboxes persist (now lines 125 and 411 after the shift); `eq:score`/`eq:adaptation` in the appendix placeholder remain the only undefined references, known since the template pass |
+| §2 ¶2 to ¶5, the machinery and the close, with `\paragraph{}` run-in heads on ¶2 to ¶4 (Diffusion models; Noise predictions are scores; Classifier-free guidance) and ¶5 unheaded; four new labelled equations `eq:forward`, `eq:objective`, `eq:score`, `eq:cfg`; plus the section 3 re-word "each push" to "each conditional term" | after ¶1b, before `\section{Missing Implications}` | passed with tectonic, exit 0, PDF 6.94 MiB, no overfull lines, no undefined references, every citation resolved. Underfull vbox warnings now at tex lines 125, 228, 260, 268 and bbl:16: page-break slack, moved by the half page this hunk adds, not new content problems |
+| the introduction's `\begin{samepage}` around the Contributions list, removed | [iclr2027_conference.tex:116-123](iclr2027_conference.tex#L116-L123) | passed with tectonic, exit 0, 11 pages. Cause of the void around equation (1): the style sets `\flushbottom`, and a block that may not break forces the page to end early, so the leftover height is poured into the display's stretchable skips. After the removal the equation sits on page 2 with 22pt above and 14pt below, and the badness-10000 underfull at line 125 is gone. Remaining underfull vboxes: bbl:16 and tex lines 254 (badness 1097) and 258, near the end of the main text |
 | 4.4, the results paragraph, with the timing figure `fig:window-map` and its caption | after ¶4.1, before the section 5 heading | passed with tectonic, PDF 4.14 MiB, no overfull lines; two new mild underfull vbox warnings at lines 263 and 271 from page-breaking around the figure, the two pre-existing ones unchanged |
 | 4.6, the closer, two sentences after the figure block | before the section 5 heading | passed with tectonic, PDF 4.14 MiB, no new warnings |
+| 2.1 recompiled after the prose pass, five sentences to three | [iclr2027_conference.tex:96](iclr2027_conference.tex#L96) | passed with tectonic, exit 0, PDF 30.59 MiB. Four underfull vbox warnings at tex lines 260, 292, 295, 301 and three underfull hboxes in the .bbl, all pre-existing page-break slack. `TeX rerun seems needed, but stopping at 6 passes` is normal here |
+| the plurality-walk pass of 2026-09-10: four `noisy latent` renames, `unconditional condition` becomes `no prompt at all` with a new sentence saying what that prediction is, the product-peak sentence with its two citations moved into ¶3.4, the $R_t$-to-$r_t$ seam sentence opening the Figure 2 paragraph, and the duplicated mechanism sentence removed from §5 | [tex:145,170,189,200,240](iclr2027_conference.tex) | passed with tectonic, exit 0, PDF 30.70 MiB, no errors, no undefined references, no overfull lines |
+| ¶2.3's naming pair, example before name, with sentence 2's tail trimmed and the Mono-as-reference clause added | [iclr2027_conference.tex:100](iclr2027_conference.tex#L100) | passed with tectonic, exit 0, PDF 30.70 MiB, no errors, no undefined references, no overfull lines |
+| ¶4.1's lead-in, the prediction stated before the result, with `We show that` marking the headline sentence | [iclr2027_conference.tex:248](iclr2027_conference.tex#L248) | passed with tectonic, exit 0, PDF 30.69 MiB, no errors, no undefined references, no overfull lines |
 | the citation pass, intro through section 3: 15 hunks (11 citation placements, the ¶6 and 3.2-opener and 3.6-seam rewordings, the "and dynamics" trim, the `Figure~\ref` fix), 7 bib entries appended, `\bibliography`/`\bibliographystyle` restored | across lines 88-212 and 249-250 | passed with tectonic, PDF 3.66 MiB, every `\citep` resolves. Two pre-existing undefined references remain, `eq:score` and `eq:adaptation` in the appendix placeholder. New underfull hbox warnings from the .bbl, cosmetic |
 
 ## Rejected wordings
@@ -1865,20 +2261,14 @@ One decision is queued behind it: F6's slot, whose register row says the argumen
 now staged in section 5's Extras so it no longer blocks that section. It gets rebuilt against a
 norm-matched floor or it is cut.
 
-The `section-2-background` sibling session walks section 2 in parallel. ¶1a and ¶1b are
-compiled and in the tex, build passed. The machinery pieces ¶2 to ¶5 are deliberately given their
-own unhurried sessions, one or two pieces per sitting: ¶2 is mid-walk (sentences 1 and 2 placed,
-equation A walking with its candidate held in Loose lines, then equation B and the closer), and
-¶3 (score), ¶4 (guidance) and ¶5 (the close) are already mapped in the section entry but
-unwalked. One structural decision is queued for the next sitting, before any more prose: whether
-¶2 to ¶5 stay paragraphs under the section heading or become named subsections (Diffusion Models,
-Score-Based Generative Modelling, Classifier-Free Guidance, and the close), which changes the tex
-skeleton but not the walked content. Resume with:
-
-```
-/drip-write section 2 of paper/iclr/iclr2027_conference.tex, resume at ¶2 equation A;
-the section 2 entry and Loose lines in DRAFT_MAP.md hold the state
-```
+The `section-2-background` sibling session is closed: section 2 is compiled in full, six
+paragraphs, build passed 2026-09-03. Two routes out of it are still open in the routes table
+under Sessions: the `/reconstruct-prompt` for the two writing templates (emitted, not run), and
+nothing else; the validation of ¶5's CoInD sentence returned and is integrated. The next
+section walk opens section 6 or section 7 from this map alone; nothing in section 2 is loose or
+blocked. Two items for the whole-paper reading pass came out of this walk: the introduction's
+line 96 uses "the score" before ¶3 defines it, and section 2 now carries four numbered displays,
+which is where a reviewer may ask why a background section derives.
 
 ```
 /drip-write section 4, break it into paragraphs

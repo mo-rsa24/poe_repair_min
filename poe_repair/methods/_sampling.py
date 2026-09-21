@@ -357,9 +357,14 @@ def _lambda_value(
         return float(lambda_max) * max(0.0, 1.0 - frac)
     if schedule == "early_only":
         return float(lambda_max) if step_index < (num_steps // 5) else 0.0
+    if schedule == "first_half":
+        # LoRA on over 0..T/2, off over T/2..T. At lambda 0 the step is eps_PoE_frozen, which is
+        # plain guided PoE with the adapter contributing nothing: the composition stays on, only
+        # the correction stops. Distinct from a CFG mask, which would drop the prompts too.
+        return float(lambda_max) if step_index < (num_steps // 2) else 0.0
     raise ValueError(
         f"unknown lambda_schedule {schedule!r}; expected one of "
-        "{'constant','linear_decay','early_only'}"
+        "{'constant','linear_decay','early_only','first_half'}"
     )
 
 
@@ -651,7 +656,10 @@ def run_lora_residual_inject(
     euler_init_noise_sigma: float,
     device: torch.device, dtype: torch.dtype,
     lambda_value: float,
+    lambda_schedule: str = "constant",
     lora_adapter_name: str = "lora",
+    freeze_null: bool = False,
+    adapt_null_only: bool = False,
     record_delta_at_steps: list[int] | None = None,
     correction_max_rel_norm: float | None = None,
     record_eps_path: "Path | None" = None,
@@ -838,16 +846,27 @@ def run_lora_residual_inject(
                 )
             else:
                 eps_a_raw_l, eps_b_raw_l, eps_uncond_l = _three_branch_forward()
-            eps_a_l = guided_eps(eps_a_raw_l, eps_uncond_l, guidance_scale)
-            eps_b_l = guided_eps(eps_b_raw_l, eps_uncond_l, guidance_scale)
-            eps_poe_lora = poe_eps(eps_a_l, eps_b_l, eps_uncond_l)
+            # V1 (--freeze-null): the adapter was trained composing against the CACHED empty
+            # branch, so sampling must use the un-adapted one too or training and sampling
+            # disagree. eps_uncond_f is that branch: the same forward with the adapter off,
+            # which this function already computes for eps_poe_frozen. No extra pass.
+            # V3 (--adapt-null-only) is the mirror: the adapter was trained moving only the
+            # empty branch, so sampling must take the two concept branches un-adapted.
+            _eps_u_l = eps_uncond_f if freeze_null else eps_uncond_l
+            _eps_a_raw_l = eps_a_raw_f if adapt_null_only else eps_a_raw_l
+            _eps_b_raw_l = eps_b_raw_f if adapt_null_only else eps_b_raw_l
+            eps_a_l = guided_eps(_eps_a_raw_l, _eps_u_l, guidance_scale)
+            eps_b_l = guided_eps(_eps_b_raw_l, _eps_u_l, guidance_scale)
+            eps_poe_lora = poe_eps(eps_a_l, eps_b_l, _eps_u_l)
             delta_hat = eps_poe_lora - eps_poe_frozen
             delta_capped, applied = _maybe_cap_correction(
                 delta_hat, eps_poe_frozen, correction_max_rel_norm,
             )
             delta_norm_per_step.append(float(delta_hat.float().norm().item()))
             cap_scale_per_step.append(float(applied))
-            eps_t = eps_poe_frozen + float(lambda_value) * delta_capped
+            _lam_t = _lambda_value(lambda_schedule, step_index, num_inference_steps,
+                                   float(lambda_value))
+            eps_t = eps_poe_frozen + _lam_t * delta_capped
             eps_poe_lora_for_log = eps_poe_lora
         eps_poe = eps_poe_frozen  # alias for the where-applied cache
 
@@ -945,6 +964,8 @@ def run_lora_residual_inject_masked(
     device: torch.device, dtype: torch.dtype,
     lambda_value: float = 1.0,
     lora_adapter_name: str = "lora",
+    external_delta_by_step: dict[int, torch.Tensor] | None = None,
+    capture_delta_tensors: bool = False,
 ) -> SamplerOutputs:
     """LoRA per-arm sampler with a per-step CFG on/off mask.
 
@@ -968,6 +989,16 @@ def run_lora_residual_inject_masked(
 
     ``extras["delta_norm_per_step"]`` is a length-N float list — the L2 norm
     of the LoRA delta used at each step. Drives the inspector strip.
+
+    ``external_delta_by_step``: when given, on-steps skip the adapter-ON
+    forward and use ``external_delta_by_step[step_index]`` as Δ̂ instead of
+    the live one (``eps_PoE_frozen`` is still computed fresh from this run's
+    own trajectory). Drives the wrong-seed and shuffled controls: inject a
+    Δ̂ trajectory captured from elsewhere into this seed's own denoising
+    path. ``capture_delta_tensors``: when true (and ``external_delta_by_step``
+    is not given), also returns the live-computed Δ̂ tensors in
+    ``extras["delta_by_step"]`` so a later run can reuse them as someone
+    else's ``external_delta_by_step``.
     """
     if composition_mode not in {"with_prompt", "always"}:
         raise ValueError(
@@ -1039,6 +1070,7 @@ def run_lora_residual_inject_masked(
         ).sample
 
     delta_norm_per_step: list[float] = []
+    captured_delta_by_step: dict[int, torch.Tensor] = {}
 
     for step_index, timestep in enumerate(scheduler.timesteps):
         mask_on = mask_list[step_index]
@@ -1049,13 +1081,18 @@ def run_lora_residual_inject_masked(
             eps_b_f = guided_eps(eps_b_raw_f, eps_uncond_f, guidance_scale)
             eps_poe_frozen = poe_eps(eps_a_f, eps_b_f, eps_uncond_f)
 
-            _adapter_enable()
-            eps_a_raw_l, eps_b_raw_l, eps_uncond_l = _three_branch_forward(timestep)
-            eps_a_l = guided_eps(eps_a_raw_l, eps_uncond_l, guidance_scale)
-            eps_b_l = guided_eps(eps_b_raw_l, eps_uncond_l, guidance_scale)
-            eps_poe_lora = poe_eps(eps_a_l, eps_b_l, eps_uncond_l)
+            if external_delta_by_step is not None:
+                delta_hat = external_delta_by_step[step_index].to(device=device, dtype=dtype)
+            else:
+                _adapter_enable()
+                eps_a_raw_l, eps_b_raw_l, eps_uncond_l = _three_branch_forward(timestep)
+                eps_a_l = guided_eps(eps_a_raw_l, eps_uncond_l, guidance_scale)
+                eps_b_l = guided_eps(eps_b_raw_l, eps_uncond_l, guidance_scale)
+                eps_poe_lora = poe_eps(eps_a_l, eps_b_l, eps_uncond_l)
+                delta_hat = eps_poe_lora - eps_poe_frozen
+                if capture_delta_tensors:
+                    captured_delta_by_step[step_index] = delta_hat.detach().clone()
 
-            delta_hat = eps_poe_lora - eps_poe_frozen
             eps_t = eps_poe_frozen + float(lambda_value) * delta_hat
             delta_norm_per_step.append(float(delta_hat.float().norm().item()))
         else:
@@ -1099,6 +1136,7 @@ def run_lora_residual_inject_masked(
             "lora_adapter_name": str(lora_adapter_name),
             "delta_norm_per_step": delta_norm_per_step,
             "guidance_scale": float(guidance_scale),
+            **({"delta_by_step": captured_delta_by_step} if capture_delta_tensors else {}),
         },
     )
 

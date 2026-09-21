@@ -331,8 +331,9 @@ Nothing drafted.
 subject lane. Chosen 2026-09-16. The first accepted render is passed as a reference image to the
 remaining eight, because Empty drifts across a multi-image technical set otherwise.
 
-The V0a architecture picture, tailored from the interactive loss diagram's "the loss" frame.
-Prompt written, held here until scope 09 exists and its `diagram-prompts.md` can own it.
+The V0a architecture picture is now prompt 3 of the scope's own map,
+`plans/09-designing-the-correction-loss/diagram-prompts.md`, which owns all six subject prompts.
+None is rendered.
 
 The rank-ablation figure plan 09 owes: held-out compose rate against rank at matched steps, with the seed-noise band drawn. Catalogued, never made.
 
@@ -351,8 +352,8 @@ recorded finding. Returns here via `integrate`.
 run; here `00` and `00a` already have, so the hypothesis steps sit after the write-up steps instead
 of before them.
 
-1. `/init-master-plan` mints `plans/09-designing-the-correction-loss/`.
-2. `/populate-plans` writes the plan files.
+1. ~~`/init-master-plan` mints `plans/09-designing-the-correction-loss/`.~~ Done 2026-09-16: `MASTER_PLAN.md`, `diagram-prompts.md` (six subject prompts, none rendered), empty `plans/`.
+2. ~~`/populate-plans` writes the plan files.~~ Done 2026-09-16: four plans (steps 71 to 74), four review files, the process lane and its first snapshot, the scope's Plans table and the root running order.
 3. Do the foundation plan: the six pillar files, the chart script, the `00` page.
 4. `/render-diagrams` drains the scope's map, starting with the `00a` picture.
 5. Do the `00a` read plan: score the four experiments, compute the band, read blind, write the page.

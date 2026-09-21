@@ -1,0 +1,197 @@
+\begin{thebibliography}{23}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Bradley et~al.(2025)Bradley, Nakkiran, Berthelot, Thornton, and
+  Susskind]{bradley2025mechanisms}
+Arwen Bradley, Preetum Nakkiran, David Berthelot, James Thornton, and Joshua~M.
+  Susskind.
+\newblock Mechanisms of projective composition of diffusion models.
+\newblock In \emph{Proceedings of the 42nd International Conference on Machine
+  Learning}, volume 267 of \emph{Proceedings of Machine Learning Research},
+  pp.\  5319--5354. PMLR, 2025.
+
+\bibitem[Chen et~al.(2023)Chen, Vi{\'e}gas, and Wattenberg]{chen2023beyond}
+Yida Chen, Fernanda Vi{\'e}gas, and Martin Wattenberg.
+\newblock Beyond surface statistics: Scene representations in a latent
+  diffusion model.
+\newblock In \emph{NeurIPS 2023 Workshop on Diffusion Models}, 2023.
+\newblock arXiv:2306.05720.
+
+\bibitem[Conwell et~al.(2024)Conwell, Tawiah-Quashie, and
+  Ullman]{conwell2024relations}
+Colin Conwell, Rupert Tawiah-Quashie, and Tomer Ullman.
+\newblock Relations, negations, and numbers: Looking for logic in generative
+  text-to-image models.
+\newblock \emph{arXiv preprint arXiv:2411.17066}, 2024.
+
+\bibitem[Dhariwal \& Nichol(2021)Dhariwal and Nichol]{dhariwal2021diffusion}
+Prafulla Dhariwal and Alexander~Quinn Nichol.
+\newblock Diffusion models beat {GAN}s on image synthesis.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~34, pp.\  8780--8794, 2021.
+\newblock arXiv:2105.05233.
+
+\bibitem[Du et~al.(2024)Du, Kolkin, Shakhnarovich, and
+  Bhattad]{du2024generative}
+Xiaodan Du, Nicholas Kolkin, Greg Shakhnarovich, and Anand Bhattad.
+\newblock Generative models: What do they know? do they know things? let's find
+  out!
+\newblock In \emph{CVPR 2024 Workshop on Generative Models for Computer
+  Vision}, 2024.
+\newblock arXiv:2311.17137.
+
+\bibitem[Du \& Kaelbling(2024)Du and Kaelbling]{du2024compositional}
+Yilun Du and Leslie Kaelbling.
+\newblock Compositional generative modeling: A single model is not all you
+  need.
+\newblock In \emph{Proceedings of the 41st International Conference on Machine
+  Learning}, 2024.
+\newblock Position Track; arXiv:2402.01103.
+
+\bibitem[Du et~al.(2023)Du, Durkan, Strudel, Tenenbaum, Dieleman, Fergus,
+  Sohl-Dickstein, Doucet, and Grathwohl]{du2023reduce}
+Yilun Du, Conor Durkan, Robin Strudel, Joshua~B. Tenenbaum, Sander Dieleman,
+  Rob Fergus, Jascha Sohl-Dickstein, Arnaud Doucet, and Will Grathwohl.
+\newblock Reduce, reuse, recycle: Compositional generation with energy-based
+  diffusion models and {MCMC}.
+\newblock In \emph{Proceedings of the 40th International Conference on Machine
+  Learning}, 2023.
+\newblock arXiv:2302.11552.
+
+\bibitem[Dutta et~al.(2026)Dutta, Chen, Rajagopalan, Wei, and
+  Roy~Choudhury]{dutta2026steer}
+Debottam Dutta, Jianchong Chen, Rajalaxmi Rajagopalan, Yu-Lin Wei, and Romit
+  Roy~Choudhury.
+\newblock Steer away from mode collisions: Improving composition in diffusion
+  models.
+\newblock In \emph{International Conference on Learning Representations}, 2026.
+\newblock arXiv:2509.25940.
+
+\bibitem[Gaudi et~al.(2025)Gaudi, Sreekumar, and Boddeti]{gaudi2025coind}
+Sachit Gaudi, Gautam Sreekumar, and Vishnu Boddeti.
+\newblock {CoInD}: Enabling logical compositions in diffusion models.
+\newblock In \emph{International Conference on Learning Representations}, 2025.
+\newblock Venue from the paper's own header, "Published as a conference paper
+  at ICLR 2025"; the arXiv listing shows none. arXiv:2503.01145.
+
+\bibitem[Ho \& Salimans(2022)Ho and Salimans]{ho2022classifier}
+Jonathan Ho and Tim Salimans.
+\newblock Classifier-free diffusion guidance.
+\newblock \emph{arXiv preprint arXiv:2207.12598}, 2022.
+\newblock A short version appeared at the NeurIPS 2021 Workshop on Deep
+  Generative Models and Downstream Applications; no archival version exists.
+
+\bibitem[Ho et~al.(2020)Ho, Jain, and Abbeel]{ho2020denoising}
+Jonathan Ho, Ajay Jain, and Pieter Abbeel.
+\newblock Denoising diffusion probabilistic models.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~33, pp.\  6840--6851, 2020.
+\newblock arXiv:2006.11239.
+
+\bibitem[Huang et~al.(2026)Huang, Xu, Mandal, and
+  Aspuru-Guzik]{huang2026factordiff}
+Haozhe Huang, Yudong Xu, Abhijoy Mandal, and Al{\'a}n Aspuru-Guzik.
+\newblock From global to factor-wise expert composition in discrete diffusion
+  models.
+\newblock \emph{arXiv preprint arXiv:2607.11758}, 2026.
+
+\bibitem[Huang et~al.(2025)Huang, Duan, Sun, Xie, Li, and
+  Liu]{huang2025t2icompbench}
+Kaiyi Huang, Chengqi Duan, Kaiyue Sun, Enze Xie, Zhenguo Li, and Xihui Liu.
+\newblock {T2I-CompBench++}: An enhanced and comprehensive benchmark for
+  compositional text-to-image generation.
+\newblock \emph{arXiv preprint arXiv:2307.06350}, 2025.
+
+\bibitem[Liu et~al.(2022)Liu, Li, Du, Torralba, and
+  Tenenbaum]{liu2022compositional}
+Nan Liu, Shuang Li, Yilun Du, Antonio Torralba, and Joshua~B. Tenenbaum.
+\newblock Compositional visual generation with composable diffusion models.
+\newblock In \emph{European Conference on Computer Vision}, pp.\  423--439.
+  Springer, 2022.
+
+\bibitem[Podell et~al.(2024)Podell, English, Lacey, Blattmann, Dockhorn,
+  M{\"u}ller, Penna, and Rombach]{podell2023sdxl}
+Dustin Podell, Zion English, Kyle Lacey, Andreas Blattmann, Tim Dockhorn, Jonas
+  M{\"u}ller, Joe Penna, and Robin Rombach.
+\newblock {SDXL}: Improving latent diffusion models for high-resolution image
+  synthesis.
+\newblock In \emph{International Conference on Learning Representations}, 2024.
+\newblock Spotlight; arXiv:2307.01952.
+
+\bibitem[Rombach et~al.(2022)Rombach, Blattmann, Lorenz, Esser, and
+  Ommer]{rombach2022high}
+Robin Rombach, Andreas Blattmann, Dominik Lorenz, Patrick Esser, and Bj{\"o}rn
+  Ommer.
+\newblock High-resolution image synthesis with latent diffusion models.
+\newblock In \emph{IEEE/CVF Conference on Computer Vision and Pattern
+  Recognition (CVPR)}, 2022.
+\newblock arXiv:2112.10752.
+
+\bibitem[Saharia et~al.(2022)Saharia, Chan, Saxena, Li, Whang, Denton,
+  Ghasemipour, Ayan, Mahdavi, Lopes, Salimans, Ho, Fleet, and
+  Norouzi]{saharia2022photorealistic}
+Chitwan Saharia, William Chan, Saurabh Saxena, Lala Li, Jay Whang, Emily
+  Denton, Seyed Kamyar~Seyed Ghasemipour, Burcu~Karagol Ayan, S.~Sara Mahdavi,
+  Rapha~Gontijo Lopes, Tim Salimans, Jonathan Ho, David~J. Fleet, and Mohammad
+  Norouzi.
+\newblock Photorealistic text-to-image diffusion models with deep language
+  understanding.
+\newblock \emph{Advances in Neural Information Processing Systems},
+  35:\penalty0 36479--36494, 2022.
+
+\bibitem[Skreta et~al.(2025{\natexlab{a}})Skreta, Akhound-Sadegh, Ohanesian,
+  Bondesan, Aspuru-Guzik, Doucet, Brekelmans, Tong, and
+  Neklyudov]{skreta2025feynman}
+Marta Skreta, Tara Akhound-Sadegh, Viktor Ohanesian, Roberto Bondesan, Al{\'a}n
+  Aspuru-Guzik, Arnaud Doucet, Rob Brekelmans, Alexander Tong, and Kirill
+  Neklyudov.
+\newblock Feynman-kac correctors in diffusion: Annealing, guidance, and product
+  of experts.
+\newblock In \emph{Proceedings of the 42nd International Conference on Machine
+  Learning}, 2025{\natexlab{a}}.
+\newblock Spotlight; arXiv:2503.02819.
+
+\bibitem[Skreta et~al.(2025{\natexlab{b}})Skreta, Atanackovic, Bose, Tong, and
+  Neklyudov]{skreta2024superdiff}
+Marta Skreta, Lazar Atanackovic, Avishek~Joey Bose, Alexander Tong, and Kirill
+  Neklyudov.
+\newblock The superposition of diffusion models using the it{\^o} density
+  estimator.
+\newblock In \emph{International Conference on Learning Representations},
+  2025{\natexlab{b}}.
+\newblock Spotlight; arXiv:2412.17762.
+
+\bibitem[Sohl-Dickstein et~al.(2015)Sohl-Dickstein, Weiss, Maheswaranathan, and
+  Ganguli]{sohldickstein2015deep}
+Jascha Sohl-Dickstein, Eric~A. Weiss, Niru Maheswaranathan, and Surya Ganguli.
+\newblock Deep unsupervised learning using nonequilibrium thermodynamics.
+\newblock In \emph{Proceedings of the 32nd International Conference on Machine
+  Learning}, volume~37 of \emph{Proceedings of Machine Learning Research}, pp.\
+   2256--2265. PMLR, 2015.
+\newblock arXiv:1503.03585.
+
+\bibitem[Song et~al.(2021)Song, Sohl-Dickstein, Kingma, Kumar, Ermon, and
+  Poole]{song2021scorebased}
+Yang Song, Jascha Sohl-Dickstein, Diederik~P. Kingma, Abhishek Kumar, Stefano
+  Ermon, and Ben Poole.
+\newblock Score-based generative modeling through stochastic differential
+  equations.
+\newblock In \emph{International Conference on Learning Representations}, 2021.
+
+\bibitem[Wang et~al.(2026)Wang, Gupta, Zhu, and MacLellan]{wang2026testtime}
+Zekun Wang, Anant Gupta, Tianyi Zhu, and Christopher~J. MacLellan.
+\newblock Test-time compositional generalization in diffusion models via
+  concept discovery.
+\newblock \emph{arXiv preprint arXiv:2605.07078}, 2026.
+
+\bibitem[Zhang et~al.(2025)Zhang, Murtuza-Lanier, Li, Du, and
+  Wu]{zhang2025product}
+Yunzhi Zhang, Carson Murtuza-Lanier, Zizhang Li, Yilun Du, and Jiajun Wu.
+\newblock Product of experts for visual generation.
+\newblock \emph{arXiv preprint arXiv:2506.08894}, 2025.
+
+\end{thebibliography}

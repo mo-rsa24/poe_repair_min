@@ -127,7 +127,7 @@ written with the answer already visible.
       this run: 128 particles per seed-K-pair, 0 composing, and the reward agreed with the judge
       from step 10 on. (Raised by the all-particle fraction of 0.)
 - [ ] 🟡 Would the same steering on top of the rank-32 correction add anything once the proposal
-      spans composing states? That is [plan 11](../plans/baselines/11-feynman-kac-steering-on-top-of-the-rank-32-correction.md).
+      spans composing states? That is [plan 11](../plans/baselines/13-feynman-kac-steering-on-top-of-the-rank-32-correction.md).
 
 ## Could the answer be an artefact
 
@@ -169,5 +169,5 @@ Navigation: ⬅️ [What the write-up owes](#what-the-write-up-owes) | 📋 [TOC
 
 Navigation: ⬅️ [Still open](#still-open) | 📋 [TOC](#table-of-contents)
 
-Read [plan 11's review](11-feynman-kac-steering-on-top-of-the-rank-32-correction.md) when its run
+Read [plan 11's review](13-feynman-kac-steering-on-top-of-the-rank-32-correction.md) when its run
 lands: the same steering with composing states put into the proposal on purpose.

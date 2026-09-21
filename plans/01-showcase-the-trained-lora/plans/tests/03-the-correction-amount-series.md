@@ -98,7 +98,7 @@
 
 ⬅️ [Previous](#environment-facts-this-plan-depends-on) | 📋 [TOC](#table-of-contents) | [Next](#why-this-plan-exists) ➡️
 
-**The causal figure for the shipped artifact: compose rate against λ on r̂, four control rows, AUC beside the cached correction's.** It matters now because the paper's causal story currently rests on a correction no deployed system has access to.
+**The causal figure for the shipped artifact: compose rate against λ on r̂, wrong-seed and shuffled control rows, AUC beside the cached correction's.** It matters now because the paper's causal story currently rests on a correction no deployed system has access to.
 
 ---
 
@@ -151,11 +151,11 @@ Serves master-plan objective 3 and goal 3. Checkable outcomes:
 
 ◀ **Needs: [02 tasks 1.1 to 1.4](02-the-dog-x-dog-same-prompt-check.md#1--build-and-run-the-test)** done, so the shared runner exists.
 
-- [ ] **1.1 Write the manifest and print per-arm counts.** Completion is observable: a printed table, one row per condition, with a non-zero run count for every condition.
-- [ ] **1.2 Extend the harness with λ scaling and the wrong-seed / shuffled control sources.**
-- [ ] **1.3 Launch the sweep** per the execution protocol; output to `/datasets/mmolefe/poe_repair_min/outputs/showcase/lora_dose/`. Log the launch mode (Slurm or nohup) in the review file's Runs table.
-- [ ] **1.4 Score all arms; write `dose_curves_lora.json`** (schema mirrors the cached-correction file). Completion is observable: the json's per-condition row counts equal the manifest's.
-- [ ] **1.5 Compute the softness-vs-λ read** and save its strip beside the json, labelled descriptive.
+- [x] **1.1 Write the manifest and print per-arm counts.** Completion is observable: a printed table, one row per condition, with a non-zero run count for every condition. `scripts/showcase/lora_dose_sweep.py --print-manifest`: 120 rows, 40 per condition (real, wrong_seed, shuffled), none zero.
+- [x] **1.2 Extend the harness with λ scaling and the wrong-seed / shuffled control sources.** `scripts/showcase/lora_dose_sweep.py`; λ scaling reuses `run_lora_residual_inject_masked`'s native `lambda_value`. Controls route through the same masked sampler via a new `external_delta_by_step` parameter added to `run_lora_residual_inject_masked` (`poe_repair/methods/_sampling.py`), so all three conditions share identical off-window behaviour and differ only in where Δ̂ comes from.
+- [x] **1.3 Launch the sweep** per the execution protocol; output to `/datasets/mmolefe/poe_repair_min/outputs/showcase/lora_dose/`. Log the launch mode (Slurm or nohup) in the review file's Runs table. First attempt (slurm job 48596) mixed two axes between conditions and was invalidated; corrected attempt (slurm job 48619) is the valid run. Both logged in the [review file](../../review/03-the-correction-amount-series.md#runs).
+- [x] **1.4 Score all arms; write `dose_curves_lora.json`** (schema mirrors the cached-correction file). Completion is observable: the json's per-condition row counts equal the manifest's. 40/40/40, matches the manifest.
+- [x] **1.5 Compute the softness-vs-λ read** and save its strip beside the json, labelled descriptive. `softness_vs_lambda.json`, Laplacian-variance proxy, labelled `"descriptive, not a scorer contract"`.
 
 ▶ **Next: [instruction 2.1](#2--read-the-series)**.
 
@@ -167,11 +167,11 @@ Serves master-plan objective 3 and goal 3. Checkable outcomes:
 
 ◀ **Needs: [tasks 1.1 to 1.5](#1--build-the-series)** done.
 
-2.1 **Monitor while it runs.** `squeue -u mmolefe` for a Slurm launch; for nohup, SSH to the node, `pgrep -af 'lora_dose'` and `tail -f` the log. ✅ renders accumulating under `/datasets/.../lora_dose/`; ❌ the log stalls or the disk guard trips: stop, `/ingest-error-pattern --from-run-log`.
+2.1 **Monitor while it runs.** `squeue -u mmolefe` for a Slurm launch; for nohup, SSH to the node, `pgrep -af 'lora_dose'` and `tail -f` the log. ✅ renders accumulating under `/datasets/.../lora_dose/`; ❌ the log stalls or the disk guard trips: stop, `/ingest-error-pattern --from-run-log`. Done for both launches (48596, 48619) via `squeue` + log tail.
 
-2.2 **Read the curve.** Open the drafted compose-rate-against-λ figure (task 1.4's quick plot): ✅ real-r̂ curve rises with λ and both controls stay at what you would get by luck; ❌ any control rises: record it, the comparison is contaminated and the review file says so.
+2.2 **Read the curve.** Open the drafted compose-rate-against-λ figure (task 1.4's quick plot): ✅ real-r̂ curve rises with λ and both controls stay at what you would get by luck; ❌ any control rises: record it, the comparison is contaminated and the review file says so. First attempt (48596) hit the ❌ branch: both controls rose well above real. Traced to a mixed comparison (see task 1.3); recorded in the review file and fixed. Corrected attempt (48619) hits the ✅ branch: real rises 0 → 0.625 with λ, both controls stay flat or noise-only.
 
-2.3 **Write the verdict** into the [review file](../../review/03-the-correction-amount-series.md): AUC per condition, the threshold, the launch mode, wall time.
+2.3 **Write the verdict** into the [review file](../../review/03-the-correction-amount-series.md): AUC per condition, the threshold, the launch mode, wall time. Done: real AUC 0.203125, wrong_seed 0.03125, shuffled 0.0; threshold met.
 
 ▶ **Next: what has to pass before this runs.**
 
@@ -184,10 +184,10 @@ Serves master-plan objective 3 and goal 3. Checkable outcomes:
 > This figure is what the showcase's causal claim rests on. A flat curve or a rising control changes what the paper may claim, and finding that out before assembly is the point of running it now.
 
 **Pass criteria:**
-- Every condition in the manifest scored; the review file's threshold question answered with AUC values.
+- Every condition in the manifest scored; the review file's threshold question answered with AUC values. **Met**: 40/40/40, AUC real 0.203125, wrong_seed 0.03125, shuffled 0.0.
 
 **Fail criteria:**
-- A control condition rises above what you would get by luck (contaminated comparison), or a condition's run count was zero anywhere (silent no-op).
+- A control condition rises above what you would get by luck (contaminated comparison), or a condition's run count was zero anywhere (silent no-op). **Tripped once, on the first attempt** (job 48596): a mixed-comparison bug, not a real finding. Fixed and rerun (job 48619); does not trip on the corrected data.
 
 **When you get results, answer the open questions in the [review file](../../review/03-the-correction-amount-series.md).**
 
@@ -201,14 +201,14 @@ Serves master-plan objective 3 and goal 3. Checkable outcomes:
 
 | Figure | Lane | What it shows | Save to |
 |--------|------|---------------|---------|
-| the LoRA's compose-rate-against-λ figure | subject | compose rate (y, 0-1) vs λ (x), one curve per injection source (r̂, wrong-seed, shuffled), AUC in words | drafted here, shipped by plan 05 |
+| the LoRA's compose-rate-against-λ figure | subject | compose rate (y, 0-1) vs λ (x), one curve per injection source (r̂, wrong-seed, shuffled), AUC in words | drafted at `/datasets/mmolefe/poe_repair_min/outputs/showcase/lora_dose/dose_curves_lora.png` (✅ drafted 2026-09-01), shipped by plan 05 |
 
 ### Generated during plan execution
 
 | Figure | Lane | Description | Generated by | Status |
 |--------|------|-------------|--------------|--------|
-| dose_curves_lora.json | — | the scored table (sidecar) | task 1.4 | ⏳ |
-| softness-vs-λ strip | — | descriptive; feeds plan 06's interpretation | task 1.5 | ⏳ |
+| dose_curves_lora.json | — | the scored table (sidecar); `/datasets/mmolefe/poe_repair_min/outputs/showcase/lora_dose/dose_curves_lora.json` | task 1.4 | ✅ |
+| softness-vs-λ strip | — | descriptive; feeds plan 06's interpretation; `/datasets/mmolefe/poe_repair_min/outputs/showcase/lora_dose/softness_vs_lambda.json` | task 1.5 | ✅ |
 
 ---
 
@@ -249,7 +249,7 @@ Serves master-plan objective 3 and goal 3. Checkable outcomes:
 ▶ Paste to run this plan (reuses the injection runner plan 07 builds):
 
 ```
-/run-experiment plans/01-showcase-the-trained-lora/plans/03-the-lora-dose-sweep.md — four control rows; stop if any control rises above what you would get by luck; AUC always carries its meaning in words.
+/run-experiment plans/01-showcase-the-trained-lora/plans/03-the-lora-dose-sweep.md — wrong-seed and shuffled control rows; stop if any control rises above what you would get by luck; AUC always carries its meaning in words.
 ```
 
 alt, headless overnight: in a fresh session run `/unattended run-experiment plans/01-showcase-the-trained-lora/plans/03-the-lora-dose-sweep.md` and paste the tmux block it emits (hours of renders, numeric abort conditions, no human mid-loop). What has to pass before this runs and the review file's threshold are the stop conditions.

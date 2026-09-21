@@ -90,23 +90,23 @@ Take $K$ cached entries. They may come from different steps, seeds and pairs.
   \label{eq:L}
 \end{align}
 
-\B{The dial is inside the loss, not outside it.} Both sides are dialled. Setting $w=1$ in
+\B{The guidance weight is inside the loss, not outside it.} Both sides carry the guidance weight. Setting $w=1$ in
 \eqref{eq:Tw} gives back \eqref{eq:T}.
 
 \B{The empty branch is read twice.} The right-hand form of \eqref{eq:Tw} shows it: once inside the
 composition, once alone at $-(w-1) = -6.5$.
 
-\B{The composition rule is blind to one move, and the dialled loss is not.}
+\B{The composition rule is blind to one move, and the loss at guidance 7.5 is not.}
 Add the same tensor $v$ to $a$ and to $u$. Then
 \begin{equation}
   T \;\mapsto\; T, \qquad\qquad
   T^{(w)} \;\mapsto\; T^{(w)} - (w-1)\,v .
   \label{eq:gauge}
 \end{equation}
-The undialled composition does not move at all. The dialled one moves by $-(w-1)v = -6.5v$, and
-so does the dialled loss, because its target is built from the cached $\bar u$ and does not follow.
+The at guidance 1 composition does not move at all. The guided one moves by $-(w-1)v = -6.5v$, and
+so does the loss at guidance 7.5, because its target is built from the cached $\bar u$ and does not follow.
 
-That asymmetry is the problem, and it is worse than blindness. \textbf{The dialled loss can lower
+That asymmetry is the problem, and it is worse than blindness. \textbf{The loss at guidance 7.5 can lower
 itself by moving the empty branch without making the composition any better.} It is a cheap way to
 cancel error that buys nothing at $w=1$. Every variation below either removes the move or leaves
 it available.
@@ -344,7 +344,7 @@ V7  & any                                     & any                             
 
 \begin{enumerate}
 \item $a+b-u$ is unchanged by adding the same $v$ to $a$ and to $u$; $T^{(w)}$ changes by
-  $-(w-1)v$. So the undialled losses cannot see that move and the dialled ones can \emph{use} it,
+  $-(w-1)v$. So the loss at guidance 1es cannot see that move and the one at guidance 7.5s can \emph{use} it,
   to cancel error without improving the composition.
 \item Freeing the empty branch buys no predictions. It only decides how the answer is split up.
 \item Whatever is frozen in training must be frozen in sampling.

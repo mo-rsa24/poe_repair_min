@@ -9,7 +9,7 @@ Step 44 in the root running order; waits on nothing; next is
 ## Recommended prompt (after this plan completes)
 
 ```
-/sync-plan-tree @plans/05-when-does-the-outcome-lock-in/plans/01-basins-by-hand.md — <one line on what actually happened>
+/sync-plan-tree @plans/05-when-does-the-outcome-lock-in/plans/reading/01-basins-by-hand.md — <one line on what actually happened>
 ```
 
 ## Recommended skill
@@ -22,7 +22,7 @@ Step 44 in the root running order; waits on nothing; next is
 |------|------|-------------|
 | 43 (previous) | [revalidate the scorer off animals](../../../01-showcase-the-trained-lora/plans/tools/13-revalidate-the-scorer-off-animals.md) | the label-pass validation in the sibling scope |
 | **44 (current)** | **Basins by hand** | **proves basins and a ridge exist for the composed flow, before any new model is downloaded** |
-| 45 (next) | [the free test](../tests/02-the-free-test.md) | posterior-mean drift as the first speciation number |
+| 45 (next) | [the free test](../tests/02-the-free-test.md) | posterior-mean drift as the first [speciation](../../../../../../../goal-setting/learning/deep-learning/diffusion-models/speciation-before-divergence/MASTER_PLAN.md) number |
 
 ## Table of contents
 
@@ -51,22 +51,24 @@ Navigation: ⬅️ [Previous](#position-in-the-plan-tree) | 📋 [TOC](#table-of
 run three times with the repo's own DDIM code, and see whether the three endings agree. Repeat
 at an early, a middle, and a late step.
 
-> A **basin** is the field's term for the set of states that all flow to the same ending. The
+> A **[basin](../../../../artifacts/scenes/noise-shell-and-basins/index.html)** is the field's term for the set of states that all flow to the same ending. The
 > ridge is the boundary between two of them, where a nudge decides which ending you get.
 
 > **Speciation**, the number plan 02 goes on to measure, is the field's word for the step at
 > which the outcome stops being undecided.
 
 **The hypothesis.** Basins are real for the composed flow: at a late step the three endings are
-the same image, at an early step they are free to differ. If true, the commitment test this
+the same image, at an early step they are free to differ. If true, the
+[commitment](../../../../context/world/interaction-term.md#words-this-file-uses) test this
 scope builds has a well-posed thing to measure. If false, the valley picture is wrong, the
 premise behind the endpoint predictor dies here, and the scope re-marks before any model
 download. Rationale: a deterministic flow assigns every state one endpoint, and endpoints should
 cluster into modes.
 
-**Context details.** One pair-and-seed run from the cached trajectories (each holds a
-50-step `latent_trajectory.pt`); steps 5, 25 and 40; three endings per step, roughly 300 U-Net
-calls per step-triplet.
+**Context details.** Two pair-and-seed runs from the cached trajectories (each holds a 50-step
+`latent_trajectory.pt`): `a_cat__x__a_dog` (failure pair) and `a_butterfly__x__a_flower_meadow`
+(success pair, already composes without correction); steps 5, 25 and 40; three endings per step
+per pair, roughly 300 U-Net calls per step-triplet, times two pairs (600 total).
 
 **This plan's job.** Prove the premise cheaply, in an afternoon, before plans 03 to 05 spend
 anything on the endpoint predictor.
@@ -81,12 +83,13 @@ full walk record is [the walk record](../../../../artifacts/drips/consistency-mo
 
 Navigation: ⬅️ [Previous](#quick-context-where-you-are) | 📋 [TOC](#table-of-contents) | [Next](#the-claim) ➡️
 
-**Expected runtime.** A few minutes of GPU per step-triplet, three triplets total; measure the
-first and write the number into the review file's Runs table.
+**Expected runtime.** A few minutes of GPU per step-triplet, six triplets total (three steps
+times two pairs); measure the first and write the number into the review file's Runs table.
 
 **Prerequisites.** A GPU node and the cached pair-and-seed runs present on `/datasets`.
 
-**Project tracking.** Output is small and local: `/datasets/mmolefe/poe_repair_min/outputs/commitment/basins_by_hand/`.
+**Project tracking.** Output is small and local: `/datasets/mmolefe/poe_repair_min/outputs/commitment/basins_by_hand/`,
+split into `a_cat__x__a_dog/` and `a_butterfly__x__a_flower_meadow/` subfolders.
 No W&B run needed at this size.
 
 **Known issues.** See [Error Matrix](#error-matrix) for a full catalog.
@@ -105,12 +108,17 @@ No W&B run needed at this size.
 
 Navigation: ⬅️ [Previous](#considerations) | 📋 [TOC](#table-of-contents) | [Next](#why-this-plan-exists) ➡️
 
-**One pair-and-seed run, three tested steps, nine finished endings: enough to prove or kill the
-premise that the composed flow has basins with an unstable ridge between them.**
+**Two pair-and-seed runs, a failure pair and a success pair, three tested steps each, eighteen
+finished endings: enough to prove or kill the premise that the composed flow has basins with an
+unstable ridge between them, and to check whether that structure is general or specific to
+composition failure.**
 
 **Why this matters right now:** every later plan in this scope measures "which basin, decided
-when"; if there are no basins, there is nothing to measure and the scope stops at a cost of one
-afternoon.
+when," for the pairs that fail by default; if the failure pair shows no basins, there is nothing
+to measure and the scope stops at a cost of one afternoon. The success pair,
+`a_butterfly__x__a_flower_meadow`, is not required to pass for the scope to continue; it exists
+to check that basin structure is a property of the sampler, not an artifact of composition
+failure.
 
 ## Why this plan exists
 
@@ -150,25 +158,28 @@ Navigation: ⬅️ [Previous](#why-this-plan-exists) | 📋 [TOC](#table-of-cont
 
 Navigation: ⬅️ [Previous](#what-happens-visual) | 📋 [TOC](#table-of-contents) | [Next](#purpose-and-goal) ➡️
 
-1. **The test script** `scripts/commitment/perturb_finish.py`. Loads one pair-and-seed run's
+1. **The test script** `scripts/commitment/perturb_finish.py`. Loads a pair-and-seed run's
    `latent_trajectory.pt`, builds the two nudged copies, finishes all three from a given step
    with the same composed epsilon the cache was made with (reusing `load_ddim_scheduler` and
    `ddim_prev_from_x0_eps`), decodes the endings, saves PNGs and a JSON of relative latent
    distances. The agreement threshold lives in this file as a constant
-   (`REL_ENDING_DIST_MAX`), set before any run.
-2. **The output**: `/datasets/mmolefe/poe_repair_min/outputs/commitment/basins_by_hand/`
-   holding nine PNGs, one JSON per tested step, and one 3x3 contact-sheet image.
+   (`REL_ENDING_DIST_MAX`), set before any run. Runs once per pair, same script, same
+   thresholds.
+2. **The output**: `/datasets/mmolefe/poe_repair_min/outputs/commitment/basins_by_hand/`, one
+   subfolder per pair (`a_cat__x__a_dog/`, `a_butterfly__x__a_flower_meadow/`), each holding
+   nine PNGs, one JSON per tested step, and one 3x3 contact-sheet image.
 
 ## Purpose and goal
 
 Navigation: ⬅️ [Previous](#description-what-to-build) | 📋 [TOC](#table-of-contents) | [Next](#tasks) ➡️
 
 **Purpose.** Objective 1 of [the master plan](../../MASTER_PLAN.md): establish whether basin
-structure is measurable on the cached trajectories at all.
+structure is measurable on the cached trajectories at all, and whether it is specific to
+composition failure or general to the sampler.
 
 **Goals:**
-1. Nine endings exist on disk with their distance JSONs.
-2. The review file's question is answered ✅ or ❌, either way with the numbers.
+1. Eighteen endings exist on disk (nine per pair) with their distance JSONs.
+2. Both of the review file's questions are answered ✅ or ❌, either way with the numbers.
 
 ## Tasks
 
@@ -179,8 +190,13 @@ Navigation: ⬅️ [Previous](#purpose-and-goal) | 📋 [TOC](#table-of-contents
 ### 0. 🧭 Check this plan before working from it
 
 - [ ] **0.1** Check this plan conforms and its instructions are concrete, before acting on it.
-  - Paste: `/verify-plan @plans/05-when-does-the-outcome-lock-in/plans/01-basins-by-hand.md`
+  - Paste: `/verify-plan @plans/05-when-does-the-outcome-lock-in/plans/reading/01-basins-by-hand.md`
   - Done when: the report comes back clean, or its proposals have been applied.
+- [ ] **0.2** Cross-reference this plan's terms against context/, environment/, runbook/,
+  report/, and any learning journey that names this project, in case a term this plan mentions
+  is already defined or explained somewhere else in the repo.
+  - Paste: `/xref-plan @plans/05-when-does-the-outcome-lock-in/plans/reading/01-basins-by-hand.md`
+  - Done when: the scan comes back with no candidates, or its proposed links have been applied.
 
 ▶ **Next: [task 1.1](#1--build-the-test-script)**, the first real work.
 
@@ -188,45 +204,60 @@ Navigation: ⬅️ [Previous](#purpose-and-goal) | 📋 [TOC](#table-of-contents
 
 ◀ **Needs: [task 0.1](#0--check-this-plan-before-working-from-it)**, so the plan is known good.
 
-- [ ] **1.1** Locate one cached pair-and-seed run and print what was found.
-  - List the pair-and-seed runs under `/datasets/mmolefe/poe_repair_min/outputs/` that hold a
-    `latent_trajectory.pt` (the same ones the trajectory-divergence analyses read), print the
-    count and the chosen run's path.
-  - **Done when:** the chosen run's path and the total count are printed and recorded in
-    the review file's orientation paragraph. A count of zero stops the plan here.
-- [ ] **1.2** Write `scripts/commitment/perturb_finish.py` per the Description, threshold constant
+- [x] **1.1** Locate the two cached pair-and-seed runs and print what was found.
+  - The failure pair: `/datasets/mmolefe/poe_repair_min/outputs/veracity/pairs/a_cat__x__a_dog/seed_4/teacher_residual_const_lam000/latent_trajectory.pt`.
+  - The success pair: `/datasets/mmolefe/poe_repair_min/outputs/veracity/pairs/a_butterfly__x__a_flower_meadow/seed_4/teacher_residual_const_lam000/latent_trajectory.pt`.
+  - **Done when:** both paths are confirmed to exist and are recorded in the review file's
+    orientation paragraph. Either path missing stops the plan here.
+  - ✅ Both confirmed present; recorded in the review file's orientation paragraph.
+- [x] **1.2** Write `scripts/commitment/perturb_finish.py` per the Description, threshold constant
   `REL_ENDING_DIST_MAX` in the source.
   - **Done when:** the script exists and `co3 python scripts/commitment/perturb_finish.py --help`
     prints its arguments.
+  - ✅ Written; `--help` prints its arguments. `REL_ENDING_DIST_MAX = 0.05` set in source before
+    any run.
 
-▶ **Next: [task 2.1](#2--run-the-three-triplets)**.
+▶ **Next: [task 2.1](#2--run-the-three-triplets-failure-pair-and-success-pair)**.
 
-### 2. 🚀 Run the three triplets
+### 2. 🚀 Run the three triplets, failure pair and success pair
 
-◀ **Needs: [tasks 1.1 to 1.2](#1--build-the-test-script)** done, so the script and the chosen run exist.
+◀ **Needs: [tasks 1.1 to 1.2](#1--build-the-test-script)** done, so the script and both chosen runs exist.
 
-- [ ] **2.1** Run the test at steps 5, 25 and 40 on the chosen pair-and-seed run.
+- [ ] **2.1** Run the test at steps 5, 25 and 40 on the failure pair, `a_cat__x__a_dog`.
 
     ```bash
-    co3 python scripts/commitment/perturb_finish.py --cell <chosen-cell-path> \
+    co3 python scripts/commitment/perturb_finish.py \
+      --cell /datasets/mmolefe/poe_repair_min/outputs/veracity/pairs/a_cat__x__a_dog/seed_4/teacher_residual_const_lam000 \
       --steps 5 25 40 --nudge 0.01 \
-      --out /datasets/mmolefe/poe_repair_min/outputs/commitment/basins_by_hand/
+      --out /datasets/mmolefe/poe_repair_min/outputs/commitment/basins_by_hand/a_cat__x__a_dog/
     ```
 
-  - **Done when:** nine PNGs, three JSONs and the contact sheet exist under the output path,
-    and the wall time is recorded in the review file's Runs table.
+  - **Done when:** nine PNGs, three JSONs and the contact sheet exist under this pair's output
+    path, and the wall time is recorded in the review file's Runs table.
 
-▶ **Next: [instruction 3.1](#3--judge-the-endings-by-eye)** (the eyeball read of the contact sheet).
+- [ ] **2.2** Run the identical test on the success pair, `a_butterfly__x__a_flower_meadow`.
+
+    ```bash
+    co3 python scripts/commitment/perturb_finish.py \
+      --cell /datasets/mmolefe/poe_repair_min/outputs/veracity/pairs/a_butterfly__x__a_flower_meadow/seed_4/teacher_residual_const_lam000 \
+      --steps 5 25 40 --nudge 0.01 \
+      --out /datasets/mmolefe/poe_repair_min/outputs/commitment/basins_by_hand/a_butterfly__x__a_flower_meadow/
+    ```
+
+  - **Done when:** nine PNGs, three JSONs and the contact sheet exist under this pair's output
+    path, and the wall time is recorded in the review file's Runs table.
+
+▶ **Next: [instruction 3.1](#3--judge-the-endings-by-eye-both-pairs)** (the eyeball read of both contact sheets).
 
 ### Close out. 🔄 Record what this plan taught
 
 ◀ **Needs:** every group above attempted, including the ones that went red.
 
 - [ ] **Capture the failures this plan hit**, while they are still fresh.
-  - Paste: `/ingest-error-pattern --from-run-log @plans/05-when-does-the-outcome-lock-in/plans/01-basins-by-hand.md`
+  - Paste: `/ingest-error-pattern --from-run-log @plans/05-when-does-the-outcome-lock-in/plans/reading/01-basins-by-hand.md`
   - Done when: each failure has a catalog entry, or there were none to record.
 - [ ] **Bring the tree current** with what actually happened.
-  - Paste: `/sync-plan-tree @plans/05-when-does-the-outcome-lock-in/plans/01-basins-by-hand.md — <one line on what you did>`
+  - Paste: `/sync-plan-tree @plans/05-when-does-the-outcome-lock-in/plans/reading/01-basins-by-hand.md — <one line on what you did>`
   - Done when: statuses, the running order and the Error Matrix match reality.
 
 ▶ **Next: what has to pass before this runs.**
@@ -237,23 +268,30 @@ Navigation: ⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](
 
 **For you to follow manually.** Do these yourself.
 
-### 3. 👁️ Judge the endings by eye
+### 3. 👁️ Judge the endings by eye, both pairs
 
-◀ **Needs: [task 2.1](#2--run-the-three-triplets)** done, so the contact sheet exists.
+◀ **Needs: [tasks 2.1 to 2.2](#2--run-the-three-triplets-failure-pair-and-success-pair)** done, so both contact sheets exist.
 
-3.1 **Open the contact sheet** at
-   `/datasets/mmolefe/poe_repair_min/outputs/commitment/basins_by_hand/contact_sheet.png`
+3.1 **Open the failure pair's contact sheet** at
+   `/datasets/mmolefe/poe_repair_min/outputs/commitment/basins_by_hand/a_cat__x__a_dog/contact_sheet.png`
    (over the SSH port-forward image viewer or by copying it local).
    - Expected result: a 3x3 grid, rows = tested steps 5, 25, 40; columns = nudged-down,
      untouched, nudged-up endings.
-   - ✅ If the step-40 row shows three versions of the same image and the step-5 row shows any
-     visible divergence, record "basins real" in the review file.
+   - ✅ If the step-40 row shows three versions of the same chimera and the step-5 row shows any
+     visible divergence, record "basins real, failure pair" in the review file.
    - ❌ If the step-40 row shows different images, record "picture wrong" in the review file and
      stop the scope, per the pass and fail rules below.
 
-3.2 **Record the numbers beside the eyeball read.**
-   - [ ] Open the three JSONs, copy each step's two relative distances into
-     [the review file](../../review/01-basins-by-hand.md) under its one pre-registered question.
+3.2 **Open the success pair's contact sheet** at
+   `/datasets/mmolefe/poe_repair_min/outputs/commitment/basins_by_hand/a_butterfly__x__a_flower_meadow/contact_sheet.png`.
+   - Expected result: the same 3x3 layout.
+   - ✅ If the step-40 row agrees, record "basins real, success pair" in the review file.
+   - ⚠️ If the step-40 row disagrees while the failure pair's agreed, record the asymmetry under
+     Still open; this does not stop the scope.
+
+3.3 **Record the numbers beside the eyeball read, both pairs.**
+   - [ ] Open all six JSONs, copy each pair's step-wise relative distances into
+     [the review file](../../review/01-basins-by-hand.md) under its two pre-registered questions.
 
 ▶ **Next: what has to pass before this runs**, then [plan 02](../tests/02-the-free-test.md).
 
@@ -262,18 +300,24 @@ Navigation: ⬅️ [Previous](#tasks) | 📋 [TOC](#table-of-contents) | [Next](
 Navigation: ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
 > **Nothing later in this scope may run until this passes**: if basins are not real for the
-> composed flow, plans 02 to 05 measure nothing.
+> failure pair, plans 02 to 05 measure nothing.
 
 - **Pass criteria:**
-  - Step-40 endings agree under `REL_ENDING_DIST_MAX` (both relative distances below the
-    threshold) and the eyeball read concurs.
-  - Step-5 endings were free to differ (no requirement that they do).
+  - `a_cat__x__a_dog` (failure pair): step-40 endings agree under `REL_ENDING_DIST_MAX` (both
+    relative distances below the threshold) and the eyeball read concurs. Step-5 endings were
+    free to differ (no requirement that they do).
+  - `a_butterfly__x__a_flower_meadow` (success pair): step-40 endings also agree under the same
+    threshold. Expected, not required for the scope to continue, but recorded either way.
 - **Fail criteria (STOP):**
-  - Step-40 endings disagree under a 1% nudge, by number or by eye. The scope's premise is
-    wrong; stop and re-mark.
+  - `a_cat__x__a_dog` step-40 endings disagree under a 1% nudge, by number or by eye. This is
+    the pair the endpoint-predictor and speciation work depend on; the scope's premise is
+    wrong, stop and re-mark.
 - **Partial pass guidance:**
-  - Agreement at 40 but oddities at 25 (inside the divergence window) is expected territory,
-    not a failure; note it under "Asked after the result".
+  - `a_cat__x__a_dog` passes but `a_butterfly__x__a_flower_meadow` does not show basins at step
+    40: does not stop the scope (the load-bearing pair passed), but it is a real asymmetry, not
+    noise, and goes to Still open rather than being resolved here.
+  - Agreement at 40 but oddities at 25 (inside the divergence window), either pair: still
+    expected territory, not a failure; note it under "Asked after the result".
 
 **When you get results, answer** [the review file](../../review/01-basins-by-hand.md) **or move to** [Next step](#next-step).
 
@@ -292,12 +336,13 @@ Navigation: ⬅️ [Previous](#what-has-to-pass-before-this-runs) | 📋 [TOC](#
 
 | Item | Lane | Description | Generated by | Status | Details |
 |------|------|-------------|--------------|--------|---------|
-| Contact sheet | — | 3x3 grid of endings, rows = steps, columns = nudges | `perturb_finish.py` | ⏳ Generated during run | copied to `artifacts/results/when-does-the-outcome-lock-in/endings-under-a-1pc-nudge__steps-5-25-40.png` with its README card |
+| Contact sheet, failure pair | — | 3x3 grid of `a_cat__x__a_dog` endings, rows = steps, columns = nudges | `perturb_finish.py` | ⏳ Generated during run | copied to `artifacts/results/when-does-the-outcome-lock-in/endings-under-a-1pc-nudge__a_cat_x_a_dog__steps-5-25-40.png` with its README card |
+| Contact sheet, success pair | — | 3x3 grid of `a_butterfly__x__a_flower_meadow` endings, rows = steps, columns = nudges | `perturb_finish.py` | ⏳ Generated during run | copied to `artifacts/results/when-does-the-outcome-lock-in/endings-under-a-1pc-nudge__a_butterfly_x_a_flower_meadow__steps-5-25-40.png` with its README card |
 
 #### Organization workflow
 
-1. Run the test; 2. Judge by eye; 3. Copy the contact sheet into `artifacts/results/` with its
-card entry; 4. Link it here.
+1. Run the test on both pairs; 2. Judge both contact sheets by eye; 3. Copy both contact sheets
+into `artifacts/results/` with their card entries; 4. Link them here.
 
 ## Orchestration: keeping catalogs and plan files in sync
 
@@ -305,9 +350,10 @@ Navigation: ⬅️ [Previous](#figure-catalog) | 📋 [TOC](#table-of-contents) 
 
 | Step | Command | Triggered by | Outcome |
 |------|---------|--------------|---------|
-| Check the plan | `/verify-plan @plans/05-when-does-the-outcome-lock-in/plans/01-basins-by-hand.md` | **task 0.1**, before any work | conformance reported |
-| Capture patterns | `/ingest-error-pattern --from-run-log @plans/05-when-does-the-outcome-lock-in/plans/01-basins-by-hand.md` | **the close out**, after any red run | errors added to catalogs |
-| Bring the tree current | `/sync-plan-tree @plans/05-when-does-the-outcome-lock-in/plans/01-basins-by-hand.md` | **the close out** | statuses match reality |
+| Check the plan | `/verify-plan @plans/05-when-does-the-outcome-lock-in/plans/reading/01-basins-by-hand.md` | **task 0.1**, before any work | conformance reported |
+| Cross-reference the plan | `/xref-plan @plans/05-when-does-the-outcome-lock-in/plans/reading/01-basins-by-hand.md` | **task 0.2**, before any work | terms already documented elsewhere linked |
+| Capture patterns | `/ingest-error-pattern --from-run-log @plans/05-when-does-the-outcome-lock-in/plans/reading/01-basins-by-hand.md` | **the close out**, after any red run | errors added to catalogs |
+| Bring the tree current | `/sync-plan-tree @plans/05-when-does-the-outcome-lock-in/plans/reading/01-basins-by-hand.md` | **the close out** | statuses match reality |
 | Organize outputs | manual move + update Figure Catalog | after completion | deliverables linked |
 
 This table is the reference, not the trigger: the trigger is the task line each row names.
@@ -332,7 +378,8 @@ for delta in (-1, 0, +1):
 
 Navigation: ⬅️ [Previous](#code-references) | 📋 [TOC](#table-of-contents)
 
-[The free test](../tests/02-the-free-test.md): posterior-mean drift as the first speciation number,
+[The free test](../tests/02-the-free-test.md): posterior-mean drift as the first
+[speciation](../../../../../../../goal-setting/learning/deep-learning/diffusion-models/speciation-before-divergence/NOTATION.md) number,
 needing no new model.
 
 ## Error Matrix

@@ -158,7 +158,7 @@ Serves [Objective 5 and DoD 4 of the scope master plan](../../MASTER_PLAN.md).
   - 💡 `/design-figure` on the two-panel split if the single-figure version fights itself ✅
 - [ ] **1.2** `two_instruments_window.py`: F4a's window curve and the windowed projection, aligned axes; sidecar
 - [ ] **1.3** Copy both into `paper/iclr/figures/` with sidecars
-- [x] **1.4** The [shared-plane](../../../../../../../goal-setting/learning/trajectory-manifold-by-hand/plans/09-the-fraction-on-the-face.md) trajectory figure (F11 in the register): built as `paper/iclr/figures/held-out-trajectories-in-one-shared-plane.pdf` by `scripts/plot_shared_plane_trajectories.py` from the sidecar at `artifacts/drips/showcase-the-trained-adapter/manifold/manifold_data.json`; every drawn number recomputed and asserted in the script
+- [x] **1.4** The [shared-plane](../../../../../../../goal-setting/learning/deep-learning/diffusion-models/trajectory-manifold-by-hand/plans/09-the-fraction-on-the-face.md) trajectory figure (F11 in the register): built as `paper/iclr/figures/held-out-trajectories-in-one-shared-plane.pdf` by `scripts/plot_shared_plane_trajectories.py` from the sidecar at `artifacts/drips/showcase-the-trained-adapter/manifold/manifold_data.json`; every drawn number recomputed and asserted in the script
 - [ ] **1.5** Export `artifacts/drips/showcase-the-trained-adapter/manifold/trajectory-manifold-prototype.html` as a self-contained file into the supplement when it is assembled; the hosted prototype link is not citable, and if per-step decoded frames get built the hover card changes, so export last
 
 ▶ **Next: [task group 2](#2--import-as-plans-land)**.
@@ -209,6 +209,12 @@ Serves [Objective 5 and DoD 4 of the scope master plan](../../MASTER_PLAN.md).
 ⬅️ [Previous](#instructions) | 📋 [TOC](#table-of-contents) | [Next](#figure-catalog) ➡️
 
 > **This is where the paper's figures either meet the standard or do not ship.**
+
+**If every figure passes:** the showcase set ships as five figures, each with a sidecar and a written standard pass: the structure figure, the two-instruments-one-window figure, the dog × dog grid, the compose-rate-against-λ figure, and the transfer matrix. The scope closes.
+
+**If a figure fails:** it is held back and named in the master plan rather than dropped silently. The scope does not close until every held-back figure is fixed and re-checked, or explicitly cut from the paper.
+
+**Why this check exists:** the five figures came from four separate plans, run at different times with different authors. The standard check is the one point where all five are read against the same caption rules (named axes, a stated meaning for every number, the correct anchor for the quantity, no fidelity/composition conflation) before a reader sees them as one paper.
 
 **Pass criteria:**
 - Every shipped figure has a sidecar and a written standard pass.

@@ -1,196 +1,269 @@
-# Progress map: Designing the Correction Loss
+# Where this work has got to: the progress map
 
-**Range: the six plans of `plans/09-designing-the-correction-loss/`, inside the root running order that holds them.** Sibling scopes are out of range and are not drawn.
+**4 prompts · 1 rendered · 3 waiting**
 
-2 prompts · 0 rendered · 2 waiting
+**Range.** Every plan in all nine scopes under `plans/`, plus `standing/`, read from the root
+[running order](../MASTER_PLAN.md#the-paper-what-has-to-land) down. Nothing outside this
+repository's plan tree is drawn. No learning journey is in range.
 
-Generated 2026-09-20 from the tick marks in the plan files. Colours are computed, never asserted: re-read the files and regenerate rather than editing a colour here.
+**Counted from the markers, not from memory.** 89 plan files. **9 done, 33 in flight, 47 not
+started.** A plan is done when every task in it is ticked, in flight when some are, not started when
+none are. A file with no task lines at all is not a plan and is not counted. The root running order
+holds 76 steps and the current position is **step 9**.
 
----
+## Table of contents
 
-## What this map answers
+- [Abstraction chain](#abstraction-chain)
+- [Art direction](#art-direction)
+- [Meaning palette](#meaning-palette)
+- [Reading axes](#reading-axes)
+- [Glyph vocabulary](#glyph-vocabulary)
+- [Devices in play](#devices-in-play)
+- [Prompt 1: The nine scopes, sorted by how far each has got](#prompt-1-the-nine-scopes-sorted-by-how-far-each-has-got)
+- [Prompt 2: One rail of 76 steps, and the work is standing on step 9](#prompt-2-one-rail-of-76-steps-and-the-work-is-standing-on-step-9)
+- [Prompt 3: The six plans of the correction-loss scope](#prompt-3-the-six-plans-of-the-correction-loss-scope)
+- [Capstone: the whole tree at a glance](#capstone-the-whole-tree-at-a-glance)
+- [The per-scope count this map was drawn from](#the-per-scope-count-this-map-was-drawn-from)
+- [What was left out, and what the markers disagree about](#what-was-left-out-and-what-the-markers-disagree-about)
 
-Of everything this scope is made of, what is finished, what is being worked on right now, and what has not been started. It draws plans as plans. What those plans build is the job of [the scope's own illustrated map](09-designing-the-correction-loss/diagram-prompts.md), and is not restated here.
+## Abstraction chain
 
----
+1. [Closing the Compositional Gap](diagram-prompts.md): subject "cache to one page per objective",
+   process "one route from an unmeasured objective to one that is named"
+
+This map is a sibling of that one rather than a generation below it: it draws the plans themselves,
+never anything they build.
 
 ## Art direction
 
-Inherited from [the plan tree's own map](diagram-prompts.md): **Vivid circuit**. The checkpoint picture looks like the rest of the project rather than introducing a third look.
+**Vivid circuit**, inherited from [the root scope's illustrated map](diagram-prompts.md) so the
+checkpoint looks like the rest of the project. The style paragraph below is embedded verbatim at the
+head of every prompt.
 
-The style paragraph is embedded verbatim at the head of every prompt below.
-
----
+```
+Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded dashed arrow lines, each color meaning exactly one kind of flow, with a small legend inside the image. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Official product logos only on components that ARE that product; every other component gets a clean generic glyph. Small cartoon figures or vehicles for external actors (users, clients). Clean sans-serif labels under every icon, short and lowercase-friendly. Generous spacing, no clutter, no watermark.
+```
 
 ## Meaning palette
 
-The inherited direction supplies the look. The meaning is the progress map's own, and it is three background colours read off the markers, per `~/.claude/DIAGRAM_PROMPTS_FORMAT.md`.
+Three colours, and they are the progress palette, not the root map's research palette. Green here
+means a plan is finished, never that a measurement passed.
 
-| Background | Means | Read from | Second cue |
-|---|---|---|---|
-| Gray | not started | no task ticked | empty outline |
-| Yellow | in flight | some ticked, some open | half-filled bar |
-| Green | done | every task ticked, closing pass owed nothing | check mark |
+| Colour | Means | Second cue, on the glyph |
+|---|---|---|
+| Green | done: every task ticked | a check mark |
+| Yellow | in flight: some ticked, some open | a half-filled bar |
+| Gray | not started: no task ticked | an empty outline |
 
-The second cue is required, not decorative: the map has to survive being printed, and being read by someone who cannot separate the two warm colours.
+The second cue is not optional. It is what keeps the map readable printed, and by anyone who cannot
+separate the two warm colours.
 
-The inherited blue, amber and red carry no meaning here. Nothing on this map is a prediction path, a correction, or a null.
+## Reading axes
 
----
+**Vertical is the dominant axis in prompt 1 and the capstone.** Reading top to bottom is reading
+from most finished to least started. **Horizontal is the dominant axis in prompts 2 and 3**, where
+left to right is the running order with step 1 at the left.
+
+The secondary axis encodes nothing in either case: cards inside a band sit side by side in no
+significant order, and all six plans in prompt 3 sit on one line.
 
 ## Glyph vocabulary
 
 | Glyph | Stands for |
 |---|---|
-| Plan card | one plan file, carrying its step number and its title in its own words |
-| Scope frame | a rounded panel holding the plan cards of one scope, labelled with the scope's name |
-| Order arrow | the running order, from each plan to the one that follows it |
-| Needs arrow | a `◀ Needs:` pointer, from a plan back to what it waits on |
-| Position marker | where the work actually is right now |
+| Plan card | one plan file, carrying its number and its title |
+| Scope card | one scope, a rounded card holding its tally |
+| Tally bar | one scope's plans split green, yellow and gray in proportion |
+| Order rail | the root running order, 76 steps left to right |
+| Position pin | where the work is right now on that rail |
+| Count strip | the three-number tally: done, in flight, not started |
+| Wait arrow | a plan's stated dependency on an earlier plan |
 
-Every plan card carries its number in-image, because the number is how a walk names it out loud.
+No product logos anywhere. Every component is this project's own plan tree.
 
----
+## Devices in play
 
-## The trace, as read
+Status chips on every plan card, numbered badges carrying the plan number, phase containers for the
+bands, an in-image legend on every prompt.
 
-| Step | Plan | Ticked | Open | Colour |
-|---|---|---|---|---|
-| 71 | [01: the four instrument fixes](09-designing-the-correction-loss/plans/tools/01-the-three-instrument-fixes.md) | 8 | 6 | yellow |
-| 72 | [02: the V0 foundation](09-designing-the-correction-loss/plans/reading/02-the-v0-foundation.md) | 0 | 19 | gray |
-| 73 | [03: the penalty read](09-designing-the-correction-loss/plans/hypothesis/03-the-v0a-read.md) | 0 | 17 | gray |
-| 74 | [04: freezing the empty branch](09-designing-the-correction-loss/plans/hypothesis/04-freezing-the-empty-branch.md) | 5 | 20 | yellow, current |
-| 75 | [05: training on the renders that composed](09-designing-the-correction-loss/plans/hypothesis/05-training-on-the-renders-that-composed.md) | 0 | 17 | gray |
-| 76 | [06: fitting the whole path](09-designing-the-correction-loss/plans/hypothesis/06-fitting-the-whole-path-and-handing-back-the-tail.md) | 2 | 16 | yellow |
-
-**0 done · 3 in flight · 3 not started.**
-
-No plan in this scope is green. Nothing here has been finished.
+History: `plan-diagrams/`, one dated snapshot per version of this map. The latest is
+[the 2026-09-20 snapshot](plan-diagrams/01-2026-09-20.md). This map is regenerated whole, never
+patched, because a colour is a function of the markers and a patched colour is a lie with a picture
+attached.
 
 ---
 
-## Prompt 1 (Progress): The six plans of this scope
+## Prompt 1: The nine scopes, sorted by how far each has got
 
-⏳ not rendered
-Save as: `plan-diagrams/progress-01-the-six-plans.png`
+🖼️ rendered 2026-09-20 as `plan-diagrams/progress-01-the-nine-scopes.png`
+
+<a href="plan-diagrams/progress-01-the-nine-scopes.png"><img src="plan-diagrams/progress-01-the-nine-scopes.png" width="800"
+   alt="Ten scope cards in three bands: two with finished work, six running, two never opened"></a>
+
+*Only the top two cards carry green. Six scopes are open at once, and 07 is almost all gray behind
+the one plan it has started.*
+
+**Thesis.** Two scopes have finished work in them, six are part-way, two have never been opened.
 
 ```
 Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded dashed arrow lines, each color meaning exactly one kind of flow, with a small legend inside the image. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Official product logos only on components that ARE that product; every other component gets a clean generic glyph. Small cartoon figures or vehicles for external actors (users, clients). Clean sans-serif labels under every icon, short and lowercase-friendly. Generous spacing, no clutter, no watermark.
 
-SCENE
-Six plan cards in one row, reading left to right in step order, all inside a single rounded panel titled with the scope's name. Each card is a rounded rectangle on its own platform, tall enough to hold a number, a title and a small status strip along its bottom edge.
+Scene: three wide horizontal bands stacked vertically, each a rounded soft-tinted phase container with its title on the left edge of the band. Reading top to bottom is reading from most finished to least started. Inside each band, scope cards sit side by side as small rounded cards, each carrying a bold number badge in its top-left corner, a short title, and a horizontal tally bar along its bottom edge divided into coloured segments in the proportions given below.
 
-CAST
-Six plan cards, in this order left to right. Each carries its step number large in its top-left corner, its title beneath, and a status strip at the bottom.
+Cast, band one, titled "some of it finished", tinted pale green, two cards, each with a green check mark beside its tally bar. Card badged "03" labelled "interaction-term", tally bar green 64% then yellow 9% then gray 27%. Card badged "04" labelled "animals-compose-transfer", tally bar green 33% then yellow 33% then gray 34%.
 
-  Card 1, step 71, yellow background, status strip a half-filled bar reading 8 of 14
-  Card 2, step 72, gray background, status strip an empty outline reading 0 of 19
-  Card 3, step 73, gray background, status strip an empty outline reading 0 of 17
-  Card 4, step 74, yellow background, status strip a half-filled bar reading 5 of 25, and this card alone is ringed by a thicker darker border with a small downward-pointing position marker sitting directly above it
-  Card 5, step 75, gray background, status strip an empty outline reading 0 of 17
-  Card 6, step 76, yellow background, status strip a half-filled bar reading 2 of 18
+Cast, band two, titled "running now", tinted pale yellow, six cards, each with a half-filled circle glyph beside its tally bar. Every tally bar in this band starts with yellow at its left edge and contains NO green segment whatsoever. Card badged "01" labelled "showcase the trained lora", yellow 48% then gray 52%. Card badged "05" labelled "when does the outcome lock in", yellow 43% then gray 57%. Card badged "06" labelled "is the gap the sampler's", yellow 69% then gray 31%. Card badged "07" labelled "writing the paper", yellow 14% then gray 86%. Card badged "09" labelled "designing the correction loss", yellow 50% then gray 50%. A sixth card with no number badge, labelled "standing", yellow 50% then gray 50%.
 
-No card is green. Nothing in this scope is finished, and the picture must not suggest otherwise.
+The card badged "09" is drawn slightly larger than the others in its band and sits on a raised platform.
 
-FLOWS
-A solid dark arrow from each card to the next, left to right, five arrows in all: the running order. Beneath the row, one thinner curved arrow running backwards from card 4 to card 1, and a second from card 4 to card 3, meaning this plan waits on those two. No other backward arrows.
+Cast, band three, titled "never opened", tinted pale gray, two cards drawn as empty outlines with no coloured fill anywhere. Card badged "02" labelled "can we trust the compose rate". Card badged "08" labelled "improve the rank-32 adapter".
 
-TEXT IN THE IMAGE, exactly as written
-  "designing the correction loss"
-  "71"
-  "the four instrument fixes"
-  "72"
-  "the V0 foundation"
-  "73"
-  "the penalty read"
-  "74"
-  "freezing the empty branch"
-  "75"
-  "training on the renders that composed"
-  "76"
-  "fitting the whole path"
-  "you are here"
-  "8 of 14"
-  "0 of 19"
-  "0 of 17"
-  "5 of 25"
-  "0 of 17"
-  "2 of 18"
-  "gray: not started"
-  "yellow: in flight"
-  "green: done"
+Flows: none. This image has no arrows.
 
-EXCLUSIONS
-No green card anywhere except in the legend swatch. No product logos, no brand marks. Nothing depicting what any plan builds: no networks, no cubes, no prompts, no images, no training curves. No components other than those listed. No placeholder gibberish text. No watermark. No arrow terminating in whitespace. No colour used without a legend entry.
+In-image text, spelled exactly: the title banner reads "where the work has got to". Band titles read "some of it finished", "running now", "never opened". A legend strip along the bottom reads "green: done  ·  yellow: in flight  ·  gray: not started". A count strip sits at the top right of the banner reading "89 plans · 9 done · 33 in flight · 47 not started".
+
+Exclusions: no arrows, no dates, no percentage numbers printed anywhere, no product logos, no watermark, nothing describing what any plan builds.
 ```
 
-Visual thesis: three of the six plans have been touched and none has been finished, and the one being worked on waits on two others.
-
-Faithfulness note: exactly six cards, in step order 71 to 76, no green among them. The position marker sits on card 74 and nowhere else. The two backward arrows leave card 74 and land on cards 71 and 73, which are what that plan's own `◀ Needs:` pointers name. Each status strip's numbers match its card's ticked and total counts.
+**Faithfulness note.** Only the two cards in the top band may carry any green: 03 is the only scope
+with most of its plans finished (7 of 11) and 04 the only other with any (2 of 6). The six cards in
+the middle band have zero finished plans between them, so a green segment on any of them states
+something false, and the two cards in the bottom band have no ticked task at all. The card badged
+"07" belongs in the middle band and not the bottom one, because one of its seven plans is part-way.
+Ten scope cards were grouped into three bands rather than drawn as ten separate panels, to stay
+inside the density budget.
 
 ---
 
-## Capstone (Progress): Where this sits in the whole running order
+## Prompt 2: One rail of 76 steps, and the work is standing on step 9
 
 ⏳ not rendered
-Save as: `plan-diagrams/progress-capstone-where-this-sits.png`
+Save as: `plans/plan-diagrams/progress-02-the-running-order.png`
+
+**Thesis.** The correction-loss work sits at the far end of an order whose current position is near
+the beginning, and the finished steps are scattered rather than a solid run at the start.
 
 ```
 Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded dashed arrow lines, each color meaning exactly one kind of flow, with a small legend inside the image. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Official product logos only on components that ARE that product; every other component gets a clean generic glyph. Small cartoon figures or vehicles for external actors (users, clients). Clean sans-serif labels under every icon, short and lowercase-friendly. Generous spacing, no clutter, no watermark.
 
-SCENE
-One long horizontal band across the middle of the canvas standing for the project's whole running order, drawn as a plain numbered track with no cards on it, running from step 1 at the far left to step 76 at the far right. One stretch of that track, from step 71 to step 76, is bracketed and pulled downward into an enlarged panel below, where the six plan cards of this scope are drawn in full. The enlargement is shown by two straight guide lines running from the bracketed stretch down to the top corners of the panel.
+Scene: one long horizontal rail running the full width of the image, made of 76 small square tiles butted together in a single row, numbered 1 at the left and 76 at the right. The rail is the only structure in the image; everything else annotates it.
 
-CAST
-The running-order track, marked only at its two ends and at the bracketed stretch.
+Cast: eleven tiles are filled green with a small white check mark, at exactly these positions and no others: 1, 2, 3, 4, 5, 7, 8, 27, 33, 56 and 57. Tile 6 sits between green tiles and is NOT green: it is yellow. All remaining tiles are a mix of yellow and gray, more yellow in the left half and more gray toward the right.
 
-The enlarged scope panel, titled with the scope's name, holding the same six plan cards as the first picture in this set, in the same order, with the same colours, the same numbers, the same titles, the same status strips and the same position marker over card 74. Nothing about them changes between the two pictures.
+The final six tiles, 71 through 76, are drawn as a distinct group: the first three yellow, the last three gray empty outlines, and the whole group of six enclosed in a rounded tinted panel that sits slightly below the rail and is joined to it by a short bracket.
 
-A count tile sitting to the right of the enlarged panel, holding three lines of tally.
+A tall glossy position pin stands on the tile numbered 9, taller than the rail, with a small flag at its top. A thin gray measuring line runs along beneath the rail from the pin to the left edge of the group of six.
 
-CAST RULE
-No glyph appears here that did not appear in the first picture of this set, except the running-order track, the bracket, the guide lines and the count tile. No card from the first picture is missing.
+In-image text, spelled exactly: the title banner reads "76 steps, standing on step 9". The flag on the pin reads "you are here". The panel around the last six tiles reads "designing the correction loss". The measuring line is labelled "62 steps away". A legend strip along the bottom reads "green: done  ·  yellow: in flight  ·  gray: not started".
 
-FLOWS
-The same five forward arrows between the six cards, and the same two backward arrows from card 74 to cards 71 and 73. The two guide lines from the bracketed stretch of the track down to the panel, drawn thin and neutral so they do not read as flow.
-
-TEXT IN THE IMAGE, exactly as written
-  "the whole running order"
-  "step 1"
-  "step 76"
-  "designing the correction loss"
-  "71"
-  "the four instrument fixes"
-  "72"
-  "the V0 foundation"
-  "73"
-  "the penalty read"
-  "74"
-  "freezing the empty branch"
-  "75"
-  "training on the renders that composed"
-  "76"
-  "fitting the whole path"
-  "you are here"
-  "0 done"
-  "3 in flight"
-  "3 not started"
-  "gray: not started"
-  "yellow: in flight"
-  "green: done"
-
-EXCLUSIONS
-No green card anywhere except in the legend swatch. No other scope drawn as cards: the rest of the running order is a plain track and nothing more. Nothing depicting what any plan builds. No product logos, no brand marks. No components other than those listed. No placeholder gibberish text. No watermark. No colour used without a legend entry.
+Exclusions: no scope names other than the one on the panel, no plan titles on individual tiles, no dates, no product logos, no watermark.
 ```
 
-Visual thesis: this scope is the last six steps of a long running order, and none of those six is finished yet.
-
-Faithfulness note: the bracketed stretch covers steps 71 to 76 and no others, and the rest of the track carries no cards, because sibling scopes are out of range for this map. The six cards are identical in colour, number, title and status to the first picture, since a card that changes between the two pictures makes the pair unreadable as one set. The count tile reads 0, 3 and 3, which is what the six cards show.
+**Faithfulness note.** Exactly eleven tiles may be green, at positions 1, 2, 3, 4, 5, 7, 8, 27, 33,
+56 and 57. Tile 6 must not be green: that step is in flight, and drawing the opening run as solid
+would claim the work started cleanly when it did not. The pin must stand on tile 9 and the panel
+must enclose tiles 71 to 76 inclusive, drawn to the same scale as the rest of the rail, so the gap
+between them is honest.
 
 ---
 
-## Regeneration
+## Prompt 3: The six plans of the correction-loss scope
 
-Regenerated whole, never patched: a colour is a function of the tick marks, so a patched colour is a lie with a picture attached. Each regeneration that finds a change writes a snapshot into `plan-diagrams/` with one line at the top saying what moved since the previous version. A regeneration that finds nothing changed writes nothing.
+⏳ not rendered
+Save as: `plans/plan-diagrams/progress-03-scope-09-opened.png`
 
-Owned by `prompt-storyboard --plan-progress`, rendered by `render-diagrams`, shown mid-walk by `drip-execute-plan`'s `progress` control, and regenerated by `sync-plan-tree` when this scope is synced.
+**Thesis.** Three of the six have been started, and the one furthest along is the instrument work
+everything else reads.
+
+```
+Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded dashed arrow lines, each color meaning exactly one kind of flow, with a small legend inside the image. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Official product logos only on components that ARE that product; every other component gets a clean generic glyph. Small cartoon figures or vehicles for external actors (users, clients). Clean sans-serif labels under every icon, short and lowercase-friendly. Generous spacing, no clutter, no watermark.
+
+Scene: one rounded tinted scope panel filling the image, with six plan cards inside it arranged left to right in running order. Each card is a rounded platform carrying a bold number badge, a short title beneath the badge, a small horizontal tally bar, and a status chip. Horizontal position is running order. Vertical position carries no meaning; all six sit on one line.
+
+Cast, left to right: card badged "01" titled "the instrument fixes", yellow, tally bar a little over half filled, half-filled circle glyph, chip reading "in progress". Card badged "02" titled "the v0 foundation", gray empty outline, chip reading "not started". Card badged "03" titled "the penalty read", gray empty outline, chip reading "not started". Card badged "04" titled "freezing the empty branch", yellow, tally bar a fifth filled, half-filled circle glyph, chip reading "in progress". Card badged "05" titled "training on the renders", gray empty outline, chip reading "not started". Card badged "06" titled "fitting the whole path", yellow, tally bar a tenth filled, half-filled circle glyph, chip reading "in progress".
+
+Flows: thin gray dashed wait arrows curving beneath the row, each running from the card that is waited on to the card that waits. One from 01 to 02. One from 02 to 03. Two into 04, one from 01 and one from 03. One from 04 to 05. Card 06 has no incoming arrow and instead carries a small free-standing tag beneath it.
+
+In-image text, spelled exactly: the title banner reads "designing the correction loss". The panel label reads "steps 71 to 76". The free-standing tag under card 06 reads "waits on nothing". A legend strip along the bottom reads "green: done  ·  yellow: in flight  ·  gray: not started".
+
+Exclusions: no green anywhere in this image, no equations, no branches or tensors, nothing describing what any of the six plans builds, no product logos, no watermark.
+```
+
+**Faithfulness note.** No card here may be green: not one of the six plans has every task ticked. The
+wait arrows must run only in the directions the scope's own Plans table states, and card 06 must
+have no incoming arrow, because its first two stages read checkpoints that already exist. Card 01 is
+the fullest bar of the three yellows and must be drawn that way.
+
+---
+
+## Capstone: the whole tree at a glance
+
+⏳ not rendered
+Save as: `plans/plan-diagrams/progress-capstone-the-checkpoint.png`
+
+**Thesis.** Over half of this work has never been started, a third is open at once, and the current
+step is not in the scope that has been getting the attention.
+
+```
+Style: premium system-design infographic. Clean white or very light gray background. Glossy semi-3D icons with soft drop shadows, one icon per component, sitting on subtle rounded platforms. Flows drawn as vivid color-coded dashed arrow lines, each color meaning exactly one kind of flow, with a small legend inside the image. Related components grouped inside rounded soft-tinted panels with a short title on the panel. A bold title banner across the top. Official product logos only on components that ARE that product; every other component gets a clean generic glyph. Small cartoon figures or vehicles for external actors (users, clients). Clean sans-serif labels under every icon, short and lowercase-friendly. Generous spacing, no clutter, no watermark.
+
+Scene: two registers. The upper two thirds hold the three horizontal bands of scope cards from the first image, in the same order and the same tints: a green band at the top, a yellow band in the middle, a gray band at the bottom. The lower third holds the long 76-tile order rail from the second image, running the full width, with its position pin.
+
+Cast, upper register: the green band holds the cards badged "03" and "04", each with a check mark. The yellow band holds the cards badged "01", "05", "06", "07" and "09" plus an unnumbered card labelled "standing", each with a half-filled circle glyph and no green in its tally bar, with "09" on a raised platform. The gray band holds two empty outline cards badged "02" and "08". Every card keeps its number badge, its short title and its tally bar.
+
+Cast, lower register: the order rail with eleven scattered green tiles, a mixed yellow and gray remainder, and the six-tile panel labelled "designing the correction loss" at its right end. The position pin stands on tile 9 with its flag.
+
+Flows: a single thin vertical dashed line, drawn in gray, running from the position pin up to the card badged "04" in the green band. A second thin vertical dashed line runs from the six-tile panel up to the raised card badged "09" in the yellow band.
+
+In-image text, spelled exactly: the title banner reads "the checkpoint". A count strip sits beneath the banner reading "89 plans  ·  9 done  ·  33 in flight  ·  47 not started". The flag on the pin reads "you are here". A legend strip along the bottom reads "green: done  ·  yellow: in flight  ·  gray: not started  ·  pin: current step".
+
+Exclusions: nothing that did not appear in the three images above, no new scope, no dates, no product logos, no watermark.
+```
+
+**Faithfulness note.** The line from the position pin must land on the card badged "04" and not on
+"09": step 9 belongs to the transfer scope, while the scope that has had the recent attention sits
+at steps 71 to 76. Those two lines going to different cards is the relationship this image exists to
+show. Every glyph here appeared in an earlier prompt and no earlier glyph is missing.
+
+---
+
+## The per-scope count this map was drawn from
+
+Counted 2026-09-20. A file with no task lines is not a plan and is not counted, which is why the
+total differs from a bare count of markdown files under `plans/`.
+
+| Scope | Plans | Done | In flight | Not started | Band |
+|---|---|---|---|---|---|
+| [01 showcase the trained lora](01-showcase-the-trained-lora/MASTER_PLAN.md) | 23 | 0 | 11 | 12 | running now |
+| [02 can we trust the compose rate](02-can-we-trust-the-compose-rate/MASTER_PLAN.md) | 4 | 0 | 0 | 4 | never opened |
+| [03 interaction-term](03-does-the-correction-cause-composition/MASTER_PLAN.md) | 11 | 7 | 1 | 3 | some of it finished |
+| [04 animals-compose-transfer](04-does-the-fix-reach-unseen-pairs/MASTER_PLAN.md) | 6 | 2 | 2 | 2 | some of it finished |
+| [05 when does the outcome lock in](05-when-does-the-outcome-lock-in/MASTER_PLAN.md) | 7 | 0 | 3 | 4 | running now |
+| [06 is the gap the sampler's](06-is-the-gap-the-samplers-or-the-models/MASTER_PLAN.md) | 16 | 0 | 11 | 5 | running now |
+| [07 writing the paper](07-writing-the-paper/MASTER_PLAN.md) | 7 | 0 | 1 | 6 | running now |
+| [08 improve the rank-32 adapter](08-improve-the-rank-32-pooled-adapter/MASTER_PLAN.md) | 7 | 0 | 0 | 7 | never opened |
+| [09 designing the correction loss](09-designing-the-correction-loss/MASTER_PLAN.md) | 6 | 0 | 3 | 3 | running now |
+| standing | 2 | 0 | 1 | 1 | running now |
+| **Total** | **89** | **9** | **33** | **47** | |
+
+## What was left out, and what the markers disagree about
+
+**Left out on purpose.** The rich verdicts the root running order carries (a null, an inconclusive,
+a stopped run) collapse into three colours here, because this map has three by definition and a
+fourth would make it a results picture. Those verdicts live in `report/` and in each scope's review
+files.
+
+**Three of the eleven finished steps carry a verdict rather than a bare tick.** Steps 27, 56 and 57
+are marked finished with their result attached; steps 1 to 5, 7, 8 and 33 are bare. The map draws
+all eleven as green, because the plan tree marks all eleven as done.
+
+**Findings for the next `sync-plan-tree`.** Scope 03 has seven plan files with every task ticked
+against six steps marked finished in the root running order, so one plan's markers and its
+running-order row disagree. No plan in scope 09 carries a `▶ Next:` or `◀ Needs:` pointer between
+its task groups, so the wait arrows in prompt 3 are drawn from the scope's Plans table instead. Both
+are reported here and resolved there, never resolved on the map.
+
+## Cross-references
+
+- [root running order](../MASTER_PLAN.md#the-paper-what-has-to-land): the 76-step order this map's
+  rail and position pin are read from.

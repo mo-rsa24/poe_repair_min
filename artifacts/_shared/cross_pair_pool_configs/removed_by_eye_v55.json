@@ -1,0 +1,69 @@
+{
+  "a_baboon__x__a_gazelle": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    17,
+    18,
+    19,
+    20
+  ],
+  "a_bear__x__a_boar": [
+    5,
+    20
+  ],
+  "a_deer__x__a_hedgehog": [
+    1,
+    3,
+    5,
+    7,
+    8,
+    18
+  ],
+  "a_giraffe__x__a_hyena": [
+    3,
+    5,
+    6,
+    7,
+    8,
+    19
+  ],
+  "a_giraffe__x__a_lion": [
+    1,
+    3,
+    7,
+    8,
+    17,
+    18
+  ],
+  "a_giraffe__x__a_zebra": [
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "a_giraffe__x__an_ostrich": [
+    3,
+    7
+  ],
+  "a_gorilla__x__a_chimpanzee": [
+    6,
+    8,
+    17,
+    19,
+    21,
+    22
+  ],
+  "a_horse__x__a_pig": [
+    4,
+    5,
+    8,
+    22
+  ]
+}

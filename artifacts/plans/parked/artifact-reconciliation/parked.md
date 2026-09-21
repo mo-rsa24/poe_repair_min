@@ -51,5 +51,5 @@ Pre-existing backlog in `plans/05` (unchanged, still parked):
 ## Re-entry
 
 Read `plans/standing/artifact-reconciliation/inventory/sweeps/2026-08-04-resweep-detection.md`, make the scope call in task 1,
-then work tasks 2-6. Re-running `/execute-plan-tree` resumes from Task-marker state; the
+then work tasks 2-6. Re-running `/drip-execute-plan --auto` resumes from Task-marker state; the
 detection commit is on the branch above for review or `git revert`.

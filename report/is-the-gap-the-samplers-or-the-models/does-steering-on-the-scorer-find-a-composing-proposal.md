@@ -88,7 +88,7 @@ would is not measured.
 
 **Nothing about selection on top of a corrected sampler.** With the rank-32 correction in the
 proposal the span is different; that is
-[plan 11](../../plans/06-is-the-gap-the-samplers-or-the-models/plans/baselines/11-feynman-kac-steering-on-top-of-the-rank-32-correction.md).
+[plan 11](../../plans/06-is-the-gap-the-samplers-or-the-models/plans/baselines/13-feynman-kac-steering-on-top-of-the-rank-32-correction.md).
 
 **The guide and the judge are one instrument.** A detector error would be selected for. None
 occurred here because no cat × dog particle ever counted 2, but the design carries the risk.

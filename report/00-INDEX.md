@@ -4,18 +4,150 @@ What this project found, one file per question, every claim paired with a figure
 statistic that backs it. What the work *means* lives in [context/](../context/00-INDEX.md),
 how to redo it in [runbook/](../runbook/00-INDEX.md); this folder is only the findings.
 
+## Read it in this order
+
+The table below is a lookup, sorted by nothing. This section is the thread: eight rungs, each one
+the question you can only ask because the rung before it was answered. Read it top to bottom once
+and the rest of the folder becomes navigable.
+
+A rung marked ⬜ has its verdict and its figures on disk but no finding file written yet, so it
+names the review file and the evidence folder instead. Those are the holes, and they are at the
+front of the arc rather than the back.
+
+**1. What product-of-experts is for, and when it works**
+
+Multiplying two experts' predictions is supposed to put both things in one picture, and sometimes
+it does. The control pair used throughout the project, a butterfly over a meadow, composes on 8 of
+8 held-out seeds, and the joint prompt (one sentence naming both animals, no product at all) also
+composes 8 of 8. Those two columns are what every failure below is measured against.
+
+⬜ No finding file. The successful columns live inside
+[does a corrector alone produce two animals](is-the-gap-the-samplers-or-the-models/does-a-corrector-alone-produce-two-animals.md)
+as the control, never on their own. What the method is and what a compose rate counts is in
+[what product-of-experts composition is](../context/world/poe-composition.md) and
+[the compose rate](../context/world/compose-rate.md).
+
+**2. Where it breaks, and how we know it broke**
+
+Ask for a cat and a dog and the product renders one fused animal: a cat's face on a dog's body.
+This is the failure the whole project is about, and it is not a one-off. It recurs across 17 animal
+pairs at 8 seeds each.
+
+⬜ No finding file. The gallery of 136 uncorrected renders, one per pair per seed with its sampler
+settings beside it, is [the blend gallery](../artifacts/results/poe-blends-instead-of-composing/README.md).
+The instrument that decides a render failed, a GroundingDINO instance count validated against
+labelled images, is [the compose-score validation set](../artifacts/results/can-we-trust-the-compose-score/README.md),
+with its verdict in [what the current benchmarks score](../plans/02-can-we-trust-the-compose-rate/review/03-what-the-current-benchmarks-score.md).
+Read the instrument before any rate below, because every number in this folder is counted by it.
+
+**3. The correction exists, and it is what causes composition**
+
+Subtract the plain product's prediction from the joint prompt's, step by step, and what is left is
+the correction. Add it back and the pair composes. Four checks say the effect is the correction and
+not the act of perturbing anything: more of it composes more, matched substitutes of the same size
+pointing elsewhere do nothing, it only works in an early window, and the same story holds read from
+three sides.
+
+⬜ No finding file, three verdicts. The amount question is in
+[more correction, more composition](../plans/03-does-the-correction-cause-composition/review/03-more-correction-more-composition.md)
+with figures under [how much correction is needed](../artifacts/results/how-much-correction-is-needed/README.md);
+the timing question is in [when in the run it matters](../plans/03-does-the-correction-cause-composition/review/05-when-in-the-run-it-matters.md)
+with figures under [when the correction must arrive](../artifacts/results/when-the-correction-must-arrive/README.md);
+the direction and substitute controls are in
+[the same story from three sides](../plans/03-does-the-correction-cause-composition/review/06-the-same-story-from-three-sides.md)
+with figures under [does the interaction term cause composition](../artifacts/results/does-the-interaction-term-cause-composition/README.md).
+
+**4. What the correction is made of, and where it moves the picture to**
+
+Two findings, and the first one written should be read second. Together they answer whether the
+product could have supplied this correction by re-weighting predictions it already has (mostly yes
+in principle, not at the weights it uses), and whether the correction moves the render toward the
+joint prompt in the scorer's own image space (yes on cat × dog, overlapping bands on held-out
+pairs).
+
+- [What is the correction made of, and could PoE have supplied it?](when-does-the-outcome-lock-in/what-is-the-correction-made-of.md) ❓ inconclusive on the pre-registered bar
+- [Where does each condition land in the scorer's image space?](when-does-the-outcome-lock-in/where-does-each-condition-land.md) ❌ null on both pre-registered bars, ✅ support on the post-hoc reads
+
+**5. An adapter learns the correction, and which one to show**
+
+The correction is computed from a joint prompt the deployed method never gets to see, so it is not
+a fix on its own. A low-rank adapter trained to predict it is. These two say which checkpoint
+composes best and what happens if you keep training past it.
+
+- [Which checkpoint composes best, and does more correction help?](does-training-longer-help-the-pooled-lora/which-checkpoint-composes-best-and-does-more-correction-help.md) ✅ 7 of 8 seeds, ⚪ null on more correction and on the early-only window
+- [Does training longer keep improving the held-out fix?](does-training-longer-help-the-pooled-lora/does-training-longer-keep-improving-the-held-out-fix.md) ❌ no: fidelity decays while the weights grow without bound
+
+**6. Whether the fix reaches pairs it never trained on**
+
+The adapter is trained on a pool of pairs and asked about pairs outside it. It carries to some and
+not others, and these two ask why: is the gap a fit problem, a drift problem or a property of the
+pair, and can the cache predict which pairs will blend before you render anything.
+
+- [Is the held-out gap a fit, a drift, or a pair problem?](does-the-fix-reach-unseen-pairs/is-the-held-out-gap-a-fit-a-drift-or-a-pair-problem.md) ✅ pair problem, ⚪ null on drift
+- [Does interaction strength predict which pairs blend?](does-the-fix-reach-unseen-pairs/does-interaction-strength-predict-which-pairs-blend.md) ⚪ null
+
+⬜ The transfer rate over fifteen pairs has its verdict in
+[does one pooled fix transfer at all](../plans/04-does-the-fix-reach-unseen-pairs/review/03-does-one-pooled-fix-transfer-at-all.md)
+and its figures under [does the fix reach unseen pairs](../artifacts/results/does-the-fix-reach-unseen-pairs/README.md),
+with no finding file.
+
+**7. Everything tried instead, and what each one ruled out**
+
+Eleven findings, and the reason there are eleven is that a reviewer will ask whether a cheaper fix
+works. Most are ways of getting two animals without adding a learned correction; the last two in
+the search family keep the correction and spend inference compute on top of it. They are ordered
+by family, and nine of the eleven are nulls or inconclusive. The two that support both buy their
+result with 16 or more draws per seed, and neither reaches past what the correction already
+delivers at full dose, which is the point: the correction is not obviously replaceable.
+
+*Correctors, which re-sample the latent without changing the score:*
+
+- [Does a corrector alone produce two animals?](is-the-gap-the-samplers-or-the-models/does-a-corrector-alone-produce-two-animals.md) ⚪ null
+- [Does a Langevin corrector remove part of the correction?](is-the-gap-the-samplers-or-the-models/does-a-langevin-corrector-remove-part-of-the-correction.md) ❓ inconclusive at every step size
+- [Can a corrector or a clean tail sharpen the adapter's renders?](is-the-gap-the-samplers-or-the-models/can-a-corrector-or-a-clean-tail-sharpen-the-adapters-renders.md) ⚪ null on both bars
+
+*A different composition method, SuperDiff, and whether its residual is the same object:*
+
+- [Does SuperDiff compose at its own defaults?](is-the-gap-the-samplers-or-the-models/does-superdiff-compose-at-its-own-defaults.md) ⚪ null at 200 steps, ✅ the missing piece is the same residual
+- [Does the PoE-trained correction carry into SuperDiff?](is-the-gap-the-samplers-or-the-models/does-the-poe-trained-correction-carry-into-superdiff.md) ⚪ null, it hurts
+- [Does an adapter trained on SuperDiff's own residual compose?](is-the-gap-the-samplers-or-the-models/does-an-adapter-trained-on-superdiffs-own-residual-compose.md) ❓ inconclusive, runs stopped early
+
+*Search and selection, which spend compute at inference instead of training anything:*
+
+- [Does selecting among the product's own proposals compose?](is-the-gap-the-samplers-or-the-models/does-selecting-among-poe-proposals-compose.md) ❓ inconclusive
+- [Does steering on the scorer find a composing proposal?](is-the-gap-the-samplers-or-the-models/does-steering-on-the-scorer-find-a-composing-proposal.md) ⚪ null
+- [Does steering the corrected sampler produce a clean cat and dog?](is-the-gap-the-samplers-or-the-models/does-steering-the-corrected-sampler-produce-clean-pairs.md) ✅ support at half dose; ⚪ null on what the resampling itself adds
+- [Does searching over the initial noise compose?](is-the-gap-the-samplers-or-the-models/does-searching-over-the-initial-noise-compose.md) ❓ inconclusive, a null in everything but its letter
+- [Does searching over the noise sharpen the corrected render?](is-the-gap-the-samplers-or-the-models/does-searching-over-the-noise-sharpen-the-corrected-render.md) ✅ support, 8 of 8 seeds
+
+**8. What is still open**
+
+The one result with a verdict, figures and a W&B run and no home in the arc yet is the energy
+penalty: charging the adapter for the size of its correction cut its on-policy energy 27% and moved
+the held-out renders back toward plain product-of-experts. Its verdict is in the scope 01 review
+file, its figures under
+[does charging the adapter for its energy sharpen the fix](../artifacts/results/does-charging-the-adapter-for-its-energy-sharpen-the-fix/),
+and the run is `2cfdtdnl`. The rest of the holes are in [Still open](#still-open) at the foot of
+this file.
+
+**The illustrated version** is two pictures waiting to be rendered, in
+[the report's illustrated map](diagram-prompts.md): the eight rungs above as one line, and what a
+single corrector step does inside one noise level.
+
 ## What was found
 
 | The question | Verdict | The number | The finding |
 |---|---|---|---|
+| Can real photographs of both animals train the composition instead of the model's own joint-prompt prediction? | ❌ dead: the corpus is reachable and unusable | of the images an automatic filter accepted, 7 of 16 cat × dog are genuine photographs of both animals and 0 of 11 turtle × tortoise are, the rest watermarked stock and merchandise; fed single-species images the same filter reports both species at 0.323 for turtle × tortoise against a 0.10 bar | [05-training-on-real-photographs.md](designing-the-correction-loss/05-training-on-real-photographs.md) |
 | Where does each condition land in the scorer's image space, and does the correction move PoE toward the joint prompt? | ❌ null on both pre-registered bars; ✅ support on the post-hoc reads | cat × dog both-ness (projection toward the joint-prompt centroid, DINOv2 cosine units, mean of 8 seeds): PoE 0.21, corrected 0.42, joint 0.52; on the 8 held-out pairs the both-ness bands overlap on 5 of 7 counted pairs (null), while the instance count on the same images reads PoE 0.00 to 0.25 and corrected 0.75 to 1.00 on every pair (post-hoc) | [where-does-each-condition-land.md](when-does-the-outcome-lock-in/where-does-each-condition-land.md) |
 | What is the correction made of, and could PoE have supplied it by re-weighting its own predictions? | ❓ inconclusive on the pre-registered bar | orthogonal share of the correction's squared norm outside the span of the three predictions PoE has, mean over seeds 9 to 16 and steps 0 to 10: 0.374 against bars at 0.5 and 0.25; the reachable part weights each expert at 1 to 3 where PoE weights 7.5; the adapter's orthogonal share 0.19 against the target's 0.37 | [what-is-the-correction-made-of.md](when-does-the-outcome-lock-in/what-is-the-correction-made-of.md) |
 | Is the held-out gap of the pooled rank 8 adapter a fit, a drift, or a pair problem? | ✅ support: pair problem; ⚪ null on drift | fit cosine on cached states: training pairs 0.97, seen words in an unseen pairing 0.84, no seen word 0.80; on the adapter's own corrected trajectory 0.82 against 0.86 cached, cat x dog | [is-the-held-out-gap-a-fit-a-drift-or-a-pair-problem.md](does-the-fix-reach-unseen-pairs/is-the-held-out-gap-a-fit-a-drift-or-a-pair-problem.md) |
 | Does the interaction strength read from the cache (Mitra et al. Theorem 1 turned around) predict which pairs blend? | ⚪ null | lower bound on G·M over steps 10 to 40 spans 100 to 3200 across pairs that all fail 8 of 8; near-synonym pairs sit ten times below distinct-animal pairs | [does-interaction-strength-predict-which-pairs-blend.md](does-the-fix-reach-unseen-pairs/does-interaction-strength-predict-which-pairs-blend.md) |
-| Which checkpoint of the pooled adapter composes cat x dog best, and does more correction or an early-only window help? | ✅ 7 of 8 at rank 8 @ 30k, rank 16 @ 50k, rank 32 @ 30k to 90k · ⚪ null on λ above 1 and on the early window | seeds composing of 8 at λ 1, all 50 steps: 7 / 7 / 7 against 0 for plain PoE; λ 1.2 to 2.0 never adds a seed on a healthy checkpoint; the early window (steps 0 to 9) reaches at most 5 of 8 | [which-checkpoint-composes-best-and-does-more-correction-help.md](does-training-longer-help-the-pooled-lora/which-checkpoint-composes-best-and-does-more-correction-help.md) |
+| Which checkpoint of the pooled adapter composes cat x dog best, and does more correction or an early-only window help? | ✅ 7 of 8 at rank 8 @ 30k, rank 16 @ 50k, rank 32 @ 30k to 90k · ⚪ null on λ above 1 and on the early window | seeds composing of 8 at λ 1, all 50 steps: 7 / 7 / 7 against 0 for plain PoE; λ 1.2 to 2.0 never adds a seed on a healthy checkpoint, and on the shipped rank-32 step-30050 checkpoint it changes the scene instead (7 / 6 / 6 / 7 / 6 at λ 1.0 / 1.2 / 1.3 / 1.5 / 2.0, with one seed's animals shrinking out of the detector's reach); the early window (steps 0 to 9) reaches at most 5 of 8 | [which-checkpoint-composes-best-and-does-more-correction-help.md](does-training-longer-help-the-pooled-lora/which-checkpoint-composes-best-and-does-more-correction-help.md) |
 | Does training the pooled adapter longer keep improving the held-out renders? | ❌ no: fidelity decays while the weights grow without bound | 8-seed DINOv2 drift at λ 1 (negative = nearer the joint-prompt image): rank 32 −0.091 at 30k to −0.013 at 90k; rank 8 −0.132 at 30k to +0.041 at 280k; LoRA weight norm rank 8 35.9 at 10k to 93.2 at 450k with weight decay 0 | [does-training-longer-keep-improving-the-held-out-fix.md](does-training-longer-help-the-pooled-lora/does-training-longer-keep-improving-the-held-out-fix.md) |
 | Does choosing among the product's own proposals, with no correction added, produce two animals? | ❓ inconclusive | compose fraction over all 12 particles at step 100k: Mono 1.0, PoE control 0.0, twisted SMC 0.0 (10 detector hits of 132 SMC particles at 40k to 80k, each one fused animal by eye); the twist's validation accuracy 0.56, under the 0.60 bar | [does-selecting-among-poe-proposals-compose.md](is-the-gap-the-samplers-or-the-models/does-selecting-among-poe-proposals-compose.md) |
 | Does steering the plain product's particles on the compose scorer (Feynman-Kac steering, Singhal et al.) find a composing proposal? | ⚪ null | cat × dog, seeds 9 to 16: compose rate 0.0 for steering at K 4 and K 16 against 0.0 for the unweighted control and 1.0 for Mono; 0 of 128 unweighted particles composed; the step-10 reward agrees with the final verdict on 0.99 of particles, so the reward was not blind | [does-steering-on-the-scorer-find-a-composing-proposal.md](is-the-gap-the-samplers-or-the-models/does-steering-on-the-scorer-find-a-composing-proposal.md) |
+| Does selecting among the corrected sampler's own draws produce a clean cat and dog? | ✅ support on the pre-registered bar; ⚪ null on what the resampling itself adds | cat × dog, seeds 9 to 16, rank-32 correction at λ 0.5 inside the proposal: 8 of 8 seeds read as two animals for steering at K 16 against 2 of 8 for the unweighted first particle and 3 of 8 for the correction alone, a gap of 0.75 against a 0.25 bar; the best of the same 16 unweighted particles is also 8 of 8, so the draws compose and the weights only choose which one survives (mean ImageReward +0.75 steered, +0.45 best of 16, +0.24 the joint prompt, −0.77 the correction alone); at λ 1.2 the control is already 8 of 8 and the gap is 0.00 | [does-steering-the-corrected-sampler-produce-clean-pairs.md](is-the-gap-the-samplers-or-the-models/does-steering-the-corrected-sampler-produce-clean-pairs.md) |
 | Does SuperDiff compose at its own defaults, and what is it missing when it does not? | ⚪ null at 200 steps; ✅ the missing piece is the same residual | cat × dog, seed 9: detector count 1 (blend) at 200 steps, 2 (compose) at 50; adding back its own residual `r_t^SD` separates 4 of 4 seeds by λ 0.75 (cat × dog) and by 0.25 (butterfly × meadow) | [does-superdiff-compose-at-its-own-defaults.md](is-the-gap-the-samplers-or-the-models/does-superdiff-compose-at-its-own-defaults.md) |
 | Does the PoE-trained correction carry into SuperDiff? | ⚪ null, it hurts | first separating λ "never" on 12 of 12 seeds against 0.5 to 0.75 for SuperDiff alone; median cosine between the adapter's correction and SuperDiff's missing residual 0.10 / 0.34 / 0.18 / 0.06 by step bucket, norms the same order | [does-the-poe-trained-correction-carry-into-superdiff.md](is-the-gap-the-samplers-or-the-models/does-the-poe-trained-correction-carry-into-superdiff.md) |
 | Does an adapter trained on SuperDiff's own residual compose inside SuperDiff? | ❓ inconclusive: separates early, smears with training, runs stopped at 61k/62k/36k of 100k | seeds of 4 with two bodies at λ 1, cat × dog: rank 8 peaks at 4 (30k) and holds 3 at 60k; rank 16 4 at 10k, 0 from 50k; rank 32 4 at 10k, 0 from 20k; loss plateaus from 30k to 40k without a matching rise | [does-an-adapter-trained-on-superdiffs-own-residual-compose.md](is-the-gap-the-samplers-or-the-models/does-an-adapter-trained-on-superdiffs-own-residual-compose.md) |
@@ -36,7 +168,8 @@ None. Every finding's evidence pairs have their render.
 Each finding's figures are read one at a time, in plain words, in a figure explainer beside the
 images: [where each condition lands, what these pictures mean](../artifacts/results/where-does-each-condition-land/figure-explainer.md)
 [is the gap the sampler's or the model's, what these pictures mean](../artifacts/results/is-the-gap-the-samplers-or-the-models/figure-explainer.md)
-and [what the correction is made of, what these pictures mean](../artifacts/results/what-the-correction-is-made-of/figure-explainer.md).
+[what the correction is made of, what these pictures mean](../artifacts/results/what-the-correction-is-made-of/figure-explainer.md)
+and [the corrector figures, what these pictures mean](../artifacts/results/is-the-gap-the-samplers-or-the-models/figure-explainer-the-langevin-corrector.md).
 The path from two X posts to the twisted-SMC run, for a reader who was not in that conversation, is
 [the note beside those pictures](../artifacts/notes/from-an-x-post-to-a-twisted-smc-baseline/note.md).
 How a finding, its card and its explainer are laid out, with that one as the worked instance, is
@@ -52,7 +185,55 @@ findings embed from; a finding with no sibling yet sits flat.
 | [does-the-fix-reach-unseen-pairs/](does-the-fix-reach-unseen-pairs/) | Why does the pooled adapter's correction carry to some unseen pairs and not others | 2 |
 | [does-training-longer-help-the-pooled-lora/](does-training-longer-help-the-pooled-lora/) | Which checkpoint of the pooled adapter to show, and what training past it does to the held-out renders | 2 |
 | [when-does-the-outcome-lock-in/](when-does-the-outcome-lock-in/) | When does a run commit to one animal or two, where does each condition end up, and what is the correction made of | 2 |
-| [is-the-gap-the-samplers-or-the-models/](is-the-gap-the-samplers-or-the-models/) | Is the gap the samplers or the models | 10 |
+| [is-the-gap-the-samplers-or-the-models/](is-the-gap-the-samplers-or-the-models/) | Is the gap the samplers or the models | 11 |
+
+## The documents that are not findings
+
+Six documents here predate the finding format and answer no question of their own. Two of them are
+load-bearing anyway: the bars several findings are judged against were written in them, before the
+runs. Where each one should eventually be filed is argued in [Still open](#still-open); this
+section is only so a reader can reach them.
+
+**[The stage-by-stage results summary](RESULTS_SUMMARY.md)**
+
+One screen per stage of the work as it stood on 2026-07-22: status, what the stage produced, its
+W&B runs, and commands that walk the outputs. Every verdict in it is a candidate finding that has
+not been written as one. Its opening warning still bites: artifacts are split across the repo and
+`/datasets`, neither root complete, so a bare `artifacts/...` path resolves for some runs and
+silently fails for others.
+
+**[The commitment-timing pre-registration](experiments-log.md)**
+
+Written before any of those runs. It fixes the axes (pair, seed, step, condition, space, adapter
+strength) and the falsification rule for each of the five experiments, and it says the rules are
+not revised after seeing results. Read it before quoting a bar from rungs 3 and 4 of the arc.
+
+**[How correction size is measured](normalization_preregistration.md)**
+
+Committed 2026-08-05, before any cross-type plot existed. It pins the measure to `‖r_t‖` over
+`‖ε̃_PoE‖`, median over steps for a per-run number then median over seeds for a per-pair number,
+every tensor upcast to fp32 first. Medians rather than means because the early steps carry heavy
+fp16 cancellation noise. Every size number in this folder is measured this way, so this one is
+still live rather than historical.
+
+**[What the measuring scripts do on real data](instrument_smoke.md)**
+
+The recorded output of each measuring script on `a_cat__x__a_dog` seed 9, with the command above
+each result, dated 2026-08-05 on node mscluster85. This is instrument provenance: it is what says
+the scripts were checked against real cells rather than assumed to work.
+
+**[The decision timeline](decision-timeline.md)**
+
+The account, in order, of what each objective asked, what ran, what came back, and the decision it
+forced, append-only with superseding banners. The arc above deliberately does not follow this
+order, because reading order and the order the work happened are different things.
+
+**[What the paper does with each piece of evidence](paper-evidence-index.md)**
+
+One row per evidence folder, saying which figure of the manuscript it feeds and what state it is
+in. It carries two live warnings the findings do not: the shared-structure argument behind figure 6
+does not stand once the control accounts for the spread in `‖r_t‖`, and several captions have to be
+rewritten before the paper may use their result.
 
 ## Still open
 

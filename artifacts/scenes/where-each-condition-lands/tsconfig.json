@@ -1,0 +1,1 @@
+{ "compilerOptions": { "target": "ESNext", "module": "ESNext", "moduleResolution": "bundler", "strict": false, "allowJs": true, "checkJs": false, "isolatedModules": true, "skipLibCheck": true, "types": ["svelte", "vite/client"] }, "include": ["src/**/*", "vendor/**/*"] }

@@ -130,7 +130,7 @@ idle node; B's two runs over the SSH-plus-nohup idle-node path per
 device 1, verify it is free); C in-session. Roughly 20 GPU-hours across three nodes. No run
 launches before its plan file and pre-registered review questions exist, per
 `~/.claude/EXPERIMENT_CONVENTIONS.md`. Every launching or harvesting session uses the wandb
-MCP and Playwright MCP (registered at user scope; runbook/reading-a-training-run.md section 3)
+MCP and Playwright MCP (registered at user scope; runbook/looking-at-what-a-run-produced/reading-a-training-run.md section 3)
 and files captured panels into that runbook page's screenshot slots.
 
 ## The shared instrument extends instrument-02 and nothing else

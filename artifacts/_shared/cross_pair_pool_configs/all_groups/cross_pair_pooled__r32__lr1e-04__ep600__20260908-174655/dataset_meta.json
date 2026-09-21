@@ -1,0 +1,356 @@
+{
+  "n_cells": 54,
+  "n_steps_total": 1350,
+  "n_steps_per_pair": {
+    "a_baboon__x__a_gazelle": 50,
+    "a_bear__x__a_boar": 25,
+    "a_bear__x__a_heron": 50,
+    "a_bear__x__a_salmon": 50,
+    "a_bear__x__a_squirrel": 50,
+    "a_beaver__x__a_raccoon": 50,
+    "a_deer__x__a_hedgehog": 25,
+    "a_deer__x__a_heron": 50,
+    "a_deer__x__a_wolf": 25,
+    "a_donkey__x__a_rooster": 50,
+    "a_giraffe__x__a_hyena": 50,
+    "a_giraffe__x__a_lion": 75,
+    "a_giraffe__x__a_zebra": 50,
+    "a_giraffe__x__an_ostrich": 50,
+    "a_gorilla__x__a_chimpanzee": 75,
+    "a_horse__x__a_pig": 125,
+    "a_horse__x__a_sheep": 50,
+    "a_lion__x__a_meerkat": 150,
+    "a_lion__x__an_oryx": 50,
+    "a_peacock__x__a_pig": 50,
+    "a_peacock__x__a_sheep": 50,
+    "a_raccoon__x__a_salmon": 50,
+    "a_wolf__x__a_husky": 75,
+    "an_impala__x__a_jackal": 25
+  },
+  "cells": [
+    {
+      "pair": "a_baboon__x__a_gazelle",
+      "seed": 1,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_baboon__x__a_gazelle/seed_1"
+    },
+    {
+      "pair": "a_baboon__x__a_gazelle",
+      "seed": 2,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_baboon__x__a_gazelle/seed_2"
+    },
+    {
+      "pair": "a_bear__x__a_boar",
+      "seed": 1,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_bear__x__a_boar/seed_1"
+    },
+    {
+      "pair": "a_bear__x__a_heron",
+      "seed": 1,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_bear__x__a_heron/seed_1"
+    },
+    {
+      "pair": "a_bear__x__a_heron",
+      "seed": 2,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_bear__x__a_heron/seed_2"
+    },
+    {
+      "pair": "a_bear__x__a_salmon",
+      "seed": 1,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_bear__x__a_salmon/seed_1"
+    },
+    {
+      "pair": "a_bear__x__a_salmon",
+      "seed": 3,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_bear__x__a_salmon/seed_3"
+    },
+    {
+      "pair": "a_bear__x__a_squirrel",
+      "seed": 1,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_bear__x__a_squirrel/seed_1"
+    },
+    {
+      "pair": "a_bear__x__a_squirrel",
+      "seed": 2,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_bear__x__a_squirrel/seed_2"
+    },
+    {
+      "pair": "a_beaver__x__a_raccoon",
+      "seed": 1,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_beaver__x__a_raccoon/seed_1"
+    },
+    {
+      "pair": "a_beaver__x__a_raccoon",
+      "seed": 2,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_beaver__x__a_raccoon/seed_2"
+    },
+    {
+      "pair": "a_deer__x__a_hedgehog",
+      "seed": 2,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_deer__x__a_hedgehog/seed_2"
+    },
+    {
+      "pair": "a_deer__x__a_heron",
+      "seed": 1,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_deer__x__a_heron/seed_1"
+    },
+    {
+      "pair": "a_deer__x__a_heron",
+      "seed": 2,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_deer__x__a_heron/seed_2"
+    },
+    {
+      "pair": "a_deer__x__a_wolf",
+      "seed": 2,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_deer__x__a_wolf/seed_2"
+    },
+    {
+      "pair": "a_donkey__x__a_rooster",
+      "seed": 1,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_donkey__x__a_rooster/seed_1"
+    },
+    {
+      "pair": "a_donkey__x__a_rooster",
+      "seed": 2,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_donkey__x__a_rooster/seed_2"
+    },
+    {
+      "pair": "a_giraffe__x__a_hyena",
+      "seed": 1,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_giraffe__x__a_hyena/seed_1"
+    },
+    {
+      "pair": "a_giraffe__x__a_hyena",
+      "seed": 2,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_giraffe__x__a_hyena/seed_2"
+    },
+    {
+      "pair": "a_giraffe__x__a_lion",
+      "seed": 2,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_giraffe__x__a_lion/seed_2"
+    },
+    {
+      "pair": "a_giraffe__x__a_lion",
+      "seed": 4,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_giraffe__x__a_lion/seed_4"
+    },
+    {
+      "pair": "a_giraffe__x__a_lion",
+      "seed": 6,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_giraffe__x__a_lion/seed_6"
+    },
+    {
+      "pair": "a_giraffe__x__a_zebra",
+      "seed": 1,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_giraffe__x__a_zebra/seed_1"
+    },
+    {
+      "pair": "a_giraffe__x__a_zebra",
+      "seed": 2,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_giraffe__x__a_zebra/seed_2"
+    },
+    {
+      "pair": "a_giraffe__x__an_ostrich",
+      "seed": 1,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_giraffe__x__an_ostrich/seed_1"
+    },
+    {
+      "pair": "a_giraffe__x__an_ostrich",
+      "seed": 2,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_giraffe__x__an_ostrich/seed_2"
+    },
+    {
+      "pair": "a_gorilla__x__a_chimpanzee",
+      "seed": 1,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_gorilla__x__a_chimpanzee/seed_1"
+    },
+    {
+      "pair": "a_gorilla__x__a_chimpanzee",
+      "seed": 2,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_gorilla__x__a_chimpanzee/seed_2"
+    },
+    {
+      "pair": "a_gorilla__x__a_chimpanzee",
+      "seed": 5,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_gorilla__x__a_chimpanzee/seed_5"
+    },
+    {
+      "pair": "a_horse__x__a_pig",
+      "seed": 1,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_horse__x__a_pig/seed_1"
+    },
+    {
+      "pair": "a_horse__x__a_pig",
+      "seed": 2,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_horse__x__a_pig/seed_2"
+    },
+    {
+      "pair": "a_horse__x__a_pig",
+      "seed": 3,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_horse__x__a_pig/seed_3"
+    },
+    {
+      "pair": "a_horse__x__a_pig",
+      "seed": 6,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_horse__x__a_pig/seed_6"
+    },
+    {
+      "pair": "a_horse__x__a_pig",
+      "seed": 7,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_horse__x__a_pig/seed_7"
+    },
+    {
+      "pair": "a_horse__x__a_sheep",
+      "seed": 1,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_horse__x__a_sheep/seed_1"
+    },
+    {
+      "pair": "a_horse__x__a_sheep",
+      "seed": 2,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_horse__x__a_sheep/seed_2"
+    },
+    {
+      "pair": "a_lion__x__a_meerkat",
+      "seed": 1,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_lion__x__a_meerkat/seed_1"
+    },
+    {
+      "pair": "a_lion__x__a_meerkat",
+      "seed": 2,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_lion__x__a_meerkat/seed_2"
+    },
+    {
+      "pair": "a_lion__x__a_meerkat",
+      "seed": 8,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_lion__x__a_meerkat/seed_8"
+    },
+    {
+      "pair": "a_lion__x__a_meerkat",
+      "seed": 17,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_lion__x__a_meerkat/seed_17"
+    },
+    {
+      "pair": "a_lion__x__a_meerkat",
+      "seed": 18,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_lion__x__a_meerkat/seed_18"
+    },
+    {
+      "pair": "a_lion__x__a_meerkat",
+      "seed": 19,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_lion__x__a_meerkat/seed_19"
+    },
+    {
+      "pair": "a_lion__x__an_oryx",
+      "seed": 1,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_lion__x__an_oryx/seed_1"
+    },
+    {
+      "pair": "a_lion__x__an_oryx",
+      "seed": 2,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_lion__x__an_oryx/seed_2"
+    },
+    {
+      "pair": "a_peacock__x__a_pig",
+      "seed": 1,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_peacock__x__a_pig/seed_1"
+    },
+    {
+      "pair": "a_peacock__x__a_pig",
+      "seed": 2,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_peacock__x__a_pig/seed_2"
+    },
+    {
+      "pair": "a_peacock__x__a_sheep",
+      "seed": 1,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_peacock__x__a_sheep/seed_1"
+    },
+    {
+      "pair": "a_peacock__x__a_sheep",
+      "seed": 2,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_peacock__x__a_sheep/seed_2"
+    },
+    {
+      "pair": "a_raccoon__x__a_salmon",
+      "seed": 1,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_raccoon__x__a_salmon/seed_1"
+    },
+    {
+      "pair": "a_raccoon__x__a_salmon",
+      "seed": 2,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_raccoon__x__a_salmon/seed_2"
+    },
+    {
+      "pair": "a_wolf__x__a_husky",
+      "seed": 4,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_wolf__x__a_husky/seed_4"
+    },
+    {
+      "pair": "a_wolf__x__a_husky",
+      "seed": 6,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_wolf__x__a_husky/seed_6"
+    },
+    {
+      "pair": "a_wolf__x__a_husky",
+      "seed": 7,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/a_wolf__x__a_husky/seed_7"
+    },
+    {
+      "pair": "an_impala__x__a_jackal",
+      "seed": 2,
+      "n_steps": 25,
+      "root": "/datasets/mmolefe/poe_repair_min/outputs/training_cache/train/an_impala__x__a_jackal/seed_2"
+    }
+  ]
+}

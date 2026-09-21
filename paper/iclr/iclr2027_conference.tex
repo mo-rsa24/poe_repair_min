@@ -21,6 +21,7 @@
 \usepackage{xcolor}
 \usepackage{hyperref}
 \usepackage{url}
+\usepackage{wrapfig}
 
 \graphicspath{{figures/}}
 
@@ -74,7 +75,7 @@ Panel A & Panel B & Panel C
 \end{center}
 }
 
-\title{Restoring plurality in product of experts by training correction adapters}
+\title{Restoring plurality in compositional diffusion by training correction adapters}
 
 % Authors must not appear in the submitted version. They should be hidden
 % as long as the \iclrfinalcopy macro remains commented out below.
@@ -97,8 +98,12 @@ Johannesburg, South Africa \\
 \maketitle
 
 \begin{abstract}
-Text-to-image diffusion models generate high-fidelity scenes in which many concepts appear together, each rendered faithfully and consistently with the physical world. Given a single prompt such as ``a cat and a dog'', these models render both concepts in the same scene as distinct objects that interact naturally. Yet composing concepts correctly remains challenging. Models often struggle with object count, attribute binding, and fail to preserve the intended spatial relationships. Scaling models and data becomes increasingly expensive as the prompt space grows to include more concepts and their combinations. Rather than asking the model for ``a cat and a dog'' in a single prompt, recent methods evaluate the model separately on ``a cat'' and ``a dog,'' then combine the two predictions during inference, reusing the pretrained model rather than retraining it. In this paper we introduce the term plurality for one aspect of compositionality, the property that every concept a prompt names appears in the scene as its own distinct object. However, composing conflicting concepts can collapse the scene into a single hybrid object rather than rendering both. We show that this failure reflects a loss of plurality when two concepts contend for the same image region. This loss is measurable, as the per-step residual between the model's prediction under the joint prompt and its combined prediction from the separate prompts. A small fraction of this residual, added back at the right stage of generation, is enough to restore plurality, returning both objects to the scene. To make this correction available without the joint prompt, we train a low-rank adapter on the cross-attention layers of Stable Diffusion XL to predict the residual at every denoising step. We show that the adapter learns a general correction for plurality rather than the appearance of any specific concept, which allows it to transfer to unseen pairs.
+Text-to-image diffusion models generate high-fidelity scenes in which many concepts appear together. Given a single prompt such as ``a cat and a dog'', these methods render both concepts in the same scene as distinct objects that interact naturally. However, scaling the prompt space to include more concepts and their combinations becomes prohibitively expensive. Rather than asking the model to produce a scene from a single prompt with all objects, recent methods evaluate the same model separately on each concept, for example ``a cat'' and ``a dog'', then combine the two predictions during inference. Yet inference-time composition remains challenging as models often fail to preserve the intended spatial relationships between objects and collapse the scene into a single hybrid object. In this paper we introduce the term plurality for one aspect of composition, the property that distinct concepts a prompt names appear in the scene as distinct objects. We show that the failure of composition reflects a loss of plurality when two concepts contend for the same image region. This loss is measurable, as the per-step residual between the model's prediction under the joint prompt and its combined prediction from the separate prompts. A small fraction of this residual, added back at the right stage of generation, is enough to restore plurality, returning both objects to the scene. To make this correction available without the joint prompt, we train a low-rank adapter on the cross-attention layers of Stable Diffusion XL to predict the residual at every denoising step. We show that the adapter learns a general correction for plurality rather than the appearance of any specific concept, which allows it to transfer to unseen pairs. Overall, our approach takes a step towards obtaining the data efficiency of inference-time composition with the scene coherence of a single joint prompt.
 \end{abstract}
+
+% \begin{abstract}
+% Text-to-image diffusion models generate high-fidelity scenes in which many concepts appear together, each rendered faithfully and consistently with the physical world. Given a single prompt such as ``a cat and a dog'', these models render both concepts in the same scene as distinct objects that interact naturally. Yet composing concepts correctly remains challenging. Models often struggle with object count, attribute binding, and fail to preserve the intended spatial relationships. Scaling models and data becomes increasingly expensive as the prompt space grows to include more concepts and their combinations. Rather than asking the model for ``a cat and a dog'' in a single prompt, recent methods evaluate the model separately on ``a cat'' and ``a dog,'' then combine the two predictions during inference, reusing the pretrained model rather than retraining it. In this paper we introduce the term plurality for one aspect of compositionality, the property that every concept a prompt names appears in the scene as its own distinct object. However, composing conflicting concepts can collapse the scene into a single hybrid object rather than rendering both. We show that this failure reflects a loss of plurality when two concepts contend for the same image region. This loss is measurable, as the per-step residual between the model's prediction under the joint prompt and its combined prediction from the separate prompts. A small fraction of this residual, added back at the right stage of generation, is enough to restore plurality, returning both objects to the scene. To make this correction available without the joint prompt, we train a low-rank adapter on the cross-attention layers of Stable Diffusion XL to predict the residual at every denoising step. We show that the adapter learns a general correction for plurality rather than the appearance of any specific concept, which allows it to transfer to unseen pairs.
+% \end{abstract}
 
 % \begin{abstract}
 % Natural images typically depict a single scene composed of multiple distinct concepts. While text-to-image diffusion models have shown promising results at depicting complex scenes when given a description of each part, the space of possible scenes grows rapidly as we introduce new concepts into the prompts. Rather than training a single large diffusion model on this large input space, recent methods have aimed to compose specialist diffusion models at inference time to extrapolate to unseen image configurations. Yet, in many cases the scenes produced by this composition do not contain multiple coherent objects but rather produce a single hybrid object. In this work we aim to understand and correct for this discrepancy between composition through prompting and inference time composition. We trace this gap to a notion of plurality which is implicit in the text prompt describing the full scene, but missing from the individual text prompts used to guide each expert. Importantly, this is measurable as the per-step residual between the model's out from a joint-prompt and its output from composition, which reveals the signal for plurality. We train a low-rank adapter on the cross-attention layers of Stable Diffusion XL to predict this term at every denoising step without being conditioned on the joint prompt. We show that, not only does adding this predicted correction term afford inference time composition the ability to create distinct objects, but transfers to unseen concept pairs. Thus, we obtain a diffusion model specialised towards an abstract property of a scene, providing the same generalisation benefits of inference time composition without the loss of global coherence.
@@ -147,11 +152,10 @@ In diffusion models, the noise prediction is a scaled negative score: $\epsilon_
 
 This linear composition is exact only when the two concepts are truly conditionally independent given the image. Natural concepts, however, interact through appearance, geometry, and spatial arrangement. The gap between what the true joint model would predict and what PoE predicts is an interaction term, the quantity a product of independent experts drops. In our setting it is narrowed to plurality, so we call it the plurality term $r_t$, and it is this missing term that we measure, understand, and learn to correct.
 
+\looseness=-1
 To make this concrete, consider two visually similar concepts: a cat and a dog. When prompted jointly, a single model trained on both concepts generates two distinct animals in one scene. When the same two concepts are composed using product-of-experts, the result is a single blended animal that combines features of both, as shown in Figure~\ref{fig:poe-failure}. This failure is not incidental; it reflects a systematic gap in how PoE composition works, one we make explicit and study throughout this paper.
 
-Understanding and fixing this gap matters because inference-time composition is the practical path forward for generative models. As the space of possible concept combinations grows, retraining on every combination becomes infeasible \citep{du2024compositional}. Composition methods that work reliably, even for concept pairs unseen during training, unlock a new mode of model reuse: combine pretrained models without additional training, and get reliable compositional generation. This paper traces a specific failure in one composition method and shows that the failure is correctable.
-
-\textbf{Contributions.} This paper makes three contributions:
+Understanding and fixing this gap matters because inference-time composition is the practical path forward for generative models. As the space of possible concept combinations grows, retraining on every combination becomes infeasible \citep{du2024compositional}. Composition methods that work reliably, even for concept pairs unseen during training, unlock a new mode of model reuse: combine pretrained models without additional training, and get reliable compositional generation. This paper traces a specific failure in one composition method and shows that the failure is correctable. This paper makes three contributions:
 \begin{itemize}
     \item \textbf{We define the plurality term.} We write $r_t$ as the step-by-step difference between the model's joint-prompt prediction and its PoE prediction, turning the missing compositional signal into a quantity we can measure and correct.
     \item \textbf{We show the plurality term is the signal that restores composition.} Adding the correct residual turns PoE failures into two-object scenes; mismatched residuals of comparable size do not have this effect.
@@ -244,6 +248,7 @@ The identity $\epsilon_{\mathrm{Mono}} = \hat\epsilon_{\mathrm{PoE}} + r_t$ hold
 \label{eq:corrected-sampler}
 \end{equation}
 
+\looseness=-1
 The strength axis separates the correction from any disturbance of the same size and schedule. In Figure~\ref{fig:strength-grid} the fusion holds until $\lambda$ reaches 0.75 and then resolves into a cat and a dog, while no control reaches two animals at any strength, so what restores composition is where the correction points rather than how hard the prediction is disturbed. The rows part company hardest past $\lambda = 1$, where the measured correction still gives two clean animals at $\lambda = 2$ and every control has collapsed into colour artefacts or a single chimera. One pair at one seed illustrates the strength axis rather than measuring it.
 
 \begin{figure}[!b]
@@ -296,7 +301,7 @@ changes exactly once, between the row that starts at step ten and the row that s
 % \label{fig:how-often-the-correction-lands}
 % \end{figure}
 
-The sweep across all eight pairs and four seeds draws the same boundary. A generated image counts as composed when an object detector finds two distinct animals in it, and all counts were manually verified. We restrict the correction to a ten-step window, leave the remaining forty steps uncorrected, and slide the window across the run in strides of five. The window is kept narrow so the sweep can separate timing from coverage, since a window spanning most of the run would contain the early steps at every position. Windows starting within the first five steps restore composition for every pair we tried, and windows starting at step 20 or later restore it for none (Figure~\ref{fig:where-the-correction-lands}). The correction is therefore not needed for most of the run: once the early steps have settled which scene the trajectory is in, plain product-of-experts composition carries the image to the end without it. In every pair we measured, the correction is at its smallest, relative to that pair's typical per-step size, in the steps where it matters, so size does not explain the timing. Why the earliest steps are decisive is open, and what we can show is that the correction they need is learnable.
+The sweep across all eight pairs and four seeds draws the same boundary. A generated image counts as composed when an object detector finds two distinct animals in it, and all counts were manually verified. We restrict the correction to a ten-step window, leave the remaining forty steps uncorrected, and slide the window across the run in strides of five. The window is kept narrow so the sweep can separate timing from coverage, since a window spanning most of the run would contain the early steps at every position. Windows starting within the first five steps restore composition for every pair we tried, and windows starting at step 20 or later restore it for none (Figure~\ref{fig:where-the-correction-lands}). The correction is therefore not needed for most of the run: once the early steps have settled which scene the trajectory is in, plain product-of-experts composition carries the image to the end without it. In every pair we measured, the correction is at its smallest, relative to that pair's typical per-step size, in the steps where it matters, so size does not explain the timing. Why the earliest steps are decisive is open, and what we can show is that the correction they need is learnable. Every result above used the joint prompt, which composition is not allowed to have. The next section removes that need.
 
 \begin{figure}[!ht]
 \centering
@@ -309,12 +314,10 @@ composes at 5--15 but not at 0--10, the one break in the left-to-right decay.}
 \label{fig:where-the-correction-lands}
 \end{figure}
 
-Every result above used the joint prompt, which composition is not allowed to have. The next section removes that need.
-
 
 \section{Learning the Plurality Term}
 \label{sec:method}
-
+\looseness=-1
 In the previous section we measured the plurality term along composed runs and showed that adding a small amount of it back, early in the run, restores composition. In this section we learn it. We train a model that produces the correction at each step, from the current state and the two concept prompts, so a corrected run no longer needs the joint prompt. The joint prompt is barred only at inference, so the term can still be measured in advance, and those measurements are what the model trains on.
 
 The model learns its correction from the residuals themselves. For each training pair we therefore store the residual at every denoising step, over several runs, so the training data covers whole trajectories rather than isolated steps. We train a single adapter on every pair together to learn the correction rule that restores the plurality lost during composition.
@@ -355,18 +358,25 @@ product-of-experts composition costs.}
 
 On pairs the adapter never trained on, its corrected sampler reproduces what the measured correction did in the previous section, and it does so from the two concept prompts alone (Figure~\ref{fig:adapter-samples}). The correction rule therefore transfers across pairs rather than being memorised per pair, which is what the compose rate below counts.
 
-\begin{figure}[!htbp]
-\centering
-\includegraphics[width=0.5\linewidth]{joint-prompt-poe-and-adapter-samples-for-four-held-out-pairs.pdf}
-\caption{\textbf{The adapter returns held-out pairs to two animals without ever seeing the joint prompt.} Samples for four animal pairs held out of the adapter's training, under the joint prompt (left), plain product-of-experts composition (middle, one blended animal per row), and the adapter-corrected sampler (right, two distinct animals per row). The three images of a row start from the same noise, and the adapter column is the pooled checkpoint at training step 100000 with $\lambda=1$. The joint-prompt column is the target the correction was defined from, not a competing method. Four pairs illustrate the effect and do not carry the rate.}
-\label{fig:adapter-samples}
-\end{figure}
+% \begin{figure}[!htbp]
+% \centering
+% \includegraphics[width=0.5\linewidth]{joint-prompt-poe-and-adapter-samples-for-four-held-out-pairs.pdf}
+% \caption{\textbf{The adapter returns held-out pairs to two animals without ever seeing the joint prompt.} Samples for four animal pairs held out of the adapter's training, under the joint prompt (left), plain product-of-experts composition (middle, one blended animal per row), and the adapter-corrected sampler (right, two distinct animals per row). The three images of a row start from the same noise, and the adapter column is the pooled checkpoint at training step 100000 with $\lambda=1$. The joint-prompt column is the target the correction was defined from, not a competing method. Four pairs illustrate the effect and do not carry the rate.}
+% \label{fig:adapter-samples}
+% \end{figure}
 
 \FloatBarrier
 \section{Discussion}
 \label{sec:discussion}
-
+\looseness=-1
 Composition does not fail because the words attend to the wrong regions of the image. A token's key determines which regions of the latent attend to it, and its value determines what those regions receive. For every token we record both at matched states of the same run, its attention over the latent and the content written into the regions it attends to, and compare each against plain composition. The attention maps stay close to where they already were, and the content written into those regions is what moves. The same happens on an elephant and a penguin, a pair we included as a control because it is not one the product fails on. So the correction acts on what the words write, not on where they look, and that holds wherever the update is applied, which locates the correction without explaining why it repairs the pairs that fail.
+
+\begin{wrapfigure}[40]{r}{0.5\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{joint-prompt-poe-and-adapter-samples-for-four-held-out-pairs.pdf}
+    \caption{\looseness=-1\textbf{The adapter returns held-out pairs to two animals without ever seeing the joint prompt.} Samples for four animal pairs held out of the adapter's training, under the joint prompt (left), plain product-of-experts composition (middle, one blended animal per row), and the adapter-corrected sampler (right, two distinct animals per row). The three images of a row start from the same noise, and the adapter column is the pooled checkpoint at training step 100000 with $\lambda=1$. The joint-prompt column is the target the correction was defined from, not a competing method. Four pairs illustrate the effect and do not carry the rate.}
+    \label{fig:adapter-samples}
+\end{wrapfigure}
 
 A correction measured from the joint prompt is not a fix, because the joint prompt is exactly what composition is denied. The adapter removes that requirement. It is trained once on residuals cached from a pool of pairs, and at inference it produces the correction from the two concept prompts and the current state alone. The base model is frozen throughout, so what a domain has to hold is one small set of low-rank matrices rather than a retrained model. Pairs outside the training pool are corrected too, so what the adapter holds is not a stored correction per pair but the rule that restores plurality to a product of two experts. This matters most where joint data does not exist, since the residuals cached on the pairs that can be measured are enough to correct the pairs that cannot.
 

@@ -1,0 +1,34 @@
+train:
+- a_bear__x__a_boar
+- a_bear__x__a_heron
+- a_bear__x__a_salmon
+- a_bear__x__a_squirrel
+- a_beaver__x__a_raccoon
+- a_birdcage__x__a_hay_bale
+- a_cactus__x__a_cooler_box
+- a_coat_rack__x__a_potted_plant
+- a_deer__x__a_hedgehog
+- a_deer__x__a_heron
+- a_deer__x__a_wolf
+- a_donkey__x__a_rooster
+- a_giraffe__x__a_hyena
+- a_giraffe__x__a_lion
+- a_giraffe__x__a_zebra
+- a_giraffe__x__an_ostrich
+- a_gorilla__x__a_chimpanzee
+- a_hay_bale__x__an_ukulele
+- a_horse__x__a_pig
+- a_horse__x__a_sheep
+- a_lion__x__a_meerkat
+- a_lion__x__an_oryx
+- a_peacock__x__a_pig
+- a_peacock__x__a_sheep
+- a_raccoon__x__a_salmon
+- a_rocking_chair__x__a_cactus
+- a_typewriter__x__a_cactus
+- a_wolf__x__a_husky
+- an_accordion__x__a_scarecrow
+- an_impala__x__a_jackal
+heldout:
+- a_cat__x__a_dog
+- an_elephant__x__a_penguin

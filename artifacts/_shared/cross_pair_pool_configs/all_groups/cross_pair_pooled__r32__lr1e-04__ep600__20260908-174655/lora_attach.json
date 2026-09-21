@@ -1,0 +1,6 @@
+{
+  "adapter_name": "lora",
+  "n_matched": 210,
+  "trainable_params": 19824640,
+  "total_params": 2587288324
+}

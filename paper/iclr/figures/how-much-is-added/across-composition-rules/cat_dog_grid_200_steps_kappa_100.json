@@ -1,0 +1,125 @@
+{
+  "figure": "cat_dog_grid_200_steps_kappa_100.png",
+  "what": "SuperDiff (AND) with a fixed kappa per sheet; columns add back a fraction lambda of r_t^SD = eps_J - eps_M (lambda 0 = SuperDiff alone, lambda 1 = the joint prompt's prediction exactly); rows are seeds. Tiles are 1024x1024 renders shown at 256px.",
+  "pair": "a_cat__x__a_dog",
+  "num_inference_steps": 200,
+  "guidance_scale": 7.5,
+  "kappa": 1.0,
+  "rows_seeds": [
+    9,
+    10,
+    11,
+    12
+  ],
+  "cols_lambda": [
+    0.0,
+    0.25,
+    0.5,
+    0.75,
+    1.0
+  ],
+  "composer": "poe_repair/composers/superdiff.py, kappa_override=<kappa>, lam=<col value>",
+  "tiles": [
+    {
+      "row_seed": 9,
+      "col_lambda": 0.0,
+      "source": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/superdiff/lambda_sweep/pairs/a_cat__x__a_dog/seed_9/superdiff_200steps_kappa1.00/superdiff_200steps_kappa1.00.png"
+    },
+    {
+      "row_seed": 9,
+      "col_lambda": 0.25,
+      "source": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/superdiff/lambda_sweep/pairs/a_cat__x__a_dog/seed_9/superdiff_200steps_kappa1.00_lam0.25/superdiff_200steps_kappa1.00_lam0.25.png"
+    },
+    {
+      "row_seed": 9,
+      "col_lambda": 0.5,
+      "source": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/superdiff/lambda_sweep/pairs/a_cat__x__a_dog/seed_9/superdiff_200steps_kappa1.00_lam0.50/superdiff_200steps_kappa1.00_lam0.50.png"
+    },
+    {
+      "row_seed": 9,
+      "col_lambda": 0.75,
+      "source": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/superdiff/lambda_sweep/pairs/a_cat__x__a_dog/seed_9/superdiff_200steps_kappa1.00_lam0.75/superdiff_200steps_kappa1.00_lam0.75.png"
+    },
+    {
+      "row_seed": 9,
+      "col_lambda": 1.0,
+      "source": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/superdiff/lambda_sweep/pairs/a_cat__x__a_dog/seed_9/superdiff_200steps_kappa1.00_lam1.00/superdiff_200steps_kappa1.00_lam1.00.png"
+    },
+    {
+      "row_seed": 10,
+      "col_lambda": 0.0,
+      "source": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/superdiff/lambda_sweep/pairs/a_cat__x__a_dog/seed_10/superdiff_200steps_kappa1.00/superdiff_200steps_kappa1.00.png"
+    },
+    {
+      "row_seed": 10,
+      "col_lambda": 0.25,
+      "source": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/superdiff/lambda_sweep/pairs/a_cat__x__a_dog/seed_10/superdiff_200steps_kappa1.00_lam0.25/superdiff_200steps_kappa1.00_lam0.25.png"
+    },
+    {
+      "row_seed": 10,
+      "col_lambda": 0.5,
+      "source": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/superdiff/lambda_sweep/pairs/a_cat__x__a_dog/seed_10/superdiff_200steps_kappa1.00_lam0.50/superdiff_200steps_kappa1.00_lam0.50.png"
+    },
+    {
+      "row_seed": 10,
+      "col_lambda": 0.75,
+      "source": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/superdiff/lambda_sweep/pairs/a_cat__x__a_dog/seed_10/superdiff_200steps_kappa1.00_lam0.75/superdiff_200steps_kappa1.00_lam0.75.png"
+    },
+    {
+      "row_seed": 10,
+      "col_lambda": 1.0,
+      "source": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/superdiff/lambda_sweep/pairs/a_cat__x__a_dog/seed_10/superdiff_200steps_kappa1.00_lam1.00/superdiff_200steps_kappa1.00_lam1.00.png"
+    },
+    {
+      "row_seed": 11,
+      "col_lambda": 0.0,
+      "source": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/superdiff/lambda_sweep/pairs/a_cat__x__a_dog/seed_11/superdiff_200steps_kappa1.00/superdiff_200steps_kappa1.00.png"
+    },
+    {
+      "row_seed": 11,
+      "col_lambda": 0.25,
+      "source": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/superdiff/lambda_sweep/pairs/a_cat__x__a_dog/seed_11/superdiff_200steps_kappa1.00_lam0.25/superdiff_200steps_kappa1.00_lam0.25.png"
+    },
+    {
+      "row_seed": 11,
+      "col_lambda": 0.5,
+      "source": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/superdiff/lambda_sweep/pairs/a_cat__x__a_dog/seed_11/superdiff_200steps_kappa1.00_lam0.50/superdiff_200steps_kappa1.00_lam0.50.png"
+    },
+    {
+      "row_seed": 11,
+      "col_lambda": 0.75,
+      "source": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/superdiff/lambda_sweep/pairs/a_cat__x__a_dog/seed_11/superdiff_200steps_kappa1.00_lam0.75/superdiff_200steps_kappa1.00_lam0.75.png"
+    },
+    {
+      "row_seed": 11,
+      "col_lambda": 1.0,
+      "source": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/superdiff/lambda_sweep/pairs/a_cat__x__a_dog/seed_11/superdiff_200steps_kappa1.00_lam1.00/superdiff_200steps_kappa1.00_lam1.00.png"
+    },
+    {
+      "row_seed": 12,
+      "col_lambda": 0.0,
+      "source": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/superdiff/lambda_sweep/pairs/a_cat__x__a_dog/seed_12/superdiff_200steps_kappa1.00/superdiff_200steps_kappa1.00.png"
+    },
+    {
+      "row_seed": 12,
+      "col_lambda": 0.25,
+      "source": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/superdiff/lambda_sweep/pairs/a_cat__x__a_dog/seed_12/superdiff_200steps_kappa1.00_lam0.25/superdiff_200steps_kappa1.00_lam0.25.png"
+    },
+    {
+      "row_seed": 12,
+      "col_lambda": 0.5,
+      "source": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/superdiff/lambda_sweep/pairs/a_cat__x__a_dog/seed_12/superdiff_200steps_kappa1.00_lam0.50/superdiff_200steps_kappa1.00_lam0.50.png"
+    },
+    {
+      "row_seed": 12,
+      "col_lambda": 0.75,
+      "source": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/superdiff/lambda_sweep/pairs/a_cat__x__a_dog/seed_12/superdiff_200steps_kappa1.00_lam0.75/superdiff_200steps_kappa1.00_lam0.75.png"
+    },
+    {
+      "row_seed": 12,
+      "col_lambda": 1.0,
+      "source": "/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/superdiff/lambda_sweep/pairs/a_cat__x__a_dog/seed_12/superdiff_200steps_kappa1.00_lam1.00/superdiff_200steps_kappa1.00_lam1.00.png"
+    }
+  ],
+  "missing": []
+}

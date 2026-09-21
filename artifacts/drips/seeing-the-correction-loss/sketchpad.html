@@ -10,6 +10,7 @@
   --attn:#D9822B; --attn-fill:#FAE8D2;
   --frozen:#707E88; --frozen-fill:#E3E8EB;
   --hot:#B33A2B; --txt:#7A5AA8; --txt-fill:#EBE3F5;
+  --tint-adapt:rgba(217,130,43,.13); --tint-frozen:rgba(112,126,136,.15);
   --shadow:0 1px 2px rgba(22,26,23,.06), 0 6px 18px rgba(22,26,23,.05);
 }
 @media (prefers-color-scheme: dark){
@@ -21,6 +22,7 @@
     --attn:#EFA85C; --attn-fill:#2B2013;
     --frozen:#8D9BA5; --frozen-fill:#1E2529;
     --hot:#E4705E; --txt:#B79BE0; --txt-fill:#231B33;
+    --tint-adapt:rgba(239,168,92,.17); --tint-frozen:rgba(141,155,165,.18);
     --shadow:0 1px 2px rgba(0,0,0,.4), 0 6px 20px rgba(0,0,0,.35);
   }
 }
@@ -32,6 +34,7 @@
   --attn:#EFA85C; --attn-fill:#2B2013;
   --frozen:#8D9BA5; --frozen-fill:#1E2529;
   --hot:#E4705E; --txt:#B79BE0; --txt-fill:#231B33;
+  --tint-adapt:rgba(239,168,92,.17); --tint-frozen:rgba(141,155,165,.18);
   --shadow:0 1px 2px rgba(0,0,0,.4), 0 6px 20px rgba(0,0,0,.35);
 }
 
@@ -123,10 +126,35 @@ text{font-family:"IBM Plex Sans",sans-serif}
 .braced.hotb .bsvg{color:var(--hot)} .braced.hotb .blab{color:var(--hot)}
 .braced.fzb  .bsvg{color:var(--frozen)} .braced.fzb  .blab{color:var(--frozen)}
 .braced.adb  .bsvg{color:var(--attn)} .braced.adb  .blab{color:var(--attn)}
-.t{padding:2px 4px; border-radius:2px; cursor:pointer; transition:background .18s, box-shadow .18s}
+.t{padding:2px 4px; border-radius:2px; cursor:pointer; transition:background .18s, box-shadow .18s;
+  background:var(--tint-adapt);}
+.t.frozen{background:var(--tint-frozen)}
+.t.scalar{background:transparent}
 .t:hover,.t.lit{background:var(--attn-fill); box-shadow:inset 0 0 0 1px var(--attn)}
 .t.frozen:hover,.t.frozen.lit{background:var(--frozen-fill); box-shadow:inset 0 0 0 1px var(--frozen)}
 .op{color:var(--ink-soft); padding:0 2px}
+.notswitch{display:flex; gap:6px; margin:0 0 12px}
+.notswitch button{
+  font:500 11.5px/1 "IBM Plex Sans",sans-serif; color:var(--ink-soft);
+  background:transparent; border:1px solid var(--rule); border-radius:14px;
+  padding:7px 12px; cursor:pointer;
+}
+.notswitch button[aria-current="true"]{background:var(--ink); color:var(--paper); border-color:var(--ink)}
+.notswitch button:focus-visible{outline:2px solid var(--attn); outline-offset:2px}
+.eqline.board{display:block; font-size:13px; line-height:1.75}
+.eqline.board .t{padding:1px 2px}
+.eqline.board .grp{white-space:normal}
+.brows{display:flex; flex-direction:column; gap:3px; width:100%}
+.brow{
+  display:block; width:100%; min-width:0; overflow-wrap:anywhere;
+  padding-left:1.9em; text-indent:-1.9em;
+}
+.brlab{
+  float:right; text-indent:0; margin-left:14px; white-space:nowrap;
+  font:400 10px/1.2 "IBM Plex Sans",sans-serif; color:var(--ink-faint);
+}
+.brlab.hotb{color:var(--hot)} .brlab.adb{color:var(--attn)} .brlab.fzb{color:var(--frozen)}
+.eqline, .eq{min-width:0; max-width:100%}
 .eqlab{font:600 9.5px/1 "IBM Plex Sans",sans-serif; letter-spacing:.11em;
   text-transform:uppercase; color:var(--ink-faint); margin:2px 0 5px}
 .eqline.full{font-size:15.5px; line-height:1.8}
@@ -197,6 +225,82 @@ text{font-family:"IBM Plex Sans",sans-serif}
 }
 .changed{animation:pulseIn .55s ease-out both; transform-box:fill-box; transform-origin:center}
 @media (prefers-reduced-motion:reduce){ .changed{animation:none} }
+
+.walkbar{
+  position:fixed; left:0; right:0; bottom:0; z-index:60;
+  display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+  padding:14px 26px; background:var(--ink); color:var(--paper);
+  box-shadow:0 -6px 24px rgba(0,0,0,.18);
+}
+.walkbar[hidden]{display:none}
+.walkbar .num{
+  font:600 11px/1 "IBM Plex Sans",sans-serif; letter-spacing:.1em; opacity:.6; white-space:nowrap;
+}
+.walkbar .line{
+  flex:1; min-width:260px; font-family:Spectral,Georgia,serif; font-size:19px; line-height:1.35;
+}
+.walkbar .line b{color:var(--attn); font-weight:600}
+.walkbar button{
+  font:600 13px/1 "IBM Plex Sans",sans-serif; color:var(--ink); background:var(--paper);
+  border:0; border-radius:3px; padding:11px 18px; cursor:pointer; white-space:nowrap;
+}
+.walkbar button.ghost{background:transparent; color:var(--paper); box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}
+.walkbar button:disabled{opacity:.3; cursor:default}
+.modeswitch{display:flex; gap:0; border:1px solid var(--rule); border-radius:20px; overflow:hidden}
+.modeswitch button{
+  font:600 12.5px/1 "IBM Plex Sans",sans-serif; color:var(--ink-soft);
+  background:transparent; border:0; padding:10px 18px; cursor:pointer;
+}
+.modeswitch button[aria-current="true"]{background:var(--ink); color:var(--paper)}
+.runbox{
+  display:grid; grid-template-columns:auto 1fr; gap:4px 12px; margin:14px 0 0;
+  padding:10px 12px; background:var(--panel-2); border-left:3px solid var(--latent);
+}
+.runbox.none{display:block; color:var(--ink-faint); font-size:12px; border-left-color:var(--rule)}
+.rk{font:600 9.5px/1.6 "IBM Plex Sans",sans-serif; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink-faint); white-space:nowrap}
+.rv{font-size:12px; color:var(--ink-soft); line-height:1.45}
+.rv a{color:var(--latent); font-weight:600; text-decoration:none; border-bottom:1px solid var(--latent)}
+.rv a:hover{color:var(--ink); border-bottom-color:var(--ink)}
+.trainedon{display:grid; grid-template-columns:auto 1fr; gap:4px 12px; margin:0 0 14px;
+  padding:9px 12px; background:var(--panel-2); border-left:3px solid var(--unet)}
+.tk{font:600 9.5px/1.6 "IBM Plex Sans",sans-serif; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink-faint); white-space:nowrap}
+.tv{font-size:12px; color:var(--ink-soft); line-height:1.4}
+.blanktile{position:relative; display:block; width:100%; aspect-ratio:1; border:1px dashed var(--rule);
+  border-radius:2px; background:var(--panel-2)}
+.blanktile svg{position:absolute; inset:0; width:100%; height:100%; stroke:var(--rule); stroke-width:1;
+  vector-effect:non-scaling-stroke}
+.blanktile em{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font:600 10px/1.2 "IBM Plex Sans",sans-serif; font-style:normal; color:var(--ink-faint); text-align:center}
+.facts{display:grid; grid-template-columns:auto 1fr; gap:5px 12px; margin:4px 0 14px}
+.fk{font:600 10px/1.5 "IBM Plex Sans",sans-serif; letter-spacing:.07em; text-transform:uppercase;
+  color:var(--ink-faint); white-space:nowrap}
+.fv{font-size:12.5px; color:var(--ink-soft); line-height:1.45}
+.steprule{margin:0 0 10px}
+.sr{margin:0 0 9px; padding-left:12px; border-left:2px solid var(--hot); font-size:15px}
+.sr .c{display:block; font-size:11.5px; color:var(--ink-faint); margin-top:3px}
+.schedrow{display:flex; gap:6px; margin:0 0 14px; flex-wrap:wrap}
+.schedrow button{
+  font:500 11.5px/1.3 "IBM Plex Sans",sans-serif; color:var(--ink-soft); text-align:left;
+  background:transparent; border:1px solid var(--rule); border-radius:3px; padding:8px 11px; cursor:pointer;
+}
+.schedrow button[aria-current="true"]{background:var(--attn); color:var(--paper); border-color:var(--attn)}
+.infrow{margin:0 0 11px; padding-left:12px; border-left:2px solid var(--rule)}
+.infrow .m{font-size:15px}
+.infrow .c{font-size:11.5px; color:var(--ink-faint); margin-top:3px}
+.grid23{display:grid; grid-template-columns:repeat(3,1fr); gap:7px; margin:8px 0 0}
+.grid23 figure{margin:0}
+.grid23 img{width:100%; display:block; border-radius:2px; border:1px solid var(--rule)}
+.cmpsheet{width:100%; display:block; border-radius:3px; border:1px solid var(--rule); margin-top:6px}
+.grid23 figcaption{font:500 10px/1.3 "IBM Plex Sans",sans-serif; color:var(--ink-soft); margin-top:4px; text-align:center}
+.rowlab{font:600 10px/1 "IBM Plex Sans",sans-serif; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--attn); margin:14px 0 6px}
+.walkstart{
+  font:600 13px/1 "IBM Plex Sans",sans-serif; color:var(--paper); background:var(--ink);
+  border:0; border-radius:20px; padding:11px 20px; cursor:pointer; white-space:nowrap;
+}
+.walkstart:hover{background:var(--hot)}
 
 /* ---------- modal ---------- */
 .modal[hidden]{display:none}
@@ -279,6 +383,11 @@ text{font-family:"IBM Plex Sans",sans-serif}
   <h1>Two legs, one loss</h1>
   <span class="tag">poe_repair_min</span>
   <span class="note">The target leg is a disk read. The composition leg is a live forward pass. Pick a variation below. Four things open: the <b>latent space</b> header, the <b>Q/KV</b> blocks, the <b>empty prompt</b>, and the <b>loss</b>.</span>
+  <span class="modeswitch" id="modeswitch">
+    <button data-m="train" aria-current="true">training</button>
+    <button data-m="infer">inference</button>
+  </span>
+  <button class="walkstart" id="walkGo">▶  walk me through it</button>
 </div>
 
 <div class="stepbar" role="group" aria-label="Reveal steps">
@@ -308,20 +417,46 @@ text{font-family:"IBM Plex Sans",sans-serif}
     <p class="caption" id="cap"></p>
     <div class="eq" id="boxV">
       <h3 id="veqTitle"></h3>
+      <div class="notswitch" role="group" aria-label="Notation">
+        <button data-n="ours" aria-current="true">our shorthand</button>
+        <button data-n="board">the board&rsquo;s notation</button>
+      </div>
       <div class="eqlab">written out in full</div>
       <div class="eqline full" id="veqFull"></div>
       <div class="why" id="vwhy"></div>
       <div class="eqlab" id="vsimplab">what it collapses to</div>
       <div class="eqline" id="veqSimp"></div>
       <p class="note" id="vnote"></p>
+      <div id="runslot"></div>
     </div>
     <div class="legend">
       <span><i class="sw fr"></i> read from cache · frozen · no gradient</span>
       <span><i class="sw ad"></i> computed now · adapter attached</span>
     </div>
   </div>
+
+  <div id="inferRail" hidden>
+    <p class="caption" id="icap"></p>
+    <div class="trainedon" id="trainedon"></div>
+    <div class="schedrow" id="schedrow">
+      <button data-s="full" aria-current="true">adapter on the whole path</button>
+      <button data-s="cut">adapter off after step 10</button>
+    </div>
+    <div id="infeqs"></div>
+    <div id="irunslot"></div>
+    <div id="samplerfacts"></div>
+    <div id="infgrid"></div>
+  </div>
 </aside>
 </main>
+
+<div class="walkbar" id="walkbar" hidden>
+  <span class="num" id="wnum"></span>
+  <span class="line" id="wline"></span>
+  <button class="ghost" id="wprev">back</button>
+  <button id="wnext">next</button>
+  <button class="ghost" id="wexit">leave the tour</button>
+</div>
 
 <div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="mtitle">
   <div class="mhead">
@@ -650,15 +785,15 @@ text{font-family:"IBM Plex Sans",sans-serif}
       o+=T(60,40,'how much each branch counts in the final prediction',12.5,'var(--ink-soft)');
       o+=T(60,290,'Move u on its own and the picture moves '+Math.abs(u).toFixed(1)+'×. The loss sees that.',13,'var(--ink-soft)');
       o+=T(60,312,'Move u and a together by the same amount and the picture still moves '+(wVal-1).toFixed(1)+'×.',13,INK,'start',600);
-      o+=T(60,332,'The composition a + b − u does not move. The dialled loss does. Next panel.',13,HOT,'start',600);
+      o+=T(60,332,'The composition a + b − u does not move. The loss at guidance 7.5 does. Next panel.',13,HOT,'start',600);
       return o;
     }},
   { cap:'And here is the move the two objectives <b>disagree</b> about. Add the same tensor to the cat branch and to the empty branch, and drag it.',
     draw:function(){
       /* real state: seed 9, step 5, from the cached predictions */
       var dlt=1.81, W=wVal, v=gaugeV;
-      var undialled = dlt;                       /* a + b − u never moves */
-      var dialled   = Math.abs(W*dlt - (W-1)*v); /* target keeps the cached u, so it does not follow */
+      var errAt1 = dlt;                       /* a + b − u never moves */
+      var errAt75  = Math.abs(W*dlt - (W-1)*v); /* target keeps the cached u, so it does not follow */
       var maxBar=W*dlt;
       var o=DEFS, X0=90, BW=440;
       function bar(y,val,max,c,lab,sub){
@@ -668,20 +803,20 @@ text{font-family:"IBM Plex Sans",sans-serif}
              + T(X0+BW+14,y+23,val.toFixed(2),15,c,'start',600)
              + T(X0,y+52,sub,11.5,'var(--ink-soft)','start');
       }
-      o+=bar(52,undialled,maxBar,AT,'the composition’s own error,  ‖(a + b − u) − ε̄J‖',
+      o+=bar(52,errAt1,maxBar,AT,'the composition’s own error,  ‖(a + b − u) − ε̄J‖',
              'what the board’s objective measures. Drag all you like: it does not move.');
-      o+=bar(150,dialled,maxBar,HOT,'the dialled loss,  ‖T⁽ʷ⁾ − target‖',
+      o+=bar(150,errAt75,maxBar,HOT,'the loss at guidance 7.5,  ‖T⁽ʷ⁾ − target‖',
              'what this repository trains. It falls as you drag.');
       /* the slider position, and the moment of embarrassment */
       var vz=(W*dlt)/(W-1);
       o+=T(X0,244,'you have added  v = '+v.toFixed(2),13,INK,'start',600);
       o+=T(X0,266,'the sampled prediction has moved '+((W-1)*v).toFixed(2),12.5,'var(--ink-soft)','start');
-      if(dialled<0.02){
+      if(errAt75<0.02){
         o+=R(X0,284,BW+118,58,HOT,'var(--panel)');
-        o+=T(X0+16,308,'The dialled loss is now zero.',14,HOT,'start',600);
+        o+=T(X0+16,308,'The loss at guidance 7.5 is now zero.',14,HOT,'start',600);
         o+=T(X0+16,330,'The composition is exactly as wrong as when you started.',13,INK,'start');
       } else {
-        o+=T(X0,306,'keep dragging to v = '+vz.toFixed(2)+' and the dialled loss reaches zero,',13,'var(--ink-soft)','start');
+        o+=T(X0,306,'keep dragging to v = '+vz.toFixed(2)+' and the loss at guidance 7.5 reaches zero,',13,'var(--ink-soft)','start');
         o+=T(X0,328,'with the composition still '+dlt.toFixed(2)+' away from the target.',13,'var(--ink-soft)','start');
       }
       var KX=660;
@@ -690,7 +825,7 @@ text{font-family:"IBM Plex Sans",sans-serif}
       o+=T(KX,134,'T⁽ʷ⁾ moves by −(w−1)v, because the',12.5,HOT,'start');
       o+=T(KX,152,'empty branch is read a second time,',12.5,HOT,'start');
       o+=T(KX,170,'and the target keeps the cached ū.',12.5,HOT,'start');
-      o+=T(KX,206,'So the dialled loss has a cheap way to',12.5,INK,'start',600);
+      o+=T(KX,206,'So the loss at guidance 7.5 has a cheap way to',12.5,INK,'start',600);
       o+=T(KX,224,'fall that fixes nothing.',12.5,INK,'start',600);
       o+=T(KX,258,'V1 removes the move: with ū frozen',12.5,UN,'start');
       o+=T(KX,276,'there is nothing left to shift.',12.5,UN,'start');
@@ -754,25 +889,29 @@ text{font-family:"IBM Plex Sans",sans-serif}
     note:'A penalty pulls the adapted empty branch back toward the cached one. The drift fell 39×; the fit error nearly doubled.'},
    {id:'V1', sub:'freeze it',    u:'disk', ab:'unet', dial:'cancels', tether:null,
     note:'The empty branch comes off the disk. One fewer forward, and the dial cancels out of the loss entirely.'},
-   {id:'V2', sub:'plural anchor',u:'unet', ab:'unet', dial:'both',    tether:{to:'ε̄pl',c:'var(--txt)'},
+   {id:'V2', off:1, sub:'plural anchor',u:'unet', ab:'unet', dial:'both',    tether:{to:'ε̄pl',c:'var(--txt)'},
     note:'The same fine, but the reference is the frozen prediction for "two animals" instead of the empty prompt.'},
-   {id:'V3', sub:'only ∅',       u:'unet', ab:'disk', dial:'both',    tether:null,
+   {id:'V3', off:1, sub:'only ∅',       u:'unet', ab:'disk', dial:'both',    tether:null,
     note:'The concept branches come off the disk. One free tensor, shared by every pair. Expected to fail.'},
    {id:'V4', sub:'no dial',      u:'unet', ab:'unet', dial:'none',    tether:null,
     note:'Guidance removed from both sides. Differs from V0 by exactly the drift, scaled by w−1.'},
-   {id:'V5', sub:'real photos',  u:'unet', ab:'unet', dial:'none',    tether:null, target:'photo',
-    note:'The target stops being the model: a real photo with both animals, noised. Blocked, no corpus exists here.'},
-   {id:'V6', sub:'better teacher',u:'unet',ab:'unet', dial:'none',    tether:null, target:'render',
-    note:'Same shape as V5, but the corpus is the model’s own renders that passed a composition filter.'},
-   {id:'V7', sub:'protect',      u:'unet', ab:'unet', dial:'both',    tether:{to:'ε̄(cat)',c:AT,on:0},
+   {id:'V5', sub:'real photos',  u:'disk', ab:'unet', dial:'none',    tether:null, target:'photo',
+    note:'The target stops being the model: a real photo with both animals, noised. Blocked, no corpus exists here. The same a/b split as V6 applies and is not drawn, because neither half can run.'},
+   {id:'V6', sub:'better teacher', u:'unet',ab:'unet', dial:'none',   tether:null, target:'render',
+    note:'All three branches adapted. With no dial anywhere, any drift in the empty branch is absorbed into the concept branches and this loss cannot tell the difference, so this is V6a’s objective at one extra forward pass per step. Flip to V6a: the only thing that changes is a bar.'},
+   {id:'V6a', sub:'…∅ frozen',     u:'disk',ab:'unet', dial:'none',   tether:null, target:'render',
+    note:'The concept branches are live, the empty one is a lookup. With no dial, letting the empty branch move as well is the same objective at one extra forward pass, so it is frozen.'},
+   {id:'V6b', sub:'…only ∅',       u:'unet',ab:'disk', dial:'none',   tether:null, target:'render',
+    note:'The mirror of V6a: the concept branches come off the disk and one shared tensor per state does all the work. A single vector common to every pair can only supply what is common to every pair.'},
+   {id:'V7', off:1, sub:'protect',      u:'unet', ab:'unet', dial:'both',    tether:{to:'ε̄(cat)',c:AT,on:0},
     note:'An extra penalty holds the cat branch near its frozen self, at states from single-prompt runs.'}
   ];
 
   /* per-variation loss: written out in full, and what it collapses to.
      token = [tex, bind, frozen?, mark?]   mark: 'cancel' | 'mark'            */
   var o_=function(x){return [x,'op'];},
-      U=['u','u'], UB=['\\bar u','u',1], A=['a','a'], B=['b','b'],
-      AB=['\\bar a','a',1], BB=['\\bar b','b',1], EJ=['\\bar\\varepsilon_J','ej',1],
+      U=['u','u'], UB=['\\bar u','ubar',1], A=['a','a'], B=['b','b'],
+      AB=['\\bar a','abar',1], BB=['\\bar b','bbar',1], EJ=['\\bar\\varepsilon_J','ej',1],
       W=['w','cfgB'], WA=['w','cfgA'];
   function cx(tok,mk){ return [tok[0],tok[1],tok[2],mk]; }
 
@@ -791,7 +930,7 @@ text{font-family:"IBM Plex Sans",sans-serif}
   }
   function simpGuided(aT,bT,uT){
     return [o_('\\big\\lVert'),
-      BR('w × the undialled error','adb'),
+      BR('w × the error at guidance 1','adb'),
         W,o_('('),aT,o_('+'),bT,o_('-'),uT,o_('-'),EJ,o_(')'),
       ENDB, o_('-'),
       BR('the drift, amplified','hotb'),
@@ -801,7 +940,7 @@ text{font-family:"IBM Plex Sans",sans-serif}
   function fine(ref,lab){
     return [o_('+'),
       BR(lab||'the fine','hotb'),
-        cx(['\\mu','cfgB'],'mark'),o_('\\big\\lVert'),cx(U,'mark'),o_('-'),cx(ref,'mark'),o_('\\big\\rVert^2'),
+        cx(['\\mu','mu'],'mark'),o_('\\big\\lVert'),cx(U,'mark'),o_('-'),cx(ref,'mark'),o_('\\big\\rVert^2'),
       ENDB];
   }
   function plainComp(uT){
@@ -809,18 +948,18 @@ text{font-family:"IBM Plex Sans",sans-serif}
       BR('the composition','adb'), o_('('),A,o_('+'),B,o_('-'),uT,o_(')'), ENDB,
       o_('-'),BR('cached target','fzb'),EJ,ENDB,o_('\\big\\rVert^2')];
   }
-  var EPL=['\\bar\\varepsilon_{\\text{pl}}','ej',1];
+  var EPL=['\\bar\\varepsilon_{\\text{pl}}','eplbar',1];
 
   var LOSS={
    V0 :{full:fullGuided(A,B,U), simp:simpGuided(A,B,U),
         why:'group the dial out front',
-        note:'The guided error is w times the undialled error, minus (w−1) times how far the empty branch drifted. Everything below is a different way of dealing with that second term.'},
+        note:'The guided error is w times the error at guidance 1, minus (w−1) times how far the empty branch drifted. Everything below is a different way of dealing with that second term.'},
    V0a:{full:fullGuided(A,B,U).concat(fine(UB)), simp:simpGuided(A,B,U).concat(fine(UB)),
         why:'same grouping, plus the fine',
         note:'The drift now appears twice: amplified by (w−1) inside the error, and fined directly on the end. The fine cut it 39×, and the fit error nearly doubled.'},
    V1 :{full:fullGuided(A,B,UB,'cancel','only a, b adapted'),
         simp:[cx(['w^2','cfgB'],'mark'),o_('\\big\\lVert'),
-              BR('the undialled error, and nothing else','adb'),
+              BR('the error at guidance 1, and nothing else','adb'),
                 o_('('),A,o_('+'),B,o_('-'),UB,o_(')'),o_('-'),EJ,
               ENDB,o_('\\big\\rVert^2')],
         why:'ū now sits on both sides, so it cancels and the dial factors out',
@@ -836,18 +975,28 @@ text{font-family:"IBM Plex Sans",sans-serif}
         note:'Already at its simplest: this is V0 with the dial at 1. Compare it with V1’s collapsed form — the only difference is u against ū, and that difference is the drift.'},
    V5 :{full:[o_('\\mathbb{E}_{x,z}'),o_('\\big\\lVert'),
               BR('the noise that was added','fzb'),['z','ej'],ENDB,o_('-'),
-              BR('the composition','adb'),o_('('),A,o_('+'),B,o_('-'),U,o_(')'),ENDB,o_('\\big\\rVert^2')],
+              BR('the composition','adb'),o_('('),A,o_('+'),B,o_('-'),UB,o_(')'),ENDB,o_('\\big\\rVert^2')],
         simp:null, why:'',
-        note:'Already at its simplest. The target stops being the model: predict the noise that was added to a real photograph. Blocked here, because no such corpus exists.'},
+        note:'Already at its simplest. The target stops being the model: predict the noise that was added to a real photograph. Blocked here, because no such corpus exists. The same a/b split as V6 applies, and is not drawn because neither half can run.'},
    V6 :{full:[o_('\\mathbb{E}_{x,z}'),o_('\\big\\lVert'),
               BR('the noise that was added','fzb'),['z','ej'],ENDB,o_('-'),
               BR('the composition','adb'),o_('('),A,o_('+'),B,o_('-'),U,o_(')'),ENDB,o_('\\big\\rVert^2')],
         simp:null, why:'',
-        note:'The same equation as V5. Only the corpus underneath the expectation changes: the model’s own renders that passed a composition filter.'},
+        note:'All three adapted, 3K forwards. Compare with V6a, which is the same objective for 2K: with no dial, nothing downstream can see the empty branch move.'},
+   V6a:{full:[o_('\\mathbb{E}_{x,z}'),o_('\\big\\lVert'),
+              BR('the noise that was added','fzb'),['z','ej'],ENDB,o_('-'),
+              BR('the composition','adb'),o_('('),A,o_('+'),B,o_('-'),UB,o_(')'),ENDB,o_('\\big\\rVert^2')],
+        simp:null, why:'',
+        note:'The empty branch comes off the disk. Same answers as V6, one forward cheaper. Against V6b, the bars have simply swapped sides.'},
+   V6b:{full:[o_('\\mathbb{E}_{x,z}'),o_('\\big\\lVert'),
+              BR('the noise that was added','fzb'),['z','ej'],ENDB,o_('-'),
+              BR('the composition','adb'),o_('('),AB,o_('+'),BB,o_('-'),U,o_(')'),ENDB,o_('\\big\\rVert^2')],
+        simp:null, why:'',
+        note:'The bars have swapped sides. Expect it to fail, for the same reason V3 does: one shared tensor cannot carry a per-pair correction.'},
    V7 :{full:fullGuided(A,B,U).concat([o_('+'),
           BR('holds the cat branch near frozen','hotb'),
-            cx(['\\nu','cfgB'],'mark'),o_('\\big\\lVert'),
-            cx(['\\varepsilon_\\theta(c_1)','a'],'mark'),o_('-'),cx(['\\bar\\varepsilon(c_1)','a',1],'mark'),
+            cx(['\\nu','nu'],'mark'),o_('\\big\\lVert'),
+            cx(['\\varepsilon_\\theta(c_1)','a'],'mark'),o_('-'),cx(['\\bar\\varepsilon(c_1)','abar',1],'mark'),
             o_('\\big\\rVert^2'),
           ENDB]),
         simp:null, why:'',
@@ -944,15 +1093,16 @@ text{font-family:"IBM Plex Sans",sans-serif}
       for(i=0;i<3;i++){
         var fz=(src[i]==='disk'), c=fz?FZ:AT, f=fz?FZF:ATF;
         if(!fz) o+=AR(474,RC[i],562,RC[i],AT);
-        o+='<g class="hit" data-bind="'+nmv[i]+'">'+R(566,RC[i]-18,58,36,c,f)+
+        o+='<g class="hit" data-bind="'+nmv[i]+(fz?'bar':'')+'">'+R(566,RC[i]-18,58,36,c,f)+
            T(595,RC[i]+6,(fz?'&#772;':'')+nmv[i],18,INK,'middle')+'</g>';
       }
       o+=T(595,398,'(K, 4, 128, 128) each',11,'var(--ink-soft)','middle');
       if(v.tether){
         var ty=RC[v.tether.on===0?0:2];
-        o+='<path d="M595,'+(ty+20)+' C595,'+(ty+58)+' 700,'+(ty+58)+' 700,'+(ty+40)+'" fill="none" stroke="'+
-           v.tether.c+'" stroke-width="1.8" stroke-dasharray="5 3"/>';
-        o+=R(668,ty+4,64,36,v.tether.c,FZF)+T(700,ty+28,v.tether.to,14,INK,'middle');
+        o+='<g data-bind="'+(v.id==='V7'?'nu':'mu')+'"><path d="M595,'+(ty+20)+' C595,'+(ty+58)+' 700,'+(ty+58)+' 700,'+(ty+40)+
+           '" fill="none" stroke="'+v.tether.c+'" stroke-width="1.8" stroke-dasharray="5 3"/></g>';
+        o+='<g data-bind="'+(v.id==='V2'?'eplbar':(v.id==='V7'?'abar':'ubar'))+'">'+
+           R(668,ty+4,64,36,v.tether.c,FZF)+T(700,ty+28,v.tether.to,14,INK,'middle')+'</g>';
         o+=T(740,ty+26,'held near this',11,v.tether.c,'start',600);
       }
     }
@@ -964,7 +1114,8 @@ text{font-family:"IBM Plex Sans",sans-serif}
         o+=AR(496,90,652,90,FZ);
         o+='<g class="hit" data-bind="cfgA">'+R(658,66,170,48,FZ,FZF)+
            T(743,86,'guidance, w = 7.5',12.5,INK,'middle',600)+
-           T(743,103,'against cached ū',11.5,'var(--ink-soft)','middle')+'</g>';
+           '<g data-bind="ubar">'+R(676,92,134,18,'none','none')+
+           T(743,103,'against cached ū',11.5,'var(--ink-soft)','middle')+'</g>'+'</g>';
         for(i=0;i<3;i++) o+=AR(628,RC[i],652,[230,254,278][i],AT);
         o+='<g class="hit" data-bind="cfgB">'+R(658,218,170,82,AT,ATF)+
            T(743,242,'guidance, w = 7.5',12.5,INK,'middle',600)+
@@ -973,7 +1124,9 @@ text{font-family:"IBM Plex Sans",sans-serif}
            T(743,291,'then add, subtract once',11.5,AT,'middle',600)+'</g>';
         hand={ax:828,ay:90,bx:828,by:259,one:false};
       } else if(v.dial==='cancels'){
-        o+='<path d="M496,90 C576,90 576,158 646,158" fill="none" stroke="'+FZ+'" stroke-width="1.6" marker-end="url(#ar)"/>';
+        o+='<g data-bind="cfgA"><path d="M496,90 C576,90 576,158 646,158" fill="none" stroke="'+FZ+
+           '" stroke-width="1.6" marker-end="url(#ar)"/>'+
+           T(566,78,'the dial on this side too',10.5,FZ,'middle')+'</g>';
         var ey=[168,192,216];
         for(i=0;i<3;i++)
           o+='<path d="M628,'+RC[i]+' C642,'+RC[i]+' 634,'+ey[i]+' 646,'+ey[i]+'" fill="none" stroke="'+AT+'" stroke-width="1.5" marker-end="url(#ar)"/>';
@@ -1416,30 +1569,112 @@ text{font-family:"IBM Plex Sans",sans-serif}
   ];
   var MAX=CAPS.length-1, s=0, vi=0, prev=null;
   var cap=document.getElementById("cap"), btns=all(".stepbar button[data-s]");
+  var TSTEPS=btns.map(function(b){ return b.textContent; });
   var stage=document.getElementById("figstage"), pills=document.getElementById("vpills");
+  var runslot=document.getElementById("runslot"), irunslot=document.getElementById("irunslot");
   var veqFull=document.getElementById("veqFull"), veqSimp=document.getElementById("veqSimp"),
       vwhy=document.getElementById("vwhy"), simpLab=document.getElementById("vsimplab"),
       vnote=document.getElementById("vnote"), veqT=document.getElementById("veqTitle");
 
+  Array.prototype.forEach.call(document.querySelectorAll('.notswitch button'),function(b){
+    b.addEventListener("click",function(){
+      notation=b.getAttribute("data-n");
+      Array.prototype.forEach.call(document.querySelectorAll('.notswitch button'),function(o){
+        o.setAttribute("aria-current", o.getAttribute("data-n")===notation ? "true":"false");
+      });
+      paintEq(VARS[vi]);
+    });
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll('#modeswitch button'),function(b){
+    b.addEventListener("click",function(){
+      mode=b.getAttribute("data-m");
+      Array.prototype.forEach.call(document.querySelectorAll('#modeswitch button'),function(o){
+        o.setAttribute("aria-current", o.getAttribute("data-m")===mode ? "true":"false"); });
+      render();
+    });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('#schedrow button'),function(b){
+    b.addEventListener("click",function(){
+      sched=b.getAttribute("data-s");
+      Array.prototype.forEach.call(document.querySelectorAll('#schedrow button'),function(o){
+        o.setAttribute("aria-current", o.getAttribute("data-s")===sched ? "true":"false"); });
+      render();
+    });
+  });
+
   pills.innerHTML = VARS.map(function(v,i){
+    if(v.off) return '';
     return '<button data-v="'+i+'" aria-current="'+(i===0)+'">'+v.id+'<small>'+v.sub+'</small></button>';
   }).join("");
   Array.prototype.forEach.call(pills.children,function(b){
     b.addEventListener("click",function(){ prev=VARS[vi]; vi=+b.getAttribute("data-v"); render(true); });
   });
 
+
+  /* ---- the same maths in the board's notation, so nothing has to be translated by hand ---- */
+  var notation='ours';
+  function sc(sub,hat){
+    return 's_{'+(hat?'\\bar\\theta':'\\theta')+'}\\!\\left(x{+}\\sigma_i z,\\; \\sigma_i,\\; P_{\\text{'+sub+'}}\\right)';
+  }
+  var BOARD={
+    'u'                              : sc('null',0),
+    '\\bar u'                        : sc('null',1),
+    'a'                              : sc('cat',0),
+    'b'                              : sc('dog',0),
+    '\\bar a'                        : sc('cat',1),
+    '\\bar b'                        : sc('dog',1),
+    '\\bar\\varepsilon_J'            : sc('mono',1),
+    '\\bar\\varepsilon_{\\text{pl}}' : sc('plural',1),
+    'z'                              : '\\dfrac{z}{\\sigma_i}',
+    '\\varepsilon_\\theta(c_1)'      : sc('cat',0),
+    '\\bar\\varepsilon(c_1)'         : sc('cat',1)
+  };
+  function texOf(t){ return (notation==='board' && BOARD[t[0]]) ? BOARD[t[0]] : t[0]; }
+
   function bsvg(){
     return '<svg class="bsvg" viewBox="0 0 100 8" preserveAspectRatio="none" aria-hidden="true">'
          + '<path d="M0,0 C0,4 2,4 5,4 L45,4 C48,4 50,5.5 50,8 C50,5.5 52,4 55,4 L95,4 C98,4 100,4 100,0"'
          + ' fill="none" stroke="currentColor" stroke-width="1.1" vector-effect="non-scaling-stroke"/></svg>';
   }
+  /* one score term per line, its operator leading it, exactly as it is written by hand.
+     A stretched brace cannot span stacked rows, so a group's label becomes a tag on its last row. */
+  function toksStacked(arr){
+    /* break only at top-level + and -, so a guidance group w( x - y ) stays whole,
+       exactly as it is grouped by hand. A long group wraps inside its own row. */
+    var rows=[], cur='', depth=0, lab=null, tone='', i, t;
+    function push(){ if(cur!==''){ rows.push({h:cur}); cur=''; } }
+    for(i=0;i<arr.length;i++){
+      t=arr[i];
+      if(t[0]==='@brace'){ lab=t[1]; tone=t[2]||''; continue; }
+      if(t[0]==='@end'){
+        push();
+        if(rows.length){ rows[rows.length-1].lab=lab; rows[rows.length-1].tone=tone; }
+        lab=null; tone=''; continue;
+      }
+      if(t[1]==='op'){
+        var c=t[0];
+        if(c==='(' || c==='\\big[') depth++;
+        else if(c===')' || c==='\\big]') depth--;
+        if(depth===0 && (c==='+' || c==='-') && cur!=='') push();
+        cur+=one(t); continue;
+      }
+      cur+=one(t);
+    }
+    push();
+    return '<span class="brows">'+rows.map(function(r){
+      return '<span class="brow">'+(r.lab?'<span class="brlab '+(r.tone||'')+'">'+r.lab+'</span>':'')+r.h+'</span>';
+    }).join('')+'</span>';
+  }
+  var SCALARS={cfgA:1,cfgB:1,mu:1,nu:1,loss:1};
   function one(t){
     if(t[1]==='op') return op(t[0]);
-    var cls='t'+(t[2]?' frozen':'')+(t[3]?' '+t[3]:'');
-    return '<span class="'+cls+'" data-bind="'+t[1]+'" tabindex="0">'+tex(t[0])+'</span>';
+    var cls='t'+(t[2]?' frozen':(SCALARS[t[1]]?' scalar':''))+(t[3]?' '+t[3]:'');
+    return '<span class="'+cls+'" data-bind="'+t[1]+'" tabindex="0">'+tex(texOf(t))+'</span>';
   }
   /* braces are drawn, not typeset, so every symbol under one keeps its own link to the picture */
   function toks(arr){
+    if(notation==='board') return toksStacked(arr);
     var out='', i, t, inBrace=false, buf='', lab='', tone='';
     for(i=0;i<arr.length;i++){
       t=arr[i];
@@ -1455,8 +1690,10 @@ text{font-family:"IBM Plex Sans",sans-serif}
     return out;
   }
   function paintEq(v){
-    var L=lossFor(v);
+    var L=lossFor(v), board=(notation==='board');
     veqT.textContent = v.id + ' · ' + v.sub;
+    veqFull.className = 'eqline full' + (board?' board':'');
+    veqSimp.className = 'eqline' + (board?' board':'');
     veqFull.innerHTML = toks(L.full);
     if(L.simp){
       vwhy.hidden=false; vwhy.textContent=L.why;
@@ -1466,12 +1703,16 @@ text{font-family:"IBM Plex Sans",sans-serif}
       vwhy.hidden=true; simpLab.hidden=true; veqSimp.hidden=true;
     }
     vnote.textContent = L.note;
+    runslot.innerHTML = runBlock(v);
   }
 
   function render(varChanged){
-    var v=VARS[vi];
-    stage.innerHTML = '<svg viewBox="0 0 1060 470" preserveAspectRatio="xMidYMid meet" role="img" aria-label="the training step">'
-                    + drawMain(v,s) + '</svg>';
+    var v=VARS[vi], inf=(mode==='infer');
+    stage.innerHTML = '<svg viewBox="0 0 1060 470" preserveAspectRatio="xMidYMid meet" role="img" aria-label="the step">'
+                    + (inf?drawInfer(v,s):drawMain(v,s)) + '</svg>';
+    document.getElementById("mainRail").hidden = inf;
+    irail.hidden = !inf;
+    btns.forEach(function(b,i){ b.textContent = inf ? ISTEPS[i] : TSTEPS[i]; });
     if(varChanged && prev){
       /* pulse only what this variation actually moved */
       var keys=[];
@@ -1484,8 +1725,8 @@ text{font-family:"IBM Plex Sans",sans-serif}
         all('#figstage [data-bind="'+k+'"]').forEach(function(n){ n.classList.add("changed"); });
       });
     }
-    cap.innerHTML=CAPS[s];
-    paintEq(v);
+    if(inf){ paintInfer(v); }
+    else { cap.innerHTML=CAPS[s]; paintEq(v); }
     btns.forEach(function(b){ b.setAttribute("aria-current", parseInt(b.getAttribute("data-s"),10)===s ? "true":"false"); });
     Array.prototype.forEach.call(pills.children,function(b){
       b.setAttribute("aria-current", +b.getAttribute("data-v")===vi ? "true":"false");
@@ -1500,8 +1741,11 @@ text{font-family:"IBM Plex Sans",sans-serif}
     if(modal && !modal.hidden) return;
     if(e.key==="ArrowRight"){ s=Math.min(MAX,s+1); render(); }
     if(e.key==="ArrowLeft"){ s=Math.max(0,s-1); render(); }
-    if(e.key==="ArrowDown"){ prev=VARS[vi]; vi=Math.min(VARS.length-1,vi+1); render(true); }
-    if(e.key==="ArrowUp"){ prev=VARS[vi]; vi=Math.max(0,vi-1); render(true); }
+    if(e.key==="ArrowDown"||e.key==="ArrowUp"){
+      var d=(e.key==="ArrowDown")?1:-1, j=vi+d;
+      while(j>=0 && j<VARS.length && VARS[j].off) j+=d;
+      if(j>=0 && j<VARS.length){ prev=VARS[vi]; vi=j; render(true); }
+    }
   });
 
   /* the two doors, delegated so they survive every redraw */
@@ -1512,6 +1756,275 @@ text{font-family:"IBM Plex Sans",sans-serif}
     if(k==="loss") openModal("plane");
     if(k==="disk") openModal("disk");
   });
+
+
+  /* ================= inference: the same cast, a different job ================= */
+  var mode='train', sched='full';
+  /* whatever a variation froze in training must stay frozen in sampling */
+  function inferOn(v,which){
+    if(which==='u') return v.u==='unet';
+    return v.ab==='unet';
+  }
+  function drawInfer(v,st){
+    var o=DEFS, BY=[176,240,304], RC=[195,259,323], i,
+        pr=['"a cat"','"a dog"','""  (empty)'], nmv=['a','b','u'],
+        on=[inferOn(v,'a'),inferOn(v,'b'),inferOn(v,'u')],
+        late=(sched==='cut');
+
+    o+='<rect x="16" y="12" width="1028" height="416" rx="9" fill="var(--latent-fill)" stroke="var(--latent)" stroke-width="1.6"/>';
+    o+=T(34,35,'LATENT SPACE · 4 × 128 × 128',13,'var(--latent)','start',600);
+    o+=T(36,62,'NO TARGET HERE. NOTHING IS BEING TRAINED.',11.5,FZ,'start',600);
+
+    /* the state coming round the loop */
+    o+='<g class="hit" data-bind="xt">'+R(36,96,150,48,UN,'var(--unet-fill)')+
+       T(111,120,'x',17,INK,'middle')+T(121,126,'t',11,INK,'middle')+
+       T(111,138,'the picture so far',10.5,'var(--ink-soft)','middle')+'</g>';
+    o+=T(111,166,st>=1?'step t of 50':'',11,'var(--ink-faint)','middle');
+
+    /* prompts */
+    if(st>=1) for(i=0;i<3;i++){
+      o+=R(36,BY[i],140,38,AT,'var(--panel)',i===2?' stroke-dasharray="5 3"':'')+
+         T(106,BY[i]+24,pr[i],14,i===2?'var(--ink-faint)':INK,'middle');
+    }
+    if(st>=1) o+=T(106,BY[2]+58,'the joint prompt is not used',11,FZ,'middle',600);
+
+    /* the model, run once per branch, with the adapter on or off */
+    if(st>=2){
+      var anyOn=on[0]||on[1]||on[2];
+      o+='<path d="M296,172 L376,206 L376,314 L296,348 Z" fill="var(--unet-fill)" stroke="'+UN+'" stroke-width="1.6"/>';
+      o+='<path d="M470,172 L390,206 L390,314 L470,348 Z" fill="var(--unet-fill)" stroke="'+UN+'" stroke-width="1.6"/>';
+      o+=T(383,164,'one U-Net',12.5,UN,'middle',600);
+      for(i=0;i<3;i++){
+        var live = on[i] && !(late && st>=4);
+        o+=AR(180,RC[i],292,RC[i],live?AT:FZ);
+        o+=R(496,RC[i]-14,104,28,live?AT:FZ,live?ATF:FZF);
+        o+=T(548,RC[i]+5,live?'adapter ON':'adapter off',10.5,live?AT:FZ,'middle',600);
+        o+=AR(474,RC[i],492,RC[i],live?AT:FZ);
+      }
+      o+=T(548,372,late&&st>=4?'past the cut, every branch is plain':'set by what this variation froze in training',
+           11,'var(--ink-faint)','middle');
+    }
+
+    /* the three predictions and the composition */
+    if(st>=3) for(i=0;i<3;i++){
+      var lv = on[i] && !(late && st>=4), c=lv?AT:FZ, f=lv?ATF:FZF;
+      o+=AR(604,RC[i],634,RC[i],c);
+      o+='<g class="hit" data-bind="'+nmv[i]+(lv?'':'bar')+'">'+R(638,RC[i]-18,54,36,c,f)+
+         T(665,RC[i]+6,(lv?'':'&#772;')+nmv[i],17,INK,'middle')+'</g>';
+    }
+    if(st>=3){
+      o+='<g class="hit" data-bind="cfgB">'+R(716,216,150,88,AT,ATF)+
+         T(791,240,'guidance, w = 7.5',12,INK,'middle',600)+
+         T(791,258,'u + w(a−u)',11.5,'var(--ink-soft)','middle')+
+         T(791,274,'+ w(b−u)',11.5,'var(--ink-soft)','middle')+
+         T(791,294,'the step direction',11,AT,'middle',600)+'</g>';
+      for(i=0;i<3;i++) o+=AR(696,RC[i],712,[236,258,282][i],AT);
+    }
+
+    /* the DDIM step and the loop back */
+    if(st>=4){
+      o+=AR(870,259,906,259,AT);
+      o+='<g class="hit" data-bind="ddim">'+R(910,232,112,54,HOT,'var(--panel)')+
+         T(966,254,'one DDIM step',11.5,INK,'middle',600)+
+         T(966,272,'x  →  x',11.5,'var(--ink-soft)','middle')+'</g>';
+      o+='<path d="M966,290 C966,392 111,392 111,152" fill="none" stroke="'+HOT+
+         '" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#ar)"/>';
+      o+=T(540,404,'and round again, fifty times',12,HOT,'middle',600);
+      /* the real timestep ladder: 981 down to 1, stride 20 */
+      var RX=210, RW=620, k;
+      o+='<line x1="'+RX+'" y1="60" x2="'+(RX+RW)+'" y2="60" stroke="var(--rule)" stroke-width="1.5"/>';
+      for(k=0;k<50;k+=1){
+        var x=RX+(k/49)*RW, tall=(k%10===0);
+        o+='<line x1="'+x.toFixed(1)+'" y1="'+(tall?52:56)+'" x2="'+x.toFixed(1)+'" y2="64" stroke="'+
+           (late&&k>=10?FZ:AT)+'" stroke-width="'+(tall?1.4:0.8)+'" opacity="'+(late&&k>=10?0.5:1)+'"/>';
+      }
+      o+=T(RX,44,'t = 981',10.5,'var(--ink-faint)','start');
+      o+=T(RX+RW,44,'t = 1',10.5,'var(--ink-faint)','end');
+      o+=T(RX+RW/2,44,'50 steps, stride 20',10.5,'var(--ink-faint)','middle');
+      if(late){
+        var cx2=RX+(10/49)*RW;
+        o+='<line x1="'+cx2.toFixed(1)+'" y1="40" x2="'+cx2.toFixed(1)+'" y2="76" stroke="'+HOT+'" stroke-width="2"/>';
+        o+=T(cx2+8,80,'the cut, step 10  ·  t = 781',10.5,HOT,'start',600);
+      }
+    }
+
+    /* what comes out */
+    if(st>=5){
+      o+=R(36,96,150,48,'none','none');
+      o+=T(966,318,'after fifty steps,',11.5,'var(--ink-soft)','middle');
+      o+=T(966,334,'a picture',11.5,'var(--ink-soft)','middle');
+    }
+    return o;
+  }
+
+  /* the shorthand for sampling, per variation and per schedule */
+  function inferEq(v){
+    var A1=inferOn(v,'a'), U1=inferOn(v,'u');
+    function br(sym,live){ return [sym,live?'plain':'bar']; }
+    var rows=[
+      ['x_t', 'the state at this step'],
+      [(A1?'a':'\\bar a')+' , '+(A1?'b':'\\bar b')+' , '+(U1?'u':'\\bar u'),
+       'three predictions, one forward each'],
+      ['T^{(w)} = ' + (U1?'u':'\\bar u') + ' + w(' + (A1?'a':'\\bar a') + ' - ' + (U1?'u':'\\bar u') +
+        ') + w(' + (A1?'b':'\\bar b') + ' - ' + (U1?'u':'\\bar u') + ')', 'compose, at w = 7.5'],
+      ['x_{t-1} = \\text{DDIM}(x_t,\\; T^{(w)})', 'one step, then repeat']
+    ];
+    return rows;
+  }
+
+
+
+  var SAMPLER_FACTS=[
+    ['sampler',   'DDIM, deterministic. No noise is added back at any step, so the same seed always gives the same picture.'],
+    ['steps',     '50, at t = 981, 961, 941 … down to 1. Stride 20 out of 1000 training timesteps.'],
+    ['predicts',  'epsilon. The network predicts the noise in the picture, never the picture.'],
+    ['guidance',  '7.5, applied to each expert against the empty branch, then composed.'],
+    ['size',      '1024 × 1024, which is a 128 × 128 latent with 4 channels.'],
+    ['precision', 'fp16 through the network, cast to fp32 before the branches are combined.']
+  ];
+  function samplerBlock(){
+    return '<div class="facts">'+SAMPLER_FACTS.map(function(r){
+      return '<div class="fk">'+r[0]+'</div><div class="fv">'+r[1]+'</div>';
+    }).join('')+'</div>'+
+    '<div class="steprule">'+
+      '<div class="sr">'+tex('x_0 = \\dfrac{x_t - \\sqrt{1-\\bar\\alpha_t}\\, \\varepsilon}{\\sqrt{\\bar\\alpha_t}}')+
+      '<span class="c">what the picture would be if this were the last step</span></div>'+
+      '<div class="sr">'+tex('x_{t-1} = \\sqrt{\\bar\\alpha_{t-1}}\\, x_0 + \\sqrt{1-\\bar\\alpha_{t-1}}\\, \\varepsilon')+
+      '<span class="c">put most of the noise back, but a little less of it</span></div>'+
+    '</div>'+
+    '<p class="note">This repository writes that step itself rather than calling the scheduler’s, ' +
+    'which is why there is no <b>eta</b> to set anywhere: the deterministic form is the only one in the code. ' +
+    'A stochastic variant was tried separately and is not what these renders use.</p>';
+  }
+
+
+  /* ---- the runs that are actually training, per variation ---- */
+  var WB='https://wandb.ai/prime_lab/poe-repair-animals-compose/runs/';
+  var RUNS={
+    V1 :{froze:'the empty branch',      tgt:'the joint-prompt target',            where:'mscluster109 dev 0',      id:'kdzx03ji', ckpt:'6,250 steps, rank 16', sheet:'cmp_v1.jpg',  at:'step 6,250'},
+    V3 :{froze:'both concept branches', tgt:'the joint-prompt target',            where:'mscluster109 dev 1',      id:'qbvj0wsm', ckpt:'6,250 steps, rank 16', sheet:'cmp_v3.jpg',  at:'step 6,250'},
+    V6 :{froze:'nothing',               tgt:'the noise added to a picked render', where:'mscluster112, Blackwell', id:'o8qv5mi5', ckpt:'11,250 steps, rank 16', sheet:'cmp_v6.jpg', at:'step 11,250'},
+    V6a:{froze:'the empty branch',      tgt:'the noise added to a picked render', where:'mscluster106 dev 1',      id:'hbhpm65r', ckpt:'1,250 steps, rank 16', sheet:'cmp_v6a.jpg', at:'step 1,250'}
+  };
+  function runBlock(v){
+    var r=RUNS[v.id];
+    if(!r) return '<div class="runbox none">No training run for '+v.id+'.</div>';
+    return '<div class="runbox">'+
+      '<div class="rk">frozen</div><div class="rv">'+r.froze+'</div>'+
+      '<div class="rk">target</div><div class="rv">'+r.tgt+'</div>'+
+      '<div class="rk">running on</div><div class="rv">'+r.where+'</div>'+
+      '<div class="rk">latest</div><div class="rv">'+r.ckpt+', still training</div>'+
+      '<div class="rk">W&amp;B</div><div class="rv"><a href="'+WB+r.id+'" target="_blank" rel="noopener">'+r.id+'</a></div>'+
+      '</div>';
+  }
+
+  /* ---- inference: captions, rail, and the comparison strips ---- */
+  var ICAPS=[
+    'Sampling. There is <b>no target</b> and nothing is being trained. Only a picture, going round a loop.',
+    'The same three prompts as training. <b>The joint prompt is not used</b>, because the whole point is to do without it.',
+    'One forward pass per branch, and here is the part that matters: <b>whichever branches were frozen in training must be frozen here too</b>.',
+    'Three predictions, combined with the same arithmetic and the same guidance weight.',
+    'One DDIM step, and round again. <b>Fifty times.</b>',
+    'What comes out, against the joint prompt and against plain composition.'
+  ];
+  var ISTEPS=['the picture so far','the prompts','adapter on or off','compose','one step, repeat','what comes out'];
+  var irail=document.getElementById("inferRail"), icap=document.getElementById("icap"),
+      infeqs=document.getElementById("infeqs"), infgrid=document.getElementById("infgrid");
+
+  var TRAINEDON={V0:'the joint prompt’s own prediction, at guidance 7.5',
+    V0a:'the same, plus a fine on the empty branch',
+    V1:'the same target, with the empty branch frozen',
+    V4:'the same target, with no guidance',
+    V5:'the noise added to a real photograph  ·  blocked, no corpus',
+    V6:'the noise added to the model’s own filtered renders',
+    V6a:'the same, with the empty branch frozen',
+    V6b:'the same, with the concept branches frozen',
+    V2:'the joint prompt, plus a fine toward a plurality prompt',
+    V3:'the joint prompt, with the concept branches frozen',
+    V7:'any of the above, plus a hold on the cat branch'};
+  function paintInfer(v){
+    icap.innerHTML=ICAPS[s];
+    document.getElementById("trainedon").innerHTML =
+      '<span class="tk">trained against</span><span class="tv">'+(TRAINEDON[v.id]||'—')+'</span>'+
+      '<span class="tk">at sampling</span><span class="tv">nothing above is used. Only the three prompts and the loop below.</span>';
+    infeqs.innerHTML = inferEq(v).slice(0, Math.max(1, Math.min(4, s))).map(function(r){
+      return '<div class="infrow"><div class="m">'+tex(r[0])+'</div><div class="c">'+r[1]+'</div></div>';
+    }).join('');
+    if(s>=5){
+      var r=RUNS[v.id];
+      if(r && r.sheet){
+        infgrid.innerHTML =
+          '<div class="rowlab">both schedules, from this variation&rsquo;s own run</div>'+
+          '<img class="cmpsheet" src="'+r.sheet+'" alt="mono, plain composition and the adapter, on both schedules">'+
+          '<p class="note">Rendered by the training loop itself at <b>'+r.at+'</b>, cat &times; dog, seed 9, ' +
+          'so the three columns share a seed and a sampler. Top row is the adapter on the whole path, ' +
+          'bottom row is the adapter on to T/2 and off after. It is <b>still training</b>: read this as ' +
+          'where it has got to, not as what it can do.</p>';
+      } else if(v.id==='V0'){
+        function tile(src,cap){ return '<figure><img src="'+src+'" alt="'+cap+'"><figcaption>'+cap+'</figcaption></figure>'; }
+        infgrid.innerHTML =
+          '<div class="rowlab">adapter on the whole path</div><div class="grid23">'+
+            tile('inf_mono.jpg','the joint prompt')+tile('inf_poe.jpg','plain composition')+tile('inf_full.jpg','with the adapter')+'</div>'+
+          '<div class="rowlab">adapter off after step 10</div><div class="grid23">'+
+            tile('inf_mono.jpg','the joint prompt')+tile('inf_poe.jpg','plain composition')+tile('inf_cut.jpg','adapter, then plain')+'</div>'+
+          '<p class="note">Rank-32 pooled adapter at 30,050 steps, &lambda; 1.2, cat &times; dog, seed 11. ' +
+          'The cut is at step 10 of 50, where this project measured the correction to live.</p>';
+      } else {
+        infgrid.innerHTML = '<p class="note"><b>'+v.id+' has no training run.</b> ' +
+          'V0 has the pooled adapter; V1, V3, V6 and V6a are training now and show their own renders.</p>';
+      }
+    } else infgrid.innerHTML='';
+
+    document.getElementById("samplerfacts").innerHTML = s>=4 ? samplerBlock() : '';
+    irunslot.innerHTML = runBlock(v);
+  }
+
+  /* ================= the tour: one path through what is already here ================= */
+  var STOPS=[
+    {t:'how one step works',
+     line:'Two legs. The one on top is a <b>lookup</b>: that prediction was made once and written to disk. The one below <b>runs now</b>, three prompts through one model. Step through it with the buttons above.',
+     go:function(){ closeDrill(); vi=0; s=0; render(); }},
+    {t:'so what is that third branch',
+     line:'One of those three prompts is <b>empty</b>. We had never looked at what it draws. It is not noise: it is a finished painting with <b>no subject in it</b>.',
+     go:function(){ vi=0; s=5; render(); openModal('empty'); ci=1; paint(); }},
+    {t:'and it is the scaffold',
+     line:'Add one word and the cat <b>resolves inside that same painting</b>. Same circle, same colours, same corners. The empty branch is what every render is built on top of.',
+     go:function(){ openModal('empty'); ci=2; paint(); }},
+    {t:'now the geometry',
+     line:'Those three predictions define a flat plane, and <b>everything the composition can produce lies in it</b>. Drag the step slider: the joint prediction stays near the middle while the composition flies away from it.',
+     go:function(){ openModal('plane'); ci=0; plSeed='9'; plIdx=10; paint(); }},
+    {t:'by how much',
+     line:'Solve for the weights the two experts would actually need. The answer is <b>2 to 4</b>, and they are not equal. The code applies <b>7.5</b> to both, always.',
+     go:function(){ openModal('plane'); ci=2; paint(); }},
+    {t:'and the adapter agrees',
+     line:'The trained adapter, which knew none of that, <b>pulls the composition in by about the same factor</b> and halves the distance to the target. Two separate measurements landing on the same thing.',
+     go:function(){ openModal('plane'); ci=3; plIdx=7; paint(); }},
+    {t:'here is the problem',
+     line:'The training loss has a <b>shortcut</b>. Drag the slider: the composition’s own error never moves, while the loss it is trained on falls to zero. It can look finished while nothing is fixed.',
+     go:function(){ openModal('empty'); ci=6; gaugeV=0; paint(); }},
+    {t:'and here is the fix',
+     line:'Freeze the empty branch. The shortcut disappears, the guidance dial <b>cancels out of the loss entirely</b>, and training gets cheaper by one forward pass. It is one substitution, and nobody has run it.',
+     go:function(){ closeDrill(); vi=2; s=4; render(); }}
+  ];
+  var wi=-1;
+  var wbar=document.getElementById("walkbar"), wline=document.getElementById("wline"),
+      wnum=document.getElementById("wnum");
+  function walkTo(i){
+    wi=Math.max(0,Math.min(STOPS.length-1,i));
+    var st=STOPS[wi];
+    st.go();
+    wbar.hidden=false;
+    wnum.textContent=(wi+1)+' / '+STOPS.length+'  ·  '+st.t;
+    wline.innerHTML=st.line;
+    document.getElementById("wprev").disabled = wi===0;
+    document.getElementById("wnext").textContent = wi===STOPS.length-1 ? 'done' : 'next';
+  }
+  function walkExit(){ wbar.hidden=true; wi=-1; }
+  on2("walkGo","click",function(){ walkTo(0); });
+  on2("wnext","click",function(){ if(wi===STOPS.length-1) walkExit(); else walkTo(wi+1); });
+  on2("wprev","click",function(){ walkTo(wi-1); });
+  on2("wexit","click",walkExit);
+
   render();
 })();
 </script>

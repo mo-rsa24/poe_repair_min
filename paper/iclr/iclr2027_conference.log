@@ -159,13 +159,13 @@ Package graphics Info: Driver file: xetex.def on input line 107.
 )
 \Gin@req@height=\dimen153
 \Gin@req@width=\dimen154
-) (wrapfig.sty
-\wrapoverhang=\dimen155
-\WF@size=\dimen156
-\c@WF@wrappedlines=\count273
-\WF@box=\box54
-\WF@everypar=\toks22
-Package: wrapfig 2003/01/31  v 3.6
+) (float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count273
+\float@exts=\toks22
+\float@box=\box54
+\@float@everytoks=\toks23
+\@floatcapt=\box55
 )
 (hyperref.sty
 Package: hyperref 2022-02-21 v7.00n Hypertext links for LaTeX
@@ -199,7 +199,7 @@ Package: auxhook 2019-12-17 v1.6 Hooks for auxiliary files (HO)
 ) (kvoptions.sty
 Package: kvoptions 2020-10-07 v3.14 Key value format for package options (HO)
 )
-\@linkdim=\dimen157
+\@linkdim=\dimen155
 \Hy@linkcounter=\count274
 \Hy@pagecounter=\count275
  (pd1enc.def
@@ -227,7 +227,7 @@ Package hyperref Info: Bookmarks ON on input line 4390.
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
 LaTeX Info: Redefining \url on input line 4749.
-\XeTeXLinkMargin=\dimen158
+\XeTeXLinkMargin=\dimen156
  (bitset.sty
 Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
  (bigintcalc.sty
@@ -235,8 +235,8 @@ Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
 )
 ))
 \Fld@menulength=\count278
-\Field@Width=\dimen159
-\Fld@charsize=\dimen160
+\Field@Width=\dimen157
+\Fld@charsize=\dimen158
 Package hyperref Info: Hyper figures OFF on input line 6027.
 Package hyperref Info: Link nesting OFF on input line 6032.
 Package hyperref Info: Hyper index ON on input line 6035.
@@ -262,7 +262,7 @@ File: hxetex.def 2022-02-21 v7.00n Hyperref driver for XeTeX
 Package: stringenc 2019/11/29 v1.12 Convert strings between diff. encodings (HO
 )
 )
-\pdfm@box=\box55
+\pdfm@box=\box56
 \c@Hy@AnnotLevel=\count282
 \HyField@AnnotCount=\count283
 \Fld@listcount=\count284
@@ -282,13 +282,13 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 )
 \Hy@SectionHShift=\skip63
 )
-LaTeX Font Info:    Trying to load font information for TU+ptm on input line 76
+LaTeX Font Info:    Trying to load font information for TU+ptm on input line 87
 .
-LaTeX Font Info:    No file TUptm.fd. on input line 76.
+LaTeX Font Info:    No file TUptm.fd. on input line 87.
 
 
 LaTeX Font Warning: Font shape `TU/ptm/m/n' undefined
-(Font)              using `TU/lmr/m/n' instead on input line 76.
+(Font)              using `TU/lmr/m/n' instead on input line 87.
 
 (l3backend-xetex.def
 File: l3backend-xetex.def 2022-02-07 L3 backend support: XeTeX
@@ -296,39 +296,39 @@ File: l3backend-xetex.def 2022-02-07 L3 backend support: XeTeX
 \l__color_backend_stack_int=\count287
 \g__color_backend_stack_int=\count288
 \g__graphics_track_int=\count289
-\l__pdf_internal_box=\box56
+\l__pdf_internal_box=\box57
 \g__pdf_backend_object_int=\count290
 \g__pdf_backend_annotation_int=\count291
 \g__pdf_backend_link_int=\count292
 ) (iclr2027_conference.aux)
 \openout1 = `iclr2027_conference.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 76.
-LaTeX Font Info:    ... okay on input line 76.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 76.
-LaTeX Font Info:    ... okay on input line 76.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 76.
-LaTeX Font Info:    ... okay on input line 76.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 76.
-LaTeX Font Info:    ... okay on input line 76.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 76.
-LaTeX Font Info:    Trying to load font information for TS1+cmr on input line 7
-6.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 87.
+LaTeX Font Info:    ... okay on input line 87.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 87.
+LaTeX Font Info:    ... okay on input line 87.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 87.
+LaTeX Font Info:    ... okay on input line 87.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 87.
+LaTeX Font Info:    ... okay on input line 87.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 87.
+LaTeX Font Info:    Trying to load font information for TS1+cmr on input line 8
+7.
  (ts1cmr.fd
 File: ts1cmr.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 76.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 76.
-LaTeX Font Info:    ... okay on input line 76.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 76.
-LaTeX Font Info:    ... okay on input line 76.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 76.
-LaTeX Font Info:    ... okay on input line 76.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 76.
-LaTeX Font Info:    ... okay on input line 76.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 76.
-LaTeX Font Info:    ... okay on input line 76.
-Package hyperref Info: Link coloring OFF on input line 76.
+LaTeX Font Info:    ... okay on input line 87.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 87.
+LaTeX Font Info:    ... okay on input line 87.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 87.
+LaTeX Font Info:    ... okay on input line 87.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 87.
+LaTeX Font Info:    ... okay on input line 87.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 87.
+LaTeX Font Info:    ... okay on input line 87.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 87.
+LaTeX Font Info:    ... okay on input line 87.
+Package hyperref Info: Link coloring OFF on input line 87.
  (nameref.sty
 Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
 
@@ -339,9 +339,9 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
 \c@section@level=\count293
 )
-LaTeX Info: Redefining \ref on input line 76.
-LaTeX Info: Redefining \pageref on input line 76.
-LaTeX Info: Redefining \nameref on input line 76.
+LaTeX Info: Redefining \ref on input line 87.
+LaTeX Info: Redefining \pageref on input line 87.
+LaTeX Info: Redefining \nameref on input line 87.
  (iclr2027_conference.out)
 (iclr2027_conference.out)
 \@outlinefile=\write3
@@ -350,80 +350,85 @@ LaTeX Info: Redefining \nameref on input line 76.
 
 
 LaTeX Font Warning: Font shape `TU/ptm/m/sc' undefined
-(Font)              using `TU/ptm/m/n' instead on input line 79.
+(Font)              using `TU/ptm/m/n' instead on input line 90.
 
-LaTeX Font Info:    Trying to load font information for U+msa on input line 79.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 90.
 
 (umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 79.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 90.
 
  (umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 
 LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
-(Font)              using `TU/ptm/m/n' instead on input line 79.
+(Font)              using `TU/ptm/m/n' instead on input line 90.
 
 
 LaTeX Font Warning: Font shape `TU/ptm/m/it' undefined
-(Font)              using `TU/ptm/m/n' instead on input line 90.
+(Font)              using `TU/ptm/m/n' instead on input line 120.
 
 [1
 
 ]
-File: figures//what-the-product-misses-explainer.png Graphic file (type bmp)
-<figures//what-the-product-misses-explainer.png>
-
+File: figures//where-the-product-lands-on-the-manifold-seed12-column.png Graphi
+c file (type bmp)
+<figures//where-the-product-lands-on-the-manifold-seed12-column.png>
+ [2]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [2]
-[3]
+ [3]
+[4]
 File: figures//correction-size-over-the-denoising-run.pdf Graphic file (type pd
 f)
 <use figures//correction-size-over-the-denoising-run.pdf>
- [4] [5]
-File: figures//when-the-correction-arrives/poe/samples-as-the-window-extends-fr
-om-the-start.png Graphic file (type bmp)
-<figures//when-the-correction-arrives/poe/samples-as-the-window-extends-from-th
-e-start.png>
-File: figures//when-the-correction-arrives/poe/samples-as-the-window-starts-lat
-er.png Graphic file (type bmp)
-<figures//when-the-correction-arrives/poe/samples-as-the-window-starts-later.pn
-g>
+ [5]
+File: figures//how-much-is-added/strength-grid.pdf Graphic file (type pdf)
+<use figures//how-much-is-added/strength-grid.pdf>
  [6]
-File: figures//when-the-correction-arrives/poe/samples-over-the-window-map.pdf 
-Graphic file (type pdf)
-<use figures//when-the-correction-arrives/poe/samples-over-the-window-map.pdf>
+File: figures//when-the-correction-arrives/when-the-correction-arrives.pdf Grap
+hic file (type pdf)
+<use figures//when-the-correction-arrives/when-the-correction-arrives.pdf>
  [7]
+File: figures//where-the-correction-lands.pdf Graphic file (type pdf)
+<use figures//where-the-correction-lands.pdf>
+ [8]
 File: figures//joint-prompt-poe-and-adapter-samples-for-four-held-out-pairs.pdf
  Graphic file (type pdf)
 <use figures//joint-prompt-poe-and-adapter-samples-for-four-held-out-pairs.pdf>
 
- (iclr2027_conference.bbl
+
+Underfull \vbox (badness 1412) has occurred while \output is active []
+
+ [9]
+Underfull \vbox (badness 1852) has occurred while \output is active []
+
+ [10]
+(iclr2027_conference.bbl
 Underfull \hbox (badness 1052) in paragraph at lines 26--30
 []\TU/ptm/m/it/10 Colin Conwell, Rupert Tawiah-Quashie, and Tomer Ullman.  Rela
 tions, negations,
  []
 
-[8]
+
 Underfull \hbox (badness 1571) in paragraph at lines 67--73
 \TU/ptm/m/it/10 fusion models.  In International Conference on Learning Represe
 ntations, 2026.
  []
 
-
-Underfull \hbox (badness 1852) in paragraph at lines 76--80
+[11]
+Underfull \hbox (badness 1852) in paragraph at lines 97--101
 \TU/ptm/m/it/10 to factor-wise expert composition in discrete diffusion models.
   arXiv preprint
  []
 
-[9]) [10] (iclr2027_conference.aux)
+) [12] (iclr2027_conference.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
 Package rerunfilecheck Info: File `iclr2027_conference.out' has not changed.
 (rerunfilecheck)             Checksum: 854BBD0110A426EB967B973576BA4FCC;1221.
  )
-Output written on iclr2027_conference.xdv (10 pages, 300920 bytes).
+Output written on iclr2027_conference.xdv (12 pages, 416232 bytes).

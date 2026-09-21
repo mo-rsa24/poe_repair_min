@@ -1,0 +1,124 @@
+a_bear__x__a_boar:
+  joint_prompt: a bear and a boar
+  prompt_a: a bear
+  prompt_b: a boar
+a_bear__x__a_heron:
+  joint_prompt: a bear and a heron
+  prompt_a: a bear
+  prompt_b: a heron
+a_beaver__x__a_raccoon:
+  joint_prompt: a beaver and a raccoon
+  prompt_a: a beaver
+  prompt_b: a raccoon
+a_beaver__x__a_woodpecker:
+  joint_prompt: a beaver and a woodpecker
+  prompt_a: a beaver
+  prompt_b: a woodpecker
+a_birdcage__x__a_hay_bale:
+  joint_prompt: a birdcage and a hay bale
+  prompt_a: a birdcage
+  prompt_b: a hay bale
+a_buffalo__x__a_hippo:
+  joint_prompt: a buffalo and a hippo
+  prompt_a: a buffalo
+  prompt_b: a hippo
+a_cactus__x__a_cooler_box:
+  joint_prompt: a cactus and a cooler box
+  prompt_a: a cactus
+  prompt_b: a cooler box
+a_cat__x__a_dog:
+  joint_prompt: a cat and a dog
+  prompt_a: a cat
+  prompt_b: a dog
+a_chicken__x__a_rabbit:
+  joint_prompt: a chicken and a rabbit
+  prompt_a: a chicken
+  prompt_b: a rabbit
+a_coat_rack__x__a_potted_plant:
+  joint_prompt: a coat rack and a potted plant
+  prompt_a: a coat rack
+  prompt_b: a potted plant
+a_deer__x__a_heron:
+  joint_prompt: a deer and a heron
+  prompt_a: a deer
+  prompt_b: a heron
+a_deer__x__a_wolf:
+  joint_prompt: a deer and a wolf
+  prompt_a: a deer
+  prompt_b: a wolf
+a_donkey__x__a_duck:
+  joint_prompt: a donkey and a duck
+  prompt_a: a donkey
+  prompt_b: a duck
+a_donkey__x__a_rooster:
+  joint_prompt: a donkey and a rooster
+  prompt_a: a donkey
+  prompt_b: a rooster
+a_giraffe__x__a_hyena:
+  joint_prompt: a giraffe and a hyena
+  prompt_a: a giraffe
+  prompt_b: a hyena
+a_giraffe__x__a_zebra:
+  joint_prompt: a giraffe and a zebra
+  prompt_a: a giraffe
+  prompt_b: a zebra
+a_giraffe__x__an_ostrich:
+  joint_prompt: a giraffe and an ostrich
+  prompt_a: a giraffe
+  prompt_b: an ostrich
+a_gorilla__x__a_chimpanzee:
+  joint_prompt: a gorilla and a chimpanzee
+  prompt_a: a gorilla
+  prompt_b: a chimpanzee
+a_hay_bale__x__an_ukulele:
+  joint_prompt: a hay bale and an ukulele
+  prompt_a: a hay bale
+  prompt_b: an ukulele
+a_horse__x__a_pig:
+  joint_prompt: a horse and a pig
+  prompt_a: a horse
+  prompt_b: a pig
+a_horse__x__a_sheep:
+  joint_prompt: a horse and a sheep
+  prompt_a: a horse
+  prompt_b: a sheep
+a_langur__x__a_peacock:
+  joint_prompt: a langur and a peacock
+  prompt_a: a langur
+  prompt_b: a peacock
+a_lion__x__a_meerkat:
+  joint_prompt: a lion and a meerkat
+  prompt_a: a lion
+  prompt_b: a meerkat
+a_lion__x__an_oryx:
+  joint_prompt: a lion and an oryx
+  prompt_a: a lion
+  prompt_b: an oryx
+a_peacock__x__a_pig:
+  joint_prompt: a peacock and a pig
+  prompt_a: a peacock
+  prompt_b: a pig
+a_rocking_chair__x__a_cactus:
+  joint_prompt: a rocking chair and a cactus
+  prompt_a: a rocking chair
+  prompt_b: a cactus
+a_typewriter__x__a_cactus:
+  joint_prompt: a typewriter and a cactus
+  prompt_a: a typewriter
+  prompt_b: a cactus
+an_accordion__x__a_scarecrow:
+  joint_prompt: an accordion and a scarecrow
+  prompt_a: an accordion
+  prompt_b: a scarecrow
+an_elephant__x__a_penguin:
+  joint_prompt: an elephant and a penguin
+  prompt_a: an elephant
+  prompt_b: a penguin
+an_emu__x__a_koala:
+  joint_prompt: an emu and a koala
+  prompt_a: an emu
+  prompt_b: a koala
+an_impala__x__a_jackal:
+  joint_prompt: an impala and a jackal
+  prompt_a: an impala
+  prompt_b: a jackal

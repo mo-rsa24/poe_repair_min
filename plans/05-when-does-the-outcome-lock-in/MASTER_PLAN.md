@@ -10,11 +10,11 @@ readout of cached states, adopted only if a calibration pass against the base mo
 thresholds set in code.
 
 ## Why this plan exists
-The correction's effective window is steps 0 to 10 (EXP-04) and trajectories visibly [diverge](../../../../../goal-setting/learning/diffusion-speciation-dynamics/plans/03-manifold-and-the-later-transition/MASTER_PLAN.md) at
+The correction's effective window is steps 0 to 10 (EXP-04) and trajectories visibly [diverge](../../../../../goal-setting/learning/deep-learning/diffusion-models/diffusion-speciation-dynamics/plans/03-manifold-and-the-later-transition/MASTER_PLAN.md) at
 steps 18 to 36, so the correction stops mattering 8 to 26 steps before anything shows. Nothing
 built so far reads commitment per step: Tweedie estimates blur at high noise, and
 divergence needs a pair of paths and reports the separation late. If commitment (the field's
-[speciation step](../../../../../goal-setting/learning/speciation-before-divergence/MASTER_PLAN.md)) lands near step 10, the gap is explained because the run [decides early, then only descends](../../../../../goal-setting/learning/speciation-before-divergence/plans/06-decide-then-descend-overlay.md); if it lands
+[speciation step](../../../../../goal-setting/learning/deep-learning/diffusion-models/speciation-before-divergence/MASTER_PLAN.md)) lands near step 10, the gap is explained because the run [decides early, then only descends](../../../../../goal-setting/learning/deep-learning/diffusion-models/speciation-before-divergence/plans/06-decide-then-descend-overlay.md); if it lands
 with divergence, that story dies. The reasoning, the five verdicts on the proposal, and every
 choice that could have gone the other way live in [the decision ledger](decisions-taken-here.md);
 this file does not repeat them.
@@ -124,6 +124,8 @@ honestly killed and the review file says what killed it.
 - ⚠️ [plans/03-wire-the-oracle.md](plans/tools/03-wire-the-endpoint-predictor.md) — LCM-SDXL downloaded, adapted, checked once against one teacher ending
 - ⚠️ [plans/04-calibrate-the-instrument.md](plans/tools/04-calibrate-the-measuring-tool.md) — 240 states, two thresholds in code, verdict: adopt, shrink, or fall back
 - ⚠️ [plans/05-the-grid-and-the-figures.md](plans/figures/05-the-grid-and-the-figures.md) — both prompt passes, the speciation table, the scope's paper figures
+- ◑ [plans/06-where-each-condition-lands.md](plans/figures/06-where-each-condition-lands.md) — five conditions as clouds in DINOv2 space, axis pictures decoded through a representation autoencoder, per-step tracks with a commit step each; cat×dog endpoint figures filed, the rest open
+- ◑ [plans/07-what-the-correction-is-made-of.md](plans/tests/07-what-the-correction-is-made-of.md) — the correction's in-span and orthogonal share per step against the three predictions PoE already has, the experts' decoded estimates, the adapter's output projected the same way, and the tracks' kinetic energy and which-animal score; cache only; four rungs done, bar inconclusive at 0.374, finding filed, close-out open
 
 ## Environment Context
 Start at [the environment index](../../environment/00-INDEX.md). The facts this scope

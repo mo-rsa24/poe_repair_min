@@ -1,0 +1,95 @@
+{
+  "cell": {
+    "pair_slug": "all_groups",
+    "seed": 1,
+    "split": "heldout",
+    "prompt_a": "a cat",
+    "prompt_b": "a dog",
+    "joint_prompt": "a cat and a dog"
+  },
+  "lora": {
+    "rank": 32,
+    "alpha": 32,
+    "dropout": 0.0,
+    "target_modules": [
+      "attn2.to_q",
+      "attn2.to_k",
+      "attn2.to_v"
+    ],
+    "init": "gaussian",
+    "adapter_name": "lora"
+  },
+  "optim": {
+    "name": "AdamW",
+    "lr": 0.0001,
+    "weight_decay": 0.01,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "grad_clip": 1.0
+  },
+  "schedule": {
+    "total_epochs": 600,
+    "epoch_size": 50,
+    "train_batch_size": 1,
+    "log_every": 20
+  },
+  "probe": {
+    "every_epochs": 1000000000,
+    "lambda_grid": [
+      0.0,
+      0.25,
+      0.5,
+      0.75,
+      1.0
+    ],
+    "commit_window": [
+      5,
+      25
+    ],
+    "where_applied_steps": [
+      7,
+      15,
+      22
+    ]
+  },
+  "kill": {
+    "loss_threshold": 0.1,
+    "after_steps": 3000,
+    "commit_bucket_halve_after_steps": 5000
+  },
+  "sampler": {
+    "scheduler": "ddim",
+    "num_inference_steps": 50,
+    "guidance_scale": 7.5,
+    "euler_init_noise_sigma": 1.0,
+    "height": 1024,
+    "width": 1024
+  },
+  "wandb": {
+    "project": "poe-repair-cross-pair",
+    "entity": null,
+    "tags": [
+      "lora"
+    ],
+    "mode": "disabled"
+  },
+  "seed": 42,
+  "model_id": "stabilityai/stable-diffusion-xl-base-1.0",
+  "device": "cuda",
+  "dtype": "float16",
+  "run_id": "cross_pair_pooled__r32__lr1e-04__ep600__20260908-174453",
+  "run_dir": "/home-mscluster/mmolefe/Playground/PhD/poe_repair_min/artifacts/_shared/cross_pair_pool_configs/all_groups/cross_pair_pooled__r32__lr1e-04__ep600__20260908-174453",
+  "dry_run": false,
+  "skip_scoring": true,
+  "resume_from": null,
+  "git_commit": "c764e16",
+  "compose": "poe",
+  "kappa": 0.5,
+  "ema_decay": 0.999,
+  "loss_space": "eps",
+  "loss_weight_cap": 22.0,
+  "energy_penalty": 0.0,
+  "gradient_checkpointing": false
+}

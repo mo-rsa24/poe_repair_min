@@ -25,7 +25,7 @@ running alone to the joint prediction exactly?
 | Step | Plan | What it does |
 |------|------|-------------|
 | 25 | [instrument-01: the-corrector-and-the-step-size-it-runs-at](../tools/02-the-corrector-and-the-step-size-it-runs-at.md) ⚠️ | supplies the composer behind the two corrector rows |
-| 28 | [baseline-01: superdiff-at-this-repos-fifty-steps](05-superdiff-at-this-repos-fifty-steps.md) ⚠️ | supplies the per-step prediction behind the SuperDiff row |
+| 28 | [baseline-01: what-changes-when-superdiff-leaves-its-own-defaults](05-what-changes-when-superdiff-leaves-its-own-defaults.md) ⚠️ | supplies the per-step prediction behind the SuperDiff row |
 | **29 (current)** | **baseline-02: three-rules-on-one-amount-axis** ⚠️ | **puts product-of-experts, SuperDiff and the corrector on one generalised amount axis, in two grids** |
 | 30 | [idea-01: feynman-kac-correctors-gated](../ideas/07-feynman-kac-correctors.md) ⚠️ | runs only if this plan and the answer at step 26 give it a reason to |
 
@@ -286,7 +286,7 @@ the pictures no rule can reach at `λ=1` are labelled rather than left looking l
   - Done when: the report comes back clean, or its proposals have been applied.
 - [ ] **0.2** Confirm all four rows can produce a per-step prediction before any grid is planned.
   - Plain product-of-experts from [poe.py](../../../poe_repair/composers/poe.py), SuperDiff from
-    [step 28's hook](05-superdiff-at-this-repos-fifty-steps.md), and both corrector rows
+    [step 28's hook](05-what-changes-when-superdiff-leaves-its-own-defaults.md), and both corrector rows
     from `poe_repair/composers/poe_langevin.py`.
   - **Done when:** `r_t^M` is formed on one render for each of the four rows and its per-step norm
     printed, so a missing hook is found now rather than mid-grid.
@@ -493,7 +493,7 @@ off the joint trajectory.
 | [scripts/interaction_term_dose_matched.py](../../../scripts/interaction_term_dose_matched.py) | the matched condition, `--mode matched`, which already answered the different-absolute-amounts problem once for this project |
 | [poe_repair/composers/poe.py](../../../poe_repair/composers/poe.py) | the plain product-of-experts row, and the interface all four rows share |
 | `poe_repair/composers/poe_langevin.py` | the two corrector rows, at `k=1` and `k=5` |
-| `poe_repair/composers/superdiff.py` | the SuperDiff row and its per-step prediction, from [step 28](05-superdiff-at-this-repos-fifty-steps.md) |
+| `poe_repair/composers/superdiff.py` | the SuperDiff row and its per-step prediction, from [step 28](05-what-changes-when-superdiff-leaves-its-own-defaults.md) |
 | [paper/iclr/figures/F5-one-dial-three-instruments.png](../../../paper/iclr/figures/F5-one-dial-three-instruments.png) | the existing one-dial figure, whose `λ=0.75` grid one reuses so the two are comparable |
 
 ## Next step

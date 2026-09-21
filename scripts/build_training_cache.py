@@ -25,8 +25,12 @@ two prompts (e.g. "a camel" / "a desert landscape" →
 from __future__ import annotations
 
 import argparse
+import sys
 import time
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent / "showcase"))
+from disallowed_subjects import check as check_subject
 
 import torch
 
@@ -234,6 +238,10 @@ def main() -> None:
     ap.add_argument("--guidance-scale", type=float, default=None)
     ap.add_argument("--overwrite", action="store_true")
     args = ap.parse_args()
+
+    # Hard refusal before anything is loaded or rendered. See scripts/showcase/disallowed_subjects.py.
+    for _t in (args.prompt_a, args.prompt_b, args.joint_prompt):
+        check_subject(_t)
 
     build_cell(
         prompt_a=args.prompt_a,

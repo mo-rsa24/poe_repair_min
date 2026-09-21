@@ -53,3 +53,12 @@ artifacts/scenes/*/dist/
 artifacts/scenes/*/node_modules/
 artifacts/scenes/*/app/dist/
 artifacts/scenes/*/app/node_modules/
+
+# Codex render attempts and transcripts land here per render-diagrams; the folder is
+# disposable by convention and only passing images are copied out to a diagrams/ path.
+temp/
+
+# The Overleaf project's git bridge, cloned as its own repository. It is a
+# transfer point between paper/iclr and Overleaf, not a second workspace, and
+# it carries a history the project repo must not nest inside its own.
+# paper/overleaf-iclr/

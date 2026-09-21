@@ -1,0 +1,106 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
+\HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldcontentsline\contentsline
+\gdef\contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
+\global\let\oldnewlabel\newlabel
+\gdef\newlabel#1#2{\newlabelxx{#1}#2}
+\gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
+\AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\contentsline\oldcontentsline
+\let\newlabel\oldnewlabel
+\fi}
+\fi}
+\global\let\hyper@last\relax 
+\gdef\HyperFirstAtBeginDocument#1{#1}
+\providecommand*\HyPL@Entry[1]{}
+\citation{saharia2022photorealistic,podell2023sdxl}
+\citation{chen2023beyond,du2024generative}
+\citation{huang2025t2icompbench}
+\citation{conwell2024relations}
+\citation{huang2025t2icompbench}
+\citation{du2024compositional}
+\citation{liu2022compositional}
+\citation{rombach2022high}
+\HyPL@Entry{0<</S/D>>}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\citation{liu2022compositional,zhang2025product}
+\citation{dhariwal2021diffusion}
+\citation{bradley2025mechanisms}
+\citation{bradley2025mechanisms}
+\citation{du2024compositional}
+\citation{liu2022compositional,zhang2025product}
+\newlabel{eq:poe-composition}{{1}{2}{Introduction}{equation.1.1}{}}
+\citation{dutta2026steer,huang2026factordiff,wang2026testtime}
+\citation{liu2022compositional}
+\citation{du2023reduce}
+\citation{zhang2025product}
+\citation{skreta2024superdiff,skreta2025feynman}
+\citation{sohldickstein2015deep,ho2020denoising}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces \textbf  {Product-of-experts composition lands between the two concepts rather than on the scene the joint prompt reaches.} All four renders are the same sampler from the same starting noise, differing only in what conditions it: the first concept alone, the second alone, both concepts composed, and the joint prompt naming the scene. Composing two concepts multiplies their distributions, which adds their scores, and the sampler follows that sum to the maximum of the product, which for two separated peaks lies between them. That maximum is the image satisfying both experts at once, and when two animals compete for the same region of the picture the only such image is a single blended animal \citep  {bradley2025mechanisms}.}}{3}{figure.1}\protected@file@percent }
+\newlabel{fig:poe-failure}{{1}{3}{\textbf {Product-of-experts composition lands between the two concepts rather than on the scene the joint prompt reaches.} All four renders are the same sampler from the same starting noise, differing only in what conditions it: the first concept alone, the second alone, both concepts composed, and the joint prompt naming the scene. Composing two concepts multiplies their distributions, which adds their scores, and the sampler follows that sum to the maximum of the product, which for two separated peaks lies between them. That maximum is the image satisfying both experts at once, and when two animals compete for the same region of the picture the only such image is a single blended animal \citep {bradley2025mechanisms}}{figure.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Background and Related Work}{3}{section.2}\protected@file@percent }
+\newlabel{sec:background}{{2}{3}{Background and Related Work}{section.2}{}}
+\citation{song2021scorebased}
+\citation{dhariwal2021diffusion}
+\citation{ho2022classifier}
+\citation{bradley2025mechanisms}
+\citation{gaudi2025coind}
+\citation{liu2022compositional}
+\@writefile{toc}{\contentsline {paragraph}{Diffusion models.}{4}{section*.1}\protected@file@percent }
+\newlabel{eq:forward}{{2}{4}{Diffusion models}{equation.2.2}{}}
+\newlabel{eq:objective}{{3}{4}{Diffusion models}{equation.2.3}{}}
+\@writefile{toc}{\contentsline {paragraph}{Noise predictions are scores.}{4}{section*.2}\protected@file@percent }
+\newlabel{eq:score}{{4}{4}{Noise predictions are scores}{equation.2.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{Classifier-free guidance.}{4}{section*.3}\protected@file@percent }
+\newlabel{eq:cfg}{{5}{4}{Classifier-free guidance}{equation.2.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Missing Implications: The Plurality Term}{4}{section.3}\protected@file@percent }
+\newlabel{sec:interaction}{{3}{4}{Missing Implications: The Plurality Term}{section.3}{}}
+\citation{liu2022compositional}
+\citation{bradley2025mechanisms,dutta2026steer}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces \textbf  {The same rule composes one pair and blends another.} Columns are prompt pairs, both sampled with uncorrected product-of-experts composition. \textbf  {Top:} one real sample each, seed 42. \textbf  {Bottom:} $\|r_t\|$ as a fraction of $\|\hat  \epsilon _{\mathrm  {PoE}}\|$ at every denoising step, median over seeds 4, 42 and 123 with a min-to-max band, both panels on one $y$ axis.}}{5}{figure.2}\protected@file@percent }
+\newlabel{fig:two-regimes}{{2}{5}{\textbf {The same rule composes one pair and blends another.} Columns are prompt pairs, both sampled with uncorrected product-of-experts composition. \textbf {Top:} one real sample each, seed 42. \textbf {Bottom:} $\|r_t\|$ as a fraction of $\|\hat \epsilon _{\mathrm {PoE}}\|$ at every denoising step, median over seeds 4, 42 and 123 with a min-to-max band, both panels on one $y$ axis}{figure.2}{}}
+\newlabel{eq:interaction-term}{{13}{6}{Missing Implications: The Plurality Term}{equation.3.13}{}}
+\newlabel{eq:corrected-sampler}{{14}{6}{Missing Implications: The Plurality Term}{equation.3.14}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces \textbf  {Only the measured correction composes, and over-driving it does no visible harm.} A cat and a dog at seed 9. A column is the strength $\lambda $ added at every step; a row is what was added. The top row is the pair's own plurality term, and beneath it sit three controls, each breaking one thing about it while matching its size and schedule: another pair's term, the same term from a different seed, and the same term with its step order deranged. Nothing is added at $\lambda = 0$, so that column is one sample shown four times, and the columns past $\lambda = 1$ carry the correction beyond the joint-prompt prediction.}}{6}{figure.3}\protected@file@percent }
+\newlabel{fig:strength-grid}{{3}{6}{\textbf {Only the measured correction composes, and over-driving it does no visible harm.} A cat and a dog at seed 9. A column is the strength $\lambda $ added at every step; a row is what was added. The top row is the pair's own plurality term, and beneath it sit three controls, each breaking one thing about it while matching its size and schedule: another pair's term, the same term from a different seed, and the same term with its step order deranged. Nothing is added at $\lambda = 0$, so that column is one sample shown four times, and the columns past $\lambda = 1$ carry the correction beyond the joint-prompt prediction}{figure.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Restoring the Plurality Term Restores Composition}{7}{section.4}\protected@file@percent }
+\newlabel{sec:analysis}{{4}{7}{Restoring the Plurality Term Restores Composition}{section.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces \textbf  {Ten corrected steps already reach the outcome, and no late start recovers it.} A cat and a dog at seed 12. Two grids of the same run, differing only in which stretch of it receives the correction: from the beginning outward in \textbf  {(a)}, from a later start through to the end in \textbf  {(b)}. Along any row the five pictures are that run decoded after 10, 20, 30, 40 and 50 steps, a green frame marks a decode taken while the correction was active, and the row marked \emph  {off} never corrects. Read down the rightmost column of each panel: in (a) it never changes, and in (b) it changes exactly once, between the row that starts at step ten and the row that starts at step twenty.}}{7}{figure.4}\protected@file@percent }
+\newlabel{fig:when-the-correction-arrives}{{4}{7}{\textbf {Ten corrected steps already reach the outcome, and no late start recovers it.} A cat and a dog at seed 12. Two grids of the same run, differing only in which stretch of it receives the correction: from the beginning outward in \textbf {(a)}, from a later start through to the end in \textbf {(b)}. Along any row the five pictures are that run decoded after 10, 20, 30, 40 and 50 steps, a green frame marks a decode taken while the correction was active, and the row marked \emph {off} never corrects. Read down the rightmost column of each panel: in (a) it never changes, and in (b) it changes exactly once, between the row that starts at step ten and the row that starts at step twenty}{figure.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces The final image for a cat and a dog at seeds 9 to 12, as the ten-step correction window slides across the run. A column is the window's first and last step, and everything outside it runs plain composition, so a row varies only in where the correction sat. The green frame is the detector verdict, a cat box and a dog box with little overlap. Seed 11 composes at 5--15 but not at 0--10, the one break in the left-to-right decay.}}{8}{figure.5}\protected@file@percent }
+\newlabel{fig:where-the-correction-lands}{{5}{8}{The final image for a cat and a dog at seeds 9 to 12, as the ten-step correction window slides across the run. A column is the window's first and last step, and everything outside it runs plain composition, so a row varies only in where the correction sat. The green frame is the detector verdict, a cat box and a dog box with little overlap. Seed 11 composes at 5--15 but not at 0--10, the one break in the left-to-right decay}{figure.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Learning the Plurality Term}{8}{section.5}\protected@file@percent }
+\newlabel{sec:method}{{5}{8}{Learning the Plurality Term}{section.5}{}}
+\bibdata{iclr2027_conference}
+\bibcite{bradley2025mechanisms}{{1}{2025}{{Bradley et~al.}}{{Bradley, Nakkiran, Berthelot, Thornton, and Susskind}}}
+\bibcite{chen2023beyond}{{2}{2023}{{Chen et~al.}}{{Chen, Vi{\'e}gas, and Wattenberg}}}
+\bibcite{conwell2024relations}{{3}{2024}{{Conwell et~al.}}{{Conwell, Tawiah-Quashie, and Ullman}}}
+\bibcite{dhariwal2021diffusion}{{4}{2021}{{Dhariwal \& Nichol}}{{Dhariwal and Nichol}}}
+\bibcite{du2024generative}{{5}{2024}{{Du et~al.}}{{Du, Kolkin, Shakhnarovich, and Bhattad}}}
+\bibcite{du2024compositional}{{6}{2024}{{Du \& Kaelbling}}{{Du and Kaelbling}}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{9}{section.6}\protected@file@percent }
+\newlabel{sec:discussion}{{6}{9}{Discussion}{section.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Conclusion}{9}{section.7}\protected@file@percent }
+\bibcite{du2023reduce}{{7}{2023}{{Du et~al.}}{{Du, Durkan, Strudel, Tenenbaum, Dieleman, Fergus, Sohl-Dickstein, Doucet, and Grathwohl}}}
+\bibcite{dutta2026steer}{{8}{2026}{{Dutta et~al.}}{{Dutta, Chen, Rajagopalan, Wei, and Roy~Choudhury}}}
+\bibcite{gaudi2025coind}{{9}{2025}{{Gaudi et~al.}}{{Gaudi, Sreekumar, and Boddeti}}}
+\bibcite{ho2022classifier}{{10}{2022}{{Ho \& Salimans}}{{Ho and Salimans}}}
+\bibcite{ho2020denoising}{{11}{2020}{{Ho et~al.}}{{Ho, Jain, and Abbeel}}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces \textbf  {The adapter returns held-out pairs to two animals without ever seeing the joint prompt.} Samples for four animal pairs held out of the adapter's training, under the joint prompt (left), plain product-of-experts composition (middle, one blended animal per row), and the adapter-corrected sampler (right, two distinct animals per row). The three images of a row start from the same noise, and the adapter column is the pooled checkpoint at training step 100000 with $\lambda =1$. The joint-prompt column is the target the correction was defined from, not a competing method. Four pairs illustrate the effect and do not carry the rate.}}{10}{figure.6}\protected@file@percent }
+\newlabel{fig:adapter-samples}{{6}{10}{\textbf {The adapter returns held-out pairs to two animals without ever seeing the joint prompt.} Samples for four animal pairs held out of the adapter's training, under the joint prompt (left), plain product-of-experts composition (middle, one blended animal per row), and the adapter-corrected sampler (right, two distinct animals per row). The three images of a row start from the same noise, and the adapter column is the pooled checkpoint at training step 100000 with $\lambda =1$. The joint-prompt column is the target the correction was defined from, not a competing method. Four pairs illustrate the effect and do not carry the rate}{figure.6}{}}
+\bibcite{huang2026factordiff}{{12}{2026}{{Huang et~al.}}{{Huang, Xu, Mandal, and Aspuru-Guzik}}}
+\bibcite{huang2025t2icompbench}{{13}{2025}{{Huang et~al.}}{{Huang, Duan, Sun, Xie, Li, and Liu}}}
+\bibcite{liu2022compositional}{{14}{2022}{{Liu et~al.}}{{Liu, Li, Du, Torralba, and Tenenbaum}}}
+\bibcite{podell2023sdxl}{{15}{2024}{{Podell et~al.}}{{Podell, English, Lacey, Blattmann, Dockhorn, M{\"u}ller, Penna, and Rombach}}}
+\bibcite{rombach2022high}{{16}{2022}{{Rombach et~al.}}{{Rombach, Blattmann, Lorenz, Esser, and Ommer}}}
+\bibcite{saharia2022photorealistic}{{17}{2022}{{Saharia et~al.}}{{Saharia, Chan, Saxena, Li, Whang, Denton, Ghasemipour, Ayan, Mahdavi, Lopes, Salimans, Ho, Fleet, and Norouzi}}}
+\bibcite{skreta2025feynman}{{18}{2025{a}}{{Skreta et~al.}}{{Skreta, Akhound-Sadegh, Ohanesian, Bondesan, Aspuru-Guzik, Doucet, Brekelmans, Tong, and Neklyudov}}}
+\bibcite{skreta2024superdiff}{{19}{2025{b}}{{Skreta et~al.}}{{Skreta, Atanackovic, Bose, Tong, and Neklyudov}}}
+\bibcite{sohldickstein2015deep}{{20}{2015}{{Sohl-Dickstein et~al.}}{{Sohl-Dickstein, Weiss, Maheswaranathan, and Ganguli}}}
+\bibcite{song2021scorebased}{{21}{2021}{{Song et~al.}}{{Song, Sohl-Dickstein, Kingma, Kumar, Ermon, and Poole}}}
+\bibcite{wang2026testtime}{{22}{2026}{{Wang et~al.}}{{Wang, Gupta, Zhu, and MacLellan}}}
+\bibcite{zhang2025product}{{23}{2025}{{Zhang et~al.}}{{Zhang, Murtuza-Lanier, Li, Du, and Wu}}}
+\bibstyle{iclr2027_conference}
+\gdef \@abspage@last{11}

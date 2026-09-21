@@ -317,12 +317,19 @@ class WandBLogger:
 # ---------------------------------------------------------------------------
 
 
-def encode_all_prompts(cfg: RunConfig, models: dict, device, dtype):
-    """Encode (A, B, J, ∅) prompts once at run start. Embeddings stay frozen."""
+def encode_all_prompts(cfg: RunConfig, models: dict, device, dtype, *, null_prompt: str = ""):
+    """Encode (A, B, J, ∅) prompts once at run start. Embeddings stay frozen.
+
+    ``null_prompt`` is the string the base branch is conditioned on. The empty string is
+    the unconditional prediction and is what every run before the branch-prompt variants
+    used. A non-empty value changes what the composition divides by, so the cached
+    ``eps_uncond`` is no longer that branch's frozen counterpart and anything reading the
+    cache as a frozen reference must be turned off by the caller.
+    """
     sa, pa = encode_prompt_sdxl(cfg.cell.prompt_a, models=models, device=device, dtype=dtype)
     sb, pb = encode_prompt_sdxl(cfg.cell.prompt_b, models=models, device=device, dtype=dtype)
     sj, pj = encode_prompt_sdxl(cfg.cell.joint_prompt, models=models, device=device, dtype=dtype)
-    se, pe = encode_prompt_sdxl("", models=models, device=device, dtype=dtype)
+    se, pe = encode_prompt_sdxl(null_prompt, models=models, device=device, dtype=dtype)
     return {
         "seq_a": sa, "pool_a": pa,
         "seq_b": sb, "pool_b": pb,

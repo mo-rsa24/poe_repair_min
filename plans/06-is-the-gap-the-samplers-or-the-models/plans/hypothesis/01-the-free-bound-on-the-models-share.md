@@ -6,7 +6,7 @@ sitting on disk, since whatever is left there is a lower bound on the model's sh
 ## Recommended prompt (after this plan completes)
 
 ```
-/sync-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis-01-the-free-bound-on-the-models-share.md — <one line on what the cached numbers said>
+/sync-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis/01-the-free-bound-on-the-models-share.md — <one line on what the cached numbers said>
 ```
 
 ## Recommended skill
@@ -55,7 +55,7 @@ Design only. Verdicts and run state live in
 ⬅️ [Previous](#position-in-the-plan-tree) | 📋 [TOC](#table-of-contents) | [Next](#quick-context-where-you-are) ➡️
 
 Is the correction still bounded away from zero at the last denoising step, in the numbers already
-sitting on disk? The [sampler's share of the error](../../../../../../../goal-setting/learning/sampler-correctors-for-composition/plans/15-the-two-gaps.md) is defined to vanish as the noise goes to zero,
+sitting on disk? The [sampler's share of the error](../../../../../../../goal-setting/learning/deep-learning/diffusion-models/sampler-correctors-for-composition/plans/15-the-two-gaps.md) is defined to vanish as the noise goes to zero,
 and the model's share is not. So anything left at the end of the run is already a lower bound on the
 model's share, bought with no GPU at all.
 
@@ -246,9 +246,14 @@ for.
 ### 0. 🧭 Check this plan before working from it
 
 - [ ] **0.1** Check this plan conforms and its instructions are concrete, before acting on it.
-  - Paste: `/verify-plan @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis-01-the-free-bound-on-the-models-share.md`
+  - Paste: `/verify-plan @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis/01-the-free-bound-on-the-models-share.md`
   - Done when: the report comes back clean, or its proposals have been applied.
-- [ ] **0.2** Re-read [the timing verdict](../../../03-does-the-correction-cause-composition/review/05-when-in-the-run-it-matters.md).
+- [ ] **0.2** Cross-reference this plan's terms against context/, environment/, runbook/,
+      report/, and any learning journey that names this project, in case a term this plan mentions
+      is already defined or explained somewhere else in the repo.
+  - Paste: `/xref-plan @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis/01-the-free-bound-on-the-models-share.md`
+  - Done when: the scan comes back with no candidates, or its proposed links have been applied.
+- [ ] **0.3** Re-read [the timing verdict](../../../03-does-the-correction-cause-composition/review/05-when-in-the-run-it-matters.md).
       Confirm the three numbers this scope quotes are still what it says. They are 0.656 at steps 0
       to 10, 0.000 from steps 20 to 30 onward, and the correction about 2.7 times larger late than
       early.
@@ -261,7 +266,7 @@ for.
 
 ### 1. 📊 Read the cached size at the low-noise end
 
-◀ **Needs: [task 0.2](#0--check-this-plan-before-working-from-it)**, so the numbers this
+◀ **Needs: [task 0.3](#0--check-this-plan-before-working-from-it)**, so the numbers this
 plan is read against are known to be current.
 
 - [ ] **1.1** Read the per-step correction size as the run approaches zero noise.
@@ -315,10 +320,10 @@ decides whether the number is a bound or an artefact of how the cache was writte
 ◀ **Needs:** every group above attempted, including the ones that went red.
 
 - [ ] **Capture the failures this plan hit**, while they are still fresh.
-  - Paste: `/ingest-error-pattern --from-run-log @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis-01-the-free-bound-on-the-models-share.md`
+  - Paste: `/ingest-error-pattern --from-run-log @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis/01-the-free-bound-on-the-models-share.md`
   - Done when: each failure has a catalog entry, or there were none to record.
 - [ ] **Bring the tree current** with what actually happened.
-  - Paste: `/sync-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis-01-the-free-bound-on-the-models-share.md — <one line>`
+  - Paste: `/sync-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis/01-the-free-bound-on-the-models-share.md — <one line>`
   - Done when: statuses, the running order and the Error Matrix match reality.
 
 ▶ **Next: [what has to pass before this runs](#what-has-to-pass-before-this-runs).**
@@ -427,10 +432,10 @@ Nothing to organise. The output of this plan is answers in its review file.
 
 | Step | Command | Triggered by | Outcome |
 |------|---------|--------------|---------|
-| Check the plan | `/verify-plan @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis-01-the-free-bound-on-the-models-share.md` | **task 0.1**, before any work | Conformance and thin instructions reported |
-| Capture patterns | `/ingest-error-pattern --from-run-log @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis-01-the-free-bound-on-the-models-share.md` | **the close out**, after any red run | Errors added to catalogs |
+| Check the plan | `/verify-plan @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis/01-the-free-bound-on-the-models-share.md` | **task 0.1**, before any work | Conformance and thin instructions reported |
+| Capture patterns | `/ingest-error-pattern --from-run-log @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis/01-the-free-bound-on-the-models-share.md` | **the close out**, after any red run | Errors added to catalogs |
 | Update Error Matrix | `/sync-plan-tree --update-error-matrices` | Auto (by ingest-error-pattern) | This plan file's Error Matrix regenerated |
-| Bring the tree current | `/sync-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis-01-the-free-bound-on-the-models-share.md` | **the close out** | Statuses, running order and Error Matrix match reality |
+| Bring the tree current | `/sync-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/plans/hypothesis/01-the-free-bound-on-the-models-share.md` | **the close out** | Statuses, running order and Error Matrix match reality |
 
 ## Code references
 

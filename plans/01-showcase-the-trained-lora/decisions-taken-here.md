@@ -156,7 +156,7 @@ idle node; B's two runs over the SSH-plus-nohup idle-node path per
 prefer device 1, verify it is free); C in-session. Roughly 20 GPU-hours across three nodes.
 No run launches before its plan file and pre-registered review questions exist, per
 `~/.claude/EXPERIMENT_CONVENTIONS.md`. Every launching or harvesting session uses the wandb
-MCP and Playwright MCP (registered at user scope; runbook/reading-a-training-run.md section
+MCP and Playwright MCP (registered at user scope; runbook/looking-at-what-a-run-produced/reading-a-training-run.md section
 3) and files captured panels into the places that runbook page keeps for screenshots.
 
 ## The shared tracking set extends instrument-02 and nothing else
@@ -284,3 +284,22 @@ The 50k-versus-100k softness sanity read (free, and nothing waits on it). The ou
 panel showing what the cached true correction reaches at best, which decides whether B's result
 is read as a capacity finding or a dead lever. The non-animal scorer re-validation, which opens
 tier-three captions.
+
+## The noise realisation is the run's third free variable, and it is searched on top of the shipped adapter
+
+Plan 07 varied how much correction and plan 14 varied when it acts. The stochastic sampler has a
+third free variable, the noise injected at every step, and Ramesh and Mardani (arXiv 2506.03164)
+show for a fixed model that a small greedy search over it, judged one step ahead, matches tree
+search at a fraction of the cost and pays most at the intermediate steps where the image de-mixes.
+Plan 16 runs that search on the corrected sampler at eta 1, confined to steps 8 to 25 (where the
+corrected run commits and where plan 14 found the softness already committed), with plan 11's
+count-gated ImageReward as the reward so the search cannot trade an animal for polish.
+
+Three choices are fixed here so the run reads one way. The judged comparison is searched against
+unsearched at eta 1 on the same noise stream, not against the shipped eta-0 render, because eta
+alone changes a run; the eta-0 render sits on the sheet as a reference. The judge is paired
+sharpness per seed with the compose count, never a sharpness band, because the three sketch seeds
+set any band's edges; ImageReward is reported and never judged on, because the search optimised it.
+And this is not a fourth selection-only baseline: the three selection-only runs in scope 06 asked
+whether plain PoE proposes a composing state, and this plan asks a fidelity question about a state
+the correction already composes.
