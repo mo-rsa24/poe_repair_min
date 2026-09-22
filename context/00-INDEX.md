@@ -27,6 +27,7 @@ Navigation: 📋 [TOC](#table-of-contents) | [Next](#the-themes) ➡️
 | What problem is this project actually solving, and for whom | [The problem](purpose/01-the-problem.md#who-has-the-problem) |
 | What PoE composition is, and what Mono is | [PoE composition § What PoE composition is](world/poe-composition.md#what-poe-composition-is) |
 | What a chimera looks like | [Chimera § What it looks like](world/chimera.md#what-it-looks-like) |
+| What a failed render's look says about its cause (clipart, mush, sketch, invented people, wrong species) | [How a render fails § The looks](world/how-a-render-fails.md#the-looks) |
 | What the interaction term (`r_t`) is | [Interaction term § What the interaction term is](world/interaction-term.md#what-the-interaction-term-is) |
 | What the trained LoRA corrector does, and why it never sees the joint prompt | [LoRA corrector § What the LoRA corrector is](world/lora-corrector.md#what-the-lora-corrector-is) |
 | What an animal pair is, and why the pool is biased toward failure | [Animal pair § What an animal pair is](world/animal-pair.md#what-an-animal-pair-is) |
@@ -43,7 +44,7 @@ Navigation: ⬅️ [I want to know...](#i-want-to-know) | 📋 [TOC](#table-of-c
 | Folder | What it answers | Files |
 |---|---|---|
 | [purpose/](purpose) | Why this exists, what it produces, what working looks like | 3 |
-| [world/](world) | The real things behind the data: PoE composition, chimera, the interaction term, the LoRA corrector, the animal pair, compose rate | 6 |
+| [world/](world) | The real things behind the data: PoE composition, chimera, the interaction term, the LoRA corrector, the animal pair, compose rate, how a render fails | 7 |
 | [data/](data) | Where the data comes from, and what every field means | 2 |
 
 Picture prompts are in [diagram-prompts.md](diagram-prompts.md) (8 prompts, 0 rendered); rendered

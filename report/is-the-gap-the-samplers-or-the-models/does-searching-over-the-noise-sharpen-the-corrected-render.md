@@ -192,3 +192,4 @@ Navigation: ⬅️ [Previous](#depends-on) | 📋 [TOC](#table-of-contents)
 ## Cross-references
 
 - The mention of **Laplacian variance as a sharpness read**, and of its disagreement with the eye on this pair, in [can a corrector or a clean tail sharpen the adapter's renders](can-a-corrector-or-a-clean-tail-sharpen-the-adapters-renders.md) (relevance match): that finding measured the same band on the plain-PoE references and demoted it to a secondary read.
+- The mention of **the edge measure**, and that it prefers a sketch to a photograph, in [how a render fails](../../context/world/how-a-render-fails.md#where-this-came-from).

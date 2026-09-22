@@ -1,22 +1,20 @@
 #!/usr/bin/env bash
 # Drive the mscluster checkout from this local one. Code is written here, committed,
 # and pushed through GitHub; the cluster checkout is fast-forwarded to the same commit
-# and every launch runs there, from the repo root, exactly as it would in a shell on
-# the login node.
+# and every launch runs there, from the repo root, on compute node mscluster84. Nothing
+# goes to the login node: node 84 has sbatch, squeue and GitHub access of its own.
 #
 #   scripts/cluster.sh sync                push this branch, fast-forward the cluster to it
 #   scripts/cluster.sh run "<command>"     sync, then run <command> in the cluster checkout
 #                                          e.g. scripts/cluster.sh run "sbatch scripts/foo.sbatch"
 #   scripts/cluster.sh sh "<command>"      run <command> in the cluster checkout, no sync
 #   scripts/cluster.sh jobs                squeue for this user
-#   scripts/cluster.sh pull <path>...      rsync git-ignored outputs back through the compute node
+#   scripts/cluster.sh pull <path>...      rsync git-ignored outputs back from the compute node
 #                                          (skips model weights: *.pt *.safetensors *.npy)
 #
-# Env overrides: CLUSTER_LOGIN (default mscluster), CLUSTER_NODE (default mscluster84),
-# CLUSTER_DIR (default the path below).
+# Env overrides: CLUSTER_NODE (default mscluster84), CLUSTER_DIR (default the path below).
 set -euo pipefail
 
-LOGIN="${CLUSTER_LOGIN:-mscluster}"
 NODE="${CLUSTER_NODE:-mscluster84}"
 RDIR="${CLUSTER_DIR:-/home-mscluster/mmolefe/Playground/PhD/poe_repair_min}"
 ROOT="$(git -C "$(dirname "$0")" rev-parse --show-toplevel)"
@@ -24,7 +22,7 @@ cd "$ROOT"
 
 die() { echo "cluster.sh: $*" >&2; exit 1; }
 
-remote() { ssh "$LOGIN" "cd '$RDIR' && bash -lc $(printf '%q' "$1")"; }
+remote() { ssh "$NODE" "cd '$RDIR' && bash -lc $(printf '%q' "$1")"; }
 
 sync() {
   local branch
@@ -35,7 +33,7 @@ sync() {
   fi
   git push -q origin "$branch"
   # --ff-only: if the cluster checkout has commits of its own, stop and say so
-  # rather than merging on the login node.
+  # rather than merging on the cluster.
   remote "git fetch -q origin && git checkout -q '$branch' && git merge -q --ff-only 'origin/$branch'" \
     || die "cluster could not fast-forward to origin/$branch (diverged or dirty); reconcile with /reconcile-machines"
   echo "cluster at $(remote 'git log --oneline -1')"
@@ -54,5 +52,5 @@ case "${1:-}" in
       rsync -az --info=progress2 --exclude='*.pt' --exclude='*.safetensors' --exclude='*.npy' \
         "$NODE:$RDIR/$p" "$(dirname "$p")/"
     done ;;
-  *) sed -n '2,17p' "$0"; exit 1 ;;
+  *) sed -n '2,16p' "$0"; exit 1 ;;
 esac

@@ -122,3 +122,4 @@ Navigation: ⬅️ [What people get wrong](#what-people-get-wrong) | 📋 [TOC](
 
 - The mention of **compose rate** in [the finding "does a corrector alone produce two animals"](../../report/is-the-gap-the-samplers-or-the-models/does-a-corrector-alone-produce-two-animals.md).
 - The mention of **the compose scorer** in [the finding "can a corrector or a clean tail sharpen the adapter's renders"](../../report/is-the-gap-the-samplers-or-the-models/can-a-corrector-or-a-clean-tail-sharpen-the-adapters-renders.md), whose primary read is a distance in that scorer's own embedding.
+- The mention of **the instance counter**, and that it cannot tell a cat from a second dog, in [how a render fails](how-a-render-fails.md#where-this-came-from).
