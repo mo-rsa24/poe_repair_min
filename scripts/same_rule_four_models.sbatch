@@ -12,14 +12,19 @@
 #
 # Slurm does not create the log folder, so make it first:
 #   mkdir -p /datasets/mmolefe/poe_repair_min/outputs/same_rule_four_models/logs
-#   sbatch --export=ALL,SEEDS="42 4 123" scripts/same_rule_four_models.sbatch
+#   sbatch --export=ALL,SEEDS=42 scripts/same_rule_four_models.sbatch
+#   sbatch --export=ALL,RUN_MODELS=sd35 scripts/same_rule_four_models.sbatch   # one column only
 #   sbatch --export=ALL,CHECK_LOAD=1 scripts/same_rule_four_models.sbatch    # load all four, render nothing
 set -uo pipefail
 REPO=/home-mscluster/mmolefe/Playground/PhD/poe_repair_min
 OUTROOT=/datasets/mmolefe/poe_repair_min/outputs/same_rule_four_models
 PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
 SCRIPT="$REPO/scripts/same_rule_four_models.py"
-SEEDS="${SEEDS:-42 4 123}"
+SEEDS="${SEEDS:-42}"
+RUN_MODELS="${RUN_MODELS:-sd14 sd21 sdxl sd35}"
+# SD 3.5 medium needs diffusers >= 0.31 and co3 has 0.29.2, so its column puts a folder holding only a
+# newer diffusers (and sentencepiece) ahead of co3 on PYTHONPATH. co3 itself is not changed.
+SD35_PYLIB=/datasets/mmolefe/poe_repair_min/pylib/sd35
 
 echo "=== node $(hostname -s)  job ${SLURM_JOB_ID:-none}  $(date -Is)"
 mkdir -p "$OUTROOT/logs"
@@ -36,9 +41,14 @@ cd "$REPO"
 if [ "${CHECK_LOAD:-0}" = 1 ]; then
   "$PY" "$SCRIPT" --check-load; rc=$?; echo "=== done $(date -Is)  rc $rc"; exit $rc
 fi
-for model in sd14 sd21 sdxl sd35; do
+for model in $RUN_MODELS; do
   echo "--- $model  $(date +%H:%M:%S)"
-  "$PY" "$SCRIPT" --model "$model" --seeds $SEEDS || echo "MODEL $model FAILED"
+  if [ "$model" = sd35 ]; then
+    PYTHONPATH="$SD35_PYLIB${PYTHONPATH:+:$PYTHONPATH}" "$PY" -c "import diffusers; print('diffusers', diffusers.__version__)"
+    PYTHONPATH="$SD35_PYLIB${PYTHONPATH:+:$PYTHONPATH}" "$PY" "$SCRIPT" --model sd35 --seeds $SEEDS || echo "MODEL sd35 FAILED"
+  else
+    "$PY" "$SCRIPT" --model "$model" --seeds $SEEDS || echo "MODEL $model FAILED"
+  fi
 done
 
 # The sheets are small, so they are copied into the checkout's outputs/ where cluster.sh pull reaches them.

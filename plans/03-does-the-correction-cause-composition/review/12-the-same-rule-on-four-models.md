@@ -24,10 +24,19 @@ Pinned before any render (task 1.1).
 
 ## Seed 42, cell by cell
 
-Not yet rendered.
+Read by eye at full size from job 58176's renders (2026-09-22). SD 3.5 did not render: its transformer needs a newer diffusers than 0.29.2, the version in every cluster environment.
 
 | Pair | Model | Joint prompt showed | PoE showed | Against the expectation |
 |---|---|---|---|---|
+| butterfly × flower meadow | SD 1.4 | one small butterfly in a meadow | one large butterfly among flowers | as expected on both sides |
+| butterfly × flower meadow | SD 2.1 | a butterfly in a meadow | a butterfly shape built out of flowers | PoE fuses the two rather than placing the butterfly in the meadow |
+| camel × forest | SD 1.4 | a camel among forest trees | a camel standing in a forest | as expected on both sides |
+| camel × forest | SD 2.1 | a camel at a forest edge | a camel with a clump of foliage on its back, trees faint in fog | PoE grafts the forest onto the camel |
+| cat × dog | SD 1.4 | one cat, no dog | one white animal with a cat's head | the joint prompt fails too: one animal |
+| cat × dog | SD 2.1 | two dogs, no cat | one cat with a collar and long legs | the joint prompt shows two animals but not a cat and a dog; PoE gives one animal |
+| butterfly × flower meadow | SDXL | several butterflies over a meadow | several butterflies over a meadow | as expected on both sides |
+| camel × forest | SDXL | a camel among bare trees | a camel with green mossy fur in a misty forest | both concepts present; the forest's colour bleeds into the camel |
+| cat × dog | SDXL | a cat beside a dog | one white animal with a dog's body and a cat-like face | as expected; the same hybrid as the current Figure 2, so this column reproduces the paper's seed 42 |
 
 ## Still open
 
