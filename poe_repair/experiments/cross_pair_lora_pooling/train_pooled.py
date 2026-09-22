@@ -23,6 +23,7 @@ Usage::
 from __future__ import annotations
 
 import argparse
+import math
 import datetime as _dt
 import json
 import logging
@@ -184,6 +185,10 @@ def build_argparser() -> argparse.ArgumentParser:
                          "attn1 q/k/v, where look-alike subjects leak features into each other "
                          "(Dahary et al. 2024, 2403.16990, section 4.3).")
     ap.add_argument("--lr", type=float, default=1e-4)
+    ap.add_argument("--lr-decay", default="none", choices=("none", "cosine"),
+                    help="none: constant --lr (every run before 2026-09-22). cosine: fall from --lr at the "
+                         "start (or resume) epoch to 0 at the last epoch, set once per epoch, so late "
+                         "checkpoints stop wandering between renders.")
     ap.add_argument("--ema-decay", type=float, default=0.0,
                     help="per-step EMA decay of the LoRA weights, saved as lora_state_ema in every checkpoint; "
                          "applied once per epoch as decay**epoch_size; 0 disables")
@@ -892,8 +897,12 @@ def main(argv: list[str] | None = None) -> int:
     t_start = _time.time()
     start_epoch = int(state.epoch)
     try:
-        for _ in range(remaining_epochs):
+        for i_epoch in range(remaining_epochs):
             t_epoch = _time.time()
+            if args.lr_decay == "cosine":
+                lr_now = float(args.lr) * 0.5 * (1.0 + math.cos(math.pi * i_epoch / max(1, remaining_epochs)))
+                for group in optimizer.param_groups:
+                    group["lr"] = lr_now
             ok = train_epoch_multi_pair(
                 unet=models["unet"], scheduler=scheduler,
                 optimizer=optimizer, dataset_by_pair=dataset_by_pair,
