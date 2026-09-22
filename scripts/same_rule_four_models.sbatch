@@ -30,6 +30,8 @@ nvidia-smi --query-gpu=name,memory.used,memory.total --format=csv,noheader || { 
 "$PY" -c "import torch; assert torch.cuda.is_available()" || { echo "ABORT: torch sees no GPU" >&2; exit 4; }
 
 export SAME_RULE_OUT="$OUTROOT"
+# Every model is already in ~/.cache/huggingface; online checks from a compute node stall for minutes.
+export HF_HUB_OFFLINE=1
 cd "$REPO"
 if [ "${CHECK_LOAD:-0}" = 1 ]; then
   "$PY" "$SCRIPT" --check-load; rc=$?; echo "=== done $(date -Is)  rc $rc"; exit $rc

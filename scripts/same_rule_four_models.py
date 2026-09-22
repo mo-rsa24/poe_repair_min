@@ -41,7 +41,7 @@ NOISE_PAIR = "a_cat__x__a_dog"          # whose cached starting latent every SDX
 MODELS = {
     "sd14": dict(label="SD 1.4", ids=["CompVis/stable-diffusion-v1-4"],
                  size=512, steps=50, guidance=7.5, sampler="DDIM"),
-    "sd21": dict(label="SD 2.1", ids=["stabilityai/stable-diffusion-2-1-base", "Manojb/stable-diffusion-2-1-base"],
+    "sd21": dict(label="SD 2.1", ids=["Manojb/stable-diffusion-2-1-base"],
                  size=512, steps=50, guidance=7.5, sampler="DDIM"),
     "sdxl": dict(label="SDXL", ids=["stabilityai/stable-diffusion-xl-base-1.0"],
                  size=1024, steps=50, guidance=7.5, sampler="DDIM"),
@@ -85,7 +85,9 @@ def meta_for(model, model_id, a, b, seed, column, noise):
             "rule": "joint prompt with CFG" if column == "joint" else "eps_u + w(eps_a-eps_u) + w(eps_b-eps_u)"}
 
 
-# ---- SD 1.4 and SD 2.1: UNet, loaded part by part (the SD 2.1 mirror has no model_index.json)
+# ---- SD 1.4 and SD 2.1: UNet, loaded part by part (the SD 2.1 mirror has no model_index.json).
+# stabilityai/stable-diffusion-2-1-base is no longer on the Hugging Face hub (404, 2026-09-22), so SD 2.1
+# base comes from the mirror Manojb/stable-diffusion-2-1-base, and every meta.json records that id.
 
 def load_unet_model(model):
     import torch
@@ -220,12 +222,14 @@ def render_sd35(seeds):
         print("sd35: everything already rendered", flush=True)
         return
     mid = m["ids"][0]
-    pipe = StableDiffusion3Pipeline.from_pretrained(mid, torch_dtype=torch.bfloat16).to("cuda")
+    # Model CPU offload keeps one part on the GPU at a time (T5 alone is about 9.5 GB in bf16), so
+    # this runs on the 12 GB cards of the batch partition as well as on a 24 GB one.
+    pipe = StableDiffusion3Pipeline.from_pretrained(mid, torch_dtype=torch.bfloat16)
+    pipe.enable_model_cpu_offload()
     if pipe.scheduler.config.get("use_dynamic_shifting"):
         raise SystemExit("the SD 3.5 scheduler uses dynamic shifting, which this loop does not pass")
 
-    # Every prompt is encoded first, and the three text encoders are freed before sampling, so the
-    # transformer at batch 3 fits on a 24 GB card.
+    # Every prompt is encoded first, and the three text encoders are dropped before sampling.
     texts = {""} | {t for a, b, _, c in cells for t in ([joint(a, b)] if c == "joint" else [a, b])}
     emb = {}
     with torch.no_grad():
@@ -233,7 +237,14 @@ def render_sd35(seeds):
             pe, _, pooled, _ = pipe.encode_prompt(prompt=t, prompt_2=None, prompt_3=None, device="cuda",
                                                   do_classifier_free_guidance=False)
             emb[t] = (pe, pooled)
-    pipe.text_encoder = pipe.text_encoder_2 = pipe.text_encoder_3 = None
+    # Sampling needs only the transformer and the VAE, about 5 GB together, so the offload hooks
+    # come off and those two go to the GPU while the text encoders stay on the CPU.
+    from accelerate.hooks import remove_hook_from_module
+    for name in ("text_encoder", "text_encoder_2", "text_encoder_3", "transformer", "vae"):
+        remove_hook_from_module(getattr(pipe, name), recurse=True)
+    for name in ("text_encoder", "text_encoder_2", "text_encoder_3"):
+        getattr(pipe, name).to("cpu")
+    pipe.transformer.to("cuda"); pipe.vae.to("cuda")
     gc.collect(); torch.cuda.empty_cache()
 
     h = m["size"] // pipe.vae_scale_factor
