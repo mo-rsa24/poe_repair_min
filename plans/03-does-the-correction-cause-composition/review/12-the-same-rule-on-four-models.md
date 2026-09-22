@@ -43,7 +43,7 @@ Read by eye at full size, 2026-09-22. SD 1.4, SD 2.1 and SDXL are job 58176 on `
 
 ## What the grid shows against the expectation
 
-PoE gives one hybrid for cat × dog on all four models, which is the expectation. Two things were not
+[PoE](../../../context/world/poe-composition.md#what-poe-composition-is) gives one hybrid for cat × dog on all four models, which is the expectation. Two things were not
 expected. The joint prompt fails on cat × dog on the two older models (SD 1.4 draws one cat, SD 2.1
 draws two dogs), so joint prompting is a working reference only on SDXL and SD 3.5. And PoE fuses
 the two concepts on two cells of the pairs expected to compose: SD 2.1 builds the butterfly out of

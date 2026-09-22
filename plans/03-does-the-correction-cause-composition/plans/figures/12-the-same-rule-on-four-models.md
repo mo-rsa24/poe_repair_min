@@ -1,8 +1,8 @@
 # 🖼️ The same rule on four models: Figure 2 as a grid
 
 This plan redraws Figure 2 of the manuscript as a grid of three prompt pairs by four Stable
-Diffusion models. Each cell shows the joint prompt on the left and uncorrected product-of-experts
-composition on the right, all at seed 42. The figure then shows the same composition rule on
+Diffusion models. Each cell shows the joint prompt on the left and uncorrected [product-of-experts
+composition](../../../../context/world/poe-composition.md#what-poe-composition-is) on the right, all at seed 42. The figure then shows the same composition rule on
 several models, where the current one shows two pairs on SDXL only.
 
 ## Recommended prompt (after this plan completes)
@@ -44,7 +44,7 @@ Design only. What the renders showed, cell by cell, lives in
 ⬅️ [Top](#-the-same-rule-on-four-models-figure-2-as-a-grid) | 📋 [TOC](#table-of-contents) | [Next](#words-this-plan-uses) ➡️
 
 Does the pattern in Figure 2 hold on four Stable Diffusion models? The pattern is that the same
-composition rule gives both concepts on one pair and a hybrid on another.
+composition rule gives both concepts on one pair and a [hybrid](../../../../context/world/chimera.md#what-a-chimera-is) on another.
 
 ## Words this plan uses
 

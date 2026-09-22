@@ -110,6 +110,8 @@ Navigation: ⬅️ [What people get wrong](#what-people-get-wrong) | 📋 [TOC](
 
 ## Cross-references
 
-- The mention of **a product of experts** (composing SDXL as an additive combination of two expert predictions) in [the scene map for the Gaussian score's base case](../../../../../goal-setting/learning/deep-learning/diffusion-models/poe-composition-diffusion/artifacts/drips/gaussian-score-base-case/SCENE_MAP.md) (relevance match).
+- The mention of **a product of experts** (composing SDXL as an additive combination of two expert predictions) in [the scene map for the Gaussian score's base case](../../../../goal-setting/learning/deep-learning/diffusion-models/05-poe-composition-diffusion/artifacts/drips/gaussian-score-base-case/SCENE_MAP.md) (relevance match).
 - The mention of **product-of-experts** in [the finding "does a Langevin corrector remove part of the correction"](../../report/is-the-gap-the-samplers-or-the-models/does-a-langevin-corrector-remove-part-of-the-correction.md).
 - The mention of **product-of-experts** in [the finding "does a corrector alone produce two animals"](../../report/is-the-gap-the-samplers-or-the-models/does-a-corrector-alone-produce-two-animals.md).
+- The mention of **product-of-experts composition** in [the figure plan "the same rule on four models"](../../plans/03-does-the-correction-cause-composition/plans/figures/12-the-same-rule-on-four-models.md).
+- The mention of **PoE** in [the review of "the same rule on four models"](../../plans/03-does-the-correction-cause-composition/review/12-the-same-rule-on-four-models.md).

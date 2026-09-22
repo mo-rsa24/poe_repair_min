@@ -105,4 +105,4 @@ Navigation: ⬅️ [What this project does about it](#what-this-project-does-abo
 
 ## Cross-references
 
-- The mention of **what this journey composes later** (the log-space sum-of-scores identity) in [the scene map for the Gaussian score's base case](../../../../../goal-setting/learning/deep-learning/diffusion-models/poe-composition-diffusion/artifacts/drips/gaussian-score-base-case/SCENE_MAP.md) (relevance match).
+- The mention of **what this journey composes later** (the log-space sum-of-scores identity) in [the scene map for the Gaussian score's base case](../../../../goal-setting/learning/deep-learning/diffusion-models/05-poe-composition-diffusion/artifacts/drips/gaussian-score-base-case/SCENE_MAP.md) (relevance match).

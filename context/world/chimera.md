@@ -88,3 +88,7 @@ Navigation: ⬅️ [What people get wrong](#what-people-get-wrong) | 📋 [TOC](
 | The chimera example image | Read directly, `data/pilot/seed_42/a_cat__x__a_dog/poe.png` | 2026-08-24 |
 | The causal claim linking chimera to the interaction term | Read in `paper/iclr/iclr2027_conference.tex`, abstract | 2026-08-24 |
 | The "two of the same animal" scorer miss | Read in `artifacts/results/can-we-trust-the-compose-score/do-the-successful-cells-contain-both-animals/README.md` | 2026-08-24 |
+
+## Cross-references
+
+- The mention of **a hybrid** in [the figure plan "the same rule on four models"](../../plans/03-does-the-correction-cause-composition/plans/figures/12-the-same-rule-on-four-models.md) (relevance match).
