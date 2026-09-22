@@ -91,17 +91,23 @@ def _attach_and_load_lora(unet: torch.nn.Module, checkpoint: Path, key: str | No
     from types import SimpleNamespace
     from poe_repair.experiments.one_pair_one_seed.config import LoRAConfig
 
-    lora_cfg = LoRAConfig(
-        rank=LORA_RANK, alpha=LORA_ALPHA, dropout=0.0,
-        target_modules=LORA_TARGET_MODULES, init="gaussian",
-        adapter_name=LORA_ADAPTER_NAME,
-    )
-    attach_info = lora_trainer.attach_lora(unet, SimpleNamespace(lora=lora_cfg))
     ckpt = torch.load(str(checkpoint), map_location="cpu", weights_only=False)
     key = LORA_KEY if key is None else key
     state = ckpt.get(key)
     if state is None:
         raise KeyError(f"{checkpoint} has no {key!r} key (found: {list(ckpt.keys())})")
+    # A checkpoint trained with self-attention too carries attn1 keys; attach to what it covers,
+    # or those weights find no module and the load silently drops them.
+    targets = tuple(LORA_TARGET_MODULES)
+    if any(".attn1." in k for k in state):
+        targets = targets + tuple(t.replace("attn2.", "attn1.") for t in LORA_TARGET_MODULES)
+    lora_cfg = LoRAConfig(
+        rank=LORA_RANK, alpha=LORA_ALPHA, dropout=0.0,
+        target_modules=targets, init="gaussian",
+        adapter_name=LORA_ADAPTER_NAME,
+    )
+    attach_info = lora_trainer.attach_lora(unet, SimpleNamespace(lora=lora_cfg))
+    attach_info["target_modules"] = list(targets)
     # The checkpoint's keys carry the adapter name they were saved under. Loading into an
     # adapter with a different name matches nothing, so rename first; without this the load
     # reports success and the adapter renders as if it were not there.

@@ -283,6 +283,7 @@ def run_lora_langevin_windowed_poe(
     corrector_score: str = "corrected",
     lora_adapter_name_late: str | None = None,
     adapter_switch_at: int | None = None,
+    spread_match: float = 0.0,
 ) -> SamplerOutputs:
     """The rank-32 corrected run with ``k`` Langevin steps inside ``corrector_window``.
 
@@ -306,6 +307,11 @@ def run_lora_langevin_windowed_poe(
     draws ``[switch, end)``. Composition is decided in the early steps and the picture is
     finished in the late ones, so this lets one adapter do each job. Leave both at ``None`` and
     a single adapter runs the whole path, unchanged.
+
+    ``spread_match`` is Lin et al.'s guidance rescale (2305.08891, section 3.4) moved onto the
+    product: each step's combined prediction is rescaled so its standard deviation matches the
+    mean of the two unguided concept predictions, then blended back in at this weight (their
+    choice is 0.7). 0 leaves the prediction as it was, which is every run before it existed.
 
     One Langevin step costs two three-branch UNet calls (frozen and adapter) when the
     drift is corrected and the adapter is on, one call otherwise.
@@ -337,7 +343,13 @@ def run_lora_langevin_windowed_poe(
         eps_a_raw, eps_b_raw, eps_uncond = noise.chunk(3)
         eps_a = guided_eps(eps_a_raw, eps_uncond, guidance_scale)
         eps_b = guided_eps(eps_b_raw, eps_uncond, guidance_scale)
-        return poe_eps(eps_a, eps_b, eps_uncond)
+        out = poe_eps(eps_a, eps_b, eps_uncond)
+        if spread_match > 0.0:
+            out32 = out.float()
+            ref = 0.5 * (eps_a_raw.float().std() + eps_b_raw.float().std())
+            rescaled = out32 * (ref / out32.std().clamp_min(1e-8))
+            out = (float(spread_match) * rescaled + (1.0 - float(spread_match)) * out32).to(out.dtype)
+        return out
 
     def adapter_for(step_index: int) -> str:
         """Which attached adapter draws this step."""
@@ -416,6 +428,7 @@ def run_lora_langevin_windowed_poe(
                 else [int(lambda_window[0]), int(lambda_window[1])]
             ),
             "corrector_score": corrector_score,
+            "spread_match": float(spread_match),
             "corrector_window": (
                 None if corrector_window is None
                 else [int(corrector_window[0]), int(corrector_window[1])]

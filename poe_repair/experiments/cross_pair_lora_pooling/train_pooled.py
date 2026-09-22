@@ -179,6 +179,10 @@ def build_argparser() -> argparse.ArgumentParser:
                          "pairs come from this file's keys.")
     ap.add_argument("--lora-rank", type=int, default=8)
     ap.add_argument("--lora-alpha", type=int, default=8)
+    ap.add_argument("--lora-targets", default="cross", choices=("cross", "cross+self"),
+                    help="cross: attn2 q/k/v only (every run before 2026-09-22). cross+self adds the "
+                         "attn1 q/k/v, where look-alike subjects leak features into each other "
+                         "(Dahary et al. 2024, 2403.16990, section 4.3).")
     ap.add_argument("--lr", type=float, default=1e-4)
     ap.add_argument("--ema-decay", type=float, default=0.0,
                     help="per-step EMA decay of the LoRA weights, saved as lora_state_ema in every checkpoint; "
@@ -326,6 +330,9 @@ def main(argv: list[str] | None = None) -> int:
     cfg.cell.split = "heldout"
     cfg.lora.rank = int(args.lora_rank)
     cfg.lora.alpha = int(args.lora_alpha)
+    if args.lora_targets == "cross+self":
+        cross = tuple(cfg.lora.target_modules)
+        cfg.lora.target_modules = cross + tuple(t.replace("attn2.", "attn1.") for t in cross)
     cfg.optim.lr = float(args.lr)
     cfg.optim.weight_decay = float(args.weight_decay)
     cfg.schedule.total_epochs = int(args.total_epochs)
