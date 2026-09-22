@@ -208,7 +208,7 @@ column's setting here.
       disk guard on `/datasets`, GPU guard, `co3` path check, models in the order SD 1.4, SD 2.1,
       SDXL, SD 3.5, with the joint column before PoE for each.
   - Done when: `bash -n` passes on the script.
-- [ ] **1.4** Commit the plan, review file and both scripts, then check all four models load on a
+- [x] **1.4** Commit the plan, review file and both scripts, then check all four models load on a
       node before rendering anything.
   - Command: `scripts/cluster.sh run "mkdir -p /datasets/mmolefe/poe_repair_min/outputs/same_rule_four_models/logs && sbatch --export=ALL,CHECK_LOAD=1 scripts/same_rule_four_models.sbatch"`
   - Done when: the log ends `rc 0`, with one `[load]` line per model; the SD 2.1 line's id goes into
@@ -218,16 +218,16 @@ column's setting here.
 
 ### 2. 🚀 Render and draw
 
-- [ ] **2.1** Launch through the one launch path.
+- [x] **2.1** Launch through the one launch path.
   - Command: `scripts/cluster.sh run "sbatch -p batch --exclude=mscluster124,mscluster129 --export=ALL,SEEDS=42 scripts/same_rule_four_models.sbatch"`
   - Expected runtime: under half an hour for 24 images (3 pairs × 4 models × 2 columns, seed 42).
   - Done when: `scripts/cluster.sh jobs` no longer lists the job and the log ends in `=== done`.
-- [ ] **2.2** Pull the renders and draw the grid.
+- [x] **2.2** Pull the renders and draw the grid.
   - Command: `scripts/cluster.sh pull outputs/same_rule_four_models`, then copy
     `outputs/same_rule_four_models/seed-42.pdf` to `paper/overleaf-iclr/figures/same-rule-on-four-models.pdf`.
     The job draws the sheet on the cluster.
   - Done when: the job log's `[sheet]` line says `missing 0 of 24`.
-- [ ] **2.3** Read every seed-42 cell against the table in
+- [x] **2.3** Read every seed-42 cell against the table in
       [What we expect before rendering](#what-we-expect-before-rendering), and write each read into
       the review file: both concepts, one hybrid, or something else, in words.
   - Done when: the review file has 24 rows filled.
@@ -289,7 +289,7 @@ ls -la paper/overleaf-iclr/figures/same-rule-on-four-models.pdf
 
 | Figure | File | What it shows | Status |
 |---|---|---|---|
-| Figure 2, main text | `paper/overleaf-iclr/figures/same-rule-on-four-models.pdf` | three pairs by four models, joint and PoE per cell, seed 42 | owed |
+| Figure 2, main text | `paper/overleaf-iclr/figures/same-rule-on-four-models.pdf` | three pairs by four models, joint and PoE per cell, seed 42 | drawn 2026-09-22 (jobs 58176, 58190) |
 
 ## Code references
 
@@ -306,4 +306,4 @@ ls -la paper/overleaf-iclr/figures/same-rule-on-four-models.pdf
 
 ⬅️ [Previous](#code-references) | 📋 [TOC](#table-of-contents)
 
-Task 1.4: commit and run the load check on a node. The dry-run passed on the laptop on 2026-09-22.
+Instruction 3.1: look at the grid, then task C.1, back to the proofread walk at chunk 11.

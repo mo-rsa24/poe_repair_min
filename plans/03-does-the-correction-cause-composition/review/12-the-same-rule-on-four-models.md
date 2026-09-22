@@ -24,7 +24,7 @@ Pinned before any render (task 1.1).
 
 ## Seed 42, cell by cell
 
-Read by eye at full size from job 58176's renders (2026-09-22). SD 3.5 did not render: its transformer needs a newer diffusers than 0.29.2, the version in every cluster environment.
+Read by eye at full size, 2026-09-22. SD 1.4, SD 2.1 and SDXL are job 58176 on `co3` (diffusers 0.29.2). SD 3.5 is job 58190, on `co3` with diffusers 0.32.2 and sentencepiece placed ahead of it on `PYTHONPATH` from `/datasets/mmolefe/poe_repair_min/pylib/sd35`, because SD 3.5 medium's transformer does not load on 0.29.2.
 
 | Pair | Model | Joint prompt showed | PoE showed | Against the expectation |
 |---|---|---|---|---|
@@ -37,6 +37,18 @@ Read by eye at full size from job 58176's renders (2026-09-22). SD 3.5 did not r
 | butterfly × flower meadow | SDXL | several butterflies over a meadow | several butterflies over a meadow | as expected on both sides |
 | camel × forest | SDXL | a camel among bare trees | a camel with green mossy fur in a misty forest | both concepts present; the forest's colour bleeds into the camel |
 | cat × dog | SDXL | a cat beside a dog | one white animal with a dog's body and a cat-like face | as expected; the same hybrid as the current Figure 2, so this column reproduces the paper's seed 42 |
+| butterfly × flower meadow | SD 3.5 | one butterfly on a flower meadow | one butterfly on a flower meadow | as expected on both sides |
+| camel × forest | SD 3.5 | a camel in a clearing with forest behind | a camel on a forest path | as expected on both sides |
+| cat × dog | SD 3.5 | a tabby cat lying beside a puppy | one tabby cat with a dog's ear and a half-dog face | as expected |
+
+## What the grid shows against the expectation
+
+PoE gives one hybrid for cat × dog on all four models, which is the expectation. Two things were not
+expected. The joint prompt fails on cat × dog on the two older models (SD 1.4 draws one cat, SD 2.1
+draws two dogs), so joint prompting is a working reference only on SDXL and SD 3.5. And PoE fuses
+the two concepts on two cells of the pairs expected to compose: SD 2.1 builds the butterfly out of
+flowers and grafts foliage onto the camel. Seed 42 was fixed before rendering and is shown as it
+came out.
 
 ## Still open
 

@@ -10,7 +10,7 @@ The walk's persistent state. Read it first on every invocation, write it before 
 | Kind | manuscript section |
 | Grain | paragraph |
 | Cadence | sweep |
-| Current chunk | 11 of 21, Figure 2's caption, waiting on the redrawn figure |
+| Current chunk | 11 of 21, Figure 2's caption, against the new grid |
 | Marks | 8 ok, 6 work, 1 cut?, 6 changed |
 | Compiled | nothing yet |
 | Owner | this session |
@@ -108,7 +108,7 @@ Navigation: ⬅️ [Originals held](#originals-held) | 📋 [TOC](#table-of-cont
 
 | Figure | Image file | Opened | What to change | Slot decided |
 |---|---|---|---|---|
-| 2 | `paper/overleaf-iclr/figures/same-rule-composes-one-pair-and-blends-another.pdf` | yes, rendered at 70 dpi | replaced by a new grid: rows butterfly × flower meadow, camel × forest, cat × dog; columns SD 1.4, SD 2.1, SDXL, SD 3.5; each cell joint prompt left, PoE right, seed 42 | not yet walked |
+| 2 | `paper/overleaf-iclr/figures/same-rule-on-four-models.pdf` (was `same-rule-composes-one-pair-and-blends-another.pdf`) | yes, the grid at 90 dpi and each surprising cell at full size | replaced by a new grid: rows butterfly × flower meadow, camel × forest, cat × dog; columns SD 1.4, SD 2.1, SDXL, SD 3.5; each cell joint prompt left, PoE right, seed 42 | not yet walked |
 | 3 | `paper/overleaf-iclr/figures/how-much-is-added/strength-grid.pdf` | yes, rendered at 200 dpi | not yet walked | not yet walked |
 
 ## Open questions on the text
@@ -129,7 +129,7 @@ Navigation: ⬅️ [Open questions](#open-questions-on-the-text) | 📋 [TOC](#t
 
 | Chunk | Where it went | What it owes back | Returned |
 |---|---|---|---|
-| 10, 11 | [the four-models figure plan](../../../plans/03-does-the-correction-cause-composition/plans/figures/12-the-same-rule-on-four-models.md) | `paper/overleaf-iclr/figures/same-rule-on-four-models.pdf` (three pairs by four models, joint and PoE per cell, seed 42) and the review file's cell-by-cell read. Tasks 1.1 to 1.3 done 2026-09-22; the load check (1.4) waits on a commit | no |
+| 10, 11 | [the four-models figure plan](../../../plans/03-does-the-correction-cause-composition/plans/figures/12-the-same-rule-on-four-models.md) | `paper/overleaf-iclr/figures/same-rule-on-four-models.pdf` (three pairs by four models, joint and PoE per cell, seed 42) and the review file's cell-by-cell read. Drawn 2026-09-22 from jobs 58176 and 58190, 24 of 24 cells; read cell by cell in the review file | yes |
 
 ## Compile log
 
