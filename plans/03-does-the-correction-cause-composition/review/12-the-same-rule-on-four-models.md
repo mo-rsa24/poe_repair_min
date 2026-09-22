@@ -18,7 +18,7 @@ Pinned before any render (task 1.1).
 | Model | Model id | Resolution | Sampler | Steps | Guidance |
 |---|---|---|---|---|---|
 | SD 1.4 | `CompVis/stable-diffusion-v1-4` | 512 | DDIM | 50 | 7.5 |
-| SD 2.1 | `stabilityai/stable-diffusion-2-1-base`, else the mirror `Manojb/stable-diffusion-2-1-base` (the one loaded is recorded here after task 1.4) | 512 | DDIM | 50 | 7.5 |
+| SD 2.1 | `Manojb/stable-diffusion-2-1-base`, a mirror: `stabilityai/stable-diffusion-2-1-base` returns 404 on the hub (2026-09-22) | 512 | DDIM | 50 | 7.5 |
 | SDXL | `stabilityai/stable-diffusion-xl-base-1.0` | 1024 | DDIM | 50 | 7.5 |
 | SD 3.5 | `stabilityai/stable-diffusion-3.5-medium` | 1024 | flow-matching Euler, rule on velocities | 40 | 4.5 |
 
@@ -29,11 +29,7 @@ Not yet rendered.
 | Pair | Model | Joint prompt showed | PoE showed | Against the expectation |
 |---|---|---|---|---|
 
-## Seeds 4 and 123
-
-Not yet rendered.
-
 ## Still open
 
-- Which SD 2.1 id loads: only the mirror is in the cluster's cache.
+- The SD 2.1 column is a third-party mirror of the base weights, not Stability's own repository, which is gone.
 - Whether a caption may call the camel row Liu et al.'s example: it is from their code's README, not their paper.

@@ -134,10 +134,10 @@ does, because that cache cannot be regenerated from `torch.manual_seed`. The oth
 draw their noise from `torch.Generator().manual_seed(42)` at their own shape. Within one column,
 all three rows share one starting noise.
 
-**Seeds 4 and 123 render alongside and are never used to pick**
+**One seed, 42, fixed before rendering**
 
-They go to an appendix sheet of the same layout, so a reader can check that seed 42 is not a lucky
-draw. The main figure shows seed 42 whatever it looks like.
+Only seed 42 renders, and the figure shows it whatever it looks like. One seed per cell shows what
+the rule can do on each model; it cannot show how often, so the caption says one sample per cell.
 
 **The camel pair comes from Liu et al.'s released code, not their paper**
 
@@ -219,20 +219,18 @@ column's setting here.
 ### 2. 🚀 Render and draw
 
 - [ ] **2.1** Launch through the one launch path.
-  - Command: `scripts/cluster.sh run "sbatch --export=ALL,SEEDS='42 4 123' scripts/same_rule_four_models.sbatch"`
-  - Expected runtime: under an hour on one 3090 for 72 images (3 pairs × 4 models × 2 columns ×
-    3 seeds).
+  - Command: `scripts/cluster.sh run "sbatch -p batch --exclude=mscluster124,mscluster129 --export=ALL,SEEDS=42 scripts/same_rule_four_models.sbatch"`
+  - Expected runtime: under half an hour for 24 images (3 pairs × 4 models × 2 columns, seed 42).
   - Done when: `scripts/cluster.sh jobs` no longer lists the job and the log ends in `=== done`.
 - [ ] **2.2** Pull the renders and draw the grid.
   - Command: `scripts/cluster.sh pull outputs/same_rule_four_models`, then copy
-    `outputs/same_rule_four_models/seed-42.pdf` to `paper/overleaf-iclr/figures/same-rule-on-four-models.pdf`
-    and the seed-4 and seed-123 sheets into `artifacts/results/same-rule-on-four-models/`. The job
-    draws the sheets on the cluster.
-  - Done when: three sheets exist, and the job log's `[sheet]` line for seed 42 says `missing 0 of 24`.
+    `outputs/same_rule_four_models/seed-42.pdf` to `paper/overleaf-iclr/figures/same-rule-on-four-models.pdf`.
+    The job draws the sheet on the cluster.
+  - Done when: the job log's `[sheet]` line says `missing 0 of 24`.
 - [ ] **2.3** Read every seed-42 cell against the table in
       [What we expect before rendering](#what-we-expect-before-rendering), and write each read into
       the review file: both concepts, one hybrid, or something else, in words.
-  - Done when: the review file has 24 rows filled for seed 42, and one line per appendix seed.
+  - Done when: the review file has 24 rows filled.
 
 ▶ **Next: [instruction 3.1](#3--look-at-the-grid)**.
 
@@ -265,14 +263,14 @@ column's setting here.
 
 ```bash
 OUT=/datasets/mmolefe/poe_repair_min/outputs/same_rule_four_models
-scripts/cluster.sh sh "find $OUT -name '*.png' | wc -l"        # 72
+scripts/cluster.sh sh "find $OUT -name '*.png' | wc -l"        # 24
 scripts/cluster.sh sh "cat $OUT/sd35/a_cat__x__a_dog/seed_42/poe.json"   # steps 40, guidance 4.5, rule velocities
 ls -la paper/overleaf-iclr/figures/same-rule-on-four-models.pdf
 ```
 
 **Pass criteria**
 
-- 72 PNGs, each with its `meta.json`.
+- 24 PNGs, each with its `meta.json`.
 - The seed-42 sheet has 24 filled images, and labels sit on the rows and columns.
 - The review file has every seed-42 cell read in words.
 
@@ -292,7 +290,6 @@ ls -la paper/overleaf-iclr/figures/same-rule-on-four-models.pdf
 | Figure | File | What it shows | Status |
 |---|---|---|---|
 | Figure 2, main text | `paper/overleaf-iclr/figures/same-rule-on-four-models.pdf` | three pairs by four models, joint and PoE per cell, seed 42 | owed |
-| Appendix sheets | `artifacts/results/same-rule-on-four-models/seed-4.pdf`, `seed-123.pdf` | the same grid at seeds 4 and 123 | owed |
 
 ## Code references
 
