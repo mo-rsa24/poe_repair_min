@@ -53,7 +53,7 @@ def cell_dir(slug: str, seed: int) -> Path:
 def render(column: str, pairs: list[tuple[str, str]], seeds: list[int], ckpt: Path | None,
            rank: int, windows: list[int | None] = (None,), tag: str = "",
            spread_match: float = 0.0, late_ckpt: Path | None = None,
-           switch_at: int | None = None) -> None:
+           switch_at: int | None = None, contrast: dict | None = None) -> None:
     free, total = torch.cuda.mem_get_info(0)
     if (total - free) / 1e9 > 1.0:
         raise SystemExit(f"device holds {(total - free) / 1e9:.1f} GB, refusing to share")
@@ -119,7 +119,7 @@ def render(column: str, pairs: list[tuple[str, str]], seeds: list[int], ckpt: Pa
                         device=ctx.device, dtype=ctx.dtype, lambda_value=1.0, k=0, c=0.0,
                         corrector_window=None, noise_seed=seed, lora_adapter_name=lbp.LORA_ADAPTER_NAME,
                         lambda_window=(0, window), corrector_score="frozen",
-                        spread_match=spread_match,
+                        spread_match=spread_match, **(contrast or {}),
                         lora_adapter_name_late="late" if late_ckpt is not None else None,
                         adapter_switch_at=switch_at if late_ckpt is not None else None,
                     )
@@ -133,7 +133,7 @@ def render(column: str, pairs: list[tuple[str, str]], seeds: list[int], ckpt: Pa
                     "pair": cell.pair_slug, "prompt_a": a, "prompt_b": b, "seed": seed,
                     "column": column, "noise_from": NOISE_PAIR,
                     "checkpoint": str(ckpt) if column != "mono" else None,
-                    "adapter_steps": window, "tag": tag, "spread_match": spread_match,
+                    "adapter_steps": window, "tag": tag, "spread_match": spread_match, "contrast": contrast,
                     "late_checkpoint": str(late_ckpt) if late_ckpt else None, "switch_at": switch_at, "guidance": ctx.guidance_scale,
                     "steps": ctx.num_inference_steps, "size": [cell.width, cell.height],
                 }, indent=1))
@@ -185,6 +185,11 @@ if __name__ == "__main__":
                     help="blend weight of the guidance rescale onto the product (0 off, 0.7 Lin et al.)")
     ap.add_argument("--late-checkpoint", type=Path, help="second adapter that draws from --switch-at on")
     ap.add_argument("--switch-at", type=int, help="step the late adapter takes over")
+    ap.add_argument("--contrast-steps", type=int, default=0,
+                    help="CO3's contrast corrector over the first N steps (0 off)")
+    ap.add_argument("--contrast-iters", type=int, default=5)
+    ap.add_argument("--contrast-beta", type=float, default=0.9)
+    ap.add_argument("--contrast-w-multi", type=float, default=2.0)
     ap.add_argument("--sheet", action="store_true")
     a = ap.parse_args()
     pairs = [parse_pair(p) for p in a.pairs]
@@ -192,6 +197,9 @@ if __name__ == "__main__":
         sheet(pairs, a.seeds)
     elif a.column:
         render(a.column, pairs, a.seeds, a.checkpoint, a.rank, a.window or [None], a.tag,
-               a.spread_match, a.late_checkpoint, a.switch_at)
+               a.spread_match, a.late_checkpoint, a.switch_at,
+               {"contrast_steps": a.contrast_steps, "contrast_iters": a.contrast_iters,
+                "contrast_beta": a.contrast_beta, "contrast_w_multi": a.contrast_w_multi}
+               if a.contrast_steps > 0 else None)
     else:
         raise SystemExit("pass --column <mono|poe|ours> or --sheet")

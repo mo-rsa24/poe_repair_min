@@ -284,6 +284,10 @@ def run_lora_langevin_windowed_poe(
     lora_adapter_name_late: str | None = None,
     adapter_switch_at: int | None = None,
     spread_match: float = 0.0,
+    contrast_steps: int = 0,
+    contrast_iters: int = 5,
+    contrast_beta: float = 0.9,
+    contrast_w_multi: float = 2.0,
 ) -> SamplerOutputs:
     """The rank-32 corrected run with ``k`` Langevin steps inside ``corrector_window``.
 
@@ -313,6 +317,16 @@ def run_lora_langevin_windowed_poe(
     mean of the two unguided concept predictions, then blended back in at this weight (their
     choice is 0.7). 0 leaves the prediction as it was, which is every run before it existed.
 
+    ``contrast_steps`` switches on CO3's contrast corrector (Dutta et al., 2509.25940, its
+    ``co3_corrector``) over the first that many steps, ``contrast_iters`` times each. CO3 subtracts
+    the single concepts from a joint-prompt prediction; here the corrected product stands in for the
+    joint prompt, so no joint prompt is needed. Each pass takes the corrected product's predicted
+    clean image at weight ``contrast_w_multi``, subtracts each concept's own predicted clean image
+    with weights ``-exp(-beta d_k)`` normalised to sum to -1 (``d_k`` is how far that concept's
+    prediction sits from the product's, so whichever concept is taking over is pushed away hardest),
+    rescales the result to the size the product alone would have had, and rebuilds the latent with
+    the empty branch. 0 steps leaves the path untouched, which is every run before it existed.
+
     One Langevin step costs two three-branch UNet calls (frozen and adapter) when the
     drift is corrected and the adapter is on, one call otherwise.
     """
@@ -334,22 +348,28 @@ def run_lora_langevin_windowed_poe(
     unet = models["unet"]
     gen = torch.Generator(device=device).manual_seed(int(noise_seed))
 
-    def three_branch(x16: torch.Tensor, timestep) -> torch.Tensor:
+    def branch_parts(x16: torch.Tensor, timestep):
+        """The three guided pieces of one step: each concept on its own, and the empty branch."""
         latent_input = scheduler.scale_model_input(x16.repeat(3, 1, 1, 1), timestep)
         noise = unet(
             latent_input, timestep, encoder_hidden_states=pe3,
             added_cond_kwargs=cond3, timestep_cond=None,
         ).sample
         eps_a_raw, eps_b_raw, eps_uncond = noise.chunk(3)
-        eps_a = guided_eps(eps_a_raw, eps_uncond, guidance_scale)
-        eps_b = guided_eps(eps_b_raw, eps_uncond, guidance_scale)
+        return (guided_eps(eps_a_raw, eps_uncond, guidance_scale),
+                guided_eps(eps_b_raw, eps_uncond, guidance_scale), eps_uncond)
+
+    def compose(eps_a: torch.Tensor, eps_b: torch.Tensor, eps_uncond: torch.Tensor) -> torch.Tensor:
         out = poe_eps(eps_a, eps_b, eps_uncond)
         if spread_match > 0.0:
             out32 = out.float()
-            ref = 0.5 * (eps_a_raw.float().std() + eps_b_raw.float().std())
+            ref = 0.5 * (eps_a.float().std() + eps_b.float().std())
             rescaled = out32 * (ref / out32.std().clamp_min(1e-8))
             out = (float(spread_match) * rescaled + (1.0 - float(spread_match)) * out32).to(out.dtype)
         return out
+
+    def three_branch(x16: torch.Tensor, timestep) -> torch.Tensor:
+        return compose(*branch_parts(x16, timestep))
 
     def adapter_for(step_index: int) -> str:
         """Which attached adapter draws this step."""
@@ -404,6 +424,29 @@ def run_lora_langevin_windowed_poe(
         else:
             row["chain_disp_rel"] = 0.0
             row["latent_norm_rel"] = 1.0
+        if contrast_steps > 0 and step_index < int(contrast_steps):
+            sqrt_1mab = (1.0 - alpha_bar_t).sqrt()
+            for _ in range(int(contrast_iters)):
+                _adapter_disable(unet)
+                eps_a_g, eps_b_g, eps_uncond = branch_parts(latents, timestep)
+                eps_multi = compose(eps_a_g, eps_b_g, eps_uncond)
+                if adapter_on:
+                    _adapter_enable(unet, adapter_for(step_index))
+                    eps_multi = eps_multi + float(lambda_value) * (three_branch(latents, timestep) - eps_multi)
+                x32 = latents.float()
+                tweedie_multi = x32 - sqrt_1mab.float() * eps_multi.float()
+                singles = [eps_a_g.float(), eps_b_g.float()]
+                dists = torch.stack([(e - eps_multi.float()).norm() for e in singles])
+                w = -torch.exp(-float(contrast_beta) * dists)
+                w = w / w.sum().abs().clamp_min(1e-8)
+                comp = float(contrast_w_multi) * tweedie_multi
+                for w_k, e_k in zip(w, singles):
+                    comp = comp + w_k * (x32 - sqrt_1mab.float() * e_k)
+                comp = comp / comp.max().clamp_min(1e-8) * tweedie_multi.max()
+                x2 = comp + sqrt_1mab.float() * eps_uncond.float()
+                x2 = x2 * (x32.norm() / x2.norm().clamp_min(1e-8))
+                latents = x2.to(dtype)
+            row["contrast_disp_rel"] = _norm(latents.float() - x_start32) / max(start_norm, 1e-12)
         eps_t, dn = corrected_forward(latents, timestep, adapter_on, step_index)
         delta_norm_per_step.append(dn)
         per_step.append(row)
@@ -429,6 +472,8 @@ def run_lora_langevin_windowed_poe(
             ),
             "corrector_score": corrector_score,
             "spread_match": float(spread_match),
+            "contrast": {"steps": int(contrast_steps), "iters": int(contrast_iters),
+                         "beta": float(contrast_beta), "w_multi": float(contrast_w_multi)},
             "corrector_window": (
                 None if corrector_window is None
                 else [int(corrector_window[0]), int(corrector_window[1])]
