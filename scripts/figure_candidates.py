@@ -133,15 +133,15 @@ def render(column: str, pairs: list[tuple[str, str]], seeds: list[int], ckpt: Pa
                     if on != window:
                         raise SystemExit(f"{cell.pair_slug} seed {seed} {column}: adapter on {on} steps, not {window}")
                 # mkdir is not idempotent on this NFS: jobs launched together race on the shared
-            # pair folder and the losers raise, either FileExists or a stale FileNotFound.
-            for _try in range(5):
-                try:
-                    out.parent.mkdir(parents=True, exist_ok=True)
-                except OSError:
-                    pass
-                if out.parent.is_dir():
-                    break
-                time.sleep(2)
+                # pair folder and the losers raise, either FileExists or a stale FileNotFound.
+                for _try in range(5):
+                    try:
+                        out.parent.mkdir(parents=True, exist_ok=True)
+                    except OSError:
+                        pass
+                    if out.parent.is_dir():
+                        break
+                    time.sleep(2)
                 write_decoded_image(res.image, out)
                 meta = out.with_suffix(".json")
                 meta.write_text(json.dumps({
