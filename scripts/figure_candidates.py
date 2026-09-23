@@ -44,6 +44,11 @@ LABELS = {"mono": "joint prompt", "poe": "plain product", "ours": "ours"}
 
 def parse_pair(s: str) -> tuple[str, str]:
     a, b = (p.strip() for p in s.split("|"))
+    # The subject lists are a hard constraint of this project, and a render path that skips the
+    # check is how a refused subject reaches a sheet anyway.
+    from disallowed_subjects import check
+    check(a)
+    check(b)
     return a, b
 
 

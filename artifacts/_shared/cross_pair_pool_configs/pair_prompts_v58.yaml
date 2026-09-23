@@ -206,10 +206,6 @@ an_emu__x__a_koala:
   joint_prompt: an emu and a koala
   prompt_a: an emu
   prompt_b: a koala
-an_iguana__x__a_teapot:
-  joint_prompt: an iguana and a teapot
-  prompt_a: an iguana
-  prompt_b: a teapot
 an_impala__x__a_jackal:
   joint_prompt: an impala and a jackal
   prompt_a: an impala
