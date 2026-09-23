@@ -221,6 +221,8 @@ def attach_lora(unet: torch.nn.Module, cfg: RunConfig) -> dict[str, Any]:
         lora_dropout=float(cfg.lora.dropout),
         bias="none",
         target_modules=list(cfg.lora.target_modules),
+        rank_pattern=dict(getattr(cfg.lora, "rank_pattern", None) or {}),
+        alpha_pattern=dict(getattr(cfg.lora, "alpha_pattern", None) or {}),
         init_lora_weights=(
             True if cfg.lora.init == "gaussian"
             else cfg.lora.init  # passthrough for "loftq" / etc.

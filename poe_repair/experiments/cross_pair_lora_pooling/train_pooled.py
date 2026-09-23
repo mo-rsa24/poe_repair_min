@@ -180,6 +180,11 @@ def build_argparser() -> argparse.ArgumentParser:
                          "pairs come from this file's keys.")
     ap.add_argument("--lora-rank", type=int, default=8)
     ap.add_argument("--lora-alpha", type=int, default=8)
+    ap.add_argument("--lora-rank-self", type=int, default=0,
+                    help="rank for the attn1 (self-attention) projections only, with --lora-targets "
+                         "cross+self. 0 keeps them at --lora-rank. The cross-attention half uses about "
+                         "four of its thirty-two directions and the self-attention half about fourteen, "
+                         "so only this half has a reason to grow.")
     ap.add_argument("--lora-targets", default="cross", choices=("cross", "cross+self"),
                     help="cross: attn2 q/k/v only (every run before 2026-09-22). cross+self adds the "
                          "attn1 q/k/v, where look-alike subjects leak features into each other "
@@ -338,6 +343,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.lora_targets == "cross+self":
         cross = tuple(cfg.lora.target_modules)
         cfg.lora.target_modules = cross + tuple(t.replace("attn2.", "attn1.") for t in cross)
+        if int(args.lora_rank_self) > 0:
+            r_self = int(args.lora_rank_self)
+            cfg.lora.rank_pattern = {t.replace("attn2.", "attn1."): r_self for t in cross}
+            cfg.lora.alpha_pattern = dict(cfg.lora.rank_pattern)
     cfg.optim.lr = float(args.lr)
     cfg.optim.weight_decay = float(args.weight_decay)
     cfg.schedule.total_epochs = int(args.total_epochs)

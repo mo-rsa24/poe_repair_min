@@ -101,10 +101,19 @@ def _attach_and_load_lora(unet: torch.nn.Module, checkpoint: Path, key: str | No
     targets = tuple(LORA_TARGET_MODULES)
     if any(".attn1." in k for k in state):
         targets = targets + tuple(t.replace("attn2.", "attn1.") for t in LORA_TARGET_MODULES)
+    # Each lora_A is (rank, d_in), so the file states its own rank per module. A checkpoint
+    # trained with one rank on cross-attention and another on self-attention loads only if the
+    # attached adapter is built the same way.
+    ranks = {t: r for t in targets
+             for k, v in state.items() if f".{t}." in k and "lora_A" in k
+             for r in [int(v.shape[0])]}
+    base = max(ranks.values(), default=LORA_RANK)
+    pattern = {t: r for t, r in ranks.items() if r != base}
     lora_cfg = LoRAConfig(
-        rank=LORA_RANK, alpha=LORA_ALPHA, dropout=0.0,
+        rank=base, alpha=base, dropout=0.0,
         target_modules=targets, init="gaussian",
         adapter_name=LORA_ADAPTER_NAME,
+        rank_pattern=pattern or None, alpha_pattern=pattern or None,
     )
     attach_info = lora_trainer.attach_lora(unet, SimpleNamespace(lora=lora_cfg))
     attach_info["target_modules"] = list(targets)

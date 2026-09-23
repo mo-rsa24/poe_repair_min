@@ -37,6 +37,10 @@ class LoRAConfig:
     )
     init: str = "gaussian"
     adapter_name: str = "lora"
+    # Per-module overrides, peft's rank_pattern/alpha_pattern: a module whose name ends with a
+    # key here gets that rank instead of ``rank``. Empty means one rank everywhere.
+    rank_pattern: dict | None = None
+    alpha_pattern: dict | None = None
 
 
 @dataclass
