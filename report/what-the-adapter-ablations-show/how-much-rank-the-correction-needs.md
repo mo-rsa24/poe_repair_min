@@ -11,8 +11,8 @@ every adapter in this project holds between 0.19% and 1.38% of the model's param
 
 The same measure as the layers question: the DINOv2 drift each run logs, the corrected render's
 cosine distance to the joint-prompt render minus its distance to the plain product render,
-dimensionless, -2 to +2, negative meaning nearer the target. The compose rate reads 1.0 for every
-configuration and cannot carry the axis. No bar was pre-registered, so this is a descriptive read.
+dimensionless, -2 to +2, negative meaning nearer the target. The compose rate reads 1.0 for every configuration on
+every cell where it is scored (here four cells per run) and cannot carry the axis. No bar was pre-registered, so this is a descriptive read.
 
 ## 1. Rank against drift, on the two comparable cells
 

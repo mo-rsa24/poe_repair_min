@@ -11,7 +11,7 @@ as the layers' doing.
 **What would have counted**
 
 The measure had to have headroom, and the compose rate does not: every configuration here reads
-1.0 on the six-cell tracking set, so it cannot separate them. The read is the DINOv2 drift logged
+1.0 on every cell where it is scored, which is the two held-out cat-and-dog cells, so it cannot separate them. The read is the DINOv2 drift logged
 by each run, defined in
 [`_inline_sampling.py::embedding_drift`](../../poe_repair/experiments/cross_pair_lora_pooling/_inline_sampling.py)
 as the corrected render's cosine distance to the joint-prompt render minus its distance to the

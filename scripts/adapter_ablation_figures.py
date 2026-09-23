@@ -10,7 +10,8 @@ The measure is the DINOv2 embedding drift, defined in
 render's cosine distance to the joint-prompt render minus its cosine distance to the plain-product
 render, in DINOv2 embedding space. It runs from -2 to +2 and is negative when the render sits nearer
 the joint-prompt target than the product it repairs, so lower is better. The compose rate cannot
-carry these figures: every configuration reads 1.0 on the tracking set.
+carry these figures: every configuration reads 1.0 on every cell where it is scored (the two
+held-out cat-and-dog cells for the newer runs, those two plus two trained cells for the older).
 
     python scripts/adapter_ablation_figures.py <measures.json> <out_dir>
 """
@@ -96,7 +97,7 @@ def layers_figure(m: dict, out: Path) -> dict:
     ax.invert_yaxis()
     ax.set_xlabel(MEASURE_NAME + "  (lower is better)", fontsize=9)
     ax.set_title("Which layers carry the adapter, at rank 32 and the same loss\n"
-                 "every bar reads compose rate 1.0, so composition cannot separate them", fontsize=11)
+                 "compose rate is 1.0 wherever it is scored, so composition cannot separate them", fontsize=11)
     ax.legend(fontsize=7.5, loc="upper center", bbox_to_anchor=(0.5, -0.16), ncol=2,
               framealpha=1.0)
     fig.tight_layout()
