@@ -129,6 +129,19 @@ def load_shared_init_latents(
     return torch.from_numpy(latents).to(device=device, dtype=dtype)
 
 
+def decode_latents_with_grad(vae: Any, latents: torch.Tensor) -> torch.Tensor:
+    """The same decode, with the graph kept, for anything that needs a gradient in the picture.
+
+    ``decode_latents_to_tensor`` is wrapped in ``no_grad`` because every ordinary render wants that.
+    Reward guidance and reward fine-tuning need the opposite, and a tensor that has passed through a
+    ``no_grad`` region carries no history, so they cannot simply call it and differentiate after.
+    """
+    latents = latents.to(dtype=vae.dtype)
+    shift_factor = getattr(vae.config, "shift_factor", 0.0) or 0.0
+    images = vae.decode(latents / vae.config.scaling_factor + shift_factor, return_dict=False)[0]
+    return ((images / 2 + 0.5).clamp(0, 1)).float()
+
+
 @torch.no_grad()
 def decode_latents_to_tensor(vae: Any, latents: torch.Tensor) -> torch.Tensor:
     latents = latents.to(dtype=vae.dtype)

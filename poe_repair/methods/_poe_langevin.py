@@ -466,10 +466,10 @@ def run_lora_langevin_windowed_poe(
             with torch.enable_grad():
                 z = latents.detach().float().requires_grad_(True)
                 x0_g = tweedie_mean(z.to(dtype), alpha_bar_t, eps_t.detach())
-                # decode_latents forces no_grad, so guidance calls the decoder itself. It
-                # returns the picture already in [0, 1].
-                from poe_repair._sdxl.sdipc_utils import decode_latents_to_tensor
-                img = decode_latents_to_tensor(models["vae"], x0_g.to(dtype))
+                # Both ordinary decoders are wrapped in no_grad, which would cut the chain
+                # before the reward ever sees the picture.
+                from poe_repair._sdxl.sdipc_utils import decode_latents_with_grad
+                img = decode_latents_with_grad(models["vae"], x0_g.to(dtype))
                 mask_a = mask_b = None
                 if "a" in last_branches:
                     from poe_repair.rewards.plurality import soft_masks
