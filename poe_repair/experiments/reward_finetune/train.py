@@ -143,6 +143,9 @@ def main() -> int:
     ap.add_argument("--w-identity", type=float, default=1.0)
     ap.add_argument("--w-distinct", type=float, default=1.0)
     ap.add_argument("--w-compact", type=float, default=1.0)
+    ap.add_argument("--w-fidelity", type=float, default=0.0,
+                    help="weight on ImageReward, which is the only term that can tell a "
+                         "well drawn pair from a badly drawn one")
     ap.add_argument("--gradient-checkpointing", action="store_true",
                     help="recompute UNet activations in the backward pass; needed on a 24 GB card")
     ap.add_argument("--sample-every", type=int, default=100)
@@ -197,7 +200,7 @@ def main() -> int:
         p.requires_grad_(True)
     opt = torch.optim.AdamW(lora_params, lr=a.lr)
     reward = PluralityReward(ctx.device, w_identity=a.w_identity, w_distinct=a.w_distinct,
-                             w_compact=a.w_compact)
+                             w_compact=a.w_compact, w_fidelity=a.w_fidelity)
 
     import wandb
     wandb.init(project=a.wandb_project, name=run_id, mode=a.wandb_mode,
@@ -287,14 +290,15 @@ def main() -> int:
         opt.step()
 
         payload = {"reward/total": terms.total, "reward/identity": terms.identity,
-                   "reward/distinct": terms.distinct, "reward/compact": terms.compact,
+                   "reward/distinct": terms.distinct, "reward/compact": terms.compact, "reward/fidelity": terms.fidelity,
                    "train/grad_norm": float(gnorm), "train/step_sampled": k,
                    "train/pair": f"{prompt_a} | {prompt_b}", "train/seed": seed,
                    "train/elapsed_s": time.perf_counter() - t0}
         wandb.log(payload, step=step)
         if step % 20 == 0:
-            log.info("step %d/%d reward=%.4f (identity %.3f distinct %.3f compact %.3f) k=%d",
-                     step, a.steps, terms.total, terms.identity, terms.distinct, terms.compact, k)
+            log.info("step %d/%d reward=%.4f (identity %.3f distinct %.3f compact %.3f fidelity %.3f) k=%d",
+                     step, a.steps, terms.total, terms.identity, terms.distinct, terms.compact,
+                     terms.fidelity, k)
 
         if step % a.sample_every == 0:
             # The tracking set, as the three panels every other run is read against: the joint

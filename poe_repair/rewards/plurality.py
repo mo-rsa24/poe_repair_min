@@ -14,7 +14,9 @@ Three terms, each a number in roughly [-1, 1] before weighting:
                punished for it.
 ``compact``    each concept occupies one place rather than several. A third animal shows up as a
                mask spread over two distant blobs, so the spatial spread of each mask is charged.
-``fidelity``   optional, the whole picture's quality, left to the caller to supply.
+``fidelity``   the whole picture's quality, from ImageReward, the preference model the steering
+               work in this project already uses. Without it the first three terms are all
+               satisfied by two clearly separated, clearly labelled, badly drawn animals.
 
 The regions come from the two concept branches the sampler already computes: the per-concept
 clean estimates say where each concept wants mass, and their difference gives a soft mask per
@@ -34,11 +36,12 @@ class Terms:
     identity: float
     distinct: float
     compact: float
+    fidelity: float
     total: float
 
     def as_dict(self) -> dict:
         return {"identity": self.identity, "distinct": self.distinct,
-                "compact": self.compact, "total": self.total}
+                "compact": self.compact, "fidelity": self.fidelity, "total": self.total}
 
 
 def soft_masks(x0_mix: torch.Tensor, x0_a: torch.Tensor, x0_b: torch.Tensor, *,
@@ -92,9 +95,11 @@ class PluralityReward:
 
     def __init__(self, device: torch.device, *, dtype: torch.dtype = torch.float32,
                  w_identity: float = 1.0, w_distinct: float = 1.0, w_compact: float = 1.0,
-                 image_size: int = 224):
+                 w_fidelity: float = 0.0, image_size: int = 224):
         self.device, self.dtype = device, dtype
         self.w_identity, self.w_distinct, self.w_compact = w_identity, w_distinct, w_compact
+        self.w_fidelity = w_fidelity
+        self._rm = None
         self.image_size = image_size
         self._clip = None
         self._clip_proc = None
@@ -150,6 +155,24 @@ class PluralityReward:
             x = F.interpolate(x, size=(side, side), mode="bilinear", align_corners=False)
         return F.normalize(self._dino(x), dim=-1)
 
+    def image_reward(self, image: torch.Tensor, prompt: str) -> torch.Tensor:
+        """ImageReward's score for this picture under the joint text, kept differentiable.
+
+        The scale runs about -2 to +2. It is squashed here so one very good or very bad picture
+        cannot swamp the other three terms.
+        """
+        if self._rm is None:
+            import ImageReward as RM
+            self._rm = RM.load("ImageReward-v1.0", device=str(self.device))
+            for q in self._rm.parameters():
+                q.requires_grad_(False)
+        x = self._prep(image, (0.48145466, 0.4578275, 0.40821073),
+                       (0.26862954, 0.26130258, 0.27577711))
+        text = self._rm.blip.tokenizer(prompt, padding="max_length", truncation=True,
+                                       max_length=35, return_tensors="pt").to(self.device)
+        emb = self._rm.blip(x, text.input_ids, text.attention_mask)
+        return torch.tanh(self._rm.mlp(emb[:, 0, :]).squeeze() / 2.0)
+
     # -- the objective -----------------------------------------------------
     def score(self, image: torch.Tensor, *, prompt_a: str, prompt_b: str,
               mask_a: torch.Tensor | None = None, mask_b: torch.Tensor | None = None,
@@ -174,11 +197,21 @@ class PluralityReward:
         da, db = self.dino_embed(region_a), self.dino_embed(region_b)
         distinct = 1.0 - (da * db).sum()
 
+        fidelity = torch.zeros((), device=image.device, dtype=image.dtype)
+        if self.w_fidelity > 0:
+            try:
+                fidelity = self.image_reward(image, f"{prompt_a} and {prompt_b}")
+            except Exception as exc:                       # the model is optional at render time
+                if not getattr(self, "_warned_rm", False):
+                    print(f"fidelity term off: {type(exc).__name__}: {exc}", flush=True)
+                    self._warned_rm = True
+
         compact = torch.zeros((), device=image.device, dtype=image.dtype)
         if mask_a is not None and mask_b is not None:
             compact = -0.5 * (spread(mask_a) + spread(mask_b))
 
         total = (self.w_identity * identity + self.w_distinct * distinct
-                 + self.w_compact * compact)
+                 + self.w_compact * compact + self.w_fidelity * fidelity)
         return total, Terms(identity=float(identity.detach()), distinct=float(distinct.detach()),
-                            compact=float(compact.detach()), total=float(total.detach()))
+                            compact=float(compact.detach()), fidelity=float(fidelity.detach()),
+                            total=float(total.detach()))
