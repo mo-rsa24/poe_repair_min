@@ -285,6 +285,8 @@ def run_lora_langevin_windowed_poe(
     adapter_switch_at: int | None = None,
     spread_match: float = 0.0,
     reward_guidance: dict | None = None,
+    expert_weights: tuple[float, float] | None = None,
+    refine: dict | None = None,
     contrast_steps: int = 0,
     contrast_iters: int = 5,
     contrast_beta: float = 0.9,
@@ -350,15 +352,23 @@ def run_lora_langevin_windowed_poe(
     gen = torch.Generator(device=device).manual_seed(int(noise_seed))
 
     def branch_parts(x16: torch.Tensor, timestep):
-        """The three guided pieces of one step: each concept on its own, and the empty branch."""
+        """The three guided pieces of one step: each concept on its own, and the empty branch.
+
+        ``expert_weights`` replaces the guidance scale on the two concept branches. The joint
+        prompt's own prediction weights the experts at roughly 2.5 to 3 early and about 1 late,
+        where plain composition holds both at 7.5, so a large part of what an adapter learns is
+        this damping. Setting it here applies it explicitly instead, which leaves the adapter free
+        to supply only what re-weighting cannot.
+        """
         latent_input = scheduler.scale_model_input(x16.repeat(3, 1, 1, 1), timestep)
         noise = unet(
             latent_input, timestep, encoder_hidden_states=pe3,
             added_cond_kwargs=cond3, timestep_cond=None,
         ).sample
         eps_a_raw, eps_b_raw, eps_uncond = noise.chunk(3)
-        return (guided_eps(eps_a_raw, eps_uncond, guidance_scale),
-                guided_eps(eps_b_raw, eps_uncond, guidance_scale), eps_uncond)
+        wa, wb = expert_weights if expert_weights else (guidance_scale, guidance_scale)
+        return (guided_eps(eps_a_raw, eps_uncond, wa),
+                guided_eps(eps_b_raw, eps_uncond, wb), eps_uncond)
 
     def compose(eps_a: torch.Tensor, eps_b: torch.Tensor, eps_uncond: torch.Tensor) -> torch.Tensor:
         out = poe_eps(eps_a, eps_b, eps_uncond)
@@ -495,6 +505,31 @@ def run_lora_langevin_windowed_poe(
             scheduler=scheduler, timestep=timestep, step_index=step_index,
             x0=x0, eps=eps_t,
         )
+    if refine:
+        # Hand the finished picture back to the frozen model for a short high-guidance pass: the
+        # scene is already settled, so this repaints texture without moving the composition, and
+        # it is drawn by weights the correction never damped.
+        _adapter_disable(unet)
+        strength = float(refine.get("strength", 0.25))
+        rg = float(refine.get("guidance", guidance_scale))
+        n_refine = max(1, int(round(strength * num_inference_steps)))
+        start = num_inference_steps - n_refine
+        t_start = scheduler.timesteps[start]
+        gen_r = torch.Generator(device=device).manual_seed(int(noise_seed) + 9973)
+        noise_r = torch.randn(latents.shape, generator=gen_r, device=device, dtype=torch.float32)
+        ab_s = scheduler.alphas_cumprod[int(t_start.item())].to(device=device, dtype=torch.float32)
+        latents = (ab_s.sqrt() * latents.float() + (1 - ab_s).sqrt() * noise_r).to(dtype)
+        for i in range(start, num_inference_steps):
+            ts = scheduler.timesteps[i]
+            latent_input = scheduler.scale_model_input(latents.repeat(3, 1, 1, 1), ts)
+            noise = unet(latent_input, ts, encoder_hidden_states=pe3, added_cond_kwargs=cond3,
+                         timestep_cond=None).sample
+            ea_raw, eb_raw, eu = noise.chunk(3)
+            eps_r = poe_eps(guided_eps(ea_raw, eu, rg), guided_eps(eb_raw, eu, rg), eu)
+            ab_i = scheduler.alphas_cumprod[int(ts.item())].to(device=device, dtype=dtype)
+            x0_r = tweedie_mean(latents, ab_i, eps_r)
+            latents = ddim_prev_from_x0_eps(scheduler=scheduler, timestep=ts, step_index=i,
+                                            x0=x0_r, eps=eps_r)
     _adapter_enable(unet, lora_adapter_name)
     tracker.store_final(latents)
     image = decode_latents(models, latents).cpu()
@@ -508,6 +543,8 @@ def run_lora_langevin_windowed_poe(
             ),
             "corrector_score": corrector_score,
             "spread_match": float(spread_match),
+            "expert_weights": list(expert_weights) if expert_weights else None,
+            "refine": refine,
             "reward_guidance": (None if not reward_guidance else
                                 {k: v for k, v in reward_guidance.items() if k != "reward"}),
             "contrast": {"steps": int(contrast_steps), "iters": int(contrast_iters),

@@ -62,7 +62,7 @@ def render(column: str, pairs: list[tuple[str, str]], seeds: list[int], ckpt: Pa
            spread_match: float = 0.0, late_ckpt: Path | None = None, ema: bool = False,
            switch_at: int | None = None, langevin: dict | None = None,
            candidates: int = 1, jitter: float = 0.0, reward_guidance: dict | None = None,
-           guidance: float | None = None, contrast: dict | None = None) -> None:
+           guidance: float | None = None, expert_weights=None, refine=None, contrast: dict | None = None) -> None:
     free, total = torch.cuda.mem_get_info(0)
     # Sharing a card slows both jobs and can run either out of memory, so it is refused unless the
     # caller says how much of someone else's memory this render may sit beside.
@@ -150,6 +150,7 @@ def render(column: str, pairs: list[tuple[str, str]], seeds: list[int], ckpt: Pa
                         corrector_score=(langevin or {}).get("score", "frozen"),
                         spread_match=spread_match, **(contrast or {}),
                         reward_guidance=reward_guidance,
+                        expert_weights=expert_weights, refine=refine,
                         lora_adapter_name_late="late" if late_ckpt is not None else None,
                         adapter_switch_at=switch_at if late_ckpt is not None else None,
                     )
@@ -248,6 +249,13 @@ if __name__ == "__main__":
                     help="classifier-free guidance scale for every branch; 7.5 is what every run "
                          "in this project uses, and raising it tests whether the adapter's "
                          "correction is acting like a lower one")
+    ap.add_argument("--expert-weights", type=float, nargs=2, metavar=("WA", "WB"),
+                    help="weights on the two concept branches instead of --guidance, applied "
+                         "explicitly rather than left for the adapter to learn")
+    ap.add_argument("--refine-strength", type=float, default=0.0,
+                    help="after the run, renoise to this fraction of the schedule and finish with "
+                         "the frozen model (0 is off)")
+    ap.add_argument("--refine-guidance", type=float, default=7.5)
     ap.add_argument("--reward-guidance", type=float, default=0.0,
                     help="weight of the plurality objective's gradient on the latent, as a "
                          "fraction of the latent's own norm per guided step (0 is off)")
@@ -272,6 +280,9 @@ if __name__ == "__main__":
         render(a.column, pairs, a.seeds, a.checkpoint, a.rank, a.window or [None], a.tag,
                a.spread_match, a.late_checkpoint, a.ema, a.switch_at, langevin, a.candidates,
                a.jitter, guidance, a.guidance,
+               tuple(a.expert_weights) if a.expert_weights else None,
+               {"strength": a.refine_strength, "guidance": a.refine_guidance}
+               if a.refine_strength > 0 else None,
                {"contrast_steps": a.contrast_steps, "contrast_iters": a.contrast_iters,
                 "contrast_beta": a.contrast_beta, "contrast_w_multi": a.contrast_w_multi}
                if a.contrast_steps > 0 else None)
