@@ -12,6 +12,8 @@ Three terms, each a number in roughly [-1, 1] before weighting:
 ``distinct``   the two regions do not look like each other. DINOv2 cosine between the regions,
                which is the anti-fusion term: a single blended animal scores 1 here and is
                punished for it.
+``compact``    each concept occupies one place rather than several. A third animal shows up as a
+               mask spread over two distant blobs, so the spatial spread of each mask is charged.
 ``fidelity``   optional, the whole picture's quality, left to the caller to supply.
 
 The regions come from the two concept branches the sampler already computes: the per-concept
@@ -31,10 +33,12 @@ class Terms:
     """Every term of one evaluation, so a log can say which part moved."""
     identity: float
     distinct: float
+    compact: float
     total: float
 
     def as_dict(self) -> dict:
-        return {"identity": self.identity, "distinct": self.distinct, "total": self.total}
+        return {"identity": self.identity, "distinct": self.distinct,
+                "compact": self.compact, "total": self.total}
 
 
 def soft_masks(x0_a: torch.Tensor, x0_b: torch.Tensor, *, temperature: float = 0.05
@@ -54,6 +58,23 @@ def soft_masks(x0_a: torch.Tensor, x0_b: torch.Tensor, *, temperature: float = 0
     return w[:, :1], w[:, 1:]
 
 
+def spread(mask: torch.Tensor) -> torch.Tensor:
+    """How far a mask's mass sits from its own centre, as a fraction of the grid's half-diagonal.
+
+    One compact blob scores near 0. Mass split between two corners scores near 1. Charging this
+    keeps a concept in one place, which is what stops a third animal appearing: a third object
+    pulls one of the two masks apart and pays for it here.
+    """
+    b, _, h, w = mask.shape
+    m = mask / mask.sum(dim=(2, 3), keepdim=True).clamp_min(1e-8)
+    ys = torch.linspace(0, 1, h, device=mask.device, dtype=mask.dtype).view(1, 1, h, 1)
+    xs = torch.linspace(0, 1, w, device=mask.device, dtype=mask.dtype).view(1, 1, 1, w)
+    cy = (m * ys).sum(dim=(2, 3), keepdim=True)
+    cx = (m * xs).sum(dim=(2, 3), keepdim=True)
+    var = (m * ((ys - cy) ** 2 + (xs - cx) ** 2)).sum(dim=(2, 3))
+    return (var.sqrt() / 0.7071).mean()
+
+
 def _upsample_to(mask: torch.Tensor, image: torch.Tensor) -> torch.Tensor:
     return F.interpolate(mask, size=image.shape[-2:], mode="bilinear", align_corners=False)
 
@@ -66,9 +87,10 @@ class PluralityReward:
     """
 
     def __init__(self, device: torch.device, *, dtype: torch.dtype = torch.float32,
-                 w_identity: float = 1.0, w_distinct: float = 1.0, image_size: int = 224):
+                 w_identity: float = 1.0, w_distinct: float = 1.0, w_compact: float = 1.0,
+                 image_size: int = 224):
         self.device, self.dtype = device, dtype
-        self.w_identity, self.w_distinct = w_identity, w_distinct
+        self.w_identity, self.w_distinct, self.w_compact = w_identity, w_distinct, w_compact
         self.image_size = image_size
         self._clip = None
         self._clip_proc = None
@@ -148,6 +170,11 @@ class PluralityReward:
         da, db = self.dino_embed(region_a), self.dino_embed(region_b)
         distinct = 1.0 - (da * db).sum()
 
-        total = self.w_identity * identity + self.w_distinct * distinct
+        compact = torch.zeros((), device=image.device, dtype=image.dtype)
+        if mask_a is not None and mask_b is not None:
+            compact = -0.5 * (spread(mask_a) + spread(mask_b))
+
+        total = (self.w_identity * identity + self.w_distinct * distinct
+                 + self.w_compact * compact)
         return total, Terms(identity=float(identity.detach()), distinct=float(distinct.detach()),
-                            total=float(total.detach()))
+                            compact=float(compact.detach()), total=float(total.detach()))
