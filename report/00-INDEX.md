@@ -93,18 +93,21 @@ with no finding file.
 
 **7. Everything tried instead, and what each one ruled out**
 
-Eleven findings, and the reason there are eleven is that a reviewer will ask whether a cheaper fix
+Twelve findings, and the reason there are twelve is that a reviewer will ask whether a cheaper fix
 works. Most are ways of getting two animals without adding a learned correction; the last two in
-the search family keep the correction and spend inference compute on top of it. They are ordered
-by family, and nine of the eleven are nulls or inconclusive. The two that support both buy their
-result with 16 or more draws per seed, and neither reaches past what the correction already
-delivers at full dose, which is the point: the correction is not obviously replaceable.
+the search family keep the correction and spend inference compute on top of it, and the last of all
+asks not whether a cheaper fix composes but whether any of them repairs the picture quality the
+correction costs. They are ordered by family, and ten of the twelve are nulls or inconclusive. The
+two that support both buy their result with 16 or more draws per seed, and neither reaches past what
+the correction already delivers at full dose, which is the point: the correction is not obviously
+replaceable.
 
 *Correctors, which re-sample the latent without changing the score:*
 
 - [Does a corrector alone produce two animals?](is-the-gap-the-samplers-or-the-models/does-a-corrector-alone-produce-two-animals.md) ⚪ null
 - [Does a Langevin corrector remove part of the correction?](is-the-gap-the-samplers-or-the-models/does-a-langevin-corrector-remove-part-of-the-correction.md) ❓ inconclusive at every step size
 - [Can a corrector or a clean tail sharpen the adapter's renders?](is-the-gap-the-samplers-or-the-models/can-a-corrector-or-a-clean-tail-sharpen-the-adapters-renders.md) ⚪ null on both bars
+- [Can any render-time fix recover the picture quality the adapter costs?](is-the-gap-the-samplers-or-the-models/does-any-render-time-fix-recover-picture-quality.md) ❓ inconclusive: eight fixes, the edge measure passes two of them, the pictures do not
 
 *A different composition method, SuperDiff, and whether its residual is the same object:*
 
@@ -160,6 +163,7 @@ single corrector step does inside one noise level.
 | Does a Langevin corrector remove part of the correction and leave part of it? | ❓ inconclusive at every step size tried | read-zone mean of `‖eps_J − eps_PoE‖ / ‖eps_PoE‖` over the last five steps, cat × dog seed 9 at step-size multiplier 3, by corrector count 0 to 200: 0.153, 0.138, 0.261, 0.203, 0.103, 0.125; the two largest counts differ by 21% against the 5% bar, and the same uncorrected cell reads 0.153, 0.169 and 0.180 on three GPUs | [does-a-langevin-corrector-remove-part-of-the-correction.md](is-the-gap-the-samplers-or-the-models/does-a-langevin-corrector-remove-part-of-the-correction.md) |
 | Does a Langevin corrector, adding nothing to the score, produce two animals? | ⚪ null | cat × dog: 0 of 4 seeds composed in every one of the nine ten-step corrector windows and with the corrector on all 50 steps; on the eight held-out seeds joint prompt 8 of 8, plain product-of-experts 0 of 8, corrector 0 of 8; the control pair holds 8, 8, 8 | [does-a-corrector-alone-produce-two-animals.md](is-the-gap-the-samplers-or-the-models/does-a-corrector-alone-produce-two-animals.md) |
 | Can a corrector, or handing the tail to the frozen model, sharpen the adapter's renders? | ⚪ null on both bars | corrector on the adapter's own tail: mean Laplacian variance 57.1 to 61.7 over 8 seeds, +8.0% against a 10% bar, composed 7, 8, 7 of 8; clean tail: DINOv2 distance to the joint render 0.472 (adapter alone) to 0.434 at best, a gain of 0.038 against a 0.05 bar, composition held within one seed | [can-a-corrector-or-a-clean-tail-sharpen-the-adapters-renders.md](is-the-gap-the-samplers-or-the-models/can-a-corrector-or-a-clean-tail-sharpen-the-adapters-renders.md) |
+| Can any render-time fix recover the picture quality the adapter costs? | ❓ inconclusive: the edge measure passes two of them, the pictures do not | median Laplacian variance over 8 held-out cells (greyscale 0 to 1, ×1e-4), as a ratio to the adapter's own render: repaint at 0.25 1.14 and at 0.40 1.24, adapter for 20 steps 1.09, guidance 10 1.45 and 12 1.80, experts weighted 3.0 and 3.0 0.78, the joint prompt itself 1.18, against a 1.10 bar borrowed from the noise-search finding after these images existed; by eye the re-weighting smears both subjects on 8 of 8 cells and guidance changes what is in the picture on 3 of 8 | [does-any-render-time-fix-recover-picture-quality.md](is-the-gap-the-samplers-or-the-models/does-any-render-time-fix-recover-picture-quality.md) |
 
 ## Figures still missing
 
@@ -173,7 +177,8 @@ Each finding's figures are read one at a time, in plain words, in a figure expla
 images: [where each condition lands, what these pictures mean](../artifacts/results/where-does-each-condition-land/figure-explainer.md)
 [is the gap the sampler's or the model's, what these pictures mean](../artifacts/results/is-the-gap-the-samplers-or-the-models/figure-explainer.md)
 [what the correction is made of, what these pictures mean](../artifacts/results/what-the-correction-is-made-of/figure-explainer.md)
-and [the corrector figures, what these pictures mean](../artifacts/results/is-the-gap-the-samplers-or-the-models/figure-explainer-the-langevin-corrector.md).
+[the corrector figures, what these pictures mean](../artifacts/results/is-the-gap-the-samplers-or-the-models/figure-explainer-the-langevin-corrector.md)
+and [which fidelity fix wins, what these pictures mean](../artifacts/results/which-fidelity-fix-wins/figure-explainer.md).
 The path from two X posts to the twisted-SMC run, for a reader who was not in that conversation, is
 [the note beside those pictures](../artifacts/notes/from-an-x-post-to-a-twisted-smc-baseline/note.md).
 How a finding, its card and its explainer are laid out, with that one as the worked instance, is
@@ -189,7 +194,7 @@ findings embed from; a finding with no sibling yet sits flat.
 | [does-the-fix-reach-unseen-pairs/](does-the-fix-reach-unseen-pairs/) | Why does the pooled adapter's correction carry to some unseen pairs and not others | 2 |
 | [does-training-longer-help-the-pooled-lora/](does-training-longer-help-the-pooled-lora/) | Which checkpoint of the pooled adapter to show, and what training past it does to the held-out renders | 2 |
 | [when-does-the-outcome-lock-in/](when-does-the-outcome-lock-in/) | When does a run commit to one animal or two, where does each condition end up, and what is the correction made of | 2 |
-| [is-the-gap-the-samplers-or-the-models/](is-the-gap-the-samplers-or-the-models/) | Is the gap the samplers or the models | 11 |
+| [is-the-gap-the-samplers-or-the-models/](is-the-gap-the-samplers-or-the-models/) | Is the gap the samplers or the models | 12 |
 | [what-the-adapter-ablations-show/](what-the-adapter-ablations-show/) | Which layers the adapter needs and how much rank the correction takes | 2 |
 | [is-the-adapter-just-copying-the-joint-prompt/](is-the-adapter-just-copying-the-joint-prompt/) | Whether the target itself is right, and what the adapter adds beyond it | 2 |
 
