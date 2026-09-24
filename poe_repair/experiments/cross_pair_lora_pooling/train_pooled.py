@@ -245,6 +245,11 @@ def build_argparser() -> argparse.ArgumentParser:
                     help="Huber on the fit term with this elbow, in units of the noise-prediction "
                          "error; quadratic below it, linear above. 0 keeps the squared error, which "
                          "is every run before 2026-09-24.")
+    ap.add_argument("--out-of-span-only", type=float, default=0.0,
+                    help="1 trains on the part of the correction no re-weighting of the two "
+                         "experts could supply, leaving the damping to be applied at sampling "
+                         "time with --expert-weights. 0 is the whole correction, which is every "
+                         "run before 2026-09-24.")
     ap.add_argument("--contrast-weight", type=float, default=0.0,
                     help="nu for the contrast term (scope 09, experiment 6). Charges the adapter "
                          "for the fraction by which the clean picture its composition is heading "
@@ -354,6 +359,7 @@ def main(argv: list[str] | None = None) -> int:
     cfg.optim.lr = float(args.lr)
     cfg.optim.weight_decay = float(args.weight_decay)
     cfg.huber_delta = float(args.huber_delta)
+    cfg.out_of_span_only = float(args.out_of_span_only)
     cfg.schedule.total_epochs = int(args.total_epochs)
     cfg.schedule.epoch_size = int(args.epoch_size)
     cfg.orth_weight = float(args.orth_weight)

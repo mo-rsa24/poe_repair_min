@@ -575,6 +575,16 @@ def _train_one_step(
     else:
         _target = eps_j_target.float()
     err = eps_poe_lora - _target
+    # The target minus what re-weighting the two experts could have supplied. The joint prompt's
+    # own prediction weights them at about 2.5 to 3 early and 1 late where composition holds 7.5,
+    # so an adapter trained on the whole correction spends its capacity learning that damping and
+    # carries it into every render as lost contrast. Under this flag it learns only the part no
+    # re-weighting can reach, and the damping is applied explicitly at sampling time instead.
+    if float(getattr(cfg, "out_of_span_only", 0.0)) > 0.0:
+        K = err.shape[0]
+        flat_e = err.reshape(K, 1, -1)
+        coeff_e = (flat_e * span_basis).sum(dim=2, keepdim=True)
+        err = (flat_e.squeeze(1) - (coeff_e * span_basis).sum(dim=1)).reshape(err.shape)
     # The error the guidance weight hides: the three adapted branches summed at weight 1,
     # against the raw cached joint prediction. Diagnostic only, never added to `loss`, and
     # computed on the same fp32 tensors so no fp16 path is reintroduced.

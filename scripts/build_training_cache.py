@@ -55,7 +55,7 @@ from poe_repair.training_cache import DEFAULT_CACHE_ROOT
 
 
 @torch.no_grad()
-def build_cell(
+def build_cell(  # noqa: PLR0913
     *,
     prompt_a: str,
     prompt_b: str,
@@ -67,6 +67,7 @@ def build_cell(
     num_inference_steps: int | None = None,
     guidance_scale: float | None = None,
     ctx: MethodCtx | None = None,
+    adapter: Path | None = None,
 ) -> Path:
     slug = slugify(prompt_a, prompt_b)
     cell_dir = out_root / split / slug / f"seed_{seed}"
@@ -125,6 +126,17 @@ def build_cell(
         cell_dir / "embeddings.pt",
     )
 
+    # On-policy: step the trajectory with the adapter on, while recording what the frozen model
+    # predicts at each state it visits. Every cache before this one followed the uncorrected
+    # product's path, so an adapter trained on it is asked at inference about states no training
+    # example ever visited, and its error compounds down the run.
+    on_policy = adapter is not None
+    if on_policy:
+        from poe_repair.experiments import _adapter_shape
+        info = _adapter_shape.attach(ctx.models["unet"], adapter, adapter_name="lora", disable=True)
+        print(f"[on-policy] adapter attached: {info['n_matched']} modules, rank {info['rank']}",
+              flush=True)
+
     scheduler = ctx.scheduler
     scheduler.set_timesteps(ctx.num_inference_steps)
     latents = (init_latents / euler_sigma).to(device=ctx.device, dtype=ctx.dtype)
@@ -156,6 +168,23 @@ def build_cell(
         eps_a_g = guided_eps(eps_a_raw, eps_uncond, ctx.guidance_scale)
         eps_b_g = guided_eps(eps_b_raw, eps_uncond, ctx.guidance_scale)
         eps_p = poe_eps(eps_a_g, eps_b_g, eps_uncond)
+        if on_policy:
+            # The step is taken with the adapter; the four predictions saved above stay frozen,
+            # so the training target is still what the base model says at this state.
+            from poe_repair.methods._poe_langevin import _adapter_disable, _adapter_enable
+            _adapter_enable(unet, "lora")
+            noise_l = unet(
+                scheduler.scale_model_input(latents.repeat(3, 1, 1, 1), timestep), timestep,
+                encoder_hidden_states=torch.cat([seq_a, seq_b, seq_e], dim=0),
+                added_cond_kwargs={
+                    "text_embeds": torch.cat([pool_a, pool_b, pool_e], dim=0),
+                    "time_ids": add_time_ids(height=cell.height, width=cell.width, batch_size=3,
+                                             device=ctx.device, dtype=ctx.dtype)},
+                timestep_cond=None).sample
+            _adapter_disable(unet)
+            ea_l, eb_l, eu_l = noise_l.chunk(3)
+            eps_p = poe_eps(guided_eps(ea_l, eu_l, ctx.guidance_scale),
+                            guided_eps(eb_l, eu_l, ctx.guidance_scale), eu_l)
 
         alpha_bar_t = scheduler.alphas_cumprod[int(timestep.item())].to(
             device=ctx.device, dtype=ctx.dtype,
@@ -236,6 +265,9 @@ def main() -> None:
                     help="Cache root (default: $POE_REPAIR_TRAINING_CACHE).")
     ap.add_argument("--num-inference-steps", type=int, default=None)
     ap.add_argument("--guidance-scale", type=float, default=None)
+    ap.add_argument("--adapter", type=Path, default=None,
+                    help="step the trajectory with this adapter, recording the frozen "
+                         "model's predictions at the states a corrected run visits")
     ap.add_argument("--overwrite", action="store_true")
     args = ap.parse_args()
 
@@ -253,6 +285,7 @@ def main() -> None:
         overwrite=args.overwrite,
         num_inference_steps=args.num_inference_steps,
         guidance_scale=args.guidance_scale,
+        adapter=args.adapter,
     )
 
 
