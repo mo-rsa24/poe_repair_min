@@ -84,19 +84,14 @@ def parse_args(argv=None) -> argparse.Namespace:
 
 
 def attach_adapter(unet, checkpoint: Path, rank: int, alpha: int) -> dict:
-    """Attach the showcase LoRA (cross-attention q, k, v) and load its weights; leave it disabled."""
-    from types import SimpleNamespace
-    from poe_repair.experiments.one_pair_one_seed import trainer as lora_trainer
-    from poe_repair.experiments.one_pair_one_seed.config import LoRAConfig
-    cfg = LoRAConfig(rank=rank, alpha=alpha, dropout=0.0, target_modules=("attn2.to_q", "attn2.to_k", "attn2.to_v"),
-                     init="gaussian", adapter_name="lora")
-    info = lora_trainer.attach_lora(unet, SimpleNamespace(lora=cfg))
-    ckpt = torch.load(str(checkpoint), map_location="cpu", weights_only=False)
-    state = ckpt["lora_state"]
-    lora_trainer.load_lora_state(unet, state)
-    unet.disable_adapters()
-    return {"n_loaded": len(state), "checkpoint_step": int(ckpt.get("step", -1)), "matched": info.get("matched_modules"),
-            "rank": rank, "alpha": alpha, "checkpoint": str(checkpoint)}
+    """Attach the adapter this checkpoint holds and load it, left disabled.
+
+    The shape comes from the checkpoint rather than from this file, so a cross-and-self adapter
+    does not load into a cross-only attachment and render as if half of it were missing. ``rank``
+    and ``alpha`` are kept for the command line and are overridden by what the file says.
+    """
+    from poe_repair.experiments import _adapter_shape
+    return _adapter_shape.attach(unet, checkpoint, adapter_name="lora", disable=True)
 
 
 # ---------------------------------------------------------------------------
