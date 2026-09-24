@@ -11,7 +11,7 @@ own entry in [chimera.md](chimera.md).
 - [Words this file uses](#words-this-file-uses)
 - [The seed sets the look first](#the-seed-sets-the-look-first)
 - [The looks](#the-looks)
-- [The gallery still to build](#the-gallery-still-to-build)
+- [The gallery](#the-gallery)
 - [Where this came from](#where-this-came-from)
 
 ## Words this file uses
@@ -52,7 +52,7 @@ them draws the same scene on every seed, which is its own failure below.
 
 ## The looks
 
-Navigation: ⬅️ [The seed sets the look first](#the-seed-sets-the-look-first) | 📋 [TOC](#table-of-contents) | [Next](#the-gallery-still-to-build) ➡️
+Navigation: ⬅️ [The seed sets the look first](#the-seed-sets-the-look-first) | 📋 [TOC](#table-of-contents) | [Next](#the-gallery) ➡️
 
 ✅ seen on all three seeds or settled by a comparison that moved one thing · 🟡 seen, cause
 inferred · ❓ seen once
@@ -75,19 +75,25 @@ The `v57w10-*` renders sit under
 `/datasets/mmolefe/poe_repair_min/outputs/showcase/v57w10/<run>/samples/per_epoch/` on the cluster,
 one folder per checkpoint.
 
-## The gallery still to build
+## The gallery
 
 Navigation: ⬅️ [The looks](#the-looks) | 📋 [TOC](#table-of-contents) | [Next](#where-this-came-from) ➡️
 
-🖼️ **Diagram wanted:** one row of real tiles, one per look in the table above, each labelled on
-the tile with the look's name and its cause, and marked with its ✅, 🟡 or ❓. Every tile is
-cropped from a render already on disk (the comparison sheets and the `v57w10-*` checkpoints named
-above), so nothing needs rendering. Save as
-`artifacts/results/which-adapter-composes-cat-and-dog/how-a-render-fails-gallery.png`.
+<a href="../../artifacts/results/which-adapter-composes-cat-and-dog/how-a-render-fails-gallery.png"><img src="../../artifacts/results/which-adapter-composes-cat-and-dog/how-a-render-fails-gallery.png" width="420" alt="Six panels, each a failed render with the telling patch enlarged in the corner"></a>
+
+Six of the looks above, one panel each, every panel a render already on disk. A red box marks the
+patch, and the same patch is enlarged in the corner of its own panel, so the fused face, the
+invented person, the third animal and the horse standing in for a dog can be seen rather than taken
+on trust. Built by `scripts/failure_gallery.py`; the panels, their source files and their crop boxes
+are listed in the sidecar beside the image.
+
+Five looks still have no panel: the mush from a rewritten branch prompt, the pencil sketch, the flat
+colour illustration, the oil painting, and the same scene on every seed. The last one needs several
+seeds side by side rather than one crop.
 
 ## Where this came from
 
-Navigation: ⬅️ [The gallery still to build](#the-gallery-still-to-build) | 📋 [TOC](#table-of-contents)
+Navigation: ⬅️ [The gallery](#the-gallery) | 📋 [TOC](#table-of-contents)
 
 Read by eye from the three comparison sheets (seeds 9, 11 and 12, twenty-three adapters and the
 no-adapter control, rendered 2026-09-21 by `scripts/across_adapters.py`) and from the per-checkpoint
