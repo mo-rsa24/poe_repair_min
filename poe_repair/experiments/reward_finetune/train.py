@@ -101,7 +101,11 @@ def main() -> int:
 
     if a.gradient_checkpointing and hasattr(unet, "enable_gradient_checkpointing"):
         unet.enable_gradient_checkpointing()
-        log.info("gradient checkpointing on")
+        # diffusers checks `self.training and self.gradient_checkpointing`, so in eval mode the
+        # flag does nothing at all. The UNet has no batch norm and the adapter has no dropout, so
+        # train mode changes nothing about the arithmetic here.
+        unet.train()
+        log.info("gradient checkpointing on (unet in train mode so it takes effect)")
     lora_params = [p for n, p in unet.named_parameters() if "lora_" in n]
     for p in lora_params:
         p.data = p.data.float()
@@ -174,6 +178,8 @@ def main() -> int:
                 eps = poe_eps(ea, eb, eu)
                 latents = scheduler.step(eps, timestep, latents).prev_sample
 
+        # The sampled part is done; give its memory back before the step that keeps a graph.
+        torch.cuda.empty_cache()
         timestep = scheduler.timesteps[k]
         ea, eb, eu = branch_parts(latents, timestep, batched=False)
         eps = poe_eps(ea, eb, eu)
