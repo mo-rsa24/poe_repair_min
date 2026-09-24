@@ -115,3 +115,4 @@ Navigation: ⬅️ [What people get wrong](#what-people-get-wrong) | 📋 [TOC](
 - The mention of **product-of-experts** in [the finding "does a corrector alone produce two animals"](../../report/is-the-gap-the-samplers-or-the-models/does-a-corrector-alone-produce-two-animals.md).
 - The mention of **product-of-experts composition** in [the figure plan "the same rule on four models"](../../plans/03-does-the-correction-cause-composition/plans/figures/12-the-same-rule-on-four-models.md).
 - The mention of **PoE** in [the review of "the same rule on four models"](../../plans/03-does-the-correction-cause-composition/review/12-the-same-rule-on-four-models.md).
+- The mention of **product-of-experts composition** in [the finding "does the adapter return two when both prompts name the same concept"](../../report/is-the-adapter-just-copying-the-joint-prompt/does-the-adapter-return-two-when-both-prompts-name-the-same-concept.md).

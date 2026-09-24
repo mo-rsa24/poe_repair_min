@@ -193,3 +193,5 @@ Navigation: ⬅️ [Previous](#depends-on) | 📋 [TOC](#table-of-contents)
 
 - The mention of **Laplacian variance as a sharpness read**, and of its disagreement with the eye on this pair, in [can a corrector or a clean tail sharpen the adapter's renders](can-a-corrector-or-a-clean-tail-sharpen-the-adapters-renders.md) (relevance match): that finding measured the same band on the plain-PoE references and demoted it to a secondary read.
 - The mention of **the edge measure**, and that it prefers a sketch to a photograph, in [how a render fails](../../context/world/how-a-render-fails.md#where-this-came-from).
+- The mention of **the 1.10 Laplacian-variance bar**, borrowed after the images existed to judge eight render-time fixes, in [the finding "can any render-time fix recover the picture quality the adapter costs"](does-any-render-time-fix-recover-picture-quality.md).
+- The mention of **the edge measure this finding used**, reused on the fidelity harness's 87 tiles, in [the evidence card "which fidelity fix wins"](../../artifacts/results/which-fidelity-fix-wins/README.md).

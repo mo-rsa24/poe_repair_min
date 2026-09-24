@@ -139,15 +139,18 @@ Navigation: ⬅️ [Previous](#2-what-the-edge-measure-says-and-where-it-disagre
 📊 Drawn in [Figure 4 of the figure explainer](../../artifacts/results/which-fidelity-fix-wins/figure-explainer.md#figure-4-cat-and-dog-seed-10).
 
 On cat and dog at seed 10 the joint prompt itself renders two dogs, so on that cell "nearer the
-joint prompt" is not a statement about composition at all. Four of the eight held-out seeds carry
-this, recorded before this harness ran. Two of the eight cells here are seed 10 cells of animal
-pairs, so a quarter of this evidence is measured against a target that does not show the pair.
+joint prompt" is not a statement about composition at all. The joint prompt dropping a concept is
+counted elsewhere, at eleven failing cells of thirty-two, in
+[does the joint prompt always draw both concepts](../is-the-adapter-just-copying-the-joint-prompt/does-the-joint-prompt-always-draw-both-concepts.md),
+over chess board and hourglass, cat and fox, dog and dog, and elephant and penguin. Cat and dog is
+not among the pairs counted there, so the one cell in this set is the only recorded case for this
+pair and nothing says how many of the eight held-out seeds share it.
 
 ## What this cannot tell you
 
 Navigation: ⬅️ [Previous](#3-the-reference-is-broken-on-one-of-the-two-seeds) | 📋 [TOC](#table-of-contents) | [Next](#where-this-came-from) ➡️
 
-**No composition count was scored.** The validated instance-count scorer was never run over these
+**No composition count was scored.** The validated [instance-count scorer](../../context/world/compose-rate.md#what-people-get-wrong) was never run over these
 87 tiles, so every statement about whether a treatment still draws two things is an eye read off
 the sheets. The counts in other findings are not comparable to anything here.
 
@@ -192,5 +195,6 @@ Navigation: ⬅️ [Previous](#depends-on) | 📋 [TOC](#table-of-contents)
 - [ ] Re-run the re-weighting column with the falling schedule the measurement implies, about 3 early
       to about 1 late, rather than the constant 3.0 tested here.
 - [ ] Finish the best-of-8 column's remaining six cells.
-- [ ] Repair the joint-prompt references on the four broken held-out seeds, before any cell that
-      uses them is judged again.
+- [ ] Count how many of the eight held-out cat-and-dog joint prompts drop the cat, the way the
+      thirty-two cells in the sibling finding were counted, before any cat-and-dog cell is judged
+      against that target again.

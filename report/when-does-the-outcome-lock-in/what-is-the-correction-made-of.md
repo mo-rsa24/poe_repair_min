@@ -268,3 +268,7 @@ Navigation: ⬅️ [Previous](#depends-on) | 📋 [TOC](#table-of-contents)
 - [ ] The same four rungs on a pair the adapter trained on, so the 0.19 against 0.37 adapter
       shortfall is known to be a held-out effect or an architecture effect.
 - [ ] The joint prompt's estimate along its own run beside the off-policy row of rung 2.
+
+## Cross-references
+
+- The mention of **the reachable part's implied expert weights**, 1 to 3 against the product's 7.5, in [the finding "can any render-time fix recover the picture quality the adapter costs"](../is-the-gap-the-samplers-or-the-models/does-any-render-time-fix-recover-picture-quality.md), which applies those weights explicitly in the sampler at a constant 3.0 and 3.0.
