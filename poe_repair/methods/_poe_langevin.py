@@ -139,6 +139,7 @@ def run_poe_langevin(
         eps_a_raw, eps_b_raw, eps_uncond = noise.chunk(3)
         eps_a = guided_eps(eps_a_raw, eps_uncond, guidance_scale)
         eps_b = guided_eps(eps_b_raw, eps_uncond, guidance_scale)
+        last_branches["a"], last_branches["b"] = eps_a.detach(), eps_b.detach()
         return poe_eps(eps_a, eps_b, eps_uncond)
 
     def joint_forward(x16: torch.Tensor, timestep) -> torch.Tensor:
@@ -284,6 +285,7 @@ def run_lora_langevin_windowed_poe(
     lora_adapter_name_late: str | None = None,
     adapter_switch_at: int | None = None,
     spread_match: float = 0.0,
+    reward_guidance: dict | None = None,
     contrast_steps: int = 0,
     contrast_iters: int = 5,
     contrast_beta: float = 0.9,
@@ -368,6 +370,10 @@ def run_lora_langevin_windowed_poe(
             out = (float(spread_match) * rescaled + (1.0 - float(spread_match)) * out32).to(out.dtype)
         return out
 
+    # The last step's two concept predictions, kept so reward guidance can ask where each concept
+    # wants mass without a second forward pass.
+    last_branches: dict[str, torch.Tensor] = {}
+
     def three_branch(x16: torch.Tensor, timestep) -> torch.Tensor:
         return compose(*branch_parts(x16, timestep))
 
@@ -449,8 +455,37 @@ def run_lora_langevin_windowed_poe(
             row["contrast_disp_rel"] = _norm(latents.float() - x_start32) / max(start_norm, 1e-12)
         eps_t, dn = corrected_forward(latents, timestep, adapter_on, step_index)
         delta_norm_per_step.append(dn)
-        per_step.append(row)
         x0 = tweedie_mean(latents, alpha_bar_t, eps_t)
+        # Reward guidance: decode the clean picture this step is heading for, score it for two
+        # concepts that are each themselves and unlike each other, and push the latent up that
+        # gradient. The same objective is what the reward fine-tune trains against, so a setting
+        # that moves pictures here is a setting worth training with.
+        if reward_guidance and reward_guidance["lo"] <= step_index < reward_guidance["hi"]:
+            rg = reward_guidance
+            with torch.enable_grad():
+                z = latents.detach().float().requires_grad_(True)
+                x0_g = tweedie_mean(z.to(dtype), alpha_bar_t, eps_t.detach())
+                # decode_latents forces no_grad, so guidance calls the decoder itself. It
+                # returns the picture already in [0, 1].
+                from poe_repair._sdxl.sdipc_utils import decode_latents_to_tensor
+                img = decode_latents_to_tensor(models["vae"], x0_g.to(dtype))
+                mask_a = mask_b = None
+                if "a" in last_branches:
+                    from poe_repair.rewards.plurality import soft_masks
+                    x0_a = tweedie_mean(latents, alpha_bar_t, last_branches["a"]).float()
+                    x0_b = tweedie_mean(latents, alpha_bar_t, last_branches["b"]).float()
+                    mask_a, mask_b = soft_masks(x0_a, x0_b)
+                total, terms = rg["reward"].score(
+                    img, prompt_a=rg["prompt_a"], prompt_b=rg["prompt_b"],
+                    mask_a=mask_a, mask_b=mask_b)
+                grad, = torch.autograd.grad(total, z)
+            step = rg["weight"] * grad / grad.norm().clamp_min(1e-8) * z.detach().norm()
+            latents = (z.detach() + step).to(dtype)
+            row["reward"] = terms.as_dict()
+            row["reward_step_rel"] = float(step.norm() / z.detach().norm().clamp_min(1e-8))
+            eps_t, dn = corrected_forward(latents, timestep, adapter_on, step_index)
+            x0 = tweedie_mean(latents, alpha_bar_t, eps_t)
+        per_step.append(row)
         tracker.store_step(
             step_index, latents, eps_t,
             float(step_index) / float(num_inference_steps), t_int,
@@ -472,6 +507,8 @@ def run_lora_langevin_windowed_poe(
             ),
             "corrector_score": corrector_score,
             "spread_match": float(spread_match),
+            "reward_guidance": (None if not reward_guidance else
+                                {k: v for k, v in reward_guidance.items() if k != "reward"}),
             "contrast": {"steps": int(contrast_steps), "iters": int(contrast_iters),
                          "beta": float(contrast_beta), "w_multi": float(contrast_w_multi)},
             "corrector_window": (
