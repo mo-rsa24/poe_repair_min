@@ -56,6 +56,14 @@ if __name__ == "__main__":
     print(f"attached {info['n_matched']} modules at rank {info['rank']} "
           f"({', '.join(info['target_modules'])}) from step {info['checkpoint_step']}", flush=True)
 
+    # Create the tree before the composer writes into it: on this NFS a fresh path can be missing
+    # under a job that never raced anyone, and the composer's own mkdir is not retried.
+    for _try in range(5):
+        (a.out_root / a.tag).mkdir(parents=True, exist_ok=True)
+        if (a.out_root / a.tag).is_dir():
+            break
+        time.sleep(2)
+
     t0 = time.perf_counter()
     for seed in a.seeds:
         cell = PairSeedCell(pair_dir=None, pair_slug=a.pair, prompt_a=a.prompt_a,
