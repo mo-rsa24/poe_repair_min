@@ -215,9 +215,9 @@ def main() -> int:
                 ea, eb, eu = branch_parts(latents, timestep, batched=True)
                 if i == a.mask_at:
                     ab_m = scheduler.alphas_cumprod[int(timestep.item())].to(ctx.device, torch.float32)
-                    x0_a = (latents.float() - (1 - ab_m).sqrt() * ea.float()) / ab_m.sqrt()
-                    x0_b = (latents.float() - (1 - ab_m).sqrt() * eb.float()) / ab_m.sqrt()
-                    mask_a, mask_b = soft_masks(x0_a, x0_b)
+                    def _x0(e):
+                        return (latents.float() - (1 - ab_m).sqrt() * e.float()) / ab_m.sqrt()
+                    mask_a, mask_b = soft_masks(_x0(poe_eps(ea, eb, eu)), _x0(ea), _x0(eb))
                 eps = poe_eps(ea, eb, eu)
                 latents = scheduler.step(eps, timestep, latents).prev_sample
 

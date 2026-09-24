@@ -41,19 +41,23 @@ class Terms:
                 "compact": self.compact, "total": self.total}
 
 
-def soft_masks(x0_a: torch.Tensor, x0_b: torch.Tensor, *, temperature: float = 0.05
-               ) -> tuple[torch.Tensor, torch.Tensor]:
-    """Where each concept wants mass, as two soft masks over the latent grid.
+def soft_masks(x0_mix: torch.Tensor, x0_a: torch.Tensor, x0_b: torch.Tensor, *,
+               temperature: float = 0.05) -> tuple[torch.Tensor, torch.Tensor]:
+    """Which concept each region of the composed picture is following, as two soft masks.
 
-    ``x0_a`` and ``x0_b`` are the clean estimates the two concept branches point at from the same
-    state. Where they disagree, the one whose estimate is further from their midpoint is the one
-    asking for that region. The masks are a softmax over that disagreement, so they are smooth and
-    differentiable and always sum to one.
+    ``x0_mix`` is the clean estimate the composed run is heading for, and ``x0_a`` and ``x0_b`` are
+    the estimates each concept branch would reach alone from the same state. A region belongs to
+    the concept whose own estimate it resembles, so the masks are a softmax over the two
+    resemblances. They are smooth, differentiable, and sum to one.
+
+    Comparing each branch against the midpoint of the two instead is degenerate: the two
+    differences are equal and opposite by construction, so every region splits exactly evenly and
+    the masks carry no information at all.
     """
-    mid = 0.5 * (x0_a + x0_b)
-    pull_a = ((x0_a - mid) ** 2).mean(dim=1, keepdim=True)
-    pull_b = ((x0_b - mid) ** 2).mean(dim=1, keepdim=True)
-    both = torch.cat([pull_a, pull_b], dim=1) / max(temperature, 1e-6)
+    d_a = ((x0_mix - x0_a) ** 2).mean(dim=1, keepdim=True)
+    d_b = ((x0_mix - x0_b) ** 2).mean(dim=1, keepdim=True)
+    scale = (d_a + d_b).mean().clamp_min(1e-8)
+    both = torch.cat([-d_a, -d_b], dim=1) / (max(temperature, 1e-6) * scale)
     w = torch.softmax(both, dim=1)
     return w[:, :1], w[:, 1:]
 

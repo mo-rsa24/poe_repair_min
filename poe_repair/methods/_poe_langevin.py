@@ -475,7 +475,7 @@ def run_lora_langevin_windowed_poe(
                     from poe_repair.rewards.plurality import soft_masks
                     x0_a = tweedie_mean(latents, alpha_bar_t, last_branches["a"]).float()
                     x0_b = tweedie_mean(latents, alpha_bar_t, last_branches["b"]).float()
-                    mask_a, mask_b = soft_masks(x0_a, x0_b)
+                    mask_a, mask_b = soft_masks(x0_g.detach().float(), x0_a, x0_b)
                 total, terms = rg["reward"].score(
                     img, prompt_a=rg["prompt_a"], prompt_b=rg["prompt_b"],
                     mask_a=mask_a, mask_b=mask_b)
