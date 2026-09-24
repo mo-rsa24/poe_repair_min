@@ -38,8 +38,9 @@ sys.path.insert(0, str(REPO / "scripts" / "showcase"))
 OUT = Path(os.environ.get("FIGURE_CANDIDATES_OUT",
                           "/datasets/mmolefe/poe_repair_min/outputs/figure_candidates"))
 NOISE_PAIR = "a_cat__x__a_dog"          # whose cached starting latent every seed borrows
-COLUMNS = ("mono", "poe", "ours")
-LABELS = {"mono": "joint prompt", "poe": "plain product", "ours": "ours"}
+COLUMNS = ("mono", "poe", "ours", "monolora")
+LABELS = {"mono": "joint prompt", "poe": "plain product", "ours": "ours",
+          "monolora": "joint prompt through the adapter"}
 
 
 def parse_pair(s: str) -> tuple[str, str]:
@@ -102,7 +103,7 @@ def render(column: str, pairs: list[tuple[str, str]], seeds: list[int], ckpt: Pa
             print(f"attached {late_ckpt} as the late adapter from step {switch_at}", flush=True)
     for window in windows:
         if window is None or column != "ours":
-            window = {"poe": 0, "ours": 50}.get(column)
+            window = {"poe": 0, "ours": 50}.get(column, 0)
         name = f"{column}_{tag}_w{window:02d}" if tag else column
 
         for a, b in pairs:
@@ -124,7 +125,7 @@ def render(column: str, pairs: list[tuple[str, str]], seeds: list[int], ckpt: Pa
                     step = torch.randn(base_latents.shape, generator=g, dtype=torch.float32)
                     init_latents = base_latents + jitter * step.to(base_latents.device, base_latents.dtype)
                 emb = encode_pair(cell, ctx)
-                if column == "mono":
+                if column in ("mono", "monolora"):
                     seq_j, pool_j = get_joint_embeds(cell, ctx)
                     res = run_cfg(
                         init_latents=init_latents, models=ctx.models, scheduler=ctx.scheduler,
