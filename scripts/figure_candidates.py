@@ -58,7 +58,7 @@ def cell_dir(slug: str, seed: int) -> Path:
 
 def render(column: str, pairs: list[tuple[str, str]], seeds: list[int], ckpt: Path | None,
            rank: int, windows: list[int | None] = (None,), tag: str = "",
-           spread_match: float = 0.0, late_ckpt: Path | None = None,
+           spread_match: float = 0.0, late_ckpt: Path | None = None, ema: bool = False,
            switch_at: int | None = None, langevin: dict | None = None,
            candidates: int = 1, jitter: float = 0.0, contrast: dict | None = None) -> None:
     free, total = torch.cuda.mem_get_info(0)
@@ -78,7 +78,10 @@ def render(column: str, pairs: list[tuple[str, str]], seeds: list[int], ckpt: Pa
         if ckpt is None or not ckpt.exists():
             raise SystemExit(f"--column {column} needs an existing --checkpoint, got {ckpt}")
         lbp.LORA_RANK = lbp.LORA_ALPHA = rank
-        info = lbp._attach_and_load_lora(ctx.models["unet"], ckpt)
+        # The running average of the weights is saved beside the raw ones in every
+        # checkpoint; it damps the swing between neighbouring checkpoints.
+        info = lbp._attach_and_load_lora(ctx.models["unet"], ckpt,
+                                         key="lora_state_ema" if ema else None)
         if int(info["n_matched"]) == 0 or int(info["n_loaded"]) == 0:
             raise SystemExit(f"adapter did not load: matched {info['n_matched']}, loaded {info['n_loaded']}")
         print(f"attached {ckpt} (step {info['checkpoint_step']}, rank {rank})", flush=True)
@@ -210,6 +213,8 @@ if __name__ == "__main__":
     ap.add_argument("--rank", type=int, default=32)
     ap.add_argument("--window", type=int, nargs="+", help="ours only: adapter on for steps 0 to N, off after; several render in one process")
     ap.add_argument("--tag", default="", help="ours only: names the tile <column>_<tag>_wNN.png")
+    ap.add_argument("--ema", action="store_true",
+                    help="render the running average of the weights instead of the raw ones")
     ap.add_argument("--spread-match", type=float, default=0.0,
                     help="blend weight of the guidance rescale onto the product (0 off, 0.7 Lin et al.)")
     ap.add_argument("--late-checkpoint", type=Path, help="second adapter that draws from --switch-at on")
@@ -241,7 +246,7 @@ if __name__ == "__main__":
         langevin = {"k": a.langevin_k, "c": a.langevin_c, "score": a.corrector_score,
                     "window": tuple(a.corrector_window) if a.corrector_window else None}
         render(a.column, pairs, a.seeds, a.checkpoint, a.rank, a.window or [None], a.tag,
-               a.spread_match, a.late_checkpoint, a.switch_at, langevin, a.candidates, a.jitter,
+               a.spread_match, a.late_checkpoint, a.ema, a.switch_at, langevin, a.candidates, a.jitter,
                {"contrast_steps": a.contrast_steps, "contrast_iters": a.contrast_iters,
                 "contrast_beta": a.contrast_beta, "contrast_w_multi": a.contrast_w_multi}
                if a.contrast_steps > 0 else None)
