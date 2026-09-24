@@ -582,8 +582,19 @@ def _train_one_step(
         err_undialled = (eps_a_raw_l + eps_b_raw_l - eps_uncond_l).float() - eps_j_raw.float()
         loss_undialled = (err_undialled ** 2).mean()
     orth_w = float(getattr(cfg, "orth_weight", 1.0))
+    # Huber on the per-element error instead of the square. Over the whole denoising run the error
+    # spans orders of magnitude (the correction is large at high noise and small at the end), and
+    # the square lets the largest samples own the gradient. Huber is quadratic below `delta` and
+    # linear above it, so a step that is far out still contributes without dominating. 0 is off,
+    # which is every run before this flag existed.
+    huber = float(getattr(cfg, "huber_delta", 0.0))
     if orth_w == 1.0:
-        per_sample = (err ** 2).mean(dim=(1, 2, 3))                # (K,)
+        if huber > 0.0:
+            a = err.abs()
+            per_element = torch.where(a <= huber, 0.5 * err ** 2, huber * (a - 0.5 * huber))
+            per_sample = per_element.mean(dim=(1, 2, 3)) * (2.0 / huber)   # scaled to match MSE
+        else:
+            per_sample = (err ** 2).mean(dim=(1, 2, 3))             # (K,)
         orth_frac = float("nan")
     else:
         # Split the error into the part the two experts could supply and the part they could not,

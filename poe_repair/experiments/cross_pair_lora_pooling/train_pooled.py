@@ -241,6 +241,10 @@ def build_argparser() -> argparse.ArgumentParser:
     ap.add_argument("--loss-weight-cap", type=float, default=22.0,
                    help="clip on the x0 weight; 22.0 is the factor at DDIM step 10 (t 781), so "
                         "steps 0 to 10 share one weight and later steps fall off as 1/SNR")
+    ap.add_argument("--huber-delta", type=float, default=0.0,
+                    help="Huber on the fit term with this elbow, in units of the noise-prediction "
+                         "error; quadratic below it, linear above. 0 keeps the squared error, which "
+                         "is every run before 2026-09-24.")
     ap.add_argument("--contrast-weight", type=float, default=0.0,
                     help="nu for the contrast term (scope 09, experiment 6). Charges the adapter "
                          "for the fraction by which the clean picture its composition is heading "
@@ -349,6 +353,7 @@ def main(argv: list[str] | None = None) -> int:
             cfg.lora.alpha_pattern = dict(cfg.lora.rank_pattern)
     cfg.optim.lr = float(args.lr)
     cfg.optim.weight_decay = float(args.weight_decay)
+    cfg.huber_delta = float(args.huber_delta)
     cfg.schedule.total_epochs = int(args.total_epochs)
     cfg.schedule.epoch_size = int(args.epoch_size)
     cfg.orth_weight = float(args.orth_weight)
