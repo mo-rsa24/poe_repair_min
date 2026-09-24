@@ -27,7 +27,9 @@ PAIRS = ["a_cat__x__a_dog", "a_tiger__x__a_dog", "a_cat__x__a_fox",
          "a_saxophone__x__a_music_stand",
          "a_lighthouse__x__a_stormy_sea", "a_tent__x__a_snowy_mountain", "a_canoe__x__a_misty_lake",
          "a_dog__x__a_dog", "a_cat__x__a_cat"]
-CELLS = [(p, s) for p in PAIRS for s in (9, 42)]
+# Sheets are built per seed group: thirteen pairs at two seeds is already 26 columns, and a
+# wider sheet stops being readable. A group's seeds appear in its filename.
+SEED_GROUPS = [(9, 42), (3, 5), (13, 15), (43, 45)]
 TILE = re.compile(r"^ours_(?P<run>.+)_s(?P<step>\d+)_w50\.png$")
 T, GAP, LEFT, HEAD = 150, 5, 190, 78
 
@@ -46,9 +48,10 @@ def found(tiles: Path) -> dict[str, set[int]]:
     return steps
 
 
-def sheet(tiles: Path, run: str, steps: list[int], out: Path) -> dict:
+def sheet(tiles: Path, run: str, steps: list[int], seeds: tuple[int, ...], out: Path) -> dict:
+    cells = [(p, s) for p in PAIRS for s in seeds]
     rows = [("joint prompt", "mono"), ("plain product", "poe")] + [(f"step {s:,}", s) for s in steps]
-    W = LEFT + len(CELLS) * (T + GAP)
+    W = LEFT + len(cells) * (T + GAP)
     H = HEAD + len(rows) * (T + GAP)
     canvas = Image.new("RGB", (W, H), "white")
     d = ImageDraw.Draw(canvas)
@@ -56,17 +59,18 @@ def sheet(tiles: Path, run: str, steps: list[int], out: Path) -> dict:
     d.text((12, 10), f"{run}: which checkpoint to take a figure cell from", fill="black", font=f_title)
     d.text((12, 34), "rows are checkpoints of this run, columns are the probe cells; the top two "
                      "rows are the references every row is judged against", fill="#444444", font=f_head)
-    for j, (pair, seed) in enumerate(CELLS):
+    for j, (pair, seed) in enumerate(cells):
         x = LEFT + j * (T + GAP)
         label = f"{pair.replace('__x__', ' + ').replace('_', ' ')}, seed {seed}"
         for k, line in enumerate(textwrap.wrap(label, 21)):
             d.text((x + 2, HEAD - 32 + k * 12), line, fill="#333333", font=f_head)
 
-    record = {"run": run, "steps": steps, "cells": [f"{p}/seed{s:02d}" for p, s in CELLS], "tiles": {}}
+    record = {"run": run, "steps": steps, "seeds": list(seeds),
+              "cells": [f"{p}/seed{s:02d}" for p, s in cells], "tiles": {}}
     for i, (label, key) in enumerate(rows):
         y = HEAD + i * (T + GAP)
         d.text((8, y + T // 2 - 8), label, fill="black", font=f_row)
-        for j, (pair, seed) in enumerate(CELLS):
+        for j, (pair, seed) in enumerate(cells):
             x = LEFT + j * (T + GAP)
             name = key if isinstance(key, str) else f"ours_{run}_s{key:06d}_w50"
             p = tiles / pair / f"seed{seed:02d}" / f"{name}.png"
@@ -90,10 +94,15 @@ if __name__ == "__main__":
     template = {}
     for run, steps in sorted(steps_by_run.items()):
         ordered = sorted(steps)
-        rec = sheet(tiles, run, ordered, out_dir / f"which-checkpoint-{run}.png")
-        (out_dir / f"which-checkpoint-{run}.json").write_text(json.dumps(rec, indent=1))
         template[run] = ordered
-        print(f"{run:28s} {len(ordered)} checkpoints -> which-checkpoint-{run}.png")
+        for seeds in SEED_GROUPS:
+            # A group with nothing rendered yet would be a sheet of empty boxes.
+            if not any((tiles / p / f"seed{s:02d}").exists() for p in PAIRS for s in seeds):
+                continue
+            stem = f"which-checkpoint-{run}_seeds_" + "_".join(str(s) for s in seeds)
+            rec = sheet(tiles, run, ordered, seeds, out_dir / f"{stem}.png")
+            (out_dir / f"{stem}.json").write_text(json.dumps(rec, indent=1))
+            print(f"{run:28s} {len(ordered)} checkpoints, seeds {seeds} -> {stem}.png")
 
     # Cut this down by hand: keep only the run and step pairs worth the paper's full cell set.
     (out_dir / "shortlist_template.json").write_text(json.dumps(template, indent=1))

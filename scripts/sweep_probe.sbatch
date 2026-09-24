@@ -9,7 +9,10 @@
 # One run's checkpoints, at a stride, over the probe cells. Pass 1 of the figure sweep: it says
 # which checkpoints of a run compose across every kind of pair, and nothing else.
 #
-#   sbatch --export=ALL,RUN_DIR=<run folder>,STRIDE=10000 scripts/sweep_probe.sbatch
+#   sbatch --export=ALL,RUN_DIR=<run folder>,STRIDE=10000,SEEDS="3 5" scripts/sweep_probe.sbatch
+#
+# Seeds are limited to the ones whose starting noise is cached (1 to 16, 42, and any minted
+# since): every render borrows that seed's latent so a column is the same noise in every row.
 #
 # Each tile lands at <pair>/seed<NN>/ours_<run>_s<step>_w50.png, so a tile always names the
 # checkpoint that drew it. Tiles that exist are skipped, so a re-run costs nothing.
@@ -27,7 +30,7 @@ PAIRS=('a cat|a dog' 'a tiger|a dog' 'a cat|a fox'
        'a chess board|an hourglass' 'a picnic basket|a watermelon' 'a saxophone|a music stand'
        'a lighthouse|a stormy sea' 'a tent|a snowy mountain' 'a canoe|a misty lake'
        'a dog|a dog' 'a cat|a cat')
-SEEDS="9 42"
+SEEDS="${SEEDS:-9 42}"
 
 RUN=$(basename "$RUN_DIR")
 echo "=== node $(hostname -s)  run $RUN  stride $STRIDE  $(date -Is)"
@@ -54,6 +57,6 @@ for c in "${PICK[@]}"; do
         --pairs "${PAIRS[@]}" --seeds $SEEDS || echo "FAILED $tag"
   # The renderer dropped writes silently once. Count what this checkpoint actually left behind.
   n=$(ls "$OUT"/*/seed*/ours_"${tag}"_w50.png 2>/dev/null | wc -l)
-  echo "--- $tag wrote $n of 26 tiles"
+  echo "--- $tag wrote $n tiles for seeds $SEEDS"
 done
 echo "=== done $(date -Is)"
