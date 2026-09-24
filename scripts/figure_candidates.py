@@ -62,8 +62,12 @@ def render(column: str, pairs: list[tuple[str, str]], seeds: list[int], ckpt: Pa
            switch_at: int | None = None, langevin: dict | None = None,
            candidates: int = 1, jitter: float = 0.0, guidance: dict | None = None, contrast: dict | None = None) -> None:
     free, total = torch.cuda.mem_get_info(0)
-    if (total - free) / 1e9 > 1.0:
-        raise SystemExit(f"device holds {(total - free) / 1e9:.1f} GB, refusing to share")
+    # Sharing a card slows both jobs and can run either out of memory, so it is refused unless the
+    # caller says how much of someone else's memory this render may sit beside.
+    max_used = float(os.environ.get("FIGURE_CANDIDATES_MAXUSED_GB", "1.0"))
+    if (total - free) / 1e9 > max_used:
+        raise SystemExit(f"device holds {(total - free) / 1e9:.1f} GB, refusing to share "
+                         f"(raise FIGURE_CANDIDATES_MAXUSED_GB above it to allow)")
 
     from poe_repair.composers._helpers import encode_pair, get_joint_embeds, init_latents_for_cell
     from poe_repair.experiments._eval_common import cell_for
