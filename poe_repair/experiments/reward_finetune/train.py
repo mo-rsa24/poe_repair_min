@@ -132,11 +132,32 @@ def main() -> int:
                  "time_ids": add_time_ids(height=cell.height, width=cell.width, batch_size=3,
                                           device=ctx.device, dtype=ctx.dtype)}
 
-        def branch_parts(x16, timestep):
-            latent_input = scheduler.scale_model_input(x16.repeat(3, 1, 1, 1), timestep)
-            noise = unet(latent_input, timestep, encoder_hidden_states=pe3,
-                         added_cond_kwargs=cond3, timestep_cond=None).sample
-            ea_raw, eb_raw, eu = noise.chunk(3)
+        cond1 = {"text_embeds": None,
+                 "time_ids": add_time_ids(height=cell.height, width=cell.width, batch_size=1,
+                                          device=ctx.device, dtype=ctx.dtype)}
+
+        def branch_parts(x16, timestep, *, batched: bool):
+            """The three guided pieces of one step.
+
+            Batched (one UNet call on three copies) while no gradient is kept, and one call per
+            branch on the step that carries the graph: three activations at 1024 do not fit a
+            24 GB card at once, and the arithmetic is identical either way.
+            """
+            if batched:
+                latent_input = scheduler.scale_model_input(x16.repeat(3, 1, 1, 1), timestep)
+                noise = unet(latent_input, timestep, encoder_hidden_states=pe3,
+                             added_cond_kwargs=cond3, timestep_cond=None).sample
+                ea_raw, eb_raw, eu = noise.chunk(3)
+            else:
+                outs = []
+                for seq, pool in ((emb["seq_a"], emb["pool_a"]), (emb["seq_b"], emb["pool_b"]),
+                                  (emb["seq_e"], emb["pool_e"])):
+                    latent_input = scheduler.scale_model_input(x16, timestep)
+                    outs.append(unet(latent_input, timestep, encoder_hidden_states=seq,
+                                     added_cond_kwargs={"text_embeds": pool,
+                                                        "time_ids": cond1["time_ids"]},
+                                     timestep_cond=None).sample)
+                ea_raw, eb_raw, eu = outs
             return (guided_eps(ea_raw, eu, a.guidance_scale),
                     guided_eps(eb_raw, eu, a.guidance_scale), eu)
 
@@ -149,12 +170,12 @@ def main() -> int:
             for i, timestep in enumerate(scheduler.timesteps):
                 if i >= k:
                     break
-                ea, eb, eu = branch_parts(latents, timestep)
+                ea, eb, eu = branch_parts(latents, timestep, batched=True)
                 eps = poe_eps(ea, eb, eu)
                 latents = scheduler.step(eps, timestep, latents).prev_sample
 
         timestep = scheduler.timesteps[k]
-        ea, eb, eu = branch_parts(latents, timestep)
+        ea, eb, eu = branch_parts(latents, timestep, batched=False)
         eps = poe_eps(ea, eb, eu)
         ab = scheduler.alphas_cumprod[int(timestep.item())].to(ctx.device, torch.float32)
         x0 = (latents.float() - (1 - ab).sqrt() * eps.float()) / ab.sqrt()
