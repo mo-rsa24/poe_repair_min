@@ -138,7 +138,16 @@ def decode_latents_with_grad(vae: Any, latents: torch.Tensor) -> torch.Tensor:
     """
     latents = latents.to(dtype=vae.dtype)
     shift_factor = getattr(vae.config, "shift_factor", 0.0) or 0.0
-    images = vae.decode(latents / vae.config.scaling_factor + shift_factor, return_dict=False)[0]
+    # Keeping the graph through a 1024 decode does not fit a 12 GB card. Tiled decoding trades a
+    # little speed for a much smaller peak by decoding overlapping patches.
+    tiled = hasattr(vae, "enable_tiling")
+    if tiled:
+        vae.enable_tiling()
+    try:
+        images = vae.decode(latents / vae.config.scaling_factor + shift_factor, return_dict=False)[0]
+    finally:
+        if tiled:
+            vae.disable_tiling()
     return ((images / 2 + 0.5).clamp(0, 1)).float()
 
 
