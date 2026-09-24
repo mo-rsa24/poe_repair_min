@@ -139,7 +139,6 @@ def run_poe_langevin(
         eps_a_raw, eps_b_raw, eps_uncond = noise.chunk(3)
         eps_a = guided_eps(eps_a_raw, eps_uncond, guidance_scale)
         eps_b = guided_eps(eps_b_raw, eps_uncond, guidance_scale)
-        last_branches["a"], last_branches["b"] = eps_a.detach(), eps_b.detach()
         return poe_eps(eps_a, eps_b, eps_uncond)
 
     def joint_forward(x16: torch.Tensor, timestep) -> torch.Tensor:
@@ -375,7 +374,9 @@ def run_lora_langevin_windowed_poe(
     last_branches: dict[str, torch.Tensor] = {}
 
     def three_branch(x16: torch.Tensor, timestep) -> torch.Tensor:
-        return compose(*branch_parts(x16, timestep))
+        eps_a, eps_b, eps_uncond = branch_parts(x16, timestep)
+        last_branches["a"], last_branches["b"] = eps_a.detach(), eps_b.detach()
+        return compose(eps_a, eps_b, eps_uncond)
 
     def adapter_for(step_index: int) -> str:
         """Which attached adapter draws this step."""
