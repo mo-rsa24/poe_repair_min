@@ -60,7 +60,7 @@ def render(column: str, pairs: list[tuple[str, str]], seeds: list[int], ckpt: Pa
            rank: int, windows: list[int | None] = (None,), tag: str = "",
            spread_match: float = 0.0, late_ckpt: Path | None = None, ema: bool = False,
            switch_at: int | None = None, langevin: dict | None = None,
-           candidates: int = 1, jitter: float = 0.0, contrast: dict | None = None) -> None:
+           candidates: int = 1, jitter: float = 0.0, guidance: dict | None = None, contrast: dict | None = None) -> None:
     free, total = torch.cuda.mem_get_info(0)
     if (total - free) / 1e9 > 1.0:
         raise SystemExit(f"device holds {(total - free) / 1e9:.1f} GB, refusing to share")
@@ -143,6 +143,7 @@ def render(column: str, pairs: list[tuple[str, str]], seeds: list[int], ckpt: Pa
                         lambda_window=(0, window),
                         corrector_score=(langevin or {}).get("score", "frozen"),
                         spread_match=spread_match, **(contrast or {}),
+                        reward_guidance=guidance,
                         lora_adapter_name_late="late" if late_ckpt is not None else None,
                         adapter_switch_at=switch_at if late_ckpt is not None else None,
                     )
@@ -237,6 +238,11 @@ if __name__ == "__main__":
                     help="best of N: render this many nearby starting noises, one tile each")
     ap.add_argument("--jitter", type=float, default=0.1,
                     help="how far each extra candidate sits from the cell's own starting noise")
+    ap.add_argument("--reward-guidance", type=float, default=0.0,
+                    help="weight of the plurality objective's gradient on the latent, as a "
+                         "fraction of the latent's own norm per guided step (0 is off)")
+    ap.add_argument("--guidance-window", type=int, nargs=2, default=(0, 12), metavar=("LO", "HI"),
+                    help="the steps the guidance runs over; composition is decided early")
     ap.add_argument("--sheet", action="store_true")
     a = ap.parse_args()
     pairs = [parse_pair(p) for p in a.pairs]
@@ -245,8 +251,17 @@ if __name__ == "__main__":
     elif a.column:
         langevin = {"k": a.langevin_k, "c": a.langevin_c, "score": a.corrector_score,
                     "window": tuple(a.corrector_window) if a.corrector_window else None}
+        guidance = None
+        if a.reward_guidance > 0:
+            import torch as _t
+            from poe_repair.rewards.plurality import PluralityReward
+            lo, hi = a.guidance_window
+            guidance = {"reward": PluralityReward(_t.device("cuda")), "weight": a.reward_guidance,
+                        "lo": int(lo), "hi": int(hi),
+                        "prompt_a": pairs[0][0], "prompt_b": pairs[0][1]}
         render(a.column, pairs, a.seeds, a.checkpoint, a.rank, a.window or [None], a.tag,
-               a.spread_match, a.late_checkpoint, a.ema, a.switch_at, langevin, a.candidates, a.jitter,
+               a.spread_match, a.late_checkpoint, a.ema, a.switch_at, langevin, a.candidates,
+               a.jitter, guidance,
                {"contrast_steps": a.contrast_steps, "contrast_iters": a.contrast_iters,
                 "contrast_beta": a.contrast_beta, "contrast_w_multi": a.contrast_w_multi}
                if a.contrast_steps > 0 else None)
