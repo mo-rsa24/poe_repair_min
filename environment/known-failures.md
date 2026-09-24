@@ -14,8 +14,8 @@ reference` repointed from `docs/ENVIRONMENT.md` to this folder. Nothing in the s
 entries was reworded beyond that repointing; `poe-disk-001` is new, added this sitting from a
 failure already documented in the project's own `CLAUDE.md` but not previously catalogued here.
 
-**Last updated:** 2026-09-20
-**Total entries:** 11
+**Last updated:** 2026-09-24
+**Total entries:** 12
 **Seed entries from:** step-09 (three-live-curves-while-training), plus one added during this
 folder's migration
 
@@ -437,6 +437,33 @@ the per-setting output of a run across many settings)
 **Category:** 🔴 critical
 
 **Environment reference:** [storage.md](storage.md)
+
+---
+
+### Rendering figures
+
+#### Entry ID: poe-render-001
+**Name:** The candidate renderer draws every cell and writes none of them
+
+**Symptom:** A render job exits 0 after the usual runtime, its log ends at the line that says the
+adapter attached, and the output folder gains nothing. Re-running changes nothing. A job whose
+pair folders did not exist yet writes its tiles normally, so the failure looks like it depends on
+the pair rather than on the code.
+
+**Root cause:** `scripts/figure_candidates.py` gained a retry loop around `mkdir` in commit
+`d3baf63`, to survive several jobs racing on one pair folder over NFS. The loop was indented
+outside the per-seed loop and the `write_decoded_image` call was left inside it, after the loop's
+`break`. When the folder already existed the loop broke on its first pass, so the write never ran:
+the image was rendered, held in memory, and dropped. Nine jobs exited clean having produced
+nothing on 2026-09-23.
+
+**Solution:** Fixed in commit `6d5d38fc`, which puts the retry inside the per-seed loop and the
+write after it. Any render made into an existing pair folder between those two commits is missing
+and has to be re-run. The job scripts now count what they wrote (`ls ... | wc -l` against the
+expected cell count) and print it, so a silent drop shows up in the log rather than in a figure
+weeks later.
+
+**Environment reference:** [storage.md](storage.md) for the NFS behaviour the retry exists for.
 
 ---
 

@@ -37,7 +37,7 @@ for i in $(seq 1 240); do
       stamp=$(date +%Y%m%d-%H%M)
       mkdir -p "$HISTORY/$stamp"
       cp "$LATEST"/*.png "$LATEST"/*.json "$HISTORY/$stamp/" 2>/dev/null
-      runs=$(grep -c 'checkpoints ->' /tmp/sweep_sheets.$$ || echo 0)
+      runs=$(grep -c 'checkpoints, seeds' /tmp/sweep_sheets.$$ || echo 0)
       echo "| $(date '+%Y-%m-%d %H:%M') | $n | $runs | [$stamp](history/$stamp/) |" >> "$LOG"
       echo "$(date +%H:%M) $n tiles, $runs runs, snapshot $stamp"
     fi
