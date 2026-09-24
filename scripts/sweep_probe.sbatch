@@ -6,8 +6,8 @@
 #SBATCH --output=/datasets/mmolefe/poe_repair_min/outputs/ablation_grid/logs/%x-%j.out
 #SBATCH --error=/datasets/mmolefe/poe_repair_min/outputs/ablation_grid/logs/%x-%j.err
 #
-# One run's checkpoints, at a stride, over the six probe cells. Pass 1 of the figure sweep: it says
-# which checkpoints of a run are worth rendering the paper's full cell set on, and nothing else.
+# One run's checkpoints, at a stride, over the probe cells. Pass 1 of the figure sweep: it says
+# which checkpoints of a run compose across every kind of pair, and nothing else.
 #
 #   sbatch --export=ALL,RUN_DIR=<run folder>,STRIDE=10000 scripts/sweep_probe.sbatch
 #
@@ -19,7 +19,14 @@ OUT=/datasets/mmolefe/poe_repair_min/outputs/ablation_grid
 PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
 : "${RUN_DIR:?set RUN_DIR}"
 STRIDE="${STRIDE:-10000}"
-PAIRS=('a cat|a dog' 'a chess board|an hourglass' 'a dog|a dog')
+# Five kinds of pair, so "it composes consistently" is a claim about more than animals: two
+# different animals, two that look alike, two objects, an object in a place, and one concept asked
+# for twice. Held out of the v58 training pool.
+PAIRS=('a cat|a dog' 'a tiger|a dog' 'a cat|a fox'
+       'a wolf|a coyote' 'a leopard|a cheetah'
+       'a chess board|an hourglass' 'a picnic basket|a watermelon' 'a saxophone|a music stand'
+       'a lighthouse|a stormy sea' 'a tent|a snowy mountain' 'a canoe|a misty lake'
+       'a dog|a dog' 'a cat|a cat')
 SEEDS="9 42"
 
 RUN=$(basename "$RUN_DIR")
@@ -47,6 +54,6 @@ for c in "${PICK[@]}"; do
         --pairs "${PAIRS[@]}" --seeds $SEEDS || echo "FAILED $tag"
   # The renderer dropped writes silently once. Count what this checkpoint actually left behind.
   n=$(ls "$OUT"/*/seed*/ours_"${tag}"_w50.png 2>/dev/null | wc -l)
-  echo "--- $tag wrote $n of 6 tiles"
+  echo "--- $tag wrote $n of 26 tiles"
 done
 echo "=== done $(date -Is)"

@@ -15,16 +15,21 @@ from __future__ import annotations
 import json
 import re
 import sys
+import textwrap
 from collections import defaultdict
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
 
-CELLS = [("a_cat__x__a_dog", 9), ("a_cat__x__a_dog", 42),
-         ("a_chess_board__x__an_hourglass", 9), ("a_chess_board__x__an_hourglass", 42),
-         ("a_dog__x__a_dog", 9), ("a_dog__x__a_dog", 42)]
+PAIRS = ["a_cat__x__a_dog", "a_tiger__x__a_dog", "a_cat__x__a_fox",
+         "a_wolf__x__a_coyote", "a_leopard__x__a_cheetah",
+         "a_chess_board__x__an_hourglass", "a_picnic_basket__x__a_watermelon",
+         "a_saxophone__x__a_music_stand",
+         "a_lighthouse__x__a_stormy_sea", "a_tent__x__a_snowy_mountain", "a_canoe__x__a_misty_lake",
+         "a_dog__x__a_dog", "a_cat__x__a_cat"]
+CELLS = [(p, s) for p in PAIRS for s in (9, 42)]
 TILE = re.compile(r"^ours_(?P<run>.+)_s(?P<step>\d+)_w50\.png$")
-T, GAP, LEFT, HEAD = 230, 6, 210, 66
+T, GAP, LEFT, HEAD = 150, 5, 190, 78
 
 
 def font(size: int):
@@ -49,12 +54,13 @@ def sheet(tiles: Path, run: str, steps: list[int], out: Path) -> dict:
     d = ImageDraw.Draw(canvas)
     f_title, f_head, f_row = font(19), font(11), font(12)
     d.text((12, 10), f"{run}: which checkpoint to take a figure cell from", fill="black", font=f_title)
-    d.text((12, 34), "rows are checkpoints of this run, columns are the six probe cells; the top two "
+    d.text((12, 34), "rows are checkpoints of this run, columns are the probe cells; the top two "
                      "rows are the references every row is judged against", fill="#444444", font=f_head)
     for j, (pair, seed) in enumerate(CELLS):
         x = LEFT + j * (T + GAP)
-        d.text((x + 2, HEAD - 16), f"{pair.replace('__x__', ' + ').replace('_', ' ')}, seed {seed}",
-               fill="#333333", font=f_head)
+        label = f"{pair.replace('__x__', ' + ').replace('_', ' ')}, seed {seed}"
+        for k, line in enumerate(textwrap.wrap(label, 21)):
+            d.text((x + 2, HEAD - 32 + k * 12), line, fill="#333333", font=f_head)
 
     record = {"run": run, "steps": steps, "cells": [f"{p}/seed{s:02d}" for p, s in CELLS], "tiles": {}}
     for i, (label, key) in enumerate(rows):
