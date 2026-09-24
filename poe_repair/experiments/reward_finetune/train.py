@@ -46,6 +46,18 @@ log = logging.getLogger("reward_finetune")
 
 NOISE_PAIR = "a_cat__x__a_dog"          # whose cached starting latent every seed borrows
 
+# The cells every sample pass renders, the same set the pooled training runs track: two pairs the
+# adapter trained on and two it did not, so a sheet shows both at once and is comparable with
+# theirs. (quadrant, prompt_a, prompt_b, seed)
+TRACKING_SET = [
+    ("in_in", "a lion", "a meerkat", 1),
+    ("in_in", "a typewriter", "a cactus", 1),
+    ("out_out", "a cat", "a dog", 9),
+    ("out_out", "a cat", "a dog", 10),
+    ("out_out", "an elephant", "a penguin", 9),
+    ("out_out", "an elephant", "a penguin", 10),
+]
+
 
 def guided_eps(eps_c, eps_u, w):
     return eps_u + w * (eps_c - eps_u)
@@ -86,6 +98,27 @@ def _strip(lora_png: Path, cell, seed: int, prompt_a: str, prompt_b: str, step: 
     return out
 
 
+def _render_cell(ctx, unet, scheduler, a, prompt_a: str, prompt_b: str, seed: int,
+                 run_dir: Path, step: int) -> Path:
+    """One tracking cell: render it at 50 steps with the adapter, then build its three-panel strip."""
+    cell = cell_for(prompt_a, prompt_b, seed)
+    emb = encode_pair(cell, ctx)
+    init_latents, euler_sigma = init_latents_for_cell(cell_from_slug(NOISE_PAIR, seed), ctx)
+    with torch.no_grad():
+        res = run_lora_langevin_windowed_poe(
+            init_latents=init_latents, models=ctx.models, scheduler=scheduler,
+            seq_a=emb["seq_a"], pool_a=emb["pool_a"], seq_b=emb["seq_b"], pool_b=emb["pool_b"],
+            seq_e=emb["seq_e"], pool_e=emb["pool_e"], guidance_scale=a.guidance_scale,
+            num_inference_steps=a.num_inference_steps, height=cell.height, width=cell.width,
+            euler_init_noise_sigma=euler_sigma, device=ctx.device, dtype=ctx.dtype,
+            lambda_value=1.0, k=0, c=0.0, corrector_window=None, noise_seed=seed,
+            lora_adapter_name="lora", lambda_window=(0, a.num_inference_steps),
+            corrector_score="frozen")
+    out = run_dir / "samples" / f"step_{step:06d}_{cell.pair_slug}_seed{seed:02d}.png"
+    write_decoded_image(res.image, out)
+    return _strip(out, cell, seed, prompt_a, prompt_b, step) or out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--checkpoint", type=Path, required=True,
@@ -116,6 +149,8 @@ def main() -> int:
     ap.add_argument("--ckpt-every", type=int, default=250)
     ap.add_argument("--out-root", type=Path,
                     default=Path("/datasets/mmolefe/poe_repair_min/outputs/reward_finetune"))
+    ap.add_argument("--resume-from", type=Path, default=None,
+                    help="a reward checkpoint to continue from; the step counter continues too")
     ap.add_argument("--run-id", default=None)
     ap.add_argument("--wandb-mode", default="online", choices=("online", "offline", "disabled"))
     ap.add_argument("--wandb-project", default="poe-repair-animals-compose")
@@ -143,6 +178,19 @@ def main() -> int:
         # train mode changes nothing about the arithmetic here.
         unet.train()
         log.info("gradient checkpointing on (unet in train mode so it takes effect)")
+    start_step = 0
+    if a.resume_from is not None:
+        prev = torch.load(str(a.resume_from), map_location="cpu", weights_only=False)
+        loaded = 0
+        with torch.no_grad():
+            by_name = dict(unet.named_parameters())
+            for n, v in prev["lora_state"].items():
+                if n in by_name:
+                    by_name[n].copy_(v.to(by_name[n].device, by_name[n].dtype))
+                    loaded += 1
+        start_step = int(prev.get("step", 0))
+        log.info("resumed %d tensors from %s at step %d", loaded, a.resume_from, start_step)
+
     lora_params = [p for n, p in unet.named_parameters() if "lora_" in n]
     for p in lora_params:
         p.data = p.data.float()
@@ -160,7 +208,7 @@ def main() -> int:
     scheduler = ctx.scheduler
     t0 = time.perf_counter()
 
-    for step in range(1, a.steps + 1):
+    for step in range(start_step + 1, a.steps + 1):
         prompt_a, prompt_b = rng.choice(pairs)
         seed = rng.choice(a.seeds)
         cell = cell_for(prompt_a, prompt_b, seed)
@@ -249,26 +297,20 @@ def main() -> int:
                      step, a.steps, terms.total, terms.identity, terms.distinct, terms.compact, k)
 
         if step % a.sample_every == 0:
-            # A finished 50-step render beside the two references every other run is read against:
-            # the joint prompt this cell was cached with, and the plain product it repairs. The
-            # picture the reward scored is a half-denoised estimate and is not comparable to those.
-            with torch.no_grad():
-                unet.eval()
-                res = run_lora_langevin_windowed_poe(
-                    init_latents=init_latents, models=ctx.models, scheduler=scheduler,
-                    seq_a=emb["seq_a"], pool_a=emb["pool_a"], seq_b=emb["seq_b"],
-                    pool_b=emb["pool_b"], seq_e=emb["seq_e"], pool_e=emb["pool_e"],
-                    guidance_scale=a.guidance_scale, num_inference_steps=a.num_inference_steps,
-                    height=cell.height, width=cell.width, euler_init_noise_sigma=euler_sigma,
-                    device=ctx.device, dtype=ctx.dtype, lambda_value=1.0, k=0, c=0.0,
-                    corrector_window=None, noise_seed=seed, lora_adapter_name="lora",
-                    lambda_window=(0, a.num_inference_steps), corrector_score="frozen")
-                if a.gradient_checkpointing:
-                    unet.train()
-            out = run_dir / "samples" / f"step_{step:06d}_{cell.pair_slug}_seed{seed:02d}.png"
-            write_decoded_image(res.image, out)
-            strip = _strip(out, cell, seed, prompt_a, prompt_b, step)
-            wandb.log({"samples/latest": wandb.Image(str(strip or out))}, step=step)
+            # The tracking set, as the three panels every other run is read against: the joint
+            # prompt this cell was cached with, the plain product it repairs, and this adapter.
+            unet.eval()
+            for quadrant, pa, pb, sd in TRACKING_SET:
+                try:
+                    strip = _render_cell(ctx, unet, scheduler, a, pa, pb, sd, run_dir, step)
+                except Exception as exc:
+                    log.warning("sample %s %s x %s seed %s failed: %s", quadrant, pa, pb, sd, exc)
+                    continue
+                slug = cell_for(pa, pb, sd).pair_slug
+                wandb.log({f"samples/{quadrant}/{slug}/seed_{sd:02d}": wandb.Image(str(strip))},
+                          step=step)
+            if a.gradient_checkpointing:
+                unet.train()
 
         if step % a.ckpt_every == 0 or step == a.steps:
             state = {n: p.detach().cpu().clone() for n, p in unet.named_parameters()
