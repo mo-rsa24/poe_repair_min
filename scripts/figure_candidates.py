@@ -59,7 +59,8 @@ def cell_dir(slug: str, seed: int) -> Path:
 def render(column: str, pairs: list[tuple[str, str]], seeds: list[int], ckpt: Path | None,
            rank: int, windows: list[int | None] = (None,), tag: str = "",
            spread_match: float = 0.0, late_ckpt: Path | None = None,
-           switch_at: int | None = None, contrast: dict | None = None) -> None:
+           switch_at: int | None = None, langevin: dict | None = None,
+           candidates: int = 1, jitter: float = 0.0, contrast: dict | None = None) -> None:
     free, total = torch.cuda.mem_get_info(0)
     if (total - free) / 1e9 > 1.0:
         raise SystemExit(f"device holds {(total - free) / 1e9:.1f} GB, refusing to share")
@@ -99,12 +100,22 @@ def render(column: str, pairs: list[tuple[str, str]], seeds: list[int], ckpt: Pa
 
         for a, b in pairs:
             for seed in seeds:
+              for cand in range(candidates):
                 cell = cell_for(a, b, seed)
                 out = cell_dir(cell.pair_slug, seed) / f"{name}.png"
+                if candidates > 1:
+                    out = cell_dir(cell.pair_slug, seed) / f"{name}_c{cand:02d}.png"
                 if out.exists():
                     print(f"{cell.pair_slug} seed {seed} {column}: already rendered", flush=True)
                     continue
-                init_latents, euler_sigma = init_latents_for_cell(cell_from_slug(NOISE_PAIR, seed), ctx)
+                base_latents, euler_sigma = init_latents_for_cell(cell_from_slug(NOISE_PAIR, seed), ctx)
+                # Best of N: candidate 0 is the cell's own noise, the rest sit a short step away
+                # from it, which is the neighbourhood the noise-search finding measured.
+                init_latents = base_latents
+                if cand > 0 and jitter > 0:
+                    g = torch.Generator(device="cpu").manual_seed(1000 * seed + cand)
+                    step = torch.randn(base_latents.shape, generator=g, dtype=torch.float32)
+                    init_latents = base_latents + jitter * step.to(base_latents.device, base_latents.dtype)
                 emb = encode_pair(cell, ctx)
                 if column == "mono":
                     seq_j, pool_j = get_joint_embeds(cell, ctx)
@@ -122,9 +133,12 @@ def render(column: str, pairs: list[tuple[str, str]], seeds: list[int], ckpt: Pa
                         seq_e=emb["seq_e"], pool_e=emb["pool_e"],
                         guidance_scale=ctx.guidance_scale, num_inference_steps=ctx.num_inference_steps,
                         height=cell.height, width=cell.width, euler_init_noise_sigma=euler_sigma,
-                        device=ctx.device, dtype=ctx.dtype, lambda_value=1.0, k=0, c=0.0,
-                        corrector_window=None, noise_seed=seed, lora_adapter_name=lbp.LORA_ADAPTER_NAME,
-                        lambda_window=(0, window), corrector_score="frozen",
+                        device=ctx.device, dtype=ctx.dtype, lambda_value=1.0,
+                        k=(langevin or {}).get("k", 0), c=(langevin or {}).get("c", 0.0),
+                        corrector_window=(langevin or {}).get("window"),
+                        noise_seed=seed, lora_adapter_name=lbp.LORA_ADAPTER_NAME,
+                        lambda_window=(0, window),
+                        corrector_score=(langevin or {}).get("score", "frozen"),
                         spread_match=spread_match, **(contrast or {}),
                         lora_adapter_name_late="late" if late_ckpt is not None else None,
                         adapter_switch_at=switch_at if late_ckpt is not None else None,
@@ -205,14 +219,29 @@ if __name__ == "__main__":
     ap.add_argument("--contrast-iters", type=int, default=5)
     ap.add_argument("--contrast-beta", type=float, default=0.9)
     ap.add_argument("--contrast-w-multi", type=float, default=2.0)
+    ap.add_argument("--langevin-k", type=int, default=0,
+                    help="Langevin corrector steps inside the corrector window (0 is off)")
+    ap.add_argument("--langevin-c", type=float, default=0.0,
+                    help="corrector step size, multiplied by beta_t at each step")
+    ap.add_argument("--corrector-window", type=int, nargs=2, metavar=("LO", "HI"),
+                    help="the step range the corrector runs over, e.g. 20 50 for the tail")
+    ap.add_argument("--corrector-score", default="frozen", choices=("frozen", "corrected"),
+                    help="frozen: the chain settles into the base model's own distribution. "
+                         "corrected: it settles into the adapted one.")
+    ap.add_argument("--candidates", type=int, default=1,
+                    help="best of N: render this many nearby starting noises, one tile each")
+    ap.add_argument("--jitter", type=float, default=0.1,
+                    help="how far each extra candidate sits from the cell's own starting noise")
     ap.add_argument("--sheet", action="store_true")
     a = ap.parse_args()
     pairs = [parse_pair(p) for p in a.pairs]
     if a.sheet:
         sheet(pairs, a.seeds)
     elif a.column:
+        langevin = {"k": a.langevin_k, "c": a.langevin_c, "score": a.corrector_score,
+                    "window": tuple(a.corrector_window) if a.corrector_window else None}
         render(a.column, pairs, a.seeds, a.checkpoint, a.rank, a.window or [None], a.tag,
-               a.spread_match, a.late_checkpoint, a.switch_at,
+               a.spread_match, a.late_checkpoint, a.switch_at, langevin, a.candidates, a.jitter,
                {"contrast_steps": a.contrast_steps, "contrast_iters": a.contrast_iters,
                 "contrast_beta": a.contrast_beta, "contrast_w_multi": a.contrast_w_multi}
                if a.contrast_steps > 0 else None)
