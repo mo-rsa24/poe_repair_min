@@ -22,6 +22,9 @@ OUT=/datasets/mmolefe/poe_repair_min/outputs/ablation_grid
 PY=/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python
 : "${RUN_DIR:?set RUN_DIR}"
 STRIDE="${STRIDE:-10000}"
+# Reward-finetuned runs name their checkpoints reward_step_*.pt and live under
+# reward_finetune/ rather than showcase/; the adapter format inside is the same.
+CKPT_GLOB="${CKPT_GLOB:-lora_step_*.pt}"
 # Five kinds of pair, so "it composes consistently" is a claim about more than animals: two
 # different animals, two that look alike, two objects, an object in a place, and one concept asked
 # for twice. Held out of the v58 training pool.
@@ -37,7 +40,7 @@ echo "=== node $(hostname -s)  run $RUN  stride $STRIDE  $(date -Is)"
 nvidia-smi --query-gpu=name,memory.used --format=csv,noheader || { echo "ABORT: no GPU" >&2; exit 4; }
 
 # Checkpoints on the stride, and always the last one, which is the state the run actually reached.
-mapfile -t CKPTS < <(ls "$RUN_DIR"/checkpoints/lora_step_*.pt 2>/dev/null | sort)
+mapfile -t CKPTS < <(ls "$RUN_DIR"/checkpoints/$CKPT_GLOB 2>/dev/null | sort)
 [ "${#CKPTS[@]}" -eq 0 ] && { echo "ABORT: no checkpoints in $RUN_DIR" >&2; exit 2; }
 PICK=()
 for c in "${CKPTS[@]}"; do
@@ -50,7 +53,7 @@ echo "=== ${#PICK[@]} of ${#CKPTS[@]} checkpoints: $(for c in "${PICK[@]}"; do b
 export POE_REPO="$REPO" FIGURE_CANDIDATES_OUT="$OUT"
 cd "$REPO" || exit 7
 for c in "${PICK[@]}"; do
-  step=$(basename "$c" | sed 's/lora_step_//; s/\.pt//')
+  step=$(basename "$c" | sed 's/[^0-9]//g')
   tag="${RUN}_s${step}"
   echo "--- $tag  $(date +%H:%M:%S)"
   "$PY" "$OUT/figure_candidates.py" --column ours --window 50 --tag "$tag" --checkpoint "$c" \
