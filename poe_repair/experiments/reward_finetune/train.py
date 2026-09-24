@@ -35,7 +35,9 @@ from poe_repair.composers._helpers import encode_pair, init_latents_for_cell
 from poe_repair.experiments import _adapter_shape
 from poe_repair.experiments._eval_common import cell_for
 from poe_repair.experiments.interaction_term.cell import cell_from_slug
+from poe_repair.methods._poe_langevin import run_lora_langevin_windowed_poe
 from poe_repair.methods._sampling import add_time_ids, write_decoded_image
+from poe_repair.training_cache import CellPath
 from poe_repair.rewards.plurality import PluralityReward, soft_masks
 from poe_repair.run import make_ctx
 from poe_repair._sdxl.sdipc_utils import decode_latents_with_grad
@@ -51,6 +53,37 @@ def guided_eps(eps_c, eps_u, w):
 
 def poe_eps(eps_a, eps_b, eps_u):
     return eps_a + eps_b - eps_u
+
+
+def _strip(lora_png: Path, cell, seed: int, prompt_a: str, prompt_b: str, step: int) -> Path | None:
+    """The three panels every run is read against: joint prompt, plain product, this adapter.
+
+    The first two come from the cell's own training cache, which stored them when the cell was
+    built, so nothing is re-rendered for them.
+    """
+    from PIL import Image, ImageDraw, ImageFont
+    try:
+        cache = CellPath.from_root(cell.pair_slug, int(seed))
+    except Exception as exc:                      # a cell the cache does not hold
+        log.warning("no cached references for %s seed %s (%s)", cell.pair_slug, seed, exc)
+        return None
+    mono, poe = cache.root / "mono.png", cache.root / "poe.png"
+    if not (mono.exists() and poe.exists()):
+        return None
+    T, pad = 512, 28
+    canvas = Image.new("RGB", (3 * T, T + pad), "white")
+    d = ImageDraw.Draw(canvas)
+    try:
+        f = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 15)
+    except OSError:
+        f = ImageFont.load_default()
+    for i, (path, label) in enumerate(((mono, "joint prompt (target)"), (poe, "plain product"),
+                                       (lora_png, f"adapter at reward step {step}"))):
+        canvas.paste(Image.open(path).convert("RGB").resize((T, T), Image.LANCZOS), (i * T, pad))
+        d.text((i * T + 6, 6), f"{label}", fill="black", font=f)
+    out = lora_png.with_name(lora_png.stem + "__strip.png")
+    canvas.save(out)
+    return out
 
 
 def main() -> int:
@@ -70,6 +103,10 @@ def main() -> int:
                     help="the graph-carrying step is drawn from [lo, hi); late steps decode to a "
                          "picture the reward can actually read")
     ap.add_argument("--reward-step-hi", type=int, default=45)
+    ap.add_argument("--mask-at", type=int, default=8,
+                    help="the step the concept masks are read at. By the late steps the two "
+                         "branches agree almost everywhere, so masks taken there cover the whole "
+                         "picture and the distinctness term reads a flat zero.")
     ap.add_argument("--w-identity", type=float, default=1.0)
     ap.add_argument("--w-distinct", type=float, default=1.0)
     ap.add_argument("--w-compact", type=float, default=1.0)
@@ -170,11 +207,17 @@ def main() -> int:
         k = rng.randrange(a.reward_step_lo, a.reward_step_hi)
 
         # Sample the run without gradients up to the chosen step: only that step carries the graph.
+        mask_a = mask_b = None
         with torch.no_grad():
             for i, timestep in enumerate(scheduler.timesteps):
                 if i >= k:
                     break
                 ea, eb, eu = branch_parts(latents, timestep, batched=True)
+                if i == a.mask_at:
+                    ab_m = scheduler.alphas_cumprod[int(timestep.item())].to(ctx.device, torch.float32)
+                    x0_a = (latents.float() - (1 - ab_m).sqrt() * ea.float()) / ab_m.sqrt()
+                    x0_b = (latents.float() - (1 - ab_m).sqrt() * eb.float()) / ab_m.sqrt()
+                    mask_a, mask_b = soft_masks(x0_a, x0_b)
                 eps = poe_eps(ea, eb, eu)
                 latents = scheduler.step(eps, timestep, latents).prev_sample
 
@@ -186,10 +229,6 @@ def main() -> int:
         ab = scheduler.alphas_cumprod[int(timestep.item())].to(ctx.device, torch.float32)
         x0 = (latents.float() - (1 - ab).sqrt() * eps.float()) / ab.sqrt()
         image = decode_latents_with_grad(ctx.models["vae"], x0.to(ctx.dtype))
-        with torch.no_grad():
-            x0_a = (latents.float() - (1 - ab).sqrt() * ea.float()) / ab.sqrt()
-            x0_b = (latents.float() - (1 - ab).sqrt() * eb.float()) / ab.sqrt()
-            mask_a, mask_b = soft_masks(x0_a, x0_b)
         total, terms = reward.score(image, prompt_a=prompt_a, prompt_b=prompt_b,
                                     mask_a=mask_a, mask_b=mask_b)
 
@@ -210,10 +249,26 @@ def main() -> int:
                      step, a.steps, terms.total, terms.identity, terms.distinct, terms.compact, k)
 
         if step % a.sample_every == 0:
+            # A finished 50-step render beside the two references every other run is read against:
+            # the joint prompt this cell was cached with, and the plain product it repairs. The
+            # picture the reward scored is a half-denoised estimate and is not comparable to those.
             with torch.no_grad():
-                out = run_dir / "samples" / f"step_{step:06d}_{cell.pair_slug}_seed{seed:02d}.png"
-                write_decoded_image(image.detach().cpu(), out)
-            wandb.log({"samples/latest": wandb.Image(str(out))}, step=step)
+                unet.eval()
+                res = run_lora_langevin_windowed_poe(
+                    init_latents=init_latents, models=ctx.models, scheduler=scheduler,
+                    seq_a=emb["seq_a"], pool_a=emb["pool_a"], seq_b=emb["seq_b"],
+                    pool_b=emb["pool_b"], seq_e=emb["seq_e"], pool_e=emb["pool_e"],
+                    guidance_scale=a.guidance_scale, num_inference_steps=a.num_inference_steps,
+                    height=cell.height, width=cell.width, euler_init_noise_sigma=euler_sigma,
+                    device=ctx.device, dtype=ctx.dtype, lambda_value=1.0, k=0, c=0.0,
+                    corrector_window=None, noise_seed=seed, lora_adapter_name="lora",
+                    lambda_window=(0, a.num_inference_steps), corrector_score="frozen")
+                if a.gradient_checkpointing:
+                    unet.train()
+            out = run_dir / "samples" / f"step_{step:06d}_{cell.pair_slug}_seed{seed:02d}.png"
+            write_decoded_image(res.image, out)
+            strip = _strip(out, cell, seed, prompt_a, prompt_b, step)
+            wandb.log({"samples/latest": wandb.Image(str(strip or out))}, step=step)
 
         if step % a.ckpt_every == 0 or step == a.steps:
             state = {n: p.detach().cpu().clone() for n, p in unet.named_parameters()
