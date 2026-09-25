@@ -146,6 +146,11 @@ def main() -> int:
     ap.add_argument("--w-fidelity", type=float, default=0.0,
                     help="weight on ImageReward, which is the only term that can tell a "
                          "well drawn pair from a badly drawn one")
+    ap.add_argument("--kl-weight", type=float, default=0.0,
+                    help="charge the composed prediction for drifting from the starting adapter's "
+                         "on the step that carries the graph, as relative squared drift: 0.01 is a "
+                         "10%% change. The anchor reward fine-tuning papers use against reward "
+                         "hacking (Flow-GRPO, DPOK); 0 leaves the objective as it was")
     ap.add_argument("--gradient-checkpointing", action="store_true",
                     help="recompute UNet activations in the backward pass; needed on a 24 GB card")
     ap.add_argument("--sample-every", type=int, default=100)
@@ -181,6 +186,9 @@ def main() -> int:
         # train mode changes nothing about the arithmetic here.
         unet.train()
         log.info("gradient checkpointing on (unet in train mode so it takes effect)")
+    # The reference the drift is measured against: the adapter as loaded, before any resume.
+    ref_state = ({n: p.detach().clone() for n, p in unet.named_parameters() if "lora_" in n}
+                 if a.kl_weight > 0 else None)
     start_step = 0
     if a.resume_from is not None:
         prev = torch.load(str(a.resume_from), map_location="cpu", weights_only=False)
@@ -200,7 +208,8 @@ def main() -> int:
         p.requires_grad_(True)
     opt = torch.optim.AdamW(lora_params, lr=a.lr)
     reward = PluralityReward(ctx.device, w_identity=a.w_identity, w_distinct=a.w_distinct,
-                             w_compact=a.w_compact, w_fidelity=a.w_fidelity)
+                             w_compact=a.w_compact, w_fidelity=a.w_fidelity,
+                             strict_fidelity=a.w_fidelity > 0)
 
     import wandb
     wandb.init(project=a.wandb_project, name=run_id, mode=a.wandb_mode,
@@ -275,6 +284,18 @@ def main() -> int:
         # The sampled part is done; give its memory back before the step that keeps a graph.
         torch.cuda.empty_cache()
         timestep = scheduler.timesteps[k]
+        eps_ref = None
+        if ref_state is not None:
+            # Before the graph is built: swapping weights in place after would break autograd.
+            by_name = dict(unet.named_parameters())
+            with torch.no_grad():
+                cur = {n: by_name[n].detach().clone() for n in ref_state}
+                for n, v in ref_state.items():
+                    by_name[n].copy_(v)
+                eps_ref = poe_eps(*branch_parts(latents, timestep, batched=True)).float()
+                for n, v in cur.items():
+                    by_name[n].copy_(v)
+            del cur
         ea, eb, eu = branch_parts(latents, timestep, batched=False)
         eps = poe_eps(ea, eb, eu)
         ab = scheduler.alphas_cumprod[int(timestep.item())].to(ctx.device, torch.float32)
@@ -284,6 +305,10 @@ def main() -> int:
                                     mask_a=mask_a, mask_b=mask_b)
 
         loss = -total                      # the optimizer minimises; the objective is maximised
+        drift = None
+        if eps_ref is not None:
+            drift = ((eps.float() - eps_ref) ** 2).mean() / (eps_ref ** 2).mean().clamp_min(1e-12)
+            loss = loss + a.kl_weight * drift
         opt.zero_grad(set_to_none=True)
         loss.backward()
         gnorm = torch.nn.utils.clip_grad_norm_(lora_params, a.grad_clip)
@@ -294,6 +319,8 @@ def main() -> int:
                    "train/grad_norm": float(gnorm), "train/step_sampled": k,
                    "train/pair": f"{prompt_a} | {prompt_b}", "train/seed": seed,
                    "train/elapsed_s": time.perf_counter() - t0}
+        if drift is not None:
+            payload["train/drift"] = float(drift.detach())
         wandb.log(payload, step=step)
         if step % 20 == 0:
             log.info("step %d/%d reward=%.4f (identity %.3f distinct %.3f compact %.3f fidelity %.3f) k=%d",

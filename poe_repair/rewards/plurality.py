@@ -95,8 +95,11 @@ class PluralityReward:
 
     def __init__(self, device: torch.device, *, dtype: torch.dtype = torch.float32,
                  w_identity: float = 1.0, w_distinct: float = 1.0, w_compact: float = 1.0,
-                 w_fidelity: float = 0.0, image_size: int = 224):
+                 w_fidelity: float = 0.0, image_size: int = 224, strict_fidelity: bool = False):
         self.device, self.dtype = device, dtype
+        # Training sets this: a fidelity weight that silently scores zero turns a run into a
+        # different run than its name says, which is what happened to refl-04-fidelity.
+        self.strict_fidelity = strict_fidelity
         self.w_identity, self.w_distinct, self.w_compact = w_identity, w_distinct, w_compact
         self.w_fidelity = w_fidelity
         self._rm = None
@@ -170,8 +173,10 @@ class PluralityReward:
                        (0.26862954, 0.26130258, 0.27577711))
         text = self._rm.blip.tokenizer(prompt, padding="max_length", truncation=True,
                                        max_length=35, return_tensors="pt").to(self.device)
-        emb = self._rm.blip(x, text.input_ids, text.attention_mask)
-        return torch.tanh(self._rm.mlp(emb[:, 0, :]).squeeze() / 2.0)
+        # BLIP_Pretrain has no forward(); score_gard runs its two encoders and ImageReward's own
+        # mean and std normalisation, which is what puts the score on the -2 to +2 scale.
+        r = self._rm.score_gard(text.input_ids, text.attention_mask, x)
+        return torch.tanh(r.squeeze() / 2.0)
 
     # -- the objective -----------------------------------------------------
     def score(self, image: torch.Tensor, *, prompt_a: str, prompt_b: str,
@@ -202,6 +207,8 @@ class PluralityReward:
             try:
                 fidelity = self.image_reward(image, f"{prompt_a} and {prompt_b}")
             except Exception as exc:                       # the model is optional at render time
+                if self.strict_fidelity:
+                    raise
                 if not getattr(self, "_warned_rm", False):
                     print(f"fidelity term off: {type(exc).__name__}: {exc}", flush=True)
                     self._warned_rm = True
