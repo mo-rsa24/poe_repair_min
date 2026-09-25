@@ -8,15 +8,21 @@
 #   K0   --kl-weight 0: refl-04-fidelity's arguments with the fidelity term working (the control)
 #   K1   --kl-weight 10: the same, charged for drifting from the starting adapter (0.01 relative
 #        squared drift, a 10% change, costs 0.1 of reward)
+#   K2   --w-contrast 10, no anchor: K0 plus a charge on each region looking more like the other
+#        concept than its own (a penguin turning into the elephant). Compared against K0 only.
 #
 # Bar, written before launch: K1 supports the anchor if, at its last checkpoint, reward/fidelity is
 # no lower than K0's and train/drift stays under 0.05, and by eye on the tracking sheets it shows no
 # more third animals or swapped species than K0. If K1's reward/total ends more than 0.05 below
 # K0's with the pictures unchanged, the weight is too high and the run is inconclusive, not a null.
+# K2 supports the contrast term if, at its last checkpoint, reward/contrast is above K0's (K0 does not
+# optimise it but its value can be recomputed on K0's tracking renders), reward/fidelity is no more
+# than 0.05 below K0's, and by eye the elephant-and-penguin and cat-and-dog sheets show fewer
+# regions drawn as the other concept than K0's.
 #
 # On the Blackwell nodes (110, 112) pass PY=/home-mscluster/mmolefe/miniforge3/envs/co3_bw/bin/python.
 set -euo pipefail
-RUN=${1:?run name: K0 K1}; GPU=${GPU:?set GPU=<cuda index>}
+RUN=${1:?run name: K0 K1 K2}; GPU=${GPU:?set GPU=<cuda index>}
 REPO=/home-mscluster/mmolefe/Playground/PhD/poe_repair_min
 PY=${PY:-/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python}
 OUT=/datasets/mmolefe/poe_repair_min/outputs/reward_finetune
@@ -48,6 +54,7 @@ BASE=(--checkpoint "$START" --pairs "a cat|a dog" "an elephant|a penguin" --seed
 case "$RUN" in
   K0) EXTRA=(--kl-weight 0) ;;
   K1) EXTRA=(--kl-weight 10) ;;
+  K2) EXTRA=(--kl-weight 0 --w-contrast 10) ;;
   *) echo "unknown run $RUN"; exit 2 ;;
 esac
 echo "=== argv: ${BASE[*]} ${EXTRA[*]} --run-id refl-kl-$RUN"

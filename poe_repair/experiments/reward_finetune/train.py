@@ -146,6 +146,10 @@ def main() -> int:
     ap.add_argument("--w-fidelity", type=float, default=0.0,
                     help="weight on ImageReward, which is the only term that can tell a "
                          "well drawn pair from a badly drawn one")
+    ap.add_argument("--w-contrast", type=float, default=0.0,
+                    help="weight on each region scoring higher on its own concept than on the other "
+                         "one under CLIP: charges a penguin that is turning into the elephant. The "
+                         "margin is a difference of cosines, typically a few hundredths")
     ap.add_argument("--kl-weight", type=float, default=0.0,
                     help="charge the composed prediction for drifting from the starting adapter's "
                          "on the step that carries the graph, as relative squared drift: 0.01 is a "
@@ -209,7 +213,7 @@ def main() -> int:
     opt = torch.optim.AdamW(lora_params, lr=a.lr)
     reward = PluralityReward(ctx.device, w_identity=a.w_identity, w_distinct=a.w_distinct,
                              w_compact=a.w_compact, w_fidelity=a.w_fidelity,
-                             strict_fidelity=a.w_fidelity > 0)
+                             strict_fidelity=a.w_fidelity > 0, w_contrast=a.w_contrast)
 
     import wandb
     wandb.init(project=a.wandb_project, name=run_id, mode=a.wandb_mode,
@@ -316,6 +320,7 @@ def main() -> int:
 
         payload = {"reward/total": terms.total, "reward/identity": terms.identity,
                    "reward/distinct": terms.distinct, "reward/compact": terms.compact, "reward/fidelity": terms.fidelity,
+                   "reward/contrast": terms.contrast,
                    "train/grad_norm": float(gnorm), "train/step_sampled": k,
                    "train/pair": f"{prompt_a} | {prompt_b}", "train/seed": seed,
                    "train/elapsed_s": time.perf_counter() - t0}
@@ -323,9 +328,9 @@ def main() -> int:
             payload["train/drift"] = float(drift.detach())
         wandb.log(payload, step=step)
         if step % 20 == 0:
-            log.info("step %d/%d reward=%.4f (identity %.3f distinct %.3f compact %.3f fidelity %.3f) k=%d",
-                     step, a.steps, terms.total, terms.identity, terms.distinct, terms.compact,
-                     terms.fidelity, k)
+            log.info("step %d/%d reward=%.4f (identity %.3f distinct %.3f compact %.3f fidelity %.3f "
+                     "contrast %.3f) k=%d", step, a.steps, terms.total, terms.identity, terms.distinct,
+                     terms.compact, terms.fidelity, terms.contrast, k)
 
         if step % a.sample_every == 0:
             # The tracking set, as the three panels every other run is read against: the joint

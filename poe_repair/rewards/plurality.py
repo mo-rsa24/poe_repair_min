@@ -38,10 +38,12 @@ class Terms:
     compact: float
     fidelity: float
     total: float
+    contrast: float = 0.0
 
     def as_dict(self) -> dict:
         return {"identity": self.identity, "distinct": self.distinct,
-                "compact": self.compact, "fidelity": self.fidelity, "total": self.total}
+                "compact": self.compact, "fidelity": self.fidelity, "total": self.total,
+                "contrast": self.contrast}
 
 
 def soft_masks(x0_mix: torch.Tensor, x0_a: torch.Tensor, x0_b: torch.Tensor, *,
@@ -95,13 +97,15 @@ class PluralityReward:
 
     def __init__(self, device: torch.device, *, dtype: torch.dtype = torch.float32,
                  w_identity: float = 1.0, w_distinct: float = 1.0, w_compact: float = 1.0,
-                 w_fidelity: float = 0.0, image_size: int = 224, strict_fidelity: bool = False):
+                 w_fidelity: float = 0.0, image_size: int = 224, strict_fidelity: bool = False,
+                 w_contrast: float = 0.0):
         self.device, self.dtype = device, dtype
         # Training sets this: a fidelity weight that silently scores zero turns a run into a
         # different run than its name says, which is what happened to refl-04-fidelity.
         self.strict_fidelity = strict_fidelity
         self.w_identity, self.w_distinct, self.w_compact = w_identity, w_distinct, w_compact
         self.w_fidelity = w_fidelity
+        self.w_contrast = w_contrast
         self._rm = None
         self.image_size = image_size
         self._clip = None
@@ -195,9 +199,14 @@ class PluralityReward:
             region_a = image * ma + image.mean(dim=(2, 3), keepdim=True) * (1 - ma)
             region_b = image * mb + image.mean(dim=(2, 3), keepdim=True) * (1 - mb)
 
-        ia = (self.clip_image_embed(region_a) * ta).sum()
-        ib = (self.clip_image_embed(region_b) * tb).sum()
+        ea, eb = self.clip_image_embed(region_a), self.clip_image_embed(region_b)
+        ia, ib = (ea * ta).sum(), (eb * tb).sum()
         identity = 0.5 * (ia + ib)
+        # Each region against the other concept's text as well as its own: a penguin region that
+        # has turned into an elephant still scores fairly on "a penguin", but it scores higher on
+        # "an elephant", and this margin goes negative. The masks come from where each branch
+        # wanted its concept, so the question is what is drawn where the penguin should be.
+        contrast = 0.5 * ((ia - (ea * tb).sum()) + (ib - (eb * ta).sum()))
 
         da, db = self.dino_embed(region_a), self.dino_embed(region_b)
         distinct = 1.0 - (da * db).sum()
@@ -218,7 +227,8 @@ class PluralityReward:
             compact = -0.5 * (spread(mask_a) + spread(mask_b))
 
         total = (self.w_identity * identity + self.w_distinct * distinct
-                 + self.w_compact * compact + self.w_fidelity * fidelity)
+                 + self.w_compact * compact + self.w_fidelity * fidelity
+                 + self.w_contrast * contrast)
         return total, Terms(identity=float(identity.detach()), distinct=float(distinct.detach()),
                             compact=float(compact.detach()), fidelity=float(fidelity.detach()),
-                            total=float(total.detach()))
+                            total=float(total.detach()), contrast=float(contrast.detach()))
