@@ -1,0 +1,46 @@
+# The run queue scripts/local/run_queue.py launches from. Edit by hand; the poller never writes
+# here (its state is run_queue_state.json, what you read is run_queue_status.md).
+#
+# A run joins the queue only with its pass bar written. Every launch is watched to its `ok` line,
+# and a run that dies before it is reported as crashed, so untested code costs one launch rather
+# than a night.
+#
+# Fields
+#   launcher  path under the cluster checkout; called as `bash <launcher> <args>` with GPU=<idx>,
+#             PY=<env python> and ALLOW_SHARE=1 (the poller has already judged the card)
+#   mem_gb    peak GPU memory the run needs; a card is used only with this much free plus 2 GB
+#   match     a string unique to the run's command line, for pgrep on the node
+#   ok        log line that proves the run is training (checked once, after launch)
+#   done      log line the run writes when it finishes
+#   bar       the pass bar, copied from the launcher header; required
+#   adopt     for a run already started by hand: node, gpu and log, so it is tracked, not launched
+
+runs:
+  - name: refl-kl-K0
+    launcher: scripts/launch_reward_kl.sh
+    args: K0
+    mem_gb: 50
+    match: "--run-id refl-kl-K0"
+    ok: "step 20/2000"
+    done: "checkpoint saved at step 2000"
+    bar: "control for K1 and K2"
+    adopt: {node: mscluster112, gpu: 0, log: /datasets/mmolefe/poe_repair_min/outputs/reward_finetune/logs/refl-kl-K0-112.log}
+
+  - name: refl-kl-K1
+    launcher: scripts/launch_reward_kl.sh
+    args: K1
+    mem_gb: 50
+    match: "--run-id refl-kl-K1"
+    ok: "step 20/2000"
+    done: "checkpoint saved at step 2000"
+    bar: "at the last checkpoint reward/fidelity no lower than K0's, train/drift under 0.05, no more third animals or swapped species than K0 by eye"
+    adopt: {node: mscluster112, gpu: 0, log: /datasets/mmolefe/poe_repair_min/outputs/reward_finetune/logs/refl-kl-K1-112.log}
+
+  - name: refl-kl-K2
+    launcher: scripts/launch_reward_kl.sh
+    args: K2
+    mem_gb: 50
+    match: "--run-id refl-kl-K2"
+    ok: "step 20/2000"
+    done: "checkpoint saved at step 2000"
+    bar: "at the last checkpoint reward/contrast above K0's, reward/fidelity no more than 0.05 below K0's, fewer regions drawn as the other concept than K0 by eye"
