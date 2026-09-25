@@ -111,8 +111,16 @@ def check_run(name: str, run: dict, spec: dict) -> None:
         event("HEALTHY", name, f"reached '{spec['ok']}' on {run['node']} GPU {run['gpu']}")
 
 
-def usable(key, card, apps, util_hist, state, need_mb) -> bool:
-    if card["faulted"] or card["total"] - card["used"] < need_mb + MARGIN_MB:
+def usable(key, card, apps, util_hist, state, need_mb, specs) -> bool:
+    # Our own runs are counted at their peak, never at the reading: a training run's memory swings
+    # by tens of GB between steps, and a launch sized to a low reading once put a third run on a
+    # card two runs already fill at their peaks.
+    own_now = sum(int(mb) for _, u, mb in apps.get(key, []) if u == ME and mb.isdigit())
+    own_peak = sum(specs[n]["mem_gb"] * 1024 for n, r in state["runs"].items()
+                   if n in specs and (r.get("node"), r.get("gpu")) == key
+                   and r["state"] in ("starting", "running"))
+    used = card["used"] - own_now + max(own_now, own_peak)
+    if card["faulted"] or card["total"] - used < need_mb + MARGIN_MB:
         return False
     foreign = [a for a in apps.get(key, []) if a[1] != ME]
     hist = util_hist.get(f"{key[0]}:{key[1]}", [])
@@ -182,7 +190,7 @@ def cycle() -> None:
         if name in state["runs"]:
             continue
         for key in sorted(cards, key=lambda k: (NODES.index(k[0]), k[1])):
-            if usable(key, cards[key], apps, state["util"], state, s["mem_gb"] * 1024):
+            if usable(key, cards[key], apps, state["util"], state, s["mem_gb"] * 1024, specs):
                 state["runs"][name] = launch(name, s, key)
                 break
         break                      # one launch per cycle: the next run waits for this one's memory
