@@ -122,9 +122,11 @@ def usable(key, card, apps, util_hist, state, need_mb, specs) -> bool:
     used = card["used"] - own_now + max(own_now, own_peak)
     if card["faulted"] or card["total"] - used < need_mb + MARGIN_MB:
         return False
-    foreign = [a for a in apps.get(key, []) if a[1] != ME]
+    # A foreign job seen in any of the last three checks counts, not only one on the card now: a
+    # worker loop that runs in bursts read as a free card between bursts and got K2 put beside it.
     hist = util_hist.get(f"{key[0]}:{key[1]}", [])
-    if foreign and (len(hist) < IDLE_CHECKS or max(hist[-IDLE_CHECKS:]) > IDLE_UTIL):
+    seen = state.get("foreign", {}).get(f"{key[0]}:{key[1]}", [])
+    if any(seen[-IDLE_CHECKS:]) and (len(hist) < IDLE_CHECKS or max(hist[-IDLE_CHECKS:]) > IDLE_UTIL):
         return False
     for r in state["runs"].values():
         if (r.get("node"), r.get("gpu")) == key and time.time() - r.get("launched_ts", 0) < SETTLE_S:
@@ -181,6 +183,9 @@ def cycle() -> None:
         h = state["util"].setdefault(f"{key[0]}:{key[1]}", [])
         h.append(c["util"] if c["util"] >= 0 else 100)
         del h[:-IDLE_CHECKS]
+        fs = state.setdefault("foreign", {}).setdefault(f"{key[0]}:{key[1]}", [])
+        fs.append(any(u != ME for _, u, _ in apps.get(key, [])))
+        del fs[:-IDLE_CHECKS]
 
     for name, r in state["runs"].items():
         if r["state"] in ("starting", "running") and name in specs:

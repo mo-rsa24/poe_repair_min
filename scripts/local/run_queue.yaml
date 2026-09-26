@@ -44,3 +44,21 @@ runs:
     ok: "step 20/2000"
     done: "checkpoint saved at step 2000"
     bar: "at the last checkpoint reward/contrast above K0's, reward/fidelity no more than 0.05 below K0's, fewer regions drawn as the other concept than K0 by eye"
+
+  - name: refl-kl-K3
+    launcher: scripts/launch_reward_kl.sh
+    args: K3
+    mem_gb: 50
+    match: "--run-id refl-kl-K3"
+    ok: "step 20/2000"
+    done: "checkpoint saved at step 2000"
+    bar: "cat-and-dog seed 9 at step 2000 shows two animals where K2 shows three, and no tracking cell loses one of its two animals"
+
+  - name: refl-kl-K4
+    launcher: scripts/launch_reward_kl.sh
+    args: K4
+    mem_gb: 50
+    match: "--run-id refl-kl-K4"
+    ok: "step 20/2000"
+    done: "checkpoint saved at step 2000"
+    bar: "cat-and-dog seed 10 at step 2000 keeps clean fur and a cat face, and reward/contrast over steps 1601-2000 is no lower than K2's 0.039"

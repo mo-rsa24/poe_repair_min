@@ -10,6 +10,11 @@
 #        squared drift, a 10% change, costs 0.1 of reward)
 #   K2   --w-contrast 10, no anchor: K0 plus a charge on each region looking more like the other
 #        concept than its own (a penguin turning into the elephant). Compared against K0 only.
+#   K3   K2 with the reward's gradient taken at steps 10-21 instead of 30-44, where the layout is
+#        still being decided, and the fidelity term off (ImageReward cannot read a picture that
+#        blurry). Aimed at the third animal, whose position is fixed before step 30.
+#   K4   K2 with the fidelity weight at 0.3 instead of 1.0: in K0 that term rose from 0.34 to 0.54
+#        while cat-and-dog seed 10 turned to wet, matted fur, so it is being gamed.
 #
 # Bar, written before launch: K1 supports the anchor if, at its last checkpoint, reward/fidelity is
 # no lower than K0's and train/drift stays under 0.05, and by eye on the tracking sheets it shows no
@@ -19,10 +24,15 @@
 # optimise it but its value can be recomputed on K0's tracking renders), reward/fidelity is no more
 # than 0.05 below K0's, and by eye the elephant-and-penguin and cat-and-dog sheets show fewer
 # regions drawn as the other concept than K0's.
+# K3 supports moving the reward earlier if, on the step-2000 tracking sheets, cat-and-dog seed 9 shows
+# two animals where K2 shows three, and no tracking cell loses one of its two animals. It fails if the
+# third animal's position survives unchanged, as it did through all 2000 steps of K0 and K2.
+# K4 supports the lower fidelity weight if cat-and-dog seed 10 at step 2000 keeps clean fur and a cat
+# face (K0's did not), and reward/contrast over steps 1601-2000 is no lower than K2's 0.039.
 #
 # On the Blackwell nodes (110, 112) pass PY=/home-mscluster/mmolefe/miniforge3/envs/co3_bw/bin/python.
 set -euo pipefail
-RUN=${1:?run name: K0 K1 K2}; GPU=${GPU:?set GPU=<cuda index>}
+RUN=${1:?run name: K0 K1 K2 K3 K4}; GPU=${GPU:?set GPU=<cuda index>}
 REPO=/home-mscluster/mmolefe/Playground/PhD/poe_repair_min
 PY=${PY:-/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python}
 OUT=/datasets/mmolefe/poe_repair_min/outputs/reward_finetune
@@ -55,6 +65,8 @@ case "$RUN" in
   K0) EXTRA=(--kl-weight 0) ;;
   K1) EXTRA=(--kl-weight 10) ;;
   K2) EXTRA=(--kl-weight 0 --w-contrast 10) ;;
+  K3) EXTRA=(--kl-weight 0 --w-contrast 10 --reward-step-lo 10 --reward-step-hi 22 --w-fidelity 0) ;;
+  K4) EXTRA=(--kl-weight 0 --w-contrast 10 --w-fidelity 0.3) ;;
   *) echo "unknown run $RUN"; exit 2 ;;
 esac
 echo "=== argv: ${BASE[*]} ${EXTRA[*]} --run-id refl-kl-$RUN"
