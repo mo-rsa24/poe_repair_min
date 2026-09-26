@@ -91,10 +91,14 @@ def check_run(name: str, run: dict, spec: dict) -> None:
     # The bracket keeps pgrep from matching the shell that runs it, whose own command line
     # carries the same text and would read every run as alive.
     pat = f"[{spec['match'][0]}]{spec['match'][1:]}"
-    out = remote(f"ssh -o BatchMode=yes -o ConnectTimeout=8 {run['node']} "
+    # The ssh is capped so a node that authenticates and then hangs (mscluster110) still lets the
+    # log tail run; a node that never answers gives neither ALIVE nor GONE, and is not a crash.
+    out = remote(f"timeout 25 ssh -o BatchMode=yes -o ConnectTimeout=8 {run['node']} "
                  f"\"pgrep -f -- '{pat}' >/dev/null && echo ALIVE || echo GONE\"; "
                  f"tail -c 20000 {run['log']} 2>/dev/null")
-    alive = "ALIVE" in out.splitlines()[:1]
+    first = out.splitlines()[:1]
+    alive = "ALIVE" in first
+    unknown = not first or first[0] not in ("ALIVE", "GONE")
     steps = STEP.findall(out)
     if steps:
         run["last_step"] = f"{steps[-1][0]}/{steps[-1][1]}"
@@ -102,7 +106,7 @@ def check_run(name: str, run: dict, spec: dict) -> None:
     if spec["done"] in out:
         run["state"] = "done"
         event("DONE", name, f"finished on {run['node']} GPU {run['gpu']}; bar: {spec['bar']}")
-    elif not alive:
+    elif not alive and not unknown:
         run["state"] = "crashed"
         event("CRASH", name, (err[-1] if err else "process gone, no error in the log")[:240])
     elif spec["ok"] in out and not run.get("ok"):

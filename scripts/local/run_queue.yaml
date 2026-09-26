@@ -48,7 +48,7 @@ runs:
   - name: refl-kl-K3
     launcher: scripts/launch_reward_kl.sh
     args: K3
-    mem_gb: 50
+    mem_gb: 40                     # no ImageReward (fidelity off), so it fits a 48 GB Quadro
     match: "--run-id refl-kl-K3"
     ok: "step 20/2000"
     done: "checkpoint saved at step 2000"
@@ -59,6 +59,7 @@ runs:
     args: K4
     mem_gb: 50
     match: "--run-id refl-kl-K4"
+    adopt: {node: mscluster110, gpu: 0, log: /datasets/mmolefe/poe_repair_min/outputs/reward_finetune/logs/refl-kl-K4-mscluster110.log}
     ok: "step 20/2000"
     done: "checkpoint saved at step 2000"
     bar: "cat-and-dog seed 10 at step 2000 keeps clean fur and a cat face, and reward/contrast over steps 1601-2000 is no lower than K2's 0.039"
