@@ -171,15 +171,12 @@ def sheet(tiles: Path, out_dir: Path, pairs: list[tuple[str, str]], seeds: list[
         columns = [("a", [f'"{a}"', "alone"]),
                    ("b", [f'"{b}"', "alone"]),
                    ("mono", ["Joint prompt", f'"{a} and {b}"']),
-                   ("poe", ["PoE", "one prompt per concept"]),
-                   ("superdiff_200", ["SuperDiff", "own noise and sampler, 200 steps"])]
+                   ("poe", ["PoE", f'"{a}" and "{b}"']),
+                   ("superdiff_200", ["SuperDiff", f'"{a}" and "{b}"'])]
         rows = [(f"seed {s}", resolver(s)) for s in seeds]
         out = out_dir / f"{slug.replace('__x__', '-and-').replace('_', '-')}.png"
-        record = grid(rows, columns, out, f'SDXL: "{a}" and "{b}", {len(seeds)} seeds',
-                      "Rows are seeds. The first four columns start a row from the same cached noise, so "
-                      "a difference along a row is the method. SuperDiff draws its own noise from the seed "
-                      "number with its own stochastic sampler at its default 200 steps; the rest use 50 DDIM steps. Guidance 7.5.",
-                      rule_before=2)
+        # Sampler, steps and noise sharing live in the artifact card, not on the figure.
+        record = grid(rows, columns, out, "Composing two concepts", "", rule_before=2)
         out.with_suffix(".json").write_text(json.dumps(record, indent=1, default=str))
         print(f"wrote {out}")
 
