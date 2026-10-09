@@ -129,16 +129,18 @@ def record(a: str, b: str, seed: int) -> Path:
     return out
 
 
-def plot(pushes_dir: Path, out_dir: Path, a: str, b: str, seed: int, sd_sidecar: Path | None) -> None:
+def plot(pushes_dir: Path, out_dir: Path, a: str, b: str, seed: int, sd_sidecar: Path | None,
+         run: str = "") -> None:
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
-    src = pushes_dir / slug_of(a, b) / f"seed{seed:02d}" / "pushes.json"
+    # `run` names a second recording of the same seed, kept beside the first as seedNN-<run>.
+    src = pushes_dir / slug_of(a, b) / (f"seed{seed:02d}-{run}" if run else f"seed{seed:02d}") / "pushes.json"
     d = json.loads(src.read_text())
     rows = d["rows"]
     out_dir.mkdir(parents=True, exist_ok=True)
-    stem = f"{slug_of(a, b).replace('__x__', '-and-').replace('_', '-')}-seed{seed:02d}"
+    stem = f"{slug_of(a, b).replace('__x__', '-and-').replace('_', '-')}-seed{seed:02d}" + (f"-{run}" if run else "")
     col_a, col_b, col_p, col_j = "#2f6fb0", "#c0504d", "#7a7a7a", "#2e8b57"
 
     # Figure 1: the plane at a few steps, each panel at its own scale.
@@ -161,7 +163,8 @@ def plot(pushes_dir: Path, out_dir: Path, a: str, b: str, seed: int, sd_sidecar:
         ax.set_xticks([])
         ax.set_yticks([])
         ax.set_title(f"step {s}", fontsize=10)
-        ax.text(0.02, 0.02, f"{a}–{b} angle {r['angle_ab_deg']:.0f}°\n"
+        ax.text(0.02, 0.02, f"lengths: {a} {r['norm_a']:.1f}, {b} {r['norm_b']:.1f}, joint {r['norm_joint']:.1f}\n"
+                            f"{a}–{b} angle {r['angle_ab_deg']:.0f}°\n"
                             f"joint out of plane {100 * r['joint_out_share']:.0f}%",
                 transform=ax.transAxes, fontsize=8, color="#333")
     fig.suptitle("Where each prompt pushes, seed %d" % seed, fontsize=12)
@@ -184,14 +187,15 @@ def plot(pushes_dir: Path, out_dir: Path, a: str, b: str, seed: int, sd_sidecar:
     fig, axes = plt.subplots(n, 1, figsize=(7.5, 2.2 * n), sharex=True)
     for ax, (label, ys, c) in zip(axes, panels):
         ax.plot(steps, ys, color=c, lw=2)
-        ax.set_ylabel(label, fontsize=8)
+        ax.set_title(label, fontsize=9, loc="left")
         ax.grid(alpha=0.3)
     if sd:
         ax = axes[-1]
         ax.plot(sd[0], sd[1], color="#8064a2", lw=1.5)
         ax.axhline(0.5, color="#999", lw=0.8, ls=":")
         ax.text(1, 0.52, "equal weight", fontsize=8, color="#666")
-        ax.set_ylabel(f"SuperDiff weight on \"{a}\"\n(1 − weight on \"{b}\")", fontsize=8)
+        ax.set_title(f"SuperDiff's weight on \"{a}\" (the rest goes to \"{b}\"), its own 200-step run",
+                     fontsize=9, loc="left")
         ax.grid(alpha=0.3)
     axes[-1].set_xlabel("denoising step (0 = pure noise, 49 = final)")
     fig.suptitle("The two pushes over the run, seed %d" % seed, fontsize=12)
@@ -208,10 +212,11 @@ def main() -> None:
     ap.add_argument("--seed", type=int, default=10)
     ap.add_argument("--plot", nargs=2, type=Path, metavar=("PUSHES_DIR", "OUT_DIR"))
     ap.add_argument("--superdiff-sidecar", type=Path)
+    ap.add_argument("--run", default="", help="plot only: the seedNN-<run> recording")
     args = ap.parse_args()
     a, b = (p.strip() for p in args.pair.split("|"))
     if args.plot:
-        return plot(*args.plot, a, b, args.seed, args.superdiff_sidecar)
+        return plot(*args.plot, a, b, args.seed, args.superdiff_sidecar, args.run)
     record(a, b, args.seed)
 
 
