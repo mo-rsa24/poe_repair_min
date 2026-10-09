@@ -67,10 +67,15 @@ def record(a: str, b: str, seed: int) -> Path:
     init, sigma = init_latents_for_cell(cell_from_slug(NOISE_PAIR, seed), ctx)
     emb = encode_pair(cell, ctx)
     seq_j, pool_j = get_joint_embeds(cell, ctx)
-    pe = torch.cat([emb["seq_a"], emb["seq_b"], seq_j, emb["seq_e"]], dim=0)
-    pool = torch.cat([emb["pool_a"], emb["pool_b"], pool_j, emb["pool_e"]], dim=0)
+    # PoE's own three predictions go through the UNet as the same batch of three run_cfg_poe uses,
+    # and the joint prediction as a batch of its own. In fp16 the batch shape changes the arithmetic
+    # slightly, and on a seed near the switch between outcomes that alone changes the final picture.
+    pe = torch.cat([emb["seq_a"], emb["seq_b"], emb["seq_e"]], dim=0)
+    pool = torch.cat([emb["pool_a"], emb["pool_b"], emb["pool_e"]], dim=0)
     cond = {"text_embeds": pool,
-            "time_ids": add_time_ids(height=cell.height, width=cell.width, batch_size=4, device=dev, dtype=dt)}
+            "time_ids": add_time_ids(height=cell.height, width=cell.width, batch_size=3, device=dev, dtype=dt)}
+    cond_j = {"text_embeds": pool_j,
+              "time_ids": add_time_ids(height=cell.height, width=cell.width, batch_size=1, device=dev, dtype=dt)}
     sched, unet = ctx.scheduler, ctx.models["unet"]
     sched.set_timesteps(ctx.num_inference_steps)
     latents = (init / sigma).to(device=dev, dtype=dt)
@@ -78,9 +83,11 @@ def record(a: str, b: str, seed: int) -> Path:
     rows = []
     with torch.no_grad():
         for i, t in enumerate(sched.timesteps):
-            x_in = sched.scale_model_input(latents.repeat(4, 1, 1, 1), t)
-            e_a, e_b, e_j, e_u = unet(x_in, t, encoder_hidden_states=pe, added_cond_kwargs=cond,
-                                      timestep_cond=None).sample.chunk(4)
+            x_in = sched.scale_model_input(latents.repeat(3, 1, 1, 1), t)
+            e_a, e_b, e_u = unet(x_in, t, encoder_hidden_states=pe, added_cond_kwargs=cond,
+                                 timestep_cond=None).sample.chunk(3)
+            e_j = unet(sched.scale_model_input(latents, t), t, encoder_hidden_states=seq_j,
+                       added_cond_kwargs=cond_j, timestep_cond=None).sample
             # The geometry is read in float32; the step itself stays in the sampler's precision.
             da, db, dj = ((e - e_u).float().flatten() for e in (e_a, e_b, e_j))
             na, nb, nj = da.norm().item(), db.norm().item(), dj.norm().item()
