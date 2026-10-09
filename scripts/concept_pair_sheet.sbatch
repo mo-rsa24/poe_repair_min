@@ -10,6 +10,7 @@
 # one column per process so SuperDiff's own SDXL never shares a card with the repo's.
 #
 #   PAIRS="a dog|rain" SEEDS="1 2 4 9 10" sbatch scripts/concept_pair_sheet.sbatch
+#   COLUMNS=pushes SEEDS=10 sbatch --partition=biggpu --nodelist=mscluster110 scripts/concept_pair_sheet.sbatch
 #   COLUMNS=superdiff sbatch --partition=biggpu --nodelist=mscluster110 scripts/concept_pair_sheet.sbatch
 #
 # Tiles land under the concept_pair_sheet tree; the sheet is built on the laptop afterwards by
@@ -37,6 +38,14 @@ export POE_REPO="$REPO" CONCEPT_PAIR_OUT="$OUT"
 cd "$REPO" || exit 7
 IFS=';' read -ra PAIR_LIST <<< "$PAIRS"
 for column in $COLUMNS; do
+  if [ "$column" = pushes ]; then
+    # The per-step pushes on PoE's own path (scripts/concept_pair_pushes.py), one run per pair and seed.
+    for pair in "${PAIR_LIST[@]}"; do for seed in $SEEDS; do
+      "$PY" scripts/concept_pair_pushes.py --pair "$pair" --seed "$seed" \
+        || { echo "pushes $pair seed $seed failed" >&2; exit 9; }
+    done; done
+    continue
+  fi
   "$PY" scripts/concept_pair_sheet.py --column "$column" --pairs "${PAIR_LIST[@]}" --seeds $SEEDS \
     || { echo "column $column failed" >&2; exit 8; }
 done
