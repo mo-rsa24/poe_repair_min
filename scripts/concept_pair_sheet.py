@@ -6,7 +6,9 @@ plain product-of-experts (PoE) and SuperDiff. Rows are seeds. The two single-con
 joint prompt and PoE start a row from the same noise: the cached starting latent of
 `a_cat__x__a_dog` at that seed, which the cache shares across pairs. SuperDiff draws its own noise
 from the seed number and samples with its own stochastic sampler, so its tile is not
-pixel-comparable with the rest of the row.
+pixel-comparable with the rest of the row. It runs at its own default of 200 steps: at 50 its sampler
+leaves the picture as a shattered texture (report/is-the-gap-the-samplers-or-the-models/
+does-superdiff-compose-at-its-own-defaults.md).
 
 PoE is the repo's plain rule (poe_repair/methods/_sampling.py, run_cfg_poe) with no adapter
 attached at all, so nothing can leak into it from a trained correction.
@@ -66,7 +68,7 @@ def write_sidecar(png: Path, record: dict) -> None:
     png.with_suffix(".json").write_text(json.dumps(record, indent=1))
 
 
-def render(column: str, pairs: list[tuple[str, str]], seeds: list[int]) -> None:
+def render(column: str, pairs: list[tuple[str, str]], seeds: list[int], superdiff_steps: int = 200) -> None:
     import torch
 
     from poe_repair.composers._helpers import encode_pair, get_joint_embeds, init_latents_for_cell
@@ -85,11 +87,11 @@ def render(column: str, pairs: list[tuple[str, str]], seeds: list[int]) -> None:
         # SuperDiff loads its own SDXL; the context only carries steps, guidance and the output root.
         ctx = MethodCtx(models={}, scheduler=None, output_root=OUT / "_superdiff_raw", device=device,
                         dtype=infer_dtype(cfg.dtype, device), guidance_scale=cfg.guidance,
-                        num_inference_steps=cfg.num_inference_steps, joint_template=cfg.joint_template)
+                        num_inference_steps=superdiff_steps, joint_template=cfg.joint_template)
         for a, b in pairs:
             for seed in seeds:
                 cell = cell_for(a, b, seed)
-                out = pair_tile(OUT, cell.pair_slug, seed, "superdiff")
+                out = pair_tile(OUT, cell.pair_slug, seed, f"superdiff_{superdiff_steps}")
                 if out.exists():
                     print(f"{cell.pair_slug} seed {seed} superdiff: already rendered", flush=True)
                     continue
@@ -170,13 +172,13 @@ def sheet(tiles: Path, out_dir: Path, pairs: list[tuple[str, str]], seeds: list[
                    ("b", [f'"{b}"', "alone"]),
                    ("mono", ["Joint prompt", f'"{a} and {b}"']),
                    ("poe", ["PoE", "one prompt per concept"]),
-                   ("superdiff", ["SuperDiff", "own noise, own sampler"])]
+                   ("superdiff_200", ["SuperDiff", "own noise and sampler, 200 steps"])]
         rows = [(f"seed {s}", resolver(s)) for s in seeds]
         out = out_dir / f"{slug.replace('__x__', '-and-').replace('_', '-')}.png"
         record = grid(rows, columns, out, f'SDXL: "{a}" and "{b}", {len(seeds)} seeds',
                       "Rows are seeds. The first four columns start a row from the same cached noise, so "
                       "a difference along a row is the method. SuperDiff draws its own noise from the seed "
-                      "number with its own stochastic sampler. 50 steps, guidance 7.5.",
+                      "number with its own stochastic sampler at its default 200 steps; the rest use 50 DDIM steps. Guidance 7.5.",
                       rule_before=2)
         out.with_suffix(".json").write_text(json.dumps(record, indent=1, default=str))
         print(f"wrote {out}")
@@ -187,6 +189,7 @@ def main() -> None:
     ap.add_argument("--column", choices=COLUMNS)
     ap.add_argument("--pairs", nargs="+", required=True, help='each as "a dog|rain"')
     ap.add_argument("--seeds", nargs="+", type=int, required=True)
+    ap.add_argument("--superdiff-steps", type=int, default=200)
     ap.add_argument("--sheet", nargs=2, type=Path, metavar=("TILES", "OUT_DIR"))
     args = ap.parse_args()
     pairs = [parse_pair(p) for p in args.pairs]
@@ -194,7 +197,7 @@ def main() -> None:
         return sheet(*args.sheet, pairs, args.seeds)
     if not args.column:
         ap.error("give --column or --sheet")
-    render(args.column, pairs, args.seeds)
+    render(args.column, pairs, args.seeds, args.superdiff_steps)
 
 
 if __name__ == "__main__":
