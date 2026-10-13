@@ -34,11 +34,12 @@ MALA, HMC, and the energy form with its accept step. No Fokker-Planck.
 |---|---|---|---|
 | 1 | mscluster88 | gets the authors' notebook and CLEVR script running | nothing |
 | 2 | laptop | brings step 1's facts, walk file and pictures here | 1 |
-| 3 | laptop | continues the paper read, running cells in the cluster notebook | 2 for the code-bearing sections |
-| 4 | laptop | tests the three conditions as an idea, ending in experiments | 3 has reached section 4 |
-| 5 | mscluster88 | reproduces the paper's figures and tables against written bars | 1 |
-| 6 | mscluster88 | runs step 4's 2D experiments | 4 and 5 |
-| 7 | laptop | merges every session from both machines into one record | 6 |
+| 3 | mscluster88 | rebuilds the 2D notebook by hand, one small change per round | 1 |
+| 4 | laptop | continues the paper read, running cells in the cluster notebook | 2 for the code-bearing sections |
+| 5 | laptop | tests the three conditions as an idea, ending in experiments | 4 has reached section 4 |
+| 6 | mscluster88 | reproduces the paper's figures and tables against written bars | 1 |
+| 7 | mscluster88 | runs step 5's 2D experiments | 5 and 6 |
+| 8 | laptop | merges every session from both machines into one record | 7 |
 
 **Why the paper read stays on the laptop.** It writes notes into the Obsidian vault, and the vault
 lives only on the laptop. The code runs on the cluster, so the read names a cell and you run it in
@@ -46,7 +47,7 @@ your cluster notebook.
 
 **How results cross between machines.** Facts, recipes, walk files and plans travel as commits in
 `poe_repair_min`. Pictures go under `artifacts/results/`, which git ignores, and come back with
-`scripts/cluster.sh pull <path>`. Session transcripts do not travel at all, so step 7 copies them
+`scripts/cluster.sh pull <path>`. Session transcripts do not travel at all, so step 8 copies them
 by hand.
 
 **The cluster checkout already has uncommitted files of its own** (26 on 2026-10-13). Every
@@ -198,7 +199,25 @@ What you want: `artifacts/drips/reduce-reuse-recycle-mscluster112/REPO_WALK.md` 
 handoff table, and the pictures opening locally. If reconcile reports a two-sided conflict, it stops
 and shows it rather than picking a side.
 
-## 3. Continue the paper read
+## 3. Rebuild the 2D notebook by hand
+
+On mscluster88, once step 1 has the notebook's product, mixture and negation cells running. The
+walk checks every brick you build against the authors' own output, so it needs that working
+original first. It can run alongside step 4: the read explains what a cell means, and this
+rebuilds it.
+
+```
+/unbuild --walk ~/PhD/reduce-reuse-recycle/notebooks/simple_distributions.ipynb
+Run on this node. The original runs here: its walk file is /home-mscluster/mmolefe/Playground/PhD/poe_repair_min/artifacts/drips/reduce-reuse-recycle-mscluster112/REPO_WALK.md and its environment is ~/PhD/reduce-reuse-recycle/.venv. Put the rebuild folder at ~/playground/deep-learning/reduce-reuse-recycle-rebuild/ on this machine, and the walk folder in journey 02's artifacts/drips/simple-distributions-rebuild/ (/home-mscluster/mmolefe/goal-setting/learning/deep-learning/diffusion-models/02-sampler-correctors-for-composition/).
+Name the audit rows each brick inherits, from step 1 of /home-mscluster/mmolefe/Playground/PhD/poe_repair_min/artifacts/drips/reduce-reuse-recycle/PROMPTS.md.
+I go slowly and want to see every small change: a 1D Gaussian, then a 2D one, then a set of points, before any network.
+```
+
+The vault lives only on the laptop, so the walk's close (handing what it taught to the vault) runs
+there. Sync the learning tree from the laptop with `bash ~/.claude/sync-machines.sh`, then open the
+same walk on the laptop and ask it to run its close.
+
+## 4. Continue the paper read
 
 On the laptop. It can start before step 1 finishes, since sections 2 and 3 need no code; the
 code-bearing sections wait for step 2.
@@ -210,7 +229,7 @@ The authors' code runs on mscluster88, not here. Its handoff table is in /home/m
 At a section close where several concepts stopped me, give me the /drip-execute-plan --from-read line rather than teaching them inline.
 ```
 
-## 4. Test the three conditions as an idea
+## 5. Test the three conditions as an idea
 
 On the laptop, once the read has reached section 4.
 
@@ -223,7 +242,7 @@ The verdict feeds claim 2 of /home/molef/PhD/xray/shortcut-companion/artifacts/i
 Want out: 2D experiments with bars written first. The share of expert B's training points inside the overlap swept over 0, 1, 10 and 50%, one curve per sampler. Negation with and without support. The prediction that HMC raises the hybrid rate when the product's peak is itself a hybrid.
 ```
 
-## 5. Reproduce the paper's figures and tables
+## 6. Reproduce the paper's figures and tables
 
 On mscluster88, using the environments step 1 built.
 
@@ -235,23 +254,23 @@ Close the same way as the repo walk: pictures under artifacts/results/, commit o
 
 Then repeat step 2 on the laptop.
 
-## 6. Run the 2D experiments of our own
+## 7. Run the 2D experiments of our own
 
 On mscluster88.
 
 ```
-/drip-execute-plan --request <paste the experiment list drip-idea's compile produced in step 4>
+/drip-execute-plan --request <paste the experiment list drip-idea's compile produced in step 5>
 2D only, run with the reduce-reuse-recycle walk's environments on this node. The x-ray work waits until the overlap and negation sweeps have a verdict, and when it starts it goes through ~/PhD/xray/shortcut-companion's plans, not this repo.
-Close as in step 5.
+Close as in step 6.
 ```
 
 Then repeat step 2 on the laptop.
 
-## 7. Merge both machines' sessions into one record
+## 8. Merge both machines' sessions into one record
 
 `/merge-sessions` finds a session by its file under `~/.claude/projects/`, so cluster sessions merge
 once their transcripts are copied to the laptop. On mscluster88, note each cluster session's id
-(steps 1, 5 and 6) before closing it. Then on the laptop:
+(steps 1, 3, 6 and 7) before closing it. Then on the laptop:
 
 ```bash
 mkdir -p ~/.claude/projects/from-mscluster
@@ -259,7 +278,7 @@ scp 'mscluster84:~/.claude/projects/*/<cluster-session-id>.jsonl' ~/.claude/proj
 ```
 
 ```
-/merge-sessions <laptop ids from steps 3 and 4> <cluster ids from steps 1, 5 and 6>
+/merge-sessions <laptop ids from steps 4 and 5> <cluster ids from steps 1, 3, 6 and 7>
 ```
 
 It ends by recommending the drip skill to continue in. Whether `scp` through mscluster84 reaches
