@@ -207,7 +207,7 @@ code-bearing sections wait for step 2.
 /drip-read --lean /home/molef/goal-setting/learning/deep-learning/diffusion-models/02-sampler-correctors-for-composition/drips/read-reduce-reuse-recycle/READ_MAP.md
 Resume from the map's Next step.
 The authors' code runs on mscluster88, not here. Its handoff table is in /home/molef/PhD/poe_repair_min/artifacts/drips/reduce-reuse-recycle-mscluster112/REPO_WALK.md and its pictures in artifacts/results/what-the-authors-code-draws/. When a chunk is about something the notebook or inf_sample.py computes (section 4.2's samplers, 5.1's 2D results, 5.2's CLEVR, appendix D, appendix E's negation), name the cell by its first line and what to look at; I run it in my cluster notebook. Read any output you need with scripts/cluster.sh sh. Never rerun the authors' notebook on this laptop: one expert takes 13 minutes on its CPU. The small objects I build by hand stay in the playground here.
-Link every concept in your plain reading that a vault note, a journey plan section, an earlier drip or a textbook page teaches (Metropolis-Hastings, HMC, Langevin, sampling, energy and the rest), at its first appearance in each section. Lift the usual three-links-per-round cap for this walk: many links are fine, they read as plain blue words. I will follow a link into its journey, walk it there, and come back to this map to resume, so keep the map's position exact. At a section close where several concepts stopped me, give me the /drip-execute-plan --from-read line rather than teaching them inline.
+At a section close where several concepts stopped me, give me the /drip-execute-plan --from-read line rather than teaching them inline.
 ```
 
 ## 4. Test the three conditions as an idea
