@@ -112,6 +112,8 @@ You ~10 min · AI ~10 min in session, ~30 min on the cluster (estimate) · Opus,
 **Outcome:** the direct-prompt sheet with its sidecar.
 **Serves:** the "asked directly" row of both tables.
 
+<a href="../artifacts/results/does-a-camel-in-the-rain-come-out-wet/asked-directly.png"><img src="../artifacts/results/does-a-camel-in-the-rain-come-out-wet/asked-directly.png" width="140" alt="The asked-directly sheet: five seeds down the page, with columns for a wet camel, a camel in the rain, a wet dog and a dog in the rain, each prompt rendered alone"></a>
+
 ```text
 /drip-execute-plan --request artifacts/drips/a-dog-and-rain/EXECUTE_WALK.md
 
@@ -260,6 +262,8 @@ You ~10 min · AI ~15 min · Opus, high
 **Objective:** one table per animal and a verdict on the hypothesis test.
 **Outcome:** the camel folder's README.
 **Serves:** the verdict row.
+
+<a href="../artifacts/results/does-a-camel-in-the-rain-come-out-wet/asked-directly.png"><img src="../artifacts/results/does-a-camel-in-the-rain-come-out-wet/asked-directly.png" width="140" alt="The asked-directly sheet: five seeds down the page, with columns for a wet camel, a camel in the rain, a wet dog and a dog in the rain, each prompt rendered alone"></a>
 
 ```text
 Background
@@ -445,7 +449,7 @@ I judge it when every family has its images opened and marked.
 
 You ~45 min (estimate) · the walk session
 
-<a href="../artifacts/results/does-a-dog-in-the-rain-come-out-wet/a-dog-and-rain.png"><img src="../artifacts/results/does-a-dog-in-the-rain-come-out-wet/a-dog-and-rain.png" width="200" alt="The dog sheet: five seeds down the page, with columns for a dog alone, rain alone, the joint prompt a dog and rain, PoE and SuperDiff"></a>
+<a href="../artifacts/results/does-a-dog-in-the-rain-come-out-wet/a-dog-and-rain.png"><img src="../artifacts/results/does-a-dog-in-the-rain-come-out-wet/a-dog-and-rain.png" width="200" alt="The dog sheet: five seeds down the page, with columns for a dog alone, rain alone, the joint prompt a dog and rain, PoE and SuperDiff"></a> <a href="../artifacts/results/does-a-camel-in-the-rain-come-out-wet/asked-directly.png"><img src="../artifacts/results/does-a-camel-in-the-rain-come-out-wet/asked-directly.png" width="140" alt="The asked-directly sheet: five seeds down the page, with columns for a wet camel, a camel in the rain, a wet dog and a dog in the rain, each prompt rendered alone"></a>
 
 ```text
 Background
