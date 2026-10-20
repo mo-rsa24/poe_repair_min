@@ -64,8 +64,8 @@ alone comes out wet on 1 or fewer.
 | 3 | Embeddings: CLIP text vectors of the B words drawn in the plane of "a dog" and "rain"; each render scored wet against dry | open |
 | 4 | The sheet again for raining, wet and water, plus the wet-minus-dry score per word and method | open |
 | 5 | Seed 10, models as rows (SD 1.4, SD 2.1, SDXL, SD 3.5), same columns | open |
-| 6 | Asked directly: "a wet camel", "a camel in the rain", "a wet dog", "a dog in the rain" alone, 5 seeds, on an RTX 3090 like job 65969 (mscluster42); bar: the tile check prints 20 of 20, each sidecar at 50 steps, guidance 7.5 and the `a_cat__x__a_dog` latent; time box one sitting, about 20 minutes of the reader's time | built: `asked-directly.png` in `artifacts/results/does-a-camel-in-the-rain-come-out-wet/`, tile check 20 of 20; rendered on mscluster66 (RTX 3090), the reader's choice over mscluster111, whose Blackwell card reads `[GPU requires reset]`; no calls yet |
-| 7 | The camel sheet in the dog sheet's shape: "a camel" alone, "rain" alone (reused from the dog sheet), joint prompt, PoE, SuperDiff at 200 steps, 5 seeds, on an RTX 3090; SuperDiff on the 3090 too, the reader's choice, since all three Blackwell cards were down; bar: 25 of 25 tiles | built: `a-camel-and-rain.png` in `artifacts/results/does-a-camel-in-the-rain-come-out-wet/`, tile check 25 of 25; no calls yet |
+| 6 | Asked directly: "a wet camel", "a camel in the rain", "a wet dog", "a dog in the rain" alone, 5 seeds, on an RTX 3090 like job 65969 (mscluster42); bar: the tile check prints 20 of 20, each sidecar at 50 steps, guidance 7.5 and the `a_cat__x__a_dog` latent; time box one sitting, about 20 minutes of the reader's time | built: `asked-directly.png` in `artifacts/results/does-a-camel-in-the-rain-come-out-wet/`, tile check 20 of 20; rendered on mscluster66 (RTX 3090), the reader's choice over mscluster111, whose Blackwell card reads `[GPU requires reset]`; called 2026-10-20 in `asked-directly-calls.json`: "a wet camel" 4 wet, "a camel in the rain" 0 wet, "a wet dog" 5 wet, "a dog in the rain" 4 wet, of 5 |
+| 7 | The camel sheet in the dog sheet's shape: "a camel" alone, "rain" alone (reused from the dog sheet), joint prompt, PoE, SuperDiff at 200 steps, 5 seeds, on an RTX 3090; SuperDiff on the 3090 too, the reader's choice, since all three Blackwell cards were down; bar: 25 of 25 tiles | built: `a-camel-and-rain.png` in `artifacts/results/does-a-camel-in-the-rain-come-out-wet/`, tile check 25 of 25; called 2026-10-20 in `a-camel-and-rain-calls.json`: joint 0 wet, PoE 0 wet of 5; SuperDiff broken on 3. 🕒 Per-seed calls on the dog sheet skipped: the test reads the dog's PoE total, 2 of 5, from piece 1 |
 
 ## Out in the world
 
@@ -94,3 +94,5 @@ alone comes out wet on 1 or fewer.
 
 - Piece 6: `cluster.sh pull` copies only paths inside the cluster checkout, so tiles under
   `/datasets` are first copied into the checkout's git-ignored results folder, then pulled.
+- Pieces 6 and 7: the reader's call words grew past wet, dry and half to broken and cant tell, so a
+  calls file keeps the word as given and a note in its own field; the test counts only wet as wet.
