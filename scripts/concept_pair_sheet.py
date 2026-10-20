@@ -191,7 +191,8 @@ def direct_sheet(tiles: Path, out: Path, pairs: list[tuple[str, str]], seeds: li
     concepts = [c for pair in pairs for c in pair]
     columns = [(c, [f'"{c}"', "alone"]) for c in concepts]
     rows = [(f"seed {s}", lambda c, s=s: single_tile(tiles, c, s)) for s in seeds]
-    record = grid(rows, columns, out, "Asked directly", "", rule_before=2 if len(pairs) > 1 else None)
+    record = grid(rows, columns, out, "Testing wetness on stable diffusion", "",
+                  rule_before=2 if len(pairs) > 1 else None, rotate_rows=True)
     # Each tile's cluster path beside its local copy, so the sheet can be traced back to the render.
     record["tiles"] = {f"seed {s}": {c: {"cluster": str(single_tile(OUT, c, s)),
                                          "local": str(single_tile(tiles, c, s))} for c in concepts}

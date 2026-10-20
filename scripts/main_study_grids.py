@@ -33,9 +33,15 @@ def dotted_line(d: ImageDraw.ImageDraw, x: int, y0: int, y1: int) -> None:
         d.line((x, y, x, min(y + 6, y1)), fill="#444444", width=2)
 
 
-def grid(rows, columns, out: Path, title: str, subtitle: str, rule_before: int | None = None) -> dict:
-    """rows: (label, resolver) where resolver(column_key) returns a path or None."""
-    W = LEFT + len(columns) * (T + GAP) + 24
+def grid(rows, columns, out: Path, title: str, subtitle: str, rule_before: int | None = None,
+         rotate_rows: bool = False) -> dict:
+    """rows: (label, resolver) where resolver(column_key) returns a path or None.
+
+    rotate_rows turns each row label to read bottom to top beside the first column, which narrows
+    the left margin from LEFT to 40 pixels.
+    """
+    left = 40 if rotate_rows else LEFT
+    W = left + len(columns) * (T + GAP) + 24
     H = HEAD + len(rows) * (T + GAP) + 40
     canvas = Image.new("RGB", (W, H), "white")
     d = ImageDraw.Draw(canvas)
@@ -46,21 +52,27 @@ def grid(rows, columns, out: Path, title: str, subtitle: str, rule_before: int |
 
     record = {"title": title, "columns": [c[0] for c in columns], "rows": [], "tiles": {}}
     for j, (key, head) in enumerate(columns):
-        x = LEFT + j * (T + GAP) + (24 if rule_before is not None and j >= rule_before else 0)
+        x = left + j * (T + GAP) + (24 if rule_before is not None and j >= rule_before else 0)
         for k, line in enumerate(head):
             d.text((x + 4, HEAD - 34 + k * 15), line,
                    fill="black" if k == 0 else "#444444", font=f_head if k == 0 else f_sub)
     if rule_before is not None:
-        x = LEFT + rule_before * (T + GAP) + 10
+        x = left + rule_before * (T + GAP) + 10
         dotted_line(d, x, HEAD - 40, H - 44)
 
     for i, (label, resolve) in enumerate(rows):
         y = HEAD + i * (T + GAP)
-        for k, line in enumerate(textwrap.wrap(label, 28)):
-            d.text((8, y + T // 2 - 18 + k * 17), line, fill="black", font=f_row)
+        if rotate_rows:
+            strip = Image.new("RGB", (int(d.textlength(label, font=f_row)) + 4, 18), "white")
+            ImageDraw.Draw(strip).text((2, 0), label, fill="black", font=f_row)
+            strip = strip.rotate(90, expand=True)
+            canvas.paste(strip, (left - strip.width - 6, y + (T - strip.height) // 2))
+        else:
+            for k, line in enumerate(textwrap.wrap(label, 28)):
+                d.text((8, y + T // 2 - 18 + k * 17), line, fill="black", font=f_row)
         record["rows"].append(label)
         for j, (key, _) in enumerate(columns):
-            x = LEFT + j * (T + GAP) + (24 if rule_before is not None and j >= rule_before else 0)
+            x = left + j * (T + GAP) + (24 if rule_before is not None and j >= rule_before else 0)
             p = resolve(key)
             if p and Path(p).exists():
                 canvas.paste(Image.open(p).convert("RGB").resize((T, T), Image.LANCZOS), (x, y))
