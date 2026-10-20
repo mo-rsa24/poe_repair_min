@@ -20,6 +20,41 @@ at least 3 of 5 seeds and PoE on at most 1 of 5 (the 6-of-10 and 3-of-10 bar, sc
 
 **Toy** seed 10, `a_dog__x__rain`.
 
+## Hypothesis test: PoE draws only an overlap SDXL saw
+
+The hypothesis is that plain PoE can only draw an overlap of two concepts that SDXL saw in
+training. The test sets a dog against a camel, each with rain. Written before any camel tile or any
+direct-prompt tile is rendered, and confirmed by the reader on 2026-10-20 with both choices below
+as written: the caption count summed over the three families, and a half call counted as dry.
+
+**The numbers it reads**, each out of the same 5 seeds (1, 2, 4, 9, 10), every tile called wet,
+dry or half by the reader's eye:
+
+- PoE wet count: PoE on "a dog" and "rain" (`a_dog__x__rain`, job 65969), and on "a camel" and
+  "rain" (`a_camel__x__rain`, the camel sheet still to render).
+- Direct wet count: "a dog in the rain" and "a camel in the rain" rendered alone, same starting
+  latent, same card model.
+- Caption wet count: verified wet images per animal in `caption-counts.md`, the "Checked by eye"
+  table, summed over the three word families (wet words, weather words, water words). A floor,
+  since captions often leave a wet animal unnamed.
+
+**A half call counts as dry** in both the PoE and the direct counts.
+
+**Supported** when both hold:
+
+1. For each animal, the PoE wet count is no more than the direct wet count.
+2. The animal with fewer verified wet caption images comes out wet on fewer PoE seeds, strictly.
+
+**Not supported** when either animal's PoE wet count exceeds its direct wet count, or the animal
+with fewer verified wet caption images comes out wet on more PoE seeds. Either one is a picture PoE
+drew that the hypothesis says it cannot.
+
+**Inconclusive** when part 1 holds for both animals and the two PoE wet counts tie, or the two
+caption wet counts tie, or a caption count is not reachable.
+
+**What would surprise**: the camel wet under PoE on 3 or more seeds while "a camel in the rain"
+alone comes out wet on 1 or fewer.
+
 ## The cut
 
 | # | Piece | State |
@@ -29,6 +64,7 @@ at least 3 of 5 seeds and PoE on at most 1 of 5 (the 6-of-10 and 3-of-10 bar, sc
 | 3 | Embeddings: CLIP text vectors of the B words drawn in the plane of "a dog" and "rain"; each render scored wet against dry | open |
 | 4 | The sheet again for raining, wet and water, plus the wet-minus-dry score per word and method | open |
 | 5 | Seed 10, models as rows (SD 1.4, SD 2.1, SDXL, SD 3.5), same columns | open |
+| 6 | Asked directly: "a wet camel", "a camel in the rain", "a wet dog", "a dog in the rain" alone, 5 seeds, on an RTX 3090 like job 65969 (mscluster42); bar: the tile check prints 20 of 20, each sidecar at 50 steps, guidance 7.5 and the `a_cat__x__a_dog` latent; time box one sitting, about 20 minutes of the reader's time | hypothesis test confirmed; rendering on mscluster66 (RTX 3090), the reader's choice over mscluster111, whose Blackwell card reads `[GPU requires reset]` |
 
 ## Out in the world
 
