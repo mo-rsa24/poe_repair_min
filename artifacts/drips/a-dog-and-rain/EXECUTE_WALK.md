@@ -73,6 +73,7 @@ alone comes out wet on 1 or fewer.
 | 65969 | piece 1 | `PAIRS="a dog\|rain" SEEDS="1 2 4 9 10" sbatch scripts/concept_pair_sheet.sbatch`, log `/datasets/mmolefe/poe_repair_min/outputs/concept_pair_sheet/logs/pairsheet-65969.out` | done, 25 tiles; its 50-step SuperDiff tiles are a shattered texture, kept as `superdiff.png` |
 | 65971 | piece 2 | pushes, seed 10, one batch of four predictions: final picture kept the dog; kept as `seed10-batch4` | done |
 | 65972 | piece 2 | pushes, seed 10, PoE's batch of three plus a separate joint call: final picture is the sheet's person (pixel gap 6.5 of 255 from the 3090-vs-Blackwell card) | done |
+| 72389 | piece 6 | `COLUMNS=single PAIRS="a wet camel\|a camel in the rain;a wet dog\|a dog in the rain" SEEDS="1 2 4 9 10" sbatch --nodelist=mscluster66 scripts/concept_pair_sheet.sbatch`, log `/datasets/mmolefe/poe_repair_min/outputs/concept_pair_sheet/logs/pairsheet-72389.out` | submitted |
 | 65970 | piece 1 | `COLUMNS=superdiff ... sbatch --partition=biggpu --nodelist=mscluster110 scripts/concept_pair_sheet.sbatch`, SuperDiff at 200 steps, tiles `superdiff_200.png` | submitted |
 
 ## For the close

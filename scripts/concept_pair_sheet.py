@@ -18,6 +18,8 @@ attached at all, so nothing can leak into it from a trained correction.
     python scripts/concept_pair_sheet.py --column poe       --pairs "a dog|rain" --seeds 1 2 4 9 10
     python scripts/concept_pair_sheet.py --column superdiff --pairs "a dog|rain" --seeds 1 2 4 9 10
     python scripts/concept_pair_sheet.py --sheet <tiles_dir> <out_dir> --pairs "a dog|rain" --seeds 1 2 4 9 10
+    python scripts/concept_pair_sheet.py --direct-sheet <tiles_dir> <out.png> \
+        --pairs "a wet camel|a camel in the rain" "a wet dog|a dog in the rain" --seeds 1 2 4 9 10
 
 Tiles land as <OUT>/single/<concept>/seedNN.png and <OUT>/<pair>/seedNN/<column>.png, each with a
 JSON sidecar; a tile that already exists is skipped.
@@ -181,6 +183,23 @@ def sheet(tiles: Path, out_dir: Path, pairs: list[tuple[str, str]], seeds: list[
         print(f"wrote {out}")
 
 
+def direct_sheet(tiles: Path, out: Path, pairs: list[tuple[str, str]], seeds: list[int]) -> None:
+    """Every concept of every pair rendered alone, one column each, seeds down the page."""
+    from main_study_grids import grid
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    concepts = [c for pair in pairs for c in pair]
+    columns = [(c, [f'"{c}"', "alone"]) for c in concepts]
+    rows = [(f"seed {s}", lambda c, s=s: single_tile(tiles, c, s)) for s in seeds]
+    record = grid(rows, columns, out, "Asked directly", "", rule_before=2 if len(pairs) > 1 else None)
+    # Each tile's cluster path beside its local copy, so the sheet can be traced back to the render.
+    record["tiles"] = {f"seed {s}": {c: {"cluster": str(single_tile(OUT, c, s)),
+                                         "local": str(single_tile(tiles, c, s))} for c in concepts}
+                       for s in seeds}
+    out.with_suffix(".json").write_text(json.dumps(record, indent=1))
+    print(f"wrote {out}")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--column", choices=COLUMNS)
@@ -188,10 +207,13 @@ def main() -> None:
     ap.add_argument("--seeds", nargs="+", type=int, required=True)
     ap.add_argument("--superdiff-steps", type=int, default=200)
     ap.add_argument("--sheet", nargs=2, type=Path, metavar=("TILES", "OUT_DIR"))
+    ap.add_argument("--direct-sheet", nargs=2, type=Path, metavar=("TILES", "OUT_PNG"))
     args = ap.parse_args()
     pairs = [parse_pair(p) for p in args.pairs]
     if args.sheet:
         return sheet(*args.sheet, pairs, args.seeds)
+    if args.direct_sheet:
+        return direct_sheet(*args.direct_sheet, pairs, args.seeds)
     if not args.column:
         ap.error("give --column or --sheet")
     render(args.column, pairs, args.seeds, args.superdiff_steps)
