@@ -64,7 +64,7 @@ alone comes out wet on 1 or fewer.
 | 3 | Embeddings: CLIP text vectors of the B words drawn in the plane of "a dog" and "rain"; each render scored wet against dry | open |
 | 4 | The sheet again for raining, wet and water, plus the wet-minus-dry score per word and method | open |
 | 5 | Seed 10, models as rows (SD 1.4, SD 2.1, SDXL, SD 3.5), same columns | open |
-| 6 | Asked directly: "a wet camel", "a camel in the rain", "a wet dog", "a dog in the rain" alone, 5 seeds, on an RTX 3090 like job 65969 (mscluster42); bar: the tile check prints 20 of 20, each sidecar at 50 steps, guidance 7.5 and the `a_cat__x__a_dog` latent; time box one sitting, about 20 minutes of the reader's time | hypothesis test confirmed; rendering on mscluster66 (RTX 3090), the reader's choice over mscluster111, whose Blackwell card reads `[GPU requires reset]` |
+| 6 | Asked directly: "a wet camel", "a camel in the rain", "a wet dog", "a dog in the rain" alone, 5 seeds, on an RTX 3090 like job 65969 (mscluster42); bar: the tile check prints 20 of 20, each sidecar at 50 steps, guidance 7.5 and the `a_cat__x__a_dog` latent; time box one sitting, about 20 minutes of the reader's time | built: `asked-directly.png` in `artifacts/results/does-a-camel-in-the-rain-come-out-wet/`, tile check 20 of 20; rendered on mscluster66 (RTX 3090), the reader's choice over mscluster111, whose Blackwell card reads `[GPU requires reset]`; no calls yet |
 
 ## Out in the world
 
@@ -73,7 +73,7 @@ alone comes out wet on 1 or fewer.
 | 65969 | piece 1 | `PAIRS="a dog\|rain" SEEDS="1 2 4 9 10" sbatch scripts/concept_pair_sheet.sbatch`, log `/datasets/mmolefe/poe_repair_min/outputs/concept_pair_sheet/logs/pairsheet-65969.out` | done, 25 tiles; its 50-step SuperDiff tiles are a shattered texture, kept as `superdiff.png` |
 | 65971 | piece 2 | pushes, seed 10, one batch of four predictions: final picture kept the dog; kept as `seed10-batch4` | done |
 | 65972 | piece 2 | pushes, seed 10, PoE's batch of three plus a separate joint call: final picture is the sheet's person (pixel gap 6.5 of 255 from the 3090-vs-Blackwell card) | done |
-| 72389 | piece 6 | `COLUMNS=single PAIRS="a wet camel\|a camel in the rain;a wet dog\|a dog in the rain" SEEDS="1 2 4 9 10" sbatch --nodelist=mscluster66 scripts/concept_pair_sheet.sbatch`, log `/datasets/mmolefe/poe_repair_min/outputs/concept_pair_sheet/logs/pairsheet-72389.out` | submitted |
+| 72389 | piece 6 | `COLUMNS=single PAIRS="a wet camel\|a camel in the rain;a wet dog\|a dog in the rain" SEEDS="1 2 4 9 10" sbatch --nodelist=mscluster66 scripts/concept_pair_sheet.sbatch`, log `/datasets/mmolefe/poe_repair_min/outputs/concept_pair_sheet/logs/pairsheet-72389.out` | done, 20 tiles, 15:18 to 15:27 UTC 2026-10-20 |
 | 65970 | piece 1 | `COLUMNS=superdiff ... sbatch --partition=biggpu --nodelist=mscluster110 scripts/concept_pair_sheet.sbatch`, SuperDiff at 200 steps, tiles `superdiff_200.png` | submitted |
 
 ## For the close
@@ -89,3 +89,6 @@ alone comes out wet on 1 or fewer.
 - Repair: seed 10 sits on the switch between a dog and a person. The batch shape of the UNet call
   and the card it runs on each flip the final picture, so the recording takes PoE's step from the
   same batch of three the sheet used, and its final picture is checked against the sheet tile.
+
+- Piece 6: `cluster.sh pull` copies only paths inside the cluster checkout, so tiles under
+  `/datasets` are first copied into the checkout's git-ignored results folder, then pulled.
