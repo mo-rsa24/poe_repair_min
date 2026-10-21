@@ -26,6 +26,7 @@ from __future__ import annotations
 import argparse
 import io
 import json
+import os
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -63,7 +64,9 @@ def duckdb(sql: str, db: Path | str = ":memory:") -> list[dict]:
 def sample(out: Path, n: int) -> None:
     """Count every whole-word match per animal, then keep the n matches with the lowest seeded hash."""
     out.mkdir(parents=True, exist_ok=True)
-    db = out / "matches.duckdb"                 # every caption naming either animal, deleted at the end
+    # every caption naming either animal (~15M rows), on node-local disk: on /datasets the writes
+    # stretched a ~10 minute scan to 47 (pilot job 72598); deleted at the end
+    db = Path(os.environ.get("TMPDIR", "/tmp")) / f"caption_wetness_{os.getpid()}.duckdb"
     either = r"\b(camel|camels|dromedary|dog|dogs|puppy)\b"
     duckdb(f"CREATE OR REPLACE TABLE m AS SELECT url, caption, key, similarity, punsafe, width, "
            f"height, filename FROM read_parquet('{PARQUET}', filename=true) "
