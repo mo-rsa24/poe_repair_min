@@ -2,7 +2,7 @@
 #SBATCH --job-name=wetness
 #SBATCH --partition=bigbatch
 #SBATCH --time=1-00:00:00
-#SBATCH --cpus-per-task=16
+#SBATCH --cpus-per-task=12
 #SBATCH --mem=96G
 #SBATCH --exclude=mscluster72,mscluster73
 #SBATCH --output=/datasets/mmolefe/relaion2b-en/logs/%x-%j.out
@@ -28,7 +28,7 @@ used=$(df --output=pcent "$OUT" | tail -1 | tr -dc '0-9')
 files=$(ls /datasets/mmolefe/relaion2b-en/parquet/*.parquet | wc -l)
 [ "$files" -eq 128 ] || { echo "ABORT: mirror holds $files of 128 files" >&2; exit 8; }
 
-export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK:-16}
+export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK:-12}
 cd "$REPO" || exit 7
 for stage in $STAGES; do
   echo "--- $stage  $(date -Is)"
