@@ -1,7 +1,7 @@
 # 🌍 PoE composition (and Mono, the target it is compared against)
 
 Product-of-Experts (PoE) composition is the method under study: a way to make SDXL draw two
-named concepts at once by [combining two separate single-concept predictions](/home-mscluster/mmolefe/goal-setting/learning/deep-learning/diffusion-models/poe-composition-diffusion/plans/07-poe-factorisation-and-normaliser.md) at every denoising
+named concepts at once by [combining two separate single-concept predictions](/home-mscluster/mmolefe/goal-setting/learning/deep-learning/diffusion-models/05-poe-composition-diffusion/plans/07-poe-factorisation-and-normaliser.md) at every denoising
 step, instead of retraining the model or hand-writing a joint prompt. It is the thing that fails
 (see [chimera.md](chimera.md)) and the thing the project's fix (see
 [lora-corrector.md](lora-corrector.md)) is trying to repair. Sibling file
@@ -110,9 +110,12 @@ Navigation: ⬅️ [What people get wrong](#what-people-get-wrong) | 📋 [TOC](
 
 ## Cross-references
 
-- The mention of **a product of experts** (composing SDXL as an additive combination of two expert predictions) in [the scene map for the Gaussian score's base case](../../../../goal-setting/learning/deep-learning/diffusion-models/05-poe-composition-diffusion/artifacts/drips/gaussian-score-base-case/SCENE_MAP.md) (relevance match).
+- The mention of **a product of experts** (composing SDXL as an additive combination of two expert predictions) in [the scene map for the Gaussian score's base case](../../../../../goal-setting/learning/deep-learning/diffusion-models/05-poe-composition-diffusion/artifacts/drips/gaussian-score-base-case/SCENE_MAP.md) (relevance match).
 - The mention of **product-of-experts** in [the finding "does a Langevin corrector remove part of the correction"](../../report/is-the-gap-the-samplers-or-the-models/does-a-langevin-corrector-remove-part-of-the-correction.md).
 - The mention of **product-of-experts** in [the finding "does a corrector alone produce two animals"](../../report/is-the-gap-the-samplers-or-the-models/does-a-corrector-alone-produce-two-animals.md).
 - The mention of **product-of-experts composition** in [the figure plan "the same rule on four models"](../../plans/03-does-the-correction-cause-composition/plans/figures/12-the-same-rule-on-four-models.md).
 - The mention of **PoE** in [the review of "the same rule on four models"](../../plans/03-does-the-correction-cause-composition/review/12-the-same-rule-on-four-models.md).
 - The mention of **product-of-experts composition** in [the finding "does the adapter return two when both prompts name the same concept"](../../report/is-the-adapter-just-copying-the-joint-prompt/does-the-adapter-return-two-when-both-prompts-name-the-same-concept.md).
+- The mention of **PoE**, as the outputs the scorer was trained on, in [the failure catalog entry poe-score-002](../../environment/known-failures.md#entry-id-poe-score-002).
+- The mention of **denoising step**, where the second UNet forward of the first step runs out of memory without `@torch.no_grad()`, in [the failure catalog entry poe-lora-004](../../environment/known-failures.md#entry-id-poe-lora-004).
+- The mention of **denoising step**, the unit every dependent variable is recorded per, in [the whole corrector design](../../plans/06-is-the-gap-the-samplers-or-the-models/source/the-whole-corrector-design.md#the-claim).

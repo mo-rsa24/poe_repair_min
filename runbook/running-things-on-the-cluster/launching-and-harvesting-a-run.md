@@ -76,3 +76,7 @@ still going on another node.
 `CLAUDE.md`'s "Harvest reads three execution modes, not one."
 
 No ❌ branch beyond an unreachable node, which is an SSH/network problem, not a harvest problem.
+
+## Cross-references
+
+- The mention of **SSH launch**, whose relative paths resolve in `$HOME` and kill the run before `nohup` starts, in [the failure catalog entry poe-launch-001](../../environment/known-failures.md#entry-id-poe-launch-001).

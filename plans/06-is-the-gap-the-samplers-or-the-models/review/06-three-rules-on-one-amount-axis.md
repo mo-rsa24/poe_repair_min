@@ -145,3 +145,7 @@ Navigation: ⬅️ [Still open](#still-open) | 📋 [TOC](#table-of-contents)
 
 Form `r_t^M` on one render for each of the four rows and print its per-step norm, so a missing hook
 is found before either grid is planned.
+
+## Cross-references
+
+- The mention of **not-an-identity** (the label on the corrector rows' pictures at λ=1) in task 7.4 of [the whole corrector design](../source/the-whole-corrector-design.md#7--three-rules-on-one-amount-axis).

@@ -38,7 +38,7 @@ scope is its own scope because it started from zero while every neighbour was ha
 
 📋 [TOC](#table-of-contents) | [Next](#what-is-this-plan) ➡️
 
-**A [Langevin corrector](../../../../../goal-setting/learning/deep-learning/diffusion-models/sampler-correctors-for-composition/plans/21-langevin-dynamics.md) run to equilibrium at each noise level removes part of the correction `r_t`
+**A [Langevin corrector](../../../../../goal-setting/learning/deep-learning/diffusion-models/02-sampler-correctors-for-composition/plans/21-langevin-dynamics.md) run to equilibrium at each noise level removes part of the correction `r_t`
 and leaves a part that does not go away, and what it leaves at the low-noise end of the run is the
 model's error rather than the sampler's.** This scope returns that share as a number with its
 limit attached, and puts three composition rules on one amount axis so the paper has a baseline row
@@ -521,3 +521,7 @@ generated run) is in the [root MASTER_PLAN.md](../../MASTER_PLAN.md) and is not 
 - **The step-size multiplier, `c`:** the one free parameter of the corrector, where
   `δ_t = c·β_t`. Fixed by search at step 25 before any curve is read, because at the wrong value
   the chain either never moves or diverges, and both imitate a scientific answer.
+
+## Cross-references
+
+- The mention of **the step-size multiplier** `c`, an argument of the corrector composer in task 2.1, in [the whole corrector design](source/the-whole-corrector-design.md#2--the-corrector-and-proof-it-changes-nothing-when-switched-off).

@@ -35,7 +35,7 @@ not yet wired.
 | Compose rate over the held-out pool | `compose_rate.json`, W&B | Fraction of held-out renders where the scorer counts two animals. The headline transfer number. |
 | `direction_cosine` | W&B | Does the learned correction point the same way as the pool-average true correction: 1 same direction, 0 unrelated. |
 | `frac_distance_reached` | W&B | How much of the true correction's length the learned one covers; it is known to stop rising at about 0.4. |
-| *new* Learned-vs-true [cosine](/home-mscluster/mmolefe/goal-setting/learning/deep-learning/diffusion-models/spectral-structure-of-the-correction/plans/01-dot-product-norm-cosine.md) at sampling steps 7, 15, 22 | to be wired | Same idea as `direction_cosine` but against this example's own true correction at three fixed sampling steps. Shows which part of the trajectory is learned first. |
+| *new* Learned-vs-true [cosine](/home-mscluster/mmolefe/goal-setting/learning/deep-learning/diffusion-models/08-spectral-structure-of-the-correction/plans/01-dot-product-norm-cosine.md) at sampling steps 7, 15, 22 | to be wired | Same idea as `direction_cosine` but against this example's own true correction at three fixed sampling steps. Shows which part of the trajectory is learned first. |
 | *new* Embedding drift in the two scoring spaces (DINOv2, CLIP) | to be wired | Distance of the render to the joint-prompt image minus distance to the PoE image. Below zero means the render now sits closer to the target than to the failure. |
 | *new* Spectral share of learned corrections | to be wired | Whether the learned corrections across training examples concentrate in a few shared directions. Diagnostic only: the paper's low-rank claim is made on true corrections, never on these. |
 | *new* Correction size across the 50 sampling steps | to be wired | Where in the sampling run the adapter acts. It should act before the layout is decided (steps 18 to 36 is where samples commit; the best injection window is steps 0 to 10). |
@@ -98,3 +98,7 @@ let the W&B MCP pull the panel data and render the figure locally.
   ```
 
   Save the output beside the run's other evidence and caption it from the tables above.
+
+## Cross-references
+
+- The mention of **fraction-of-distance-reached**, stopping at 20% where earlier runs reached 40%, in [the failure catalog entry poe-lora-001](../../environment/known-failures.md#entry-id-poe-lora-001).

@@ -138,3 +138,7 @@ Navigation: ⬅️ [Still open](#still-open) | 📋 [TOC](#table-of-contents)
 
 Answer the pre-registered question. It needs no GPU and reads files already on disk, and its number
 changes how much the rest of the scope is worth running.
+
+## Cross-references
+
+- The mention of **the uncorrected path**, read by the free bound in task 1, in [the whole corrector design](../source/the-whole-corrector-design.md#considerations).

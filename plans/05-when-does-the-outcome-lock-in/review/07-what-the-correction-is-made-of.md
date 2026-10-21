@@ -227,3 +227,7 @@ Navigation: ⬅️ [What the run cost](#what-the-run-cost-and-what-it-bought) | 
 Navigation: ⬅️ [Still open](#still-open) | 📋 [TOC](#table-of-contents)
 
 Run the plan's close-out: `/sync-plan-tree @plans/05-when-does-the-outcome-lock-in/plans/tests/07-what-the-correction-is-made-of.md — four rungs done, bar inconclusive at 0.374`.
+
+## Cross-references
+
+- The mention of **the early window** (the high-noise steps where the corrector cannot tell the sampler's share from the model's) in [the whole corrector design](../../06-is-the-gap-the-samplers-or-the-models/source/the-whole-corrector-design.md#where-the-two-errors-can-be-told-apart-and-where-they-cannot).

@@ -86,8 +86,8 @@ Navigation: ⬅️ [Why the project cares](#why-the-project-cares) | 📋 [TOC](
 |---|---|---|---|
 | `pair_slug` | which two animals this run is about | `a_cat__x__a_dog` (example) | [Dictionary § pair_slug](../data/02-dictionary.md#pair_slug) |
 | `seed` | which noise re-roll produced this run | `42` (example) | [Dictionary § seed](../data/02-dictionary.md#seed) |
-| `fail_rate` | how often plain PoE fails this pair, over 8 seeds | `1.00` (example, 8 of 8) | [Dictionary § fail_rate](../data/02-dictionary.md#fail_rate-compose_rate) |
-| `group` | the six-way taxonomy label some pairs still carry | `group6_coherent_collision` (example) | [Dictionary § group](../data/02-dictionary.md#group-group_label) |
+| `fail_rate` | how often plain PoE fails this pair, over 8 seeds | `1.00` (example, 8 of 8) | [Dictionary § fail_rate](../data/02-dictionary.md#fail_rate--compose_rate) |
+| `group` | the six-way taxonomy label some pairs still carry | `group6_coherent_collision` (example) | [Dictionary § group](../data/02-dictionary.md#group--group_label) |
 
 ## What people get wrong
 
@@ -127,3 +127,6 @@ Navigation: ⬅️ [What people get wrong](#what-people-get-wrong) | 📋 [TOC](
 
 - The mention of **the pair that composes by default** (a butterfly and a flower meadow, used as the control a corrector must not break) in [does a corrector alone produce two animals](../../report/is-the-gap-the-samplers-or-the-models/does-a-corrector-alone-produce-two-animals.md) (relevance match).
 - The mention of **animal pairs** (the 11 look-alike pairs behind `00`'s five runs, read as history rather than as a comparison) in [designing the correction loss](../../plans/09-designing-the-correction-loss/MASTER_PLAN.md) (exact match).
+- The mention of **animal pairs** (the 11 look-alike pairs of the original 88-run training pool, whose adapters never draw a person into the picture) in [the known failure "a pooled adapter draws a person into a picture of two animals"](../../environment/known-failures.md#entry-id-poe-lora-005) (exact match).
+- The mention of **animal pairs** (the 15 pairs each held out in turn, one LoRA trained without each) in [the plan measuring transfer as a rate over fifteen held-out pairs](../../plans/04-does-the-fix-reach-unseen-pairs/plans/hypothesis/04-transfer-as-a-rate-over-fifteen-pairs.md#quick-context-where-you-are) (exact match).
+- The mention of **seed** (same pair and same seed across every corrector count) in [the whole corrector design](../../plans/06-is-the-gap-the-samplers-or-the-models/source/the-whole-corrector-design.md#the-claim).

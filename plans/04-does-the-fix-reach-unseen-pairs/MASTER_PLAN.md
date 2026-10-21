@@ -152,3 +152,8 @@ Terms only this scope uses. Shared vocabulary is in the root `MASTER_PLAN.md`.
 - **Direction-cosine:** how aligned the run's correction is with the pool-mean correction.
 - **Distance-reached:** how far toward the Mono target the fix actually moved the prediction.
 - **Do-no-harm control:** pairs that compose fine without any fix; the LoRA must not break them.
+
+## Cross-references
+
+- The mention of **direction-cosine**, diverging below 0.3 while the loss falls, in [the failure catalog entry poe-lora-002](../../environment/known-failures.md#entry-id-poe-lora-002).
+- The mention of **direction-cosine**, collected on each of the fifteen held-out runs, in [the plan measuring transfer as a rate over fifteen held-out pairs](plans/hypothesis/04-transfer-as-a-rate-over-fifteen-pairs.md#quick-context-where-you-are).

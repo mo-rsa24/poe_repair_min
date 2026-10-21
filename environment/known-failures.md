@@ -40,7 +40,7 @@ assert eval_output.dtype == torch.float32, f"Expected float32, got {eval_output.
 assert eval_output.device.type == 'cuda', f"Expected GPU tensor, got {eval_output.device}"
 assert eval_output.min() >= -0.1 and eval_output.max() <= 1.1, f"Range error: [{eval_output.min()}, {eval_output.max()}]"
 ```
-Check the normalization pipeline in `experiments/one_pair_one_seed/main.py::eval_hook`.
+Check the normalization pipeline in `poe_repair/experiments/one_pair_one_seed/main.py::eval_hook`.
 
 **First discovered:** poe_repair_min, step-09
 
@@ -54,12 +54,12 @@ the scorer; not yet written)
 ---
 
 #### Entry ID: poe-score-002
-**Name:** Compose-rate stuck at 0.0 even though the fix is active
+**Name:** [Compose-rate](../context/world/compose-rate.md#what-a-compose-rate-is) stuck at 0.0 even though the fix is active
 
 **Symptom:** Correction is being applied (loss decreases), but `eval/compose_rate/mean = 0.0`
 throughout training.
 
-**Root cause:** The scorer was trained on PoE (product-of-experts) outputs in a particular
+**Root cause:** The scorer was trained on [PoE](../context/world/poe-composition.md#what-poe-composition-is) (product-of-experts) outputs in a particular
 style or value range. The fix is changing the images, but not in the direction the scorer
 recognizes.
 
@@ -149,7 +149,7 @@ checking both pass `device` explicitly)
 ### LoRA and correction dynamics
 
 #### Entry ID: poe-lora-001
-**Name:** Fraction-of-distance-reached stops rising at 20% instead of the expected 40%
+**Name:** [Fraction-of-distance-reached](../runbook/looking-at-what-a-run-produced/reading-a-training-run.md#2-the-tracking-set-saved-at-every-10k-step-checkpoint) stops rising at 20% instead of the expected 40%
 
 **Symptom:** `eval/frac_distance_reached/mean` climbs to about 0.2 by epoch 1, then stalls.
 Prior runs stop rising at about 0.4.
@@ -176,7 +176,7 @@ magnitude; not yet written)
 ---
 
 #### Entry ID: poe-lora-002
-**Name:** Direction-cosine diverges (< 0.3) despite low training loss
+**Name:** [Direction-cosine](../plans/04-does-the-fix-reach-unseen-pairs/MASTER_PLAN.md#glossary) diverges (< 0.3) despite low training loss
 
 **Symptom:** Training loss decreases smoothly, but `eval/direction_cosine/mean` stays below 0.3
 or goes negative (anti-aligned).
@@ -234,7 +234,7 @@ provable from the numbers alone.
 **First discovered:** poe_repair_min, `scripts/showcase/lora_dose_sweep.py`, plan 03 of
 `01-showcase-the-trained-lora` (slurm job 48596 → corrected in job 48619)
 
-**Also seen:** plan 07's own λ-window grid (`scripts/showcase/lambda_window_grid.py`, jobs
+**Also seen:** plan 07's own [λ-window grid](../plans/01-showcase-the-trained-lora/plans/experiments/07-experiment-c-lambda-window.md) (`scripts/showcase/lambda_window_grid.py`, jobs
 48607-48611) hit the same root cause in a different guise: the plan's pre-registered λ=0
 identity check compared a `run_lora_residual_inject_masked`-style render against `poe.png`
 (rendered with full guided PoE at all 50 steps), and the off-window unguided-only branch gave a
@@ -260,7 +260,7 @@ in `poe_repair/methods/_sampling.py`, not yet documented there.
 forward pass
 
 **Symptom:** `torch.OutOfMemoryError: CUDA out of memory` on the second UNet forward of the
-first denoising step (23.5 of 24GB already in use before that call), even though an
+first [denoising step](../context/world/poe-composition.md#words-this-file-uses) (23.5 of 24GB already in use before that call), even though an
 identically-shaped forward pass in an existing, working sampler function completes fine.
 
 **Root cause:** Every inference-only sampler in `poe_repair/methods/_sampling.py` (there are
@@ -297,19 +297,19 @@ animals
 
 **Symptom:** A rank-32 adapter renders `a_cat__x__a_dog` and the picture contains a human, usually
 crouching beside a single animal, on a seed where the same prompt pair without the adapter draws
-one fused cat-dog creature and no person. The detector's instance count does not flag it, because
+one fused cat-dog creature and no person. The detector's [instance count](../context/world/compose-rate.md#words-this-file-uses) does not flag it, because
 a person is not one of the animal queries.
 
 **Root cause:** Not established. It is reproducible and it tracks the training pool rather than the
 objective: on `a_cat__x__a_dog` seed 1, four adapters do it (`pool43-early25` and
 `pool43-all50-orth3` at 40,000, `v54d_P` and `v54d_C1_allseeds` at 30,000) and every adapter
-trained on the original 88-cell pool over 11 look-alike animal pairs does not, at matched steps.
+trained on the original 88-cell pool over 11 look-alike [animal pairs](../context/world/animal-pair.md#what-an-animal-pair-is) does not, at matched steps.
 The broader pools carry object pairs and scene pairs the original did not, so a prompt-driven
 prior toward a photographed scene with a person in it is the first thing to check.
 
 **Solution:** None yet. Until there is one, a figure using a broader-pool adapter is read by eye
 before it is used, because no scorer in this repository reports an extra person. Recorded 2026-09-20
-from the fourteen-adapter sheet at
+from [the fourteen-adapter sheet](../artifacts/results/composing-unseen-pairs/README.md) at
 `artifacts/results/composing-unseen-pairs/`, which renders one seed through every adapter this
 project has trained.
 
@@ -322,8 +322,8 @@ project has trained.
 #### Entry ID: poe-launch-001
 **Name:** SSH-direct launch dies instantly: relative paths resolve in `$HOME`, not the repo
 
-**Symptom:** `bash: line 1: logs/<name>.log: No such file or directory` the moment the SSH
-launch command runs; `pgrep` on the node shows no process; no log file is ever created.
+**Symptom:** `bash: line 1: logs/<name>.log: No such file or directory` the moment the [SSH
+launch](../runbook/running-things-on-the-cluster/launching-and-harvesting-a-run.md#2-launch-on-a-shared-device) command runs; `pgrep` on the node shows no process; no log file is ever created.
 
 **Root cause:** A non-interactive SSH command starts in `$HOME`, not the repo, so every
 relative path in the launch line (the script path, the `nohup` log redirect) resolves against
@@ -526,3 +526,4 @@ solutions above are owned by
 
 - The instrument finding in [the corrector's step-size review](../plans/06-is-the-gap-the-samplers-or-the-models/review/02-the-corrector-and-the-step-size-it-runs-at.md): a Langevin step size can pass both numeric divergence guards while its renders are texture noise, because the latent norm cannot rise until the Euler step stops contracting. The picture is rung 3 of [the finding](../report/is-the-gap-the-samplers-or-the-models/does-a-langevin-corrector-remove-part-of-the-correction.md).
 - The mention of **the adapter left attached after a windowed run** (why the two adapter stages run in their own process) in [can a corrector or a clean tail sharpen the adapter's renders](../report/is-the-gap-the-samplers-or-the-models/can-a-corrector-or-a-clean-tail-sharpen-the-adapters-renders.md) and [running the Langevin corrector](../runbook/running-things-on-the-cluster/running-the-langevin-corrector.md).
+- The mention of **hardware-faulted** `bigbatch` cards in [the partition table of the node notes](hpc/nodes.md#partitions).

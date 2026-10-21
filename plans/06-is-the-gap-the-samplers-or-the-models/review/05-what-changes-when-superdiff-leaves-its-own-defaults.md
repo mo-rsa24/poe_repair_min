@@ -307,3 +307,8 @@ collapses at 200) rather than the anticipated one. Before this becomes a paper s
 with the user whether to chase the "still open" items above, or take the finding as-is to
 [step 29](06-three-rules-on-one-amount-axis.md) and the `kappa`-sweep figure (task group 4 of the
 design), both of which are unblocked now that `eps_M` and the clamp are verified working.
+
+## Cross-references
+
+- The mention of **the step count**, matched from 200 to 50 in task 6.2, in [the whole corrector design](../source/the-whole-corrector-design.md#6--superdiff-at-this-repos-settings).
+- The mention of **SuperDiff** (the row whose per-step prediction step 28 supplies) in [the plan putting three rules on one amount axis](../plans/baselines/06-three-rules-on-one-amount-axis.md#position-in-the-plan-tree).

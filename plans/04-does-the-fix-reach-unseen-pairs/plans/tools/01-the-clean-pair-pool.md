@@ -92,3 +92,7 @@ it, then check again that at least 10 remain.
 ## Recommended skill
 ▶ `/run-experiment` ✅: drives the fail-rate scoring pass over 8 seeds and confirms
    the pool. alt: `/debug-config` for the pair_pool.yaml load + overlap assertion.
+
+## Cross-references
+
+- The mention of **the finalised pair pool**, a prerequisite for the fifteen leave-one-pair-out runs, in [the plan measuring transfer as a rate over fifteen held-out pairs](../hypothesis/04-transfer-as-a-rate-over-fifteen-pairs.md#considerations) (relevance match).

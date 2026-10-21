@@ -81,9 +81,9 @@ Navigation: ⬅️ [Why the project cares](#why-the-project-cares) | 📋 [TOC](
 | Column | Stands for | Example | Entry |
 |---|---|---|---|
 | `n_instances` | the detector's raw count for one image | `2` (example) | [Dictionary § n_instances](../data/02-dictionary.md#n_instances) |
-| `label` | the scorer's compose/blend call for one image | `compose` (example) | [Dictionary § label](../data/02-dictionary.md#label-truth) |
-| `truth` | the human-assigned ground truth used to validate the scorer, only present in the validation set | `compose` (example) | [Dictionary § label](../data/02-dictionary.md#label-truth) |
-| `fail_rate` / `compose_rate` | the fraction of a pair's seeds scored one way | `0.94` (example, the λ=1 headline before the audit's bound) | [Dictionary § fail_rate / compose_rate](../data/02-dictionary.md#fail_rate-compose_rate) |
+| `label` | the scorer's compose/blend call for one image | `compose` (example) | [Dictionary § label](../data/02-dictionary.md#label--truth) |
+| `truth` | the human-assigned ground truth used to validate the scorer, only present in the validation set | `compose` (example) | [Dictionary § label](../data/02-dictionary.md#label--truth) |
+| `fail_rate` / `compose_rate` | the fraction of a pair's seeds scored one way | `0.94` (example, the λ=1 headline before the audit's bound) | [Dictionary § fail_rate / compose_rate](../data/02-dictionary.md#fail_rate--compose_rate) |
 
 ## What people get wrong
 
@@ -125,3 +125,5 @@ Navigation: ⬅️ [What people get wrong](#what-people-get-wrong) | 📋 [TOC](
 - The mention of **the instance counter**, and that it cannot tell a cat from a second dog, in [how a render fails](how-a-render-fails.md#where-this-came-from).
 - The mention of **the instance counter**, and that it cannot tell a dog from a horse, in [the finding "does the adapter return two when both prompts name the same concept"](../../report/is-the-adapter-just-copying-the-joint-prompt/does-the-adapter-return-two-when-both-prompts-name-the-same-concept.md).
 - The mention of **the instance-count scorer**, as the read that was not run over the fidelity harness's tiles, in [the finding "can any render-time fix recover the picture quality the adapter costs"](../../report/is-the-gap-the-samplers-or-the-models/does-any-render-time-fix-recover-picture-quality.md).
+- The mention of **compose rate** (the metric reading 0.0 through training while the correction is active) in [the known failure "compose rate stuck at 0.0 even though the fix is active"](../../environment/known-failures.md#entry-id-poe-score-002).
+- The mention of **instance count**, which does not flag a person drawn beside one animal, in [the failure catalog entry poe-lora-005](../../environment/known-failures.md#entry-id-poe-lora-005).

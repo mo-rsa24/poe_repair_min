@@ -337,3 +337,4 @@ run against an inconclusive curve.
 
 - The finding built from this verdict: [does a Langevin corrector remove part of the correction](../../../report/is-the-gap-the-samplers-or-the-models/does-a-langevin-corrector-remove-part-of-the-correction.md).
 - The recipe that reruns the grid and prints the branch: [running the Langevin corrector](../../../runbook/running-things-on-the-cluster/running-the-langevin-corrector.md).
+- The mention of **the read zone**, marked on the plot in task 4.4, in [the whole corrector design](../source/the-whole-corrector-design.md#4--what-is-left-once-the-chain-settles).

@@ -257,3 +257,4 @@ before 670 plain-render equivalents are spent on a composer that is not inert.
 
 - The finding built from this verdict: [does a Langevin corrector remove part of the correction](../../../report/is-the-gap-the-samplers-or-the-models/does-a-langevin-corrector-remove-part-of-the-correction.md), which carries the search table's picture and the instrument finding about the divergence guards.
 - The recipe that reruns the leak checks and the search: [running the Langevin corrector](../../../runbook/running-things-on-the-cluster/running-the-langevin-corrector.md).
+- The mention of **relative displacement**, carried beside every point of the curve, in [the whole corrector design](../source/the-whole-corrector-design.md#considerations).

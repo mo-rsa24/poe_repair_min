@@ -18,6 +18,7 @@ for CLEVR.
 - [4. Get the CLEVR checkpoint](#4-get-the-clevr-checkpoint)
 - [5. Give the CLEVR script a CUDA torch](#5-give-the-clevr-script-a-cuda-torch)
 - [6. Run the notebook on the GPU instead](#6-run-the-notebook-on-the-gpu-instead)
+- [7. Build the 2D notebook's environment on the cluster](#7-build-the-2d-notebooks-environment-on-the-cluster)
 - [Where this came from](#where-this-came-from)
 
 ## Before any of these
@@ -126,7 +127,7 @@ Build a CUDA torch in the clone instead (about 2.5 GB):
 
 ## 6. Run the notebook on the GPU instead   `unverified`
 
-Navigation: ⬅️ [5. CLEVR torch](#5-give-the-clevr-script-a-cuda-torch) | 📋 [TOC](#table-of-contents) | [Next](#where-this-came-from) ➡️
+Navigation: ⬅️ [5. CLEVR torch](#5-give-the-clevr-script-a-cuda-torch) | 📋 [TOC](#table-of-contents) | [Next](#7-build-the-2d-notebooks-environment-on-the-cluster) ➡️
 
 ```bash
 cd ~/PhD/reduce-reuse-recycle
@@ -137,10 +138,42 @@ UV_HTTP_TIMEOUT=600 uv pip install --python .venv-2d/bin/python "jax[cuda13]==0.
 ✅ **a `CudaDevice`** in the list. The download is about 2.3 GB of CUDA libraries. Then restart
 the notebook's kernel and rerun from the top.
 
+## 7. Build the 2D notebook's environment on the cluster   `ran 2026-10-13`
+
+Navigation: ⬅️ [6. GPU notebook](#6-run-the-notebook-on-the-gpu-instead) | 📋 [TOC](#table-of-contents) | [Next](#where-this-came-from) ➡️
+
+On a GPU node (the walk used `mscluster88`), with the clone from recipe 1 at
+`~/PhD/reduce-reuse-recycle`. Check the card first, because `bigbatch` cards fault between checks:
+
+```bash
+nvidia-smi -L
+```
+
+✅ **one `GPU 0:` line.** ❌ **`Unable to determine the device handle`**: the card is faulted;
+move to another node from [the node table](../environment/hpc/nodes.md).
+
+```bash
+R=/datasets/mmolefe/reduce-reuse-recycle
+mkdir -p $R/uv-cache $R/venvs
+export UV_CACHE_DIR=$R/uv-cache
+~/.local/bin/uv venv --python 3.12 $R/venvs/rrr-jax
+~/.local/bin/uv pip install --python $R/venvs/rrr-jax/bin/python "jax[cuda12]==0.11.2" dm-haiku optax distrax chex matplotlib ipykernel
+ln -sfn $R/venvs/rrr-jax ~/PhD/reduce-reuse-recycle/.venv
+~/PhD/reduce-reuse-recycle/.venv/bin/python -c "import jax; print(jax.devices())"
+```
+
+✅ **`[CudaDevice(id=0)]`.** The install takes about 5 minutes. ❌ **`[CpuDevice(id=0)]`**: the
+CUDA plugin did not install or the node has no visible card; rerun `nvidia-smi -L`.
+
+In VS Code, open the notebook, click the kernel name at the top right, choose **Select Another
+Kernel → Python Environments → .venv (Python 3.12.10)**. If `.venv` is not listed, choose **Enter
+interpreter path** and paste `/home-mscluster/mmolefe/PhD/reduce-reuse-recycle/.venv/bin/python`.
+
 ## Where this came from
 
-Navigation: ⬅️ [6. GPU notebook](#6-run-the-notebook-on-the-gpu-instead) | 📋 [TOC](#table-of-contents)
+Navigation: ⬅️ [7. Cluster environment](#7-build-the-2d-notebooks-environment-on-the-cluster) | 📋 [TOC](#table-of-contents)
 
 **The drip-repo walk of 2026-10-13**, whose working file is
 `artifacts/drips/reduce-reuse-recycle/REPO_WALK.md`. Every recipe marked `ran` was run that day
-on the laptop.
+on the laptop, except recipe 7, run on `mscluster88` from the walk file
+`artifacts/drips/reduce-reuse-recycle-mscluster112/REPO_WALK.md`.

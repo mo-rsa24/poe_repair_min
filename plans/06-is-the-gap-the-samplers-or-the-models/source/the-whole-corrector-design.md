@@ -66,7 +66,7 @@ one review file per plan.
 
 ## What this asks, in one line
 
-Run a Langevin corrector at every noise level so the latent settles into the distribution the
+Run a [Langevin corrector](../../../runbook/running-things-on-the-cluster/running-the-langevin-corrector.md) at every noise level so the latent settles into the distribution the
 product-of-experts score actually describes, then measure what is left of the correction at that
 settled point. The part that goes away when the chain settles belongs to the sampler. The part
 still there at the end of the run belongs to the model.
@@ -124,7 +124,7 @@ that the correction is about 2.7 times larger late than early, so it works where
 and that tripling the amount added late changes almost nothing.
 
 The threat is that the same picture is what a sampler artifact looks like. Error A is worst at
-high noise, and high noise is the early steps, which is exactly the window that decides the
+high noise, and high noise is the early steps, which is exactly the [window](../../../context/world/interaction-term.md#words-this-file-uses) that decides the
 outcome. Nothing measured so far tells the two apart, because `r_t` is both of them added
 together and no run in this repo has ever separated them.
 
@@ -150,7 +150,7 @@ Du et al.'s sampler code is already vendored here, at
 
 The corrector moves `x_t`. Every cached trajectory in `outputs/interaction_term/` and
 `cache_analyses/` is for a path the corrector is no longer on, so nothing here reads them except
-the one free bound in task 1, which reads the uncorrected path on purpose.
+the one free bound in task 1, which reads the [uncorrected path](../review/01-the-free-bound-on-the-models-share.md#words-this-file-uses) on purpose.
 
 **Two corrector counts are two trajectories, not one point wiggled twice.**
 
@@ -178,7 +178,7 @@ the ratio caused by a rising denominator is visible rather than hidden.
 
 A curve flat from `k=1` reads as "the corrector does nothing, it is all error B", and it reads
 identically when the step size is so small the chain never left where it started. Every point
-carries the median relative displacement `‖x_t^(k) - x_t^(0)‖/‖x_t^(0)‖` beside it. A flat curve
+carries the median [relative displacement](../review/02-the-corrector-and-the-step-size-it-runs-at.md#words-this-file-uses) `‖x_t^(k) - x_t^(0)‖/‖x_t^(0)‖` beside it. A flat curve
 whose displacement sits below the minimum written in source means the measuring tool failed, and
 nothing about the answer can be read off it.
 
@@ -204,9 +204,9 @@ leaves a part that does not go away. What it leaves at the low-noise end of the 
 error, `p(cat)·p(dog) ≠ p(cat and dog)`.
 
 **Independent variable.** The corrector count `k ∈ {0, 1, 5, 20, 100, 200}` at a step size fixed
-by task 3, and nothing else. Same pair, same seed, same 50 DDIM steps, same guidance 7.5.
+by task 3, and nothing else. Same pair, same [seed](../../../context/world/animal-pair.md#words-this-file-uses), same 50 DDIM steps, same guidance 7.5.
 
-**Dependent variables.** Per denoising step `t` and per `k`: the numerator
+**Dependent variables.** Per [denoising step](../../../context/world/poe-composition.md#words-this-file-uses) `t` and per `k`: the numerator
 `‖eps_J(x_t^(k)) - eps_PoE(x_t^(k))‖₂`, the denominator `‖eps_PoE(x_t^(k))‖₂`, their ratio, and
 the relative chain displacement. All in fp32, upcast from the fp16 the models run in.
 
@@ -248,7 +248,7 @@ they cannot be moved after the answer is visible.
 ⬅️ [Previous](#the-claim) | 📋 [TOC](#table-of-contents) | [Next](#what-happens-visual) ➡️
 
 The paper's argument is that a small, shared, learnable correction fixes composition, and that a
-rank-8 adapter can carry it. If most of `r_t` is error A, a training-free corrector gets most of
+[rank-8](../../../context/world/lora-corrector.md#words-this-file-uses) adapter can carry it. If most of `r_t` is error A, a training-free corrector gets most of
 the same benefit and the adapter is answering a question the sampler had already solved. That is
 the strongest reviewer objection available against this work, and
 [the two literature checks before print](../../03-does-the-correction-cause-composition/plans/checks/09-two-literature-checks-before-print.md) already cite the paper that raises it.
@@ -318,7 +318,7 @@ only, and cannot say which of the two errors that size came from.
 
 **Which lands on the timing result.** The compose-decisive window is steps 0 to 10, the high-noise
 end, which is the region where this plan cannot attribute. That limit is stated in the caption and
-in the review file rather than argued away. What the plan can say about the early window is
+in the review file rather than argued away. What the plan can say about the [early window](../../05-when-does-the-outcome-lock-in/review/07-what-the-correction-is-made-of.md#words-this-file-uses) is
 whether a corrector applied only there changes the compose rate, which is task 5 and is a
 behavioural answer rather than an attribution.
 
@@ -349,8 +349,8 @@ step-size search, and a curve that sizes error A against error B. Then, only if 
 rerun of the sliding-window grid with the corrector in place of the injected `r_t`.
 
 **The comparison half, tasks 6 to 8.** SuperDiff wired at this repo's 50 steps, and two grids
-putting product-of-experts, SuperDiff and the corrector on one generalised amount axis. Then a full
-read of the Feynman-Kac paper, which happens only if the first two justify it.
+putting product-of-experts, SuperDiff and the corrector on one generalised amount axis. Then a [full
+read](../review/07-feynman-kac-correctors.md#words-this-file-uses) of the Feynman-Kac paper, which happens only if the first two justify it.
 
 The two halves ask different questions. The first sizes an error, the second compares methods. They
 share a plan file because the second is only worth running under some outcomes of the first, and
@@ -483,8 +483,8 @@ Run group: **hypothesis**, the measuring-tool half.
 - [ ] **2.1** Write `poe_repair/composers/poe_langevin.py`, beside
       [poe.py](../../../poe_repair/composers/poe.py), following
       [poe_internal.py](../../../poe_repair/composers/poe_internal.py)'s per-step
-      intervention pattern and the vendored `AnnealedULASampler`. Arguments: `k`, the step-size
-      multiplier `c`, and a `corrector_window` tuple so the corrector can be on inside a range and
+      intervention pattern and the vendored `AnnealedULASampler`. Arguments: `k`, the [step-size
+      multiplier](../MASTER_PLAN.md#glossary) `c`, and a `corrector_window` tuple so the corrector can be on inside a range and
       off elsewhere. Method name format follows `poe_internal.py`'s: `poe_langevin_k<NNN>_c<NNN>`,
       plus `_w<start>-<end>` when a window is set.
 - [ ] **2.2** The leak check, before any measurement. `k=0` must reproduce plain
@@ -542,7 +542,7 @@ already written in [The claim](#the-claim). No images, no detector, no scorer.
       `/datasets/mmolefe/poe_repair_min/outputs/interaction_term/corrector/residual_curves.json`.
 - [ ] **4.4** Plot it. One panel per pair, ratio against denoising step 0 to 49, one curve per `k`,
       with the numerator and denominator on a second row so a moving denominator is visible. Mark
-      the last five steps as the read zone and shade steps 0 to 10 as the zone where the two errors
+      the last five steps as the [read zone](../review/03-what-is-left-once-the-chain-settles.md#words-this-file-uses) and shade steps 0 to 10 as the zone where the two errors
       cannot be separated. Figure to
       `paper/iclr/figures/when-the-correction-arrives/mcmc/how-much-of-the-correction-a-corrector-removes.png`
       with its `.json` sidecar.
@@ -563,11 +563,15 @@ seeds, same nine positions, corrector in place of injected `r_t`.
       positions as columns, green border on the pictures the detector scored as composed, plus a tenth column with the
       corrector on for all 50 steps. Figure to
       `paper/iclr/figures/when-the-correction-arrives/mcmc/samples-as-a-ten-step-corrector-window-slides.png`.
+
+      <a href="../../../paper/iclr/figures/when-the-correction-arrives/mcmc/samples-as-a-ten-step-corrector-window-slides.png"><img src="../../../paper/iclr/figures/when-the-correction-arrives/mcmc/samples-as-a-ten-step-corrector-window-slides.png" width="200" alt="Cat-and-dog renders in four rows, seeds 9 to 12, and ten columns: the Langevin corrector on in one ten-step window from 0–10 to 40–50, then on for all 50 steps, with a green bar under each picture marking where it acts; every frame is red and labelled blended, 1 instance"></a>
 - [ ] **5.2** Put it beside
       `paper/iclr/figures/when-the-correction-arrives/poe/samples-as-a-ten-step-window-slides.png`
       and record in the review file whether the corrector's compose rate peaks in the same window
-      the injected correction does. Same window is a strong result: two different mechanisms
+      the [injected correction](../review/04-does-the-corrector-compose-in-the-same-window.md#words-this-file-uses) does. Same window is a strong result: two different mechanisms
       acting at the same moment. A different window is a stronger one and needs its own paragraph.
+
+      <a href="../../../paper/iclr/figures/when-the-correction-arrives/poe/samples-as-a-ten-step-window-slides.png"><img src="../../../paper/iclr/figures/when-the-correction-arrives/poe/samples-as-a-ten-step-window-slides.png" width="200" alt="Cat-and-dog renders in four rows, seeds 9 to 12, and nine columns headed by ten-step ranges from 0–10 to 40–50; most pictures in the 0–10 column show a cat and a dog apart, and the later columns show one merged face"></a>
 
 **The condition on this task is deliberately soft.** A flat curve in task 4 does not strictly imply no
 change in compose rate, because the corrector could relocate the trajectory without shrinking
@@ -591,7 +595,7 @@ diagnosis, and the framing of every caption changes with it.
       `poe_repair/composers/superdiff.py`.
 - [ ] **6.2** Match it to SDXL base, DDIM, 50 steps, guidance 7.5. Its default is 200 steps, so
       this is a task with its own check: render the same pair and seed at 200 and at 50 steps and
-      record whether the 50-step render still composes. If matching the step count breaks the
+      record whether the 50-step render still composes. If matching the [step count](../review/05-what-changes-when-superdiff-leaves-its-own-defaults.md#words-this-file-uses) breaks the
       method, the comparison is between a working rule and a crippled one, and that has to be said
       rather than discovered in the grid.
 - [ ] **6.3** Expose `eps_M` per step so `r_t^SD = eps_J - eps_M` can be formed, which is what the
@@ -612,13 +616,15 @@ Run group: **baseline**.
       [F5](../../../paper/iclr/figures/F5-one-dial-three-instruments.png) already reads at.
       Render the same grid at `λ=0` in the same pass, which gives the methods-alone figure for
       free.
+
+      <a href="../../../paper/iclr/figures/F5-one-dial-three-instruments.png"><img src="../../../paper/iclr/figures/F5-one-dial-three-instruments.png" width="200" alt="Three panels against λ from 0 to 1 for the pair's own r_t, another pair's r_t and a random vector of the same size: position in image space from PoE to Mono, the share called two animals, and agreement with the step"></a>
 - [ ] **7.3** Grid two: columns are `λ ∈ {0, 0.25, 0.5, 0.75, 1}`, seed fixed at 9.
 - [ ] **7.4** Handle the two things this grid is known to hit rather than discovering them. The
       rows deliver different absolute amounts at the same `λ`, because `‖r_t^M‖` differs per row.
       [The timing plan](../../03-does-the-correction-cause-composition/plans/hypothesis/05-when-in-the-run-it-matters.md) met this and answered it with
       a `--mode matched` setting, so either put the delivered total on each row label or run matched.
       And the corrector rows will not reproduce the joint render at `λ=1`, because the chain has
-      already moved off the joint trajectory; label those pictures not-an-identity. A row that fails
+      already moved off the joint trajectory; label those pictures not-an-identity<sub>[1](../plans/baselines/06-three-rules-on-one-amount-axis.md#words-this-plan-uses "plan: three rules on one amount axis"), [2](../review/06-three-rules-on-one-amount-axis.md#words-this-file-uses "review: four composition rules on the same amount axis")</sub>. A row that fails
       to converge at `λ=1` is doing something beyond combining scores, which makes the `λ=1` column
       a free classifier of what each rule is.
 - [ ] **7.5** Figures to `paper/iclr/figures/how-much-is-added/across-composition-rules/`, not to
@@ -703,7 +709,7 @@ them.
       free classifier of what each rule is doing.
 - [ ] **11.2** For grid one, count composed pictures per row by eye and compare against the detector's
       count. [The timing verdict](../../03-does-the-correction-cause-composition/review/05-when-in-the-run-it-matters.md) records
-      that the detector and the eye disagree on cat and dog often enough that the eye read is the
+      that the [detector and the eye disagree on cat and dog](../plans/hypothesis/04-does-the-corrector-compose-in-the-same-window.md#-the-detector-and-the-eye-disagree-on-cat-and-dog) often enough that the eye read is the
       one cited, so do both and cite the eye where they differ.
 - [ ] **11.3** Write both counts into the review file, side by side, with the disagreements named
       picture by picture.

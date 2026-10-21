@@ -583,7 +583,7 @@ which disagrees with the eye on this pair often enough that the eye count is quo
 
 | Path | Why it is read |
 |---|---|
-| [scripts/interaction_term_window.py](../../../scripts/interaction_term_window.py) | the injected-correction window run this plan mirrors, with its nine positions, its seeds, and its scored-grid format |
+| [scripts/interaction_term_window.py](../../../../scripts/interaction_term_window.py) | the injected-correction window run this plan mirrors, with its nine positions, its seeds, and its scored-grid format |
 | `poe_repair/composers/poe_langevin.py` | the composer from [step 25](../tools/02-the-corrector-and-the-step-size-it-runs-at.md), whose `corrector_window` argument is what this plan slides |
 | `paper/iclr/figures/when-the-correction-arrives/README.md` | the folder's own rule for which subfolder a figure lands in, and the exact green-border rule quoted into captions |
 
@@ -632,3 +632,8 @@ already records the disagreement rate.
 Do not edit manually.
 
 </details>
+
+## Cross-references
+
+- The mention of **the detector and the eye disagreeing on cat and dog** (why grid one is counted by eye as well as by the detector) in [the plan putting three rules on one amount axis](../baselines/06-three-rules-on-one-amount-axis.md#3--judge-the-two-grids-by-eye).
+- The mention of **the detector and the eye disagreeing on cat and dog** in the instruction judging the two amount grids by eye, in [the whole corrector design](../../source/the-whole-corrector-design.md#11--judge-the-two-amount-grids-by-eye).

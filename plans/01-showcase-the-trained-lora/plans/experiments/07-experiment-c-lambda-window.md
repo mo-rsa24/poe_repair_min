@@ -295,3 +295,7 @@ From [environment/known-failures.md](../../../../environment/known-failures.md):
 - **poe-mem-002** — `_Embedders()` instantiated with no `device` defaults to CPU, and DINOv2's
   xformers attention kernel doesn't support CPU. Hit while writing `measure()` in
   `scripts/showcase/lambda_window_grid.py` (job 48608); fixed by passing `device=torch.device("cuda")`.
+
+## Cross-references
+
+- The mention of **the λ-window grid**, whose λ=0 identity check hit the off-window sampler mismatch, in [the failure catalog entry poe-lora-003](../../../../environment/known-failures.md#entry-id-poe-lora-003).

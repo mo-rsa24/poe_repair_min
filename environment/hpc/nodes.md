@@ -19,7 +19,7 @@ time limit, node count).
 | Partition | Nodes | Time limit | Notes |
 |---|---|---|---|
 | `biggpu` | mscluster[106-112], 7 nodes | 3 days | First choice for GPU jobs. `mscluster106`: 2x Quadro RTX 8000, 49GB each. `mscluster108`: 2x Quadro RTX 8000, 49GB each. `mscluster109`: 2x RTX A6000, 49GB each. `mscluster110`, `111`, `112`: 1x NVIDIA RTX PRO 6000 Blackwell Workstation Edition each, ~96GB VRAM (Blackwell generation, newer and larger than every other `biggpu` card). `mscluster107`: down. `mscluster111`: visible to `nvidia-smi` but unusable on 2026-09-05, pstate reads `[GPU requires reset]`, utilisation `[N/A]`, and `torch.cuda.is_available()` is False under `co3_bw`, so a launch there runs on the CPU with no error (a 320-render job crawled at 14 GB RSS for ten minutes before it was caught); every launcher now asserts `torch.cuda.is_available()` after pinning the device. All others verified live via `nvidia-smi` on 2026-09-01. `sinfo` GRES reads `(null)` for every partition, so per-node GPU models are only discoverable by SSH + `nvidia-smi`, not by querying Slurm. |
-| `bigbatch` | mscluster[42-89], 48 nodes | 3 days | Fallback when no `biggpu` node is idle. `mscluster50` and `mscluster51` sit `idle` in `sinfo` but their GPU is hardware-faulted (`nvidia-smi`: "Unable to determine the device handle for GPU0: 0000:17:00.0: Unknown Error"), so a job lands there and the GPU guard aborts it in under a second (jobs 49277 and 49278, 2026-09-03). A probe of every idle `bigbatch` node over SSH (`ssh <node> nvidia-smi --query-gpu=name,memory.used,utilization.gpu --format=csv`) finds the same fault on more nodes than Slurm reports. On 2026-09-10 the faulted set was `mscluster44`, `45`, `50`, `57`, `65` and `76`, all reporting `Unable to determine the device handle for GPU0: 0000:17:00.0`; job 52566 landed on `mscluster76` and the guard refused it in under a second. `mscluster74` reads utilisation `[N/A]`, which the launchers treat as faulted. The healthy idle cards that day were RTX 3090 24 GB on `mscluster46`, `49`, `72`, `73`, `75` and `88`. On 2026-09-24 every idle `bigbatch` node answered `nvidia-smi` with "No devices were found": `mscluster44`, `57`, `59`, `62`, `65`, `75` and `83`, with `mscluster45` not answering at all, so job 59136 died on `mscluster59` in seconds. `mscluster59`, `62` and `75` were healthy at the previous probe, and `75` was one of the six the 2026-09-10 probe named as good. Idle on this partition is evidence of a dead card rather than a free one. The fault set grows between probes, so prefer pinning: run the probe over `sinfo -p bigbatch -N -h -o "%N %t" | awk '$2=="idle"'` and pass `--nodelist=<healthy node>`. Excluding works too but goes stale, and the current list is `--exclude=mscluster44,mscluster45,mscluster50,mscluster51,mscluster57,mscluster65,mscluster74,mscluster76,mscluster83`. `sinfo` lists the session node `mscluster85` as idle while it carries this project's own runs, so idle is not free there either. A second fault is invisible to every GPU probe: on 2026-09-12 `mscluster72` and `mscluster73` could not see `/datasets` **from inside a Slurm job**, while `ssh <node> test -d /datasets/...` from the session node succeeded on both, so an SSH probe passes them as healthy and the job then writes nowhere. Eight jobs (53301, 53302, 53312, 53313, 53316, 53317, 53319, 53320) died on those two nodes and none on `mscluster46`, `49`, `52`-`56`, `58`, `59` or `75`, which all probed `datasets=OK` under Slurm the same hour. Probe the filesystem the job will write to with a two-minute `sbatch`, never with `ssh`, and keep the launcher's own directory guard: before it existed the `df` check ran against a missing path, left the usage string empty, and the `>= 90` test passed silently. |
+| `bigbatch` | mscluster[42-89], 48 nodes | 3 days | Fallback when no `biggpu` node is idle. `mscluster50` and `mscluster51` sit `idle` in `sinfo` but their GPU is [hardware-faulted](../known-failures.md#entry-id-poe-launch-002) (`nvidia-smi`: "Unable to determine the device handle for GPU0: 0000:17:00.0: Unknown Error"), so a job lands there and the [GPU guard](execution-protocol.md) aborts it in under a second (jobs 49277 and 49278, 2026-09-03). A probe of every idle `bigbatch` node over SSH (`ssh <node> nvidia-smi --query-gpu=name,memory.used,utilization.gpu --format=csv`) finds the same fault on more nodes than Slurm reports. On 2026-09-10 the faulted set was `mscluster44`, `45`, `50`, `57`, `65` and `76`, all reporting `Unable to determine the device handle for GPU0: 0000:17:00.0`; job 52566 landed on `mscluster76` and the guard refused it in under a second. `mscluster74` reads utilisation `[N/A]`, which the launchers treat as faulted. The healthy idle cards that day were RTX 3090 24 GB on `mscluster46`, `49`, `72`, `73`, `75` and `88`. On 2026-09-24 every idle `bigbatch` node answered `nvidia-smi` with "No devices were found": `mscluster44`, `57`, `59`, `62`, `65`, `75` and `83`, with `mscluster45` not answering at all, so job 59136 died on `mscluster59` in seconds. `mscluster59`, `62` and `75` were healthy at the previous probe, and `75` was one of the six the 2026-09-10 probe named as good. Idle on this partition is evidence of a dead card rather than a free one. The fault set grows between probes, so prefer pinning: run the probe over `sinfo -p bigbatch -N -h -o "%N %t" | awk '$2=="idle"'` and pass `--nodelist=<healthy node>`. Excluding works too but goes stale, and the current list is `--exclude=mscluster44,mscluster45,mscluster50,mscluster51,mscluster57,mscluster65,mscluster74,mscluster76,mscluster83`. `sinfo` lists the session node `mscluster85` as idle while it carries this project's own runs, so idle is not free there either. A second fault is invisible to every GPU probe: on 2026-09-12 `mscluster72` and `mscluster73` could not see `/datasets` **from inside a Slurm job**, while `ssh <node> test -d /datasets/...` from the session node succeeded on both, so an SSH probe passes them as healthy and the job then writes nowhere. Eight jobs (53301, 53302, 53312, 53313, 53316, 53317, 53319, 53320) died on those two nodes and none on `mscluster46`, `49`, `52`-`56`, `58`, `59` or `75`, which all probed `datasets=OK` under Slurm the same hour. Probe the filesystem the job will write to with a two-minute `sbatch`, never with `ssh`, and keep the launcher's own directory guard: before it existed the `df` check ran against a missing path, left the usage string empty, and the `>= 90` test passed silently. |
 | `batch` | mscluster[120-219], 100 nodes | 1 day | Short jobs only. |
 | `stampede` | mscluster[22-41], 20 nodes | 3 days | Rarely used for this project. |
 | `gpuexpress` | mscluster116, 1 node | 1 hour | Short wiring checks only. |
@@ -43,7 +43,7 @@ assuming a submission will start promptly.
 **`co3` is the project environment.** Absolute path:
 `/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python` (a symlink to `python3.10`, verified
 live via `ls -la` on 2026-08-24). Every job script must use this absolute path, never a bare
-`python`, because nothing in the execution model activates an environment implicitly.
+`python`, because nothing in the [execution model](../overview.md#execution-model) activates an environment implicitly.
 
 **`co3_bw` is the environment for the Blackwell nodes (mscluster110, 111, 112).** Measured
 2026-09-03 on mscluster112: `co3_bw` is torch 2.11.0+cu128 with kernels for `sm_100` and
@@ -59,11 +59,40 @@ and `utilization.gpu=[N/A]`, and `torch.cuda.is_available()` under `co3_bw` retu
 sampler launched there runs on the CPU at about 40 times the GPU time with no error in its log.
 Consequence: treat the node as faulted until an administrator resets it; the shared-device launch
 script refuses a device whose utilisation reads `[N/A]` or whose CUDA probe fails, per
-[poe-launch-002](../known-failures.md). `mscluster110` and `mscluster112` were fine the same day.
+[poe-launch-002](../known-failures.md#entry-id-poe-launch-002). `mscluster110` and `mscluster112` were fine the same day.
+
+**`mscluster112`'s card does not answer at all (verified 2026-10-13).** `nvidia-smi` prints
+`Unable to determine the device handle for GPU0: 0000:01:00.0: Unknown Error` and then
+`No devices were found`, and `torch.cuda.get_device_name(0)` under `co3_bw` raises
+`RuntimeError: CUDA unknown error`. This is the same fault form as the `bigbatch` nodes above, and
+it shows up even with the node allocated and a VS Code remote session open on it, so holding the
+node says nothing about its card. Run `nvidia-smi -L` before any GPU work here; a faulted card
+needs an administrator reset or a reboot (node uptime that day: 54 days).
+
+**`mscluster88` works under `co3_bw` (verified 2026-10-13).** RTX 3090, 24 GB, driver 595.71.05;
+`torch.cuda.is_available()` is True and a 1000×1000 ones matmul on the card sums to 1e9. From
+this node PyPI downloaded at 13.5 MB/s (30 MB of the `nvidia-cublas-cu12` wheel in 2.3 s), so a
+[2.3 GB CUDA install](../reduce-reuse-recycle-code.md#on-the-cluster-mscluster88) takes about three minutes here.
 
 
 `superdiff` exists for SuperDiff-related work if its dependencies conflict with `co3`
 (stated, not re-verified this sitting).
+
+## VS Code extensions on the compute nodes
+
+**The compute nodes cannot reach the VS Code extension marketplace.** From `mscluster88`, every
+extension download returns an 875-byte Microsoft page reading "The request is blocked." Both
+`code-server --install-extension` and the Extensions panel's install fail with `Extract: End of
+central directory record signature not found`. **Install from VSIX** also fails: the main extension
+unpacks, but the members of its extension pack (for `ms-python.python`: Pylance, debugpy, Python
+Environments) are fetched from the node, those downloads are blocked, and the install rolls back.
+The truncated downloads sit in `~/.vscode-server/data/CachedExtensionVSIXs/`. (verified 2026-10-13)
+
+**The fix is to let the laptop download remote extensions.** On the laptop, tick **Remote: Download
+Extensions Locally** (`remote.downloadExtensionsLocally`) in User settings, reload the window, then
+click **Install in SSH: mscluster88** in the Extensions panel. VS Code fetches each extension and its
+pack members on the laptop and copies them over. `ms-python.python` 2026.8.0 and
+`ms-toolsai.jupyter` 2025.9.1 installed this way. (verified 2026-10-13)
 
 ## Cross-references
 

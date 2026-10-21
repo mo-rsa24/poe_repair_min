@@ -134,3 +134,7 @@ Navigation: ⬅️ [Still open](#still-open) | 📋 [TOC](#table-of-contents)
 
 Get the one-epoch first run in [the three live curves plan](02-three-live-curves-while-training.md)
 green, then launch the fifteen runs.
+
+## Cross-references
+
+- The mention of **the degradation curve** in the hypothesis of [the plan measuring transfer as a rate over fifteen held-out pairs](../plans/hypothesis/04-transfer-as-a-rate-over-fifteen-pairs.md#quick-context-where-you-are).

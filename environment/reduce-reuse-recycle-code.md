@@ -51,3 +51,24 @@ reading the code; audit row R59 says the same; not yet run)
 542 tensors and 125.1 M parameters, from the Google Drive link at README line 59. Google serves a
 virus-scan page for a file this size, so a plain `curl` fetches HTML, not the weights; the download
 needs the page's `confirm` and `uuid` values. (verified 2026-10-13)
+
+## On the cluster (mscluster88)
+
+**The cluster clone is `/home-mscluster/mmolefe/PhD/reduce-reuse-recycle`**, branch `walk` at
+`81177d9`, with the same notebook fixes as the laptop. The walk runs on `mscluster88` (`bigbatch`,
+RTX 3090, 24 GB) because `mscluster112`'s card is faulted; see the
+[node table](hpc/nodes.md). (verified 2026-10-13)
+
+**The 2D notebook's environment is a uv venv on `/datasets`**, at
+`/datasets/mmolefe/reduce-reuse-recycle/venvs/rrr-jax`, linked into the clone as `.venv`. Python
+3.12.10, jax 0.11.2 with the `cuda12` plugin, dm-haiku 0.0.17, optax 0.2.8, distrax 0.1.9, chex
+0.1.92. Its uv cache is `/datasets/mmolefe/reduce-reuse-recycle/uv-cache`, so the 2.3 GB of CUDA
+wheels never land under `/home-mscluster`. `jax.devices()` prints `[CudaDevice(id=0)]` and a
+1000×1000 ones matmul sums to 1e9. The install took 5 min 15 s from PyPI. (verified 2026-10-13)
+
+**No existing mamba env holds a usable jax.** `jax` has none installed; `jax115` has jax 0.4.30
+with a CPU-only jaxlib and no haiku. (verified 2026-10-13)
+
+## Cross-references
+
+- The mention of **2.3 GB CUDA install**, timed from the PyPI download rate measured on `mscluster88`, in [the HPC nodes fact, under Python environments](hpc/nodes.md#python-environments).

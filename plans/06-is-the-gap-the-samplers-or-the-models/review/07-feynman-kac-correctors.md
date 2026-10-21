@@ -143,3 +143,7 @@ Navigation: ⬅️ [Still open](#still-open) | 📋 [TOC](#table-of-contents)
 Read which branch step 26 fired and decide whether this plan runs at all. Record either "running,
 because step 26 returned X" or "closed unrun, because step 26 returned a null", with the branch
 named.
+
+## Cross-references
+
+- The mention of **a full read** of the Feynman-Kac paper in [the whole corrector design](../source/the-whole-corrector-design.md#description-what-to-build).

@@ -110,3 +110,4 @@ without touching GPU 0.
 
 - The mention of **launching outside Slurm and harvesting by process** in [does a Langevin corrector remove part of the correction](../../report/is-the-gap-the-samplers-or-the-models/does-a-langevin-corrector-remove-part-of-the-correction.md) and [does a corrector alone produce two animals](../../report/is-the-gap-the-samplers-or-the-models/does-a-corrector-alone-produce-two-animals.md), whose grids ran this way on three nodes.
 - The mention of **a device taken between the check and the launch**, which this protocol's guard refused twice on 2026-09-05, in [running the Langevin corrector](../../runbook/running-things-on-the-cluster/running-the-langevin-corrector.md).
+- The mention of **the GPU guard**, which aborts a job landing on a hardware-faulted `bigbatch` card in under a second, in [the HPC nodes fact, under Partitions](nodes.md#partitions).

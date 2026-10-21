@@ -275,3 +275,4 @@ seeds 10 to 12.
 
 - The two findings built from this verdict: [does a corrector alone produce two animals](../../../report/is-the-gap-the-samplers-or-the-models/does-a-corrector-alone-produce-two-animals.md) and [can a corrector or a clean tail sharpen the adapter's renders](../../../report/is-the-gap-the-samplers-or-the-models/can-a-corrector-or-a-clean-tail-sharpen-the-adapters-renders.md).
 - The recipe that reruns the window sweep, the sheets and the two tails: [running the Langevin corrector](../../../runbook/running-things-on-the-cluster/running-the-langevin-corrector.md).
+- The mention of **the injected correction**, whose window the corrector's is compared against in task 5.2, in [the whole corrector design](../source/the-whole-corrector-design.md#5--only-if-the-curve-falls-slide-the-corrector-window-across-the-run).

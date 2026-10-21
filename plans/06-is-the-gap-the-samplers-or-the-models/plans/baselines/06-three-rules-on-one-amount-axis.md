@@ -6,7 +6,7 @@ running alone to the joint prediction exactly?
 ## Recommended prompt (after this plan completes)
 
 ```
-/sync-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/plans/baseline-02-three-rules-on-one-dose-axis.md — <what the lambda=1 column classified>
+/sync-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/plans/baselines/06-three-rules-on-one-amount-axis.md — <what the lambda=1 column classified>
 ```
 
 ## Recommended skill
@@ -25,7 +25,7 @@ running alone to the joint prediction exactly?
 | Step | Plan | What it does |
 |------|------|-------------|
 | 25 | [instrument-01: the-corrector-and-the-step-size-it-runs-at](../tools/02-the-corrector-and-the-step-size-it-runs-at.md) ⚠️ | supplies the composer behind the two corrector rows |
-| 28 | [baseline-01: what-changes-when-superdiff-leaves-its-own-defaults](05-what-changes-when-superdiff-leaves-its-own-defaults.md) ⚠️ | supplies the per-step prediction behind the SuperDiff row |
+| 28 | [baseline-01: what-changes-when-superdiff-leaves-its-own-defaults](05-what-changes-when-superdiff-leaves-its-own-defaults.md) ⚠️ | supplies the per-step prediction behind the [SuperDiff](../../review/05-what-changes-when-superdiff-leaves-its-own-defaults.md#words-this-file-uses) row |
 | **29 (current)** | **baseline-02: three-rules-on-one-amount-axis** ⚠️ | **puts product-of-experts, SuperDiff and the corrector on one generalised amount axis, in two grids** |
 | 30 | [idea-01: feynman-kac-correctors-gated](../ideas/07-feynman-kac-correctors.md) ⚠️ | runs only if this plan and the answer at step 26 give it a reason to |
 
@@ -100,7 +100,7 @@ four rows by five columns, `λ ∈ {0, 0.25, 0.5, 0.75, 1}` at seed 9. Thirty-si
 
 **Associated materials.** [The review questions](../../review/06-three-rules-on-one-amount-axis.md),
 [the whole corrector design](../../source/the-whole-corrector-design.md), and
-[F5, the existing one-dial figure](../../../paper/iclr/figures/F5-one-dial-three-instruments.png)
+[F5, the existing one-dial figure](../../../../paper/iclr/figures/F5-one-dial-three-instruments.png)
 whose `λ=0.75` this grid reuses.
 
 ## Considerations
@@ -206,7 +206,7 @@ matched in fraction and unmatched in absolute size, and a row that composes at `
 have received more.
 [The timing plan in the causal scope](../../../03-does-the-correction-cause-composition/plans/hypothesis/05-when-in-the-run-it-matters.md)
 met exactly this and answered it by running a matched condition, `--mode matched`, implemented at
-[interaction_term_dose_matched.py](../../../scripts/interaction_term_dose_matched.py). Either put
+[interaction_term_dose_matched.py](../../../../scripts/interaction_term_dose_matched.py). Either put
 the delivered absolute total on each row's label, or run matched. Deciding which is task 1.3, and
 it is decided before the render rather than after the grid looks confusing.
 
@@ -226,8 +226,10 @@ something beyond combining scores.
    `r_t^M = eps_J - eps_M`. Four rows: plain product-of-experts with `r_t`, SuperDiff with
    `r_t^SD`, the corrector at `k=1` with `r_t^(1)`, and the corrector at `k=5` with `r_t^(5)`.
 2. **Grid one.** Columns are seeds 9 to 12, `λ` fixed at 0.75, the value
-   [F5](../../../paper/iclr/figures/F5-one-dial-three-instruments.png) already reads at. Render the
+   [F5](../../../../paper/iclr/figures/F5-one-dial-three-instruments.png) already reads at. Render the
    same grid at `λ=0` in the same pass, which gives the methods-alone figure for free.
+
+   <a href="../../../../paper/iclr/figures/F5-one-dial-three-instruments.png"><img src="../../../../paper/iclr/figures/F5-one-dial-three-instruments.png" width="200" alt="Three panels against λ from 0 to 1 for the pair's own r_t, another pair's r_t and a random vector of the same size: position in image space from PoE to Mono, the share called two animals, and agreement with the step"></a>
 3. **Grid two.** Columns are `λ ∈ {0, 0.25, 0.5, 0.75, 1}`, seed fixed at 9.
 
 Both figures land in `paper/iclr/figures/how-much-is-added/across-composition-rules/`, each with a
@@ -282,10 +284,10 @@ the pictures no rule can reach at `λ=1` are labelled rather than left looking l
 ### 0. 🧭 Check this plan before working from it
 
 - [ ] **0.1** Check this plan conforms and its instructions are concrete, before acting on it.
-  - Paste: `/verify-plan @plans/06-is-the-gap-the-samplers-or-the-models/plans/baseline-02-three-rules-on-one-dose-axis.md`
+  - Paste: `/verify-plan @plans/06-is-the-gap-the-samplers-or-the-models/plans/baselines/06-three-rules-on-one-amount-axis.md`
   - Done when: the report comes back clean, or its proposals have been applied.
 - [ ] **0.2** Confirm all four rows can produce a per-step prediction before any grid is planned.
-  - Plain product-of-experts from [poe.py](../../../poe_repair/composers/poe.py), SuperDiff from
+  - Plain product-of-experts from [poe.py](../../../../poe_repair/composers/poe.py), SuperDiff from
     [step 28's hook](05-what-changes-when-superdiff-leaves-its-own-defaults.md), and both corrector rows
     from `poe_repair/composers/poe_langevin.py`.
   - **Done when:** `r_t^M` is formed on one render for each of the four rows and its per-step norm
@@ -309,7 +311,7 @@ prediction to build the correction from.
 - [ ] **1.3** Decide and record how the different absolute amounts per row are handled.
   - Either put the delivered absolute total on each row's label, or run the matched condition,
     `--mode matched`, from
-    [interaction_term_dose_matched.py](../../../scripts/interaction_term_dose_matched.py),
+    [interaction_term_dose_matched.py](../../../../scripts/interaction_term_dose_matched.py),
     which [the timing plan](../../../03-does-the-correction-cause-composition/plans/hypothesis/05-when-in-the-run-it-matters.md)
     already used for this exact problem.
   - **Done when:** the choice and its reason are written into the review file **before** any grid
@@ -352,10 +354,10 @@ do on this pair.
 ◀ **Needs:** every group above attempted, including the ones that went red.
 
 - [ ] **Capture the failures this plan hit**, while they are still fresh.
-  - Paste: `/ingest-error-pattern --from-run-log @plans/06-is-the-gap-the-samplers-or-the-models/plans/baseline-02-three-rules-on-one-dose-axis.md`
+  - Paste: `/ingest-error-pattern --from-run-log @plans/06-is-the-gap-the-samplers-or-the-models/plans/baselines/06-three-rules-on-one-amount-axis.md`
   - Done when: each failure has a catalog entry, or there were none to record.
 - [ ] **Bring the tree current** with what actually happened.
-  - Paste: `/sync-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/plans/baseline-02-three-rules-on-one-dose-axis.md — <one line>`
+  - Paste: `/sync-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/plans/baselines/06-three-rules-on-one-amount-axis.md — <one line>`
   - Done when: statuses, the running order and the Error Matrix match reality.
 
 ▶ **Next: [the check before moving on](#the-check-before-moving-on).**
@@ -379,7 +381,7 @@ them.
 - [ ] **3.2** For grid one, count composed renders per row by eye and compare against the
       detector's count.
   - [The timing verdict](../../../03-does-the-correction-cause-composition/review/05-when-in-the-run-it-matters.md)
-    records that the detector and the eye disagree on cat and dog often enough that the eye read is
+    records that the [detector and the eye disagree on cat and dog](../hypothesis/04-does-the-corrector-compose-in-the-same-window.md#-the-detector-and-the-eye-disagree-on-cat-and-dog) often enough that the eye read is
     the one cited, so do both and cite the eye where they differ.
 - [ ] **3.3** Write both counts into the review file, side by side, naming every picture the two
       reads disagree on.
@@ -479,10 +481,10 @@ off the joint trajectory.
 
 | Step | Command | Triggered by | Outcome |
 |------|---------|--------------|---------|
-| Check the plan | `/verify-plan @plans/06-is-the-gap-the-samplers-or-the-models/plans/baseline-02-three-rules-on-one-dose-axis.md` | **task 0.1**, before any work | Conformance and thin instructions reported |
-| Capture patterns | `/ingest-error-pattern --from-run-log @plans/06-is-the-gap-the-samplers-or-the-models/plans/baseline-02-three-rules-on-one-dose-axis.md` | **the close out**, after any red run | Errors added to catalogs |
+| Check the plan | `/verify-plan @plans/06-is-the-gap-the-samplers-or-the-models/plans/baselines/06-three-rules-on-one-amount-axis.md` | **task 0.1**, before any work | Conformance and thin instructions reported |
+| Capture patterns | `/ingest-error-pattern --from-run-log @plans/06-is-the-gap-the-samplers-or-the-models/plans/baselines/06-three-rules-on-one-amount-axis.md` | **the close out**, after any red run | Errors added to catalogs |
 | Update Error Matrix | `/sync-plan-tree --update-error-matrices` | Auto (by ingest-error-pattern) | This plan file's Error Matrix regenerated |
-| Bring the tree current | `/sync-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/plans/baseline-02-three-rules-on-one-dose-axis.md` | **the close out** | Statuses, running order and Error Matrix match reality |
+| Bring the tree current | `/sync-plan-tree @plans/06-is-the-gap-the-samplers-or-the-models/plans/baselines/06-three-rules-on-one-amount-axis.md` | **the close out** | Statuses, running order and Error Matrix match reality |
 
 ## Code references
 
@@ -490,11 +492,11 @@ off the joint trajectory.
 
 | Path | Why it is read |
 |---|---|
-| [scripts/interaction_term_dose_matched.py](../../../scripts/interaction_term_dose_matched.py) | the matched condition, `--mode matched`, which already answered the different-absolute-amounts problem once for this project |
-| [poe_repair/composers/poe.py](../../../poe_repair/composers/poe.py) | the plain product-of-experts row, and the interface all four rows share |
+| [scripts/interaction_term_dose_matched.py](../../../../scripts/interaction_term_dose_matched.py) | the matched condition, `--mode matched`, which already answered the different-absolute-amounts problem once for this project |
+| [poe_repair/composers/poe.py](../../../../poe_repair/composers/poe.py) | the plain product-of-experts row, and the interface all four rows share |
 | `poe_repair/composers/poe_langevin.py` | the two corrector rows, at `k=1` and `k=5` |
 | `poe_repair/composers/superdiff.py` | the SuperDiff row and its per-step prediction, from [step 28](05-what-changes-when-superdiff-leaves-its-own-defaults.md) |
-| [paper/iclr/figures/F5-one-dial-three-instruments.png](../../../paper/iclr/figures/F5-one-dial-three-instruments.png) | the existing one-dial figure, whose `λ=0.75` grid one reuses so the two are comparable |
+| [paper/iclr/figures/F5-one-dial-three-instruments.png](../../../../paper/iclr/figures/F5-one-dial-three-instruments.png) | the existing one-dial figure, whose `λ=0.75` grid one reuses so the two are comparable |
 
 ## Next step
 
@@ -549,3 +551,7 @@ a question about timing.
 Do not edit manually.
 
 </details>
+
+## Cross-references
+
+- The mention of **not-an-identity** (the label on the corrector rows' pictures at λ=1) in task 7.4 of [the whole corrector design](../../source/the-whole-corrector-design.md#7--three-rules-on-one-amount-axis).

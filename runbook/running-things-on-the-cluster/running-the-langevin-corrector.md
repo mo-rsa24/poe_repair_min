@@ -273,3 +273,7 @@ and the commands here are the ones that ran, with the node and device each was l
 verdicts they produced are the three corrector findings linked at the top; the constants every
 branch is judged against sit in `scripts/corrector_residual_curve.py` and
 `scripts/corrector_window_sweep.py`.
+
+## Cross-references
+
+- The mention of **a Langevin corrector** run at every noise level in [the whole corrector design](../../plans/06-is-the-gap-the-samplers-or-the-models/source/the-whole-corrector-design.md#what-this-asks-in-one-line).
