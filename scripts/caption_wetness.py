@@ -14,6 +14,9 @@ does-a-camel-in-the-rain-come-out-wet/caption-counts.md, "Dataset searched"). Ca
     python scripts/caption_wetness.py sample --n 100 --out /datasets/mmolefe/relaion2b-en/wetness/pilot
     python scripts/caption_wetness.py fetch  --out /datasets/mmolefe/relaion2b-en/wetness/pilot
     python scripts/caption_wetness.py score  --out /datasets/mmolefe/relaion2b-en/wetness/pilot
+    python scripts/caption_wetness.py explain --out /datasets/mmolefe/relaion2b-en/wetness/pilot
+
+`explain` adds the numbers the explainer scene draws for its 10 pictures (see its docstring).
 
 The by-eye check of the wet calls happens afterwards on a contact sheet. The thresholds that check is
 judged against sit below, fixed before any picture was scored.
@@ -179,11 +182,75 @@ def score(out: Path) -> None:
               f"{sum(r['wet'] for r in present)} called wet")
 
 
+def explain(out: Path, per_animal: int = 5, grid: int = 7) -> None:
+    """Extra numbers for the explainer scene, on the first `per_animal` fetched pictures of each animal.
+
+    caption_grid  cosine of every picture against every one of those pictures' own captions
+    occlusion     P(wet) with each cell of a grid x grid split of the picture greyed out
+    arrows        the picture and its five presence sentences projected onto their top-2 plane
+    """
+    import open_clip
+    import torch
+    from PIL import Image
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    model, _, preprocess = open_clip.create_model_and_transforms(CLIP_MODEL, device=device)
+    tokenizer = open_clip.get_tokenizer(CLIP_MODEL)
+    model.eval()
+    scale = float(model.logit_scale.exp())
+    scores = json.loads((out / "scores.json").read_text())
+    walk = []
+    for name in ANIMALS:
+        ok = sorted((r for r in scores["images"] if r["animal"] == name and r["status"] == "ok"),
+                    key=lambda r: r["rank"])
+        walk += ok[:per_animal]
+
+    @torch.no_grad()
+    def unit(e: torch.Tensor) -> torch.Tensor:
+        e = e.float()
+        return e / e.norm(dim=-1, keepdim=True)
+
+    with torch.no_grad():
+        pix = torch.stack([preprocess(Image.open(out / "images" / r["path"])) for r in walk]).to(device)
+        img = unit(model.encode_image(pix))
+        cap = unit(model.encode_text(tokenizer([r["caption"] for r in walk]).to(device)))
+        caption_grid = (img @ cap.T).tolist()
+        occlusion, arrows = [], []
+        side = pix.shape[-1]
+        edges = [round(i * side / grid) for i in range(grid + 1)]
+        for i, r in enumerate(walk):
+            _, noun, other = ANIMALS[r["animal"]]
+            wet_c = unit(model.encode_text(tokenizer([t.format(a=noun) for t in WET]).to(device))).mean(0)
+            dry_c = unit(model.encode_text(tokenizer([t.format(a=noun) for t in DRY]).to(device))).mean(0)
+            classes = unit(torch.stack([wet_c, dry_c]))
+            batch = []
+            for gy in range(grid):
+                for gx in range(grid):
+                    x = pix[i].clone()
+                    x[:, edges[gy]:edges[gy + 1], edges[gx]:edges[gx + 1]] = 0.0   # 0 = dataset mean grey
+                    batch.append(x)
+            occ = unit(model.encode_image(torch.stack(batch)))
+            p_wet = (scale * occ @ classes.T).softmax(-1)[:, 0]
+            occlusion.append([p_wet[g * grid:(g + 1) * grid].tolist() for g in range(grid)])
+            presence = [f"a photo of a {noun}"] + NOT_THE_ANIMAL + [f"a photo of a {other}"]
+            vecs = torch.cat([img[i:i + 1], unit(model.encode_text(tokenizer(presence).to(device)))])
+            _, _, v = torch.linalg.svd(vecs, full_matrices=False)
+            xy = vecs @ v[:2].T
+            arrows.append({"labels": ["the picture"] + presence, "xy": xy.tolist(),
+                           "cos_to_picture": (vecs @ img[i]).tolist(),
+                           "kept_length": (xy.norm(dim=-1)).tolist()})
+    walk_out = [{k: r[k] for k in ("animal", "rank", "key", "url", "caption", "path")} for r in walk]
+    (out / "explain.json").write_text(json.dumps(
+        {"model": CLIP_MODEL, "grid": grid, "walk": walk_out, "caption_grid": caption_grid,
+         "occlusion": occlusion, "arrows": arrows}, indent=1))
+    print("explained", len(walk), "pictures;", "diagonal mean",
+          round(sum(caption_grid[i][i] for i in range(len(walk))) / len(walk), 3))
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("stage", choices=["sample", "fetch", "score"])
+    ap.add_argument("stage", choices=["sample", "fetch", "score", "explain"])
     ap.add_argument("--out", type=Path, required=True)
     ap.add_argument("--n", type=int, default=100, help="rows drawn per animal (sample only)")
     a = ap.parse_args()
     {"sample": lambda: sample(a.out, a.n), "fetch": lambda: fetch(a.out),
-     "score": lambda: score(a.out)}[a.stage]()
+     "score": lambda: score(a.out), "explain": lambda: explain(a.out)}[a.stage]()
