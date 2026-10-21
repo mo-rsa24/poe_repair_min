@@ -86,7 +86,7 @@ cat × dog      [img] [img]     ...
 - **One cell:** two images of one pair on one model at seed 42, the joint prompt on the left and
   PoE on the right.
 - **Data:** the PNGs under `/datasets/mmolefe/poe_repair_min/outputs/same_rule_four_models/`, one
-  `meta.json` per image carrying model id, sampler, steps, guidance, resolution, seed and prompts.
+  `meta.json` per image carrying [model id](../../../../context/data/02-dictionary.md#model_id), sampler, steps, guidance, resolution, seed and prompts.
 - **Output:** `paper/overleaf-iclr/figures/same-rule-on-four-models.pdf`, full text width.
 
 ## What we expect before rendering

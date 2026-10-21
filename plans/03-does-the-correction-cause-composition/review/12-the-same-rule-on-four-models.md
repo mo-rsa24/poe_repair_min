@@ -36,7 +36,7 @@ Read by eye at full size, 2026-09-22. SD 1.4, SD 2.1 and SDXL are job 58176 on `
 | cat × dog | SD 2.1 | two dogs, no cat | one cat with a collar and long legs | the joint prompt shows two animals but not a cat and a dog; PoE gives one animal |
 | butterfly × flower meadow | SDXL | several butterflies over a meadow | several butterflies over a meadow | as expected on both sides |
 | camel × forest | SDXL | a camel among bare trees | a camel with green mossy fur in a misty forest | both concepts present; the forest's colour bleeds into the camel |
-| cat × dog | SDXL | a cat beside a dog | one white animal with a dog's body and a cat-like face | as expected; the same hybrid as the current Figure 2, so this column reproduces the paper's seed 42 |
+| cat × dog | SDXL | a cat beside a dog | one white animal with a dog's body and a cat-like face | as expected; the same [hybrid](../../../context/world/chimera.md#what-a-chimera-is) as the current Figure 2, so this column reproduces the paper's seed 42 |
 | butterfly × flower meadow | SD 3.5 | one butterfly on a flower meadow | one butterfly on a flower meadow | as expected on both sides |
 | camel × forest | SD 3.5 | a camel in a clearing with forest behind | a camel on a forest path | as expected on both sides |
 | cat × dog | SD 3.5 | a tabby cat lying beside a puppy | one tabby cat with a dog's ear and a half-dog face | as expected |
@@ -50,7 +50,19 @@ the two concepts on two cells of the pairs expected to compose: SD 2.1 builds th
 flowers and grafts foliage onto the camel. Seed 42 was fixed before rendering and is shown as it
 came out.
 
+## Which seed the paper shows
+
+Two seeds are rendered, 42 and 9, the same three pairs across the same four models. The paper
+shows seed 42, because it is the one read cell by cell at full size and recorded above.
+
+Seed 9 is in `outputs/same_rule_four_models/*/*/seed_9/`, 24 cells, none missing. It has not been
+read cell by cell. At thumbnail size its bottom row agrees with seed 42, one blended animal under
+PoE on all four models, and its joint-prompt column looks stronger on SD 1.4 and SD 2.1 than seed
+42's. If that holds under a full-size read, the joint prompt failing on the two older models is a
+property of seed 42 rather than of those models, and any sentence resting on it has to say so.
+
 ## Still open
 
+- Seed 9 has no cell-by-cell read, so no claim in the paper may rest on its cells.
 - The SD 2.1 column is a third-party mirror of the base weights, not Stability's own repository, which is gone.
 - Whether a caption may call the camel row Liu et al.'s example: it is from their code's README, not their paper.

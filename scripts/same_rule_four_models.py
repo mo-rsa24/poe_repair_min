@@ -282,9 +282,9 @@ def sheet(seed, out, root):
     import matplotlib.pyplot as plt
     from PIL import Image
     order = list(MODELS)
-    fig = plt.figure(figsize=(12, 4.9))
-    gs = fig.add_gridspec(len(PAIRS), len(order), wspace=0.06, hspace=0.06,
-                          left=0.105, right=0.995, top=0.86, bottom=0.01)
+    fig = plt.figure(figsize=(5.5, 2.80))
+    gs = fig.add_gridspec(len(PAIRS), len(order), wspace=0.05, hspace=0.06,
+                          left=0.003, right=0.997, top=0.845, bottom=0.085)
     missing = 0
     for r, (a, b) in enumerate(PAIRS):
         for c, model in enumerate(order):
@@ -302,14 +302,21 @@ def sheet(seed, out, root):
                             transform=ax.transAxes)
                 for s in ax.spines.values():
                     s.set_linewidth(0.4)
-                if r == 0:
-                    ax.set_title("joint prompt" if column == "joint" else "PoE", fontsize=8, pad=2)
-                if r == 0 and k == 0:
-                    ax.text(1.01, 1.16, MODELS[model]["label"], transform=ax.transAxes,
-                            ha="center", va="bottom", fontsize=11)
-                if c == 0 and k == 0:
-                    ax.set_ylabel(f"{a} ×\n{b}", fontsize=9.5, rotation=0, ha="right", va="center",
-                                  labelpad=6)
+
+    band = gs[0, 0].get_position(fig)
+    for c, model in enumerate(order):
+        q = gs[0, c].get_position(fig)
+        fig.text((q.x0 + q.x1) / 2, band.y1 + 0.095, MODELS[model]["label"],
+                 ha="center", va="bottom", fontsize=9)
+        fig.text(q.x0 + (q.x1 - q.x0) * 0.25, band.y1 + 0.025, "joint prompt",
+                 ha="center", va="bottom", fontsize=6.5)
+        fig.text(q.x0 + (q.x1 - q.x0) * 0.75, band.y1 + 0.025, "PoE",
+                 ha="center", va="bottom", fontsize=6.5)
+
+    where = ("top", "middle", "bottom")
+    legend = ";  ".join(f"{w} row, {a} \u00d7 {b}" for w, (a, b) in zip(where, PAIRS))
+    fig.text(0.5, 0.025, legend, ha="center", va="bottom", fontsize=7)
+
     out.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out, dpi=300)
     print(f"[sheet] {out}  seed {seed}  missing {missing} of {len(PAIRS) * len(order) * 2}", flush=True)

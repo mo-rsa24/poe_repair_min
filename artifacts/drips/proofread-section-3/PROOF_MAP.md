@@ -163,3 +163,103 @@ Navigation: ⬅️ [Compile log](#compile-log) | 📋 [TOC](#table-of-contents)
 Section 3 is walked end to end and compiled into the Overleaf clone, and it builds. Owed: push the
 clone to Overleaf from the cluster, decide whether `paper/iclr/` takes the same text, and settle the
 open questions below.
+
+
+## Second pass: the figures, 2026-09-23
+
+A figures-only pass over the same section, after the prose was compiled on 2026-09-22.
+
+**Figure 3, accepted and not yet written**
+
+The manuscript carries a crop of a September 10 render, set at `0.62\textwidth` with 0.51 in
+tiles. Accepted replacement: the generator's own output at full text width with no row-label
+gutter, 5.50 x 4.97 in and 1.09 in tiles, which is 4.6 times the area of the crop. The four rows
+are named in one line under the grid. Renders, the card and the script diffs are in
+[how big the strength grid should be](../../results/how-big-the-strength-grid-should-be/README.md).
+
+The script changes this needs, none of them committed yet:
+
+- `PANEL` fitted to the canvas. `GUTTER 0.92 + 5 x PANEL 0.92 + RIGHT_MARGIN 0.18` is 5.70 in
+  against a `FIG_W` of 5.5, so the grid overran its canvas and cut off its own note.
+- `GUTTER` and `RIGHT_MARGIN` to 0.02, the row labels beside the grid removed, and the four row
+  names drawn as one line under it.
+- the curve panel removed, and the lambda values drawn as column titles, since in the generator
+  those labels are the curve's x-axis ticks.
+- the note band and the count chips removed.
+
+The manuscript's include also changes from `0.62\textwidth` to `\textwidth`.
+
+Known cost of dropping the side labels: every row is a ginger cat, so a reader identifies a row
+only by counting against the legend, where figure 2's rows are told apart by their pictures.
+
+**Figure 3's caption, accepted and not yet written**
+
+"\textbf{Only the measured correction composes.} A cat and a dog at seed 9. A column is the
+strength $\lambda$ added at every step, up to the full correction at $\lambda = 1$; a row is what
+was added. The top row is the pair's own plurality term, and beneath it sit three controls, each
+breaking one thing about it while matching its size and schedule: another pair's term, the same
+term from a different seed, and the same term with its step order deranged. Nothing is added at
+$\lambda = 0$, so the boxed column is one sample shown four times. An object detector finds two
+animals only in the top row, at $\lambda = 0.75$ and $\lambda = 1$."
+
+The seed and the detector counts come from `dose_curves.json`, the file the removed chips read.
+
+**Figure 2, diagnosed, nothing accepted**
+
+`scripts/same_rule_four_models.py` draws at `figsize=(12, 4.9)` and the manuscript shows it at
+5.50 in, a scale of 0.458, so its 8, 9.5 and 11 pt labels reach the page at 3.7, 4.4 and 5.0 pt.
+Its source renders are pulled to `outputs/same_rule_four_models`, 31 MB. Re-drawing at
+`figsize=(5.5, 2.2)` fixes the type and leaves the tiles at about 0.61 in, since eight image
+columns share the width either way.
+
+**Figure 2's caption and its paragraph, accepted and not yet written**
+
+The caption's column description becomes "columns are four text-to-image models, oldest to
+newest". No model is called largest: the figure uses SD 3.5 Medium, which is not larger than
+SDXL, so any ranking of the four is wrong at the last column.
+
+Caption: "\\textbf{A larger model does not rescue product-of-experts composition.} Rows are prompt
+pairs and columns are four text-to-image models, oldest to newest, each cell showing the joint
+prompt on the left and product-of-experts composition on the right. The same composition rule
+returns one hybrid animal for a cat and a dog on every model."
+
+The paragraph at line 224 becomes two, the second carrying the motivation for the whole paper:
+
+"The same composition rule succeeds for a butterfly and a meadow on three of the four models, but
+produces a hybrid cat and dog on all four (Figure~\\ref{fig:two-regimes}). The outcome therefore
+depends on the concept pair more than on the particular model, and it is unchanged across four
+models of different families and sizes. Compositional benchmarks report the same kind of failure
+in current text-to-image systems \\citep{huang2025t2icompbench,conwell2024relations}.
+
+Composing specialised models offers a different route: rather than training a single model to
+cover every possible combination of concepts, independently learned components can be combined at
+inference time \\citep{du2024compositional}. This alternative is useful, however, only if the
+interaction lost during composition can be recovered. In our formulation, the omitted factor
+$R_t$ depends on the particular concept pair, but it is never evaluated directly during sampling.
+We therefore study this missing interaction through the gap between two predictions the network
+can produce."
+
+The comparison this motivation implies, a set of small models with the correction against one
+larger model, is not run anywhere in the paper. The conclusion names it as the experiment most
+worth running, and no sentence here claims it as a result.
+
+**Figure 2's layout, accepted and not yet written**
+
+Full text width with no row-label gutter, plain borders, and the three pairs named in one line
+under the grid. 5.50 x 2.80 in, tiles 0.69 in against 0.62 in in the paper today. Coloured borders
+were tried and rejected: red on the PoE column reads as a verdict, and PoE succeeds in the top two
+rows. The render and its script diff are in
+[how big the strength grid should be](../../results/how-big-the-strength-grid-should-be/README.md).
+
+**The strength grid moved to the appendix**
+
+The main text keeps the argument and loses the picture. Section 3's paragraph states that a control
+built from another pair's term, from the same term at a different seed, or from the same term with
+its step order deranged carries exactly the same magnitude as the correction, that the hybrid
+separates before the full correction is reached while no control reaches two animals anywhere on
+the axis, and that composition is therefore restored by direction rather than by size. The figure
+and its caption sit in `Appendix~\ref{app:strength-sweep}`, "The strength sweep and its controls".
+
+Why the evidence stays in the paper at all: it is what answers the reply that any disturbance of
+that size would do, and without it the second contribution claim has nothing behind it. It carries
+no weight for the transfer result, which is why the main text does not spend a page on it.

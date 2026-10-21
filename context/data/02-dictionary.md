@@ -324,3 +324,6 @@ condition over the eight held-out seeds
 verdicts; a commit between two saved steps is invisible; a run whose `both_ness` never rises
 reads `commit_step = 0` even if its picture changes animal, as seed 15's PoE run does ⚠️
 
+## Cross-references
+
+- The mention of **model id** in [the figure plan "the same rule on four models"](../../plans/03-does-the-correction-cause-composition/plans/figures/12-the-same-rule-on-four-models.md).

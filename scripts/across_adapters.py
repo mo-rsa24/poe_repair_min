@@ -56,6 +56,8 @@ ROWS = [
     ("54-cell + plural prompt",    "correction_loss_variants/r16_s0_25_plurality",   30000, 16),
     ("54-cell + connective",       "correction_loss_variants/r16_s0_25_connective",  30000, 16),
     ("43 cells, first 10, on the picture", "showcase/v57w10/v57w10-02-picture",       7000,  32),
+    ("43 cells, first 10 steps",   "showcase/v57w10/v57w10-01-base",                7000,  32),
+    ("first 10 steps, x0, all seeds", "showcase/cohort2/v57-09-x0-seeds",           40000, 32),
 ]
 
 

@@ -70,6 +70,8 @@ points at it.
 
 - [x] F1, the two readings of "a cat and a dog": design and build.
       `python scripts/what_the_product_misses.py` → `paper/iclr/figures/what-the-product-misses-explainer.pdf`.
+      <a href="../../diagrams/the-product-peaks-at-the-chimera.png"><img src="../../diagrams/the-product-peaks-at-the-chimera.png" width="200" alt="Two orange contour clusters labelled a cat and a dog, their overlap shaded blue and marked with a dot as the product; a dashed empty region at lower left labelled cat beside dog with a leader line reading no product mass; corner note, schematic, not measured"></a>
+      <br><em>F1's left panel: the cat and dog contour clusters, the shaded overlap marked as the product, and the empty dashed region labelled "cat beside dog".</em>
 - [x] F2, more correction more composition: built as a 4x5 grid above four
       curves. Rows: own r_t, other pair's r_t, other seed's r_t (the same
       pair's correction cached from the run at seed+4), own r_t with the step

@@ -40,7 +40,7 @@ artifacts/_quarantine/
 results/
 
 # Papers / reference PDFs (not source)
-*.pdf
+# *.pdf
 
 # Misc transient
 .DS_Store

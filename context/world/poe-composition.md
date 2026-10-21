@@ -119,3 +119,4 @@ Navigation: ⬅️ [What people get wrong](#what-people-get-wrong) | 📋 [TOC](
 - The mention of **PoE**, as the outputs the scorer was trained on, in [the failure catalog entry poe-score-002](../../environment/known-failures.md#entry-id-poe-score-002).
 - The mention of **denoising step**, where the second UNet forward of the first step runs out of memory without `@torch.no_grad()`, in [the failure catalog entry poe-lora-004](../../environment/known-failures.md#entry-id-poe-lora-004).
 - The mention of **denoising step**, the unit every dependent variable is recorded per, in [the whole corrector design](../../plans/06-is-the-gap-the-samplers-or-the-models/source/the-whole-corrector-design.md#the-claim).
+- The mention of **product-of-experts composition** in [the plan "the cheapest test: does RoentGen-v2 draw two findings"](../../plans/10-does-roentgen-draw-two-findings/plans/01-the-cheapest-test.md).

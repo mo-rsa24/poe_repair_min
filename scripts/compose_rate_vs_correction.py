@@ -60,14 +60,14 @@ ROW_MARKER = {"oracle": "o", "wrong_pair": "^",
 
 # Page geometry, in inches. ICLR 2027 is single column: iclr2027_conference.sty
 # line 49 sets \textwidth 5.5 true in, so F2 is a `figure`, not a `figure*`.
-FIG_W = 5.5
-GUTTER = 0.92          # left band carrying the row labels, sized to the longest
-PANEL = 0.92           # one image panel, square
-RIGHT_MARGIN = 0.18
-TOP_MARGIN = 0.06
-NOTE_BAND = 0.24       # the one line under the grid
-CURVE_H = 1.55
-XLABEL_BAND = 0.42
+FIG_W = 4.7
+GUTTER = 0.02          # no row labels; the rows are named under the grid
+PANEL = (4.7 - 0.02 - 0.02) / 5   # one image panel, square, fitted to the canvas
+RIGHT_MARGIN = 0.02
+TOP_MARGIN = 0.24      # holds one row of lambda column titles
+NOTE_BAND = 0.26       # the one line naming the rows
+CURVE_H = 0.0
+XLABEL_BAND = 0.10
 FIG_H = TOP_MARGIN + 4 * PANEL + NOTE_BAND + CURVE_H + XLABEL_BAND
 
 
@@ -123,7 +123,7 @@ def add_panel(fig, rect, png: Path, count: int) -> None:
         # given the same chance.
         sp.set_linewidth(0.6)
         sp.set_color("#444444")
-    draw_chip(ax, count)
+    # count chips omitted in this variant; the caption carries the counts
 
 
 def main() -> int:
@@ -165,8 +165,7 @@ def main() -> int:
             add_panel(fig, rect, panel_png(args.pair, args.seed, lam, row),
                       counts[(row, lam)])
 
-        fig.text(x0 - 0.012, row_bottoms[i] + ph / 2, ROW_LABEL[row],
-                 ha="right", va="center", fontsize=8)
+        # rows are named under the grid, not beside it
 
     # The shared lambda=0 column, disclosed rather than styled away.
     if args.layout == "grid5":
@@ -184,34 +183,14 @@ def main() -> int:
             edgecolor="#999999", linewidth=0.8, zorder=7))
         note = "$\\lambda$=0: one sample, all rows"
 
-    note_y = grid_bottom - NOTE_BAND / FIG_H * 0.55
-    fig.text(x0, note_y, note, ha="left", va="center", fontsize=7, color="#1f77b4")
-    fig.text(x0 + 5 * pw, note_y, "count = animals detected;  filled = composed",
-             ha="right", va="center", fontsize=7, color="#333333")
+    legend = "rows, top to bottom: " + ", ".join(ROW_LABEL[r] for r in ROWS)
+    fig.text(0.5, (NOTE_BAND * 0.35) / FIG_H, legend, ha="center", va="center", fontsize=7)
 
-    # The curves, on the same left and right bounds as the grid.
-    ax = fig.add_axes([x0, XLABEL_BAND / FIG_H, 5 * pw, CURVE_H / FIG_H])
-    for row in ROWS:
-        rate = []
-        for lam in lams:
-            cells = [s["compose"] for s in scores
-                     if s["row"] == row and float(s["lambda"]) == lam]
-            n, k = len(cells), sum(cells)
-            rate.append(k / n)
-        ax.plot(lams, rate, ROW_STYLE[row], color=ROW_COLOR[row],
-                marker=ROW_MARKER[row], markersize=4, linewidth=1.6,
-                label=ROW_LABEL[row])
-
-    ax.set_xlim(-0.125, 1.125)          # column k sits over tick k
-    ax.set_ylim(0, 1.0)
-    ax.set_xticks(lams)
-    ax.set_yticks([0, 0.25, 0.5, 0.75, 1.0])
-    ax.set_yticklabels(["0%", "25%", "50%", "75%", "100%"])
-    ax.set_xlabel("$\\lambda$", fontsize=9)
-    ax.set_ylabel("compose rate", fontsize=9)
-    ax.tick_params(labelsize=8)
-    ax.grid(alpha=0.25, linewidth=0.5)
-    ax.legend(loc="upper left", fontsize=7, framealpha=0.9)
+    # curve panel omitted in this variant; the lambda values become column titles
+    top = row_bottoms[0] + ph
+    for k, lam in enumerate(lams):
+        fig.text(x0 + (k + 0.5) * pw, top + 0.02, rf"$\lambda$={lam:g}",
+                 ha="center", va="bottom", fontsize=8)
 
     args.out_dir.mkdir(parents=True, exist_ok=True)
     out = args.out_dir / f"{args.name or FIG_NAME[args.layout]}.png"

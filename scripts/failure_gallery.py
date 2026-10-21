@@ -7,6 +7,12 @@ rather than taken on trust: a face that is two animals at once, a person the pro
 for, the third animal in the corner.
 
     python scripts/failure_gallery.py <tiles_dir> <out.png>
+    python scripts/failure_gallery.py --paper <gallery.png> <out.png>
+
+`--paper` re-lays an already-rendered gallery for the manuscript: the six panels and their bold
+look labels only, no title, no cause or provenance lines, and the gaps closed, since the paper's
+caption carries the prose. It crops the panels out of the gallery PNG, so the renders need not be
+on disk.
 
 `tiles_dir` holds the renders pulled from the cluster, in the layout `scripts/across_adapters.py`
 and the training runs write them.
@@ -86,7 +92,27 @@ def panel(src: Path, crop: tuple[int, int, int, int], corner: str | None = None)
     return tile
 
 
+def paper_layout(gallery: Path, out: Path, cols: int = 3, gap: int = 8, label_h: int = 30) -> None:
+    src = Image.open(gallery).convert("RGB")
+    n = len(PANELS)
+    rows = (n + cols - 1) // cols
+    W = cols * TILE + (cols - 1) * gap
+    H = rows * (TILE + label_h) + (rows - 1) * gap
+    canvas = Image.new("RGB", (W, H), "white")
+    for i in range(n):
+        r, c = divmod(i, cols)
+        sx, sy = GAP + c * (TILE + GAP), HEAD + r * (TILE + CAP + GAP)
+        x, y = c * (TILE + gap), r * (TILE + label_h + gap)
+        canvas.paste(src.crop((sx, sy, sx + TILE, sy + TILE)), (x, y))
+        canvas.paste(src.crop((sx, sy + TILE + 4, sx + TILE, sy + TILE + 4 + label_h)), (x, y + TILE))
+    canvas.save(out)
+    print("wrote", out, canvas.size)
+
+
 if __name__ == "__main__":
+    if sys.argv[1] == "--paper":
+        paper_layout(Path(sys.argv[2]), Path(sys.argv[3]))
+        sys.exit(0)
     tiles, out = Path(sys.argv[1]), Path(sys.argv[2])
     cols = 3
     rows = (len(PANELS) + cols - 1) // cols

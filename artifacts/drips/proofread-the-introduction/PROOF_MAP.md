@@ -10,7 +10,7 @@ The walk's persistent state. Read it first on every invocation, write it before 
 | Kind | manuscript section |
 | Grain | paragraph |
 | Cadence | sweep |
-| Current chunk | walk complete and compiled |
+| Current chunk | walk complete and compiled; the sentence introducing the contributions rewritten 2026-09-25 |
 | Marks | 3 ok, 7 changed, 3 cut, 0 still to settle |
 | Compiled | 2026-09-22, the whole introduction, into `paper/overleaf-iclr/` only |
 | Owner | this session |
@@ -77,7 +77,43 @@ something to do, `cut?` means it may not belong.
 
 Navigation: ⬅️ [The chunk map](#the-chunk-map) | 📋 [TOC](#table-of-contents) | [Next](#originals-held) ➡️
 
-Nothing waiting. Everything accepted was written on 2026-09-22; see the compile log.
+**The score identity in the fused paragraph (`iclr2027_conference.tex:158`): `improve`, written
+2026-09-25 (see the compile log).** Fault, added to this walk's vocabulary as **stretched line**: inline math
+too long to break, so TeX can only break after its `=` and stretches the few spaces before it. Swapping
+`\mid` for `\,|\,` was tested and does not fix it; displaying the identity does. Tested in a scratch
+copy: 14 pages, no errors, Figure 5 on page 8, Conclusion on page 9. The identity is unnumbered, so
+Equation (1) keeps its number.
+
+was: `In diffusion models, the noise prediction is a scaled negative score: $\epsilon_\theta(x_t, t \mid c) = -\sigma_t \nabla_{x_t} \log p(x_t \mid c)$ \citep{dhariwal2021diffusion}, where`
+
+now:
+
+```latex
+In diffusion models, the noise prediction is a scaled negative score \citep{dhariwal2021diffusion},
+\begin{equation*}
+\epsilon_\theta(x_t, t \mid c) = -\sigma_t \nabla_{x_t} \log p(x_t \mid c),
+\end{equation*}
+where
+```
+
+**Contribution bullet 3 (`iclr2027_conference.tex:174`): `improve`, written 2026-09-25 (see the compile log).** Three faults. The bold lead "We learn it without the joint prompt" reads as training
+without it, when training needs the joint prompt and only inference goes without. "Predicts $r_t$"
+is claim past the evidence: the adapter matches the joint-prompt prediction, and section 5 finds
+the implied correction agrees with $r_t$ only over the early steps. "On the cross-attention layers"
+is detail the section 5 map has an open question on (the reported run also adapts self-attention).
+
+was: `\item \textbf{We learn it without the joint prompt.} A low-rank adapter on the cross-attention layers of Stable Diffusion XL predicts $r_t$ from the two concept prompts alone and composes pairs held out of its training set.`
+
+now: `\item \textbf{We learn a correction that needs no joint prompt at inference.} A low-rank adapter on Stable Diffusion XL is trained against the joint-prompt prediction, then composes pairs held out of its training set from the two concept prompts alone.`
+
+**The sentence introducing the contributions (`iclr2027_conference.tex:170`): `improve`, written
+2026-09-25 (see the compile log).** Faults: no join with what follows ("answers it with three contributions"
+when only the third answers the question), claim past the evidence ("learn to produce the
+residual"), stacked ideas (reason and question in one 50-word sentence joined by "so").
+
+was: `Measuring $r_t$ requires the joint prompt, which is available when collecting training data but not when composing at inference, so the open question is whether a model can learn to produce the residual from the concept prompts alone, for pairs it never trained on. This paper answers it with three contributions:`
+
+now: `Measuring $r_t$ requires the joint prompt, which is available during training but not when composing at inference. The open question is whether a model can learn a correction that restores plurality from the concept prompts alone, on pairs it never trained on. We make three contributions, the last of which answers it:`
 
 ## Originals held
 
@@ -132,6 +168,9 @@ Navigation: ⬅️ [Routes and threads](#routes-and-threads) | 📋 [TOC](#table
 | When | Chunks written | Build | Notes |
 |---|---|---|---|
 | 2026-09-22 | 2 to 13 and the Figure 1 caption, one hunk at lines 129 to 165 of `paper/overleaf-iclr/iclr2027_conference.tex` | passed, pdflatex and bibtex on the laptop, no errors, no undefined references or citations | 12 pages before, 11 after, both built the same way; the conclusion moves from page 11 to 10. `paper/iclr/` not written. Not committed in the clone, not pushed to Overleaf |
+| 2026-09-25 | the score identity at line 158, displayed and unnumbered | passed, pdflatex twice, no errors, no undefined references | 14 pages before and after; page 2 checked by eye, even spacing. Pre-edit file kept in the session scratchpad as `iclr2027_conference.tex.bak-eq`, not in the clone. Not committed |
+| 2026-09-25 | contribution bullet 3 at line 174 | passed, pdflatex twice, no errors, no undefined references | 14 pages, the bullet still three lines on page 2. Pre-edit file in the session scratchpad as `iclr2027_conference.tex.bak-bullet3`. Not committed |
+| 2026-09-25 | the sentence introducing the contributions at line 170 | passed, pdflatex twice, no errors, no undefined references | 14 pages. Pre-edit file in the session scratchpad as `iclr2027_conference.tex.bak-leadin`. Not committed |
 
 ## Next step
 

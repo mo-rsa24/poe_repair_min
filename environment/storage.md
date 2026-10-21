@@ -60,3 +60,7 @@ Neither filesystem is under version control and neither is snapshotted. Every `â
 evidence tag in the plan tree points at a path on one of them, so an artifact deleted or moved
 silently breaks the claim it backs. `artifacts/plans/parked/artifact-reconciliation/plans/05-resweep-on-new-runs.md`
 exists to catch this, and is a standing recurring plan rather than a finished one.
+
+## Cross-references
+
+- The mention of **disk guard** in [the plan "the cheapest test: does RoentGen-v2 draw two findings"](../plans/10-does-roentgen-draw-two-findings/plans/01-the-cheapest-test.md), task 5.1.

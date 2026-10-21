@@ -22,6 +22,8 @@ from PIL import Image, ImageDraw, ImageFont
 
 T, GAP, LEFT, HEAD, FOOT = 300, 8, 250, 132, 22
 OURS = "ours_v58self_w50"
+ADAPTER_NOTE = "Adapter trained for 1,000 epochs"   # v58-03-self step 50,000; an epoch is 50 steps
+OURS_JOINT = "monolora_v58self_w00"   # the joint prompt, adapter on for every step
 
 
 def font(size: int):
@@ -33,34 +35,46 @@ def dotted_line(d: ImageDraw.ImageDraw, x: int, y0: int, y1: int) -> None:
         d.line((x, y, x, min(y + 6, y1)), fill="#444444", width=2)
 
 
-def grid(rows, columns, out: Path, title: str, subtitle: str, rule_before: int | None = None) -> dict:
+def grid(rows, columns, out: Path, title: str, subtitle: str, rule_before: int | None = None,
+         note: str = "", vertical_labels: bool = False) -> dict:
     """rows: (label, resolver) where resolver(column_key) returns a path or None."""
-    W = LEFT + len(columns) * (T + GAP) + 24
-    H = HEAD + len(rows) * (T + GAP) + 40
+    top = HEAD - (0 if subtitle else 58) - (0 if title else 30)   # drop the space for any missing heading line
+    left = 36 if vertical_labels else LEFT     # a label turned on its side needs one line of width
+    shift = 24 if rule_before is not None else 0   # the columns right of the dotted rule sit this much further over
+    W = left + len(columns) * (T + GAP) + (8 + shift if vertical_labels else 24)
+    H = top + len(rows) * (T + GAP) + 40
     canvas = Image.new("RGB", (W, H), "white")
     d = ImageDraw.Draw(canvas)
     f_title, f_sub, f_head, f_row = font(21), font(12), font(13), font(13)
-    d.text((14, 12), title, fill="black", font=f_title)
+    if title:
+        d.text((14, 12), title, fill="black", font=f_title)
     for k, line in enumerate(textwrap.wrap(subtitle, 150)):
         d.text((14, 42 + k * 17), line, fill="#444444", font=f_sub)
 
     record = {"title": title, "columns": [c[0] for c in columns], "rows": [], "tiles": {}}
     for j, (key, head) in enumerate(columns):
-        x = LEFT + j * (T + GAP) + (24 if rule_before is not None and j >= rule_before else 0)
+        x = left + j * (T + GAP) + (24 if rule_before is not None and j >= rule_before else 0)
         for k, line in enumerate(head):
-            d.text((x + 4, HEAD - 34 + k * 15), line,
+            d.text((x + 4, top - 34 + k * 15), line,
                    fill="black" if k == 0 else "#444444", font=f_head if k == 0 else f_sub)
     if rule_before is not None:
-        x = LEFT + rule_before * (T + GAP) + 10
-        dotted_line(d, x, HEAD - 40, H - 44)
+        x = left + rule_before * (T + GAP) + 10
+        dotted_line(d, x, top - 40, H - 44)
 
     for i, (label, resolve) in enumerate(rows):
-        y = HEAD + i * (T + GAP)
-        for k, line in enumerate(textwrap.wrap(label, 28)):
-            d.text((8, y + T // 2 - 18 + k * 17), line, fill="black", font=f_row)
+        y = top + i * (T + GAP)
+        if vertical_labels:
+            box = d.textbbox((0, 0), label, font=f_row)
+            strip = Image.new("RGB", (box[2] + 4, box[3] + 4), "white")
+            ImageDraw.Draw(strip).text((2, 0), label, fill="black", font=f_row)
+            strip = strip.rotate(90, expand=True)             # reads bottom to top
+            canvas.paste(strip, ((left - strip.width) // 2, y + (T - strip.height) // 2))
+        else:
+            for k, line in enumerate(textwrap.wrap(label, 28)):
+                d.text((8, y + T // 2 - 18 + k * 17), line, fill="black", font=f_row)
         record["rows"].append(label)
         for j, (key, _) in enumerate(columns):
-            x = LEFT + j * (T + GAP) + (24 if rule_before is not None and j >= rule_before else 0)
+            x = left + j * (T + GAP) + (24 if rule_before is not None and j >= rule_before else 0)
             p = resolve(key)
             if p and Path(p).exists():
                 canvas.paste(Image.open(p).convert("RGB").resize((T, T), Image.LANCZOS), (x, y))
@@ -68,6 +82,8 @@ def grid(rows, columns, out: Path, title: str, subtitle: str, rule_before: int |
             else:
                 d.rectangle((x, y, x + T, y + T), outline="#cccccc")
                 d.text((x + 10, y + T // 2), "not rendered", fill="#999999", font=f_sub)
+    if note:
+        d.text((14, H - 30), note, fill="#666666", font=f_sub)
     canvas.save(out)
     (out.with_suffix(".json")).write_text(json.dumps(record, indent=1))
     print("wrote", out.name)
@@ -111,29 +127,24 @@ if __name__ == "__main__":
          "and a person appears beside one dog.")
 
     # 3. The same concept twice.
-    grid([("dog and dog, seed 1", cell("a_dog__x__a_dog", 1)),
-          ("dog and dog, seed 2", cell("a_dog__x__a_dog", 2)),
+    grid([("dog and dog, seed 2", cell("a_dog__x__a_dog", 2)),
           ("dog and dog, seed 9", cell("a_dog__x__a_dog", 9)),
           ("cat and cat, seed 9", cell("a_cat__x__a_cat", 9)),
           ("tiger and tiger, seed 9", cell("a_tiger__x__a_tiger", 9))],
-         three, out_dir / "the-same-concept-twice.png",
-         "One concept asked for twice, so the two experts agree",
-         "Nothing here contends for the same region on semantic grounds, and the plain product "
-         "still returns a single animal. Whether the adapter returns two says what it learned: "
-         "plurality itself, or a way of separating two different concepts.")
+         [three[0], (OURS_JOINT, ["Joint prompt, through the adapter", "same prompt, same noise"]),
+          *three[1:]],
+         out_dir / "the-same-concept-twice.png",
+         "", "", note=ADAPTER_NOTE, vertical_labels=True)
 
     # 4. What the adapter costs on the prompt it never targets.
-    grid([("cat and dog, seed 9", cell("a_cat__x__a_dog", 9)),
-          ("tiger and dog, seed 9", cell("a_tiger__x__a_dog", 9)),
-          ("chess board and hourglass, seed 9", cell("a_chess_board__x__an_hourglass", 9)),
-          ("picnic basket and watermelon, seed 9", cell("a_picnic_basket__x__a_watermelon", 9))],
+    grid([("cat and dog", cell("a_cat__x__a_dog", 9)),     # every row is seed 9
+          ("tiger and dog", cell("a_tiger__x__a_dog", 9)),
+          ("chess board and hourglass", cell("a_chess_board__x__an_hourglass", 9)),
+          ("picnic basket and watermelon", cell("a_picnic_basket__x__a_watermelon", 9))],
          [("mono", ["Joint prompt, base model", "the model as shipped"]),
-          ("monolora_v58self", ["Joint prompt, through the adapter", "same prompt, same noise"])],
+          (OURS_JOINT, ["Joint prompt, through the adapter", "same prompt, same noise"])],
          out_dir / "what-the-adapter-costs-on-a-joint-prompt.png",
-         "The adapter is never meant to touch a joint prompt. This is what it does to one anyway",
-         "Both columns run the single prompt naming both concepts, from the same starting noise. "
-         "A difference here is damage the adapter does outside the composition it was trained to "
-         "repair.")
+         "", "", note=ADAPTER_NOTE, vertical_labels=True)
 
     # 5. Published models on the joint prompt, then ours.
     def model_tile(pair: str, seed: int):
