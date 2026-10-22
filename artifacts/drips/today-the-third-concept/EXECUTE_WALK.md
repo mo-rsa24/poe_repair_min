@@ -2,7 +2,7 @@
 
 **Plan:** [today-the-third-concept](../../../plans/10-what-poe-loses-when-it-composes/today-the-third-concept.md)
 **Branch:** exec/dog-and-rain (commits per tick, never pushed)
-**On step:** 1, check the laptop can render
+**On step:** 2, time one seed (card line of step 1 is judged on this run)
 **Depth:** full
 
 ## Stop point
@@ -18,6 +18,8 @@
 
 | Step | Evidence |
 |---|---|
+| 1, card | 1851 MiB in use; step 2's render finished all seven tiles with no out-of-memory error |
+| 2, seven camel tiles | seven camel photographs, none black or noise; tiles 49 to 72 s, 405 s for the seed, 8 min 16 s with the model load |
 | 1, setup log | ENV OK 2.5.1+cu121 0.31.0 True RTX 4070 Laptop; WEIGHTS OK; SETUP EXIT 0 |
 
 ## Parked
@@ -36,6 +38,7 @@
 
 | Id | Kind | Serves | Command | State |
 |---|---|---|---|---|
+| bx8capx2u | run | step 2 | `$PY scripts/local_sdxl_poe.py render --animals camel --seeds 1`, log scratchpad/step2-camel-seed1.log | landed, exit 0, 10:54:38 to 11:02:54 |
 
 ## Closing pass still owed
 

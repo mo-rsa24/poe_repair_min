@@ -106,14 +106,14 @@ Every command runs from `/home/molef/PhD/poe_repair_min-dog-and-rain` with
 - [x] ✅ **Read the setup log:** `tail -4 /home/molef/datasets/sdxl-local-setup.log` ✓ verified 2026-10-22: `ENV OK 2.5.1+cu121 0.31.0 True NVIDIA GeForce RTX 4070 Laptop GPU`, `WEIGHTS OK`, `SETUP EXIT 0`
   - ✅ `ENV OK 2.5.1+cu121 0.31.0 True NVIDIA GeForce RTX 4070 Laptop GPU` and `WEIGHTS OK`, then `SETUP EXIT 0`.
   - ❌ No `ENV OK` means the torch install failed; the log's last lines say why.
-- [ ] **Check the card is free:** `nvidia-smi` should show under 1 GB in use before rendering.
+- [x] ✅ **Check the card is free:** `nvidia-smi` should show under 1 GB in use before rendering. ✓ verified 2026-10-22: 1851 MiB in use by Windows apps with VS Code open; the one-seed render in step 2 ran all seven tiles with no out-of-memory error
 
 ### 2. 🔧 Time one seed, then choose how many (AI, ~10 min)
 
 - [ ] **Run one seed for the camel:** `$PY scripts/local_sdxl_poe.py render --animals camel --seeds 1`
   - Each tile prints its seconds. Seven tiles run 18 UNet passes per step in total, so one seed of one animal is about 900 passes.
   - **Pick the seed count** so the rest fits the time left: total ≈ (seconds for this seed) × 2 animals × seeds. Aim for 8 seeds, take no fewer than 5.
-- [ ] **Open the seven camel tiles** in `laptop-third-concept/camel/seed01/` and check they are photographs of a camel, not noise or black squares (a black square means the fp16 VAE overflowed; the script decodes in fp32 to avoid it).
+- [x] ✅ **Open the seven camel tiles** in `laptop-third-concept/camel/seed01/` and check they are photographs of a camel, not noise or black squares (a black square means the fp16 VAE overflowed; the script decodes in fp32 to avoid it). ✓ verified 2026-10-22: seven camel photographs, mean brightness 111 to 157 of 255 per tile
 
 ### 3. 🔧 Render the rest in the background (AI starts it; ~1 to 1.5 h)
 
