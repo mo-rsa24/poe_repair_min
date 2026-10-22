@@ -131,14 +131,14 @@ Every command runs from `/home/molef/PhD/poe_repair_min-dog-and-rain` with
 
 ### 3. 🔧 Render the rest in the background (AI starts it; ~1 to 1.5 h)
 
-- [ ] **Run:** `$PY scripts/local_sdxl_poe.py render --animals camel dog --seeds 1 2 3 4 5 6 7 8` (or the count chosen in step 2), in the background.
+- [x] ✅ **Run:** `$PY scripts/local_sdxl_poe.py render --animals camel dog --seeds 1 2 3 4 5 6 7 8` (or the count chosen in step 2), in the background. ✓ verified 2026-10-22: 112 of 112 seven-column tiles, camel and dog, 8 seeds; exit 0
   - It skips tiles already made, so a stopped run restarts where it left off.
-- [ ] **Render column 8:** the same command once the first run has finished; it skips every tile already made and draws only column 8.
-- [ ] **Walk the [caption walk](today-camel-and-dog-in-the-training-data.md) meanwhile.** The GPU renders here while the network and the CPU work there.
+- [x] ✅ **Render column 8:** the same command once the first run has finished; it skips every tile already made and draws only column 8. ✓ verified 2026-10-22: 16 column-8 tiles, exit 0 at 13:09; 128 tiles in all
+- [ ] **Walk the [caption walk](today-camel-and-dog-in-the-training-data.md) meanwhile.** The GPU renders here while the network and the CPU work there. 🕒 the caption walk is its own plan; nothing in this plan's tally reads it
 
 ### 4. 🔧 Build the two sheets (AI, ~1 min)
 
-- [ ] **Run:** `$PY scripts/local_sdxl_poe.py sheet`, once when the camel's seeds are done (so step 5 starts on the camel while the dog renders) and again when the dog's are
+- [x] ✅ **Run:** `$PY scripts/local_sdxl_poe.py sheet`, once when the camel's seeds are done (so step 5 starts on the camel while the dog renders) and again when the dog's are ✓ verified 2026-10-22: camel-sheet.jpg and dog-sheet.jpg, 8 seeds × 8 columns each
   - `camel-sheet.jpg` and `dog-sheet.jpg`: seeds down the page, the eight columns across, numbered 1 to 8.
 
 ### 5. 👀 Call every tile, one sheet per message (you, ~20 min)
