@@ -35,6 +35,7 @@
 | GPU memory before rendering | close Chrome and Teams first; try as is | you, default | "defaults and I closed chrome and teams"; card went 2225 to 1851 MiB, still over the plan's 1 GB |
 | pass marks had no row for the camel on exactly 2 recovered seeds | a inconclusive for the camel; b supported allows 2; c falsified starts at 2 | you, before any render | "a" |
 | seed count | 8; 7; 6 | you | "8" |
+| tile 7 wet where 5 and 6 are dry: a cause is needed, or push is enough | add PoE camel × wet × wet now; park it in the causal route | you, after seeing camel seeds 1 to 6 | "add wet twice"; pass marks for column 8 written into the plan before it rendered; costs ~15 min past the box |
 | depth | full; to 2 | you, default | every step feeds step 6's table |
 
 ## Out of the session
@@ -42,7 +43,8 @@
 | Id | Kind | Serves | Command | State |
 |---|---|---|---|---|
 | bx8capx2u | run | step 2 | `$PY scripts/local_sdxl_poe.py render --animals camel --seeds 1`, log scratchpad/step2-camel-seed1.log | landed, exit 0, 10:54:38 to 11:02:54 |
-| render-8 | run, detached (nohup setsid), pid 225613 | step 3 | `$PY scripts/local_sdxl_poe.py render --animals camel dog --seeds 1 2 3 4 5 6 7 8`, log laptop-third-concept/render.log | in flight, started 11:15:47 |
+| render-8 | run, detached (nohup setsid), pid 225613 | step 3 | `$PY scripts/local_sdxl_poe.py render --animals camel dog --seeds 1 2 3 4 5 6 7 8`, log laptop-third-concept/render.log | camel done 12:00:43, dog in flight |
+| col8-queue | run, detached waiter | step 3, column 8 | waits for pid 225613 to exit, then the same render command; log laptop-third-concept/render-col8.log | waiting |
 
 ## Closing pass still owed
 

@@ -4,8 +4,8 @@
 > [!NOTE]
 > **You will hold:** for a camel and a dog, on the same seeds and the same starting noise, what SDXL
 > draws for the joint prompt, the wet animal asked directly, PoE of animal and rain, PoE of animal and
-> "wet", and PoE of all three; your call on every tile; and a count of the seeds where the third concept
-> brought the effect back. **Time:** ~2.5 h, mostly rendering while you do the
+> "wet", PoE of all three, and PoE of the animal with "wet" twice; your call on every tile; a count of the
+> seeds where the third concept brought the effect back; and whether a second "wet" does what rain did. **Time:** ~2.5 h, mostly rendering while you do the
 > [caption walk](today-camel-and-dog-in-the-training-data.md) · **Stop point:** step 6's table
 
 Walk it with:
@@ -48,7 +48,7 @@ more counted seeds falsifies the support claim.**
 
 Navigation: ⬅️ [Previous](#why-this-exists) | 📋 [Contents](#contents) | [Next](#where-things-land) ➡️
 
-**The seven columns**, every one from the same noise on each seed:
+**The eight columns**, every one from the same noise on each seed:
 
 | # | Column | What it is |
 |---|---|---|
@@ -59,8 +59,9 @@ Navigation: ⬅️ [Previous](#why-this-exists) | 📋 [Contents](#contents) | [
 | 5 | PoE of "a camel" and "rain" | two-concept PoE |
 | 6 | PoE of "a camel" and "wet" | PoE with the effect word (the walk map's second test) |
 | 7 | PoE of "a camel", "rain" and "wet" | the third concept |
+| 8 | PoE of "a camel", "wet" and "wet" | the effect pushed twice, with no cause: column 7's total weight without rain |
 
-The same seven for the dog.
+The same eight for the dog.
 
 **Your calls on every tile:** `e` the effect is on the animal (wet fur, droplets on it, standing in
 water), `n` not, `h` half, `x` the animal is lost. A half counts as not.
@@ -80,6 +81,19 @@ totals.
 | dog recovered on fewer than half its counted seeds | **the third concept is not a remedy**, even with support |
 | either animal has fewer than 2 counted seeds | **inconclusive** for that animal: too few lost effects to test |
 
+**Column 8, read on its own.** Two readings explain a wet animal in column 7 when columns 5 and 6 are
+not. *A cause is needed*: PoE draws the effect only with its cause beside it. *Push is enough*: "rain"
+and "wet" share a pull toward water on surfaces, and that shared part pulled twice beats the animal's dry
+pictures where pulled once it does not. Column 8 carries column 7's total weight with no cause in it. It is
+judged per animal on the **pair seeds**: column 6 not `e` and column 7 `e`.
+
+| Result | Reading |
+|---|---|
+| column 8 `e` on at least half the pair seeds | **push is enough**: a second "wet" does what rain did |
+| column 8 `e` on at most 1 pair seed, with at least 3 pair seeds | **a cause is needed**: rain adds something "wet" twice does not |
+| anything between | **inconclusive** |
+| fewer than 2 pair seeds | **inconclusive** for that animal: too few seeds where the pair did what one could not |
+
 ## Where things land
 
 Navigation: ⬅️ [Previous](#the-test-written-before-any-render) | 📋 [Contents](#contents) | [Next](#steps) ➡️
@@ -89,7 +103,7 @@ Navigation: ⬅️ [Previous](#the-test-written-before-any-render) | 📋 [Conte
 ~/.cache/huggingface/hub/models--stabilityai--stable-diffusion-xl-base-1.0/    SDXL's fp16 weights, ~7 GB
 artifacts/results/does-an-effect-need-support/laptop-third-concept/            gitignored, local only
   camel/seedNN/<column>.png and .json             every tile with its settings
-  camel-sheet.jpg  dog-sheet.jpg                  seeds down, the seven columns across
+  camel-sheet.jpg  dog-sheet.jpg                  seeds down, the eight columns across
   calls.json  tally.json                          your calls; the counted-seed table
 scripts/local_sdxl_poe.py                         render, sheet, tally
 ```
@@ -119,24 +133,25 @@ Every command runs from `/home/molef/PhD/poe_repair_min-dog-and-rain` with
 
 - [ ] **Run:** `$PY scripts/local_sdxl_poe.py render --animals camel dog --seeds 1 2 3 4 5 6 7 8` (or the count chosen in step 2), in the background.
   - It skips tiles already made, so a stopped run restarts where it left off.
+- [ ] **Render column 8:** the same command once the first run has finished; it skips every tile already made and draws only column 8.
 - [ ] **Walk the [caption walk](today-camel-and-dog-in-the-training-data.md) meanwhile.** The GPU renders here while the network and the CPU work there.
 
 ### 4. 🔧 Build the two sheets (AI, ~1 min)
 
 - [ ] **Run:** `$PY scripts/local_sdxl_poe.py sheet`, once when the camel's seeds are done (so step 5 starts on the camel while the dog renders) and again when the dog's are
-  - `camel-sheet.jpg` and `dog-sheet.jpg`: seeds down the page, the seven columns across, numbered 1 to 7.
+  - `camel-sheet.jpg` and `dog-sheet.jpg`: seeds down the page, the eight columns across, numbered 1 to 8.
 
 ### 5. 👀 Call every tile, one sheet per message (you, ~20 min)
 
 - [ ] **The walk shows you the camel sheet one seed row at a time**, then the dog's.
-- [ ] **Reply with the row's seven calls in column order**, for example `seed03: n n n e n n e`.
+- [ ] **Reply with the row's calls in column order**, for example `seed03: n n n e n n e n`. A row called before its column 8 rendered gets that call later as `seed03 c8: e`.
 - [ ] **The walk writes them into `calls.json`** under the animal, seed and column names, and never proposes a call.
 - [ ] **The call is about the animal.** Rain falling around a dry camel is `n`.
 
 ### 6. 🔧 The counted-seed table and the verdict (AI with you, ~10 min)
 
 - [ ] **Run:** `$PY scripts/local_sdxl_poe.py tally`
-  - Per animal: the effect count in each column, the counted seeds, and how many of them column 7 recovered.
+  - Per animal: the effect count in each column, the counted seeds, how many of them column 7 recovered, the pair seeds, and how many of them column 8 matched.
 - [ ] **Read it against [the pass marks](#the-test-written-before-any-render)** and write one verdict line, with its numbers.
 - [ ] **For the slide:** the two sheets, the table, and the verdict line.
 
@@ -145,7 +160,7 @@ Every command runs from `/home/molef/PhD/poe_repair_min-dog-and-rain` with
 Navigation: ⬅️ [Previous](#steps) | 📋 [Contents](#contents)
 
 **Fresh noise.** The cluster's sheets started each seed from a cached latent, so these tiles do not
-match them seed for seed. The seven columns here do match each other.
+match them seed for seed. The eight columns here do match each other.
 
 **A different scheduler setup.** These use diffusers' DDIM at 50 steps and guidance 7.5, the same
 settings as the cluster's sheets; small differences in implementation could still change single tiles.
