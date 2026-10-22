@@ -103,7 +103,7 @@ Every command runs from `/home/molef/PhD/poe_repair_min-dog-and-rain` with
 
 ### 2. 🔧 Search the captions and time it (AI, ~5 min)
 
-- [ ] **Run:** `$PY -I scripts/census/laptop_slice.py count`
+- [x] **Run:** `$PY -I scripts/census/laptop_slice.py count` ✓ verified 2026-10-22: 2 files, 32,776,409 captions in 24 s (13.8 s and 9.8 s per file), peak memory 1.0 GB; camel 12,291, dog 225,544
   - It prints one line per file: captions searched and seconds taken (about 16.4 million captions per file).
   - Then the counts per animal: all, wet words, weather words, water words, and any of them.
   - **Read the time per file times 128:** that is how long the full search would take on this laptop.

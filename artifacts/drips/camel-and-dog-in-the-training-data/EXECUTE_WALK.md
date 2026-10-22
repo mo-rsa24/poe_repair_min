@@ -2,7 +2,7 @@
 
 **Plan:** [today: camel and dog in the training data](../../../plans/10-what-poe-loses-when-it-composes/today-camel-and-dog-in-the-training-data.md)
 **Mode:** default walk, depth full (the plan is a single afternoon; every step feeds step 8)
-**On step:** 2, search and time it (me)
+**On step:** 3, read the camel captions with wet words (you)
 
 ## Stop point
 
@@ -29,12 +29,15 @@
 
 | Step | Evidence |
 |---|---|
+| 2 count | exit 0; 2 files, 32,776,409 captions in 24 s; camel 12,291 (239 with a wet, weather or water word: wet 7, weather 22, water 213), dog 225,544 (4,822: wet 781, weather 651, water 3,456) |
 | 1 download | 2 files, 3.62 GB each, 16,388,209 and 16,388,200 rows; 1.6 and 1.5 MB/s; download stopped by the watcher at 12:11 |
 | 0 token | confirmed by hand: curl printed "200"; `~/.cache/huggingface/token` is `-rw-------`, 38 bytes |
 
 ## Parked
 
 ## Repairs
+
+- `scripts/census/laptop_slice.py` `count()` reads each file one row group at a time. The whole-file read was killed for memory (exit 137) with an SDXL render from the third-concept walk holding 3.1 GB and swap at 7 of 8 GB; peak after the change is 1.0 GB.
 
 ## Decisions
 
