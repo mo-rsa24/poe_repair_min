@@ -29,6 +29,7 @@
 | Question | Options | Who chose | Why |
 |---|---|---|---|
 | GPU memory before rendering | close Chrome and Teams first; try as is | you, default | "defaults and I closed chrome and teams"; card went 2225 to 1851 MiB, still over the plan's 1 GB |
+| pass marks had no row for the camel on exactly 2 recovered seeds | a inconclusive for the camel; b supported allows 2; c falsified starts at 2 | you, before any render | "a" |
 | depth | full; to 2 | you, default | every step feeds step 6's table |
 
 ## Out of the session

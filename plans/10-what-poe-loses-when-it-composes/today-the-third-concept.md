@@ -76,6 +76,7 @@ totals.
 |---|---|
 | dog recovered on at least half its counted seeds, camel on at most 1 | **supported**: the third concept brings back an effect only where the animal's pictures hold it |
 | camel recovered on 3 or more counted seeds | **falsified**: PoE drew an effect the camel's pictures rarely hold |
+| camel recovered on exactly 2 counted seeds | **inconclusive** for the camel: too few to falsify, too many to call support |
 | dog recovered on fewer than half its counted seeds | **the third concept is not a remedy**, even with support |
 | either animal has fewer than 2 counted seeds | **inconclusive** for that animal: too few lost effects to test |
 
