@@ -110,7 +110,7 @@ Every command runs from `/home/molef/PhD/poe_repair_min-dog-and-rain` with
 
 ### 2. 🔧 Time one seed, then choose how many (AI, ~10 min)
 
-- [ ] **Run one seed for the camel:** `$PY scripts/local_sdxl_poe.py render --animals camel --seeds 1`
+- [x] ✅ **Run one seed for the camel:** `$PY scripts/local_sdxl_poe.py render --animals camel --seeds 1` ✓ verified 2026-10-22: exit 0, tiles 49 to 72 s, 405 s per seed; 8 seeds chosen
   - Each tile prints its seconds. Seven tiles run 18 UNet passes per step in total, so one seed of one animal is about 900 passes.
   - **Pick the seed count** so the rest fits the time left: total ≈ (seconds for this seed) × 2 animals × seeds. Aim for 8 seeds, take no fewer than 5.
 - [x] ✅ **Open the seven camel tiles** in `laptop-third-concept/camel/seed01/` and check they are photographs of a camel, not noise or black squares (a black square means the fp16 VAE overflowed; the script decodes in fp32 to avoid it). ✓ verified 2026-10-22: seven camel photographs, mean brightness 111 to 157 of 255 per tile
@@ -123,7 +123,7 @@ Every command runs from `/home/molef/PhD/poe_repair_min-dog-and-rain` with
 
 ### 4. 🔧 Build the two sheets (AI, ~1 min)
 
-- [ ] **Run:** `$PY scripts/local_sdxl_poe.py sheet`
+- [ ] **Run:** `$PY scripts/local_sdxl_poe.py sheet`, once when the camel's seeds are done (so step 5 starts on the camel while the dog renders) and again when the dog's are
   - `camel-sheet.jpg` and `dog-sheet.jpg`: seeds down the page, the seven columns across, numbered 1 to 7.
 
 ### 5. 👀 Call every tile, one sheet per message (you, ~20 min)
