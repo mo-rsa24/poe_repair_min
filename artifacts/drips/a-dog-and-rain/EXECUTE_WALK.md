@@ -55,6 +55,42 @@ caption wet counts tie, or a caption count is not reachable.
 **What would surprise**: the camel wet under PoE on 3 or more seeds while "a camel in the rain"
 alone comes out wet on 1 or fewer.
 
+## Hypothesis test: PoE cannot borrow an effect the subject is rarely shown in
+
+Written before any of these tiles is rendered, on 2026-10-22. "a wet camel" asked directly came out
+wet on 4 of 5 seeds (half on seed 9), so SDXL can draw a wet camel when one phrase ties the effect
+to the animal. The hypothesis is that PoE cannot: it multiplies what "a camel" looks like by what
+the effect looks like, and camels are rarely shown wet, so the product has little to land on.
+
+**The renders**, seeds 1, 2, 4, 9 and 10, 50 DDIM steps at guidance 7.5, the cached
+`a_cat__x__a_dog` starting latent, plain PoE with no adapter, an RTX 3090 as for every earlier tile:
+
+| PoE of | Asked directly, already rendered |
+|---|---|
+| "a camel" and "wet" | "a wet camel": wet 4, half 1 |
+| "a camel" and "in the rain" | "a camel in the rain": dry 4, half 1 |
+| "a dog" and "wet" | "a wet dog": wet 5 |
+| "a dog" and "in the rain" | "a dog in the rain": wet 4, half 1 |
+
+"wet" and "in the rain" are also rendered alone, so each PoE tile can be read against both of its
+factors. Each tile is called wet, dry or half by eye, and a half call counts as dry.
+
+**Supported** when PoE of "a camel" and "wet" is wet on at most 1 of 5 seeds and PoE of "a dog" and
+"wet" is wet on at least 3 of 5.
+
+**Not supported** when PoE of "a camel" and "wet" is wet on 3 or more seeds: PoE drew an effect on a
+subject the hypothesis says it cannot borrow it for.
+
+**Inconclusive** when the camel count is 2, or the dog count is 2 or fewer. A dry dog under PoE
+means something other than the subject's own pictures blocks the effect, and the camel result
+cannot then be read as a support effect.
+
+**The "in the rain" pair** is read the same way and predicted dry for the camel, matching the
+direct prompt. A wet camel there on 3 or more seeds also counts as not supported.
+
+**What would surprise**: a camel with wet fur under PoE on 3 or more seeds, or droplets drawn on
+the camel's coat while the rest of the picture stays dry.
+
 ## The cut
 
 | # | Piece | State |
