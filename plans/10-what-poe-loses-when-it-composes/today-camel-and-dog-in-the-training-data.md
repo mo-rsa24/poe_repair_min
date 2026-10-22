@@ -97,7 +97,7 @@ Every command runs from `/home/molef/PhD/poe_repair_min-dog-and-rain` with
 
 ### 1. 🔧 Download 4 files (AI, ~15 to 40 min depending on the connection)
 
-- [ ] **Run:** `$PY -I scripts/census/laptop_slice.py download --files 4`
+- [x] **Run:** `$PY -I scripts/census/laptop_slice.py download --files 4` ✓ verified 2026-10-22: first file at 1.6 MB/s, so stopped at 2 files per the rule below (16,388,209 and 16,388,200 captions, 3.62 GB each)
   - Each file prints its size (about 3.6 GB) and the speed in MB/s.
   - If the first file runs under 5 MB/s, stop and use `--files 2`; every later number then covers 2 files.
 

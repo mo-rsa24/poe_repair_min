@@ -2,7 +2,7 @@
 
 **Plan:** [today: camel and dog in the training data](../../../plans/10-what-poe-loses-when-it-composes/today-camel-and-dog-in-the-training-data.md)
 **Mode:** default walk, depth full (the plan is a single afternoon; every step feeds step 8)
-**On step:** 1, download 4 files (me)
+**On step:** 2, search and time it (me)
 
 ## Stop point
 
@@ -29,6 +29,7 @@
 
 | Step | Evidence |
 |---|---|
+| 1 download | 2 files, 3.62 GB each, 16,388,209 and 16,388,200 rows; 1.6 and 1.5 MB/s; download stopped by the watcher at 12:11 |
 | 0 token | confirmed by hand: curl printed "200"; `~/.cache/huggingface/token` is `-rw-------`, 38 bytes |
 
 ## Parked
@@ -39,11 +40,14 @@
 
 | Decision | Options | Who chose | Why |
 |---|---|---|---|
+| download 2 files, not 4 | 4 files (~2 h) · 2 files (~1 h, the plan's rule) · 1 file (~30 min) | the plan's own rule, applied by the walk; open to the user's veto | first file measured at 2.1 MB/s, under the plan's 5 MB/s cutoff; every later number covers 2 of 128 files |
 
 ## Out of the session
 
 | Id | Kind | Serves | State |
 |---|---|---|---|
+| bkbyc0nc2 | run: `/home/molef/miniconda3/bin/python3 -u -I scripts/census/laptop_slice.py download --files 4`, log in the session scratchpad `download.log` | step 1 | done 12:11, folded in |
+| b4v21nc87 | watcher: kills the download (pid 203103) once 2 `part-*.parquet` files exist | step 1 | fired 12:11, folded in |
 
 ## Closing pass owed
 
