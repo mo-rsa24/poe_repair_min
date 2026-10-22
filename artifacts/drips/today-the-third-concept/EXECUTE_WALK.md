@@ -47,8 +47,9 @@
 |---|---|---|---|---|
 | bx8capx2u | run | step 2 | `$PY scripts/local_sdxl_poe.py render --animals camel --seeds 1`, log scratchpad/step2-camel-seed1.log | landed, exit 0, 10:54:38 to 11:02:54 |
 | render-8 | run, detached (nohup setsid), pid 225613 | step 3 | `$PY scripts/local_sdxl_poe.py render --animals camel dog --seeds 1 2 3 4 5 6 7 8`, log laptop-third-concept/render.log | stopped 12:04 by the walk after 4 dog tiles, so column 8 renders first (your ask to see it) |
-| 73075 | cluster job, bigbatch mscluster56 | your side request, outside the plan: cat × dog joint and PoE sheet | `PAIRS="a cat\|a dog" COLUMNS="single mono poe" SEEDS="1..8" sbatch scripts/concept_pair_sheet.sbatch`, cluster checkout on exec/correction-loss-01 | running |
+| 73075 | cluster job, bigbatch mscluster56, cancelled: you dropped the singulars | your side request, outside the plan: cat × dog joint and PoE sheet | `PAIRS="a cat\|a dog" COLUMNS="single mono poe" SEEDS="1..8" sbatch scripts/concept_pair_sheet.sbatch`, cluster checkout on exec/correction-loss-01 | running |
 | 73077 | cluster job, after 73075 | the same sheet with plurals: "cats" alone, "dogs" alone, joint "cats and dogs", PoE "cats" × "dogs" | `PAIRS="cats\|dogs" COLUMNS="single mono poe"`; replaces 73076, cancelled while pending | pending on 73075 |
+| 73079 | cluster job, after 73077 | the cats-and-dogs sheet's two extra tiles: PoE "dog and cat" × "multiple animals", PoE "dog" × "cat" × "single" | `_scripts/concept_multi_poe.sbatch` on /datasets, running `scripts/concept_multi_poe.py` (committed here) | pending |
 | col8-queue | run, detached waiter | step 3, column 8 | waits for pid 225613 to exit, then the same render command; log laptop-third-concept/render-col8.log | landed 13:09:12, exit 0 |
 
 ## Closing pass still owed
