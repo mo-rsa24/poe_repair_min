@@ -85,9 +85,11 @@ fast-forwarded to the committed branch. Every path on a launch line is absolute,
 
 ### 2. 🔧 The pool loader and the starting row (AI, ~40 min)
 
-- [ ] **Load** the 182 cells from the training cache, asserting that none is cat × dog and none is a seed
-  from 9 to 16.
-- [ ] **Report** the held-out share removed at steps 0, 10, 25 and 40 with the untrained token.
+- [x] **Load** the 182 cells from the training cache, asserting that none is cat × dog and none is a seed
+  from 9 to 16. ✓ verified 2026-10-28: 182 cells over 48 pairs, all in the train split, assertions hold.
+- [x] **Report** the held-out share removed at steps 0, 10, 25 and 40 with the untrained token.
+  ✓ verified 2026-10-28, means over seeds 9 to 16: −0.142, −0.064, −0.086, −0.052. Log:
+  `/datasets/mmolefe/poe_repair_min/outputs/learned_and_token/logs/baseline.log`.
 
 ### 3. 🔧 The trainer, 50 steps (AI, ~15 min)
 

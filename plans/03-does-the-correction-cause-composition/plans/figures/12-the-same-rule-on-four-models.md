@@ -307,3 +307,7 @@ ls -la paper/overleaf-iclr/figures/same-rule-on-four-models.pdf
 ⬅️ [Previous](#code-references) | 📋 [TOC](#table-of-contents)
 
 Instruction 3.1: look at the grid, then task C.1, back to the proofread walk at chunk 11.
+
+## Cross-references
+
+- The mention of **joint prompt** in [the causal-composition route](../../../10-what-poe-loses-when-it-composes/route-causal-does-an-effect-need-support.md#what-you-will-achieve).

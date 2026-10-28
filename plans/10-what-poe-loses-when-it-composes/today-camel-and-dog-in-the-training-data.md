@@ -6,7 +6,7 @@
 > - how big the caption set is and how long a search takes;
 > - how many camel and dog captions mention wet, rain or water, and what they say;
 > - your own count of wet, dry and missing animals in a few hundred training pictures, as a table and one figure;
-> - what SDXL's joint prompt and PoE draw for a camel with rain.
+> - what SDXL's [joint prompt](what-poe-loses-when-it-composes.md#21-the-objects) and [PoE](../../context/world/poe-composition.md#what-poe-composition-is) draw for a camel with rain.
 >
 > **Time:** ~3 h · **Stop point:** step 8's talking points written.
 
@@ -148,7 +148,7 @@ Every command runs from `/home/molef/PhD/poe_repair_min-dog-and-rain` with
 
 - [ ] **Open the renders**, all from the same 5 seeds:
   - [the direct prompts](../../artifacts/results/does-a-camel-in-the-rain-come-out-wet/asked-directly.png): "a wet camel", "a camel in the rain", "a wet dog", "a dog in the rain";
-  - [the camel sheet](../../artifacts/results/does-a-camel-in-the-rain-come-out-wet/a-camel-and-rain.png): camel, rain, joint "a camel and rain", PoE, SuperDiff;
+  - [the camel sheet](../../artifacts/results/does-a-camel-in-the-rain-come-out-wet/a-camel-and-rain.png): camel, rain, joint "a camel and rain", PoE, [SuperDiff](../../../../goal-setting/learning/deep-learning/diffusion-models/02-sampler-correctors-for-composition/plans/31-superdiff-derived-and-placed.md);
   - [the dog sheet](../../artifacts/results/does-a-dog-in-the-rain-come-out-wet/a-dog-and-rain.png): the same for the dog;
   - [the side-by-side figure](../../artifacts/notes/what-poe-loses-when-it-composes/figures/fig-causal-renders.png).
 

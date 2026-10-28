@@ -3,7 +3,7 @@
 
 > [!NOTE]
 > **You will hold:** for a camel and a dog, on the same seeds and the same starting noise, what SDXL
-> draws for the joint prompt, the wet animal asked directly, PoE of animal and rain, PoE of animal and
+> draws for the joint prompt, the wet animal asked directly, [PoE](../../context/world/poe-composition.md#what-poe-composition-is) of animal and rain, PoE of animal and
 > "wet", PoE of all three, and PoE of the animal with "wet" twice; your call on every tile; a count of the
 > seeds where the third concept brought the effect back; and whether a second "wet" does what rain did. **Time:** ~2.5 h, mostly rendering while you do the
 > [caption walk](today-camel-and-dog-in-the-training-data.md) · **Stop point:** step 6's table
