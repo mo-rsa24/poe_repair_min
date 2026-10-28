@@ -2,7 +2,7 @@
 
 ⬅️ [Layer 2: composing](02-composing-two-experts.md) · 🏠 [the guide](../PROMPTS.md) · [Layer 4: the parts world](04-the-parts-world.md) ➡️
 
-**Why it is half critical.** The ideal expert is critical: the training points smoothed by N(0, σ²I). Under a denoising objective taken over the whole distribution, with unlimited model capacity and a global optimum, its score is the best score field at that smoothing level. The rebuild then treats this smoothed set as the clean expert, which makes every later target exact, so a failure can be blamed on the sampler or the data rather than on a network's approximation. In the cited 2D run, trained networks matched it within `0.04` nats. Of the seven kinds, only co-occurrence, intersection, the chimera and the wet dog matter for the goal.
+**Why it is half critical.** The ideal expert is critical: the training points smoothed by N(0, σ²I). Under a denoising objective taken over the whole distribution, with unlimited model capacity and a global optimum, its score is the best score field at that smoothing level. The rebuild then treats this smoothed set as the clean expert, which makes every later target exact, so a failure can be blamed on the sampler or the data rather than on a network's approximation. In the cited 2D run, trained networks matched it within `0.04` nats. Of the seven kinds, only co-occurrence, intersection, the chimera and the wet dog matter for the goal. On [the axes](../PROMPTS.md#the-axes-one-new-variable-per-rung), this is rung a: the ideal expert that layer 1's learned expert is measured against.
 
 **Depth.** Build: the ideal expert, the exact target and its perfect-sample baseline, the four kinds that matter, and the weak-sampler rebuild. Link only: disjunction and dominance. You 4.3 to 8.7 h in all.
 
@@ -31,154 +31,27 @@
 
 ### 0. AI, in the background: quizzes 3.1 and 3.2, one layer ahead
 
-Paste this when you start layer 2's build.
+Claude prepares and publishes quizzes 3.1 and 3.2 while you build layer 2. Paste the prompt when you start layer 2's build.
 
-```text
-In the background, prepare and build layer 3's two quizzes, bottom up, for the composition ladder
-in artifacts/drips/simple-distributions-rebuild/: quiz 3.1 and quiz 3.2.
-
-Task: for each quiz, first dispatch prep-cadence (quiz-prep-pulse --build) with the goal and minutes
-below, then dispatch quiz-cadence (mode build, repo
-/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain). The goal for both is "build the ideal expert and
-grade every composition against an exact target".
-- Quiz 3.1, --minutes 40: the college maths under layer 3. Convolving a density with a Gaussian,
-  kernel density estimates, softmax weights over training points.
-- Quiz 3.2, --minutes 90: layer 3 itself, from the step file
-  03-ideal-experts-and-the-seven-kinds.md. The ideal expert's score, why its composition is exact
-  at every noise level, the perfect-sample baseline, co-occurrence, intersection, contention and
-  interaction.
-Starts from: nothing from this layer; it runs during layer 2's build, so the layer 3 --math drip has
-not run and the notation is the step file's. Quiz 3.1 takes its material from the Study first line
-of artifacts/drips/simple-distributions-rebuild/ladder/03-ideal-experts-and-the-seven-kinds.md;
-quiz 3.2 takes it from
-artifacts/drips/simple-distributions-rebuild/03-ideal-experts-and-the-seven-kinds.md.
-Settled facts:
-- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
-- quiz-cadence stops when a quiz has no coverage file in .quiz-prep/, so prep-cadence runs first for
-  each quiz (quiz-cadence, "The preparation gate").
-- The step file links a textbook page beside each fundamental it uses and carries timestamped video
-  tables on the kernel density estimate, the sum of two independent Gaussians, total variation
-  distance and the product of experts; reuse them as nodes before searching again (step file 03;
-  the guide, "When a step stalls on the maths").
-- No listed creator works the variance rule Var(aX + bY) = a²Var(X) + b²Var(Y) for independent X
-  and Y, and the kernel-density segment never says a Gaussian kernel density estimate is a Gaussian
-  mixture with one equal-weight component per point (step file 03, steps 1 and 2, video tables).
-- The textbooks are Murphy, Probabilistic Machine Learning 16.3 (kernel density estimation, p605)
-  and Chan, Introduction to Probability for Data Science 5.5 (the sum of two random variables,
-  p296); smoothing by a Gaussian as a convolution is equation 2.3 of the conditional-expectation
-  textbook's chapter 02 (this layer's Study first line).
-- The score of a Gaussian mixture is Σ r_i(x)(μ_i − x)/σ², with r_i the posterior softmax weights
-  over the components (the plan "the exact score of a Gaussian mixture", linked on this layer's
-  Study first line).
-- pdftotext is not installed on mscluster, so
-  ~/.claude/skills/index-source/scripts/find-in-textbooks.py fails; open the PDFs with PyMuPDF from
-  the co3 environment (checked on mscluster109: import pymupdf works in co3, version 1.28.2, and
-  import pypdf fails everywhere).
-- The shelf index is ~/Obsidian/Mathematics/references/textbooks/Textbooks.md and the
-  worked-examples index is ~/Obsidian/Mathematics/references/exercises/Worked Examples.md
-  (quiz-prep-pulse, "The bank").
-- The notation is the step file's: the ideal expert p_σ(x) = (1/N)Σ N(x; x_i, σ²I); its noised
-  density q_t(x) = (1/N)Σ N(x; √ᾱ_t x_i, v_t I) with v_t = 1 − ᾱ_t + ᾱ_t σ²; σ = 0.05 and N = 800
-  (step file 03, steps 0 to 2).
-- Every worked number prints from python -m rebuild.walk_numbers as a p3. key in
-  rebuild/out/walk-numbers.json. 7 of the 25 are the numbers walk03.py prints: the three-point
-  log-density -2.6288 by formula and by scikit-learn, v_t = 1.0, 0.5229 and 0.00313 at t = 99, 50
-  and 0, the cell area 8.403e-05 and 58081 grid points. The other 18 back the step file's
-  derivations, among them the 200 perfect-draw redraws and dominance's mode weights
-  (rebuild/out/walk-numbers.json).
-- The perfect-sample baseline (the code prints it as floor TV) is the total variation, on 40 × 40
-  bins, between n exact draws from the grid density and the density itself; a sampler is read
-  against it, never against 0. It is random, not a lower bound: a sampler can score below one
-  perfect draw by chance (step file 03, step 4).
-- The exact measures of the four kinds the goal needs: intersection 0.71, co-occurrence 0.81,
-  contention 0.67, interaction −0.41 (step file 03, steps 5, 7, 8 and 10).
-- Trained 2D networks match the ideal experts within 0.04 nats
-  (artifacts/ideas/poe-overlap-dial/IDEA_MAP.md, run 2).
-Outputs:
-- two coverage files under artifacts/drips/simple-distributions-rebuild/.quiz-prep/, each with a
-  verdict per question: ready, blocked, or unprepared by choice;
-- rows in the worked-examples index for every banked problem;
-- two published quiz pages, each opening on a read-first list with minutes per item, a short path
-  and a full path.
-Target: no question on either page carries the verdict blocked; both quizzes carry banked problems,
-about 6 to 10 per concept at the build depth; every number in an answer traces to walk_numbers,
-the step file or a cited textbook page. I judge, from the pages.
-Progress: prep-cadence reports, per quiz, its question count, node count and verdicts; quiz-cadence
-reports each URL as it publishes.
-Proof: the two coverage files exist under .quiz-prep/ and list no question as blocked; the two
-URLs open.
-Limits: change nothing in the step files' prose or in rebuild/; in the ladder files, write only the
-two URLs.
-Hand-off: write quiz 3.1's URL into step 1 and quiz 3.2's URL into step 3 of
-artifacts/drips/simple-distributions-rebuild/ladder/03-ideal-experts-and-the-seven-kinds.md, each
-replacing "(URL lands here)".
-```
-
-added: every field the setup's quiz prompt carries, so this prompt stands alone instead of pointing at "the setup section of PROMPTS.md", which the guide no longer holds (the setup moved to `ladder/00-setup.md`) · the preparation gate (from the quiz-cadence agent definition) · the step file's video tables and their two gaps (from step file 03) · the textbooks (from this layer's Study first line) · the mixture score with [softmax weights](../../../../../../Obsidian/Artificial%20Intelligence/Deep%20Learning/Softmax.md#where-to-learn-this)<sub>[1](../../../../../../Obsidian/Mathematics/references/textbooks/ai-engineering/ai-engineering.pdf#page=192 "AI engineering, chapter 2, Sampling, Works it with numbers: logits [1, 2] give softmax probabilities [0.27, 0.73], and dividing by a temperature of 0.5 first..."), [2](../../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/understanding-deep-learning.pdf#page=81 "Understanding deep learning, section 5.5, Softmax as the function that makes K arbitrary network outputs non-negative and [sum to one](../../Mathematics/refe..."), [3](../../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/probabilistic-machine-learning-an-introduction.pdf#page=79 "Probabilistic machine learning: an introduction, section 2.5.2, Defines softmax and logits, then divides by a temperature T to show it tends to the argmax as..."), [▶1](https://www.youtube.com/watch?v=8gVi4Rk21Eg&t=3149s "CS229 lecture 4, 52:29 to 54:29, Works the softmax numbers: raw scores 2, 1 and 0.1 are exponentiated and normalised into class probabilities. Caption-read."), [▶2](https://www.youtube.com/watch?v=pdqofxJeBN8&t=3450s "CS231n lecture 2, 57:30 to 1:00:36, Turns a cat image's scores 3.2, 5.1 and −1.7 into probabilities, giving the cat class 0.13, and names the raw scores logi..."), [◆](../../../../../../goal-setting/learning/ai-engineering/llm-applications/retrieval-augmented-generation/soft-retrieval-with-softmax-weights/plans/01-softmax-weights-by-hand.md "Turn one question's chunk scores into softmax weights by hand, ai-engineering/llm-applications/retrieval-augmented-generation/soft-retrieval-with-softmax-wei...")</sub> (from the exact-mixture-score plan) · the missing `pdftotext` and the PyMuPDF route (from the textbook pass) · the notation, the p3. keys, the floor and the four exact measures (from step file 03 and `walk-numbers.json`) · the 0.04 nats (from the `poe-overlap-dial` idea map, run 2) · the URL write-back · the floor renamed the perfect-sample baseline and marked as random rather than a lower bound (from the Codex mathematics review) · the p3. key count, 25, with the 7 walk03.py prints named apart from the 18 that back the derivations (from the port of the review's checks into walk_numbers)
-dropped: nothing
+**Prompt:** [build layer 3's two quizzes](prompts/03-0-build-layer-3-quizzes.md)
 
 ⏱ AI ~1.5 h (estimate), beside layer 2's build
 
 ### 1. You: quiz 3.1
 
-Quiz 3.1: (URL lands here)
+Quiz 3.1 checks the college maths under this layer: convolving a density with a Gaussian, kernel density estimates, and softmax weights over training points. Its link lands here when step 0 publishes it: (URL lands here)
 
 ⏱ you 20 to 40 min · stop: the bar, every *needed now* question right and at least 80% of the rest; below that, read the items your misses point at and retake.
 
 ### 2. You: the maths drip
 
-```text
-/drip --math why smoothing the training points by N(0, σ²I) is the best a diffusion model can learn
-at that noise level, and under which assumptions, as steps 1 and 2 of
-artifacts/drips/simple-distributions-rebuild/03-ideal-experts-and-the-seven-kinds.md set them out
+You derive why smoothing the training points by N(0, σ²I) gives the best score field a diffusion model can learn at that smoothing, under which assumptions, and what the smoothed set becomes at every noise level. Your quiz 3.1 misses become the first rungs.
 
-Starts from: quiz 3.1 passed; any question it marked missed becomes a first rung. Layer 2's --math
-drip folder under artifacts/drips/ holds my notation for the two constructions and the summed
-scores.
-Settled facts:
-- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
-- The ideal expert of x_1, …, x_N at smoothing σ is p_σ(x) = (1/N)Σ N(x; x_i, σ²I), a Gaussian
-  kernel density estimate with bandwidth σ (step file 03, step 1).
-- Write the training set as p̂_0(x) = (1/N)Σ δ(x − x_i). Gaussian corruption of variance σ² gives
-  p_σ(x) = (1/N)Σ N(x; x_i, σ²I). With unlimited capacity and the denoising objective taken over
-  the whole distribution and minimised globally, the optimal learned score is ∇_x log p_σ(x). The
-  rebuild chooses this kernel density estimate as its clean expert before applying the forward
-  process. A network can do worse by underfitting or differently by extrapolating (step file 03,
-  step 1).
-- σ = 0.05 is a chosen smoothing, not the schedule's smallest noise: √(1 − ᾱ_0) = 0.0251
-  (p1.sqrt_1m_abar_0). A model trained on the bare points would have component variance 1 − ᾱ_t at
-  step t; the extra ᾱ_t σ² in v_t comes from noising p_σ (step file 03, steps 1 and 2).
-- In run 2 of the idea map, trained 2D networks matched the ideal experts within 0.04 nats, so in
-  that run a trained expert added nothing measurable past its smoothed data
-  (artifacts/ideas/poe-overlap-dial/IDEA_MAP.md, run 2 and claim 7).
-- The worked instance: three points (−0.5, −0.5), (−0.6, −0.4), (−0.5, 0.5) at σ = 0.15 give a
-  log-density at (−0.5, 0) of -2.6288 by the formula and by scikit-learn's KernelDensity
-  (p3.ideal_logdensity_formula, p3.ideal_logdensity_sklearn).
-- Noising scales each kernel by √ᾱ_t and convolves it with N(0, (1 − ᾱ_t)I), and convolving two
-  Gaussians adds their variances, so q_t(x) = (1/N)Σ N(x; √ᾱ_t x_i, v_t I) with
-  v_t = 1 − ᾱ_t + ᾱ_t σ² (step file 03, step 2).
-- With σ = 0.05, v_t is 1.0, 0.5229 and 0.00313 at t = 99, 50 and 0; at t = 50, ᾱ_t = 0.4783, and
-  1 − 0.4783 + 0.4783 × 0.0025 = 0.5229 (the p3.noised_ideal_var_* and p1.abar_50 keys).
-- The score of that mixture, derived. Put μ_i = √ᾱ_t x_i and φ_i(x) = N(x; μ_i, v_t I), so
-  q_t = (1/N)Σ φ_i. Differentiating the log gives ∇ log q_t = Σ_i ∇φ_i / Σ_j φ_j. Writing
-  ∇φ_i = φ_i ∇ log φ_i turns that into Σ_i r_i(x) ∇ log φ_i, with r_i = φ_i / Σ_j φ_j the softmax
-  responsibilities over the training points. The score of an isotropic Gaussian is (μ_i − x)/v_t,
-  so ∇ log q_t(x) = Σ_i r_i(x)(√ᾱ_t x_i − x)/v_t (step file 03, step 2; the plan "the exact score
-  of a Gaussian mixture", linked on this layer's Study first line).
-- Because each q_t is exact, every annealing target π_t = compose(log q^A_t, log q^B_t) and every
-  score a sampler uses is exact (step file 03, step 2). Summed noised scores under reverse diffusion
-  still target the product of the noised experts, not the noised product, so exact experts do not
-  make reverse diffusion exact (step file 02, step 2).
-Outputs: the drip's thread folder under artifacts/drips/, with dispatch.md recording my notation,
-the worked numbers I used and what clicked.
-Target: I derive q_t and v_t from the kernel density estimate without notes, reproduce v_t = 0.5229
-at t = 50 and the -2.6288 instance by hand, and say which sampler the exactness helps and which it
-does not. I judge.
-Hand-off: the thread folder's path, which step 7's cross-links read.
-```
+<a href="../figures/walk03-step2-noised-variance.png"><img src="../figures/walk03-step2-noised-variance.png" width="420" alt="The exact component variance v_t of the noised ideal expert against diffusion step t at σ = 0.05: 0.00313 at t = 0, 0.1665 at 25, 0.5229 at 50, 0.8668 at 75 and 1 at 99"></a>
 
-added: the definition, why it is the optimum, and the 0.04 nats (from step file 03, step 1, and the `poe-overlap-dial` idea map, run 2) · the worked numbers and the check on v_t at t = 50 (from `walk-numbers.json`) · the mixture score with softmax weights (from the exact-mixture-score plan) · the line between an exact target and an exact sampler (from step files 02 and 03) · layer 2's drip folder as the notation source · the assumptions behind the optimum (whole-distribution objective, unlimited capacity, global optimum), the smoothed set as a chosen clean expert with σ separate from the schedule's 0.0251, and the step-by-step derivation of the mixture score (from the Codex mathematics review)
-dropped: "in 2D a trained expert adds nothing past its smoothed data" as a general claim, narrowed to the one run that measured it (from the Codex mathematics review)
+Each training point's kernel widens from the narrow clean 0.00313 to the full 1 by the last step, following v_t = 1 − ᾱ_t + ᾱ_t σ². The drip has you reproduce the 0.5229 at t = 50 by hand.
+
+**Prompt:** [the maths drip](prompts/03-2-the-maths-drip.md)
 
 ⏱ you 45 to 90 min · AI ~10 min · stop: you derive the Outcome below without notes
 
@@ -186,84 +59,21 @@ dropped: "in 2D a trained expert adds nothing past its smoothed data" as a gener
 
 ### 3. You: quiz 3.2
 
-Quiz 3.2: (URL lands here)
+Quiz 3.2 checks the layer itself, with banked problems: the ideal expert's score, why its composition is exact at every noise level, the perfect-sample baseline, and co-occurrence, intersection, contention and interaction. Its link lands here when step 0 publishes it: (URL lands here)
 
 ⏱ you 45 to 90 min, the banked problems included · stop: the bar, then the build. Below the bar, the misses become the first rungs of a second `/drip --math`, and you retake before building.
 
 ### 4a. You: the build, walk03.py
 
-```text
-/drip-execute-plan
-artifacts/drips/simple-distributions-rebuild/03-ideal-experts-and-the-seven-kinds.md --depth
-objective, I type every block myself into ~/Playground/PhD/simple-distributions-walk/walk03.py
+You type the ideal experts, the exact grid, the perfect-sample baseline and the kinds of composition into `walk03.py`, following [the step file](../03-ideal-experts-and-the-seven-kinds.md) one step per message, steps 0 to 13. Disjunction and dominance are typed so the data stay in the notebook's order, but not taught.
 
-Task: walk the step file one step per message in its order, steps 0 to 13, teaching all but steps 6
-(disjunction) and 9 (dominance). I type every block myself into
-~/Playground/PhD/simple-distributions-walk/walk03.py and run it from that folder with
-/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python and
-PYTHONPATH=/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy.
-Starts from: the setup's folder and environment; walk02.py from layer 2; quiz 3.2 passed; the layer
-3 --math drip folder under artifacts/drips/, whose dispatch.md holds my notation.
-Settled facts:
-- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
-- The reference is rebuild/ideal.py, rebuild/kinds.py and rebuild/phase3_kinds.py; every worked
-  number prints from python -m rebuild.walk_numbers, run from toy/, as 25 p3. keys; the
-  kinds notebook's printed numbers are in
-  artifacts/ideas/poe-overlap-dial/kinds-of-composition-on-the-papers-toys.ipynb, and the rebuilt
-  run beside them in rebuild/out/phase3/phase3.json (step file 03, opening).
-- rebuild/phase3_kinds.py compares the reference with the notebook's printed numbers and never
-  reads walk03.py: exact numbers to the notebook's printed precision, sampler numbers within 0.03
-  (rebuild/phase3_kinds.py, docstring; REBUILD_WALK.md, brick "Ideal experts and the seven kinds").
-- rng = np.random.default_rng(0) draws the training data in exactly the kinds notebook's order, and
-  everything else random uses rng2, so typed in order the data equal the notebook's (step file 03,
-  step 0). Steps 6 and 9 each draw training data from rng, so their show_kind lines are typed even
-  though their teaching is skipped; leaving them out shifts every later kind's data off the
-  notebook's (step file 03, steps 0, 4, 6 and 9).
-- σ = 0.05, N = 800; the grid is 241 × 241 over [−1.1, 1.1]², cell area 8.403e-05, 58081 points
-  (step file 03, steps 0 and 3; p3.grid_cell_area, p3.grid_points).
-- Step 1's instance gives -2.6288 by formula and scikit-learn; step 2's v_t is 1.0, 0.5229 and
-  0.00313 at t = 99, 50 and 0 (p3. keys).
-- The perfect-sample baseline (printed as floor TV) is the total variation, on 40 × 40 bins, of n
-  perfect draws from the grid density, each jittered inside its cell; for 2,000 points it is about
-  0.10 (0.11 in the notebook's draw, 0.10 in the step file's run). It is random, with a standard
-  deviation of 0.0062 to 0.0095 over 200 redraws (p3.perfect_tv_200_redraws_sd_range), so a
-  sampler can score below it by chance (step file 03, steps 4 and 5).
-- Exact measures: intersection 0.71 (mass within 0.08 of a ring mode, ring × a bar of half-width
-  0.05), co-occurrence 0.81 (mass in the crossing), contention 0.67 (mass within 0.12 of the two
-  apart positions, half of each set rotated), interaction −0.41 (mean x1 in the band at f = 0.3),
-  negation 0.10 at w = 0.05 (step file 03, steps 5, 7, 8, 10 and 11).
-- The dials: contention falls from 0.657 at 5% rotated to 0.002 at 0%, the chimera column of step
-  8; negation at the paper's w = 0.3 leaves 0.863 of the mass away from every ring mode. Dials draw
-  fresh data and move up to about 0.08 from the notebook's curves where a curve is steep (step file
-  03, step 12).
-- Step 13 on contention printed, against exact 0.67: UHA 0.62 with TV 0.14, tuned MALA 0.58 with TV
-  0.18, reverse diffusion 0.60 with TV 0.24, and 1000 perfect draws at TV 0.13 (step file 03, step
-  13).
-- Dominance defeats every sampler (TV 0.29 to 0.58, against a perfect-draw TV of 0.11 in that
-  run), because no local sampler moves mass between separated modes to match unequal weights; it
-  is skipped here (step file 03, step 13; artifacts/ideas/poe-overlap-dial/IDEA_MAP.md, claim 4
-  and run 4).
-Outputs:
-- walk03.py: one script that runs end to end and prints each step's worked number and each kind's
-  "exact measure, floor TV" line;
-- step11-seven-kinds-exact.png, the seven exact compositions in a row, in the typing folder;
-- the step file's steps ticked, and the walk map that holds my place between sittings.
-Target: every p3. number walk03.py prints equals walk_numbers to the digits shown; the exact
-measures print 0.71, 0.81, 0.67 and −0.41 for intersection, co-occurrence, contention and
-interaction, the notebook's and phase3_kinds' values to two decimals; the contention dial prints
-0.002 at 0% rotated. I judge, from the printed lines.
-Progress: step 1 prints -2.6288 twice; step 2 the three v_t values; step 3 the cell area and grid
-points; steps 5, 7, 8 and 10 one "exact measure, floor TV" line each; step 12 the dial curves; step
-13 one line per sampler on contention.
-Proof: python walk03.py prints "intersection: exact measure 0.71", "co-occurrence: exact measure
-0.81", "contention: exact measure 0.67" and "interaction: exact measure -0.41", and the comparison
-in step 5 of this layer shows no differing number.
-Limits: never edit rebuild/ or the step file's code blocks; I type, I do not paste; no commit.
-Hand-off: the retrospective the walk closes on, and the /drip-retro command it prints.
-```
+Before the first step, walk [the kinds-of-composition scene](https://claude.ai/artifact/DBmJtn6xy75sPtQwPEvQZU#system) one cell at a time. It lays out the 15-cell [notebook](../../../ideas/poe-overlap-dial/what-an-expert-learns-and-kinds-of-composition.ipynb) as a walk, and its closing cells compute co-occurrence, contention and interaction as products of two experts' densities on one grid, the same kinds this build types.
 
-added: the reference files, the 7 p3. keys, the draw-order rule and its consequence for the two skipped steps, the grid, the floor, the exact measures, the dials, step 13's printed numbers and dominance's failure (from step file 03, `walk-numbers.json`, `phase3_kinds.py`, `REBUILD_WALK.md` and the `poe-overlap-dial` idea map) · the step range, 0 to 13, with the two skipped teachings named · the floor renamed the perfect-sample baseline, with its spread over repeated draws, and dominance's 0.11 called a perfect-draw TV rather than a floor (from the Codex mathematics review) · the p3. key count, 25, and the redraw spread at four decimals, 0.0062 to 0.0095, in place of 0.006 to 0.010, which rounded 0.0095 up (from the port of the review's checks into walk_numbers)
-dropped: "bar: python -m rebuild.phase3_kinds prints ok on co-occurrence, intersection, contention and interaction against my code" from the first line (why: `phase3_kinds` compares the reference with the notebook and never reads `walk03.py`, so its `ok` says nothing about my code; the same four exact numbers, printed by my script, are the bar instead)
+<a href="../../../../toy/rebuild/out/phase3/figure1-every-sampler-on-every-kind.png"><img src="../../../../toy/rebuild/out/phase3/figure1-every-sampler-on-every-kind.png" width="420" alt="Seven kinds of composition, one per row (intersection, disjunction, co-occurrence, contention, dominance, interaction, negation): the two experts' training data, the exact composed density, then 2,000 samples each from perfect draws, reverse diffusion, ULA, MALA and UHA, each titled with its total variation"></a>
+
+This is the kinds notebook's Figure 1, which `phase3_kinds` rebuilds. On the intersection row reverse diffusion leaves a faint ring between the two modes (TV 0.31) where perfect draws read 0.11 and UHA 0.13. The dominance row stays high for every sampler (0.29 to 0.58), which is why this layer skips it.
+
+**Prompt:** [the build](prompts/03-4a-the-build.md)
 
 ⏱ you 1.5 to 3 h (12 of the 14 steps; disjunction and dominance are skipped) · AI ~30 min · stop: the prompt's bar
 
@@ -271,66 +81,9 @@ dropped: "bar: python -m rebuild.phase3_kinds prints ok on co-occurrence, inters
 
 ### 4b. You: the idea-walk rebuild, walk03b.py
 
-```text
-/drip-execute-plan --request rebuild run 2 of
-artifacts/ideas/poe-overlap-dial/kinds-of-composition-on-the-papers-toys.ipynb by hand in
-~/Playground/PhD/simple-distributions-walk/walk03b.py; bar: with 5% of each set rotated, the exact
-composition puts 0.75 of its mass on co-occurrence while reverse diffusion draws a chimera column
-with 0.21, and at 2% overlap reverse diffusion, ULA and MALA add a dry-dog cluster that tuned MALA
-and UHA do not
+You rebuild run 2 of [the kinds notebook on the paper's toys](../../../ideas/poe-overlap-dial/kinds-of-composition-on-the-papers-toys.ipynb) in `walk03b.py`: three kinds at the steep settings where a weak sampler draws the picture of a data failure, such as reverse diffusion's chimera column at contention with 5% of each set rotated.
 
-Task: cut run 2 into 4 to 6 pieces, write the step file at the open, and build, teach and test one
-piece per round. I type every block into walk03b.py and run it with
-/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python and
-PYTHONPATH=/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy.
-Starts from: walk03.py from step 4a, whose exact grid, perfect-sample baseline, kinds and dials run
-2 reuses;
-walk02c.py from layer 2, whose tuned MALA it reuses; the notebook named above, whose printed run 2
-table is the answer key.
-Settled facts:
-- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
-- Run 2 runs three kinds at the steep points of Figure 2, where a sampler's error and the data's
-  limit could be mistaken for each other: co-occurrence with A's top edge at 0.4, contention with 5%
-  of each set rotated, interaction at 2% overlap (notebook, cell 17).
-- The samplers: perfect draws, reverse diffusion with the composed score, ULA and MALA at 0.05·v_t,
-  tuned MALA adapted to 0.6 acceptance, and UHA at 0.3·√v_t with damping 0.5 and 3 leapfrog steps;
-  2,000 samples each (notebook, cells 2 and 18).
-- The notebook's run 2 table, measure and TV per sampler. Co-occurrence at top edge 0.4, exact 0.44:
-  perfect 0.43 / 0.11, reverse diffusion 0.38 / 0.22, ULA 0.40 / 0.19, MALA 0.42 / 0.18, tuned MALA
-  0.42 / 0.13, UHA 0.43 / 0.13. Contention at 5% rotated, exact 0.75: perfect 0.73 / 0.10, reverse
-  diffusion 0.21 / 0.69, ULA 0.26 / 0.57, MALA 0.24 / 0.57, tuned MALA 0.53 / 0.30, UHA 0.53 /
-  0.27. Interaction at 2% overlap, exact −0.38: perfect −0.38 / 0.05, reverse diffusion −0.35 /
-  0.59, ULA −0.37 / 0.26, MALA −0.37 / 0.27, tuned MALA −0.38 / 0.08, UHA −0.38 / 0.08 (notebook,
-  cell 18).
-- At contention 5% rotated, reverse diffusion's samples form one column at x1 ≈ 0 between the bars,
-  a chimera the exact composition does not contain; at interaction 2%, reverse diffusion, ULA and
-  MALA put a second cluster at the dry position at the band's bottom edge (notebook, cell 19).
-- A weak sampler near the edge of what the data supports draws the kind's failure picture, which
-  without the exact composition beside it would be blamed on missing data; only the samplers that
-  come closest to the perfect-sample baseline in 2D (tuned MALA, UHA) are read on image results
-  (artifacts/ideas/poe-overlap-dial/IDEA_MAP.md, claim 4 and run 6).
-- rebuild/phase3_kinds.py reproduces run 2 within 0.05 of the notebook on every row, its own
-  tolerance for these sampler numbers (rebuild/phase3_kinds.py, Run 2;
-  rebuild/out/phase3/phase3.json, run2).
-Outputs:
-- walk03b.py, printing one block per steep setting: the exact measure, then measure and TV per
-  sampler;
-- a figure of the three settings with one panel per sampler, in the typing folder;
-- the step file the walk writes at its open, ticked piece by piece.
-Target: the exact measures print 0.44, 0.75 and −0.38; every sampler row's measure and TV are within
-0.05 of the notebook's run 2 table, the tolerance phase3_kinds holds the reference to; the figure
-shows reverse diffusion's chimera column at contention 5% and the dry-dog cluster at interaction
-2%. I judge, from the printed table and the figure.
-Progress: piece 1 prints the three exact measures; each sampler piece prints its row for all three
-settings; the figure piece saves the panels.
-Proof: python walk03b.py prints the three blocks, and step 5's comparison with python -m
-rebuild.phase3_kinds (Run 2) shows each row within 0.05.
-Limits: never edit the notebook or rebuild/; I type, I do not paste; no commit.
-Hand-off: the retrospective the walk closes on, and the /drip-retro command it prints.
-```
-
-added: run 2's three settings, the sampler settings, the full run 2 table, the two failure pictures, the claim 4 repair and the reference's tolerance (from the kinds notebook, the `poe-overlap-dial` idea map, claim 4 and run 6, and `phase3_kinds.py`) · walk03.py and walk02c.py as the parts the rebuild reuses
-dropped: "samplers that reach the floor", since one perfect draw is random and not a floor; now "the samplers that come closest to the perfect-sample baseline" (from the Codex mathematics review)
+**Prompt:** [rebuild the steep settings](prompts/03-4b-rebuild-the-steep-settings.md)
 
 ⏱ you 1 to 2 h (one build concept) · AI ~35 min · stop: the prompt's bar
 
@@ -353,31 +106,7 @@ cd ~/Playground/PhD/simple-distributions-walk
 
 ### 7. You: close the layer
 
-This layer has no scene, so the flow skips step 6. Run the `/drip-retro` command step 4a's build printed at its close (⏱ about 25 minutes). Then paste this:
-
-```text
-In the background, dispatch xref-cadence over the files layer 3 of the composition ladder wrote: the
-layer 3 --math drip folder under artifacts/drips/, the step file the --request walk of step 4b
-wrote at its open, and the retrospectives the two layer 3 walks closed on.
-
-Settled facts:
-- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
-- The reference sets to link against are the vault notes, journey plans and textbook chapter on
-  the Study first line of
-  artifacts/drips/simple-distributions-rebuild/ladder/03-ideal-experts-and-the-seven-kinds.md,
-  including artifacts/ideas/poe-overlap-dial/composition-terms.md; the layer 3 row of the Bricks
-  table in artifacts/drips/simple-distributions-rebuild/REBUILD_WALK.md ("Ideal experts and the
-  seven kinds"); claims 4, 7 and 8 and runs 2, 3, 4 and 6 of
-  artifacts/ideas/poe-overlap-dial/IDEA_MAP.md; and claim 4 of
-  artifacts/ideas/when-poe-reaches-a-and-b/IDEA_MAP.md.
-- ~/Playground/PhD/simple-distributions-walk/ is scratch space; link nothing into it (CLAUDE.md, the
-  playground is disposable).
-Outputs: links written both ways between those files and the reference sets.
-Hand-off: the agent's report, listing every link it wrote, read before layer 4 starts.
-```
-
-added: the reference sets, by path (from this layer's Study first line, `REBUILD_WALK.md` and the two idea maps)
-dropped: nothing
+This layer has no scene, so the flow skips step 6. Run the `/drip-retro` command step 4a's build printed at its close (about 25 minutes). Then paste [the linking prompt](prompts/03-7-link-the-layer.md), which links what this layer wrote to the vault notes, journey plans and idea maps that teach it.
 
 ⏱ you 2 min to paste · AI ~10 min (estimate)
 

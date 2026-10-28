@@ -2,7 +2,7 @@
 
 ⬅️ [Layer 7: A without B](07-a-without-b.md) · 🏠 [the guide](../PROMPTS.md) · [Correction prior art](08a-correction-prior-art.md) ➡️
 
-**Why it is critical.** This is the first half of the research goal. It is defined exactly here before any learned version of it is trusted.
+**Why it is critical.** This is the first half of the research goal. It is defined exactly here before any learned version of it is trusted. On [the axes](../PROMPTS.md#the-axes-one-new-variable-per-rung), this is rung e: the interaction term, defined here and learned back as a correction in layer 9.
 
 **Depth.** Build: r(x) in log-density form, its ε-space form, and the label term. You 3.3 to 6.7 h in all (rough).
 
@@ -37,193 +37,17 @@
 
 **AI, one layer ahead.** Paste both when you start layer 7's build.
 
-```text
-In the background, build the layer 8 reference: rebuild/phase8_interaction.py, the interaction term
-in the parts world with a wet rule (the cat half shifts when a dog is present), computed exactly
-from the Gaussian mixtures, and r_t with its gradient at each noise level. Print r with the rule off
-and on, per noise level. Add those numbers to rebuild/walk_numbers.py as phase8() with keys p8.*,
-and run it once with the co3 python.
+The first prompt has an AI session write the reference your step 5 compares against: `rebuild/interaction.py` and `rebuild/phase8_interaction.py`. They compute the interaction term exactly in the parts world with a wet rule (the cat half shifts when a dog is present), then r_t and its gradient at each noise level, and add the numbers to `walk_numbers` as `p8.` keys. The second prompt prepares and builds quizzes 8.1 and 8.2, so they are waiting at steps 1 and 3.
 
-Task: in /home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy, write rebuild/interaction.py (the
-functions) and rebuild/phase8_interaction.py (the run, python -m rebuild.phase8_interaction --out
-rebuild/out/phase8), the split the brick row names, and add phase8() to rebuild/walk_numbers.py.
-Run everything from toy/ with /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python.
-Starts from: rebuild/ as layers 1 to 5 left it; nothing from layer 8's walk.
-Settled facts:
-- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
-- The brick row: in the parts world with a "wet" rule (the cat half shifts when a dog is present),
-  r(x) = log p(x|A,B) − [log p(x|A) + log p(x|B) − log p(x)] in closed form, expected constant
-  with the rule off and varying with it on; then the noised r_t and its gradient, written also in
-  ε-space as ε_joint − ε_A − ε_B + ε_∅, the residual poe_repair_min already caches for 25 pairs
-  at all 50 steps; files rebuild/interaction.py and rebuild/phase8_interaction.py; not built
-  (artifacts/drips/simple-distributions-rebuild/REBUILD_WALK.md, brick "The interaction term,
-  exact").
-- When each label is a fixed function of the image, the interaction term is exactly zero, so
-  interaction is no third operator: it is a same-variable product whose A∩B appearance must be in
-  the training data. The wet-dog shift was found at 20% overlap and missed at 0% (mean x1 −0.79
-  against −0.48) (artifacts/ideas/poe-overlap-dial/IDEA_MAP.md, claim 7.1 and run 1).
-- By Bayes, r(x) = log p(A,B|x) − log p(A|x) − log p(B|x) + log[p(A)p(B)/p(A,B)], so with clean
-  labels r is one constant wherever the joint has mass, wet rule or not; the brick row's "varying
-  with it on" can then only appear in r_t at t > 0, off the joint's support, or for experts whose
-  training sets lack the wet A∩B images (claim 7.1;
-  artifacts/ideas/when-poe-reaches-a-and-b/IDEA_MAP.md, claims 3 and 9). Compute and report all
-  three; never tune the world to force a difference at t = 0.
-- "Interaction" splits in two: appearance interaction (a data condition, no term) and label
-  dependence given the image (a real term, zero for clean labels, nonzero for report-mined labels)
-  (artifacts/ideas/poe-overlap-dial/IDEA_MAP.md, claim 7.3).
-- No paper adds an interaction term to a product; the clean-label argument is Bradley et al.
-  2025a's Bayes composition, p.4 (artifacts/ideas/poe-overlap-dial/IDEA_MAP.md, claim 7, route 1).
-- rebuild/parts_world.py: a sample is 16 pixels, HEAD 0 to 7, BODY 8 to 15, LEFT and RIGHT the
-  column halves; Mixture(w, m, v) normalises its weights, noised(abar) gives N(√ᾱ m, ᾱ v + 1 − ᾱ)
-  per component, responsibilities(x) is float64 NumPy, and torch() casts to float32, so keep the
-  closed-form checks out of torch() and logp_torch(); placed(value, half, var_in=0.01,
-  var_out=1.0, bg=0.0) builds one placement; mixture_product(A, B) builds every pair.
-- rebuild/phase5_dial.py: pw_experts(f, bg_var) builds layer 5's experts, cat-only on either half
-  at weight (1 − f)/2 each and cat-and-dog at f/2 each (B likewise with the dog at −1), object
-  variance 0.01, background mean 0 with variance 0.01 or 1.0; pw_ab(x) calls a sample A∩B when
-  one half's mean is above 0.75 and the other's below −0.75.
-- Layer 5's parts-world dial: with an empty background the product at 0% overlap is a ghost with
-  half-means (0.5, −0.5) and A∩B weight 0.000, and the matching pair wins by 386.2 nats from 0.1%;
-  with a loose background (variance 1.0) the A∩B weight is 1.000 at every overlap including 0%
-  (step file 05-the-overlap-dial.md, step 6; p5.matching_pair_advantage_nats in
-  rebuild/out/walk-numbers.json).
-- The parts world is exact: rebuild/phase4_parts_world.py matches example 9's numbers.json to a
-  largest relative difference of 2.87e-16 (step file 04-the-parts-world.md, step 8).
-- Noise levels come from the cosine schedule, rebuild.ideal.ABAR over T = 100; t = −1 means clean
-  in parts_world.composed_target; ᾱ_t is 0.9994, 0.8356, 0.4783, 0.1335 and 0.0 at t = 0, 25,
-  50, 75 and 99 (the p1.abar_* keys in rebuild/out/walk-numbers.json).
-- ε = −√(1 − ᾱ_t)·∇log q_t (layer 1), so ∇r_t = −(ε_joint − ε_A − ε_B + ε_∅)/√(1 − ᾱ_t), and
-  ∇r_t is exactly what the composed score s_A + s_B − s_∅ misses of the joint's score (brick row
-  above; ladder/01-one-diffusion-expert.md, step 2).
-- SDXL's cache under /datasets/mmolefe/poe_repair_min/artifacts/caches/training_cache/ holds ε_A,
-  ε_B, ε_joint and ε_∅ at all 50 steps for 25 pairs, with the residual gs*(eps_j − eps_a − eps_b +
-  eps_uncond) at guidance 7.5; its lower bound on the interaction did not track which pairs blend
-  (artifacts/ideas/sdxl-shaped-hybrid-testbed/IDEA_MAP.md, claim 1 and Sources).
-- Claim 7.4's label term: points uniform on [−1, 1]², A true when x1 < 0 and B true when x2 > 0
-  (the A and B of rebuild/phase5_dial.py), A read with probability 0.9 when true, and inside A∩B,
-  B read only when A was read; the term log p(A,B|x) − log p(A|x) − log p(B|x) is +0.105 nats
-  for (A,B) inside A∩B, strongly negative for (¬A,B) there, and zero elsewhere
-  (artifacts/ideas/poe-overlap-dial/IDEA_MAP.md, claim 7.4). +0.105 is −ln 0.9, whatever the
-  probability of reading B once A was read.
-- rebuild/walk_numbers.py prints through put(key, value), its __main__ loop runs phase1, phase2,
-  phase3 and phase5 and writes rebuild/out/walk-numbers.json; it holds worked numbers, and run
-  results are read from rebuild/out/phase*/ (walk_numbers.py docstring).
-- Every phase is one command from toy/, python -m rebuild.<script>, with outputs in
-  rebuild/out/phaseN; pick the device with rebuild.device.pick_device, the GPU guard
-  (REBUILD_WALK.md, Pins).
-Outputs:
-- rebuild/interaction.py: r_t and ∇r_t, in float64, for any four Mixture objects (joint, A, B,
-  unconditional) at a noise level t, in any dimension, since layer 9 applies it to a 2D toy;
-- rebuild/phase8_interaction.py: one world of image kinds (cat-only, dog-only, cat-and-dog) with
-  prior weights, its true conditionals derived by "contains" labels, the wet rule off and on, and
-  the experts that never saw a cat-and-dog image from pw_experts(0.0, 1.0); it prints r's mean and
-  spread over 2,000 joint draws and 2,000 p(x) draws at t = −1, 0, 25, 50, 75 and 99, ∇r_t at one
-  fixed image, and the exact label term of claim 7.4 in each label cell;
-- rebuild/out/phase8/phase8.json with every chosen setting beside each number, and
-  rebuild/out/phase8/interaction-term.png: r's spread on the joint's draws (y) against the noise
-  level (x), one line per setting, rule off and on;
-- phase8() in rebuild/walk_numbers.py, added to its __main__ loop, putting p8. keys: the chosen
-  settings (p8.wet_cat_value, the world's weights, the background variance), r and ∇r_t at the
-  fixed image per setting and level, the ε-space residual there, and p8.label_term_* per cell;
-- rebuild/out/walk-numbers.json rewritten with the p8. keys added.
-Target: the composed score plus interaction.py's ∇r_t equals the joint's exact score, and ∇r_t
-equals the four exact scores combined, both within 1e-10 at every printed level; r from the true
-conditionals has a spread on the joint's draws at t = −1 and t = 0 at float64 precision, rule off
-and on, or the run stops and reports it against claim 7.1; the label term for (A,B) inside A∩B
-prints 0.1054; every p1., p2., p3. and p5. value is unchanged. I judge, from the printed lines.
-Progress: the identity check prints first, then one line per setting and level, then the label
-cells, then the p8. keys.
-Proof: python -m rebuild.phase8_interaction --out rebuild/out/phase8 prints "identity max
-difference <x>" with x under 1e-10, and python -m rebuild.walk_numbers | grep 'p8\.' prints the
-keys; git diff rebuild/out/walk-numbers.json shows only added p8. lines.
-Limits: change no existing function in rebuild/ and no p1. to p5. value; write nothing under
-artifacts/; no commit.
-Hand-off: rebuild/out/phase8/phase8.json and the p8. keys, which step 4a's walk, step 5's
-comparison, step 6's scene and layer 9's reference read; at the top of phase8_interaction.py's
-docstring, one paragraph saying where r moved with the wet rule and where it did not.
-```
+**Prompt:** [the layer 8 reference](prompts/08-0-the-interaction-reference.md)
 
-added: the function and run split, the run command and the output folder (from the brick row and the Pins) · claim 7.1, its Bayes form, and the instruction to report rather than force the brick row's contrast (from the `poe-overlap-dial` idea map, claims 7.1 and 7.3, and the `when-poe-reaches-a-and-b` idea map, claims 3 and 9) · the real functions in `parts_world.py` and `phase5_dial.py`, and the float32 cast to avoid (from the code) · layer 5's ghost and loose-background results (from step file 05 and `walk-numbers.json`) · the noise levels, the ε-space [gradient](../../../../../../Obsidian/Mathematics/Calculus/Gradient.md#where-to-learn-this)<sub>[1](../../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=152 "Mathematics for machine learning, section 5.2, Varies one input at a time to get partial derivatives, stacks them into the gradient, and computes one (Exampl..."), [2](../../../../../../Obsidian/Mathematics/references/textbooks/calculus/calculus-textbook.pdf#page=984 "Calculus textbook, section 13.6, Directional derivatives, then the gradient (Definition 13.6.4, page 987) and why it points the way of fastest increase."), [3](../../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=99 "Deep learning textbook, section 4.3, The gradient as the vector of partial derivatives, the directional derivative, and steepest descent."), [▶1](https://www.youtube.com/watch?v=CnVes9TdnPo&t=754s "The Organic Chemistry Tutor, 12:34 to 28:29, Worked gradient problems. Chapter-timed, from the video lessons index."), [▶2](https://www.youtube.com/watch?v=tDPp5uWSIiU&t=3506s "Leonard, Calculus 3, 13.6, 58:26 to 1:15:15, The gradient defined, its properties, and why it points the way of fastest increase. Chapter-timed, from the vid..."), [◆](../../../../../../goal-setting/learning/deep-learning/transformers/textbook/08-take-a-slope-and-the-gradient.md "Take a slope and the gradient of a function of two numbers, deep-learning/transformers, chapter 08. The gradient of a squared loss in two numbers a and b, st..."), [◈](https://claude.ai/artifact/DBmJtn6xy75sPtQwPEvQZU#nb-sec2 "Kinds of composition notebook, Same points, two labellings, The denoising loss and one gradient step, showing the gradient is identical under two labellings ...")</sub> and SDXL's [cache](../../../../../../Obsidian/Information%20Technology/System%20Design/Caching/Cache.md#where-to-learn-this)<sub>[1](../../../../../../Obsidian/Mathematics/references/textbooks/system-design/computer-networking-a-top-down-approach.pdf#page=140 "Computer networking: a top-down approach, section 2.2.5, Web caching, A web cache, or proxy server, in front of an institution's 15 Mbps access link worked w..."), [2](../../../../../../Obsidian/Mathematics/references/textbooks/system-design/system-design-interview.pdf#page=15 "System design interview, chapter 1, Cache, Walks one web request through a cache tier (check the cache, on a miss query the database and store the answer), t..."), [3](../../../../../../Obsidian/Mathematics/references/textbooks/system-design/grokking-the-system-design-interview.pdf#page=15 "Grokking the system design interview, section 13, Caching, The three invalidation schemes (write-through, write-around and write-back), each with what it cos..."), [▶1](https://www.youtube.com/watch?v=dGAgxozNWFE&t=239s "ByteByteGo, Cache Systems Every Developer Should Know, Distributed and backend cache, 3:59 to 4:42, The shared cache that sits between services and the datab..."), [▶2](https://www.youtube.com/watch?v=RCdAGvtTYI0&t=97s "Hayk Simonyan, The Ultimate Guide to Caching and CDNs, Cache HIT, MISS, and Ratio, 1:37 to 2:09, Names a hit, a miss and the hit ratio that measures a cache...."), [◆](../../../../../../goal-setting/learning/system-design/foundations/plans/10-the-nginx-cache.md "The nginx cache: MISS, then HIT, system-design/foundations, plan 10. An nginx cache answers the corner shop's catalogue page by itself on the second request,...")</sub> (from `walk-numbers.json`, layer 1 and the `sdxl-shaped-hybrid-testbed` idea map) · the exact label term, so step 4b has a reference (from claim 7.4) · how `walk_numbers.py` is built (from its docstring)
-dropped: "rule off (constant)" as a printed [expectation](../../../../../../Obsidian/Mathematics/Statistics/Probability/Expected%20Value.md#where-to-learn-this)<sub>[1](../../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=141 "Introduction to probability for data science, section 3.4, Works with numbers: E[X] = Σ x p(x) and why it equals a dataset's average once repeated values are..."), [2](../../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-statistics.pdf#page=81 "Introduction to statistics (Wits lecture notes), section 4.2.3, The expected value of a discrete random variable as the mean over many trials, with E[X] and ..."), [3](../../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=196 "Introduction to probability for data science, section 4.2, The integral definition for a continuous variable, with uniform and exponential worked examples (p..."), [▶1](https://www.youtube.com/watch?v=KLs_7b7SKi4&t=309s "StatQuest, Expected Values, Main Ideas, 5:09 to 8:02, Calculating an expected value: each outcome times its probability, added up. Chapter-timed, from the vi..."), [▶2](https://www.youtube.com/watch?v=OSPr6G6Ka-U&t=738s "StatQuest, Expected Values for Continuous Variables, 12:18 to 18:17, Calculating the expected value of an exponential distribution, after deriving the formul..."), [◆](../../../../../../goal-setting/learning/mathematics/statistics/conditional-expectation/textbook/01-expectation-and-the-best-constant-guess.md "1. Expectation, and the best constant guess, mathematics/statistics/conditional-expectation, section 1. A fair die's best constant guess under squared error ...")</sub> (why: claim 7.1 says r from clean labels is constant with the rule on too, so the run prints the spread and reports which holds)
-
-```text
-In the background, prepare and build layer 8's two quizzes, bottom up, for the composition ladder
-in artifacts/drips/simple-distributions-rebuild/: quiz 8.1 and quiz 8.2.
-
-Task: for each quiz, first dispatch prep-cadence (quiz-prep-pulse --build) with the goal and minutes
-below, then dispatch quiz-cadence (mode build, repo
-/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain). The goal for both is "define the interaction
-term exactly and say where it lives".
-- Quiz 8.1, --minutes 40: the college maths under layer 8. Bayes' rule for two labels, conditional
-  independence, log-odds.
-- Quiz 8.2, --minutes 60: layer 8 itself. r(x) = log p(x|A,B) − [log p(x|A) + log p(x|B) −
-  log p(x)], why it is constant when the labels are fixed functions of the image, its ε-space form
-  ε_joint − ε_A − ε_B + ε_∅, the label term for report-style labels.
-Starts from: nothing from this layer; it runs during layer 7's build, so the layer 8 --math drip
-has not run and layer 8 has no step file yet. Quiz 8.1 takes its material from the Study first
-line of artifacts/drips/simple-distributions-rebuild/ladder/08-the-interaction-term.md; quiz 8.2
-takes it from that file's steps 2, 4a and 4b, the brick row "The interaction term, exact" in
-artifacts/drips/simple-distributions-rebuild/REBUILD_WALK.md, and claim 7 (7.1 to 7.4) of
-artifacts/ideas/poe-overlap-dial/IDEA_MAP.md.
-Settled facts:
-- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
-- quiz-cadence stops when a quiz has no coverage file in .quiz-prep/, so prep-cadence runs first for
-  each quiz (quiz-cadence, "The preparation gate").
-- The textbook for Bayes is Deisenroth et al. 6.3, p189; log-odds has no passage that teaches it
-  yet beyond Murphy 10.2 (binary logistic regression, p377), so quiz 8.1's preparation writes the
-  missing passage (this layer's Study first line).
-- pdftotext is not installed on mscluster, so
-  ~/.claude/skills/index-source/scripts/find-in-textbooks.py fails; open the PDFs with PyMuPDF from
-  the co3 environment (checked on mscluster109: import pymupdf works in co3, version 1.28.2, and
-  import pypdf fails everywhere).
-- The shelf index is ~/Obsidian/Mathematics/references/textbooks/Textbooks.md and the
-  worked-examples index is ~/Obsidian/Mathematics/references/exercises/Worked Examples.md
-  (quiz-prep-pulse, "The bank").
-- By Bayes, r(x) = log p(A,B|x) − log p(A|x) − log p(B|x) + log[p(A)p(B)/p(A,B)]; when each label
-  is a fixed function of the image the term is exactly zero, so the wet dog is a data condition
-  (does either expert's data hold A as it looks under B), and the shift was found at 20% overlap
-  and missed at 0% (artifacts/ideas/poe-overlap-dial/IDEA_MAP.md, claim 7.1 and run 1;
-  artifacts/ideas/when-poe-reaches-a-and-b/IDEA_MAP.md, claim 9).
-- With report-mined labels a label term survives; on claim 7.4's quadrant labels (A read with
-  probability 0.9 when true, B read inside A∩B only when A was read) it is +0.105 nats for (A,B)
-  inside A∩B, strongly negative for (¬A,B) there, and zero elsewhere; +0.105 is −ln 0.9
-  (artifacts/ideas/poe-overlap-dial/IDEA_MAP.md, claims 7.3 and 7.4).
-- A chest X-ray diagnosis is read from its findings with uncertainty, so diagnosis labels carry the
-  label term while finding labels given the diagnosis do not (claim 7, route 2).
-- The notation: q(x_t | x_0) = N(√ᾱ_t x_0, (1 − ᾱ_t) I) over T = 100 steps of a cosine schedule,
-  ε = −√(1 − ᾱ_t)·∇log q_t, so ∇r_t = −(ε_joint − ε_A − ε_B + ε_∅)/√(1 − ᾱ_t)
-  (ladder/01-one-diffusion-expert.md, step 2; REBUILD_WALK.md, brick "The interaction term,
-  exact").
-- Every number an answer uses comes from the idea maps, step files 04-the-parts-world.md and
-  05-the-overlap-dial.md, rebuild/out/walk-numbers.json or a cited textbook page; the p8. keys do
-  not exist yet, because the layer 8 reference is built beside these quizzes.
-Outputs:
-- two coverage files under artifacts/drips/simple-distributions-rebuild/.quiz-prep/, each with a
-  verdict per question: ready, blocked, or unprepared by choice;
-- the missing log-odds passage, written where quiz-prep-pulse --build files passages;
-- rows in the worked-examples index for every banked problem;
-- two published quiz pages, each opening on a read-first list with minutes per item, a short path
-  and a full path.
-Target: no question on either page carries the verdict blocked; quiz 8.2 carries banked problems,
-about 6 to 10 per concept at the build depth (r(x), its ε-space form, the label term); every number
-in an answer traces to a source named above. I judge, from the pages.
-Progress: prep-cadence reports, per quiz, its question count, node count and verdicts; quiz-cadence
-reports each URL as it publishes.
-Proof: the two coverage files exist under .quiz-prep/ and list no question as blocked; the two
-URLs open.
-Limits: change nothing in the step files' prose, the idea maps or rebuild/; in the ladder files,
-write only the two URLs.
-Hand-off: write quiz 8.1's URL into step 1 and quiz 8.2's URL into step 3 of
-artifacts/drips/simple-distributions-rebuild/ladder/08-the-interaction-term.md, each replacing
-"(URL lands here)".
-```
-
-added: every field the setup's quiz prompt carries, so this prompt stands alone instead of pointing at "the setup section of PROMPTS.md", which the guide no longer holds (the setup is `ladder/00-setup.md`) · quiz 8.2's material named by path in place of "plan PROMPTS.md (layer 8) with REBUILD_WALK.md", since layer 8's prompts live in this file · the preparation gate (from the quiz-cadence agent definition) · the Bayes and [log-odds](../../../../../../Obsidian/Artificial%20Intelligence/Deep%20Learning/Logit.md#where-to-learn-this)<sub>[1](../../../../../../Obsidian/Mathematics/references/textbooks/ai-engineering/ai-engineering.pdf#page=190 "AI engineering, chapter 2, Sampling fundamentals, A language model outputs one logit per vocabulary token (figure 2-15); logits can be negative and do not su..."), [2](../../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/probabilistic-machine-learning-an-introduction.pdf#page=76 "Probabilistic machine learning: an introduction, section 2.4.2, Shows the sigmoid's input a equals the log odds log(p / (1 − p)), and names the inverse of th..."), [3](../../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/probabilistic-machine-learning-an-introduction.pdf#page=79 "Probabilistic machine learning: an introduction, section 2.5.2, Calls the inputs to the softmax logits, 'a generalization of the log odds', and writes a = Wx..."), [▶1](https://www.youtube.com/watch?v=pdqofxJeBN8&t=3450s "CS231n lecture 2, 57:30 to 1:00:36, Turns a cat image's raw scores 3.2, 5.1 and −1.7 into probabilities with a softmax, giving the cat class 0.13, and names ..."), [▶2](https://www.youtube.com/watch?v=pwQ0l4hFCVI&t=1746s "CS229 lecture 14, 29:06 to 36:12, Divides the logits (2, 1, −1) by a tiny temperature to get (200, 100, −100) and a near one-hot softmax, then top-k sampling..."), [◆](../../../../../../goal-setting/learning/deep-learning/transformers/textbook/10-find-the-gradient-of-the-cross-entropy.md "Find the gradient of the cross-entropy loss through a softmax, deep-learning/transformers, chapter 10. Defines a logit as a score before the softmax, takes t...")</sub> textbooks and the missing passage (from this layer's Study first line) · the missing `pdftotext` and the PyMuPDF route (from the textbook pass) · claim 7's facts and the route 2 diagnosis line (from the `poe-overlap-dial` idea map) · the notation (from layer 1 and the brick row) · that the p8. keys do not exist yet · the URL write-back
-dropped: nothing
+**Prompt:** [build quizzes 8.1 and 8.2](prompts/08-0-quizzes-8-1-and-8-2.md)
 
 ⏱ AI ~2 h for both (estimate), beside layer 7's build
 
 ### 1. You: quiz 8.1
+
+Quiz 8.1 checks the college maths under this layer: Bayes' rule for two labels, conditional independence, and log-odds.
 
 Quiz 8.1: (URL lands here)
 
@@ -231,41 +55,9 @@ Quiz 8.1: (URL lands here)
 
 ### 2. You: the maths drip
 
-```text
-/drip --math Bayes' rule for two labels and conditional independence, ending at r(x) = log p(x|A,B)
-- [log p(x|A) + log p(x|B) - log p(x)] and its ε-space form ε_joint - ε_A - ε_B + ε_∅
+You derive, one rung per message, Bayes' rule for two labels and conditional independence, ending at the interaction term r(x) = log p(x|A,B) − [log p(x|A) + log p(x|B) − log p(x)] and its noise-prediction form ε_joint − ε_A − ε_B + ε_∅. Your quiz 8.1 misses become the first rungs.
 
-Starts from: quiz 8.1 passed; any question it marked missed becomes a first rung. Layer 1's --math
-drip folder under artifacts/drips/ holds my notation for q(x_t | x_0) and the score.
-Settled facts:
-- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
-- By Bayes, log p(x|A) = log p(A|x) + log p(x) − log p(A), so r(x) = log p(A,B|x) − log p(A|x) −
-  log p(B|x) + log[p(A)p(B)/p(A,B)]: r is the label term plus a constant (the route through
-  p(c1, c2 | x), section 8.2 of the textbook on this layer's Study first line;
-  artifacts/ideas/when-poe-reaches-a-and-b/IDEA_MAP.md, claim 9).
-- Construction (1), score(x|A) + score(x|B) − score(x), targets p(x|A)p(x|B)/p(x), which is
-  p(x)·p(A|x)·p(B|x) up to a constant, and assumes A and B independent given x
-  (artifacts/ideas/when-poe-reaches-a-and-b/IDEA_MAP.md, claim 3 and "What the words are").
-- When each label is a fixed function of the image, the term is exactly zero, so the wet dog is a
-  data condition rather than a third operator; the shift was found at 20% overlap and missed at 0%
-  (mean x1 −0.79 against −0.48) (artifacts/ideas/poe-overlap-dial/IDEA_MAP.md, claim 7.1 and run
-  1).
-- With report-mined labels the term survives: +0.105 nats for (A,B) inside A∩B on claim 7.4's
-  labels, which is −ln 0.9 (artifacts/ideas/poe-overlap-dial/IDEA_MAP.md, claims 7.3 and 7.4).
-- ε = −√(1 − ᾱ_t)·∇log q_t, so ∇r_t = −(ε_joint − ε_A − ε_B + ε_∅)/√(1 − ᾱ_t), the gap between
-  the joint's score and the composed score (ladder/01-one-diffusion-expert.md, step 2;
-  REBUILD_WALK.md, brick "The interaction term, exact").
-- poe_repair_min caches that residual for 25 pairs at all 50 steps, at guidance 7.5
-  (artifacts/ideas/sdxl-shaped-hybrid-testbed/IDEA_MAP.md, claim 1 and Sources).
-Outputs: the drip's thread folder under artifacts/drips/, with dispatch.md recording my notation,
-the worked numbers I used and what clicked.
-Target: I derive r and its ε-space form without notes, say why r is constant when the labels are
-fixed functions of the image, and reproduce +0.105 = −ln 0.9 by hand. I judge.
-Hand-off: the thread folder's path, which quiz 8.2, step 6's scene and step 7's cross-links read.
-```
-
-added: the Bayes rewrite and construction (1)'s target (from the textbook on the Study first line and the `when-poe-reaches-a-and-b` idea map, claims 3 and 9) · claim 7.1 with run 1's numbers and the label term (from the `poe-overlap-dial` idea map) · the ε-space gradient (from layer 1 and the brick row) · SDXL's cache (from the `sdxl-shaped-hybrid-testbed` idea map) · layer 1's drip folder as the notation source
-dropped: nothing
+**Prompt:** [the maths drip](prompts/08-2-the-maths-drip.md)
 
 ⏱ rough: you 30 to 60 min · AI ~10 min · stop: you derive r and its ε-space form without notes
 
@@ -273,72 +65,17 @@ dropped: nothing
 
 ### 3. You: quiz 8.2
 
+Quiz 8.2 checks the layer itself: r(x), why it is constant when the labels are fixed functions of the image, its ε-space form, and the label term for report-style labels, with banked problems.
+
 Quiz 8.2: (URL lands here)
 
 ⏱ you 30 to 60 min, the banked problems included · stop: the bar, then the build. Below the bar, the misses become the first rungs of a second `/drip --math`, and you retake before building.
 
 ### 4a. You: the build, walk08.py
 
-```text
-/drip-execute-plan --request the interaction term in the parts world with a wet rule (the cat half
-shifts when a dog is present), computed exactly from the Gaussian mixtures and plotted, then r_t and
-its gradient at each noise level, as layer 8 of
-artifacts/drips/simple-distributions-rebuild/REBUILD_WALK.md; I type every block myself into
-~/Playground/PhD/simple-distributions-walk/walk08.py; bar: every p8. number walk08.py prints
-equals the reference's, and r from clean labels is constant on the joint's draws at t = 0 with the
-rule off and on, with the rule's effect shown where claim 7.1 puts it
+You type the interaction term into `walk08.py` from an empty file, one piece per round: the world's weights and four densities, r at t = 0 with the wet rule off and on, r_t per noise level, ∇r_t with its identity check, and the plot. With clean labels r stays constant at t = 0 whether the rule is on or off. The rule's effect shows at t > 0, off the joint's support, or for experts whose training sets lack the wet cat-and-dog images.
 
-Task: cut the layer into 4 to 6 pieces, write the step file at the open, and build, teach and test
-one piece per round. I type every block into walk08.py and run it with
-/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python from
-~/Playground/PhD/simple-distributions-walk/, with
-PYTHONPATH=/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy.
-Starts from: the layer 8 reference from step 0, rebuild/interaction.py,
-rebuild/phase8_interaction.py, rebuild/out/phase8/phase8.json and the p8. keys in
-rebuild/out/walk-numbers.json, whose settings (p8.wet_cat_value, the world's weights, the
-background variance) I use; quiz 8.2 passed; the layer 8 --math drip folder under artifacts/drips/,
-whose dispatch.md holds my notation.
-Settled facts:
-- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
-- The brick row expects r constant with the rule off and varying with it on, and the noised r_t
-  and its gradient in ε-space as ε_joint − ε_A − ε_B + ε_∅ (REBUILD_WALK.md, brick "The
-  interaction term, exact").
-- When each label is a fixed function of the image, r is exactly constant, so the wet rule alone
-  does not move r at t = 0; it shows in r_t at t > 0, off the joint's support, and for experts
-  whose training sets lack the wet A∩B images (artifacts/ideas/poe-overlap-dial/IDEA_MAP.md, claim
-  7.1; step 0's reference, the docstring of rebuild/phase8_interaction.py).
-- The parts world is rebuild/parts_world.py: 16 pixels, HEAD 0 to 7 and BODY 8 to 15, LEFT and
-  RIGHT halves, a cat +1 and a dog −1 on their pixels with variance 0.01; Mixture.noised(abar)
-  gives N(√ᾱ m, ᾱ v + 1 − ᾱ) per component, and a product of mixtures is a mixture over every
-  pair (step file 04-the-parts-world.md, steps 1, 5 and 6).
-- rebuild/phase5_dial.py's pw_experts(f, bg_var) gives layer 5's experts; at 0% overlap an empty
-  background gives a ghost at half-means (0.5, −0.5), and a loose one (variance 1.0) reaches A∩B
-  with weight 1.000 (step file 05-the-overlap-dial.md, step 6).
-- ᾱ_t is 0.9994, 0.8356, 0.4783, 0.1335 and 0.0 at t = 0, 25, 50, 75 and 99 (the p1.abar_* keys in
-  rebuild/out/walk-numbers.json).
-- Work in float64: Mixture.torch() casts to float32, which hides a spread at float64 precision
-  (rebuild/parts_world.py).
-- ∇r_t = −(ε_joint − ε_A − ε_B + ε_∅)/√(1 − ᾱ_t) is what the composed score misses of the joint's
-  score (layer 1's ε = −√(1 − ᾱ_t)·∇log q_t; brick row above).
-Outputs:
-- walk08.py: one script that prints r's mean and spread per setting and noise level, ∇r_t at the
-  reference's fixed image, and the identity check, and saves the plot of r with the rule off and
-  on at every noise level;
-- the step file the walk writes at its open, ticked piece by piece.
-Target: every p8. number walk08.py prints equals the reference's to the digits shown; the identity
-check prints under 1e-10; r from the true conditionals has a spread at float64 precision on the
-joint's draws at t = 0, rule off and on. I judge, from the printed lines.
-Progress: piece 1 prints the world's weights and the four densities at one image; piece 2 r at
-t = 0, rule off and on; piece 3 r_t per noise level; piece 4 ∇r_t and the identity check; piece 5
-the plot.
-Proof: python walk08.py prints "identity max difference <x>" with x under 1e-10, and step 5's
-comparison shows no differing p8. number.
-Limits: never edit rebuild/ or the idea maps; I type, I do not paste; no commit.
-Hand-off: the retrospective the walk closes on, and the /drip-retro command it prints.
-```
-
-added: the reference's outputs and its settings as the starting point (from step 0) · claim 7.1 and where the wet rule can show (from the `poe-overlap-dial` idea map) · the parts world, layer 5's two backgrounds, the noise levels and the float32 cast (from step files 04 and 05, `walk-numbers.json` and `parts_world.py`) · the ε-space gradient (from layer 1 and the brick row)
-dropped: "r is constant with the rule off and structured with it on, at every noise level" as the bar (why: by claim 7.1, r from clean labels is constant at t = 0 with the rule on as well, and r_t at intermediate noise levels varies with the rule off too; the bar now asks for the reference's numbers and claim 7.1's constancy)
+**Prompt:** [the build](prompts/08-4a-the-interaction-build.md)
 
 ⏱ rough: you 1 to 2 h (about 5 pieces) · AI ~35 min · stop: the prompt's bar
 
@@ -346,61 +83,19 @@ dropped: "r is constant with the rule off and structured with it on, at every no
 
 ### 4b. You: the label term, walk08b.py
 
-```text
-/drip-execute-plan --request the label term with report-style labels on the quadrant toy: A is read
-with probability 0.9 when true, and inside A∩B, B is read only when A was read; a 4-way classifier
-over the label pairs against two separate classifiers gives log p(A,B|x) - log p(A|x) - log p(B|x);
-I type every block myself into ~/Playground/PhD/simple-distributions-walk/walk08b.py; bar: +0.105
-nats for (A,B) inside A∩B, zero elsewhere, strongly negative for (not A, B)
+You type the label term into `walk08b.py`. On the quadrant toy, A is read with probability 0.9 when true, and inside A∩B, B is read only when A was read. A four-way classifier over the label pairs, set against two separate classifiers, gives the term: +0.105 nats for (A,B) inside A∩B, zero elsewhere, and strongly negative for (not A, B).
 
-Task: cut the label-term toy into 4 to 6 pieces, write the step file at the open, and build, teach
-and test one piece per round. I type every block into walk08b.py and run it with
-/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python from
-~/Playground/PhD/simple-distributions-walk/.
-Starts from: walk08.py from step 4a; the p8.label_term_* keys in rebuild/out/walk-numbers.json from
-step 0's reference, which are the exact values.
-Settled facts:
-- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
-- The toy: points uniform on [−1, 1]², A true when x1 < 0 and B true when x2 > 0 (the A and B of
-  rebuild/phase5_dial.py), so A∩B is the top-left quadrant
-  (artifacts/ideas/poe-overlap-dial/IDEA_MAP.md, claim 7.4; rebuild/phase5_dial.py docstring).
-- Claim 7.4's expected label term: +0.105 nats for (A,B) inside A∩B, very negative for (¬A,B)
-  there, zero elsewhere (artifacts/ideas/poe-overlap-dial/IDEA_MAP.md, claim 7.4).
-- Inside A∩B, P(A,B|x) / [P(A|x)·P(B|x)] = 0.9q / (0.9 · 0.9q) = 1/0.9 for any probability q of
-  reading B once A was read, so +0.105 = −ln 0.9; (¬A,B) has probability 0 there, so its term is
-  −∞ and a classifier reports it as strongly negative; outside A∩B at most one label is uncertain,
-  so the term is 0 (the arithmetic of claim 7.4's labelling).
-- The term is zero for clean labels and nonzero for report-mined ones, and it is a different thing
-  from the wet dog of step 4a (artifacts/ideas/poe-overlap-dial/IDEA_MAP.md, claim 7.3).
-- On chest X-rays it matters most for the negation cells, pneumothorax without drain and drain
-  without pneumothorax; 20% to 54% of NIH pneumothoraces have no drain
-  (artifacts/ideas/poe-overlap-dial/IDEA_MAP.md, claim 6 and "The idea, as it stands").
-- A margin of 0.15 inside a quadrant keeps boundary points out of a region count
-  (rebuild/phase5_dial.py, MARGIN).
-Outputs:
-- walk08b.py: one script that trains the 4-way classifier and the two binary classifiers on the
-  same points and prints the label term's mean per label cell, inside A∩B and outside it, beside
-  the exact p8.label_term_* values;
-- the step file the walk writes at its open, ticked piece by piece.
-Target: the classifier's (A,B) term inside A∩B (points at least 0.15 inside) is within 0.05 nats of
-+0.105; outside A∩B (points at least 0.15 from both boundaries) it is within 0.05 of 0; (¬A,B)
-inside A∩B is below −2. I judge, from the printed lines.
-Progress: piece 1 prints the label counts per cell; piece 2 the exact term per cell; pieces 3 and 4
-each classifier's accuracy; piece 5 the estimated term beside the exact one.
-Proof: python walk08b.py prints "(A,B) inside A∩B: <x> nats, exact 0.1054" with x within 0.05 of
-0.1054.
-Limits: never edit rebuild/ or the idea maps; I type, I do not paste; no commit.
-Hand-off: the retrospective the walk closes on, and the /drip-retro command it prints.
-```
-
-added: the toy's geometry (from claim 7.4 and `phase5_dial.py`) · the arithmetic behind +0.105 and the −∞ cell (worked from claim 7.4's labelling) · claim 7.3's split and claim 6's drain rates (from the `poe-overlap-dial` idea map) · the margin (from `phase5_dial.py`) · the reference's exact values as the answer key (from step 0) · the tolerances 0.05 nats and −2, which are estimates: change them here if a [classifier](../../../../../../Obsidian/Artificial%20Intelligence/Machine%20Learning/Classifier.md#where-to-learn-this)<sub>[1](../../../../../../Obsidian/Mathematics/references/textbooks/natural-language-processing/hands-on-large-language-models.pdf#page=160 "Hands-on large language models, chapter 4, Works a classifier end to end on real data: 5,331 positive and 5,331 negative Rotten Tomatoes reviews labelled by ..."), [2](../../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/probabilistic-machine-learning-an-introduction.pdf#page=30 "Probabilistic machine learning: an introduction, section 1.2.1, Classification on the iris data: 150 flowers with four measurements each and one of three spe..."), [3](../../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/understanding-deep-learning.pdf#page=78 "Understanding deep learning, sections 5.4 to 5.5, A network becomes a binary classifier by predicting a Bernoulli probability through the logistic sigmoid, a..."), [▶1](https://www.youtube.com/watch?v=pdqofxJeBN8&t=995s "CS231n lecture 2, 16:35 to 20:12, Builds the nearest neighbour classifier: training memorises the data, prediction returns the label of the closest training ..."), [▶2](https://www.youtube.com/watch?v=DATnpGoGhM8&t=759s "CS229 lecture 1, 12:39 to 14:39, Separates regression (continuous y) from classification (discrete y) with a house against townhouse boundary, and frames nex..."), [◆](../../../../../../goal-setting/learning/machine-learning/classical-ml-from-scratch/MASTER_PLAN.md "Classical ML from Scratch, machine-learning/classical-ml-from-scratch. Goal 1 classifies a toy dataset with logistic regression written by hand, and goal 7 b..."), [◈](https://claude.ai/artifact/DBmJtn6xy75sPtQwPEvQZU#nb-sec4 "Kinds of composition notebook, A classifier learns 'not B', A classifier trained on the labels the data carries learns the hidden-B points as 'not B'.")</sub> on a few thousand points cannot reach them
-dropped: nothing
+**Prompt:** [the label term](prompts/08-4b-the-label-term-build.md)
 
 ⏱ rough: you 1 to 2 h (one build concept) · AI ~35 min · stop: the prompt's bar
 
 **Outcome:** the interaction term in both places it lives. In the pixels it is the wet dog. In the labels it is zero for clean labels and real for report-mined ones like NIH's, and it hits the negation cells hardest.
 
 **What it looks like at scale (look by hand).** Open `artifacts/results/joint-against-poe-by-kind-of-composition/README.md` and its `interaction-grids/`. On Stable Diffusion v1-4, the product fuses one cat-dog in 4 of 4 seeds, and it paints rain streaks over a dry dog in 4 of 4. Those are the two things the term you just computed leaves out, on a real model.
+
+<a href="../../../results/joint-against-poe-by-kind-of-composition/pairs/interaction.png"><img src="../../../results/joint-against-poe-by-kind-of-composition/pairs/interaction.png" width="420" alt="Stable Diffusion v1-4, seed 0: on the left the joint prompt 'a wet dog in the rain' gives a dog with soaked fur standing in a puddle; on the right the product of 'a dog' and 'rain' gives a dry, clean dog with rain streaks drawn over the picture"></a>
+
+Look at the fur: the joint's dog is soaked, and the product's dog is dry with the rain drawn over the picture. The product does this in [all 4 of its seeds](../../../results/joint-against-poe-by-kind-of-composition/tiles/interaction-poe-seeds0to3.png).
 
 ### 5. You: compare your numbers with the reference
 
@@ -419,36 +114,9 @@ cd ~/Playground/PhD/simple-distributions-walk
 
 ### 6. AI, in the background: the scene
 
-```text
-/math-scene the folder the layer 8 --math drip wrote under artifacts/drips/: the interaction term in
-the parts world, with the wet rule as a toggle and the noise level as a slider
+An AI session builds a scene in your notation of the parts world's interaction term, with the wet rule as a toggle and the noise level as a slider. Every number on it comes from the `p8.` keys.
 
-Starts from: the layer 8 --math drip folder and its dispatch.md (step 2's hand-off); the layer 8
-reference's rebuild/out/phase8/phase8.json and its p8. keys (step 0).
-Settled facts:
-- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
-- The parts world: 16 pixels drawn as a 4 × 4 image, a cat +1 and a dog −1 on their pixels with
-  variance 0.01, each expert a mixture of diagonal Gaussians, so every noised density is exact
-  (step file 04-the-parts-world.md, steps 1, 5 and 6).
-- The noise levels are t = 0, 25, 50, 75 and 99, where ᾱ_t is 0.9994, 0.8356, 0.4783, 0.1335 and
-  0.0 (the p1.abar_* keys in rebuild/out/walk-numbers.json).
-- With clean labels r is constant at t = 0 whether the wet rule is on or off; the toggle changes r
-  only where phase8.json shows it does, and the scene shows that, not the brick row's expectation
-  (artifacts/ideas/poe-overlap-dial/IDEA_MAP.md, claim 7.1; the docstring of
-  rebuild/phase8_interaction.py).
-- The wet dog at scale: on Stable Diffusion v1-4 the product paints rain streaks over a dry dog
-  where the joint prompt gives wet fur in 4 of 4 seeds
-  (artifacts/results/joint-against-poe-by-kind-of-composition/five-interactions.md).
-- Every number on the scene comes from phase8.json, the p8. keys or the drip's dispatch.md, never
-  estimated.
-Outputs: one published scene, in my notation from dispatch.md.
-Hand-off: write the scene's URL into step 6 of
-artifacts/drips/simple-distributions-rebuild/ladder/08-the-interaction-term.md, replacing "(URL
-lands here)".
-```
-
-added: the reference's outputs as the scene's numbers (from step 0) · the parts world and the noise levels (from step file 04 and `walk-numbers.json`) · that the toggle shows what the reference found (from claim 7.1) · the wet dog at scale (from the results card) · the URL write-back
-dropped: nothing
+**Prompt:** [the scene](prompts/08-6-the-interaction-scene.md)
 
 Scene: (URL lands here)
 
@@ -458,29 +126,7 @@ Scene: (URL lands here)
 
 ### 7. You: close the layer
 
-Run the `/drip-retro` commands the two builds printed at their close (⏱ about 25 minutes each). Then paste this:
-
-```text
-In the background, dispatch xref-cadence over the files layer 8 of the composition ladder wrote: the
-layer 8 --math drip folder under artifacts/drips/, the step files the two --request walks of steps
-4a and 4b wrote at their open, and the retrospectives the two layer 8 walks closed on.
-
-Settled facts:
-- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
-- The reference sets to link against are the journey plans, textbook chapters and vault note on
-  the Study first line of
-  artifacts/drips/simple-distributions-rebuild/ladder/08-the-interaction-term.md; the layer 8 row
-  of the Bricks table in artifacts/drips/simple-distributions-rebuild/REBUILD_WALK.md ("The
-  interaction term, exact") and the vault note it links, What An Expert Learns From Its Training
-  Set; and claim 7 (7.1 to 7.4) with run 1 of artifacts/ideas/poe-overlap-dial/IDEA_MAP.md.
-- ~/Playground/PhD/simple-distributions-walk/ is scratch space; link nothing into it (CLAUDE.md, the
-  playground is disposable).
-Outputs: links written both ways between those files and the reference sets.
-Hand-off: the agent's report, listing every link it wrote, read before the prior-art read starts.
-```
-
-added: the reference sets, by path (from this layer's Study first line, `REBUILD_WALK.md` and the `poe-overlap-dial` idea map, claim 7)
-dropped: nothing
+Run the `/drip-retro` commands the two builds printed at their close (⏱ about 25 minutes each). Then paste [the linking prompt](prompts/08-7-link-the-layer.md), which links what the maths drip and the two builds wrote to the journey plans, textbook chapters, vault notes, brick row and idea-map claims the layer rests on.
 
 ⏱ you 2 min to paste · AI ~10 min (estimate)
 
