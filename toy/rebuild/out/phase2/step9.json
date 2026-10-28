@@ -1,0 +1,33 @@
+{
+ "exact_share_clean": 0.712576150894165,
+ "exact_share_pi0": 0.6360940337181091,
+ "abar_0": 0.9993687184016583,
+ "nu_0": 0.003129703394345839,
+ "nu_clean": 0.0025000000000000005,
+ "clean_mass_within": {
+  "in_bar_0.1": 0.712576150894165,
+  "in_bar_0.15": 0.9004383087158203,
+  "in_bar_0.2": 0.932704508304596,
+  "other_six_0.2": 0.06529588997364044,
+  "beyond_0.2_of_every_centre": 0.0027690036222338676
+ },
+ "clean_level": {
+  "moves": 10,
+  "ula_mala_step": 0.00012500000000000003,
+  "uha_leapfrog_step": 0.015,
+  "uha_damping": 0.5,
+  "uha_leapfrog_steps": 3
+ },
+ "share_perfect_1000": 0.718,
+ "share_reverse_diffusion": 0.468,
+ "share_annealed": {
+  "ULA": 0.356,
+  "MALA": 0.37,
+  "UHA": 0.563
+ },
+ "share_annealed_then_clean_level": {
+  "ULA": 0.407,
+  "MALA": 0.411,
+  "UHA": 0.62
+ }
+}

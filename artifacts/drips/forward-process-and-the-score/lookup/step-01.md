@@ -1,0 +1,18 @@
+# Lookup: step 1
+
+Home journey: 01-poe-derivation-foundations
+
+| concept | kind | journey | plan | section | tasks | textbook | picture | leans on | comes after | matched | new this walk |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| forward process | journey | 01-poe-derivation-foundations | 🌫️ The forward process, derived and coded | /home-mscluster/mmolefe/goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/plans/09-the-forward-process.md#1--iterate-the-forward-process-then-jump-it-and-compare | 0.1, 1.1, 1.2, 2.1, 2.2, 3.7, 4.4 of 17 | /home-mscluster/mmolefe/goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/09-the-forward-process-by-hand.md | /home-mscluster/mmolefe/goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/plans/checks/09_image_ladder.png |  |  | alpha bar, forward process, variance | yes |
+| score of the noised density | no link | | | | | | | | | 16 candidates, none names it in a title or heading | yes |
+
+## Path: forward process
+
+| order | state | plan | journey | section | textbook | video |
+|---|---|---|---|---|---|---|
+| 1 | 0 of 19 ticked | 📈 From slope to gradient | 01-poe-derivation-foundations | /home-mscluster/mmolefe/goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/plans/05-from-slope-to-gradient.md#0--open-the-teaching-session | /home-mscluster/mmolefe/goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/04-differentiating-by-hand.md | [Professor Dave, 2:09 to 9:36](https://www.youtube.com/watch?v=AXH9Xm6Rbfc&t=129s) |
+| 2 | 0 of 22 ticked | 🧭 The gradient field, drawn | 01-poe-derivation-foundations | /home-mscluster/mmolefe/goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/plans/06-the-gradient-field-drawn.md#0--open-the-teaching-session | /home-mscluster/mmolefe/goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/05-predicting-a-score-field.md |  |
+| 3 | 0 of 13 ticked | 🎯 The score function, defined and seen | 01-poe-derivation-foundations | /home-mscluster/mmolefe/goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/plans/07-the-score-function.md#0--open-the-teaching-session | /home-mscluster/mmolefe/goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/05-predicting-a-score-field.md | [Stanford CS236, lecture 13, 3:52 to 11:51](https://www.youtube.com/watch?v=8G-OsDs1RLI&t=232s) |
+| 4 | 0 of 16 ticked | ⚖️ The score of a Gaussian, and scores adding | 01-poe-derivation-foundations | /home-mscluster/mmolefe/goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/plans/08-score-of-a-gaussian.md#0--open-the-teaching-session | /home-mscluster/mmolefe/goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/06-the-gaussian-score.md | [StatQuest, Main Ideas behind Probability Distributions, 2:15 to 5:14](https://www.youtube.com/watch?v=oI3hZJqXJuc&t=135s) |
+| 5 | 0 of 17 ticked | 🌫️ The forward process, derived and coded | 01-poe-derivation-foundations | /home-mscluster/mmolefe/goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/plans/09-the-forward-process.md#1--iterate-the-forward-process-then-jump-it-and-compare | /home-mscluster/mmolefe/goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/09-the-forward-process-by-hand.md | [Vizuara, DDPM practical, 13:08 to 18:43](https://www.youtube.com/watch?v=6to_EG3SJgs&t=788s) |

@@ -1,0 +1,176 @@
+{
+ "checkpoints": [
+  {
+   "exact": {
+    "interior": 0.15909195270207338,
+    "quadrant": 0.22838293181871241
+   },
+   "MALA, tuned": {
+    "interior": 0.158,
+    "quadrant": 0.228,
+    "tv": 0.33872929514307715,
+    "kept": 2000
+   },
+   "UHA": {
+    "interior": 0.1625,
+    "quadrant": 0.226,
+    "tv": 0.3353832965395747,
+    "kept": 2000
+   },
+   "steps": 0
+  },
+  {
+   "exact": {
+    "interior": 0.08905889441925885,
+    "quadrant": 0.1454529711321412
+   },
+   "MALA, tuned": {
+    "interior": 0.1045,
+    "quadrant": 0.1615,
+    "tv": 0.3309158827409619,
+    "kept": 2000
+   },
+   "UHA": {
+    "interior": 0.122,
+    "quadrant": 0.1925,
+    "tv": 0.3224949900321412,
+    "kept": 2000
+   },
+   "steps": 10
+  },
+  {
+   "exact": {
+    "interior": 0.0009270683145906198,
+    "quadrant": 0.0016069590969028512
+   },
+   "MALA, tuned": {
+    "interior": 0.056,
+    "quadrant": 0.08,
+    "tv": 0.32818054452338496,
+    "kept": 2000
+   },
+   "UHA": {
+    "interior": 0.068,
+    "quadrant": 0.101,
+    "tv": 0.4166260793047179,
+    "kept": 2000
+   },
+   "steps": 30
+  },
+  {
+   "exact": {
+    "interior": 0.004928109770293988,
+    "quadrant": 0.17239766387656963
+   },
+   "MALA, tuned": {
+    "interior": 0.004,
+    "quadrant": 0.1865,
+    "tv": 0.13389165817339793,
+    "kept": 2000
+   },
+   "UHA": {
+    "interior": 0.0055,
+    "quadrant": 0.1975,
+    "tv": 0.1390617534751934,
+    "kept": 2000
+   },
+   "steps": 100
+  },
+  {
+   "exact": {
+    "interior": 7.298809871904939e-05,
+    "quadrant": 0.11765632597230744
+   },
+   "MALA, tuned": {
+    "interior": 0.0,
+    "quadrant": 0.1325,
+    "tv": 0.10114368888348554,
+    "kept": 2000
+   },
+   "UHA": {
+    "interior": 0.0005,
+    "quadrant": 0.1435,
+    "tv": 0.10257175194764764,
+    "kept": 2000
+   },
+   "steps": 300
+  },
+  {
+   "exact": {
+    "interior": 6.833160536988859e-07,
+    "quadrant": 0.19042491607920692
+   },
+   "MALA, tuned": {
+    "interior": 0.0,
+    "quadrant": 0.2395,
+    "tv": 0.08766835059055901,
+    "kept": 2000
+   },
+   "UHA": {
+    "interior": 0.0,
+    "quadrant": 0.2355,
+    "tv": 0.0911310847348626,
+    "kept": 2000
+   },
+   "steps": 1000
+  },
+  {
+   "exact": {
+    "interior": 1.8319844750462814e-13,
+    "quadrant": 0.15758088641966406
+   },
+   "MALA, tuned": {
+    "interior": 0.0,
+    "quadrant": 0.22,
+    "tv": 0.10564409404888737,
+    "kept": 2000
+   },
+   "UHA": {
+    "interior": 0.0,
+    "quadrant": 0.2295,
+    "tv": 0.10177587206250199,
+    "kept": 2000
+   },
+   "steps": 3000
+  },
+  {
+   "exact": {
+    "interior": 7.037853484257606e-16,
+    "quadrant": 0.021085309819655538
+   },
+   "MALA, tuned": {
+    "interior": 0.0,
+    "quadrant": 0.291,
+    "tv": 0.9025589444128864,
+    "kept": 2000
+   },
+   "UHA": {
+    "interior": 0.0,
+    "quadrant": 0.287,
+    "tv": 0.9025444569983556,
+    "kept": 2000
+   },
+   "steps": 10000
+  }
+ ],
+ "from_scratch": {
+  "exact": {
+   "interior": 4.344787081769812e-14,
+   "quadrant": 0.20343933569688655
+  },
+  "MALA, tuned": {
+   "interior": 0.0,
+   "quadrant": 0.251,
+   "tv": 0.0952046594248962,
+   "kept": 2000
+  },
+  "UHA": {
+   "interior": 0.0,
+   "quadrant": 0.255,
+   "tv": 0.09463446920048707,
+   "kept": 2000
+  }
+ },
+ "lr": 0.0001,
+ "pretrain_steps": 10000
+}

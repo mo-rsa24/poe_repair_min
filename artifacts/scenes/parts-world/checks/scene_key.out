@@ -1,0 +1,26 @@
+walk key /a/head_mean                                   0.9801980198019802  this script       0.9801980198019802  rel gap 0.0e+00
+walk key /a/body_mean                                  -0.9801980198019802  this script      -0.9801980198019802  rel gap 0.0e+00
+walk key /a/logZ                                        -46.46578749493179  this script       -46.46578749493179  rel gap 0.0e+00
+walk key /b/mean                                                       0.0  this script                      0.0  rel gap 0.0e+00
+walk key /b/product_sd                                 0.07071067811865475  this script      0.07071067811865475  rel gap 0.0e+00
+walk key /b/logZ                                         -1583.40683248785  this script        -1583.40683248785  rel gap 0.0e+00
+walk key /b/sds_from_each_expert                                      10.0  this script                     10.0  rel gap 0.0e+00
+walk key /c/cat-left x dog-left/weight                                 0.0  this script                      0.0  rel gap 0.0e+00
+walk key /c/cat-left x dog-left/logw_unnorm              -803.213807592922  this script        -803.213807592922  rel gap 0.0e+00
+walk key /c/cat-left x dog-right/weight                                0.5  this script                      0.5  rel gap 0.0e+00
+walk key /c/cat-left x dog-right/logw_unnorm           -24.089705618427917  this script      -24.089705618427917  rel gap 0.0e+00
+walk key /c/cat-right x dog-left/weight                                0.5  this script                      0.5  rel gap 0.0e+00
+walk key /c/cat-right x dog-left/logw_unnorm           -24.089705618427917  this script      -24.089705618427917  rel gap 0.0e+00
+walk key /c/cat-right x dog-right/weight                               0.0  this script                      0.0  rel gap 0.0e+00
+walk key /c/cat-right x dog-right/logw_unnorm            -803.213807592922  this script        -803.213807592922  rel gap 0.0e+00
+walk key /d/abar                                                       0.5  this script                      0.5  rel gap 0.0e+00
+walk key /d/head_mean_product_of_noised                0.23257000444341597  this script      0.23257000444341597  rel gap 0.0e+00
+walk key /d/head_mean_noised_product                    0.6931046667076061  this script       0.6931046667076061  rel gap 0.0e+00
+all 18 walk-key numbers reproduced, worst relative gap 0.0e+00
+tight dog head: {'head_mean': 0.0, 'body_mean': -0.9801980198019802, 'head_var': 0.005, 'body_var': 0.009900990099009901, 'logZ': -814.9363099913908}
+hand check (cat head 0.02, dog head 0.5): {'head_mean': 0.9230769230769231, 'body_mean': -0.9801980198019802, 'head_var': 0.019230769230769232, 'body_var': 0.009900990099009901, 'logZ': -58.73792691270739}
+pixel log Z: {'sure_vs_loose_opposite': -2.904111718433237, 'sure_vs_sure_opposite': -98.96292703049062, 'sure_vs_loose_zero': -1.4189632035817517, 'loose_zero_vs_loose_zero': -1.2655121234846454}
+(c) component means: {'cat-left x dog-left': {'left': 0.0, 'right': 0.0, 'var_left': 0.005, 'var_right': 0.5}, 'cat-left x dog-right': {'left': 0.9900990099009901, 'right': -0.9900990099009901, 'var_left': 0.009900990099009901, 'var_right': 0.009900990099009901}, 'cat-right x dog-left': {'left': -0.9900990099009901, 'right': 0.9900990099009901, 'var_left': 0.009900990099009901, 'var_right': 0.009900990099009901}, 'cat-right x dog-right': {'left': 0.0, 'right': 0.0, 'var_left': 0.5, 'var_right': 0.005}}
+(c) gap: 779.124101974494
+(d) noised head: {'cat_var': 0.505, 'dog_var': 1.0, 'precision_ratio': 1.9801980198019802, 'cat_mean': 0.7071067811865476, 'dog_mean': -0.7071067811865476}
+grid states 2401, noise states 247

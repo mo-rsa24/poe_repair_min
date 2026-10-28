@@ -1,0 +1,76 @@
+PASS  1.1 sum of the ten heights                                           1708   chapter says 1708
+PASS  1.1 mean x-bar (cm)                                                 170.8   chapter says 170.8
+PASS  1.1 sum of squared distances                                        541.6   chapter says 541.6
+PASS  1.1 variance s^2, dividing by 10 (cm^2)                             54.16   chapter says 54.16
+PASS  1.1 spread s (cm)                                                 7.35935   chapter says 7.3593
+PASS  1.1 variance dividing by 9 (cm^2)                                 60.1778   chapter says 60.18
+PASS  1.2 Gaussian integral of exp(-u^2/2)                              2.50663   chapter says 2.5066282746310002
+PASS  1.2 front factor 1/(s sqrt(2 pi))                               0.0542089   chapter says 0.0542
+PASS  1.2 p(173) under the best bell (per cm)                           0.05184   chapter says 0.0518
+PASS  1.2 area under the best bell                                            1   chapter says 1.0
+PASS  1.2 peak of a bell with sigma 0.1 (per cm)                        3.98942   chapter says 3.99
+PASS  1.3 P(172 <= X <= 174)                                            0.10339   chapter says 0.1034
+PASS  1.3 p(173) x 2 cm                                                 0.10368   chapter says 0.1037
+PASS  1.4 log L at the best bell                                       -34.1491   chapter says -34.15
+PASS  1.4 L at the best bell                                        1.47651e-15   chapter says 1.477e-15
+PASS  1.4 integral over mu of p(173; mu, s)                                   1   chapter says 1.0
+PASS  1.4 integral over mu of L(mu, s) for ten heights                8.613e-15   chapter says 8.611e-15
+PASS  1.5 slope in mu at mu = 177                                      -1.14476   chapter says -1.145
+PASS  1.5 numerical maximiser mu (cm)                                     170.8   chapter says 170.8
+PASS  1.5 numerical maximiser sigma (cm)                                7.35935   chapter says 7.3593
+PASS  1.5 log L with sigma dividing by 9                               -34.1759   chapter says -34.18
+PASS  1.6 one height: log L at sigma = 1                              -0.918939   chapter says -0.92
+PASS  1.6 one height: log L at sigma = 0.1                              1.38365   chapter says 1.38
+PASS  1.7 F(173)                                                       0.617507   chapter says 0.6175
+PASS  1.7 numerical slope of F at 173                                   0.05184   chapter says 0.0518
+PASS  1.8 Phi^-1(0.975)                                                 1.95996   chapter says 1.96
+PASS  1.8 F^-1(0.975) (cm)                                              185.224   chapter says 185.2
+PASS  1.8 share of F^-1(U) below 173 in 200,000 draws                   0.61871   chapter says 0.6175
+PASS  2.1 numbers in a 128 x 128 colour photo                             49152   chapter says 49152
+PASS  2.2 normaliser, d = 1                                             3.98942   chapter says 3.989
+PASS  2.2 normaliser, d = 2                                             15.9155   chapter says 15.92
+PASS  2.2 normaliser, d = 4                                             253.303   chapter says 253.3
+PASS  2.2 p(a), the top-bright image                                    126.651   chapter says 126.65
+PASS  2.2 log10 p(1, -1, 1, -1), equally far from a and b              -171.314   chapter says -171.31
+PASS  2.2 volume of p over R^4 (product of four 1-D integrals per bump)              1   chapter says 1.0
+PASS  2.3 marginal p(x1) at x1 = 1                                      1.99471   chapter says 1.995
+PASS  2.3 integral over x2 of p(x1=1, x2)                               1.99471   chapter says 1.995
+PASS  2.4 in-order draw, pixel 1                                       0.974665   chapter says 0.975
+PASS  2.4 in-order draw, pixel 2                                       0.974665   chapter says 0.975
+PASS  2.4 in-order draw, pixel 3                                      -0.974665   chapter says -0.975
+PASS  2.4 in-order draw, pixel 4                                             -1   chapter says -1.0
+PASS  2.4 weight on top bright after pixel 1                                  1   chapter says 1.0
+PASS  2.4 Phi^-1(0.4)                                                 -0.253347   chapter says -0.2533
+PASS  2.5 exact share of real images, pixels drawn alone                  0.125   chapter says 0.125
+PASS  2.5 share real in 100,000 draws, pixels alone                     0.12363   chapter says 0.125
+PASS  2.5 free numbers in an 8 x 8 black-and-white table            1.84467e+19   chapter says 1.845e+19
+PASS  2.5 digits in the 128 x 128 colour count                           118370   chapter says 118370
+PASS  2.6 area of N(mu1 = 0.6, sigma = 0.3)                                   1   chapter says 1.0
+PASS  2.7 share of G(z) near top bright                                 0.50065   chapter says 0.5
+PASS  2.7 spread of pixel 1 within a bump                             0.0999126   chapter says 0.1
+PASS  2.7 change of variables: x = 170.8 + 7.36 z, density at 173        0.05184   chapter says 0.0518
+PASS  2.8 best scale c on eight fresh training images                     0.988   chapter says 1.0
+PASS  3.0 beta_0                                                    0.000631282   chapter says 0.000631
+PASS  3.0 abar_50                                                      0.478265   chapter says 0.4783
+PASS  3.0 abar_99                                                   2.42857e-07   chapter says 2.43e-07
+PASS  3.1 posterior weights add to                                            1   chapter says 1.0
+PASS  3.1 largest weight at t = 50, x_t = 0.3                          0.146852   chapter says 0.147
+PASS  3.1 uneven prior: weight on 173 cm                               0.462553   chapter says 0.463
+PASS  3.2 best guess at t = 50, x_t = 0.3 (cm)                          172.383   chapter says 172.4
+PASS  3.2 best guess at t = 99 (cm)                                     170.801   chapter says 170.8
+PASS  3.2 c minimising expected squared error equals the posterior mean         0.2151   chapter says 0.21509141940256682
+PASS  3.3 a_50                                                        0.0424907   chapter says 0.0425
+PASS  3.3 b_50                                                         0.954715   chapter says 0.9547
+PASS  3.3 sigma_50^2                                                  0.0306044   chapter says 0.0306
+PASS  3.3 product of two bells: variance = 1/precision                0.0306044   chapter says 0.03060436932943749
+PASS  3.3 product of two bells: mean                                   0.299117   chapter says 0.2991167282255055
+PASS  3.3 mean for x0 = 173 cm, x_t = 0.3                              0.299117   chapter says 0.2991
+PASS  3.4 spread of the exact ten-bell mix                             0.177858   chapter says 0.1779
+PASS  3.4 spread of the single bell                                    0.174941   chapter says 0.1749
+PASS  3.5 a_0 (the last step returns the best guess)                          1   chapter says 1.0
+PASS  3.6 share of 200 chains ending within 0.5 cm of a height                1   chapter says 1.0
+PASS  3.7 P(tall) with threshold 175 cm                                0.303535   chapter says 0.304
+PASS  3.7 area of p(x | tall)                                                 1   chapter says 1.0
+PASS  3.7 mean of p(x | tall) (cm)                                       178.43   chapter says 178.4
+
+74 numbers, 0 FAIL

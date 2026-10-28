@@ -1,0 +1,811 @@
+<title>Where the Product Lands</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chewy&family=Paprika&family=Mouse+Memoirs&family=Public+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one stage that never changes shape (expert A x expert B [/ divisor] = product, on the
+   four-quadrant plane), the question and readouts beside it, Back/Next fixed at the foot.
+   Identity hues are the composition series': expert A blue, expert B amber, the divisor (all films)
+   wall grey, the product violet. hot marks mass landing where the learner does not want it; ok marks
+   a right answer or an exact key value. */
+:root{
+  --paper:#f4f6fa; --panel:#ffffff; --shade:#eceff5; --ink:#17202f; --muted:#576074; --rule:#d9dee8;
+  --ea:#2458d6; --easoft:#dde7fd; --eb:#a8690f; --ebsoft:#fbefd5; --wall:#6e7585; --wallsoft:#e6e8ee;
+  --accent:#6d33e0; --accent-soft:#ece4fd; --hot:#c03a12; --hot-soft:#fde5da; --ok:#16793c; --ok-soft:#dcf5e5;
+  --shout:"Chewy","Trebuchet MS",system-ui,sans-serif;
+  --title:"Paprika",Georgia,serif;
+  --label:"Mouse Memoirs","Arial Narrow",system-ui,sans-serif;
+  --prose:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --data:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#11141b; --panel:#191d26; --shade:#222733; --ink:#e7eaf1; --muted:#a2aaba; --rule:#303746;
+    --ea:#86abff; --easoft:#1d2a4a; --eb:#f0b351; --ebsoft:#3a2c12; --wall:#a9afbc; --wallsoft:#2a2e37;
+    --accent:#b89cff; --accent-soft:#2d2448; --hot:#fb8a5c; --hot-soft:#3d2216; --ok:#55d68a; --ok-soft:#12321f;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#11141b; --panel:#191d26; --shade:#222733; --ink:#e7eaf1; --muted:#a2aaba; --rule:#303746;
+  --ea:#86abff; --easoft:#1d2a4a; --eb:#f0b351; --ebsoft:#3a2c12; --wall:#a9afbc; --wallsoft:#2a2e37;
+  --accent:#b89cff; --accent-soft:#2d2448; --hot:#fb8a5c; --hot-soft:#3d2216; --ok:#55d68a; --ok-soft:#12321f;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--prose);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.data{font-family:var(--data);font-variant-numeric:tabular-nums}
+.app{max-width:1500px;margin:0 auto;height:100%;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto}
+.band,.press,.navbar{min-width:0}
+
+/* header band: the question in the shout face, the live readout on the right */
+.band{display:flex;flex-direction:column;gap:6px;padding-block:12px 4px}
+.bandrow{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 20px}
+.eyebrow{font-family:var(--label);font-size:15px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--shout);font-weight:400;font-size:clamp(26px,3.1vw,42px);line-height:1.05;margin:0;text-wrap:balance}
+.why{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.why .wl{font-family:var(--label);font-size:15px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+.why .wv{font-family:var(--data);font-size:28px;font-weight:600;color:var(--accent);min-width:3.5ch}
+.why .wv.slot{color:var(--muted);border:1.5px dashed var(--rule);border-radius:8px;padding:0 10px}
+.toprow{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between}
+.chaps{display:flex;flex-wrap:wrap;gap:6px}
+.chap{font:inherit;font-size:14px;padding:3px 11px;border-radius:999px;border:1.5px solid var(--rule);background:var(--panel);color:var(--muted);cursor:pointer;min-height:32px}
+.chap.on{border-color:var(--ink);color:var(--ink);font-weight:600}
+.score{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.score .sl{font-family:var(--label);font-size:15px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+.sc{font:inherit;font-size:13px;border:1.5px dashed var(--rule);border-radius:7px;padding:1px 7px;background:transparent;color:var(--muted);cursor:pointer;min-height:28px}
+.sc.right{border-style:solid;border-color:var(--ok);color:var(--ok);background:var(--ok-soft)}
+.sc.wrong{border-style:solid;border-color:var(--hot);color:var(--hot);background:var(--hot-soft)}
+.sc.skipped{border-style:solid}
+.themebtn{font:inherit;font-size:13px;border:1.5px solid var(--rule);background:var(--panel);color:var(--ink);border-radius:999px;padding:2px 10px;cursor:pointer;min-height:30px}
+
+/* the press */
+.press{min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:12px;padding-block:6px 10px}
+.say{display:flex;flex-direction:column;gap:3px;min-height:74px}
+h2{font-family:var(--title);font-weight:400;font-size:25px;line-height:1.15;margin:0;text-wrap:balance}
+.say p{margin:0;font-size:18px;line-height:1.5;max-width:80ch}
+.recall{display:flex;flex-wrap:wrap;gap:6px}
+.recall a,.recall span{font-size:13px;text-decoration:none;border:1px dashed var(--accent);border-radius:999px;padding:1px 10px;color:var(--accent)}
+.stage{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,400px);gap:22px;align-items:start}
+.leftcol{display:flex;flex-direction:column;gap:12px;min-width:0;position:sticky;top:0;background:var(--paper);z-index:1}
+@media (max-width:1000px){.leftcol{display:contents}.figs{order:1}.side{order:2}#readout{order:3}}
+@media (max-width:1000px){.stage{grid-template-columns:minmax(0,1fr)}}
+.figs{display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));gap:12px;max-width:min(calc(var(--n,3) * 330px),calc((100dvh - 330px) * var(--n,3)))}
+@media (max-width:640px){.figs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+figure{margin:0;display:flex;flex-direction:column;gap:4px;min-width:0;transition:opacity .3s ease}
+figure.dim{opacity:.22}
+figcaption{font-family:var(--label);font-size:16px;letter-spacing:.09em;text-transform:uppercase;line-height:1.1;min-height:2.2em}
+figcaption .math{font-family:var(--prose);text-transform:none;letter-spacing:0;font-size:14px;color:var(--muted);display:block}
+sub{font-size:12px;line-height:0}
+figure[data-g="A"] figcaption{color:var(--ea)} figure[data-g="B"] figcaption{color:var(--eb)}
+figure[data-g="D"] figcaption{color:var(--wall)} figure[data-g="P"] figcaption{color:var(--accent)} figure[data-g="S"] figcaption{color:var(--muted)}
+.plot{position:relative;width:100%;aspect-ratio:1;max-width:100%;border:1px solid var(--rule);border-radius:9px;overflow:hidden;background:var(--panel)}
+.plot canvas,.plot svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.plot svg{touch-action:none}
+.plot.slot{border:2px dashed var(--rule)}
+.ql{font-family:var(--label);font-size:17px;letter-spacing:.06em;fill:var(--ink);paint-order:stroke;stroke:var(--panel);stroke-width:4px;stroke-linejoin:round}
+.ax{stroke:var(--rule);stroke-width:1.2;stroke-dasharray:4 4}
+.axl{font-family:var(--label);font-size:17px;letter-spacing:.05em;fill:var(--muted);paint-order:stroke;stroke:var(--panel);stroke-width:4px}
+.num{font-family:var(--data);font-size:19px;font-weight:600;fill:var(--ink);paint-order:stroke;stroke:var(--panel);stroke-width:5px;stroke-linejoin:round}
+.num.hot{fill:var(--hot)} .num.want{fill:var(--accent)}
+.ring{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-dasharray:5 4}
+.oring{fill:none;stroke:var(--hot);stroke-width:1.4;stroke-dasharray:3 3}
+.ghost{fill:var(--accent-soft);fill-opacity:.55;stroke:var(--ink);stroke-width:2;stroke-dasharray:6 4}
+.ghostt{font-family:var(--label);font-size:17px;fill:var(--ink);paint-order:stroke;stroke:var(--panel);stroke-width:4px}
+.qmark{font-family:var(--shout);font-size:64px;fill:var(--muted)}
+.slott{font-family:var(--label);font-size:17px;fill:var(--muted);letter-spacing:.05em}
+.handle{fill:transparent;stroke:var(--eb);stroke-width:2.5;cursor:grab}
+.handle:active{cursor:grabbing}
+
+/* side column */
+.side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.lab{font-family:var(--label);font-size:15px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+.cells{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px 14px}
+@media (max-width:640px){.cells{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.cell{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--rule);padding-top:4px;min-width:0}
+.cell .cl{font-size:13px;color:var(--muted);line-height:1.25}
+.cell .cv{font-family:var(--data);font-variant-numeric:tabular-nums;font-size:18px;font-weight:600}
+.cell.want .cv{color:var(--accent)} .cell.hot .cv{color:var(--hot)}
+.cv.slot{color:var(--muted);font-weight:400}
+.chip{display:inline-block;font-family:var(--label);font-size:14px;letter-spacing:.08em;text-transform:uppercase;border-radius:5px;padding:0 6px;border:1px solid var(--ok);color:var(--ok);background:var(--ok-soft);vertical-align:middle}
+.chip.hot{border-color:var(--hot);color:var(--hot);background:var(--hot-soft)}
+.stateline{font-size:15px;line-height:1.45;margin:0}
+.formula{font-family:var(--data);font-size:17px;background:var(--shade);border-radius:8px;padding:6px 10px;overflow-x:auto;white-space:nowrap}
+.formula math{font-size:19px}
+.drag{cursor:ew-resize;user-select:none;-webkit-user-select:none;touch-action:none;background:var(--accent-soft);color:var(--accent);border-radius:4px;padding:0 .25em;outline:1.5px solid transparent;font-weight:600}
+.drag:hover,.drag.active{outline-color:currentColor}
+.hint{font-size:13px;color:var(--muted)}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.pill{font:inherit;font-size:14px;padding:4px 11px;border-radius:999px;border:1.5px solid var(--rule);background:var(--panel);color:var(--muted);cursor:pointer;min-height:36px}
+.pill[aria-pressed="true"]{border-color:var(--ink);color:var(--ink);font-weight:600;background:var(--shade)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.rangeends{display:flex;justify-content:space-between;font-size:13px;color:var(--muted)}
+.catch{border-left:4px solid var(--hot);background:var(--hot-soft);border-radius:0 8px 8px 0;padding:8px 12px;font-size:15px}
+.hand{border:1.5px solid var(--accent);border-radius:10px;padding:10px 12px;background:var(--panel);font-size:15px}
+
+/* question */
+.q{background:var(--panel);border:1.5px solid var(--rule);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:7px}
+.q .qask{font-size:17px;font-weight:600;line-height:1.4}
+.q .qask u{text-decoration-style:dotted;text-decoration-color:var(--accent);text-underline-offset:3px;cursor:help}
+.q details{font-size:14px;color:var(--muted)}
+.q summary{cursor:pointer}
+.opt{display:flex;gap:9px;align-items:flex-start;text-align:left;width:100%;font:inherit;font-size:15px;line-height:1.4;padding:8px 10px;border-radius:9px;border:1.5px solid var(--rule);background:var(--panel);color:var(--ink);cursor:pointer}
+.opt .ol{flex:0 0 auto;width:22px;height:22px;border-radius:50%;border:1.5px solid currentColor;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--muted)}
+.opt[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.opt .ob{display:flex;flex-direction:column;gap:3px;min-width:0}
+.opt .why{font-size:14px;color:var(--muted)}
+.opt .why b{color:var(--ink);font-weight:600}
+.opt .tagp{font-family:var(--label);font-size:14px;letter-spacing:.06em;text-transform:uppercase;border-radius:4px;padding:0 6px;background:var(--accent);color:var(--panel);align-self:flex-start}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)} .opt.right .ol{color:var(--ok)}
+.opt.wrong .ol{color:var(--hot)} .opt.wrong.picked{border-color:var(--hot);background:var(--hot-soft)}
+.opt.revealed{cursor:default}
+.qverdict{font-size:15px;font-weight:600}
+.qverdict.right{color:var(--ok)} .qverdict.wrong{color:var(--hot)}
+.gloss{font-size:14px;color:var(--muted);margin:0}
+.gloss b{color:var(--ink);font-weight:600}
+
+/* foot */
+.navbar{position:sticky;bottom:0;z-index:5;display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--paper);border-top:1px solid var(--rule);padding-top:8px;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+.navbar button{font:inherit;font-size:16px;min-height:44px;padding:0 18px;border-radius:999px;border:1.5px solid var(--rule);background:var(--panel);color:var(--ink);cursor:pointer}
+.navbar button.primary{background:var(--ink);color:var(--paper);border-color:var(--ink);margin-left:auto}
+.navbar button:disabled{opacity:.4;cursor:default}
+.count{font-size:14px;color:var(--muted)}
+.guide{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:6px;cursor:pointer}
+.nudge{flex-basis:100%;font-size:14px;color:var(--hot);background:var(--hot-soft);border-radius:8px;padding:6px 10px}
+details.sources{margin:6px 0 18px;font-size:14px;color:var(--muted)}
+details.sources summary{cursor:pointer;font-size:15px}
+details.sources p{max-width:85ch}
+.tablewrap{overflow-x:auto}
+details.sources table{border-collapse:collapse;margin-top:6px;font-size:13px}
+details.sources td,details.sources th{padding:3px 10px;border-bottom:1px solid var(--rule);text-align:left;white-space:nowrap}
+details.sources td.data{text-align:right}
+@media (max-width:640px){.eyebrow{display:none}.chaps,.score{flex-wrap:nowrap;overflow-x:auto;max-width:100%;padding-bottom:2px}.chap,.sc{flex:0 0 auto}.toprow{flex-direction:column;align-items:stretch}.say{min-height:0}h2{font-size:22px}.say p{font-size:17px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="app">
+  <header class="band">
+    <div class="bandrow">
+      <div>
+        <div class="eyebrow">Claim 2 · can a product of two experts reach a film neither was trained on?</div>
+        <h1>Where the product lands</h1>
+      </div>
+      <div class="why" aria-live="polite">
+        <span class="wl">share in the A-and-B blob</span>
+        <span class="wv" id="live">?</span>
+        <button class="themebtn" id="theme" type="button">Dark</button>
+      </div>
+    </div>
+    <div class="toprow">
+      <nav class="chaps" id="chaps" aria-label="Chapters"></nav>
+      <div class="score" id="score" aria-label="Your predictions"></div>
+    </div>
+  </header>
+
+  <main class="press" id="press">
+    <div class="say">
+      <h2 id="pTitle"></h2>
+      <p id="pSay"></p>
+      <div class="recall" id="recall"></div>
+    </div>
+    <div class="stage">
+      <div class="leftcol">
+      <div class="figs" id="figs">
+        <figure data-g="A" id="fA"><figcaption id="cA"></figcaption><div class="plot"><canvas width="120" height="120"></canvas><svg viewBox="0 0 240 240" role="img"></svg></div></figure>
+        <figure data-g="B" id="fB"><figcaption id="cB"></figcaption><div class="plot"><canvas width="120" height="120"></canvas><svg viewBox="0 0 240 240" role="img"></svg></div></figure>
+        <figure data-g="D" id="fD"><figcaption id="cD"></figcaption><div class="plot"><canvas width="120" height="120"></canvas><svg viewBox="0 0 240 240" role="img"></svg></div></figure>
+        <figure data-g="P" id="fP"><figcaption id="cP"></figcaption><div class="plot"><canvas width="120" height="120"></canvas><svg viewBox="0 0 240 240" role="img"></svg></div></figure>
+        <figure data-g="S" id="fS"><figcaption id="cS"></figcaption><div class="plot slot"><canvas width="120" height="120"></canvas><svg viewBox="0 0 240 240" role="img"></svg></div></figure>
+      </div>
+      <div id="readout"></div>
+      </div>
+      <aside class="side" id="side">
+        <div id="qBox"></div>
+        <div id="ctrl"></div>
+        <div id="extra"></div>
+      </aside>
+    </div>
+    <details class="sources" id="sources">    <summary>Where these numbers come from</summary>
+    <p><b>The toy.</b> One Gaussian blob per quadrant at (±0.5, ±0.5), standard deviation 0.15. A is x₁ &gt; 0 (pneumothorax), B is x₂ &gt; 0 (no chest drain). Top-right is A and B, pneumothorax without a drain. Bottom-right is A, not B (pneumothorax with a drain). Top-left is B, not A (no pneumothorax, no drain). Bottom-left is neither (a drain without pneumothorax).</p>
+    <p><b>How the numbers were made.</b> The experts are ideal blob mixtures with chosen weights, multiplied on a 441 × 441 grid over [−1.1, 1.1]². There is no training and no sampler. The walk's answer key is <span class="data">artifacts/ideas/when-poe-reaches-a-and-b/runs/answer-key-quadrants/answer_key.py</span>, run in the co3 environment on 2026-10-17. This page's key, <span class="data">artifacts/scenes/when-a-product-reaches-a-and-b/checks/scene_key.py</span>, copies that script's grid and functions unchanged and reproduces all 18 of its rows. It adds only the slider stops the walk's key does not print (ε = 0.2, 0.15, 0.075, 0.025, 0.005; leftover next door at every stop; r = 0.1, 0.02, 0.005) and the four drag positions of press 3.</p>
+    <p><b>What "in the top-right blob" counts.</b> The share of the normalised composed density within 3 standard deviations (0.45) of (0.5, 0.5), the dashed ring. "At the origin" is within 0.45/√2 ≈ 0.318 of (0, 0). A quadrant share would mislead: two far-apart blobs multiply into one blob between them, which a quadrant count would split.</p>
+    <p><b>Why 0.989 keeps appearing.</b> One data blob keeps 1 − e^(−9/2) = 0.9889 of its mass inside its own 3-std ring. The background-divided product in 2b rebuilds the top-right data blob exactly, so it reads 0.989. Construction (1) comes extremely close to that blob for every r &gt; 0 listed, because the other blobs meet it only through tiny tails: 0.9889 at r = 0.25 and 0.9886 at r = 0.001. It is not exactly the same density.</p>
+    <p><b>Why 2b's plain product reads 0.9999.</b> Write φ(u) for the data blob's profile N(u; 0.5, 0.15²) and b(u) for the background marginal. Expert A is φ(x₁)·b(x₂) and expert B is b(x₁)·φ(x₂), so their product is [φ(x₁)b(x₁)]·[φ(x₂)b(x₂)]. Near top-right b(u) is half of φ(u), so each coordinate goes as φ(u)², a Gaussian with half the variance. That narrower blob puts more than 0.989 inside the ring. Dividing by b(x₁)b(x₂) cancels both background factors exactly and leaves φ(x₁)φ(x₂), the data blob. So 0.9999 is not a better fit than 0.989.</p>
+    <p><b>Support on this toy.</b> A Gaussian blob is never exactly zero, so "outside the support" here means smaller by many orders of magnitude: the product's raw mass Z falls from 3.54 (both blobs on bottom-right) to 7.9 × 10⁻¹⁰ (opposite corners). Normalised, that leftover sits where the two tails meet: the product of two Gaussians is a Gaussian between them (no textbook page linked: this machine has no PDF reader to confirm one). The vault note "Diffusion Models", section "When neither training set holds A and B", runs the same rule with an exactly-zero bar: there Z falls from 0.313 to 1.6 × 10⁻⁷. Each panel's shading is linear in density and scaled to that panel's own peak; press 3's "raw" view scales the product to the case where both blobs overlap.</p>
+    <p><b>What ε is and is not.</b> ε is the weight each fine-tuned expert keeps on each quadrant outside its own. It is not a count of fine-tuning steps: how fast fine-tuning lowers ε is check 2a in the walk's idea map, and it has not run. At ε = 0.25 both experts equal the pretrained model (fine-tune step 0); at ε = 0 they are experts trained from scratch on one quadrant each. The formula ε/(2 − 4ε) comes from treating each blob as a weight per quadrant and ignoring products between blobs at different centres: top-right and bottom-left get ε², bottom-right and top-left get ε(1 − 3ε), the total is 2ε − 4ε², and ε² / (2ε − 4ε²) = ε/(2 − 4ε) for ε &gt; 0; the grid matches it to four decimal places down to ε = 0.001. At ε = 0 the formula says 0 and the grid says 0.006, because the blobs' tails meeting at the origin take over.</p>
+    <p><b>Construction (1)</b> is one conditional model with "contains A" and "contains B" labels, composed as p(x|A)·p(x|B)/p(x), with a share r of all films in top-right and (1 − r)/3 on each other quadrant. The key multiplies the joint densities p(x, A) and p(x, B) rather than the conditionals; the constants between them cancel on rescaling, so every share is the same, but the raw mass Z is the joint version's. That Z is close to r for r &gt; 0 (0.250, 0.0500, 0.0100, 0.00100 in the key) and 3.8 × 10⁻⁷ at r = 0; true conditionals would divide it by (r + (1 − r)/3)². <b>Rescue 2b</b> builds the factorisation in: expert A models x₁ from bottom-right films only and borrows x₂ from a background marginal; expert B is the mirror image. The key's background marginals put half their mass at each of ±0.5. Those marginals need no film that is jointly A and B, since films with x₂ near 0.5 exist in top-left. With top-right films absent the split would move off one half; by hand, neither 2b number depends on it, because division cancels the background exactly and in the plain product the background only rescales the top-right blob (not run). Trained 2D networks did not learn this factorisation on their own in the earlier walk (they matched their smoothed data within 0.04 nats). The background-divided form is projective composition, Bradley et al. 2025a, arXiv 2502.04549. <b>Rescue 2c</b> needs the sampler runs of claim 4, which have not run, so the sampler slot is empty on purpose.</p>
+    <p><b>Two kinds of p_A.</b> In construction (2), p<sub>A</sub> is the expert fine-tuned on bottom-right films only, which learned "not B" too. In construction (1), the factors are p(x | A) and p(x | B), which include the top-right films. The two are not interchangeable, which is the whole difference between 0.0278 and 0.989 at the same rarity.</p>
+    <p><b>Samplers.</b> Against an exact target there is no model error, but a sampler's histogram can still miss through finite samples, discretisation or a bug, so claim 4 reads the gap against the perfect-sampler floor.</p>
+    <p><b>Checks.</b> The page embeds the scene key and recomputes the rows below on load with its own code, on the same grid.</p>
+    <div class="tablewrap"><table id="keyTable"><thead><tr><th>Case</th><th>Quantity</th><th>This page</th><th>Answer key</th><th></th></tr></thead><tbody></tbody></table></div>
+  </details>
+  </main>
+
+  <div class="navbar" id="navbar">
+    <button id="back" type="button">◀ Back</button>
+    <span class="count data" id="count"></span>
+    <label class="guide"><input type="checkbox" id="guide" checked> Dim what this press does not use</label>
+    <button id="next" class="primary" type="button">Next ▶</button>
+  </div>
+
+</div>
+
+<script>
+(function(){
+"use strict";
+
+// ==== KEY:BEGIN (scene_key.json, written by checks/scene_key.py; substituted at build)
+const KEY = __KEY_JSON__;
+// ==== KEY:END ====
+
+// ==== COMPUTE:BEGIN (the same grid, blobs and constructions as answer_key.py)
+const S = 0.15;
+const QS = ["TR","BR","TL","BL"];
+const MU = {TR:[0.5,0.5], BR:[0.5,-0.5], TL:[-0.5,0.5], BL:[-0.5,-0.5]};
+const blobAt = (cx,cy) => (x,y) => Math.exp(-((x-cx)**2 + (y-cy)**2)/(2*S*S))/(2*Math.PI*S*S);
+const BLOB = {}; QS.forEach(q => { BLOB[q] = blobAt(MU[q][0], MU[q][1]); });
+const mix = w => (x,y) => { let s = 0; for (const q in w) if (w[q]) s += w[q]*BLOB[q](x,y); return s; };
+const n1 = (v,m) => Math.exp(-((v-m)**2)/(2*S*S))/Math.sqrt(2*Math.PI*S*S);
+const bg1 = v => 0.5*n1(v,0.5) + 0.5*n1(v,-0.5);
+function leftover(own, eps, where){ const w = {TR:0,BR:0,TL:0,BL:0}; where.forEach(q => { w[q] = eps; }); w[own] = 1 - eps*where.length; return w; }
+// factors(mode, p) -> {A, B, D?} density functions, plus the weights each panel prints on its blobs
+function factors(mode, p){
+  if (mode === "c2even" || mode === "c2adj"){
+    const wa = mode === "c2even" ? ["TR","TL","BL"] : ["TR","BL"];
+    const wb = mode === "c2even" ? ["TR","BR","BL"] : ["TR","BL"];
+    const wA = leftover("BR", p.eps, wa), wB = leftover("TL", p.eps, wb);
+    return {A: mix(wA), B: mix(wB), wA, wB};
+  }
+  if (mode === "c1"){
+    const r = p.r, o = (1 - r)/3;
+    const jA = {TR:r, BR:o}, jB = {TR:r, TL:o}, wD = {TR:r, BR:o, TL:o, BL:o};
+    const nm = w => { const t = Object.values(w).reduce((a,b)=>a+b,0); const out = {}; for (const q in w) out[q] = w[q]/t; return out; };
+    return {A: mix(jA), B: mix(jB), D: mix(wD), wA: nm(jA), wB: nm(jB), wD};
+  }
+  if (mode === "b2plain" || mode === "b2div"){
+    const f = {A: (x,y) => n1(x,0.5)*bg1(y), B: (x,y) => bg1(x)*n1(y,0.5), wA:{TR:0.5,BR:0.5}, wB:{TL:0.5,TR:0.5}};
+    if (mode === "b2div"){ f.D = (x,y) => bg1(x)*bg1(y); f.wD = {TR:0.25,BR:0.25,TL:0.25,BL:0.25}; }
+    return f;
+  }
+  if (mode === "support"){
+    const c = p.bpos || MU[p.q];
+    const wB = {}; if (p.q && !p.dragging) wB[p.q] = 1;
+    return {A: BLOB.BR, B: blobAt(c[0], c[1]), wA:{BR:1}, wB, bpos:c};
+  }
+  throw new Error("unknown mode " + mode);
+}
+const product = f => f.D ? (x,y) => f.A(x,y)*f.B(x,y)/f.D(x,y) : (x,y) => f.A(x,y)*f.B(x,y);
+// shares(dens): the answer key's measure on the answer key's 441 x 441 grid
+function shares(dens){
+  const n = 441, step = 2.2/440, g = []; for (let i = 0; i < n; i++) g.push(i === n-1 ? 1.1 : -1.1 + i*step);
+  const dA = step*step, R2 = (3*S)**2, RM = 3*S/Math.sqrt(2);
+  let tot = 0; const inq = {TR:0,BR:0,TL:0,BL:0}; let mid = 0;
+  for (let j = 0; j < n; j++){ const y = g[j];
+    for (let i = 0; i < n; i++){ const x = g[i]; const v = dens(x,y); tot += v;
+      for (const q of QS){ const dx = x - MU[q][0], dy = y - MU[q][1]; if (dx*dx + dy*dy < R2) inq[q] += v; }
+      if (Math.hypot(x,y) < RM) mid += v; } }
+  const out = {}; QS.forEach(q => { out["in_"+q+"_blob"] = inq[q]/tot; }); out.at_origin = mid/tot; out.Z = tot*dA; return out;
+}
+// keyRow(mode, p): the answer-key row a state reads its numbers from
+function keyRow(mode, p){
+  if (mode === "c2even") return KEY.c2_even[String(p.eps)];
+  if (mode === "c2adj") return KEY.c2_adjacent[String(p.eps)];
+  if (mode === "c1") return KEY.c1[String(p.r)];
+  if (mode === "b2plain") return KEY.b2_plain;
+  if (mode === "b2div") return KEY.b2_divided;
+  if (mode === "support") return p.dragging ? null : KEY.support_pins[p.q];
+  return null;
+}
+const EPS = [0.25, 0.2, 0.15, 0.1, 0.075, 0.05, 0.025, 0.01, 0.005, 0.001, 0];
+const RS = [0.25, 0.1, 0.05, 0.02, 0.01, 0.005, 0.001, 0];
+// ==== COMPUTE:END ====
+
+/* ---------- helpers ---------- */
+const $ = id => document.getElementById(id);
+const el = (tag, attrs, html) => { const e = document.createElement(tag); if (attrs) for (const k in attrs) { if (k === "class") e.className = attrs[k]; else e.setAttribute(k, attrs[k]); } if (html != null) e.innerHTML = html; return e; };
+const store = {
+  get(k, d){ try { const v = localStorage.getItem("where-the-product-lands:" + k); return v == null ? d : JSON.parse(v); } catch(e){ return d; } },
+  set(k, v){ try { localStorage.setItem("where-the-product-lands:" + k, JSON.stringify(v)); } catch(e){} }
+};
+const reduced = () => { try { return matchMedia("(prefers-reduced-motion: reduce)").matches; } catch(e){ return false; } };
+const SUP = {"-":"⁻","0":"⁰","1":"¹","2":"²","3":"³","4":"⁴","5":"⁵","6":"⁶","7":"⁷","8":"⁸","9":"⁹"};
+function fmt(v){
+  if (v == null || isNaN(v)) return "?";
+  if (v === 0) return "0";
+  if (v < 1e-3) { const e = Math.floor(Math.log10(v)); const m = v/Math.pow(10,e); return m.toFixed(1) + " × 10" + String(e).split("").map(c=>SUP[c]).join(""); }
+  if (v > 0.995 && v < 1) return v.toFixed(4);
+  let s = v.toPrecision(3);
+  if (s.indexOf(".") >= 0 && v < 0.95) s = s.replace(/0+$/,"").replace(/\.$/,"");
+  const d = (s.split(".")[1] || "").length; if (v < 1 && d < 2) s = v.toFixed(2);
+  return s;
+}
+const fmtZ = v => v >= 1e-3 ? (v >= 1 ? v.toFixed(2) : v.toPrecision(3)) : fmt(v);
+function fmtW(w){ if (w === 0) return "0"; let s = (Math.round(w*1000)/1000).toString(); return s; }
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function rgb(c){ const t = document.createElement("canvas").getContext("2d"); t.fillStyle = c; const s = t.fillStyle; if (s[0] === "#") return [parseInt(s.slice(1,3),16), parseInt(s.slice(3,5),16), parseInt(s.slice(5,7),16)]; const m = s.match(/\d+/g); return m ? m.slice(0,3).map(Number) : [0,0,0]; }
+const X = x => (x + 1.1)/2.2*240, Y = y => (1.1 - y)/2.2*240;
+const QNAME = {TR:"A and B", BR:"A, not B", TL:"B, not A", BL:"neither"};
+const QMEAN = {TR:"pneumothorax without a drain, the rare film wanted", BR:"pneumothorax with a drain, most positive films", TL:"no pneumothorax, no drain", BL:"a drain without pneumothorax"};
+const QSIDE = {TR:"top-right", BR:"bottom-right", TL:"top-left", BL:"bottom-left"};
+
+/* ---------- drawing one panel ---------- */
+const GRID = 120;
+function paint(fig, dens, hueVar, scaleTo){
+  const cv = fig.querySelector("canvas"), ctx = cv.getContext("2d");
+  const bg = rgb(css("--panel")), hue = rgb(css(hueVar));
+  const img = ctx.createImageData(GRID, GRID), vals = new Float64Array(GRID*GRID);
+  let mx = 0;
+  for (let j = 0; j < GRID; j++) for (let i = 0; i < GRID; i++){
+    const x = -1.1 + (i + 0.5)*2.2/GRID, y = 1.1 - (j + 0.5)*2.2/GRID;
+    const v = dens ? dens(x,y) : 0; vals[j*GRID+i] = v; if (v > mx) mx = v; }
+  const top = scaleTo || mx || 1;
+  for (let k = 0; k < GRID*GRID; k++){
+    const a = Math.min(1, vals[k]/top)*0.92;
+    img.data[4*k] = bg[0] + (hue[0]-bg[0])*a; img.data[4*k+1] = bg[1] + (hue[1]-bg[1])*a; img.data[4*k+2] = bg[2] + (hue[2]-bg[2])*a; img.data[4*k+3] = 255; }
+  ctx.putImageData(img, 0, 0);
+}
+function overlay(fig, o){
+  const svg = fig.querySelector("svg"); let h = "";
+  h += '<line class="ax" x1="120" y1="0" x2="120" y2="240"/><line class="ax" x1="0" y1="120" x2="240" y2="120"/>';
+  if (o.axes){
+    h += '<text class="axl" x="236" y="112" text-anchor="end">x₁ &gt; 0: pneumothorax →</text>';
+    h += '<text class="axl" transform="translate(140,236) rotate(-90)">x₂ &gt; 0: no drain →</text>';
+  }
+  if (o.ring) h += '<circle class="ring" cx="' + X(0.5) + '" cy="' + Y(0.5) + '" r="' + (0.45/2.2*240) + '"/>';
+  if (o.oring) h += '<circle class="oring" cx="120" cy="120" r="' + (0.318/2.2*240) + '"/>';
+  const cor = {TR:[234,20,"end"], BR:[234,232,"end"], TL:[6,20,"start"], BL:[6,232,"start"]};
+  QS.forEach(q => { const c = cor[q]; h += '<g><title>' + QNAME[q] + ": " + QMEAN[q] + '</title><text class="ql" x="' + c[0] + '" y="' + c[1] + '" text-anchor="' + c[2] + '">' + QNAME[q] + '</text></g>'; });
+  if (o.slot){ if (!o.ghosts) h += '<text class="qmark" x="120" y="135" text-anchor="middle">?</text>'; if (o.slotText) o.slotText.forEach((t,i) => { h += '<text class="slott" x="120" y="' + (172 + i*20) + '" text-anchor="middle">' + t + '</text>'; }); }
+  (o.nums || []).forEach(n => { h += '<text class="num' + (n.cls ? " " + n.cls : "") + '" x="' + X(n.x) + '" y="' + (Y(n.y) + 7) + '" text-anchor="middle">' + n.t + '</text>'; });
+  if (o.ghosts){ o.ghosts.forEach(g => {
+      if (g.cross) h += '<line class="ghost" x1="40" y1="40" x2="200" y2="200"/><line class="ghost" x1="200" y1="40" x2="40" y2="200"/>';
+      else h += '<circle class="ghost" cx="' + X(g.x) + '" cy="' + Y(g.y) + '" r="' + g.r + '"/>'; });
+    h += '<text class="ghostt" x="120" y="' + (o.ghostLabelY || 150) + '" text-anchor="middle">what this option says</text>'; }
+  if (o.handle) h += '<circle class="handle" id="bHandle" cx="' + X(o.handle[0]) + '" cy="' + Y(o.handle[1]) + '" r="' + (0.3/2.2*240) + '"><title>Drag expert B</title></circle>';
+  svg.innerHTML = h;
+}
+const blobNums = (w, cls) => QS.filter(q => w && w[q] > 0).map(q => ({x:MU[q][0], y:MU[q][1], t:fmtW(w[q]), cls}));
+
+/* ---------- state and the stage ---------- */
+// st: {mode, eps, r, q, bpos, dragging, raw, slot, ghosts, focus}
+let st = {mode:"c2even", eps:0.25, r:0.05, q:"TL", raw:true, slot:false};
+const RAW_PEAK = BLOB.BR(0.5,-0.5)**2;   // the product's peak when both blobs sit on bottom-right
+const CAPS = {
+  c2even: [["Expert A", "fine-tuned on A, not B · p<sub>A</sub>"], ["× Expert B", "fine-tuned on B, not A · p<sub>B</sub>"], null, ["= Product", "p<sub>A</sub> · p<sub>B</sub>"]],
+  c1: [["Given A", "p(x | A), films that contain A"], ["× Given B", "p(x | B), films that contain B"], ["÷ All films", "p(x)"], ["= Composed", "p(x|A) p(x|B) / p(x)"]],
+  b2plain: [["Expert A", "lung part x₁ from A, not B; x₂ from background"], ["× Expert B", "chest-wall part x₂ from B, not A; x₁ from background"], null, ["= Product", "p<sub>A</sub> · p<sub>B</sub>"]],
+  b2div: [["Expert A", "lung part x₁ from A, not B; x₂ from background"], ["× Expert B", "chest-wall part x₂ from B, not A; x₁ from background"], ["÷ Background", "all films, p<sub>bg</sub>"], ["= Composed", "p<sub>A</sub> p<sub>B</sub> / p<sub>bg</sub>"]],
+  support: [["Expert A", "only bottom-right · p<sub>A</sub>"], ["× Expert B", "one blob: drag it"], null, ["= Product", "p<sub>A</sub> · p<sub>B</sub>"]],
+  scratch: [["Expert A", "trained from scratch on A, not B"], ["× Expert B", "trained from scratch on B, not A"], null, ["= Product", "p<sub>A</sub> · p<sub>B</sub>"]]
+};
+CAPS.c2adj = CAPS.c2even;
+function caption(id, c){ $(id).innerHTML = c ? c[0] + '<span class="math">' + c[1] + '</span>' : ""; }
+
+function productNums(row, mode){
+  if (!row) return [];
+  const out = [];
+  QS.forEach(q => { const v = row["in_" + q + "_blob"]; if (v >= 0.001) out.push({x:MU[q][0], y:MU[q][1], t:fmt(v), cls: q === "TR" ? "want" : "hot"}); });
+  if (row.at_origin >= 0.01) out.push({x:0, y:0, t:fmt(row.at_origin), cls:"hot"});
+  if (mode === "support" && (st.q === "TR" || st.q === "BL" || (st.raw && st.q !== "BR"))) return [];
+  return out;
+}
+function liveValue(){
+  if (st.slot) return null;
+  const row = keyRow(st.mode, st); if (!row) return null;
+  return row.in_TR_blob;
+}
+function drawStage(){
+  const scratchLike = (st.mode === "c2even" || st.mode === "c2adj") && st.eps === 0;
+  const capKey = st.capKey || (scratchLike && st.mode === "c2even" && st.scratchCaps ? "scratch" : st.mode);
+  const caps = CAPS[capKey];
+  const f = factors(st.mode, st);
+  const hasD = !!f.D, showS = !!st.sampler;
+  $("fD").hidden = !hasD; $("fS").hidden = !showS;
+  $("figs").style.setProperty("--n", 3 + (hasD ? 1 : 0) + (showS ? 1 : 0));
+  caption("cA", caps[0]); caption("cB", caps[1]); caption("cD", caps[2]); caption("cP", caps[3]);
+  caption("cS", ["Sampler's samples", "histogram, same grid"]);
+  paint($("fA"), f.A, "--ea"); overlay($("fA"), {axes:true, nums: st.mode === "support" ? [] : blobNums(f.wA)});
+  paint($("fB"), f.B, "--eb");
+  overlay($("fB"), {nums: st.mode === "support" ? [] : blobNums(f.wB), handle: st.mode === "support" ? f.bpos : null});
+  if (hasD){ paint($("fD"), f.D, "--wall"); overlay($("fD"), {nums: blobNums(f.wD)}); }
+  const row = keyRow(st.mode, st);
+  if (st.slot){
+    paint($("fP"), null, "--accent"); $("fP").querySelector(".plot").classList.add("slot");
+    overlay($("fP"), {ring:true, slot:true, ghosts: st.ghosts, ghostLabelY: st.ghostLabelY});
+  } else {
+    $("fP").querySelector(".plot").classList.remove("slot");
+    const P = product(f);
+    paint($("fP"), P, "--accent", st.mode === "support" && st.raw ? RAW_PEAK : null);
+    overlay($("fP"), {ring:true, oring: row && row.at_origin >= 0.01, nums: productNums(row, st.mode)});
+  }
+  if (showS){ paint($("fS"), null, "--muted"); overlay($("fS"), {ring:true, slot:true, slotText:["to be filled by the", "sampler runs (claim 4)"]}); }
+  const lv = liveValue(); const live = $("live");
+  live.textContent = lv == null ? "?" : fmt(lv); live.classList.toggle("slot", lv == null);
+  guide();
+}
+
+/* ---------- readouts ---------- */
+function readout(row, opts){
+  opts = opts || {};
+  const box = el("div", {class:"card"});
+  box.appendChild(el("div", {class:"lab"}, (opts.title || "Where the product's mass sits") + ' <span class="chip">exact · answer key</span>'));
+  const cells = el("div", {class:"cells"});
+  const add = (label, v, cls, z) => { const c = el("div", {class:"cell " + (cls || "")}); c.appendChild(el("span", {class:"cl"}, label)); c.appendChild(el("span", {class:"cv" + (v == null ? " slot" : "")}, v == null ? "?" : (z ? fmtZ(v) : fmt(v)))); cells.appendChild(c); };
+  const g = k => (row && !opts.slot) ? row[k] : null;
+  add("top-right blob · A and B", g("in_TR_blob"), "want");
+  add("at the origin · a blend of neither", g("at_origin"), "hot");
+  add("bottom-right · A, not B", g("in_BR_blob"), "hot");
+  add("top-left · B, not A", g("in_TL_blob"), "hot");
+  add("bottom-left · neither", g("in_BL_blob"), "hot");
+  add("raw mass Z before normalising", g("Z"), "", true);
+  box.appendChild(cells);
+  if (opts.line) box.appendChild(el("p", {class:"stateline"}, opts.line));
+  return box;
+}
+
+/* ---------- questions ---------- */
+const QST = store.get("q", {});
+const QDEF = {};
+const L = "ABCD";
+function defineQ(id, d){ QDEF[id] = d; }
+function picked(id){ return !!(QST[id] && QST[id].pick != null); }
+function askQ(box, id){
+  const d = QDEF[id], s = QST[id] || {};
+  if (s.result) return revealQ(box, id);
+  box.innerHTML = ""; const q = el("div", {class:"q"});
+  q.appendChild(el("div", {class:"lab"}, "Predict: tap one"));
+  q.appendChild(el("div", {class:"qask"}, d.ask));
+  if (d.gloss) d.gloss.forEach(g => q.appendChild(el("p", {class:"gloss"}, g)));
+  const dt = el("details"); dt.appendChild(el("summary", null, "What is this asking?")); dt.appendChild(el("div", null, d.plain)); q.appendChild(dt);
+  const btns = d.options.map((o, i) => {
+    const b = el("button", {class:"opt", type:"button", "aria-pressed": String(s.pick === i)}, '<span class="ol">' + L[i] + '</span><span class="ob"><span>' + o.t + '</span></span>');
+    const pv = on => { const p = on ? i : (QST[id] && QST[id].pick != null ? QST[id].pick : null); st.ghosts = p == null ? null : d.options[p].ghost; st.ghostLabelY = p == null ? null : d.options[p].gy; drawStage(); };
+    b.addEventListener("pointerenter", e => { if (e.pointerType === "mouse") pv(true); });
+    b.addEventListener("pointerleave", e => { if (e.pointerType === "mouse") pv(false); });
+    b.addEventListener("focus", () => pv(true)); b.addEventListener("blur", () => pv(false));
+    b.addEventListener("click", () => { QST[id] = {pick:i}; store.set("q", QST); btns.forEach((x, j) => x.setAttribute("aria-pressed", String(j === i))); pv(true); });
+    q.appendChild(b); return b; });
+  q.appendChild(el("div", {class:"hint"}, "Point at an answer to see it drawn on the product. Next shows the verdict."));
+  box.appendChild(q);
+  st.ghosts = s.pick != null ? d.options[s.pick].ghost : null;
+}
+function revealQ(box, id){
+  const d = QDEF[id]; const s = QST[id] || {};
+  if (!s.result){ s.result = s.pick == null ? "skipped" : (d.options[s.pick].right ? "right" : "wrong"); QST[id] = s; store.set("q", QST); }
+  renderScore();
+  box.innerHTML = ""; const q = el("div", {class:"q"});
+  q.appendChild(el("div", {class:"lab"}, "Your prediction, checked"));
+  q.appendChild(el("div", {class:"qask"}, d.ask));
+  d.options.forEach((o, i) => {
+    const mine = s.pick === i;
+    const b = el("div", {class:"opt revealed " + (o.right ? "right" : "wrong") + (mine ? " picked" : "")});
+    b.innerHTML = '<span class="ol">' + (o.right ? "✓" : "✗") + '</span><span class="ob">' + (mine ? '<span class="tagp">your pick</span>' : "") + '<span>' + o.t + '</span><span class="why"><b>' + (o.right ? "Right because" : "Tempting because") + ':</b> ' + o.why + '</span></span>';
+    q.appendChild(b); });
+  q.appendChild(el("div", {class:"qverdict " + (s.result === "right" ? "right" : s.result === "wrong" ? "wrong" : "")}, {right:"Right first time.", wrong:"Not this time: the green one is what the product now shows.", skipped:"No pick made, so this one is scored as seen."}[s.result]));
+  if (d.lesson) q.appendChild(el("div", {class:"qask"}, d.lesson));
+  box.appendChild(q);
+  st.ghosts = null;
+}
+const SCORE_ROWS = [{id:"q1", label:"no overlap", press:0}, {id:"q2", label:"step 0", press:3}, {id:"q3", label:"leftover", press:5}, {id:"q4", label:"labels", press:8}, {id:"q5", label:"parts", press:10}];
+function renderScore(){
+  const box = $("score"); box.innerHTML = '<span class="sl">Predictions</span>';
+  SCORE_ROWS.forEach(r => { const s = (QST[r.id] && QST[r.id].result) || "empty";
+    const b = el("button", {class:"sc " + s, type:"button", title:r.label + ": " + ({empty:"not answered yet", right:"right first time", wrong:"missed, answer seen", skipped:"seen without a pick"}[s])}, ({empty:"?", right:"✓", wrong:"✗", skipped:"–"}[s]) + " " + r.label);
+    b.addEventListener("click", () => go(r.press)); box.appendChild(b); });
+}
+
+const gR = 0.45/2.2*240;
+defineQ("q1", {
+  ask: "Where will the <u title='p_A times p_B: what adding the two experts&#39; scores samples from'>product</u> put its samples?",
+  gloss: ["<b>product</b>: p<sub>A</sub>·p<sub>B</sub>, which is what adding the two scores samples from."],
+  plain: "Multiply expert A's picture by expert B's, point by point, then rescale so it sums to 1. Where is the result biggest? Look at where each expert has density.",
+  options: [
+    {t:"In the top-right blob: A and B", ghost:[{x:0.5,y:0.5,r:gR}], gy:200, why:"each expert says yes to its own concept, so their meeting point sounds like A and B. Neither expert has a blob there, only tiny tails, so the product has almost none."},
+    {t:"Half on bottom-right, half on top-left", ghost:[{x:0.5,y:-0.5,r:gR},{x:-0.5,y:0.5,r:gR}], gy:60, why:"that is what a mixture (a sum) of the two experts would do. A product needs both factors at the same point."},
+    {t:"At the origin, between the two blobs", right:true, ghost:[{x:0,y:0,r:0.318/2.2*240}], gy:200, why:"two Gaussian blobs multiply into one blob midway between them, where both tails meet. 0.989 of the rescaled product sits within 0.318 of the origin."},
+    {t:"Nowhere: the product is zero", ghost:[{cross:true}], gy:126, why:"the raw product is almost zero everywhere (its mass Z is 7.9 × 10⁻¹⁰). A sampler rescales whatever is left, so it still returns samples, at the origin."}
+  ],
+  lesson: "The product lands where neither expert has data: a blend of neither."
+});
+const shareGhost = sh => QS.map(q => ({x:MU[q][0], y:MU[q][1], r: Math.max(6, gR*Math.sqrt(sh[q]/0.5))}));
+defineQ("q2", {
+  ask: "At fine-tune step 0, what <u title='share of the rescaled product within the dashed ring around (0.5, 0.5)'>share</u> of the product lands in the top-right blob?",
+  gloss: ["<b>step 0</b>: no fine-tuning yet, so both experts are the pretrained model: four blobs, 0.25 each."],
+  plain: "Both factors are the same four-blob picture. Square it, rescale, and read off the top-right blob's part.",
+  options: [
+    {t:"0.0625", ghost: shareGhost({TR:0.0625, BR:0.3125, TL:0.3125, BL:0.3125}), gy:126, why:"0.25 × 0.25 = 0.0625 is the top-right blob's raw weight. Every other blob also gets 0.0625, so rescaling gives each 0.25."},
+    {t:"0.25", right:true, ghost: shareGhost({TR:0.25, BR:0.25, TL:0.25, BL:0.25}), gy:126, why:"the four blobs stay equal under squaring, so each keeps a quarter."},
+    {t:"0.5", ghost: shareGhost({TR:0.5, BR:0.1667, TL:0.1667, BL:0.1667}), gy:126, why:"two experts agreeing feels like it should double the overlap. They agree equally on all four blobs."},
+    {t:"1", ghost: shareGhost({TR:1, BR:0, TL:0, BL:0}), gy:200, why:"top-right is where A and B live, but at step 0 neither expert has learned A or B yet."}
+  ],
+  lesson: "0.25 is pretraining's equal weight on every quadrant, not a choice of A and B."
+});
+defineQ("q3", {
+  ask: "Each expert keeps a <u title='the weight left on each quadrant outside its own after fine-tuning'>leftover</u> ε = 0.05 elsewhere. Where does the product's mass go?",
+  gloss: ["<b>leftover ε</b>: expert A keeps 1 − 3ε = 0.85 on bottom-right and 0.05 on each other quadrant; B mirrors it on top-left."],
+  plain: "Multiply the two experts' weights quadrant by quadrant (0.85 or 0.05 each), then rescale. Which quadrants win?",
+  options: [
+    {t:"Into the top-right blob, A and B", ghost:[{x:0.5,y:0.5,r:gR}], gy:200, why:"both experts kept some top-right. Each kept only ε there, and ε × ε = 0.0025 is the smallest product on the board."},
+    {t:"Back onto bottom-right and top-left", right:true, ghost:[{x:0.5,y:-0.5,r:gR},{x:-0.5,y:0.5,r:gR}], gy:126, why:"bottom-right gets 0.85 × 0.05 = 0.0425, as does top-left, against 0.0025 for top-right. Rescaled: 0.472 each, and 0.0278 for top-right."},
+    {t:"Onto bottom-left, neither", ghost:[{x:-0.5,y:-0.5,r:gR}], gy:60, why:"both experts learned a 'not'. Bottom-left also gets only ε × ε."},
+    {t:"It stays at 0.25 in every blob", ghost: shareGhost({TR:0.25, BR:0.25, TL:0.25, BL:0.25}), gy:126, why:"that holds only at step 0, where ε = 0.25 makes all four weights equal."}
+  ],
+  lesson: "The product hands back the films you already have."
+});
+defineQ("q4", {
+  ask: "One film in 20 is A and B (r = 0.05). What share of the composed density lands in the top-right blob?",
+  gloss: ["<b>r</b>: the share of all films that are pneumothorax without a drain.", "<b>÷ p(x)</b>: divide by the model of all films, so a region's rarity cancels."],
+  plain: "Top-right sits in both conditionals with weight r, and in p(x) with weight r. Work out r·r/r, compare it with what the other blobs get, and rescale.",
+  options: [
+    {t:"0.05, the data's own share", ghost: shareGhost({TR:0.05, BR:0.32, TL:0.32, BL:0.32}), gy:126, why:"it is how rare the film is. Dividing by p(x) leaves top-right r·r/r = r and the other blobs almost nothing, so rescaling hands top-right nearly all of it."},
+    {t:"0.0278, as for two fine-tuned experts", ghost:[{x:0.5,y:-0.5,r:gR},{x:-0.5,y:0.5,r:gR},{x:0.5,y:0.5,r:12}], gy:126, why:"that is construction (2) at ε = 0.05. Here the A-and-B films sit inside both conditionals, so neither factor says 'not B' or 'not A'."},
+    {t:"About 0.99", right:true, ghost:[{x:0.5,y:0.5,r:gR}], gy:200, why:"top-right is the only blob in both p(x|A) and p(x|B); the rest meet only through tiny tails. 0.989 sits in its ring for every r from 0.25 to 0.001."},
+    {t:"0: rare means nothing to compose", ghost:[{cross:true}], gy:126, why:"rare is not absent. At r = 0 the top-right blob leaves both factors, and most of the product moves to the origin (0.970), with 0.070 left in the ring."}
+  ],
+  lesson: "Rare is enough. Absent is not."
+});
+defineQ("q5", {
+  ask: "No film is A and B. Each expert learns only its own part. What share lands in the top-right blob?",
+  gloss: ["<b>its own part</b>: expert A models only x₁ (the lung) from A-not-B films and borrows x₂ (the chest wall) from the background."],
+  plain: "Expert A is high wherever x₁ = 0.5, at any x₂ the background holds. Expert B is high wherever x₂ = 0.5. Where are both high?",
+  options: [
+    {t:"0: no training film is there", ghost:[{cross:true}], gy:126, why:"no training film is A and B. But expert A puts density at x₁ = 0.5 for every x₂ the background holds, and x₂ = 0.5 is one of them."},
+    {t:"0.25, as at step 0", ghost: shareGhost({TR:0.25, BR:0.25, TL:0.25, BL:0.25}), gy:126, why:"the step-0 symmetry. Here each expert has two blobs, and top-right is the only one they share."},
+    {t:"About 0.99", right:true, ghost:[{x:0.5,y:0.5,r:gR}], gy:200, why:"both experts are high only at top-right. The plain product puts 0.9999 there; dividing out the background gives 0.989."},
+    {t:"0.5, tied with neither", ghost:[{x:0.5,y:0.5,r:gR*0.75},{x:-0.5,y:-0.5,r:gR*0.75}], gy:126, why:"that was the leftover-next-door tie. Here expert A has no blob in bottom-left, only a tiny tail, since bottom-left needs x₁ = −0.5."}
+  ],
+  lesson: "The parts recombine into a film neither expert saw."
+});
+
+/* ---------- controls ---------- */
+function epsSlider(host, withFormula, onChange){
+  const card = el("div", {class:"card"});
+  card.appendChild(el("div", {class:"lab"}, "Leftover each expert keeps elsewhere, ε"));
+  if (withFormula){
+    const fm = el("div", {class:"formula"});
+    card.appendChild(fm);
+    const drawF = () => {
+      const e = st.eps, v = e > 0 ? e/(2 - 4*e) : 0;
+      fm.innerHTML = 'top-right = <span class="drag" id="epsDrag" tabindex="0" role="slider" aria-label="leftover epsilon" aria-valuenow="' + e + '">' + e + '</span> / (2 − 4 × ' + e + ') = ' + fmt(v);
+    };
+    drawF(); card._drawF = drawF;
+    card.appendChild(el("div", {class:"hint"}, "Drag the highlighted ε sideways, or use the slider. The formula counts each blob as one weight; at ε = 0 the blobs' tails take over."));
+  }
+  const inp = el("input", {type:"range", min:"0", max:String(EPS.length - 1), step:"1", id:"epsRange", "aria-label":"leftover epsilon"});
+  inp.value = String(EPS.indexOf(st.eps));
+  card.appendChild(inp);
+  card.appendChild(el("div", {class:"rangeends"}, "<span>0.25: fine-tune step 0</span><span>0: trained from scratch</span>"));
+  const set = i => { i = Math.max(0, Math.min(EPS.length - 1, i)); st.eps = EPS[i]; inp.value = String(i); if (card._drawF) card._drawF(); onChange(); };
+  inp.addEventListener("input", () => set(+inp.value));
+  card.addEventListener("pointerdown", e => {
+    const h = e.target.closest && e.target.closest("#epsDrag"); if (!h) return; e.preventDefault();
+    const x0 = e.clientX, i0 = EPS.indexOf(st.eps); h.classList.add("active");
+    const mv = ev => { const i = i0 + Math.round((ev.clientX - x0)/28); if (EPS[Math.max(0, Math.min(EPS.length-1, i))] !== st.eps) set(i); const n = $("epsDrag"); if (n) n.classList.add("active"); };
+    const up = () => { window.removeEventListener("pointermove", mv); window.removeEventListener("pointerup", up); window.removeEventListener("pointercancel", up); const n = $("epsDrag"); if (n) n.classList.remove("active"); };
+    window.addEventListener("pointermove", mv); window.addEventListener("pointerup", up); window.addEventListener("pointercancel", up);
+  });
+  card.addEventListener("keydown", e => { if (e.target.id !== "epsDrag") return; const i = EPS.indexOf(st.eps);
+    if (e.key === "ArrowRight" || e.key === "ArrowUp"){ e.preventDefault(); e.stopPropagation(); set(i + 1); $("epsDrag").focus(); }
+    if (e.key === "ArrowLeft" || e.key === "ArrowDown"){ e.preventDefault(); e.stopPropagation(); set(i - 1); $("epsDrag").focus(); } });
+  host.appendChild(card);
+  return card;
+}
+function rSlider(host, onChange){
+  const card = el("div", {class:"card"});
+  card.appendChild(el("div", {class:"lab"}, "Share of films that are A and B, r"));
+  const val = el("div", {class:"formula"}); card.appendChild(val);
+  const inp = el("input", {type:"range", min:"0", max:String(RS.length - 1), step:"1", id:"rRange", "aria-label":"share of A-and-B films"});
+  inp.value = String(RS.indexOf(st.r)); card.appendChild(inp);
+  card.appendChild(el("div", {class:"rangeends"}, "<span>0.25: one film in 4</span><span>0: none</span>"));
+  const draw = () => { val.textContent = "r = " + st.r + (st.r > 0 ? "  (one film in " + Math.round(1/st.r) + ")" : "  (no film is A and B)"); };
+  draw();
+  inp.addEventListener("input", () => { st.r = RS[+inp.value]; draw(); onChange(); });
+  host.appendChild(card);
+}
+function pills(host, label, items, cur, onPick){
+  const card = el("div", {class:"card"});
+  card.appendChild(el("div", {class:"lab"}, label));
+  const row = el("div", {class:"row"});
+  items.forEach(it => { const b = el("button", {class:"pill", type:"button", "aria-pressed": String(it.v === cur)}, it.t);
+    b.addEventListener("click", () => { row.querySelectorAll(".pill").forEach(x => x.setAttribute("aria-pressed", "false")); b.setAttribute("aria-pressed", "true"); onPick(it.v); });
+    row.appendChild(b); });
+  card.appendChild(row); host.appendChild(card); return card;
+}
+function c2Line(){
+  const r = keyRow(st.mode, st);
+  if (st.eps === 0) return "ε = 0, experts trained from scratch: " + fmt(r.at_origin) + " sits at the origin, a blend of neither.";
+  if (st.mode === "c2adj") return "Leftover next door: top-right " + fmt(r.in_TR_blob) + ", bottom-left " + fmt(r.in_BL_blob) + ". Top-right only ties with neither.";
+  if (st.eps === 0.25) return "Step 0: all four blobs hold " + fmt(r.in_TR_blob) + ".";
+  return "Top-right " + fmt(r.in_TR_blob) + "; bottom-right and top-left " + fmt(r.in_BR_blob) + " each: the films you already have.";
+}
+
+/* ---------- the presses ---------- */
+const CHAPTERS = [{id:"sup", label:"Support"}, {id:"a", label:"2a: keep pretraining"}, {id:"a1", label:"2a: one labelled model"}, {id:"b", label:"2b: learn one part"}, {id:"c", label:"2c: test samplers"}, {id:"x", label:"Explore"}];
+const ctrl = () => $("ctrl"), ro = () => $("readout"), ex = () => $("extra");
+function refreshReadout(opts){ ro().innerHTML = ""; ro().appendChild(readout(keyRow(st.mode, st), opts)); }
+const PRESSES = [
+  {chap:"sup", title:"Two experts, nothing shared", say:"Expert A learned only pneumothorax films with a drain. Expert B learned only films with no pneumothorax and no drain.",
+    focus:["A","B","P"], gate:"q1",
+    enter(){ Object.assign(st, {mode:"c2even", eps:0, slot:true, scratchCaps:true});
+      ex().appendChild(el("div", {class:"card"}, '<div class="lab">Broken run <span class="chip hot">experts from scratch</span></div><p class="stateline">Neither training set holds a top-right film. This is the case composition is hoped to rescue.</p>'));
+      askQ($("qBox"), "q1"); refreshReadout({slot:true}); }},
+  {chap:"sup", title:"The product lands between them", say:"Rescaled, 0.989 of the product sits at the origin, a blend of neither. Only 0.006 reaches the top-right blob.",
+    focus:["P"],
+    enter(){ Object.assign(st, {mode:"c2even", eps:0, slot:false, scratchCaps:true}); revealQ($("qBox"), "q1");
+      refreshReadout({});
+      ex().appendChild(el("div", {class:"card"}, '<div class="lab">Wrong and right</div><p class="stateline">From scratch: <b class="data">' + fmt(KEY.c2_even["0"].in_TR_blob) + '</b> in the top-right blob. Keep pretraining\'s support (step 0): <span class="data">' + fmt(KEY.c2_even["0.25"].in_TR_blob) + '</span>, press 5.</p>')); }},
+  {chap:"sup", title:"A product needs both factors", say:"Support is where a density is not zero, and a product is zero wherever either factor is. These blobs only get tiny, so drag B away and the product's raw mass Z all but vanishes.",
+    focus:["B","P"],
+    enter(){ Object.assign(st, {mode:"support", q:"BR", bpos:null, dragging:false, raw:true, slot:false});
+      const box = ctrl();
+      pills(box, "Put expert B's blob on", [{t:"bottom-right, with A", v:"BR"}, {t:"top-right, next door", v:"TR"}, {t:"top-left, opposite", v:"TL"}], "BR", v => { st.q = v; st.bpos = null; drawStage(); supportRO(); });
+      pills(box, "Draw the product", [{t:"raw, before rescaling", v:true}, {t:"rescaled, as a sampler sees it", v:false}], true, v => { st.raw = v; drawStage(); });
+      supportRO(); }},
+  {chap:"a", title:"Step 0: one model, twice", say:"Before fine-tuning, both experts are the pretrained model, trained on all four kinds of film: a quarter each.",
+    focus:["A","B","P"], gate:"q2",
+    enter(){ Object.assign(st, {mode:"c2even", eps:0.25, slot:true}); askQ($("qBox"), "q2"); refreshReadout({slot:true}); }},
+  {chap:"a", title:"A quarter in every blob", say:"Both factors are the same four equal blobs, so their product stays the same in all four quadrants. Rescaled, each blob holds 0.25.",
+    focus:["P"],
+    enter(){ Object.assign(st, {mode:"c2even", eps:0.25, slot:false}); revealQ($("qBox"), "q2"); refreshReadout({}); }},
+  {chap:"a", title:"Fine-tuning leaves a leftover ε", say:"Fine-tuning continues each copy on one quadrant. Expert A keeps 1 − 3ε on bottom-right and ε on each other; expert B mirrors it on top-left.",
+    focus:["A","B","P"], gate:"q3",
+    enter(){ Object.assign(st, {mode:"c2even", eps:0.05, slot:true}); askQ($("qBox"), "q3"); refreshReadout({slot:true}); }},
+  {chap:"a", title:"It hands back films you have", say:"Each expert also learned 'not B' or 'not A'. Top-right gets ε × ε; bottom-right and top-left get ε × (1 − 3ε).",
+    focus:["P"],
+    enter(){ Object.assign(st, {mode:"c2even", eps:0.05, slot:false}); revealQ($("qBox"), "q3");
+      epsSlider(ctrl(), true, () => { drawStage(); refreshReadout({line:c2Line()}); }); refreshReadout({line:c2Line()}); }},
+  {chap:"a", title:"Leftover next door: a tie", say:"Suppose each expert keeps leftover only on the two quadrants beside its own. Top-right can then at best tie with bottom-left, 0.50 each: 0.5 is the ceiling.",
+    focus:["A","B","P"],
+    enter(){ Object.assign(st, {mode:"c2adj", eps:0.1, slot:false});
+      pills(ctrl(), "Where the leftover sits", [{t:"next door only", v:"c2adj"}, {t:"spread over the other three", v:"c2even"}], "c2adj", v => { st.mode = v; drawStage(); refreshReadout({line:c2Line()}); });
+      epsSlider(ctrl(), false, () => { drawStage(); refreshReadout({line:c2Line()}); });
+      refreshReadout({line:c2Line()}); }},
+  {chap:"a1", title:"One model, divided by p(x)", say:"One conditional model learns from 'contains A' and 'contains B' labels, and is composed as p(x|A)·p(x|B)/p(x). Here one film in 20 is A and B.",
+    focus:["A","B","D","P"], gate:"q4",
+    enter(){ Object.assign(st, {mode:"c1", r:0.05, slot:true}); askQ($("qBox"), "q4"); refreshReadout({slot:true}); }},
+  {chap:"a1", title:"Rare is enough, absent is not", say:"0.989 sits in the top-right blob for every r from 0.25 down to 0.001. At r = 0, no film is A and B, and it falls to the origin blend: 0.970.",
+    focus:["P"],
+    enter(){ Object.assign(st, {mode:"c1", r:0.05, slot:false}); revealQ($("qBox"), "q4");
+      const line = () => st.r > 0 ? "r = " + st.r + ": one film in " + Math.round(1/st.r) + " is pneumothorax without a drain, and " + fmt(KEY.c1[String(st.r)].in_TR_blob) + " lands in its blob." : "r = 0: no such film, and " + fmt(KEY.c1["0"].at_origin) + " lands at the origin instead.";
+      rSlider(ctrl(), () => { drawStage(); refreshReadout({line:line()}); }); refreshReadout({line:line()}); }},
+  {chap:"b", title:"Each expert learns its part", say:"Expert A models only the lung part, x₁, and borrows the chest-wall part, x₂, from the background; expert B mirrors it. No film is A and B.",
+    focus:["A","B","P"], gate:"q5",
+    enter(){ Object.assign(st, {mode:"b2plain", slot:true}); askQ($("qBox"), "q5"); refreshReadout({slot:true}); }},
+  {chap:"b", title:"Parts recombine into A and B", say:"The plain product puts 0.9999 in the top-right blob, and dividing out the background gives 0.989. The divided form is projective composition, from Bradley and coauthors (2025a).",
+    focus:["A","B","D","P"],
+    recall:[{href:"https://claude.ai/artifact/KS2mvPznS1VKNdWz7B6f85", text:"Second view: the same division on the two-pixel toy (other numbers), Divide Out the Wall"}],
+    enter(){ Object.assign(st, {mode:"b2plain", slot:false}); revealQ($("qBox"), "q5");
+      pills(ctrl(), "Compose the two parts", [{t:"plain product", v:"b2plain"}, {t:"divide out the background", v:"b2div"}], "b2plain", v => { st.mode = v; drawStage(); refreshReadout({}); });
+      ex().appendChild(el("div", {class:"catch"}, "<b>The catch:</b> on chest X-rays a drain changes the lung it treats, so the parts may not be separate."));
+      refreshReadout({}); }},
+  {chap:"c", title:"A known answer grades samplers", say:"On this toy the right answer is computed exactly, with no model error. A miss then points at the sampler run: the sampler, its sample size, or its code.",
+    focus:["P","S"],
+    enter(){ Object.assign(st, {mode:"c2even", eps:0.05, slot:false, sampler:true});
+      const opts = [{t:"from scratch", v:["c2even",{eps:0}]}, {t:"step 0", v:["c2even",{eps:0.25}]}, {t:"leftover 0.05", v:["c2even",{eps:0.05}]}, {t:"next door 0.05", v:["c2adj",{eps:0.05}]}, {t:"labelled, r = 0.05", v:["c1",{r:0.05}]}, {t:"parts, divided", v:["b2div",{}]}];
+      pills(ctrl(), "Exact target to grade a sampler on", opts, opts[2].v, v => { st.mode = v[0]; Object.assign(st, v[1]); drawStage(); refreshReadout({title:"Exact target the sampler must match"}); });
+      ex().appendChild(el("div", {class:"card"}, '<div class="lab">Sampler histogram <span class="chip hot">not run yet</span></div><p class="stateline">To be filled by the sampler runs (claim 4): annealed ULA, MALA and UHA on these exact experts, scored by total variation to the target.</p>'));
+      refreshReadout({title:"Exact target the sampler must match"}); },
+    leave(){ st.sampler = false; }},
+  {chap:"x", title:"Explore, then check by hand", say:"", focus:null,
+    enter(){ Object.assign(st, {mode:"c2even", eps:0.1, r:0.05, slot:false});
+      const sayLine = () => {
+        const r = keyRow(st.mode, st), tr = fmt(r.in_TR_blob);
+        const t = {c2even: c2Line(), c2adj: c2Line(),
+          c1: st.r > 0 ? "One labelled model at r = " + st.r + ": " + tr + " in the top-right blob." : "One labelled model with no A-and-B film: " + fmt(r.at_origin) + " at the origin.",
+          b2plain: "Experts that learn their own part, plain product: " + tr + " in the top-right blob, with no A-and-B film.",
+          b2div: "Experts that learn their own part, background divided: " + tr + " in the top-right blob."}[st.mode];
+        $("pSay").textContent = t; };
+      const box = ctrl(); let slot = el("div");
+      const build = () => { slot.innerHTML = "";
+        if (st.mode === "c2even" || st.mode === "c2adj") epsSlider(slot, true, () => { drawStage(); sayLine(); refreshReadout({}); });
+        if (st.mode === "c1") rSlider(slot, () => { drawStage(); sayLine(); refreshReadout({}); }); };
+      pills(box, "Construction", [{t:"two fine-tuned experts", v:"c2even"}, {t:"leftover next door", v:"c2adj"}, {t:"one labelled model", v:"c1"}, {t:"parts, plain", v:"b2plain"}, {t:"parts, divided", v:"b2div"}], "c2even", v => { st.mode = v; build(); drawStage(); sayLine(); refreshReadout({}); });
+      box.appendChild(slot); build(); sayLine(); refreshReadout({});
+      ex().appendChild(el("div", {class:"hand"}, "✍️ <b>On paper:</b> at ε = 0.1 write each expert's four weights (0.7 on its own quadrant, 0.1 on each other), multiply quadrant by quadrant, and rescale. You should get 0.0625 in top-right and 0.4375 in bottom-right.")); }}
+];
+function supportRO(){
+  const r = st.dragging ? null : KEY.support_pins[st.q];
+  const line = st.dragging ? "Release to snap B onto a quadrant." :
+    st.q === "BR" ? "Both blobs on bottom-right: raw mass Z = " + fmtZ(r.Z) + ", and " + fmt(r.in_BR_blob) + " of the product is there." :
+    st.q === "TL" ? "Opposite corners: Z falls to " + fmtZ(r.Z) + ". Rescaled, " + fmt(r.at_origin) + " sits at the origin." :
+    "Next door: Z falls to " + fmtZ(r.Z) + ". Rescaled, the product sits on the edge between the two blobs.";
+  ro().innerHTML = "";
+  const box = el("div", {class:"card"});
+  box.appendChild(el("div", {class:"lab"}, 'The product\'s raw mass, Z <span class="chip">exact · answer key</span>'));
+  box.appendChild(el("div", {class:"formula"}, "Z = " + (r ? fmtZ(r.Z) : "…")));
+  box.appendChild(el("p", {class:"stateline"}, line));
+  ro().appendChild(box);
+  const live = $("live"); live.textContent = r ? fmt(r.in_TR_blob) : "?";
+}
+
+/* ---------- support drag on expert B ---------- */
+$("fB").querySelector("svg").addEventListener("pointerdown", e => {
+  if (st.mode !== "support") return;
+  const svg = e.currentTarget; e.preventDefault(); try { svg.setPointerCapture(e.pointerId); } catch(_){}
+  const toXY = ev => { const r = svg.getBoundingClientRect(); return [((ev.clientX - r.left)/r.width)*2.2 - 1.1, 1.1 - ((ev.clientY - r.top)/r.height)*2.2]; };
+  st.dragging = true; st.bpos = toXY(e); drawStage(); supportRO();
+  const mv = ev => { st.bpos = toXY(ev); drawStage(); };
+  const up = ev => { svg.removeEventListener("pointermove", mv); svg.removeEventListener("pointerup", up); svg.removeEventListener("pointercancel", up);
+    const p = st.bpos; let best = "BR", bd = 1e9; QS.forEach(q => { const d = (p[0]-MU[q][0])**2 + (p[1]-MU[q][1])**2; if (d < bd){ bd = d; best = q; } });
+    st.q = best; st.bpos = null; st.dragging = false; drawStage(); supportRO();
+    ctrl().querySelectorAll(".card")[0].querySelectorAll(".pill").forEach(b => b.setAttribute("aria-pressed", String(b.textContent.indexOf(QSIDE[best]) === 0))); };
+  svg.addEventListener("pointermove", mv); svg.addEventListener("pointerup", up); svg.addEventListener("pointercancel", up);
+});
+
+/* ---------- engine ---------- */
+let cur = -1, nudged = false;
+function guide(){ const p = PRESSES[cur]; const on = $("guide").checked && p && p.focus;
+  document.querySelectorAll("figure[data-g]").forEach(f => f.classList.toggle("dim", !!on && !p.focus.includes(f.dataset.g))); }
+function go(i){
+  i = Math.max(0, Math.min(PRESSES.length - 1, i));
+  if (PRESSES[cur] && PRESSES[cur].leave) PRESSES[cur].leave();
+  cur = i; nudged = false; const p = PRESSES[i];
+  const nn = document.querySelector(".nudge"); if (nn) nn.remove();
+  $("pTitle").textContent = p.title; $("pSay").textContent = p.say;
+  const rc = $("recall"); rc.innerHTML = ""; (p.recall || []).forEach(r => rc.appendChild(el("a", {href:r.href, target:"_blank", rel:"noopener"}, r.text)));
+  ["qBox","ctrl","readout","extra"].forEach(id => { $(id).innerHTML = ""; });
+  st.ghosts = null; st.scratchCaps = false; st.sampler = false; st.capKey = null;
+  p.enter();
+  drawStage();
+  $("count").textContent = (i + 1) + " of " + PRESSES.length;
+  $("back").disabled = i === 0; $("next").disabled = i === PRESSES.length - 1;
+  const ci = CHAPTERS.findIndex(c => c.id === p.chap);
+  $("chaps").querySelectorAll(".chap").forEach((b, j) => b.classList.toggle("on", j === ci));
+  store.set("press", i);
+  try { history.replaceState(null, "", "#p" + (i + 1)); } catch(e){}
+}
+function next(){ const p = PRESSES[cur];
+  if (p.gate && !picked(p.gate) && !nudged){ nudged = true; $("navbar").appendChild(el("div", {class:"nudge"}, "Pick an answer first. Press Next again to see the verdict without one.")); return; }
+  go(cur + 1); }
+CHAPTERS.forEach(c => { const b = el("button", {class:"chap", type:"button"}, c.label); b.addEventListener("click", () => go(PRESSES.findIndex(p => p.chap === c.id))); $("chaps").appendChild(b); });
+$("next").addEventListener("click", next);
+$("back").addEventListener("click", () => go(cur - 1));
+$("guide").addEventListener("change", guide);
+document.addEventListener("keydown", e => { const t = e.target; if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || (t.classList && t.classList.contains("drag")))) return;
+  if (e.key === "ArrowRight"){ e.preventDefault(); next(); } else if (e.key === "ArrowLeft"){ e.preventDefault(); go(cur - 1); } });
+
+/* theme */
+const themeBtn = $("theme");
+const isDark = () => { const a = document.documentElement.getAttribute("data-theme"); if (a) return a === "dark"; try { return matchMedia("(prefers-color-scheme: dark)").matches; } catch(e){ return false; } };
+const syncTheme = () => { themeBtn.textContent = isDark() ? "Light" : "Dark"; };
+themeBtn.addEventListener("click", () => { document.documentElement.setAttribute("data-theme", isDark() ? "light" : "dark"); syncTheme(); drawStage(); });
+try { matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { syncTheme(); drawStage(); }); new MutationObserver(() => { syncTheme(); drawStage(); }).observe(document.documentElement, {attributes:true, attributeFilter:["data-theme"]}); } catch(e){}
+syncTheme();
+
+/* key table, recomputed on load */
+function keyTable(){
+  const tb = $("keyTable").querySelector("tbody");
+  const rows = [
+    ["construction 2, ε = 0.25 (step 0)", "c2even", {eps:0.25}, "in_TR_blob"],
+    ["construction 2, ε = 0.1", "c2even", {eps:0.1}, "in_TR_blob"],
+    ["construction 2, ε = 0.05", "c2even", {eps:0.05}, "in_TR_blob"],
+    ["construction 2, ε = 0 (from scratch)", "c2even", {eps:0}, "at_origin"],
+    ["construction 2, ε = 0 (from scratch)", "c2even", {eps:0}, "Z"],
+    ["leftover next door, ε = 0.1", "c2adj", {eps:0.1}, "in_TR_blob"],
+    ["leftover next door, ε = 0.1", "c2adj", {eps:0.1}, "in_BL_blob"],
+    ["construction 1, r = 0.05", "c1", {r:0.05}, "in_TR_blob"],
+    ["construction 1, r = 0", "c1", {r:0}, "at_origin"],
+    ["2b, plain product", "b2plain", {}, "in_TR_blob"],
+    ["2b, background divided", "b2div", {}, "in_TR_blob"],
+    ["support, B on bottom-right", "support", {q:"BR"}, "Z"]
+  ];
+  rows.forEach(r => { const got = shares(product(factors(r[1], r[2])))[r[3]]; const want = keyRow(r[1], r[2])[r[3]];
+    const ok = Math.abs(got - want) <= 1e-9*Math.max(1, Math.abs(want));
+    const tr = el("tr"); tr.innerHTML = "<td>" + r[0] + "</td><td>" + r[3] + "</td><td class='data'>" + got.toPrecision(6) + "</td><td class='data'>" + want.toPrecision(6) + "</td><td>" + (ok ? "✓" : "✗") + "</td>"; tb.appendChild(tr); });
+}
+let tableBuilt = false;
+$("sources").addEventListener("toggle", () => { if ($("sources").open && !tableBuilt){ tableBuilt = true; keyTable(); } });
+window.addEventListener("load", () => setTimeout(() => { if (!tableBuilt){ tableBuilt = true; keyTable(); } }, 400));
+
+renderScore();
+let start = 0; const m = /^#p(\d+)$/.exec(location.hash || ""); if (m) start = +m[1] - 1; else start = store.get("press", 0);
+go(start);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => drawStage());
+window.addEventListener("resize", () => {});
+})();
+</script>

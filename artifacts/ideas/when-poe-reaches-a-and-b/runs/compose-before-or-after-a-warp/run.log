@@ -1,0 +1,4 @@
+warp_strength_a=0 detJ_min=1 detJ_max=1 tv_plain_product=0 tv_construction_1=0 tv_negation_w0.3=0 plain_TR_pixel=0.9997 plain_TR_latent=0.9997
+warp_strength_a=0.3 detJ_min=1.008 detJ_max=2.56 tv_plain_product=0.03539 tv_construction_1=3.721e-17 tv_negation_w0.3=5e-17 plain_TR_pixel=0.9998 plain_TR_latent=0.9997
+warp_strength_a=1 detJ_min=1.027 detJ_max=9 tv_plain_product=0.07957 tv_construction_1=3.711e-17 tv_negation_w0.3=5.336e-17 plain_TR_pixel=0.9998 plain_TR_latent=0.9997
+warp_strength_a=3 detJ_min=1.081 detJ_max=49 tv_plain_product=0.1261 tv_construction_1=3.822e-17 tv_negation_w0.3=6.638e-17 plain_TR_pixel=0.9998 plain_TR_latent=0.9997

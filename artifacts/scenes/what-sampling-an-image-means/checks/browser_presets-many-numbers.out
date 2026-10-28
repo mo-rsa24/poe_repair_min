@@ -1,0 +1,54 @@
+
+frame 1
+  default: This image is the point (1.00, 1.00, −1.00, −1.00). Change any pixel and the point moves along that one axis.
+  preset 1 Top bright: This image is the point (1.00, 1.00, −1.00, −1.00). Change any pixel and the point moves along that one axis.
+  preset 2 Bottom bright: This image is the point (−1.00, −1.00, 1.00, 1.00). Change any pixel and the point moves along that one axis.
+  preset 3 A checkerboard: This image is the point (1.00, −1.00, −1.00, 1.00). Change any pixel and the point moves along that one axis.
+
+frame 2
+  default: Volume of the (x₁, x₂) slice: 1.0000. The normaliser grows from 3.989 for one number to 253.30 for four, because the same total of 1 is packed into a smaller region in more dimensions.
+  preset 1 d = 1: Volume of the (x₁, x₂) slice: 1.0000. The normaliser grows from 3.989 for one number to 253.30 for four, because the same total of 1 is packed into a smaller region in more dimensions.
+  preset 2 d = 2: Volume of the (x₁, x₂) slice: 1.0000. The normaliser grows from 3.989 for one number to 253.30 for four, because the same total of 1 is packed into a smaller region in more dimensions.
+
+frame 3
+  default: Summing the joint over x₂ at x₁ = 1.00 gives 1.9947; the formula gives 1.9947.
+  preset 1 x₁ = 1: Summing the joint over x₂ at x₁ = 1.00 gives 1.9947; the formula gives 1.9947.
+  preset 2 x₁ = 0: Summing the joint over x₂ at x₁ = 0.00 gives 0.0000; the formula gives 0.0000.
+  preset 3 x₁ = −0.9: Summing the joint over x₂ at x₁ = -0.90 gives 1.2099; the formula gives 1.2099.
+  switch 1 flipped: Summing the joint over x₂ at x₁ = 1.00 gives 1.9947; the formula gives 1.9947.
+
+frame 4
+  default: Image (0.975, 0.975, −0.975, −1.000). After pixel 1 the weight on top bright is 1.000, so the other three pixels follow it: a real image.
+  preset 1 u₁ = 0.3: Image (−0.975, −1.025, 1.025, 1.000). After pixel 1 the weight on top bright is 0.000, so the other three pixels follow it: a real image.
+  preset 2 u₁ = 0.5: Image (−0.175, −1.025, 1.025, 1.000). After pixel 1 the weight on top bright is 0.000, so the other three pixels follow it: a real image.
+
+frame 5
+  default: 1 of these 16 draws is one of the two real images.
+  preset 1 New 16 draws: 1 of these 16 draws is one of the two real images.
+  switch 1 flipped: 16 of these 16 draws are one of the two real images.
+
+frame 6
+  default: Area under pixel 1’s bell: 1.0000, for μ₁ = 0.60 and σ = 0.30. The four bells multiply, so the volume over all four pixels is 1 × 1 × 1 × 1.
+  preset 1 μ₁ = −1: Area under pixel 1’s bell: 1.0000, for μ₁ = -1.00 and σ = 0.30. The four bells multiply, so the volume over all four pixels is 1 × 1 × 1 × 1.
+  preset 2 σ = 0.1: Area under pixel 1’s bell: 1.0000, for μ₁ = 0.60 and σ = 0.10. The four bells multiply, so the volume over all four pixels is 1 × 1 × 1 × 1.
+  preset 3 σ = 1: Area under pixel 1’s bell: 1.0000, for μ₁ = 0.60 and σ = 1.00. The four bells multiply, so the volume over all four pixels is 1 × 1 × 1 × 1.
+
+frame 7
+  default: 300 draws of z in, 300 images out: 162 land on top bright and 138 on bottom bright. Mass is moved and never created, so the outputs’ volume stays 1.
+  preset 1 z₀ = −0.4: 300 draws of z in, 300 images out: 162 land on top bright and 138 on bottom bright. Mass is moved and never created, so the outputs’ volume stays 1.
+  preset 2 z₀ = 0.05: 300 draws of z in, 300 images out: 162 land on top bright and 138 on bottom bright. Mass is moved and never created, so the outputs’ volume stays 1.
+  switch 1 flipped: 300 u’s in, 300 heights out, mean 170.8 cm. Nothing is created: each u is carried to one height.
+
+frame 8
+  default: The score is highest at c = 0.993, log L = 21.6, close to the c = 1 the toy was built with; eight images cannot pin it exactly.
+  preset 1 c = 0: The score is highest at c = 0.993, log L = 21.6, close to the c = 1 the toy was built with; eight images cannot pin it exactly.
+  preset 2 c = 1: The score is highest at c = 0.993, log L = 21.6, close to the c = 1 the toy was built with; eight images cannot pin it exactly.
+  preset 3 c = 1.4: The score is highest at c = 0.993, log L = 21.6, close to the c = 1 the toy was built with; eight images cannot pin it exactly.
+
+frame 9
+  default: Each draw sits 0.721 from the mean image per pixel (predicted 0.722). Their average sits 0.417 (predicted 0.417).
+  preset 1 t = 10: Each draw sits 0.182 from the mean image per pixel (predicted 0.182). Their average sits 0.105 (predicted 0.105).
+  preset 2 t = 90: Each draw sits 0.988 from the mean image per pixel (predicted 0.990). Their average sits 0.572 (predicted 0.572).
+  preset 3 New draws: Each draw sits 0.722 from the mean image per pixel (predicted 0.722). Their average sits 0.414 (predicted 0.417).
+
+browser actions: 34; katex errors: 0; page errors: 0; equations wider than their card: 0 frames

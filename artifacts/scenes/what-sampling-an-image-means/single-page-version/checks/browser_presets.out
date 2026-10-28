@@ -1,0 +1,143 @@
+
+frame 1
+  default: Shortest 158 cm, tallest 184 cm. 3 of the 10 are taller than you.
+
+frame 2
+  default: Bin width 5 cm: the tallest bar holds 3 of the 10 heights. The bins change the picture; the mean and variance stay the same.
+  preset 1 2 cm bins: Bin width 2 cm: the tallest bar holds 1 of the 10 heights. The bins change the picture; the mean and variance stay the same.
+  preset 2 10 cm bins: Bin width 10 cm: the tallest bar holds 5 of the 10 heights. The bins change the picture; the mean and variance stay the same.
+
+frame 3
+  default: Score −66.43. The best bell scores −34.15, so this one is 32.28 below it.
+  preset 1 Too narrow: Score −50.26. The best bell scores −34.15, so this one is 16.12 below it.
+  preset 2 Too wide: Score −37.47. The best bell scores −34.15, so this one is 3.32 below it.
+  preset 3 Off centre: Score −41.96. The best bell scores −34.15, so this one is 7.81 below it.
+  preset 4 Best bell: This is the best bell: no other μ and σ score higher than −34.15.
+
+frame 4
+  default: Total area under p: 1.0000. Squeeze σ to 0.1 cm and the peak would read 3.99 per cm; an area can never pass 1.
+  preset 1 At the mean: Total area under p: 1.0000. Squeeze σ to 0.1 cm and the peak would read 3.99 per cm; an area can never pass 1.
+  preset 2 Your height: Total area under p: 1.0000. Squeeze σ to 0.1 cm and the peak would read 3.99 per cm; an area can never pass 1.
+  preset 3 200 cm: Total area under p: 1.0000. Squeeze σ to 0.1 cm and the peak would read 3.99 per cm; an area can never pass 1.
+
+frame 5
+  default: 2 of the 10 people fall between 172.0 and 174.0 cm, a share of 0.2. The bell gives 0.103.
+  preset 1 1 cm strip: 1 of the 10 people falls between 172.5 and 173.5 cm, a share of 0.1. The bell gives 0.052.
+  preset 2 10 cm strip: 5 of the 10 people fall between 168.0 and 178.0 cm, a share of 0.5. The bell gives 0.484.
+  preset 3 Width 0: Width 0: area 0. A single exact height has chance zero, even though p(173.0) = 0.0518 per cm.
+
+frame 6
+  default: The lowest of the ten terms is −4.52, at 184 cm, the dot this bell covers worst.
+  preset 1 σ = 3: The lowest of the ten terms is −11.70, at 184 cm, the dot this bell covers worst.
+  preset 2 μ = 180: The lowest of the ten terms is −7.38, at 158 cm, the dot this bell covers worst.
+  preset 3 Best bell: The lowest of the ten terms is −4.52, at 184 cm, the dot this bell covers worst.
+  switch 1 flipped: One term left: the score ignores nine of the ten people.
+
+frame 7
+  default: Both slopes are zero only at μ = x̄ = 170.8 and σ² = s² = 54.16. Searching 180,861 bells finds the top at μ = 170.80, σ = 7.35, score −34.15.
+  preset 1 Jump to the top: Both slopes are zero only at μ = x̄ = 170.8 and σ² = s² = 54.16. Searching 180,861 bells finds the top at μ = 170.80, σ = 7.35, score −34.15.
+  preset 2 σ dividing by 9: Both slopes are zero only at μ = x̄ = 170.8 and σ² = s² = 54.16. Searching 180,861 bells finds the top at μ = 170.80, σ = 7.35, score −34.15.
+  preset 3 μ at the median: Both slopes are zero only at μ = x̄ = 170.8 and σ² = s² = 54.16. Searching 180,861 bells finds the top at μ = 170.80, σ = 7.35, score −34.15.
+
+frame 8
+  default: At σ = 2.00 the score is −1.61; halve σ and it rises to −0.92. The score has no top above σ = 0.
+  preset 1 σ = 1: At σ = 1.00 the score is −0.92; halve σ and it rises to −0.23. The score has no top above σ = 0.
+  preset 2 σ = 0.1: At σ = 0.10 the score is 1.38; halve σ and it rises to 2.08. The score has no top above σ = 0.
+  preset 3 Use all 10: With all ten heights the score peaks at σ = 7.36 and falls on both sides, so the spike is gone.
+  switch 1 flipped: With all ten heights the score peaks at σ = 7.36 and falls on both sides, so the spike is gone.
+
+frame 9
+  default: F(173.0) = 0.6175. 7 of the 10 people are at or below 173.0 cm, a share of 0.7.
+  preset 1 x = μ: F(170.8) = 0.5000. 5 of the 10 people are at or below 170.8 cm, a share of 0.5.
+  preset 2 Your height: F(173.0) = 0.6175. 7 of the 10 people are at or below 173.0 cm, a share of 0.7.
+  preset 3 x = 190: F(190.0) = 0.9955. 10 of the 10 people are at or below 190.0 cm, a share of 1.0.
+
+frame 10
+  default: u = 0.500: a share 0.500 of the bell lies below 170.8 cm.
+  preset 1 u = 0.5: u = 0.500: a share 0.500 of the bell lies below 170.8 cm.
+  preset 2 u = 0.975: u = 0.975 lands 1.96 spreads above the mean: 170.8 + 1.96 × 7.36 = 185.2 cm.
+  preset 3 u = F(173): u = 0.618 gives 173.0 cm, your height: F(173) = 0.6175.
+
+frame 11
+  default: 200 draws: mean 171.1 cm, spread 7.58 cm, against the bell’s 170.8 and 7.36.
+  preset 1 10 draws: 10 draws: mean 174.8 cm, spread 7.43 cm, against the bell’s 170.8 and 7.36.
+  preset 2 2000 draws: 2000 draws: mean 170.7 cm, spread 7.40 cm, against the bell’s 170.8 and 7.36.
+  preset 3 New draws: 200 draws: mean 170.7 cm, spread 8.00 cm, against the bell’s 170.8 and 7.36.
+
+frame 12
+  default: This pixel is coordinates 24,769 to 24,771 of 49,152.
+  preset 1 Top-left pixel: This pixel is coordinates 1 to 3 of 49,152.
+  preset 2 Bottom-right: This pixel is coordinates 49,150 to 49,152 of 49,152.
+
+frame 13
+  default: Across the four dogs, pixel A and pixel B differ by 0.18 on average, on the −1 to 1 scale.
+  preset 1 Two neighbouring pixels: Across the four dogs, pixel A and pixel B differ by 0.18 on average, on the −1 to 1 scale.
+  preset 2 Two far-apart pixels: Across the four dogs, pixel A and pixel B differ by 0.33 on average, on the −1 to 1 scale.
+  preset 3 Pixel 1176 and 1224, one row apart: Across the four dogs, pixel A and pixel B differ by 0.21 on average, on the −1 to 1 scale.
+
+frame 14
+  default: 1 of these 16 draws is one of the two real images.
+  preset 1 New 16 draws: 1 of these 16 draws is one of the two real images.
+  switch 1 flipped: 16 of these 16 draws are one of the two real images.
+
+frame 15
+  default: 2⁶⁴ − 1 = 1.845 × 10¹⁹, the number in journey 03’s facts.json. Writing it takes 20 digits.
+  preset 1 8 × 8, black and white: 2⁶⁴ − 1 = 1.845 × 10¹⁹, the number in journey 03’s facts.json. Writing it takes 20 digits.
+  preset 2 128 × 128 colour: 49,152 pixel values at 256 levels each: writing the count of free numbers takes 118,370 digits.
+  preset 3 2 × 2, black and white: 4 pixel values at 2 levels each: writing the count of free numbers takes 2 digits.
+
+frame 16
+  default: Noise image 1 always becomes the labrador, and u = 0.618 always gives 173.0 cm. Sampling is choosing the noise.
+  preset 1 u = 0.2: Noise image 1 always becomes the labrador, and u = 0.200 always gives 164.6 cm. Sampling is choosing the noise.
+  preset 2 u = 0.8: Noise image 1 always becomes the labrador, and u = 0.800 always gives 177.0 cm. Sampling is choosing the noise.
+  preset 3 Noise image 2: Noise image 2 always becomes the husky, and u = 0.618 always gives 173.0 cm. Sampling is choosing the noise.
+  preset 4 Noise image 3: Noise image 3 always becomes the golden puppy, and u = 0.618 always gives 173.0 cm. Sampling is choosing the noise.
+
+frame 17
+  default: Each draw sits 0.721 from the mean image per pixel (predicted 0.722). Their average sits 0.417 (predicted 0.417), since the draws scatter around that mean.
+  preset 1 t = 10: Each draw sits 0.182 from the mean image per pixel (predicted 0.182). Their average sits 0.105 (predicted 0.105), since the draws scatter around that mean.
+  preset 2 t = 90: Each draw sits 0.988 from the mean image per pixel (predicted 0.990). Their average sits 0.572 (predicted 0.572), since the draws scatter around that mean.
+  preset 3 New draws: Each draw sits 0.722 from the mean image per pixel (predicted 0.722). Their average sits 0.414 (predicted 0.417), since the draws scatter around that mean.
+
+frame 18
+  default: The weights spread over the equivalent of 8.5 heights, so the guess is 172.4 cm. At t = 99 it is 170.8 cm, close to the average of all ten.
+  preset 1 t = 95, nearly pure noise: The weights spread over the equivalent of 10.0 heights, so the guess is 170.9 cm. At t = 99 it is 170.8 cm, close to the average of all ten.
+  preset 2 t = 5, almost clean: The weights spread over the equivalent of 1.7 heights, so the guess is 172.7 cm. At t = 99 it is 170.8 cm, close to the average of all ten.
+  preset 3 Noisy value −1.5: The weights spread over the equivalent of 4.2 heights, so the guess is 163.1 cm. At t = 99 it is 170.8 cm, close to the average of all ten.
+
+frame 19
+  default: 20 of 20 chains end within 0.5 cm of a training height.
+  preset 1 5 chains: 5 of 5 chains end within 0.5 cm of a training height.
+  preset 2 100 chains: 100 of 100 chains end within 0.5 cm of a training height.
+  preset 3 New noise: 20 of 20 chains end within 0.5 cm of a training height.
+
+frame 20
+  default: The chain ends on the labrador, matching it to three decimals. At step 99 the guess is 0.003 from the average of the four dogs.
+  preset 1 t = 99: The chain ends on the labrador, matching it to three decimals. At step 99 the guess is 0.003 from the average of the four dogs.
+  preset 2 t = 0: The chain ends on the labrador, matching it to three decimals. At step 99 the guess is 0.003 from the average of the four dogs.
+  preset 3 New starting noise: The chain ends on the husky, matching it to three decimals. At step 99 the guess is 0.005 from the average of the four dogs.
+  switch 1 flipped: The chain ends on the labrador, matching it to three decimals. At step 99 the guess is 0.003 from the average of the four dogs.
+
+frame 21
+  default: 200 of 200 chains (100%) end within 0.5 cm of one of the 10 training heights.
+  preset 1 2 training heights: 200 of 200 chains (100%) end within 0.5 cm of one of the 2 training heights.
+  preset 2 5 training heights: 200 of 200 chains (100%) end within 0.5 cm of one of the 5 training heights.
+  switch 1 flipped: 67 of 200 chains (34%) end within 0.5 cm of one of the 10 training heights; the other 133 are heights the data never had.
+
+frame 22
+  default: The posterior adds to 1.0000. Its largest weight is 0.147, on 173 cm.
+  preset 1 t = 10: The posterior adds to 1.0000. Its largest weight is 0.519, on 173 cm.
+  preset 2 t = 90: The posterior adds to 1.0000. Its largest weight is 0.106, on 184 cm.
+  switch 1 flipped: The posterior adds to 1.0000. Its largest weight is 0.463, on 173 cm.
+
+frame 23
+  default: One of the five, Gaussian forward noise, is a free choice. The other four are bets about the data and the network.
+
+frame 24
+  default: Convnet: each output looks at a small neighbourhood with the same filter everywhere, a built-in bet that nearby pixels matter most.
+  switch 1 flipped: Transformer: every patch compares itself with every other patch from the first layer, with fewer built-in bets about distance.
+
+frame 25
+  default: Seven rungs, one change each: count, curve, best curve, sample, more numbers, a network, many small steps.
+
+browser actions: 91; katex errors: 0; page errors: 0

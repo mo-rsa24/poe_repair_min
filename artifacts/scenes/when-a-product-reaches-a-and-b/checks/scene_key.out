@@ -1,0 +1,43 @@
+PASS  construction 2, leftover even eps=0.25
+PASS  construction 2, leftover even eps=0.1
+PASS  construction 2, leftover even eps=0.05
+PASS  construction 2, leftover even eps=0.01
+PASS  construction 2, leftover even eps=0.001
+PASS  construction 2, leftover even eps=0.0001
+PASS  construction 2, leftover even eps=1e-06
+PASS  construction 2, leftover even eps=0.0
+PASS  construction 2, leftover adjacent only eps=0.1
+PASS  construction 2, leftover adjacent only eps=0.01
+PASS  construction 2, leftover adjacent only eps=0.001
+PASS  construction 1, contains labels r=0.25
+PASS  construction 1, contains labels r=0.05
+PASS  construction 1, contains labels r=0.01
+PASS  construction 1, contains labels r=0.001
+PASS  construction 1, contains labels r=0.0
+PASS  2b factorised experts, plain product pA*pB
+PASS  2b factorised experts, background-divided pA*pB/pbg
+PASS  all key rows reproduced (0 mismatches)
+eps=0.25   even TR=0.2500 BR=0.2500 origin=0.0001 Z=0.884 formula=0.2500 | adjacent TR=0.4999 BL=0.4999 origin=0.0001
+eps=0.2    even TR=0.1666 BR=0.3333 origin=0.0001 Z=0.849 formula=0.1667 | adjacent TR=0.4999 BL=0.4999 origin=0.0001
+eps=0.15   even TR=0.1071 BR=0.3928 origin=0.0001 Z=0.743 formula=0.1071 | adjacent TR=0.4999 BL=0.4999 origin=0.0001
+eps=0.1    even TR=0.0625 BR=0.4374 origin=0.0001 Z=0.566 formula=0.0625 | adjacent TR=0.4999 BL=0.4999 origin=0.0001
+eps=0.075  even TR=0.0441 BR=0.4558 origin=0.0001 Z=0.451 formula=0.0441 | adjacent TR=0.4998 BL=0.4998 origin=0.0001
+eps=0.05   even TR=0.0278 BR=0.4722 origin=0.0001 Z=0.318 formula=0.0278 | adjacent TR=0.4997 BL=0.4997 origin=0.0001
+eps=0.025  even TR=0.0132 BR=0.4868 origin=0.0001 Z=0.168 formula=0.0132 | adjacent TR=0.4995 BL=0.4995 origin=0.0001
+eps=0.01   even TR=0.0051 BR=0.4948 origin=0.0001 Z=0.0693 formula=0.0051 | adjacent TR=0.4989 BL=0.4989 origin=0.0002
+eps=0.005  even TR=0.0025 BR=0.4974 origin=0.0001 Z=0.035 formula=0.0025 | adjacent TR=0.4978 BL=0.4978 origin=0.0003
+eps=0.001  even TR=0.0005 BR=0.4994 origin=0.0001 Z=0.00706 formula=0.0005 | adjacent TR=0.4894 BL=0.4894 origin=0.0011
+eps=0.0    even TR=0.0059 BR=0.0059 origin=0.9889 Z=7.9e-10 formula=0.0000 | adjacent TR=0.0059 BL=0.0059 origin=0.9889
+r=0.25   c1 TR=0.9889 origin=0.0030 Z=0.25
+r=0.1    c1 TR=0.9889 origin=0.0030 Z=0.1
+r=0.05   c1 TR=0.9889 origin=0.0030 Z=0.05
+r=0.02   c1 TR=0.9889 origin=0.0030 Z=0.02
+r=0.01   c1 TR=0.9889 origin=0.0030 Z=0.01
+r=0.005  c1 TR=0.9889 origin=0.0030 Z=0.005
+r=0.001  c1 TR=0.9886 origin=0.0033 Z=0.001
+r=0.0    c1 TR=0.0700 origin=0.9699 Z=3.78e-07
+support B at TR: Z=5.286e-05 BR=0.2779 TR=0.2779 BL=0.0000 origin=0.0324
+support B at BR: Z=3.537 BR=0.9999 TR=0.0000 BL=0.0000 origin=0.0001
+support B at TL: Z=7.9e-10 BR=0.0059 TR=0.0059 BL=0.0059 origin=0.9889
+support B at BL: Z=5.286e-05 BR=0.2779 TR=0.0000 BL=0.2779 origin=0.0324
+one blob inside 3 std: {'grid': 0.9888750371177414, 'closed_form': 0.9888910034617577}

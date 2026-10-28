@@ -1,0 +1,982 @@
+{
+ "figure1": [
+  {
+   "kind": "intersection",
+   "exact": 0.7147238533696691,
+   "mala_accept_mean": 0.993554949760437,
+   "mala_accept_sd_across_samples": 0.00832746084779501,
+   "perfect": {
+    "measure": 0.7120000000000002,
+    "tv": 0.11075142073781952,
+    "ref_measure": 0.71,
+    "ref_tv": 0.11,
+    "mark": "matches"
+   },
+   "reverse diffusion": {
+    "measure": 0.6240000000000001,
+    "tv": 0.3104342794169143,
+    "ref_measure": 0.62,
+    "ref_tv": 0.31,
+    "mark": "matches"
+   },
+   "ULA": {
+    "measure": 0.5135000000000001,
+    "tv": 0.24591667179714144,
+    "ref_measure": 0.51,
+    "ref_tv": 0.25,
+    "mark": "matches"
+   },
+   "MALA": {
+    "measure": 0.4985,
+    "tv": 0.24389053629044508,
+    "ref_measure": 0.5,
+    "ref_tv": 0.24,
+    "mark": "matches"
+   },
+   "UHA": {
+    "measure": 0.6570000000000001,
+    "tv": 0.13329287544891807,
+    "ref_measure": 0.66,
+    "ref_tv": 0.13,
+    "mark": "matches"
+   }
+  },
+  {
+   "kind": "disjunction",
+   "exact": 0.4999674384148825,
+   "mala_accept_mean": 0.9982600212097168,
+   "mala_accept_sd_across_samples": 0.004157050978392363,
+   "perfect": {
+    "measure": 0.5095000000000001,
+    "tv": 0.23148702251405126,
+    "ref_measure": 0.51,
+    "ref_tv": 0.23,
+    "mark": "matches"
+   },
+   "reverse diffusion": {
+    "measure": 0.5015000000000001,
+    "tv": 0.21353659897942165,
+    "ref_measure": 0.5,
+    "ref_tv": 0.21,
+    "mark": "matches"
+   },
+   "ULA": {
+    "measure": 0.518,
+    "tv": 0.24404648112653002,
+    "ref_measure": 0.52,
+    "ref_tv": 0.24,
+    "mark": "matches"
+   },
+   "MALA": {
+    "measure": 0.496,
+    "tv": 0.24081034743535498,
+    "ref_measure": 0.5,
+    "ref_tv": 0.24,
+    "mark": "matches"
+   },
+   "UHA": {
+    "measure": 0.4895,
+    "tv": 0.22922773811692343,
+    "ref_measure": 0.49,
+    "ref_tv": 0.23,
+    "mark": "matches"
+   }
+  },
+  {
+   "kind": "co-occurrence",
+   "exact": 0.812917338082007,
+   "mala_accept_mean": 0.9977951049804688,
+   "mala_accept_sd_across_samples": 0.004743336699903011,
+   "perfect": {
+    "measure": 0.8135000000000003,
+    "tv": 0.09901543212198327,
+    "ref_measure": 0.81,
+    "ref_tv": 0.1,
+    "mark": "matches"
+   },
+   "reverse diffusion": {
+    "measure": 0.9230000000000004,
+    "tv": 0.19141470874659683,
+    "ref_measure": 0.92,
+    "ref_tv": 0.19,
+    "mark": "matches"
+   },
+   "ULA": {
+    "measure": 0.7205000000000001,
+    "tv": 0.13429444005445496,
+    "ref_measure": 0.72,
+    "ref_tv": 0.13,
+    "mark": "matches"
+   },
+   "MALA": {
+    "measure": 0.7135000000000002,
+    "tv": 0.15475042704930558,
+    "ref_measure": 0.71,
+    "ref_tv": 0.15,
+    "mark": "matches"
+   },
+   "UHA": {
+    "measure": 0.7955000000000003,
+    "tv": 0.09774714320929666,
+    "ref_measure": 0.8,
+    "ref_tv": 0.1,
+    "mark": "matches"
+   }
+  },
+  {
+   "kind": "contention",
+   "exact": 0.6698430945737233,
+   "mala_accept_mean": 0.9959799647331238,
+   "mala_accept_sd_across_samples": 0.0065008304081857204,
+   "perfect": {
+    "measure": 0.6730000000000002,
+    "tv": 0.10079489985995775,
+    "ref_measure": 0.67,
+    "ref_tv": 0.1,
+    "mark": "matches"
+   },
+   "reverse diffusion": {
+    "measure": 0.5745,
+    "tv": 0.23362027081859899,
+    "ref_measure": 0.57,
+    "ref_tv": 0.23,
+    "mark": "matches"
+   },
+   "ULA": {
+    "measure": 0.41350000000000003,
+    "tv": 0.2976244802306587,
+    "ref_measure": 0.41,
+    "ref_tv": 0.3,
+    "mark": "matches"
+   },
+   "MALA": {
+    "measure": 0.42150000000000004,
+    "tv": 0.29765240331963483,
+    "ref_measure": 0.42,
+    "ref_tv": 0.3,
+    "mark": "matches"
+   },
+   "UHA": {
+    "measure": 0.6170000000000001,
+    "tv": 0.1182887241381646,
+    "ref_measure": 0.62,
+    "ref_tv": 0.12,
+    "mark": "matches"
+   }
+  },
+  {
+   "kind": "dominance",
+   "exact": 0.4042377147401566,
+   "mala_accept_mean": 0.9930449724197388,
+   "mala_accept_sd_across_samples": 0.008462490513920784,
+   "perfect": {
+    "measure": 0.40367994819128244,
+    "tv": 0.11004079233290127,
+    "ref_measure": 0.4,
+    "ref_tv": 0.11,
+    "mark": "matches"
+   },
+   "reverse diffusion": {
+    "measure": 0.3447662445530294,
+    "tv": 0.5838797414183667,
+    "ref_measure": 0.34,
+    "ref_tv": 0.58,
+    "mark": "matches"
+   },
+   "ULA": {
+    "measure": 0.36748136137425885,
+    "tv": 0.41130423239798247,
+    "ref_measure": 0.37,
+    "ref_tv": 0.41,
+    "mark": "matches"
+   },
+   "MALA": {
+    "measure": 0.3697523086145519,
+    "tv": 0.38269415383374183,
+    "ref_measure": 0.37,
+    "ref_tv": 0.38,
+    "mark": "matches"
+   },
+   "UHA": {
+    "measure": 0.3874630189836024,
+    "tv": 0.28908852063316126,
+    "ref_measure": 0.39,
+    "ref_tv": 0.29,
+    "mark": "matches"
+   }
+  },
+  {
+   "kind": "interaction",
+   "exact": -0.4050744252044409,
+   "mala_accept_mean": 0.99555504322052,
+   "mala_accept_sd_across_samples": 0.006798173766583204,
+   "perfect": {
+    "measure": -0.4057560068345931,
+    "tv": 0.07261043374889324,
+    "ref_measure": -0.41,
+    "ref_tv": 0.07,
+    "mark": "matches"
+   },
+   "reverse diffusion": {
+    "measure": -0.4018585880021904,
+    "tv": 0.29884774793795765,
+    "ref_measure": -0.4,
+    "ref_tv": 0.3,
+    "mark": "matches"
+   },
+   "ULA": {
+    "measure": -0.40163624821870886,
+    "tv": 0.0952637764580789,
+    "ref_measure": -0.4,
+    "ref_tv": 0.1,
+    "mark": "matches"
+   },
+   "MALA": {
+    "measure": -0.40306395930583333,
+    "tv": 0.09386834175389347,
+    "ref_measure": -0.4,
+    "ref_tv": 0.09,
+    "mark": "matches"
+   },
+   "UHA": {
+    "measure": -0.403993706986308,
+    "tv": 0.08463320735369595,
+    "ref_measure": -0.4,
+    "ref_tv": 0.08,
+    "mark": "matches"
+   }
+  },
+  {
+   "kind": "negation",
+   "exact": 0.09719463068186997,
+   "mala_accept_mean": 0.9962149262428284,
+   "mala_accept_sd_across_samples": 0.006078019272536039,
+   "perfect": {
+    "measure": 0.0885,
+    "tv": 0.1520206521963749,
+    "ref_measure": 0.09,
+    "ref_tv": 0.15,
+    "mark": "matches"
+   },
+   "reverse diffusion": {
+    "measure": 0.20400000000000001,
+    "tv": 0.26001912967938245,
+    "ref_measure": 0.2,
+    "ref_tv": 0.26,
+    "mark": "matches"
+   },
+   "ULA": {
+    "measure": 0.1295,
+    "tv": 0.2510973073479208,
+    "ref_measure": 0.13,
+    "ref_tv": 0.25,
+    "mark": "matches"
+   },
+   "MALA": {
+    "measure": 0.11200000000000002,
+    "tv": 0.25054288946617354,
+    "ref_measure": 0.11,
+    "ref_tv": 0.25,
+    "mark": "matches"
+   },
+   "UHA": {
+    "measure": 0.1185,
+    "tv": 0.21154934024281002,
+    "ref_measure": 0.12,
+    "ref_tv": 0.21,
+    "mark": "matches"
+   }
+  }
+ ],
+ "figure2": {
+  "co-occurrence": {
+   "dial": [
+    1.0,
+    0.8,
+    0.6,
+    0.5,
+    0.4,
+    0.3
+   ],
+   "measure": [
+    0.7963519226922802,
+    0.8183210871923633,
+    0.8469438860750268,
+    0.718410867340244,
+    0.48101270577888905,
+    0.11605215680189447
+   ],
+   "ref": [
+    0.796,
+    0.818,
+    0.847,
+    0.718,
+    0.481,
+    0.116
+   ],
+   "mark": "matches"
+  },
+  "contention": {
+   "dial": [
+    0.5,
+    0.3,
+    0.2,
+    0.1,
+    0.05,
+    0.0
+   ],
+   "measure": [
+    0.6939777084854568,
+    0.664424590819982,
+    0.6845245758670812,
+    0.683582163095643,
+    0.6574010676222253,
+    0.0021121213634458834
+   ],
+   "ref": [
+    0.694,
+    0.664,
+    0.685,
+    0.684,
+    0.657,
+    0.002
+   ],
+   "mark": "matches"
+  },
+  "interaction": {
+   "dial": [
+    0.3,
+    0.2,
+    0.1,
+    0.05,
+    0.02,
+    0.0
+   ],
+   "measure": [
+    -0.3960126637887708,
+    -0.3935205228649082,
+    -0.39970439897493687,
+    -0.3898445929149273,
+    -0.39378958664850483,
+    -0.21503008291999323
+   ],
+   "ref": [
+    -0.396,
+    -0.394,
+    -0.4,
+    -0.39,
+    -0.394,
+    -0.215
+   ],
+   "mark": "matches"
+  },
+  "negation in-bar": {
+   "dial": [
+    0.0,
+    0.02,
+    0.05,
+    0.1,
+    0.3,
+    1.0
+   ],
+   "measure": [
+    0.14599900930817256,
+    0.12079653558608164,
+    0.08464515295131358,
+    0.037284871441880585,
+    0.00010333209223694647,
+    3.5001757211703816e-23
+   ],
+   "ref": [
+    0.146,
+    0.121,
+    0.085,
+    0.037,
+    0.0,
+    0.0
+   ],
+   "mark": "matches"
+  },
+  "negation away": {
+   "dial": [
+    0.0,
+    0.02,
+    0.05,
+    0.1,
+    0.3,
+    1.0
+   ],
+   "measure": [
+    0.3866379157995587,
+    0.38444233618441276,
+    0.39096285889467947,
+    0.438898409429862,
+    0.8627565289551121,
+    0.9999999999799737
+   ],
+   "ref": [
+    0.387,
+    0.384,
+    0.391,
+    0.439,
+    0.863,
+    1.0
+   ],
+   "mark": "matches"
+  }
+ },
+ "run1": [
+  {
+   "kind": "intersection",
+   "accept": 0.5974299907684326,
+   "tv": 0.11114010067453667,
+   "floor": 0.11075142073781952,
+   "step_ratio": 18.597532047888187,
+   "accept_sd_across_samples": 0.05411708727478981,
+   "ref": [
+    0.6,
+    0.11,
+    0.11
+   ],
+   "mark": "matches"
+  },
+  {
+   "kind": "disjunction",
+   "accept": 0.6060850024223328,
+   "tv": 0.23188384532777717,
+   "floor": 0.23148702251405126,
+   "step_ratio": 78.41617407929421,
+   "accept_sd_across_samples": 0.09852754324674606,
+   "ref": [
+    0.61,
+    0.22,
+    0.23
+   ],
+   "mark": "matches"
+  },
+  {
+   "kind": "co-occurrence",
+   "accept": 0.6086399555206299,
+   "tv": 0.0978132596537505,
+   "floor": 0.09901543212198327,
+   "step_ratio": 68.23992419395994,
+   "accept_sd_across_samples": 0.05104461684823036,
+   "ref": [
+    0.61,
+    0.11,
+    0.1
+   ],
+   "mark": "matches"
+  },
+  {
+   "kind": "contention",
+   "accept": 0.6028850078582764,
+   "tv": 0.14024721193996953,
+   "floor": 0.10079489985995775,
+   "step_ratio": 42.86385731745178,
+   "accept_sd_across_samples": 0.07493352890014648,
+   "ref": [
+    0.6,
+    0.16,
+    0.1
+   ],
+   "mark": "matches"
+  },
+  {
+   "kind": "dominance",
+   "accept": 0.5948249697685242,
+   "tv": 0.2885613044472841,
+   "floor": 0.11004079233290127,
+   "step_ratio": 17.366249966338827,
+   "accept_sd_across_samples": 0.05163528025150299,
+   "ref": [
+    0.6,
+    0.3,
+    0.11
+   ],
+   "mark": "matches"
+  },
+  {
+   "kind": "interaction",
+   "accept": 0.6079950332641602,
+   "tv": 0.08372773615304817,
+   "floor": 0.07261043374889324,
+   "step_ratio": 37.86504439988179,
+   "accept_sd_across_samples": 0.05475425720214844,
+   "ref": [
+    0.61,
+    0.08,
+    0.07
+   ],
+   "mark": "matches"
+  },
+  {
+   "kind": "negation",
+   "accept": 0.5973950028419495,
+   "tv": 0.2082591149020652,
+   "floor": 0.1520206521963749,
+   "step_ratio": 27.6749978609346,
+   "accept_sd_across_samples": 0.05264740809798241,
+   "ref": [
+    0.6,
+    0.21,
+    0.15
+   ],
+   "mark": "matches"
+  }
+ ],
+ "run2": [
+  {
+   "setting": "co-occurrence, top edge 0.4",
+   "sampler": "perfect",
+   "exact": 0.44256761410041673,
+   "measure": 0.42500000000000004,
+   "tv": 0.1128825788189692,
+   "ref": [
+    0.43,
+    0.11
+   ],
+   "mark": "matches"
+  },
+  {
+   "setting": "co-occurrence, top edge 0.4",
+   "sampler": "reverse diffusion",
+   "exact": 0.44256761410041673,
+   "measure": 0.393,
+   "tv": 0.23478313425414107,
+   "ref": [
+    0.38,
+    0.22
+   ],
+   "mark": "matches"
+  },
+  {
+   "setting": "co-occurrence, top edge 0.4",
+   "sampler": "ULA",
+   "exact": 0.44256761410041673,
+   "measure": 0.401,
+   "tv": 0.18225958006664325,
+   "ref": [
+    0.4,
+    0.19
+   ],
+   "mark": "matches"
+  },
+  {
+   "setting": "co-occurrence, top edge 0.4",
+   "sampler": "MALA",
+   "exact": 0.44256761410041673,
+   "measure": 0.42600000000000005,
+   "tv": 0.17268185015828766,
+   "ref": [
+    0.42,
+    0.18
+   ],
+   "mark": "matches"
+  },
+  {
+   "setting": "co-occurrence, top edge 0.4",
+   "sampler": "MALA, tuned",
+   "exact": 0.44256761410041673,
+   "measure": 0.41600000000000004,
+   "tv": 0.12466067266341999,
+   "ref": [
+    0.42,
+    0.13
+   ],
+   "mark": "matches"
+  },
+  {
+   "setting": "co-occurrence, top edge 0.4",
+   "sampler": "UHA",
+   "exact": 0.44256761410041673,
+   "measure": 0.41500000000000004,
+   "tv": 0.130161868263279,
+   "ref": [
+    0.43,
+    0.13
+   ],
+   "mark": "matches"
+  },
+  {
+   "setting": "contention, 5% rotated",
+   "sampler": "perfect",
+   "exact": 0.7540663387919775,
+   "measure": 0.7295000000000003,
+   "tv": 0.09662708116731172,
+   "ref": [
+    0.73,
+    0.1
+   ],
+   "mark": "matches"
+  },
+  {
+   "setting": "contention, 5% rotated",
+   "sampler": "reverse diffusion",
+   "exact": 0.7540663387919775,
+   "measure": 0.202,
+   "tv": 0.6773824995068565,
+   "ref": [
+    0.21,
+    0.69
+   ],
+   "mark": "matches"
+  },
+  {
+   "setting": "contention, 5% rotated",
+   "sampler": "ULA",
+   "exact": 0.7540663387919775,
+   "measure": 0.2695,
+   "tv": 0.5528645404758504,
+   "ref": [
+    0.26,
+    0.57
+   ],
+   "mark": "matches"
+  },
+  {
+   "setting": "contention, 5% rotated",
+   "sampler": "MALA",
+   "exact": 0.7540663387919775,
+   "measure": 0.24,
+   "tv": 0.584277250947522,
+   "ref": [
+    0.24,
+    0.57
+   ],
+   "mark": "matches"
+  },
+  {
+   "setting": "contention, 5% rotated",
+   "sampler": "MALA, tuned",
+   "exact": 0.7540663387919775,
+   "measure": 0.556,
+   "tv": 0.26713702731158434,
+   "ref": [
+    0.53,
+    0.3
+   ],
+   "mark": "matches"
+  },
+  {
+   "setting": "contention, 5% rotated",
+   "sampler": "UHA",
+   "exact": 0.7540663387919775,
+   "measure": 0.559,
+   "tv": 0.2447352731676311,
+   "ref": [
+    0.53,
+    0.27
+   ],
+   "mark": "matches"
+  },
+  {
+   "setting": "interaction, 2% overlap",
+   "sampler": "perfect",
+   "exact": -0.38269185188355664,
+   "measure": -0.3837996252151323,
+   "tv": 0.05307597586101115,
+   "ref": [
+    -0.38,
+    0.05
+   ],
+   "mark": "matches"
+  },
+  {
+   "setting": "interaction, 2% overlap",
+   "sampler": "reverse diffusion",
+   "exact": -0.38269185188355664,
+   "measure": -0.34580236360513045,
+   "tv": 0.6049499423336544,
+   "ref": [
+    -0.35,
+    0.59
+   ],
+   "mark": "matches"
+  },
+  {
+   "setting": "interaction, 2% overlap",
+   "sampler": "ULA",
+   "exact": -0.38269185188355664,
+   "measure": -0.37236683135963516,
+   "tv": 0.2544672381401628,
+   "ref": [
+    -0.37,
+    0.26
+   ],
+   "mark": "matches"
+  },
+  {
+   "setting": "interaction, 2% overlap",
+   "sampler": "MALA",
+   "exact": -0.38269185188355664,
+   "measure": -0.3702840515221307,
+   "tv": 0.28801997785444095,
+   "ref": [
+    -0.37,
+    0.27
+   ],
+   "mark": "matches"
+  },
+  {
+   "setting": "interaction, 2% overlap",
+   "sampler": "MALA, tuned",
+   "exact": -0.38269185188355664,
+   "measure": -0.38369540334970353,
+   "tv": 0.06542852029299304,
+   "ref": [
+    -0.38,
+    0.08
+   ],
+   "mark": "matches"
+  },
+  {
+   "setting": "interaction, 2% overlap",
+   "sampler": "UHA",
+   "exact": -0.38269185188355664,
+   "measure": -0.38203308054839075,
+   "tv": 0.08528753312901327,
+   "ref": [
+    -0.38,
+    0.08
+   ],
+   "mark": "matches"
+  }
+ ],
+ "marks": {
+  "figure1_exact_and_floor": "matches",
+  "figure2": "matches"
+ },
+ "figure1_off_canvas": {
+  "rows": {
+   "intersection": {
+    "perfect": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.11075142073781952,
+     "tv_figure1": 0.11075142073781952
+    },
+    "reverse diffusion": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.3104342794169143,
+     "tv_figure1": 0.3104342794169143
+    },
+    "ULA": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.24591667179714144,
+     "tv_figure1": 0.24591667179714144
+    },
+    "UHA": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.13329287544891807,
+     "tv_figure1": 0.13329287544891807
+    },
+    "MALA": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.24389053629044508,
+     "tv_figure1": 0.24389053629044508
+    }
+   },
+   "disjunction": {
+    "perfect": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.23148702251405126,
+     "tv_figure1": 0.23148702251405126
+    },
+    "reverse diffusion": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.21353659897942165,
+     "tv_figure1": 0.21353659897942165
+    },
+    "ULA": {
+     "off_canvas_share": 0.0025,
+     "tv_shift": 0.00125,
+     "tv_replay": 0.24404648112653002,
+     "tv_figure1": 0.24404648112653002
+    },
+    "UHA": {
+     "off_canvas_share": 0.001,
+     "tv_shift": 0.0005,
+     "tv_replay": 0.22922773811692343,
+     "tv_figure1": 0.22922773811692343
+    },
+    "MALA": {
+     "off_canvas_share": 0.0005,
+     "tv_shift": 0.00025,
+     "tv_replay": 0.24081034743535498,
+     "tv_figure1": 0.24081034743535498
+    }
+   },
+   "co-occurrence": {
+    "perfect": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.09901543212198327,
+     "tv_figure1": 0.09901543212198327
+    },
+    "reverse diffusion": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.19141470874659683,
+     "tv_figure1": 0.19141470874659683
+    },
+    "ULA": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.13429444005445496,
+     "tv_figure1": 0.13429444005445496
+    },
+    "UHA": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.09774714320929666,
+     "tv_figure1": 0.09774714320929666
+    },
+    "MALA": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.15475042704930558,
+     "tv_figure1": 0.15475042704930558
+    }
+   },
+   "contention": {
+    "perfect": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.10079489985995775,
+     "tv_figure1": 0.10079489985995775
+    },
+    "reverse diffusion": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.23362027081859899,
+     "tv_figure1": 0.23362027081859899
+    },
+    "ULA": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.2976244802306587,
+     "tv_figure1": 0.2976244802306587
+    },
+    "UHA": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.1182887241381646,
+     "tv_figure1": 0.1182887241381646
+    },
+    "MALA": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.29765240331963483,
+     "tv_figure1": 0.29765240331963483
+    }
+   },
+   "dominance": {
+    "perfect": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.11004079233290127,
+     "tv_figure1": 0.11004079233290127
+    },
+    "reverse diffusion": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.5838797414183667,
+     "tv_figure1": 0.5838797414183667
+    },
+    "ULA": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.41130423239798247,
+     "tv_figure1": 0.41130423239798247
+    },
+    "UHA": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.28908852063316126,
+     "tv_figure1": 0.28908852063316126
+    },
+    "MALA": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.38269415383374183,
+     "tv_figure1": 0.38269415383374183
+    }
+   },
+   "interaction": {
+    "perfect": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.07261043374889324,
+     "tv_figure1": 0.07261043374889324
+    },
+    "reverse diffusion": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.29884774793795765,
+     "tv_figure1": 0.29884774793795765
+    },
+    "ULA": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.0952637764580789,
+     "tv_figure1": 0.0952637764580789
+    },
+    "UHA": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.08463320735369595,
+     "tv_figure1": 0.08463320735369595
+    },
+    "MALA": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.09386834175389347,
+     "tv_figure1": 0.09386834175389347
+    }
+   },
+   "negation": {
+    "perfect": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.1520206521963749,
+     "tv_figure1": 0.1520206521963749
+    },
+    "reverse diffusion": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.26001912967938245,
+     "tv_figure1": 0.26001912967938245
+    },
+    "ULA": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.2510973073479208,
+     "tv_figure1": 0.2510973073479208
+    },
+    "UHA": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.21154934024281002,
+     "tv_figure1": 0.21154934024281002
+    },
+    "MALA": {
+     "off_canvas_share": 0.0,
+     "tv_shift": 0.0,
+     "tv_replay": 0.25054288946617354,
+     "tv_figure1": 0.25054288946617354
+    }
+   }
+  },
+  "max_share": 0.0025,
+  "max_kind": "disjunction",
+  "max_sampler": "ULA",
+  "max_tv_gap_replay_vs_figure1": 0.0
+ }
+}

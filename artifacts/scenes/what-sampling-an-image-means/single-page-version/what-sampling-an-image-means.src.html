@@ -1,0 +1,780 @@
+<title>From 173 cm to a Dog</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chewy&family=Paprika&family=Mouse+Memoirs&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one walk of 25 frames across seven tabs. Each frame is text and equation on the left, the
+   picture the handles drive on the right. Colours keep Step 1 and Step 4's meanings; purple is always
+   the random number fed in (u, z, ε). */
+:root{
+  --paper:#f6f8f8; --panel:#ffffff; --shade:#edf2f2; --ink:#1b2427; --muted:#56656a; --rule:#d6dfdf;
+  --x:#00838f; --x-soft:#d6f0f1;
+  --x0:#1565c0; --x0-soft:#dbe8fb;
+  --ab:#2e7d32; --ab-soft:#dcefdc;
+  --nz:#ef6c00; --nz-soft:#fde6d0;
+  --eps:#6a1b9a; --eps-soft:#efe0f6;
+  --p:#ad1457; --p-soft:#f8dde9;
+  --hot:#c62828; --hot-soft:#fbe0e0;
+  --f-shout:"Chewy","Trebuchet MS",system-ui,sans-serif;
+  --f-title:"Paprika",Georgia,serif;
+  --f-label:"Mouse Memoirs","Arial Narrow",system-ui,sans-serif;
+  --f-prose:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-data:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --radius:8px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#101618; --panel:#172023; --shade:#1d282b; --ink:#e4ebeb; --muted:#9db0b4; --rule:#2b393c;
+  --x:#4fc8cf; --x-soft:#123437; --x0:#7fb2f5; --x0-soft:#16263d; --ab:#7ccf80; --ab-soft:#173021; --nz:#ffa654; --nz-soft:#3a2510;
+  --eps:#c993e6; --eps-soft:#2c1a38; --p:#f48fb1; --p-soft:#3a1626; --hot:#ff7b7b; --hot-soft:#3d1818; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#101618; --panel:#172023; --shade:#1d282b; --ink:#e4ebeb; --muted:#9db0b4; --rule:#2b393c;
+  --x:#4fc8cf; --x-soft:#123437; --x0:#7fb2f5; --x0-soft:#16263d; --ab:#7ccf80; --ab-soft:#173021; --nz:#ffa654; --nz-soft:#3a2510;
+  --eps:#c993e6; --eps-soft:#2c1a38; --p:#f48fb1; --p-soft:#3a1626; --hot:#ff7b7b; --hot-soft:#3d1818; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-prose);font-size:16px;line-height:1.5;margin:0;-webkit-font-smoothing:antialiased}
+.page{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:10px 12px;max-width:1520px;margin:0 auto}
+.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 20px;margin-bottom:8px}
+.mast{display:flex;flex-direction:column;gap:0;min-width:0}
+.eyebrow{font-family:var(--f-label);font-size:15px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);line-height:1.2}
+h1{font-family:var(--f-shout);font-weight:400;font-size:clamp(22px,2.1vw,30px);line-height:1.1;margin:0;text-wrap:balance}
+.tabs{display:flex;gap:5px;flex-wrap:wrap}
+.tab{font:500 13.5px/1.2 var(--f-prose);border:1.5px solid var(--rule);background:var(--panel);color:var(--muted);border-radius:999px;padding:6px 12px;min-height:34px;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.walk{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.walk .count{font-family:var(--f-data);font-size:13px;color:var(--muted);min-width:4.5em;text-align:center;font-variant-numeric:tabular-nums}
+.prog{flex:1;min-width:40px;height:4px;background:var(--rule);border-radius:2px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--ink);transition:width .3s}
+.keys{font-size:12.5px;color:var(--muted)}
+@media (max-width:640px){.keys{display:none}}
+.btn{font:500 14px/1.2 var(--f-prose);border:1.5px solid var(--ink);background:var(--panel);color:var(--ink);border-radius:6px;padding:6px 12px;min-height:34px;cursor:pointer}
+.btn.primary{background:var(--ink);color:var(--paper)}
+.btn:disabled{opacity:.4;cursor:default}
+
+.frame{display:grid;grid-template-columns:minmax(0,31rem) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:1000px){.frame{grid-template-columns:minmax(0,1fr)}}
+.ftext{display:flex;flex-direction:column;gap:9px;min-width:0}
+.ftext p{margin:0}
+.frame h2{font-family:var(--f-title);font-weight:400;font-size:24px;line-height:1.2;margin:0;text-wrap:balance}
+#cap{font-size:16px;max-width:62ch}
+.eq{background:var(--shade);border-radius:var(--radius);padding:8px 12px;overflow-x:auto;overflow-y:hidden;max-width:100%}
+.eq:empty{display:none}
+.eq .katex-display{margin:0;text-align:left}
+.eq .katex-display>.katex{text-align:left}
+.katex{color:inherit;font-size:1.04em}
+.c-x{color:var(--x)} .c-x0{color:var(--x0)} .c-ab{color:var(--ab)} .c-nz{color:var(--nz)} .c-eps{color:var(--eps)} .c-p{color:var(--p)} .c-hot{color:var(--hot)}
+.off{opacity:.45}
+[data-k]{position:relative;z-index:2;cursor:ew-resize;user-select:none;-webkit-user-select:none;touch-action:none;border-radius:4px;padding:0 .14em;margin:0 .04em;
+  background:var(--panel);color:var(--ink);box-shadow:inset 0 -2px 0 var(--muted)}
+[data-k]::after{content:"";position:absolute;inset:-5px -6px}
+[data-k="u"],[data-k="z"]{background:var(--eps-soft);color:var(--eps);box-shadow:inset 0 -2px 0 var(--eps)}
+[data-k="t"],[data-k="xt"]{background:var(--x-soft);color:var(--x);box-shadow:inset 0 -2px 0 var(--x)}
+[data-k]:hover,[data-k].active{box-shadow:inset 0 0 0 2px currentColor}
+[data-k]:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+.status{margin:0;font-size:14px;border-radius:6px;padding:7px 10px;background:var(--ab-soft)}
+.status:empty{display:none}
+.status.bad{background:var(--hot-soft)}
+.ctl{display:flex;flex-wrap:wrap;gap:6px}
+.ctl:empty{display:none}
+.pre{font:500 13px/1.2 var(--f-prose);border:1px solid var(--rule);background:var(--panel);color:var(--ink);border-radius:6px;padding:6px 10px;min-height:32px;cursor:pointer}
+.pre[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.sw{font:500 13px/1.2 var(--f-prose);border:1.5px solid var(--ink);background:var(--shade);color:var(--ink);border-radius:999px;padding:6px 11px;min-height:32px;cursor:pointer}
+.sw.offstate{border-color:var(--hot);color:var(--hot);background:var(--hot-soft)}
+.howto{font-size:12.5px;color:var(--muted);margin:0}
+
+.fig2{display:flex;flex-direction:column;gap:12px;min-width:0}
+.fig2.enter{animation:rise .35s ease}
+@keyframes rise{from{opacity:.25;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.fig2.enter{animation:none}.prog i{transition:none}}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:var(--radius);padding:12px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+@media (max-width:620px){.pair{grid-template-columns:minmax(0,1fr)}}
+svg.chart{width:100%;height:auto;display:block;max-height:min(560px,62vh);background:var(--panel)}
+.chart text{font-family:var(--f-prose);font-size:13px;fill:var(--ink);paint-order:stroke;stroke:var(--panel);stroke-width:4px;stroke-linejoin:round}
+.chart text.tick{fill:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+.chart text.ax{fill:var(--muted);font-family:var(--f-label);font-size:14px;letter-spacing:.06em}
+.chart text.num{font-family:var(--f-data);font-size:12.5px}
+.chart .axis{stroke:var(--muted);fill:none}
+.chart .grid{stroke:var(--rule);stroke-dasharray:2 4;fill:none}
+.chart path,.chart line{vector-effect:non-scaling-stroke}
+@media (prefers-reduced-motion:no-preference){.chart .draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw .7s ease forwards}}
+@keyframes draw{to{stroke-dashoffset:0}}
+.pix{image-rendering:pixelated;width:100%;height:auto;aspect-ratio:1;display:block;border-radius:6px;border:1px solid var(--rule);background:#000}
+.imgrow{display:grid;gap:10px;align-items:start}
+.imgrow figure{margin:0;display:flex;flex-direction:column;gap:4px;min-width:0}
+.imgrow figcaption{font-family:var(--f-data);font-size:12.5px;text-align:center;line-height:1.3}
+.probe{position:relative;max-width:min(360px,100%)}
+.probe svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.probe canvas{cursor:crosshair}
+.coords{font-family:var(--f-data);font-size:13px;display:grid;grid-template-columns:auto auto;gap:2px 14px;align-content:start;font-variant-numeric:tabular-nums}
+.coords .lit{color:var(--x0);font-weight:500}
+.coords .k{color:var(--muted)}
+.mach{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1.2fr) auto minmax(0,1fr);gap:10px;align-items:center}
+.mach .arr{font-family:var(--f-data);font-size:22px;color:var(--muted)}
+.mach .box{border:2px solid var(--ink);border-radius:8px;padding:12px 10px;text-align:center;font-size:14px;background:var(--shade)}
+.mach .val{font-family:var(--f-data);font-size:20px;text-align:center}
+.mach .pix{max-width:120px;margin:0 auto}
+.mach .noise{border:2px solid var(--eps)}
+.snaps{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.snaps button{padding:0;border:1.5px solid var(--rule);background:var(--panel);border-radius:6px;cursor:pointer;display:flex;flex-direction:column;align-items:stretch;gap:2px;font:12px var(--f-data);color:var(--muted)}
+.snaps button[aria-pressed="true"]{border-color:var(--x);color:var(--x)}
+.snaps canvas{width:100%;aspect-ratio:1;image-rendering:pixelated;display:block;border-radius:5px 5px 0 0}
+.wbars{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;max-width:440px}
+.imgrow.top3{max-width:620px}
+.wbars div{display:flex;flex-direction:column;gap:4px;align-items:stretch;font:12.5px var(--f-data);text-align:center}
+.wbars img{width:100%;image-rendering:pixelated;border-radius:4px}
+.wbars .bar{height:8px;background:var(--rule);border-radius:4px;overflow:hidden}
+.wbars .bar i{display:block;height:100%;background:var(--x0)}
+.alist{display:flex;flex-direction:column;gap:8px}
+.alist button{text-align:left;font:15px/1.4 var(--f-prose);background:var(--panel);color:var(--ink);border:1px solid var(--rule);border-left:6px solid var(--x0);border-radius:6px;padding:10px 12px;cursor:pointer}
+.alist button.choice{border-left-color:var(--nz)}
+.alist button span{color:var(--muted);font-size:13px;display:block}
+details.src{font-size:13.5px;color:var(--muted);border-top:1px solid var(--rule);padding-top:8px;margin-top:10px}
+details.src summary{cursor:pointer}
+details.src p{margin:8px 0 0;max-width:90ch}
+</style>
+
+<div class="page">
+  <div class="top">
+    <header class="mast">
+      <span class="eyebrow" id="eye0">What sampling an image means</span>
+      <h1 id="h1">From 173 cm to a dog</h1>
+    </header>
+    <div class="tabs" role="tablist" aria-label="Tabs" id="tabs"></div>
+  </div>
+  <nav class="walk" aria-label="Walk">
+    <button class="btn" id="prev">← Back</button>
+    <span class="count" id="fnum">1 / 25</span>
+    <button class="btn primary" id="next">Next →</button>
+    <div class="prog" aria-hidden="true"><i id="progbar"></i></div>
+    <span class="keys">← → keys walk the frames</span>
+  </nav>
+  <div class="frame">
+    <div class="ftext">
+      <span class="eyebrow" id="fEye"></span>
+      <h2 id="fTitle"></h2>
+      <p id="cap"></p>
+      <div class="eq" id="fEq"></div>
+      <div class="eq" id="fEqT"></div>
+      <p class="howto" id="howto">Shaded numbers: drag sideways, or focus and use the arrow keys. Home resets one.</p>
+      <p class="status" id="fCheck" aria-live="polite"></p>
+      <div class="ctl" id="fSw" role="group" aria-label="Switch a piece off" data-optional></div>
+      <div class="ctl" id="fPres" role="group" aria-label="Try one change" data-optional></div>
+    </div>
+    <div class="fig2" id="fFig"></div>
+  </div>
+  <details class="src">
+    <summary>Where this frame's numbers come from</summary>
+    <p id="fNote"></p>
+    <p>Every number on the page is computed in the page from the ten example heights, the four photos and Step 4's cosine schedule, except where a note names a file.</p>
+    <p>Photos, all from Wikimedia Commons: "YellowLabradorLooking new.jpg" by Djmirko (derivative work), CC BY-SA 3.0; "Golde33443.jpg" by Golden Trvs Gol twister, CC BY-SA 3.0; "Border Collie liver portrait.jpg" by John Haslam, CC BY 2.0; "Siberian-husky.jpg" by Utopialand, CC BY-SA 4.0. Each is cropped square and resized, to 128 × 128 for the Labrador and 48 × 48 for the four training photos.</p>
+  </details>
+</div>
+
+%%KATEX_CSS%%
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.js"></script>
+<script>
+(function(){
+const R=Math.sqrt, PI=Math.PI, LN2PI=Math.log(2*PI), T=100;
+const $=id=>document.getElementById(id);
+const SUP='⁰¹²³⁴⁵⁶⁷⁸⁹';
+const sub=n=>String(n).split('').map(c=>'₀₁₂₃₄₅₆₇₈₉'[c]||c).join('');
+const f1=v=>v.toFixed(1), f2=v=>v.toFixed(2), f3=v=>v.toFixed(3), f4=v=>v.toFixed(4);
+const mm=s=>String(s).replace(/^-/,'−');
+const sci=v=>{if(v===0)return '0';const e=Math.floor(Math.log10(Math.abs(v)));const m=v/Math.pow(10,e);return m.toFixed(3)+' × 10'+(e<0?'⁻':'')+String(Math.abs(e)).split('').map(c=>SUP[c]).join('');};
+const tsci=v=>{if(v===0)return '0';const e=Math.floor(Math.log10(Math.abs(v)));if(e>=-3&&e<4)return f4(v);const m=v/Math.pow(10,e);return `${m.toFixed(3)}\\times10^{${e}}`;};
+const comma=n=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+const tcomma=n=>comma(n).replace(/,/g,'{,}');
+
+/* ---------- the ten heights: example values ---------- */
+const HTS=[158,163,165,168,170,172,173,176,179,184], ME=173, NH=10, MEI=HTS.indexOf(ME);
+const SUM=HTS.reduce((a,b)=>a+b,0), MU0=SUM/NH, SS0=HTS.reduce((a,h)=>a+(h-MU0)**2,0), VAR0=SS0/NH, SG0=R(VAR0);
+const Z=HTS.map(h=>(h-MU0)/SG0);
+const DOGNAME=['the golden puppy','the border collie','the husky','the labrador'];
+
+/* ---------- bells ---------- */
+function erf(x){const s=x<0?-1:1;x=Math.abs(x);const t=1/(1+0.3275911*x);return s*(1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x));}
+const npdf=(x,m,s)=>Math.exp(-((x-m)**2)/(2*s*s))/(s*R(2*PI));
+const lpdf=(x,m,s)=>-Math.log(s)-0.5*LN2PI-((x-m)**2)/(2*s*s);
+const ncdf=(x,m,s)=>0.5*(1+erf((x-m)/(s*Math.SQRT2)));
+function probit(p){const a=[-3.969683028665376e+01,2.209460984245205e+02,-2.759285104469687e+02,1.383577518672690e+02,-3.066479806614716e+01,2.506628277459239e+00],
+  b=[-5.447609879822406e+01,1.615858368580409e+02,-1.556989798598866e+02,6.680131188771972e+01,-1.328068155288572e+01],
+  c=[-7.784894002430293e-03,-3.223964580411365e-01,-2.400758277161838e+00,-2.549732539343734e+00,4.374664141464968e+00,2.938163982698783e+00],
+  d=[7.784695709041462e-03,3.224671290700398e-01,2.445134137142996e+00,3.754408661907416e+00];
+  const pl=0.02425;let q,r;
+  if(p<pl){q=R(-2*Math.log(p));return (((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1);}
+  if(p<=1-pl){q=p-0.5;r=q*q;return (((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q/(((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1);}
+  q=R(-2*Math.log(1-p));return -(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1);}
+const Finv=u=>MU0+SG0*probit(u);
+const logL=(mu,sg,all)=>all?HTS.reduce((a,h)=>a+lpdf(h,mu,sg),0):lpdf(ME,mu,sg);
+const BEST=logL(MU0,SG0,true), F173=ncdf(ME,MU0,SG0);
+
+/* ---------- Step 4's cosine schedule ---------- */
+function schedule(delta,clip){
+  const C=new Float64Array(T+1);
+  for(let k=0;k<=T;k++){const c=Math.cos(((k/T)+delta)/(1+delta)*PI*0.5);C[k]=c*c;}
+  const c0=C[0];for(let k=0;k<=T;k++)C[k]/=c0;
+  const beta=new Float64Array(T),abar=new Float64Array(T);let p=1;
+  for(let t=0;t<T;t++){let b=1-C[t+1]/C[t];if(b<0)b=0;if(clip&&b>0.999)b=0.999;beta[t]=b;p*=1-b;abar[t]=p;}
+  return {C,beta,abar};
+}
+const S=schedule(0.008,true);
+const ab=t=>t<0?1:S.abar[t];
+function coef(t){const b=S.beta[t],a=S.abar[t],ap=ab(t-1);return {A:R(ap)*b/(1-a),B:R(1-b)*(1-ap)/(1-a),V:b*(1-ap)/(1-a)};}
+
+/* ---------- seeded noise ---------- */
+function rng(seed){let a=seed>>>0;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function gauss(seed,n){const r=rng(seed),o=new Float32Array(n);for(let i=0;i<n;i+=2){let u=r();if(u<1e-12)u=1e-12;const v=r(),m=R(-2*Math.log(u));o[i]=m*Math.cos(2*PI*v);if(i+1<n)o[i+1]=m*Math.sin(2*PI*v);}return o;}
+
+/* ---------- the best guess of x0, and the reverse chain, for heights ---------- */
+function den1(x,t,zs,pw){const a=S.abar[t],ra=R(a),v=1-a;let mx=-Infinity;
+  const lw=zs.map((z,i)=>{const l=Math.log(pw?pw[i]:1)-(x-ra*z)**2/(2*v);if(l>mx)mx=l;return l;});
+  let s=0;const w=lw.map(l=>{const e=Math.exp(l-mx);s+=e;return e;});let o=0;w.forEach((e,i)=>{w[i]=e/s;o+=w[i]*zs[i];});return {x0:o,w,lik:lw.map(l=>Math.exp(l-mx))};}
+const denBell=(x,t,m,s2)=>{const a=S.abar[t],ra=R(a);return m+s2*ra*(x-ra*m)/(a*s2+1-a);};
+function chain1(seed,nc,guess){
+  const out=[];for(let c=0;c<nc;c++){const r=rng(seed*9973+c*131+1);const g=()=>{let u=r();if(u<1e-12)u=1e-12;return R(-2*Math.log(u))*Math.cos(2*PI*r());};
+    let x=g();const tr=new Float64Array(101);tr[0]=x;
+    for(let t=99;t>=0;t--){const x0=guess(x,t),k=coef(t);x=k.A*x0+k.B*x+(k.V>0?R(k.V)*g():0);tr[100-t]=x;}
+    out.push(tr);}
+  return out;}
+const toCm=z=>MU0+SG0*z;
+const nearH=cm=>HTS.reduce((b,h)=>Math.min(b,Math.abs(h-cm)),Infinity);
+
+/* ---------- images ---------- */
+const N0=128*128*3, D=48*48*3;
+const X0=new Float32Array(N0);let ready0=false;
+const DOGS=[0,1,2,3].map(()=>new Float32Array(D)),THUMB=[];let readyD=false;
+function loadImgs(){
+  const im0=new Image();im0.onload=()=>{const c=document.createElement('canvas');c.width=c.height=128;const g=c.getContext('2d');if(!g)return;g.drawImage(im0,0,0,128,128);
+    const d=g.getImageData(0,0,128,128).data;let j=0;for(let i=0;i<d.length;i+=4){X0[j++]=d[i]/127.5-1;X0[j++]=d[i+1]/127.5-1;X0[j++]=d[i+2]/127.5-1;}ready0=true;inval();};
+  im0.src='%%DOG_B64%%';
+  const imD=new Image();imD.onload=()=>{const c=document.createElement('canvas');c.width=192;c.height=48;const g=c.getContext('2d');if(!g)return;g.drawImage(imD,0,0);
+    for(let k=0;k<4;k++){const d=g.getImageData(k*48,0,48,48).data;let j=0;for(let i=0;i<d.length;i+=4){DOGS[k][j++]=d[i]/127.5-1;DOGS[k][j++]=d[i+1]/127.5-1;DOGS[k][j++]=d[i+2]/127.5-1;}
+      const t=document.createElement('canvas');t.width=t.height=48;t.getContext('2d').putImageData(g.getImageData(k*48,0,48,48),0,0);THUMB[k]=t.toDataURL();}
+    readyD=true;imgCache={};inval();};
+  imD.src='%%DOGS_B64%%';
+}
+function paint(arr,cv,n){if(!cv)return;const g=cv.getContext&&cv.getContext('2d');if(!g)return;cv.width=cv.height=n;const im=g.createImageData(n,n),d=im.data;let j=0;
+  for(let i=0;i<d.length;i+=4){for(let c=0;c<3;c++){let v=arr[j++];v=v<-1?-1:v>1?1:v;d[i+c]=Math.round((v+1)*127.5);}d[i+3]=255;}g.putImageData(im,0,0);}
+const rms=(a,b,n)=>{let s=0;for(let i=0;i<n;i++){const e=a[i]-b[i];s+=e*e;}return R(s/n);};
+let imgCache={};
+function chainImg(seed,fresh){
+  const key=seed+'|'+fresh;if(imgCache[key])return imgCache[key];
+  let x=gauss(seed*7919+11,D);const xs=[Float32Array.from(x)],hs=[],ws=[];
+  for(let t=99;t>=0;t--){
+    const a=S.abar[t],ra=R(a),v=1-a;
+    const lw=DOGS.map(d=>{let s=0;for(let i=0;i<D;i++){const e=x[i]-ra*d[i];s+=e*e;}return -s/(2*v);});
+    const mx=Math.max(...lw);let sm=0;const w=lw.map(l=>{const e=Math.exp(l-mx);sm+=e;return e;}).map(e=>e/sm);
+    const x0=new Float32Array(D);for(let k=0;k<4;k++){if(w[k]<1e-12)continue;const d=DOGS[k];for(let i=0;i<D;i++)x0[i]+=w[k]*d[i];}
+    const nx=new Float32Array(D);
+    if(fresh){const k=coef(t),e=k.V>0?gauss(seed*104729+t*31+7,D):null,sv=R(k.V);for(let i=0;i<D;i++)nx[i]=k.A*x0[i]+k.B*x[i]+(e?sv*e[i]:0);}
+    else{const ap=ab(t-1),re=R(1-a);for(let i=0;i<D;i++){const eh=(x[i]-ra*x0[i])/re;nx[i]=R(ap)*x0[i]+R(1-ap)*eh;}}
+    hs.push(x0);ws.push(w);x=nx;xs.push(x);
+  }
+  const fin=xs[100];let end=0,dist=Infinity;DOGS.forEach((d,k)=>{const r=rms(fin,d,D);if(r<dist){dist=r;end=k;}});
+  return imgCache[key]={xs,hs,ws,end,dist};
+}
+
+/* ---------- KaTeX with draggable numbers ---------- */
+const KO={displayMode:true,output:'htmlAndMathml',strict:false,throwOnError:!!window.__STRICT__,trust:c=>c.command==='\\htmlData'||c.command==='\\htmlClass'};
+const cl=(c,t)=>`\\htmlClass{${c}}{${t}}`;
+const lim={mu:[150,195],sg:[0.05,25],bw:[1,15],xq:[140,205],w:[0,30],u:[0.001,0.999],nd:[1,2000],r:[0,127],c:[0,127],pa:[0,2303],pb:[0,2303],
+  side:[1,128],lev:[2,256],ch:[1,3],t:[0,99],xt:[-3.5,3.5],nc:[1,100],z:[1,40],nh:[1,10]};
+const stp={mu:0.1,sg:0.05,bw:1,xq:0.1,w:0.5,u:0.001,nd:1,r:1,c:1,pa:1,pb:1,side:1,lev:1,ch:1,t:1,xt:0.01,nc:1,z:1,nh:1};
+const LABEL={mu:'bell centre μ',sg:'bell width σ',bw:'bin width',xq:'height x',w:'strip width w',u:'random number u',nd:'number of draws',r:'pixel row',c:'pixel column',
+  pa:'pixel A',pb:'pixel B',side:'image side n',lev:'levels per value L',ch:'channels c',t:'step t',xt:'noisy value',nc:'number of chains',z:'noise image number',nh:'number of training heights'};
+const DIG={mu:1,sg:2,xq:1,w:1,u:3,xt:2};
+const fmtK=(k,v)=>DIG[k]!==undefined?v.toFixed(DIG[k]):String(Math.round(v));
+const H=k=>`\\htmlData{k=${k}}{${mm(fmtK(k,P[k]))}}`;
+const clampK=(k,v)=>{v=Math.min(lim[k][1],Math.max(lim[k][0],v));return DIG[k]!==undefined?Math.round(v/stp[k])*stp[k]:Math.round(v);};
+let activeKey=null,focusKey=null;
+function K(el,tex){if(!tex){el.innerHTML='';return;}katex.render(tex,el,KO);
+  el.querySelectorAll('[data-k]').forEach(n=>{const k=n.dataset.k;n.tabIndex=0;n.setAttribute('role','slider');
+    n.setAttribute('aria-label',LABEL[k]+', drag sideways or use the arrow keys');n.setAttribute('aria-valuenow',P[k]);n.setAttribute('aria-valuemin',lim[k][0]);n.setAttribute('aria-valuemax',lim[k][1]);
+    if(k===activeKey)n.classList.add('active');});
+  if(focusKey&&!el.contains(document.activeElement)){const n=el.querySelector(`[data-k="${focusKey}"]`);if(n)n.focus({preventScroll:true});}}
+
+/* ---------- chart helpers ---------- */
+const lin=(lo,hi,a,b)=>v=>a+(v-lo)/(hi-lo)*(b-a);
+const pth=(xs,ys)=>xs.map((x,i)=>`${i?'L':'M'}${x.toFixed(1)} ${ys[i].toFixed(1)}`).join('');
+const txt=(x,y,s,o)=>{o=o||{};return `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}"${o.c?` class="${o.c}"`:''}${o.a?` text-anchor="${o.a}"`:''}${o.s?` style="${o.s}"`:''}>${s}</text>`;};
+function hAxis(sx,lo,hi,y,step,title,xt){let s=`<line class="axis" x1="${sx(lo)}" x2="${sx(hi)}" y1="${y}" y2="${y}"/>`;
+  for(let v=Math.ceil(lo/step)*step;v<=hi+1e-9;v+=step)s+=`<line class="axis" x1="${sx(v)}" x2="${sx(v)}" y1="${y}" y2="${y+5}"/>`+txt(sx(v),y+18,mm(+v.toFixed(2)),{c:'tick',a:'middle'});
+  if(title)s+=txt(xt!==undefined?xt:sx(hi),y+36,title,{c:'ax',a:'end'});return s;}
+function vAxis(sy,x,ticks,fmt,title,ytop){let s='';ticks.forEach(v=>{s+=`<line class="grid" x1="${x}" x2="${x+9999}" y1="${sy(v)}" y2="${sy(v)}"/>`+txt(x-6,sy(v)+4,fmt(v),{c:'tick',a:'end'});});
+  if(title)s+=txt(x+4,ytop,title,{c:'ax'});return s;}
+const curve=(f,lo,hi,sx,sy,n)=>{n=n||240;const xs=[],ys=[];for(let i=0;i<=n;i++){const v=lo+(hi-lo)*i/n;xs.push(sx(v));ys.push(sy(f(v)));}return pth(xs,ys);};
+const clipW=(id,w)=>`<clipPath id="${id}"><rect x="0" y="0" width="${w}" height="9999"/></clipPath>`;
+const SVG=(id,W,Hh,label)=>`<svg class="chart" id="${id}" viewBox="0 0 ${W} ${Hh}" role="img" aria-label="${label}"></svg>`;
+
+/* bell over the heights, with a stem from each dot up to the curve */
+function bellStems(id,mu,sg,o){o=o||{};const W=o.W||600,Hh=320,m={l:52,r:20,t:30,b:52},lo=145,hi=200,sx=lin(lo,hi,m.l,W-m.r);
+  const peak=Math.max(npdf(mu,mu,sg),o.hist?0.08:0.06),ym=Math.min(o.ymax||0.2,Math.max(0.07,peak*1.08)),sy=v=>Hh-m.b-Math.min(v,ym)/ym*(Hh-m.t-m.b);
+  const st=ym>0.2?0.1:ym>0.09?0.05:0.02,tk=[];for(let v=0;v<=ym+1e-9;v+=st)tk.push(+v.toFixed(2));
+  let s=vAxis(sy,m.l,tk,v=>f2(v),'BELL HEIGHT, PER CM',m.t-12).replace(/x2="\d+"/g,`x2="${W-m.r}"`);
+  if(o.hist){const bw=5;for(let a=145;a<200;a+=bw){const c=HTS.filter(h=>h>=a&&h<a+bw).length;if(!c)continue;s+=`<rect x="${sx(a)}" y="${sy(c/(NH*bw))}" width="${sx(a+bw)-sx(a)}" height="${Hh-m.b-sy(c/(NH*bw))}" fill="var(--x-soft)" stroke="var(--panel)"/>`;}}
+  if(o.ghost)s+=`<path d="${curve(v=>npdf(v,MU0,SG0),lo,hi,sx,sy)}" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-dasharray="6 5"/>`;
+  s+=`<path d="${curve(v=>npdf(v,mu,sg),lo,hi,sx,sy,400)}" fill="none" stroke="var(--p)" stroke-width="2.8"/>`;
+  HTS.forEach(h=>{const on=o.all!==false||h===ME;const y=sy(npdf(h,mu,sg));s+=`<line x1="${sx(h)}" x2="${sx(h)}" y1="${Hh-m.b}" y2="${y}" stroke="${on?'var(--x)':'var(--rule)'}" stroke-width="2.2"/>`;
+    s+=`<circle cx="${sx(h)}" cy="${Hh-m.b}" r="${h===ME?6.5:4.5}" fill="${on?'var(--x)':'var(--rule)'}"/>`;});
+  s+=hAxis(sx,150,200,Hh-m.b+8,10,'HEIGHT, CM');
+  $(id).innerHTML=s;}
+/* score against sigma */
+function llChart(id,mu,sg,all,both,W){W=W||600;const Hh=320,m={l:52,r:24,t:30,b:52},lo=0.05,hi=20,sx=lin(0,hi,m.l,W-m.r),yl=-70,yh=5,sy=v=>Hh-m.b-(Math.max(yl,Math.min(yh,v))-yl)/(yh-yl)*(Hh-m.t-m.b);
+  let s=vAxis(sy,m.l,[-60,-40,-20,0],v=>mm(v),'SCORE, LOG L',m.t-12).replace(/x2="\d+"/g,`x2="${W-m.r}"`);
+  const draw=(a,col,w,dash)=>{const xs=[],ys=[];for(let i=0;i<=300;i++){const v=lo+(hi-lo)*i/300,l=logL(mu,v,a);if(l<yl)continue;xs.push(sx(v));ys.push(sy(l));}return `<path d="${pth(xs,ys)}" fill="none" stroke="${col}" stroke-width="${w}"${dash?' stroke-dasharray="6 5"':''}/>`;};
+  if(both){s+=draw(!all,'var(--muted)',1.8,true);}
+  s+=draw(all,all?'var(--ab)':'var(--hot)',2.8);
+  const v=logL(mu,sg,all);s+=`<line x1="${sx(sg)}" x2="${sx(sg)}" y1="${m.t}" y2="${Hh-m.b}" stroke="var(--x)" stroke-width="1.4"/><circle cx="${sx(sg)}" cy="${sy(v)}" r="6" fill="var(--x)"/>`;
+  const right=sx(sg)<W-120;s+=txt(sx(sg)+(right?10:-10),Math.max(m.t+14,sy(v)-10),mm(f2(v)),{c:'num',a:right?'start':'end',s:'fill:var(--x)'});
+  s+=hAxis(sx,0,20,Hh-m.b+8,5,'BELL WIDTH σ, CM');
+  $(id).innerHTML=s;}
+
+/* ---------- frames ---------- */
+const TABS=['Ten heights','Density','Fitting','Sampling','An image','A model samples','Your questions'];
+const P={};
+const BASE={mu:MU0,sg:SG0,bw:5,xq:173,w:2,u:0.5,nd:200,seed:1,r:64,c:64,pa:1176,pb:1177,side:8,lev:2,ch:1,t:50,xt:0.3,nc:20,z:1,nh:10,all:true,ord:false,fresh:true,exact:true,skew:false,tf:false};
+const ORD=[6,0,9,3,7,1,8,4,2,5];
+
+const FR=[
+/* 1 */{tab:0,title:'One height is one sample',
+ say:'Ten people, ten heights in centimetres, all example values. Each dot is one sample, and the letter x names a sample, so yours is x = 173 cm.',
+ note:'The ten heights are example values chosen for this page, with 173 cm included as yours. They are not measurements of real people.',
+ eq:()=>`\\{x_1,\\dots,x_{10}\\}=\\{${HTS.map(h=>h===ME?cl('c-x','\\mathbf{173}'):h).join(',\\,')}\\}\\ \\text{cm}`,
+ eqT:()=>`\\text{one sample: }${cl('c-x','x_7')}=${cl('c-x','173')}\\text{ cm}`,
+ check:()=>`Shortest ${Math.min(...HTS)} cm, tallest ${Math.max(...HTS)} cm. ${HTS.filter(h=>h>ME).length} of the 10 are taller than you.`,
+ fig:el=>{el.innerHTML=`<div class="card">${SVG('g','640','230','Ten heights as dots on a ruler, yours lit')}</div>`;},
+ draw(){const W=640,Hh=230,sx=lin(145,195,40,W-30);let s=hAxis(sx,145,195,150,5,'HEIGHT, CM');
+   HTS.forEach((h,i)=>{const me=h===ME;s+=`<circle cx="${sx(h)}" cy="128" r="${me?10:7}" fill="${me?'var(--x)':'var(--x-soft)'}" stroke="var(--x)" stroke-width="2"/>`;});
+   s+=`<line x1="${sx(ME)}" x2="${sx(ME)}" y1="70" y2="114" stroke="var(--x)" stroke-width="1.5"/>`+txt(sx(ME),60,'you, 173',{a:'middle',s:'fill:var(--x);font-weight:600'});
+   $('g').innerHTML=s;}},
+/* 2 */{tab:0,title:'The pile has a middle and a spread',
+ say:'Count the heights in bins and the pile shows its shape. The mean is the average height, and the variance is the average squared distance from that mean.',
+ note:'Mean and variance here divide by 10, the number of heights. Dividing by 9 instead gives 60.18, the unbiased variance; frame 7 shows which one the best bell picks.',
+ def:{bw:5},pres:[['2 cm bins',{bw:2}],['10 cm bins',{bw:10}]],
+ eq:()=>`\\begin{aligned}\\bar x&=\\tfrac{1}{10}\\textstyle\\sum_{i=1}^{10}x_i=\\tfrac{${SUM}}{10}=${f1(MU0)}\\text{ cm}\\\\s^2&=\\tfrac{1}{10}\\textstyle\\sum_{i=1}^{10}(x_i-\\bar x)^2=\\tfrac{${f1(SS0)}}{10}=${f2(VAR0)}\\text{ cm}^2,\\quad s=${f2(SG0)}\\text{ cm}\\end{aligned}`,
+ eqT:()=>`\\text{bin width}=${H('bw')}\\text{ cm}`,
+ check(){const c=bins(P.bw);return `Bin width ${P.bw} cm: the tallest bar holds ${Math.max(...c.map(b=>b.n))} of the 10 heights. The bins change the picture; the mean and variance stay the same.`;},
+ fig:el=>{el.innerHTML=`<div class="card">${SVG('g','640','330','Histogram of the ten heights with the mean and one spread either side')}</div>`;},
+ draw(){const W=640,Hh=330,m={l:46,r:24,t:56,b:60},sx=lin(145,200,m.l,W-m.r),c=bins(P.bw),ym=Math.max(4,...c.map(b=>b.n)),sy=v=>Hh-m.b-v/ym*(Hh-m.t-m.b);
+   let s=vAxis(sy,m.l,[...Array(ym+1).keys()].filter(v=>ym<=6||v%2===0),v=>v,'COUNT',m.t-30).replace(/x2="\d+"/g,`x2="${W-m.r}"`);
+   c.forEach(b=>{if(b.n)s+=`<rect x="${sx(b.a)+1}" y="${sy(b.n)}" width="${Math.max(1,sx(b.a+P.bw)-sx(b.a)-2)}" height="${Hh-m.b-sy(b.n)}" fill="var(--x-soft)" stroke="var(--x)"/>`;});
+   HTS.forEach(h=>{s+=`<circle cx="${sx(h)}" cy="${Hh-m.b+10}" r="4" fill="var(--x)"/>`;});
+   s+=`<line x1="${sx(MU0)}" x2="${sx(MU0)}" y1="${m.t-14}" y2="${Hh-m.b}" stroke="var(--ink)" stroke-width="2" stroke-dasharray="5 4"/>`+txt(sx(MU0),m.t-20,'mean '+f1(MU0),{a:'middle',c:'num'});
+   const yb=m.t+4;s+=`<line x1="${sx(MU0-SG0)}" x2="${sx(MU0+SG0)}" y1="${yb}" y2="${yb}" stroke="var(--nz)" stroke-width="3"/><line x1="${sx(MU0-SG0)}" x2="${sx(MU0-SG0)}" y1="${yb-6}" y2="${yb+6}" stroke="var(--nz)" stroke-width="2"/><line x1="${sx(MU0+SG0)}" x2="${sx(MU0+SG0)}" y1="${yb-6}" y2="${yb+6}" stroke="var(--nz)" stroke-width="2"/>`;
+   s+=txt(sx(MU0+SG0)+8,yb+4,'s = '+f2(SG0),{c:'num',s:'fill:var(--nz)'});
+   s+=hAxis(sx,145,200,Hh-m.b+20,5,'HEIGHT, CM');$('g').innerHTML=s;}},
+/* 3 */{tab:0,title:'Lay a bell over the pile',
+ say:"Drag μ to slide the bell and σ to widen it. The score adds the log of the bell's height over each of the 10 dots, so a bell that stands tall over every dot scores best.",
+ note:'The dashed bell is the best one (μ = 170.8, σ = 7.36), drawn so every change is read against it. Bars are the 5 cm histogram rescaled so their total area is 1.',
+ def:{mu:180,sg:4},pres:[['Too narrow',{mu:MU0,sg:3}],['Too wide',{mu:MU0,sg:15}],['Off centre',{mu:180,sg:SG0}],['Best bell',{mu:MU0,sg:SG0}]],
+ eq:()=>`\\text{centre }\\mu=${H('mu')}\\text{ cm},\\qquad\\text{width }\\sigma=${H('sg')}\\text{ cm}`,
+ eqT:()=>`\\text{score}=\\sum_{i=1}^{10}\\log\\big(\\text{bell height at }${cl('c-x','x_i')}\\big)=${mm(f2(logL(P.mu,P.sg,true)))}`,
+ check(){const g=BEST-logL(P.mu,P.sg,true);return g<0.005?`This is the best bell: no other μ and σ score higher than ${mm(f2(BEST))}.`:`Score ${mm(f2(BEST-g))}. The best bell scores ${mm(f2(BEST))}, so this one is ${f2(g)} below it.`;},
+ fig:el=>{el.innerHTML=`<div class="card">${SVG('g','600','320','A bell curve over the ten heights, a stem from each dot up to the curve')}</div>`;},
+ draw(){bellStems('g',P.mu,P.sg,{hist:true,ghost:true,ymax:0.15});}},
+/* 4 */{tab:1,title:"The bell's height is a density",
+ say:'Call the best bell p(x). Its height is measured per centimetre, so it is a density, telling how thickly heights pile up near x, and never a chance on its own.',
+ note:'Area is summed in 0.01 cm strips from 100 cm to 250 cm. The best bell uses μ = 170.8 cm and σ = 7.36 cm from frame 2.',
+ def:{xq:173},pres:[['At the mean',{xq:+MU0.toFixed(1)}],['Your height',{xq:173}],['200 cm',{xq:200}]],
+ eq(){const q=(P.xq-MU0)**2/(2*VAR0),c0=1/(SG0*R(2*PI));return `${cl('c-p','p(x)')}=\\underbrace{\\frac{1}{\\sigma\\sqrt{2\\pi}}}_{${f4(c0)}}\\exp\\!\\Big(-\\underbrace{\\frac{(x-\\mu)^2}{2\\sigma^2}}_{${f3(q)}}\\Big)=${cl('c-p',tsci(npdf(P.xq,MU0,SG0)))}\\text{ per cm}`;},
+ eqT:()=>`${cl('c-x','x')}=${H('xq')}\\text{ cm},\\qquad\\mu=${f1(MU0)},\\ \\sigma=${f2(SG0)}`,
+ check(){let a=0;for(let x=100;x<250;x+=0.01)a+=npdf(x+0.005,MU0,SG0)*0.01;return `Total area under p: ${f4(a)}. Squeeze σ to 0.1 cm and the peak would read ${f2(npdf(0,0,0.1))} per cm; an area can never pass 1.`;},
+ fig:el=>{el.innerHTML=`<div class="card">${SVG('g','600','320','The best bell with a marker at the chosen height and its density value')}</div>`;},
+ draw(){const W=600,Hh=320,m={l:56,r:20,t:30,b:52},sx=lin(140,205,m.l,W-m.r),ym=0.06,sy=v=>Hh-m.b-v/ym*(Hh-m.t-m.b),x=P.xq,p=npdf(x,MU0,SG0);
+   let s=vAxis(sy,m.l,[0,0.02,0.04,0.06],v=>f2(v),'DENSITY, PER CM',m.t-12).replace(/x2="\d+"/g,`x2="${W-m.r}"`);
+   s+=`<path d="${curve(v=>npdf(v,MU0,SG0),140,205,sx,sy)}" fill="none" stroke="var(--p)" stroke-width="2.8"/>`;
+   s+=`<line x1="${sx(x)}" x2="${sx(x)}" y1="${Hh-m.b}" y2="${sy(p)}" stroke="var(--x)" stroke-width="2.4"/><circle cx="${sx(x)}" cy="${sy(p)}" r="6" fill="var(--p)"/>`;
+   const right=sx(x)<W-220;s+=txt(sx(x)+(right?12:-12),sy(p)-10,'p = '+(p<1e-3?sci(p):f4(p))+' per cm',{c:'num',a:right?'start':'end',s:'fill:var(--p)'});
+   s+=hAxis(sx,140,200,Hh-m.b+8,10,'HEIGHT, CM');$('g').innerHTML=s;}},
+/* 5 */{tab:1,title:'A chance is an area',
+ say:'The chance of landing in a range is the area under p over that range. A narrow strip has area close to height times width, so one exact height has area zero.',
+ note:'The area is F(b) − F(a), with F the running area of frame 9. The count of people in the strip comes from the ten example heights.',
+ def:{xq:173,w:2},pres:[['1 cm strip',{w:1}],['10 cm strip',{w:10}],['Width 0',{w:0}]],
+ eq(){const a=P.xq-P.w/2,b=P.xq+P.w/2,ar=ncdf(b,MU0,SG0)-ncdf(a,MU0,SG0),p=npdf(P.xq,MU0,SG0);return `P(a\\le X\\le b)=\\int_a^b ${cl('c-p','p(x)')}\\,dx=${f4(ar)},\\qquad ${cl('c-p','p(x)')}\\cdot w=${f4(p*P.w)}`;},
+ eqT:()=>`${cl('c-x','x')}=${H('xq')}\\text{ cm},\\quad w=${H('w')}\\text{ cm},\\quad a=${f2(P.xq-P.w/2)},\\ b=${f2(P.xq+P.w/2)}`,
+ check(){const a=P.xq-P.w/2,b=P.xq+P.w/2,ar=ncdf(b,MU0,SG0)-ncdf(a,MU0,SG0);if(P.w===0)return `Width 0: area 0. A single exact height has chance zero, even though p(${f1(P.xq)}) = ${f4(npdf(P.xq,MU0,SG0))} per cm.`;
+   const k=HTS.filter(h=>h>=a&&h<=b).length;return `${k} of the 10 people ${k===1?'falls':'fall'} between ${f1(a)} and ${f1(b)} cm, a share of ${f1(k/10)}. The bell gives ${f3(ar)}.`;},
+ fig:el=>{el.innerHTML=`<div class="card">${SVG('g','600','320','The best bell with a shaded strip whose area is the chance')}</div>`;},
+ draw(){const W=600,Hh=320,m={l:56,r:20,t:30,b:52},sx=lin(140,205,m.l,W-m.r),ym=0.06,sy=v=>Hh-m.b-v/ym*(Hh-m.t-m.b),a=Math.max(140,P.xq-P.w/2),b=Math.min(205,P.xq+P.w/2);
+   let s=vAxis(sy,m.l,[0,0.02,0.04,0.06],v=>f2(v),'DENSITY, PER CM',m.t-12).replace(/x2="\d+"/g,`x2="${W-m.r}"`);
+   if(b>a){const xs=[sx(a)],ys=[sy(0)];for(let i=0;i<=80;i++){const v=a+(b-a)*i/80;xs.push(sx(v));ys.push(sy(npdf(v,MU0,SG0)));}xs.push(sx(b));ys.push(sy(0));s+=`<path d="${pth(xs,ys)}Z" fill="var(--p-soft)" stroke="var(--p)" stroke-width="1"/>`;}
+   s+=`<path d="${curve(v=>npdf(v,MU0,SG0),140,205,sx,sy)}" fill="none" stroke="var(--p)" stroke-width="2.8"/>`;
+   const ar=ncdf(P.xq+P.w/2,MU0,SG0)-ncdf(P.xq-P.w/2,MU0,SG0);s+=txt(sx(P.xq),m.t+6,'area '+f4(ar),{c:'num',a:'middle',s:'fill:var(--p)'});
+   HTS.forEach(h=>{const inn=h>=P.xq-P.w/2&&h<=P.xq+P.w/2;s+=`<circle cx="${sx(h)}" cy="${Hh-m.b+38}" r="${inn?6:4}" fill="${inn?'var(--x)':'var(--x-soft)'}" stroke="var(--x)"/>`;});
+   s+=hAxis(sx,140,200,Hh-m.b+4,10,'');s+=txt(W-m.r,Hh-4,'HEIGHT, CM',{c:'ax',a:'end'});$('g').innerHTML=s;}},
+/* 6 */{tab:2,title:'Likelihood multiplies all ten heights',
+ say:'Likelihood multiplies p at every sample, so one badly covered dot drags the whole product down. Taking the log turns the product of ten into a sum of ten.',
+ note:'Left: the bell and a stem up to it from each height. Right: the score log L against the width σ, with the centre μ held at its current value.',
+ def:{mu:MU0,sg:SG0,all:true},pres:[['σ = 3',{sg:3}],['μ = 180',{mu:180}],['Best bell',{mu:MU0,sg:SG0}]],
+ sw:[{k:'all',on:'Using all 10 heights',off:'Using only your 173 cm'}],
+ eq(){const ll=logL(P.mu,P.sg,P.all);if(P.all)return `\\begin{aligned}L(\\mu,\\sigma)&=\\prod_{i=1}^{10}${cl('c-p','p(x_i;\\mu,\\sigma)')}=${tsci(Math.exp(ll))}\\\\\\log L&=\\sum_{i=1}^{10}\\log ${cl('c-p','p(x_i;\\mu,\\sigma)')}=${mm(f2(ll))}\\end{aligned}`;
+   return `\\log L=\\log ${cl('c-p','p(173;\\mu,\\sigma)')}+${cl('c-hot','\\cancel{\\textstyle\\sum_{i\\ne7}\\log p(x_i;\\mu,\\sigma)}')}=${mm(f2(ll))}`;},
+ eqT:()=>`\\mu=${H('mu')}\\text{ cm},\\qquad\\sigma=${H('sg')}\\text{ cm}`,
+ check(){if(!P.all)return 'One term left: the score ignores nine of the ten people.';const t=HTS.map(h=>lpdf(h,P.mu,P.sg)),i=t.indexOf(Math.min(...t));return `The lowest of the ten terms is ${mm(f2(t[i]))}, at ${HTS[i]} cm, the dot this bell covers worst.`;},
+ bad:()=>!P.all,
+ fig:el=>{el.innerHTML=`<div class="pair"><div class="card">${SVG('gl','440','320','The bell over the ten heights')}</div><div class="card">${SVG('gr','440','320','Score against bell width')}</div></div>`;},
+ draw(){bellStems('gl',P.mu,P.sg,{all:P.all,ymax:0.15,W:440});llChart('gr',P.mu,P.sg,P.all,false,440);}},
+/* 7 */{tab:2,title:'The best bell is the average and spread',
+ say:'Slide μ and σ until the score stops rising. The top sits where μ is the average height and σ² the average squared distance, the same two numbers the pile gave.',
+ note:'Grid search: μ from 160 to 185 cm and σ from 2 to 20 cm, both in 0.05 cm steps, every bell scored on all ten heights. The ring on the map marks the top it finds.',
+ def:{mu:176,sg:11},pres:[['Jump to the top',{mu:MU0,sg:SG0}],['σ dividing by 9',{mu:MU0,sg:R(SS0/9)}],['μ at the median',{mu:171,sg:SG0}]],
+ eq(){const dmu=HTS.reduce((a,h)=>a+(h-P.mu),0)/P.sg**2,dsg=-NH/P.sg+HTS.reduce((a,h)=>a+(h-P.mu)**2,0)/P.sg**3;
+   return `\\begin{aligned}\\frac{\\partial\\log L}{\\partial\\mu}&=\\sum_{i=1}^{10}\\frac{x_i-\\mu}{\\sigma^2}=${mm(f3(dmu))}\\\\\\frac{\\partial\\log L}{\\partial\\sigma}&=-\\frac{10}{\\sigma}+\\sum_{i=1}^{10}\\frac{(x_i-\\mu)^2}{\\sigma^3}=${mm(f3(dsg))}\\end{aligned}`;},
+ eqT:()=>`\\mu=${H('mu')}\\text{ cm},\\qquad\\sigma=${H('sg')}\\text{ cm},\\qquad\\log L=${mm(f2(logL(P.mu,P.sg,true)))}`,
+ check(){const g=grid();return `Both slopes are zero only at μ = x̄ = ${f1(MU0)} and σ² = s² = ${f2(VAR0)}. Searching ${comma(g.n)} bells finds the top at μ = ${f2(g.mu)}, σ = ${f2(g.sg)}, score ${mm(f2(g.v))}.`;},
+ fig:el=>{el.innerHTML=`<div class="pair"><div class="card">${SVG('gl','440','320','The bell over the ten heights')}</div><div class="card">${SVG('gr','440','320','Map of the score over centre and width')}</div></div>`;},
+ draw(){bellStems('gl',P.mu,P.sg,{ymax:0.15,ghost:true,W:440});heat('gr');}},
+/* 8 */{tab:2,title:'One height alone shrinks σ to zero',
+ say:'Score only your own 173 cm and every narrower bell scores higher, so the best fit is a spike of zero width. That is why fitting needs all ten heights.',
+ note:'Journey 03 found the same by simulation: with one sample the fitted variance was 0 in every trial (mle_var_n1_mean = 0.0 in generative-models/03-sampling-from-a-graph/artifacts/substrate/facts.json).',
+ def:{mu:173,sg:2,all:false},pres:[['σ = 1',{sg:1}],['σ = 0.1',{sg:0.1}],['Use all 10',{all:true}]],
+ sw:[{k:'all',on:'Using all 10 heights',off:'Using only your 173 cm'}],
+ eq(){const v=logL(P.mu,P.sg,P.all);if(!P.all)return `\\begin{aligned}\\log L&=\\log ${cl('c-p','p(173;\\mu,\\sigma)')}\\\\&=-\\log\\big(\\sigma\\sqrt{2\\pi}\\big)-\\frac{(173-\\mu)^2}{2\\sigma^2}=${mm(f2(v))}\\end{aligned}`;
+   return `\\log L=\\sum_{i=1}^{10}\\log ${cl('c-p','p(x_i;\\mu,\\sigma)')}=${mm(f2(v))}`;},
+ eqT:()=>`\\mu=${H('mu')}\\text{ cm},\\qquad\\sigma=${H('sg')}\\text{ cm}`,
+ check(){if(P.all)return `With all ten heights the score peaks at σ = ${f2(SG0)} and falls on both sides, so the spike is gone.`;
+   const v=logL(P.mu,P.sg,false),v2=logL(P.mu,P.sg/2,false);return `At σ = ${f2(P.sg)} the score is ${mm(f2(v))}; halve σ and it rises to ${mm(f2(v2))}. The score has no top above σ = 0.`;},
+ bad:()=>!P.all,
+ fig:el=>{el.innerHTML=`<div class="pair"><div class="card">${SVG('gl','440','320','The bell over your height alone')}</div><div class="card">${SVG('gr','440','320','Score against bell width for one height and for ten')}</div></div>`;},
+ draw(){bellStems('gl',P.mu,P.sg,{all:P.all,ymax:0.25,W:440});llChart('gr',P.mu,P.sg,P.all,true,440);}},
+/* 9 */{tab:3,title:'The running area is the CDF',
+ say:'Sweep from the far left, keeping a running total of the area under p. Call the running total F(x); it climbs from 0 to 1.',
+ note:'F is computed from the error function (Abramowitz and Stegun 7.1.26, error below 1.5 × 10⁻⁷).',
+ def:{xq:173},pres:[['x = μ',{xq:+MU0.toFixed(1)}],['Your height',{xq:173}],['x = 190',{xq:190}]],
+ eq:()=>`F(${cl('c-x','x')})=\\int_{-\\infty}^{x}${cl('c-p','p(s)')}\\,ds=${f4(ncdf(P.xq,MU0,SG0))}`,
+ eqT:()=>`${cl('c-x','x')}=${H('xq')}\\text{ cm}`,
+ check:()=>{const k=HTS.filter(h=>h<=P.xq).length;return `F(${f1(P.xq)}) = ${f4(ncdf(P.xq,MU0,SG0))}. ${k} of the 10 people are at or below ${f1(P.xq)} cm, a share of ${f1(k/10)}.`;},
+ fig:el=>{el.innerHTML=`<div class="card">${SVG('g','600','450','The bell with the area left of x shaded, and below it the running area F')}</div>`;},
+ draw(){const W=600,m={l:56,r:20},sx=lin(140,205,m.l,W-m.r),x=P.xq,F=ncdf(x,MU0,SG0);
+   const sy1=v=>170-v/0.06*140,sy2=v=>400-v*160;
+   let s=vAxis(sy1,m.l,[0,0.03,0.06],v=>f2(v),'DENSITY p',22).replace(/x2="\d+"/g,`x2="${W-m.r}"`);
+   const xs=[sx(140)],ys=[sy1(0)];for(let i=0;i<=120;i++){const v=140+(Math.min(x,205)-140)*i/120;xs.push(sx(v));ys.push(sy1(npdf(v,MU0,SG0)));}xs.push(sx(Math.min(x,205)));ys.push(sy1(0));
+   s+=`<path d="${pth(xs,ys)}Z" fill="var(--p-soft)"/><path d="${curve(v=>npdf(v,MU0,SG0),140,205,sx,sy1)}" fill="none" stroke="var(--p)" stroke-width="2.6"/>`;
+   s+=vAxis(sy2,m.l,[0,0.5,1],v=>v,'RUNNING AREA F',224).replace(/x2="\d+"/g,`x2="${W-m.r}"`);
+   s+=`<path d="${curve(v=>ncdf(v,MU0,SG0),140,205,sx,sy2)}" fill="none" stroke="var(--ink)" stroke-width="2.6"/>`;
+   s+=`<line x1="${sx(x)}" x2="${sx(x)}" y1="${sy1(0)}" y2="${sy2(0)}" stroke="var(--x)" stroke-width="1.4" stroke-dasharray="4 4"/><circle cx="${sx(x)}" cy="${sy2(F)}" r="6" fill="var(--x)"/>`;
+   const right=sx(x)<W-150;s+=txt(sx(x)+(right?10:-10),sy2(F)-10,'F = '+f4(F),{c:'num',a:right?'start':'end',s:'fill:var(--x)'});
+   s+=hAxis(sx,140,200,408,10,'HEIGHT, CM');$('g').innerHTML=s;}},
+/* 10 */{tab:3,title:'Pick u, read off a height',
+ say:'Pick a number u between 0 and 1, read across to the curve F and down to the height axis. The height you land on is F⁻¹(u), one sample from the bell.',
+ note:'F⁻¹(u) is computed as μ + σ·Φ⁻¹(u), with Φ⁻¹ the standard bell’s inverse (Acklam’s rational approximation). Journey 03 lists Φ⁻¹(0.975) = 1.96 (invcdf_normal_at_0975 in its facts.json).',
+ def:{u:0.5},pres:[['u = 0.5',{u:0.5}],['u = 0.975',{u:0.975}],['u = F(173)',{u:+F173.toFixed(3)}]],
+ eq:()=>`${cl('c-x','x')}=F^{-1}(${cl('c-eps','u')})=${cl('c-x',f1(Finv(P.u)))}\\text{ cm}`,
+ eqT:()=>`${cl('c-eps','u')}=${H('u')}`,
+ check(){const x=Finv(P.u),zq=probit(P.u);if(Math.abs(P.u-0.975)<0.0005)return `u = 0.975 lands ${f2(zq)} spreads above the mean: ${f1(MU0)} + ${f2(zq)} × ${f2(SG0)} = ${f1(x)} cm.`;
+   if(Math.abs(x-ME)<0.15)return `u = ${f3(P.u)} gives ${f1(x)} cm, your height: F(173) = ${f4(F173)}.`;return `u = ${f3(P.u)}: a share ${f3(P.u)} of the bell lies below ${f1(x)} cm.`;},
+ fig:el=>{el.innerHTML=`<div class="card">${SVG('g','600','340','The running area F with u on the side axis, a line across to the curve and down to a height')}</div>`;},
+ draw(){const W=600,Hh=340,m={l:56,r:20,t:24,b:54},sx=lin(140,205,m.l,W-m.r),sy=v=>Hh-m.b-v*(Hh-m.t-m.b),x=Finv(P.u);
+   let s=vAxis(sy,m.l,[0,0.25,0.5,0.75,1],v=>v,'u, AND THE RUNNING AREA F',m.t-8).replace(/x2="\d+"/g,`x2="${W-m.r}"`);
+   s+=`<path d="${curve(v=>ncdf(v,MU0,SG0),140,205,sx,sy)}" fill="none" stroke="var(--ink)" stroke-width="2.6"/>`;
+   s+=`<path class="draw" pathLength="1" d="M${m.l} ${sy(P.u)}H${sx(x)}V${Hh-m.b}" fill="none" stroke="var(--eps)" stroke-width="2.2"/>`;
+   s+=`<circle cx="${m.l}" cy="${sy(P.u)}" r="6" fill="var(--eps)"/><circle cx="${sx(x)}" cy="${Hh-m.b}" r="7" fill="var(--x)"/>`;
+   s+=txt(m.l+10,sy(P.u)-8,'u = '+f3(P.u),{c:'num',s:'fill:var(--eps)'});
+   const right=sx(x)<W-140;s+=txt(sx(x)+(right?10:-10),Hh-m.b-10,f1(x)+' cm',{c:'num',a:right?'start':'end',s:'fill:var(--x)'});
+   s+=hAxis(sx,140,200,Hh-m.b+6,10,'HEIGHT, CM');$('g').innerHTML=s;}},
+/* 11 */{tab:3,title:"Many u's rebuild the bell",
+ say:"Feed in many evenly spread random u's and the heights pile up in the bell's shape. All the randomness lives in u, and F⁻¹ is a fixed rule.",
+ note:'The u’s come from a seeded generator, so the same count always gives the same draws. Bars are 2.5 cm wide and rescaled to area 1.',
+ def:{nd:200},pres:[['10 draws',{nd:10}],['2000 draws',{nd:2000}],['New draws',{nd:200,seedInc:1}]],
+ eq:()=>`${cl('c-eps','u_j')}\\sim\\text{Uniform}(0,1),\\qquad ${cl('c-x','x_j')}=F^{-1}(${cl('c-eps','u_j')}),\\qquad j=1,\\dots,${P.nd}`,
+ eqT:()=>`\\text{draws}=${H('nd')}`,
+ check(){const d=draws();const m=d.reduce((a,b)=>a+b,0)/d.length,s=R(d.reduce((a,b)=>a+(b-m)**2,0)/d.length);return `${d.length} draws: mean ${f1(m)} cm, spread ${f2(s)} cm, against the bell’s ${f1(MU0)} and ${f2(SG0)}.`;},
+ fig:el=>{el.innerHTML=`<div class="card">${SVG('g','600','360','A strip of random u values above a histogram of the heights they give')}</div>`;},
+ draw(){const W=600,Hh=360,m={l:56,r:20},d=draws(),us=uDraws();const su=lin(0,1,m.l,W-m.r),sx=lin(140,205,m.l,W-m.r);
+   let s=`<line class="axis" x1="${m.l}" x2="${W-m.r}" y1="52" y2="52"/>`+txt(m.l,20,'RANDOM u, 0 TO 1',{c:'ax'});us.slice(0,300).forEach(u=>{s+=`<line x1="${su(u)}" x2="${su(u)}" y1="32" y2="50" stroke="var(--eps)" stroke-opacity=".55"/>`;});
+   s+=txt(m.l-6,57,'0',{c:'tick',a:'end'})+txt(W-m.r,70,'1',{c:'tick',a:'end'});
+   const bw=2.5,ym=0.07,sy=v=>290-Math.min(v,ym)/ym*190;s+=vAxis(sy,m.l,[0,0.035,0.07],v=>f3(v),'',0).replace(/x2="\d+"/g,`x2="${W-m.r}"`);
+   for(let a=140;a<205;a+=bw){const c=d.filter(h=>h>=a&&h<a+bw).length;if(c)s+=`<rect x="${sx(a)}" y="${sy(c/(d.length*bw))}" width="${sx(a+bw)-sx(a)-1}" height="${290-sy(c/(d.length*bw))}" fill="var(--x-soft)" stroke="var(--x)" stroke-width=".8"/>`;}
+   s+=`<path d="${curve(v=>npdf(v,MU0,SG0),140,205,sx,sy)}" fill="none" stroke="var(--p)" stroke-width="2.4"/>`;
+   HTS.forEach(h=>{s+=`<circle cx="${sx(h)}" cy="326" r="4.5" fill="var(--ink)"/>`;});s+=txt(sx(186.5),330,'the ten real heights',{c:'tick'});
+   s+=hAxis(sx,140,200,290,10,'');s+=txt(W-m.r,352,'HEIGHT, CM',{c:'ax',a:'end'});$('g').innerHTML=s;}},
+/* 12 */{tab:4,title:'One photo is 49,152 numbers',
+ say:'A 128 × 128 colour photo stores a red, a green and a blue number for each pixel. Line them up and the photo is one point with 49,152 coordinates, as your height was a point with one.',
+ note:'Pixel values are scaled from 0 to 255 onto −1 to 1 by v/127.5 − 1, as in Step 4. Click the photo to move the probe.',
+ def:{r:64,c:64},pres:[['Top-left pixel',{r:0,c:0}],['Bottom-right',{r:127,c:127}]],
+ eq:()=>`${cl('c-x0','x')}\\in\\mathbb{R}^{128\\times128\\times3},\\qquad 128\\times128\\times3=${tcomma(128*128*3)}`,
+ eqT(){const i=(P.r*128+P.c)*3;const v=[0,1,2].map(j=>X0[i+j]),raw=v.map(a=>Math.round((a+1)*127.5));return `\\begin{aligned}&\\text{row }${H('r')},\\ \\text{column }${H('c')}:\\ (R,G,B)=(${raw.join(',')})\\\\&\\text{scaled to }{-1}\\ldots1:\\ (${v.map(a=>mm(f3(a))).join(',\\,')})\\end{aligned}`;},
+ check:()=>{const i=(P.r*128+P.c)*3;return `This pixel is coordinates ${comma(i+1)} to ${comma(i+3)} of ${comma(N0)}.`;},
+ fig(el){el.innerHTML=`<div class="card"><div class="pair"><div class="probe" id="probe"><canvas class="pix" id="cv" width="128" height="128" aria-label="The labrador photo, 128 by 128 pixels"></canvas><svg viewBox="0 0 128 128" id="ov" aria-hidden="true"></svg></div><div class="coords" id="co"></div></div></div>`;
+   $('cv').addEventListener('pointerdown',e=>{const r=e.currentTarget.getBoundingClientRect();P.c=clampK('c',(e.clientX-r.left)/r.width*128-0.5);P.r=clampK('r',(e.clientY-r.top)/r.height*128-0.5);userMoved();inval();});},
+ draw(){if(ready0)paint(X0,$('cv'),128);const i=(P.r*128+P.c)*3;$('ov').innerHTML=`<rect x="${P.c-0.5}" y="${P.r-0.5}" width="2" height="2" fill="none" stroke="#fff" stroke-width="0.8"/><rect x="${P.c-2}" y="${P.r-2}" width="5" height="5" fill="none" stroke="#000" stroke-width="0.6"/>`;
+   let s='';for(let j=Math.max(0,i-3);j<Math.min(N0,i+6);j++){const lit=j>=i&&j<i+3;s+=`<span class="k">no. ${comma(j+1)}</span><span class="${lit?'lit':''}">${mm(f3(X0[j]))}${lit?'  '+'RGB'[j-i]:''}</span>`;}
+   $('co').innerHTML=`<span class="k">coordinate</span><span class="k">scaled value</span>`+s+`<span class="k">…</span><span class="k">${comma(N0)} in all</span>`;}},
+/* 13 */{tab:4,title:'A pile of dog photos',
+ say:'Each training photo is one sample from a distribution nobody can see, written p(x | dog). Plot any two pixels and the four dogs are four points, as the ten heights were ten dots.',
+ note:'The four training photos are cropped square and shrunk to 48 × 48 (6,912 numbers each) so the page can compute with all of them. Brightness is the mean of a pixel’s three scaled values. Pixels are numbered row by row from 0.',
+ def:{pa:1176,pb:1177},pres:[['Two neighbouring pixels',{pa:1176,pb:1177}],['Two far-apart pixels',{pa:0,pb:2303}],['Pixel 1176 and 1224, one row apart',{pa:1176,pb:1224}]],
+ eq:()=>`\\{${cl('c-x0','x^{(1)}')},\\dots,${cl('c-x0','x^{(4)}')}\\}\\sim p(x\\mid\\text{dog}),\\qquad x^{(k)}\\in\\mathbb{R}^{48\\times48\\times3}`,
+ eqT:()=>`\\text{pixel A}=${H('pa')},\\qquad\\text{pixel B}=${H('pb')}`,
+ check(){if(!readyD)return '';const pts=DOGS.map(d=>[bright(d,P.pa),bright(d,P.pb)]);const md=pts.reduce((a,p)=>a+Math.abs(p[0]-p[1]),0)/4;return `Across the four dogs, pixel A and pixel B differ by ${f2(md)} on average, on the −1 to 1 scale.`;},
+ fig:el=>{el.innerHTML=`<div class="card" style="max-width:520px">${SVG('g','480','480','The four dog photos placed by the brightness of two chosen pixels')}</div>`;},
+ draw(){const W=480,m={l:56,r:24,t:24,b:56},sx=lin(-1,1,m.l,W-m.r),sy=v=>lin(-1,1,W-m.b,m.t)(v);
+   let s=`<rect x="${m.l}" y="${m.t}" width="${W-m.l-m.r}" height="${W-m.t-m.b}" fill="none" stroke="var(--rule)"/><line class="grid" x1="${sx(-1)}" y1="${sy(-1)}" x2="${sx(1)}" y2="${sy(1)}"/>`;
+   [-1,0,1].forEach(v=>{s+=txt(sx(v),W-m.b+18,mm(v),{c:'tick',a:'middle'})+txt(m.l-8,sy(v)+4,mm(v),{c:'tick',a:'end'});});
+   s+=txt(W-m.r,W-m.b+40,'PIXEL A BRIGHTNESS',{c:'ax',a:'end'})+txt(m.l,m.t-8,'PIXEL B BRIGHTNESS',{c:'ax'});
+   if(readyD)DOGS.forEach((d,k)=>{const x=sx(bright(d,P.pa)),y=sy(bright(d,P.pb));s+=`<image href="${THUMB[k]}" x="${x-26}" y="${y-26}" width="52" height="52" style="image-rendering:pixelated"/><rect x="${x-26}" y="${y-26}" width="52" height="52" fill="none" stroke="var(--x0)" stroke-width="2"/>`;});
+   $('g').innerHTML=s;}},
+/* 14 */{tab:4,title:'Pixels must agree with each other',
+ say:'In this four-pixel world only two images exist. Draw each pixel on its own and most results never occur; draw them in order, each given the last, and every result is real.',
+ note:'This is journey 03’s four-pixel stripes toy (stripes_independent_valid = 0.125 and stripes_chain_valid = 1.0 in its facts.json). Each pixel is dark in exactly one of the two real images, so drawing it alone at 50 : 50 gets every single pixel’s chance right and the image wrong.',
+ def:{ord:false},pres:[['New 16 draws',{seedInc:1}]],
+ sw:[{k:'ord',on:'In order, each pixel given the last',off:'Each pixel drawn on its own'}],
+ eq:()=>P.ord?`p(x)=p(x_1)\\,p(x_2\\mid x_1)\\,p(x_3\\mid x_2)\\,p(x_4\\mid x_3)`:`p(x)\\overset{?}{=}p(x_1)\\,p(x_2)\\,p(x_3)\\,p(x_4)`,
+ eqT:()=>`\\text{share of real images}=${P.ord?'1':`\\tfrac{${exactStripes()*16}}{16}=${f3(exactStripes())}`}`,
+ check(){const d=stripes();const v=d.filter(isReal).length;return `${v} of these 16 draws ${v===1?'is':'are'} one of the two real images.`;},
+ bad:()=>!P.ord,
+ fig:el=>{el.innerHTML=`<div class="card">${SVG('g','600','330','The two real four-pixel images, and sixteen drawn images marked real or not')}</div>`;},
+ draw(){const W=600;let s=txt(20,22,'THE ONLY TWO REAL IMAGES',{c:'ax'});const cell=(x,y,b,z)=>`<rect x="${x}" y="${y}" width="${z}" height="${z}" fill="${b?'var(--ink)':'var(--panel)'}" stroke="var(--muted)"/>`;
+   [[1,1,0,0],[0,0,1,1]].forEach((im,k)=>{im.forEach((b,i)=>{s+=cell(20+k*150+i*28,32,b,28);});});
+   s+=txt(320,22,'SIXTEEN DRAWS',{c:'ax'});const d=stripes();
+   d.forEach((im,j)=>{const x=20+(j%4)*145,y=96+Math.floor(j/4)*56,ok=isReal(im);im.forEach((b,i)=>{s+=cell(x+i*24,y,b,24);});
+     s+=`<rect x="${x-4}" y="${y-4}" width="${4*24+8}" height="32" fill="none" stroke="${ok?'var(--ab)':'var(--hot)'}" stroke-width="${ok?2.5:1.5}"${ok?'':' stroke-dasharray="4 3"'}/>`+txt(x+4*24+12,y+18,ok?'✓':'✗',{s:`fill:${ok?'var(--ab)':'var(--hot)'};font-size:16px`});});
+   $('g').innerHTML=s;}},
+/* 15 */{tab:4,title:'The table is too big to write',
+ say:'Drawing in order needs the chance of each pixel value given every earlier pixel, which is a table over every possible image. Count its entries as the image grows.',
+ note:'A table of chances over every image must add to 1, so one entry follows from the rest: free numbers = entries − 1. Journey 03 gives 1.845 × 10¹⁹ for 8 × 8 black and white (full_table_free_numbers_8x8 in its facts.json).',
+ def:{side:8,lev:2,ch:1},pres:[['8 × 8, black and white',{side:8,lev:2,ch:1}],['128 × 128 colour',{side:128,lev:256,ch:3}],['2 × 2, black and white',{side:2,lev:2,ch:1}]],
+ eq(){const n=P.side*P.side*P.ch,lg=n*Math.log10(P.lev);let v;if(lg<15){v=tcomma((BigInt(P.lev)**BigInt(n)-1n).toString());}else v=`10^{${tcomma(lg.toFixed(1))}}`;
+   return `\\text{free numbers}=L^{\\,n\\cdot n\\cdot c}-1=${P.lev}^{${tcomma(n)}}-1${lg<15?'=':'\\approx'}${v}`;},
+ eqT:()=>`n=${H('side')},\\quad L=${H('lev')}\\text{ levels},\\quad c=${H('ch')}\\text{ channels}`,
+ check(){const n=P.side*P.side*P.ch,dg=Math.floor(n*Math.log10(P.lev)+1e-9)+1;if(P.side===8&&P.lev===2&&P.ch===1)return `2⁶⁴ − 1 = ${sci(2**64-1)}, the number in journey 03’s facts.json. Writing it takes ${dg} digits.`;
+   return `${comma(n)} pixel values at ${P.lev} levels each: writing the count of free numbers takes ${comma(dg)} digits.`;},
+ fig:el=>{el.innerHTML=`<div class="card">${SVG('g','600','300','Digits needed to write the table size, on a log scale, for three images and the current one')}</div>`;},
+ draw(){const W=600,m={l:180,r:30},sx=lin(0,6,m.l,W-m.r),dig=(n,L)=>Math.floor(n*Math.log10(L)+1e-9)+1;
+   const rows=[['2 × 2, black and white',dig(4,2)],['8 × 8, black and white',dig(64,2)],['128 × 128 colour',dig(128*128*3,256)],['your setting',dig(P.side*P.side*P.ch,P.lev)]];
+   let s=txt(m.l,20,'DIGITS IN THE COUNT, LOG SCALE',{c:'ax'});[0,1,2,3,4,5,6].forEach(e=>{s+=`<line class="grid" x1="${sx(e)}" x2="${sx(e)}" y1="30" y2="250"/>`+txt(sx(e),270,'10'+SUP[e],{c:'tick',a:'middle'});});
+   rows.forEach(([l,dg],i)=>{const y=44+i*52,w=sx(Math.log10(dg))-m.l,cur=i===3;s+=`<rect x="${m.l}" y="${y}" width="${Math.max(2,w)}" height="30" fill="${cur?'var(--x)':'var(--x-soft)'}" stroke="var(--x)"/>`;
+     s+=txt(m.l-10,y+20,l,{a:'end',s:cur?'fill:var(--x);font-weight:600':''})+txt(m.l+Math.max(2,w)+8,y+20,comma(dg),{c:'num'});});
+   $('g').innerHTML=s;}},
+/* 16 */{tab:5,title:'Noise in, sample out, fixed rule between',
+ say:'F⁻¹ is a fixed rule, so the same u always gives the same height and the randomness lives in u. A generator does the same with many numbers, turning a random noise image into a picture.',
+ note:'The image row runs this page’s 100-step sampler (frame 20) with fresh noise switched off, using the exact best guess over the four training dogs, so it is a fixed function of the starting noise image (the deterministic update of Song, Meng and Ermon 2021). A trained VAE decoder or GAN generator is likewise a fixed function of its input noise z.',
+ def:{u:+F173.toFixed(3),z:1},pres:[['u = 0.2',{u:0.2}],['u = 0.8',{u:0.8}],['Noise image 2',{z:2}],['Noise image 3',{z:3}]],
+ eq:()=>`\\begin{aligned}${cl('c-eps','u')}&\\xrightarrow{\\;F^{-1},\\ \\text{fixed}\\;}${cl('c-x','x')}=${f1(Finv(P.u))}\\text{ cm}\\\\${cl('c-eps','z')}&\\xrightarrow{\\;\\text{100 steps, fixed}\\;}\\text{an image}\\end{aligned}`,
+ eqT:()=>`${cl('c-eps','u')}=${H('u')},\\qquad\\text{noise image no. }${H('z')}`,
+ check(){if(!readyD)return '';const c=chainImg(P.z,false);return `Noise image ${P.z} always becomes ${DOGNAME[c.end]}, and u = ${f3(P.u)} always gives ${f1(Finv(P.u))} cm. Sampling is choosing the noise.`;},
+ fig:el=>{el.innerHTML=`<div class="card"><div class="mach"><div class="val c-eps">u = <span id="mu"></span></div><span class="arr">→</span><div class="box">F⁻¹<br><small>fixed rule</small></div><span class="arr">→</span><div class="val c-x" id="mx"></div></div></div>
+   <div class="card"><div class="mach"><figure style="margin:0"><canvas class="pix noise" id="mz" width="48" height="48" aria-label="The starting noise image"></canvas></figure><span class="arr">→</span><div class="box">100 denoising steps<br><small>fixed, fresh noise off</small></div><span class="arr">→</span><figure style="margin:0"><canvas class="pix" id="mo" width="48" height="48" aria-label="The image the steps produce"></canvas></figure></div></div>`;},
+ draw(){$('mu').textContent=f3(P.u);$('mx').textContent=f1(Finv(P.u))+' cm';if(readyD){const c=chainImg(P.z,false);paint(c.xs[0],$('mz'),48);paint(c.xs[100],$('mo'),48);}}},
+/* 17 */{tab:5,title:'x₀ is one photo, not the mean',
+ say:"Fix one training photo and call it x₀. Its noisy copies scatter around √ᾱₜ·x₀, the mean for this one photo, with spread √(1 − ᾱₜ), where ᾱₜ is Step 4's kept share.",
+ note:'Schedule: Step 4’s cosine schedule, T = 100, offset 0.008, β clipped at 0.999, computed in the page. Distances are root-mean-square per pixel value over all 49,152 values.',
+ def:{t:50},pres:[['t = 10',{t:10}],['t = 90',{t:90}],['New draws',{t:50,seedInc:1}]],
+ eq(){const a=S.abar[P.t];return `\\begin{aligned}q(${cl('c-x','x_t')}\\mid ${cl('c-x0','x_0')})&=\\mathcal N\\big(\\underbrace{${cl('c-ab','\\sqrt{\\bar\\alpha_t}')}\\,${cl('c-x0','x_0')}}_{\\text{mean, }${f4(R(a))}\\,x_0},\\ \\underbrace{(1-${cl('c-ab','\\bar\\alpha_t')})}_{${f4(1-a)}}\\,I\\big)\\\\${cl('c-x','x_t')}&=${cl('c-ab','\\sqrt{\\bar\\alpha_t}')}\\,${cl('c-x0','x_0')}+${cl('c-nz','\\sqrt{1-\\bar\\alpha_t}')}\\,${cl('c-eps','\\varepsilon')}\\end{aligned}`;},
+ eqT:()=>`t=${H('t')}\\text{ of }99,\\qquad ${cl('c-ab','\\bar\\alpha_t')}=${cl('c-ab',f4(S.abar[P.t]))}`,
+ check(){if(!ready0)return '';const d=noisy3(),mean=meanImg();const d1=d.map(x=>rms(x,mean,N0)),avg=new Float32Array(N0);for(let i=0;i<N0;i++)avg[i]=(d[0][i]+d[1][i]+d[2][i])/3;
+   return `Each draw sits ${f3((d1[0]+d1[1]+d1[2])/3)} from the mean image per pixel (predicted ${f3(R(1-S.abar[P.t]))}). Their average sits ${f3(rms(avg,mean,N0))} (predicted ${f3(R((1-S.abar[P.t])/3))}), since the draws scatter around that mean.`;},
+ fig:el=>{el.innerHTML=`<div class="card"><div class="imgrow" style="grid-template-columns:repeat(5,minmax(0,1fr))">
+   <figure><canvas class="pix" id="a0"></canvas><figcaption class="c-x0">x₀, one photo</figcaption></figure>
+   <figure><canvas class="pix" id="a1"></canvas><figcaption class="c-ab">mean √ᾱₜ·x₀</figcaption></figure>
+   <figure><canvas class="pix" id="a2"></canvas><figcaption class="c-x">draw 1</figcaption></figure>
+   <figure><canvas class="pix" id="a3"></canvas><figcaption class="c-x">draw 2</figcaption></figure>
+   <figure><canvas class="pix" id="a4"></canvas><figcaption class="c-x">draw 3</figcaption></figure></div>
+   <p class="howto">The mean image is darker grey because √ᾱₜ shrinks every value toward 0, the middle of the −1 to 1 scale.</p></div>`;},
+ draw(){if(!ready0)return;paint(X0,$('a0'),128);paint(meanImg(),$('a1'),128);noisy3().forEach((x,k)=>paint(x,$('a'+(k+2)),128));}},
+/* 18 */{tab:5,title:'Without x₀, take a weighted average',
+ say:'When sampling, nobody hands you x₀. Each training height gets a weight for how well it explains the noisy value, and the best guess of x₀ is their weighted average.',
+ note:'Heights are rescaled to mean 0 and spread 1 before noise is added, as images are scaled to −1 to 1. The weights are exact for a model that knows only these ten heights; frame 22 shows they are Bayes’ theorem.',
+ def:{t:50,xt:0.3},pres:[['t = 95, nearly pure noise',{t:95}],['t = 5, almost clean',{t:5}],['Noisy value −1.5',{xt:-1.5}]],
+ eq(){const r=den1(P.xt,P.t,Z);return `${cl('c-x0','\\hat x_0')}(${cl('c-x','x_t')})=\\sum_{i=1}^{10}w_i\\,x_i,\\qquad w_i\\propto\\mathcal N\\big(${cl('c-x','x_t')};\\,${cl('c-ab','\\sqrt{\\bar\\alpha_t}')}\\,x_i,\\ 1-${cl('c-ab','\\bar\\alpha_t')}\\big)`;},
+ eqT:()=>`t=${H('t')},\\quad ${cl('c-x','x_t')}=${H('xt')},\\quad ${cl('c-x0','\\hat x_0')}=${cl('c-x0',f1(toCm(den1(P.xt,P.t,Z).x0)))}\\text{ cm}`,
+ check(){const r=den1(P.xt,P.t,Z),ne=1/r.w.reduce((a,w)=>a+w*w,0);return `The weights spread over the equivalent of ${f1(ne)} heights, so the guess is ${f1(toCm(r.x0))} cm. At t = 99 it is ${f1(toCm(den1(P.xt,99,Z).x0))} cm, close to the average of all ten.`;},
+ fig:el=>{el.innerHTML=`<div class="card">${SVG('g','600','400','Ten bumps, one per training height, cut by the noisy value; below, the weights on the ten heights')}</div>`;},
+ draw(){const W=600,m={l:40,r:20},sx=lin(-3.5,3.5,m.l,W-m.r),a=S.abar[P.t],ra=R(a),v=1-a,r=den1(P.xt,P.t,Z);
+   const pk=1/R(2*PI*v),sy=q=>170-q/pk*130;let s=txt(m.l,20,'WHERE EACH HEIGHT’S NOISY COPIES LAND',{c:'ax'});
+   Z.forEach((z,i)=>{s+=`<path d="${curve(x=>Math.exp(-((x-ra*z)**2)/(2*v))/R(2*PI*v),-3.5,3.5,sx,sy,160)}" fill="none" stroke="${i===MEI?'var(--x0)':'var(--muted)'}" stroke-opacity="${i===MEI?1:.6}" stroke-width="${i===MEI?2.2:1.3}"/>`;});
+   s+=`<line class="axis" x1="${m.l}" x2="${W-m.r}" y1="170" y2="170"/>`;[-3,-2,-1,0,1,2,3].forEach(q=>{s+=txt(sx(q),186,mm(q),{c:'tick',a:'middle'});});
+   s+=`<line x1="${sx(P.xt)}" x2="${sx(P.xt)}" y1="34" y2="176" stroke="var(--x)" stroke-width="2.4"/>`+txt(sx(P.xt)+(P.xt<2?8:-8),48,'noisy value',{a:P.xt<2?'start':'end',s:'fill:var(--x)'});
+   const hx=lin(150,190,m.l,W-m.r),wm=Math.max(0.2,...r.w),by=v2=>360-v2/wm*110,im=r.w.indexOf(Math.max(...r.w));s+=txt(m.l,222,'WEIGHT ON EACH TRAINING HEIGHT',{c:'ax'});
+   HTS.forEach((h,i)=>{s+=`<rect x="${hx(h)-6}" y="${by(r.w[i])}" width="12" height="${360-by(r.w[i])}" fill="${i===MEI?'var(--x0)':'var(--x0-soft)'}" stroke="var(--x0)"/>`;});
+   s+=txt(hx(HTS[im]),by(r.w[im])-6,f2(r.w[im]),{c:'num',a:'middle',s:'fill:var(--x0)'});const g=toCm(r.x0);s+=`<line x1="${hx(g)}" x2="${hx(g)}" y1="236" y2="362" stroke="var(--x0)" stroke-width="2" stroke-dasharray="5 4"/>`+txt(hx(g)+(g<180?8:-8),246,'guess '+f1(g)+' cm',{c:'num',a:g<180?'start':'end',s:'fill:var(--x0)'});s+=txt(W-m.r,222,'BAR HEIGHT ∝ WEIGHT',{c:'tick',a:'end'});
+   s+=hAxis(hx,150,190,364,10,'');$('g').innerHTML=s;}},
+/* 19 */{tab:5,title:'Step back from noise to a height',
+ say:'Start from pure noise at step 99. Each step guesses x₀, moves part of the way toward the guess and adds a little fresh noise, and every chain ends on a height.',
+ note:'Reverse step of Ho, Jain and Abbeel (2020): the mean of q(xₜ₋₁ | xₜ, x₀) with x₀ replaced by the best guess, and variance βₜ(1 − ᾱₜ₋₁)/(1 − ᾱₜ). A chain ends on a height when it lands within 0.5 cm of one of the ten.',
+ def:{nc:20,t:50},pres:[['5 chains',{nc:5}],['100 chains',{nc:100}],['New noise',{seedInc:1}]],
+ eq(){const k=coef(P.t);return `${cl('c-x','x_{t-1}')}=\\underbrace{${f4(k.A)}}_{a_t}\\,${cl('c-x0','\\hat x_0')}+\\underbrace{${f4(k.B)}}_{b_t}\\,${cl('c-x','x_t')}+\\underbrace{${f4(R(k.V))}}_{\\sigma_t}\\,${cl('c-eps','\\varepsilon_t')}`;},
+ eqT:()=>`t=${H('t')},\\qquad\\text{chains}=${H('nc')}`,
+ check(){const c=chains19();const k=c.filter(tr=>nearH(toCm(tr[100]))<0.5).length;return `${k} of ${c.length} chains end within 0.5 cm of a training height.`;},
+ fig:el=>{el.innerHTML=`<div class="card">${SVG('g','600','380','Chains of heights from step 99 on the left to clean on the right, ending on the ten training heights')}</div>`;},
+ draw(){const W=600,Hh=380,m={l:50,r:40,t:28,b:48},sx=j=>m.l+j/100*(W-m.l-m.r),sy=lin(140,200,Hh-m.b,m.t),c=chains19();
+   let s=vAxis(sy,m.l,[150,160,170,180,190],v=>v,'HEIGHT, CM',m.t-12).replace(/x2="\d+"/g,`x2="${W-m.r}"`);
+   HTS.forEach(h=>{s+=`<line x1="${W-m.r+2}" x2="${W-m.r+14}" y1="${sy(h)}" y2="${sy(h)}" stroke="var(--x0)" stroke-width="2.4"/>`;});
+   c.forEach(tr=>{const xs=[],ys=[];for(let j=0;j<=100;j++){xs.push(sx(j));ys.push(sy(Math.max(140,Math.min(200,toCm(tr[j])))));}s+=`<path class="draw" pathLength="1" d="${pth(xs,ys)}" fill="none" stroke="var(--x)" stroke-opacity="${c.length>30?.35:.7}" stroke-width="1.4"/>`;});
+   const jx=sx(99-P.t);s+=`<line x1="${jx}" x2="${jx}" y1="${m.t}" y2="${Hh-m.b}" stroke="var(--nz)" stroke-width="1.5"/>`;
+   [[0,'99'],[49,'50'],[99,'0'],[100,'']].forEach(([j,l])=>{if(l)s+=txt(sx(j),Hh-m.b+18,l,{c:'tick',a:'middle'});});s+=txt(sx(100)+4,Hh-m.b+18,'clean',{c:'tick',a:'start'});
+   s+=txt(m.l,Hh-6,'STEP T, COUNTING DOWN',{c:'ax'});$('g').innerHTML=s;}},
+/* 20 */{tab:5,title:'The same steps end on a dog',
+ say:'Run the same steps on four dog photos, starting from a pure-noise image. At step 99 the guess is the average of all four dogs, and it sharpens into one dog as t falls.',
+ note:'The best guess here is exact for a model that knows only these four photos; a trained network learns an approximation of it from the same photos. Click a thumbnail to jump to that step.',
+ def:{t:97,fresh:true},pres:[['t = 99',{t:99}],['t = 0',{t:0}],['New starting noise',{seedInc:1}]],
+ sw:[{k:'fresh',on:'Fresh noise at each step',off:'No fresh noise'}],
+ eq:()=>`${cl('c-x0','\\hat x_0')}(${cl('c-x','x_t')})=\\sum_{k=1}^{4}w_k\\,x^{(k)},\\qquad w_k\\propto\\exp\\!\\Big(-\\frac{\\lVert ${cl('c-x','x_t')}-${cl('c-ab','\\sqrt{\\bar\\alpha_t}')}\\,x^{(k)}\\rVert^2}{2(1-${cl('c-ab','\\bar\\alpha_t')})}\\Big)`,
+ eqT(){if(!readyD)return `t=${H('t')}`;const c=chainImg(P.seed,P.fresh),w=c.ws[99-P.t];return `t=${H('t')},\\qquad w=(${w.map(f2).join(',\\,')})`;},
+ check(){if(!readyD)return '';const c=chainImg(P.seed,P.fresh),w=c.ws[99-P.t],avgD=rms(c.hs[0],meanDog(),D);
+   return `The chain ends on ${DOGNAME[c.end]}, ${c.dist<0.0005?'matching it to three decimals':f3(c.dist)+' from it per value'}. At step 99 the guess is ${f3(avgD)} from the average of the four dogs.`;},
+ fig:el=>{el.innerHTML=`<div class="card"><div class="imgrow top3" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+   <figure><canvas class="pix" id="b0"></canvas><figcaption class="c-x" id="b0c">xₜ</figcaption></figure>
+   <figure><canvas class="pix" id="b1"></canvas><figcaption class="c-x0">best guess x̂₀</figcaption></figure>
+   <figure><canvas class="pix" id="b2"></canvas><figcaption>the clean end</figcaption></figure></div>
+   <div class="wbars" id="wb"></div><div class="snaps" id="sn" data-optional></div></div>`;
+   const ts=[99,98,97,96,95,50,0];$('sn').innerHTML=ts.map(t=>`<button data-t="${t}" aria-label="Jump to step ${t}"><canvas width="48" height="48"></canvas>t = ${t}</button>`).join('');
+   $('sn').querySelectorAll('button').forEach(b=>b.onclick=()=>{P.t=+b.dataset.t;userMoved();inval();});},
+ draw(){if(!readyD)return;const c=chainImg(P.seed,P.fresh),j=99-P.t;paint(c.xs[j],$('b0'),48);paint(c.hs[j],$('b1'),48);paint(c.xs[100],$('b2'),48);$('b0c').textContent='x'+sub(P.t);
+   $('wb').innerHTML=c.ws[j].map((w,k)=>`<div><img src="${THUMB[k]}" alt="${DOGNAME[k]}"><span class="bar"><i style="width:${(w*100).toFixed(1)}%"></i></span>${f2(w)}</div>`).join('');
+   $('sn').querySelectorAll('button').forEach(b=>{const t=+b.dataset.t;b.setAttribute('aria-pressed',t===P.t);paint(c.xs[99-t],b.querySelector('canvas'),48);});}},
+/* 21 */{tab:6,title:'What the training data decides',
+ say:'With the exact best guess the sampler can only return training heights, so the data is everything it knows. A smoother guess, such as a fitted bell, returns new heights in between.',
+ note:'Outside this page: an exact denoiser makes a diffusion model reproduce its training set, and trained networks produce new images because they cannot represent that exact denoiser (Kadkhodaie et al. 2024, “Generalization in diffusion models arises from geometry-adaptive harmonic representations”). The fitted bell stands in for a smoother model here; it is not a network. Heights join the training set in the order 173, 158, 184, 168, 176, 163, 179, 170, 165, 172.',
+ def:{nh:10,exact:true},pres:[['2 training heights',{nh:2}],['5 training heights',{nh:5}]],
+ sw:[{k:'exact',on:'Best guess from the training heights',off:'Best guess from a fitted bell'}],
+ eq:()=>P.exact?`${cl('c-x0','\\hat x_0')}(${cl('c-x','x_t')})=\\sum_{i=1}^{${P.nh}}w_i\\,x_i`:`${cl('c-x0','\\hat x_0')}(${cl('c-x','x_t')})=m+\\frac{s^2${cl('c-ab','\\sqrt{\\bar\\alpha_t}')}\\,(${cl('c-x','x_t')}-${cl('c-ab','\\sqrt{\\bar\\alpha_t}')}\\,m)}{${cl('c-ab','\\bar\\alpha_t')}s^2+1-${cl('c-ab','\\bar\\alpha_t')}}`,
+ eqT:()=>`\\text{training heights}=${H('nh')}`,
+ check(){const e=ends21();const k=e.filter(cm=>nearH21(cm)<0.5).length;return `${k} of ${e.length} chains (${Math.round(100*k/e.length)}%) end within 0.5 cm of one of the ${P.nh} training heights${P.exact?'':`; the other ${e.length-k} are heights the data never had`}.`;},
+ fig:el=>{el.innerHTML=`<div class="card">${SVG('g','600','340','Histogram of 200 sampled heights with the training heights marked')}</div>`;},
+ draw(){const W=600,Hh=340,m={l:50,r:20,t:30,b:60},sx=lin(140,205,m.l,W-m.r),e=ends21(),c={};e.forEach(cm=>{const b=Math.round(cm);c[b]=(c[b]||0)+1;});
+   const ym=Math.max(10,...Object.values(c)),sy=v=>Hh-m.b-v/ym*(Hh-m.t-m.b);let s=vAxis(sy,m.l,[0,Math.round(ym/2),ym],v=>v,'CHAINS ENDING NEAREST EACH WHOLE CM',m.t-12).replace(/x2="\d+"/g,`x2="${W-m.r}"`);
+   Object.entries(c).forEach(([b,n])=>{const a=+b-0.5;if(a<140||a>=205)return;s+=`<rect x="${sx(a)}" y="${sy(n)}" width="${Math.max(1,sx(a+1)-sx(a)-1)}" height="${Hh-m.b-sy(n)}" fill="var(--x)"/>`;});
+   train21().forEach(h=>{s+=`<circle cx="${sx(h)}" cy="${Hh-m.b+12}" r="5" fill="var(--x0)"/>`;});
+   s+=hAxis(sx,140,200,Hh-m.b+22,10,'');s+=txt(W-m.r,Hh-4,'HEIGHT, CM',{c:'ax',a:'end'});$('g').innerHTML=s;}},
+/* 22 */{tab:6,title:"Where Bayes' theorem enters",
+ say:"Each weight in the guess is Bayes' theorem: prior times likelihood, divided by the total. The prior is the chance of each height before seeing noise, and the likelihood is how well it explains the noisy value.",
+ note:'The label enters the same way: p(x | dog) ∝ p(dog | x) p(x). Outside this page, classifier guidance steers a sampler with ∇log p(x | dog) = ∇log p(x) + ∇log p(dog | x) (Dhariwal and Nichol 2021); nothing here trains a classifier. Each row of bars is scaled to its own tallest bar.',
+ def:{t:50,xt:0.3,skew:false},pres:[['t = 10',{t:10}],['t = 90',{t:90}]],
+ sw:[{k:'skew',on:'Uneven prior: 173 cm counts five times',off:'Even prior: 1 in 10 each'}],
+ eq:()=>`\\begin{aligned}p(x_0{=}x_i\\mid ${cl('c-x','x_t')})&=\\frac{q(${cl('c-x','x_t')}\\mid x_i)\\,p(x_i)}{\\sum_{j}q(${cl('c-x','x_t')}\\mid x_j)\\,p(x_j)}\\\\p(x\\mid\\text{dog})&\\propto p(\\text{dog}\\mid x)\\,p(x)\\end{aligned}`,
+ eqT:()=>`t=${H('t')},\\qquad ${cl('c-x','x_t')}=${H('xt')}`,
+ check(){const r=den1(P.xt,P.t,Z,prior22());const s=r.w.reduce((a,b)=>a+b,0),i=r.w.indexOf(Math.max(...r.w));return `The posterior adds to ${f4(s)}. Its largest weight is ${f3(r.w[i])}, on ${HTS[i]} cm.`;},
+ fig:el=>{el.innerHTML=`<div class="card">${SVG('g','600','380','Three rows of ten bars: prior, likelihood and posterior for each training height')}</div>`;},
+ draw(){const W=600,m={l:110,r:20},hx=lin(150,190,m.l,W-m.r),pw=prior22(),r=den1(P.xt,P.t,Z,pw),ps=pw.reduce((a,b)=>a+b,0);const lk=r.lik,lm=Math.max(...lk);
+   const rows=[['prior',pw.map(v=>v/ps),'var(--muted)'],['likelihood',lk.map(v=>v/lm),'var(--x)'],['posterior',r.w,'var(--x0)']];let s='';
+   rows.forEach(([l,vals,col],k)=>{const base=100+k*110,mx=Math.max(...vals,1e-9);s+=txt(m.l-12,base-30,l,{a:'end',s:`fill:${col};font-weight:600`});s+=`<line class="axis" x1="${m.l}" x2="${W-m.r}" y1="${base}" y2="${base}"/>`;
+     vals.forEach((v,i)=>{const h=v/mx*76;s+=`<rect x="${hx(HTS[i])-6}" y="${base-h}" width="12" height="${h}" fill="${col}" fill-opacity="${i===MEI?1:.55}"/>`;});});
+   s+=hAxis(hx,150,190,324,10,'');s+=txt(W-m.r,372,'TRAINING HEIGHT, CM',{c:'ax',a:'end'});$('g').innerHTML=s;}},
+/* 23 */{tab:6,title:'How many assumptions it takes',
+ say:'Five assumptions carry the whole chain from heights to a dog. Click one to jump to the frame where it does its work.',
+ note:'Assumption 4: the log of a Gaussian density is −(x − μ)²/2σ² plus a constant, so maximising Gaussian likelihood is the same as minimising squared error, the training loss of Ho, Jain and Abbeel (2020).',
+ check:()=>'One of the five, Gaussian forward noise, is a free choice. The other four are bets about the data and the network.',
+ fig:el=>{const A=[[13,'The training photos are independent draws from one p(x | dog).','frame 13'],[17,'The noise added going forward is Gaussian. This one is a choice.','frame 17',1],[19,'Steps are small, so each reverse step is close to Gaussian.','frame 19'],
+   [6,'Training by squared error is training by Gaussian likelihood.','frame 6'],[18,'The network can learn the best guess x̂₀(xₜ).','frame 18']];
+   el.innerHTML=`<div class="alist">${A.map(([f,t,l,c],i)=>`<button class="${c?'choice':''}" data-f="${f}">${i+1}. ${t}<span>${l} · ${c?'a choice':'a bet'}</span></button>`).join('')}</div>`;
+   el.querySelectorAll('button').forEach(b=>b.onclick=()=>go(+b.dataset.f-1));},
+ draw(){}},
+/* 24 */{tab:6,title:'Does the architecture carry probability?',
+ say:'Swap a convnet for a transformer and the loss and the sampler stay the same. The network is a fixed function, and what its design adds is a preference for which functions are easy to learn.',
+ note:'Outside this page: locality and shared weights in convolution, and the all-pairs comparison in attention, are built-in preferences (inductive biases). Neither layer computes a probability; the probability comes from the Gaussian noise, the squared-error loss and the sampler.',
+ def:{tf:false},sw:[{k:'tf',on:'Inside the box: a transformer',off:'Inside the box: a convnet'}],
+ eq:()=>`\\begin{aligned}\\text{loss}&=\\big\\lVert ${cl('c-eps','\\varepsilon')}-\\hat\\varepsilon_\\theta(${cl('c-x','x_t')},t)\\big\\rVert^2&&\\text{unchanged}\\\\${cl('c-x','x_{t-1}')}&=a_t\\,${cl('c-x0','\\hat x_0')}+b_t\\,${cl('c-x','x_t')}+\\sigma_t\\,${cl('c-eps','\\varepsilon_t')}&&\\text{unchanged}\\end{aligned}`,
+ check:()=>P.tf?'Transformer: every patch compares itself with every other patch from the first layer, with fewer built-in bets about distance.':'Convnet: each output looks at a small neighbourhood with the same filter everywhere, a built-in bet that nearby pixels matter most.',
+ fig:el=>{el.innerHTML=`<div class="card">${SVG('g','640','300','A noisy image goes into the network box and a noise prediction comes out; the box contents change with the switch')}</div>`;},
+ draw(){const W=640;let s=`<rect x="20" y="100" width="90" height="90" fill="var(--x-soft)" stroke="var(--x)"/>`+txt(65,214,'noisy image',{a:'middle',s:'fill:var(--x)'});
+   s+=`<line x1="116" x2="196" y1="145" y2="145" stroke="var(--muted)" stroke-width="2"/><rect x="200" y="50" width="240" height="190" rx="10" fill="var(--shade)" stroke="var(--ink)" stroke-width="2"/>`;
+   const gx=232,gy=78,cz=17;for(let i=0;i<8;i++)for(let j=0;j<8;j++)s+=`<rect x="${gx+i*cz}" y="${gy+j*cz}" width="${cz}" height="${cz}" fill="var(--panel)" stroke="var(--rule)"/>`;
+   if(!P.tf){s+=`<rect x="${gx+2*cz}" y="${gy+3*cz}" width="${3*cz}" height="${3*cz}" fill="var(--x0-soft)" stroke="var(--x0)" stroke-width="2.5"/>`;s+=txt(320,228,'3 × 3 filter, slid everywhere',{a:'middle',c:'num'});}
+   else{const c=[gx+3.5*cz,gy+3.5*cz];[[0,0],[7,0],[0,7],[7,7],[1,5],[6,2],[3,7],[5,0]].forEach(([i,j])=>{s+=`<line x1="${c[0]}" y1="${c[1]}" x2="${gx+(i+.5)*cz}" y2="${gy+(j+.5)*cz}" stroke="var(--x0)" stroke-width="1.6"/>`;});s+=`<circle cx="${c[0]}" cy="${c[1]}" r="6" fill="var(--x0)"/>`;s+=txt(320,228,'one patch attends to all',{a:'middle',c:'num'});}
+   s+=`<line x1="444" x2="520" y1="145" y2="145" stroke="var(--muted)" stroke-width="2"/><rect x="526" y="100" width="90" height="90" fill="var(--eps-soft)" stroke="var(--eps)"/>`+txt(571,214,'predicted noise',{a:'middle',s:'fill:var(--eps)'});
+   s+=txt(320,34,P.tf?'TRANSFORMER':'CONVNET',{a:'middle',c:'ax'});$('g').innerHTML=s;}},
+/* 25 */{tab:6,title:'From one height to one dog',
+ say:'Each rung changes one thing from the rung below. Teach upward one change at a time, and check each rung on numbers you can drag.',
+ note:'Each rung jumps to the frame that builds it.',
+ check:()=>'Seven rungs, one change each: count, curve, best curve, sample, more numbers, a network, many small steps.',
+ fig:el=>{el.innerHTML=`<div class="card">${SVG('g','600','440','A ladder of seven rungs from one height at the bottom to a sampled dog at the top')}</div>`;},
+ draw(){const R7=[[1,'one height, x = 173'],[2,'a pile: mean and variance'],[4,'a curve: density p(x)'],[6,'the best curve: likelihood'],[10,'a sample: F⁻¹(u)'],[12,'49,152 numbers, not 1'],[20,'a network, many small steps']];
+   let s=`<line x1="90" x2="90" y1="20" y2="420" stroke="var(--ink)" stroke-width="3"/><line x1="150" x2="150" y1="20" y2="420" stroke="var(--ink)" stroke-width="3"/>`;
+   R7.forEach(([f,l],i)=>{const y=400-i*58;s+=`<g class="rung" data-f="${f}" role="button" tabindex="0" style="cursor:pointer"><line x1="90" x2="150" y1="${y}" y2="${y}" stroke="${i===6?'var(--x0)':'var(--x)'}" stroke-width="6"/><rect x="80" y="${y-24}" width="500" height="44" fill="transparent"/>`+txt(170,y+5,l,{s:i===6?'fill:var(--x0);font-weight:600':''})+txt(72,y+5,'frame '+f,{c:'tick',a:'end'})+`</g>`;});
+   $('g').innerHTML=s;$('g').querySelectorAll('.rung').forEach(r=>{r.onclick=()=>go(+r.dataset.f-1);r.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();go(+r.dataset.f-1);}};});}}
+];
+
+/* ---------- frame-specific computations ---------- */
+function bins(bw){const out=[];for(let a=145;a<200;a+=bw)out.push({a,n:HTS.filter(h=>h>=a&&h<a+bw).length});return out;}
+let gridC=null;function grid(){if(gridC)return gridC;let best={v:-Infinity,n:0};for(let mu=160;mu<=185.0001;mu+=0.05)for(let sg=2;sg<=20.0001;sg+=0.05){best.n++;const v=logL(mu,sg,true);if(v>best.v){best.v=v;best.mu=mu;best.sg=sg;}}return gridC=best;}
+let heatC=null;
+function heat(id){const W=440,Hh=320,m={l:52,r:24,t:30,b:52},sx=lin(160,185,m.l,W-m.r),sy=lin(3,15,Hh-m.b,m.t);
+  if(!heatC){let s='';const nx=50,ny=36;for(let i=0;i<nx;i++)for(let j=0;j<ny;j++){const mu=160+(i+.5)*25/nx,sg=3+(j+.5)*12/ny,v=logL(mu,sg,true),o=Math.max(0,Math.min(1,1+(v-BEST)/12));
+      s+=`<rect x="${sx(160+i*25/nx)}" y="${sy(3+(j+1)*12/ny)}" width="${(W-m.l-m.r)/nx+.5}" height="${(Hh-m.t-m.b)/ny+.5}" fill="var(--ab)" fill-opacity="${(o*o*0.9).toFixed(3)}"/>`;}
+    heatC=s;}
+  const g=grid();let s=heatC+`<circle cx="${sx(g.mu)}" cy="${sy(g.sg)}" r="9" fill="none" stroke="var(--ink)" stroke-width="2"/>`;
+  s+=`<circle cx="${sx(Math.max(160,Math.min(185,P.mu)))}" cy="${sy(Math.max(3,Math.min(15,P.sg)))}" r="6" fill="var(--x)" stroke="var(--panel)" stroke-width="2"/>`;
+  [160,165,170,175,180,185].forEach(v=>{s+=txt(sx(v),Hh-m.b+18,v,{c:'tick',a:'middle'});});[3,6,9,12,15].forEach(v=>{s+=txt(m.l-6,sy(v)+4,v,{c:'tick',a:'end'});});
+  s+=txt(W-m.r,Hh-m.b+38,'CENTRE μ, CM',{c:'ax',a:'end'})+txt(m.l,m.t-12,'WIDTH σ, CM · DARKER SCORES HIGHER',{c:'ax'});$(id).innerHTML=s;}
+let drawC={};function uDraws(){const k=P.nd+'|'+P.seed;if(drawC.k!==k){const r=rng(P.seed*31+5);drawC={k,u:[...Array(P.nd)].map(()=>Math.min(0.999999,Math.max(1e-6,r())))};}return drawC.u;}
+const draws=()=>uDraws().map(Finv);
+const bright=(d,p)=>(d[p*3]+d[p*3+1]+d[p*3+2])/3;
+function stripes(){const r=rng(P.seed*977+3),out=[];for(let j=0;j<16;j++){if(P.ord){const a=r()<0.5?1:0;out.push([a,a,1-a,1-a]);}else out.push([0,1,2,3].map(()=>r()<0.5?1:0));}return out;}
+const isReal=im=>im.join('')==='1100'||im.join('')==='0011';
+function exactStripes(){let s=0;for(let k=0;k<16;k++){const im=[3,2,1,0].map(b=>(k>>b)&1);if(isReal(im))s+=1/16;}return s;}
+let mean0C={};function meanImg(){const k=P.t;if(mean0C.k!==k||!mean0C.v){const a=R(S.abar[P.t]),o=new Float32Array(N0);for(let i=0;i<N0;i++)o[i]=a*X0[i];mean0C={k,v:o};}return mean0C.v;}
+let n3C={};function noisy3(){const k=P.t+'|'+P.seed;if(n3C.k!==k){const a=R(S.abar[P.t]),b=R(1-S.abar[P.t]);n3C={k,v:[0,1,2].map(j=>{const e=gauss(P.seed*7919+j*101+3,N0),o=new Float32Array(N0);for(let i=0;i<N0;i++)o[i]=a*X0[i]+b*e[i];return o;})};}return n3C.v;}
+let c19={};function chains19(){const k=P.nc+'|'+P.seed;if(c19.k!==k)c19={k,v:chain1(P.seed,P.nc,(x,t)=>den1(x,t,Z).x0)};return c19.v;}
+const train21=()=>ORD.slice(0,P.nh).map(i=>HTS[i]);
+const nearH21=cm=>train21().reduce((b,h)=>Math.min(b,Math.abs(h-cm)),Infinity);
+let c21={};function ends21(){const k=P.nh+'|'+P.exact+'|'+P.seed;if(c21.k!==k){const zs=ORD.slice(0,P.nh).map(i=>Z[i]);const m=zs.reduce((a,b)=>a+b,0)/zs.length,s2=Math.max(1e-4,zs.reduce((a,b)=>a+(b-m)**2,0)/zs.length);
+  const g=P.exact?(x,t)=>den1(x,t,zs).x0:(x,t)=>denBell(x,t,m,s2);c21={k,v:chain1(P.seed+100,200,g).map(tr=>toCm(tr[100]))};}return c21.v;}
+const prior22=()=>HTS.map(h=>P.skew&&h===ME?5:1);
+let mdC=null;function meanDog(){if(mdC)return mdC;const o=new Float32Array(D);DOGS.forEach(d=>{for(let i=0;i<D;i++)o[i]+=d[i]/4;});return mdC=o;}
+
+/* ---------- the walk ---------- */
+let fi=0,curPre=-1;
+const TAB0=TABS.map((_,j)=>FR.findIndex(f=>f.tab===j));
+$('tabs').innerHTML=TABS.map((t,j)=>`<button class="tab" role="tab" id="tab${j}" aria-selected="false">${j+1} · ${t}</button>`).join('');
+TABS.forEach((_,j)=>{$('tab'+j).onclick=()=>go(TAB0[j]);});
+function go(i){i=Math.max(0,Math.min(FR.length-1,i));if(i!==fi||!built)enter(i);}
+let built=false;
+function enter(i){fi=i;const f=FR[i];for(const k in P)delete P[k];Object.assign(P,BASE,f.def||{});curPre=-1;built=true;
+  const inTab=FR.filter(g=>g.tab===f.tab),k=inTab.indexOf(f)+1;
+  TABS.forEach((_,j)=>$('tab'+j).setAttribute('aria-selected',j===f.tab));
+  $('fEye').textContent=`${TABS[f.tab]} · ${k} of ${inTab.length}`;$('fTitle').textContent=f.title;$('cap').textContent=f.say;$('fNote').textContent=f.note||'';
+  $('fnum').textContent=`${i+1} / ${FR.length}`;$('progbar').style.width=((i+1)/FR.length*100).toFixed(1)+'%';$('prev').disabled=i===0;$('next').disabled=i===FR.length-1;
+  $('fPres').innerHTML=(f.pres||[]).map(([l],j)=>`<button class="pre" data-j="${j}" aria-pressed="false">${l}</button>`).join('');
+  $('fPres').querySelectorAll('button').forEach(b=>b.onclick=()=>applyPre(+b.dataset.j));
+  $('fSw').innerHTML=(f.sw||[]).map((s,j)=>`<button class="sw" data-j="${j}"></button>`).join('');
+  $('fSw').querySelectorAll('button').forEach(b=>b.onclick=()=>{const s=f.sw[+b.dataset.j];P[s.k]=!P[s.k];curPre=-1;markPre();inval();});
+  const fig=$('fFig');fig.classList.remove('enter');void fig.offsetWidth;fig.classList.add('enter');f.fig(fig);
+  try{history.replaceState(null,'','#f'+(i+1));}catch(e){}
+  drawNow();}
+function applyPre(j){const f=FR[fi],p=f.pres[j][1],seed=P.seed;const keep={};(f.sw||[]).forEach(s=>keep[s.k]=P[s.k]);
+  for(const k in P)delete P[k];Object.assign(P,BASE,f.def||{},keep);const q=Object.assign({},p);delete q.seedInc;Object.assign(P,q);P.seed=p.seedInc?seed+1:seed;curPre=j;markPre();inval();}
+function markPre(){$('fPres').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.j===curPre));}
+function drawNow(){const f=FR[fi];K($('fEq'),f.eq?f.eq():'');K($('fEqT'),f.eqT?f.eqT():'');
+  $('howto').hidden=!$('fEq').querySelector('[data-k]')&&!$('fEqT').querySelector('[data-k]');
+  const c=$('fCheck');c.innerHTML=f.check?f.check():'';c.classList.toggle('bad',!!(f.bad&&f.bad()));
+  (f.sw||[]).forEach((s,j)=>{const b=$('fSw').querySelector(`[data-j="${j}"]`);const on=!!P[s.k];b.textContent=on?s.on:s.off;b.setAttribute('aria-pressed',on);b.classList.toggle('offstate',(s.k==='all'||s.k==='fresh'||s.k==='exact')&&!on);});
+  f.draw();}
+let raf=0;const inval=()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;drawNow();});};
+function setK(k,v){P[k]=clampK(k,v);}
+function userMoved(){if(curPre>=0){curPre=-1;markPre();}}
+$('prev').onclick=()=>go(fi-1);$('next').onclick=()=>go(fi+1);
+
+document.addEventListener('pointerdown',e=>{
+  const el=e.target.closest&&e.target.closest('[data-k]');if(!el)return;
+  e.preventDefault();const k=el.dataset.k,x0=e.clientX,v0=P[k];activeKey=k;userMoved();
+  const per=(lim[k][1]-lim[k][0])/400*(k==='t'?1.6:1);
+  const mv=ev=>{setK(k,v0+(ev.clientX-x0)*per);inval();};
+  const up=()=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',up);removeEventListener('pointercancel',up);activeKey=null;inval();};
+  addEventListener('pointermove',mv);addEventListener('pointerup',up);addEventListener('pointercancel',up);
+});
+document.addEventListener('focusin',e=>{const n=e.target;focusKey=(n.dataset&&n.dataset.k)?n.dataset.k:null;});
+const BIG={nd:10,pa:48,pb:48,side:8,lev:16};
+document.addEventListener('keydown',e=>{
+  const n=e.target,k=n.dataset&&n.dataset.k;
+  if(k){if(e.key==='Home'){e.preventDefault();userMoved();P[k]=(FR[fi].def&&k in FR[fi].def)?FR[fi].def[k]:BASE[k];inval();return;}
+    const d={ArrowRight:1,ArrowUp:1,ArrowLeft:-1,ArrowDown:-1}[e.key];if(!d)return;
+    e.preventDefault();userMoved();setK(k,P[k]+d*stp[k]*(e.shiftKey?10:1)*(BIG[k]||1));inval();return;}
+  if(e.target.closest&&e.target.closest('input,textarea,select'))return;
+  if(e.key==='ArrowRight'){e.preventDefault();go(fi+1);}else if(e.key==='ArrowLeft'){e.preventDefault();go(fi-1);}
+});
+
+/* test hook: the node and browser checks drive the page through this */
+window.__scene={n:FR.length,go:i=>enter(i),frame:()=>fi,pres:()=>(FR[fi].pres||[]).length,sw:()=>(FR[fi].sw||[]).length,
+  applyPre:j=>{applyPre(j);drawNow();},toggle:j=>{const s=FR[fi].sw[j];P[s.k]=!P[s.k];drawNow();},
+  keys:()=>[...document.querySelectorAll('#fEq [data-k],#fEqT [data-k]')].map(n=>n.dataset.k),
+  set:(k,v)=>{setK(k,v);drawNow();},lim:k=>lim[k],P:()=>Object.assign({},P),text:()=>({cap:$('cap').textContent,check:$('fCheck').textContent}),
+  fake:()=>{const g=gauss(5,N0);for(let i=0;i<N0;i++)X0[i]=Math.tanh(g[i]);DOGS.forEach((d,k)=>{const h=gauss(17+k,D);for(let i=0;i<D;i++)d[i]=Math.tanh(h[i]);THUMB[k]='data:,';});ready0=readyD=true;imgCache={};mdC=null;}};
+
+loadImgs();
+const m=/^#f(\d+)$/.exec(location.hash||'');enter(m?Math.max(0,Math.min(FR.length-1,+m[1]-1)):0);
+})();
+</script>

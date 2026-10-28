@@ -1,0 +1,165 @@
+{
+  "page": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/4ac5b34b-3599-4be2-b946-a3df30a4430b/scratchpad/series/out/index.html",
+  "baseline": null,
+  "frames": [
+    {
+      "frame": 1,
+      "caption": "Ten people, ten heights in centimetres, all example values. Each dot is one sample, and the letter x names a sample, so yours is x = 173 cm.",
+      "spotlight": [
+        {
+          "parts": 11,
+          "lit": 1
+        }
+      ],
+      "phone_dark": "screens/index/phone-dark-01.png",
+      "desktop_light": "screens/index/desktop-light-01.png"
+    },
+    {
+      "frame": 2,
+      "caption": "Count the heights in bins and the pile shows its shape. The mean is the average height, and the variance is the average squared distance from that mean.",
+      "spotlight": [
+        {
+          "parts": 11,
+          "lit": 3
+        }
+      ],
+      "phone_dark": "screens/index/phone-dark-02.png",
+      "desktop_light": "screens/index/desktop-light-02.png"
+    },
+    {
+      "frame": 3,
+      "caption": "Drag μ to slide the bell and σ to widen it. The score adds the log of the bell's height over each of the 10 dots, so a bell that stands tall over every dot scores best.",
+      "spotlight": [
+        {
+          "parts": 11,
+          "lit": 3
+        }
+      ],
+      "phone_dark": "screens/index/phone-dark-03.png",
+      "desktop_light": "screens/index/desktop-light-03.png"
+    },
+    {
+      "frame": 4,
+      "caption": "Call the best bell p(x). Its height is measured per centimetre, so it is a density, telling how thickly heights pile up near x, and never a chance on its own.",
+      "spotlight": [
+        {
+          "parts": 11,
+          "lit": 1
+        }
+      ],
+      "phone_dark": "screens/index/phone-dark-04.png",
+      "desktop_light": "screens/index/desktop-light-04.png"
+    },
+    {
+      "frame": 5,
+      "caption": "The chance of landing in a range is the area under p over that range. A narrow strip has area close to height times width, so one exact height has area zero.",
+      "spotlight": [
+        {
+          "parts": 11,
+          "lit": 1
+        }
+      ],
+      "phone_dark": "screens/index/phone-dark-05.png",
+      "desktop_light": "screens/index/desktop-light-05.png"
+    },
+    {
+      "frame": 6,
+      "caption": "Fix μ and let x move, and the formula is a density over heights. Fix your height at 173 and let μ move, and the same formula is a likelihood, scoring each possible centre.",
+      "spotlight": [
+        {
+          "parts": 11,
+          "lit": 2
+        }
+      ],
+      "phone_dark": "screens/index/phone-dark-06.png",
+      "desktop_light": "screens/index/desktop-light-06.png"
+    },
+    {
+      "frame": 7,
+      "caption": "Likelihood multiplies p at every sample, so one badly covered dot drags the whole product down. Taking the log turns the product of ten into a sum of ten.",
+      "spotlight": [
+        {
+          "parts": 11,
+          "lit": 2
+        }
+      ],
+      "phone_dark": "screens/index/phone-dark-07.png",
+      "desktop_light": "screens/index/desktop-light-07.png"
+    },
+    {
+      "frame": 8,
+      "caption": "Slide μ until the tangent on the score lies flat. The slope is the sum of the ten distances xᵢ − μ, so it is zero exactly where μ is the average height.",
+      "spotlight": [
+        {
+          "parts": 11,
+          "lit": 2
+        }
+      ],
+      "phone_dark": "screens/index/phone-dark-08.png",
+      "desktop_light": "screens/index/desktop-light-08.png"
+    },
+    {
+      "frame": 9,
+      "caption": "Now slide σ with μ at the average. The tangent lies flat where σ² equals the average squared distance, the variance the pile gave, so fitting by likelihood returns the two summary numbers.",
+      "spotlight": [
+        {
+          "parts": 11,
+          "lit": 2
+        }
+      ],
+      "phone_dark": "screens/index/phone-dark-09.png",
+      "desktop_light": "screens/index/desktop-light-09.png"
+    },
+    {
+      "frame": 10,
+      "caption": "Score only your own 173 cm and every narrower bell scores higher, so the best fit is a spike of zero width. That is why fitting needs all ten heights.",
+      "spotlight": [
+        {
+          "parts": 11,
+          "lit": 2
+        }
+      ],
+      "phone_dark": "screens/index/phone-dark-10.png",
+      "desktop_light": "screens/index/desktop-light-10.png"
+    },
+    {
+      "frame": 11,
+      "caption": "Sweep from the far left, keeping a running total of the area under p. Call the running total F(x); it climbs from 0 to 1, and its slope at any x is p(x).",
+      "spotlight": [
+        {
+          "parts": 11,
+          "lit": 3
+        }
+      ],
+      "phone_dark": "screens/index/phone-dark-11.png",
+      "desktop_light": "screens/index/desktop-light-11.png"
+    },
+    {
+      "frame": 12,
+      "caption": "Read F upwards and a height x gives a share F(x). Read the same curve from the side and a share u gives back a height F⁻¹(u), one sample from the bell.",
+      "spotlight": [
+        {
+          "parts": 11,
+          "lit": 3
+        }
+      ],
+      "phone_dark": "screens/index/phone-dark-12.png",
+      "desktop_light": "screens/index/desktop-light-12.png"
+    },
+    {
+      "frame": 13,
+      "caption": "Feed in many evenly spread random u's and the heights pile up in the bell's shape. All the randomness lives in u, and F⁻¹ is a fixed rule that only moves it.",
+      "spotlight": [
+        {
+          "parts": 11,
+          "lit": 3
+        }
+      ],
+      "phone_dark": "screens/index/phone-dark-13.png",
+      "desktop_light": "screens/index/desktop-light-13.png"
+    }
+  ],
+  "numbers": null,
+  "must_fix": [],
+  "should_check": []
+}

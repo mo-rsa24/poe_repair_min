@@ -1,0 +1,148 @@
+{
+  "page": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/4ac5b34b-3599-4be2-b946-a3df30a4430b/scratchpad/series/out/going-back.html",
+  "baseline": null,
+  "frames": [
+    {
+      "frame": 1,
+      "caption": "Each cell holds the chance of one training height and one noisy value together. A row adds noise to one height; a column, divided by its sum, is Bayes: the chance of each height behind one noisy value.",
+      "spotlight": [
+        {
+          "parts": 15,
+          "lit": 3
+        }
+      ],
+      "phone_dark": "screens/going-back/phone-dark-01.png",
+      "desktop_light": "screens/going-back/desktop-light-01.png"
+    },
+    {
+      "frame": 2,
+      "caption": "Each column is Bayes' theorem: prior times likelihood, divided by the total. The prior is each height's chance before seeing noise, and the likelihood is how well it explains the noisy value.",
+      "spotlight": [
+        {
+          "parts": 15,
+          "lit": 3
+        }
+      ],
+      "phone_dark": "screens/going-back/phone-dark-02.png",
+      "desktop_light": "screens/going-back/desktop-light-02.png"
+    },
+    {
+      "frame": 3,
+      "caption": "Average the training heights with those weights and you get the best guess x̂₀ of where the noisy value came from. At step 99 the weights are nearly even, so the guess is the mean from scene 1.",
+      "spotlight": [
+        {
+          "parts": 15,
+          "lit": 3
+        }
+      ],
+      "phone_dark": "screens/going-back/phone-dark-03.png",
+      "desktop_light": "screens/going-back/desktop-light-03.png"
+    },
+    {
+      "frame": 4,
+      "caption": "With xₜ and x₀ both known, two bells pin down the earlier value xₜ₋₁: one from xₜ, one from x₀. Their product is a single bell, so this step back is Gaussian.",
+      "spotlight": [
+        {
+          "parts": 15,
+          "lit": 2
+        }
+      ],
+      "phone_dark": "screens/going-back/phone-dark-04.png",
+      "desktop_light": "screens/going-back/desktop-light-04.png"
+    },
+    {
+      "frame": 5,
+      "caption": "Sampling has no x₀, so the step uses x̂₀ instead. The exact step back mixes ten bells, one per height; a single bell built on x̂₀ has the same mean and a little less spread.",
+      "spotlight": [
+        {
+          "parts": 15,
+          "lit": 3
+        }
+      ],
+      "phone_dark": "screens/going-back/phone-dark-05.png",
+      "desktop_light": "screens/going-back/desktop-light-05.png"
+    },
+    {
+      "frame": 6,
+      "caption": "Start from pure noise at step 99. Each step guesses x₀, moves part of the way toward the guess and adds a little fresh noise, and every chain ends on a height.",
+      "spotlight": [
+        {
+          "parts": 15,
+          "lit": 4
+        }
+      ],
+      "phone_dark": "screens/going-back/phone-dark-06.png",
+      "desktop_light": "screens/going-back/desktop-light-06.png"
+    },
+    {
+      "frame": 7,
+      "caption": "Run the same steps on four dog photos, starting from a pure-noise image. At step 99 the guess is the average of all four dogs, and it sharpens into one dog as t falls.",
+      "spotlight": [
+        {
+          "parts": 15,
+          "lit": 2
+        }
+      ],
+      "phone_dark": "screens/going-back/phone-dark-07.png",
+      "desktop_light": "screens/going-back/desktop-light-07.png"
+    },
+    {
+      "frame": 8,
+      "caption": "Asking for a dog, or here for a tall person, multiplies the density by the chance of that label at each x, then divides by the total. The result is a new density, p(x | tall), with area 1.",
+      "spotlight": [
+        {
+          "parts": 15,
+          "lit": 3
+        }
+      ],
+      "phone_dark": "screens/going-back/phone-dark-08.png",
+      "desktop_light": "screens/going-back/desktop-light-08.png"
+    },
+    {
+      "frame": 9,
+      "caption": "With the exact best guess the sampler can only return training heights, so the data is everything it knows. A smoother guess, such as a fitted bell, returns new heights in between.",
+      "spotlight": [
+        {
+          "parts": 15,
+          "lit": 3
+        }
+      ],
+      "phone_dark": "screens/going-back/phone-dark-09.png",
+      "desktop_light": "screens/going-back/desktop-light-09.png"
+    },
+    {
+      "frame": 10,
+      "caption": "Five assumptions carry the whole chain from heights to a dog. Each links to the frame where it does its work.",
+      "spotlight": [
+        {
+          "parts": 15,
+          "lit": 2
+        }
+      ],
+      "phone_dark": "screens/going-back/phone-dark-10.png",
+      "desktop_light": "screens/going-back/desktop-light-10.png"
+    },
+    {
+      "frame": 11,
+      "caption": "Swap a convnet for a transformer and the loss and the sampler stay the same. The network is a fixed function, and what its design adds is a preference for which functions are easy to learn.",
+      "spotlight": [
+        {
+          "parts": 15,
+          "lit": 1
+        }
+      ],
+      "phone_dark": "screens/going-back/phone-dark-11.png",
+      "desktop_light": "screens/going-back/desktop-light-11.png"
+    },
+    {
+      "frame": 12,
+      "caption": "Every box above is a concept and every arrow an operation that turns one into the next. Click any box to go to the frame that teaches it.",
+      "spotlight": [],
+      "phone_dark": "screens/going-back/phone-dark-12.png",
+      "desktop_light": "screens/going-back/desktop-light-12.png"
+    }
+  ],
+  "numbers": null,
+  "must_fix": [],
+  "should_check": []
+}

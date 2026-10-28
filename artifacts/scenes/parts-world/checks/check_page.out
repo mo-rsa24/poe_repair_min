@@ -1,0 +1,78 @@
+PASS  embedded walk: equal to scene_key.json
+PASS  embedded a_dog_head_tight: equal to scene_key.json
+PASS  embedded hand_check: equal to scene_key.json
+PASS  embedded pixel_logZ: equal to scene_key.json
+PASS  embedded c_component_means: equal to scene_key.json
+PASS  embedded c_gap: equal to scene_key.json
+PASS  embedded d_noised_head: equal to scene_key.json
+PASS  embedded vstops: equal to scene_key.json
+PASS  embedded astops: equal to scene_key.json
+PASS  embedded walk key: equal to numbers.json
+PASS  variance stops: 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1
+PASS  noise stops: 1, 0.95, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0.05, 0.01
+PASS  page compute a head_mean: got 0.9801980198019802, want 0.9801980198019802
+PASS  page compute a body_mean: got -0.9801980198019802, want -0.9801980198019802
+PASS  page compute a logZ: got -46.465787494931774, want -46.46578749493179
+PASS  page compute b mean: got 0, want 0
+PASS  page compute b product_sd: got 0.07071067811865475, want 0.07071067811865475
+PASS  page compute b logZ: got -1583.4068324878497, want -1583.40683248785
+PASS  page compute b sds_from_each_expert: got 10, want 10
+PASS  page compute d head product of noised: got 0.23257000444341605, want 0.23257000444341597
+PASS  page compute d head noised product: got 0.6931046667076062, want 0.6931046667076061
+PASS  page compute c cat-left x dog-left logw: got -803.213807592922, want -803.213807592922
+PASS  page compute c cat-left x dog-left weight: got 0, want 0
+PASS  page compute c cat-left x dog-left left mean: got 0, want 0
+PASS  page compute c cat-left x dog-left right mean: got 0, want 0
+PASS  page compute c cat-left x dog-right logw: got -24.089705618427914, want -24.089705618427917
+PASS  page compute c cat-left x dog-right weight: got 0.5, want 0.5
+PASS  page compute c cat-left x dog-right left mean: got 0.9900990099009901, want 0.9900990099009901
+PASS  page compute c cat-left x dog-right right mean: got -0.9900990099009901, want -0.9900990099009901
+PASS  page compute c cat-right x dog-left logw: got -24.089705618427914, want -24.089705618427917
+PASS  page compute c cat-right x dog-left weight: got 0.5, want 0.5
+PASS  page compute c cat-right x dog-left left mean: got -0.9900990099009901, want -0.9900990099009901
+PASS  page compute c cat-right x dog-left right mean: got 0.9900990099009901, want 0.9900990099009901
+PASS  page compute c cat-right x dog-right logw: got -803.213807592922, want -803.213807592922
+PASS  page compute c cat-right x dog-right weight: got 0, want 0
+PASS  page compute c cat-right x dog-right left mean: got 0, want 0
+PASS  page compute c cat-right x dog-right right mean: got 0, want 0
+PASS  page compute on all 2401 variance stops (12005 numbers): worst relative gap 8.2e-16
+PASS  page compute on all 247 noise states (988 numbers): worst relative gap 7.2e-16
+PASS  typed 0.980 head (99/101): shown 0.98, key 0.9801980198019802
+PASS  typed 10 sds: shown 10, key 10
+PASS  typed sd 0.071: shown 0.071, key 0.07071067811865475
+PASS  typed -98.96 sure vs sure per pixel: shown -98.96, key -98.96292703049062
+PASS  typed -2.904 sure vs loose per pixel: shown -2.904, key -2.904111718433237
+PASS  typed -98.962927 disclosure: shown -98.962927, key -98.96292703049062
+PASS  typed -2.904112 disclosure: shown -2.904112, key -2.904111718433237
+PASS  typed -1.418963 disclosure: shown -1.418963, key -1.4189632035817517
+PASS  typed -1.265512 disclosure: shown -1.265512, key -1.2655121234846454
+PASS  typed -814.936 disclosure: shown -814.936, key -814.9363099913908
+PASS  typed -22.703 side-by-side sum: shown -22.703, key -22.703411257308026
+PASS  typed -801.828 same-half sum: shown -801.828, key -801.8275132318021
+PASS  typed -803.2 same-half log w: shown -803.2, key -803.213807592922
+PASS  typed -24.1 side-by-side log w: shown -24.1, key -24.089705618427917
+PASS  typed 0.505 noised cat head var: shown 0.505, key 0.505
+PASS  typed 1.0 noised dog head var: shown 1, key 1
+PASS  typed 1.98 precision ratio: shown 1.98, key 1.9801980198019802
+PASS  typed 0.233 summed: shown 0.233, key 0.23257000444341597
+PASS  typed 0.693 target: shown 0.693, key 0.6931046667076061
+PASS  typed 0.707 noised means: shown 0.707, key 0.7071067811865476
+PASS  typed hand check 0.923: shown 0.923, key 0.9230769230769231
+PASS  typed -815 tight dog head log Z: shown -815, key -814.9363099913908
+PASS  typed e^-779 gap: shown 779, key 779.124101974494
+PASS  typed 2.98 denominator: shown 2.98, key 2.98019801980198
+PASS  page text carries "99/101 = 0.980": found
+PASS  page text carries "−803.2": found
+PASS  page text carries "−24.1": found
+PASS  page text carries "0.505": found
+PASS  page text carries "1.98 : 1": found
+PASS  page text carries "0.233": found
+PASS  page text carries "0.693": found
+PASS  page text carries "−98.96": found
+PASS  page text carries "−2.904": found
+PASS  page text carries "8 × (−98.962927) + 8 × (−2.904112) = −814.936": found
+PASS  page text carries "w ≈ ": found
+PASS  page text carries "(50 − 2) / 52": found
+PASS  page text carries "0.9801980198019802": found
+PASS  page text carries "−46.46578749493179": found
+PASS  77 of 77 checks

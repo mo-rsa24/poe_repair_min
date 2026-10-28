@@ -1,0 +1,184 @@
+{
+  "page": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/4ac5b34b-3599-4be2-b946-a3df30a4430b/scratchpad/build/index.html",
+  "baseline": null,
+  "frames": [
+    {
+      "frame": 1,
+      "caption": "Ten people, ten heights in centimetres, all example values. Each dot is one sample, and the letter x names a sample, so yours is x = 173 cm.",
+      "spotlight": [],
+      "phone_dark": "screens/phone-dark-01.png",
+      "desktop_light": "screens/desktop-light-01.png"
+    },
+    {
+      "frame": 2,
+      "caption": "Count the heights in bins and the pile shows its shape. The mean is the average height, and the variance is the average squared distance from that mean.",
+      "spotlight": [],
+      "phone_dark": "screens/phone-dark-02.png",
+      "desktop_light": "screens/desktop-light-02.png"
+    },
+    {
+      "frame": 3,
+      "caption": "Drag μ to slide the bell and σ to widen it. The score adds the log of the bell's height over each of the 10 dots, so a bell that stands tall over every dot scores best.",
+      "spotlight": [],
+      "phone_dark": "screens/phone-dark-03.png",
+      "desktop_light": "screens/desktop-light-03.png"
+    },
+    {
+      "frame": 4,
+      "caption": "Call the best bell p(x). Its height is measured per centimetre, so it is a density, telling how thickly heights pile up near x, and never a chance on its own.",
+      "spotlight": [],
+      "phone_dark": "screens/phone-dark-04.png",
+      "desktop_light": "screens/desktop-light-04.png"
+    },
+    {
+      "frame": 5,
+      "caption": "The chance of landing in a range is the area under p over that range. A narrow strip has area close to height times width, so one exact height has area zero.",
+      "spotlight": [],
+      "phone_dark": "screens/phone-dark-05.png",
+      "desktop_light": "screens/desktop-light-05.png"
+    },
+    {
+      "frame": 6,
+      "caption": "Likelihood multiplies p at every sample, so one badly covered dot drags the whole product down. Taking the log turns the product of ten into a sum of ten.",
+      "spotlight": [],
+      "phone_dark": "screens/phone-dark-06.png",
+      "desktop_light": "screens/desktop-light-06.png"
+    },
+    {
+      "frame": 7,
+      "caption": "Slide μ and σ until the score stops rising. The top sits where μ is the average height and σ² the average squared distance, the same two numbers the pile gave.",
+      "spotlight": [],
+      "phone_dark": "screens/phone-dark-07.png",
+      "desktop_light": "screens/desktop-light-07.png"
+    },
+    {
+      "frame": 8,
+      "caption": "Score only your own 173 cm and every narrower bell scores higher, so the best fit is a spike of zero width. That is why fitting needs all ten heights.",
+      "spotlight": [],
+      "phone_dark": "screens/phone-dark-08.png",
+      "desktop_light": "screens/desktop-light-08.png"
+    },
+    {
+      "frame": 9,
+      "caption": "Sweep from the far left, keeping a running total of the area under p. Call the running total F(x); it climbs from 0 to 1.",
+      "spotlight": [],
+      "phone_dark": "screens/phone-dark-09.png",
+      "desktop_light": "screens/desktop-light-09.png"
+    },
+    {
+      "frame": 10,
+      "caption": "Pick a number u between 0 and 1, read across to the curve F and down to the height axis. The height you land on is F⁻¹(u), one sample from the bell.",
+      "spotlight": [],
+      "phone_dark": "screens/phone-dark-10.png",
+      "desktop_light": "screens/desktop-light-10.png"
+    },
+    {
+      "frame": 11,
+      "caption": "Feed in many evenly spread random u's and the heights pile up in the bell's shape. All the randomness lives in u, and F⁻¹ is a fixed rule.",
+      "spotlight": [],
+      "phone_dark": "screens/phone-dark-11.png",
+      "desktop_light": "screens/desktop-light-11.png"
+    },
+    {
+      "frame": 12,
+      "caption": "A 128 × 128 colour photo stores a red, a green and a blue number for each pixel. Line them up and the photo is one point with 49,152 coordinates, as your height was a point with one.",
+      "spotlight": [],
+      "phone_dark": "screens/phone-dark-12.png",
+      "desktop_light": "screens/desktop-light-12.png"
+    },
+    {
+      "frame": 13,
+      "caption": "Each training photo is one sample from a distribution nobody can see, written p(x | dog). Plot any two pixels and the four dogs are four points, as the ten heights were ten dots.",
+      "spotlight": [],
+      "phone_dark": "screens/phone-dark-13.png",
+      "desktop_light": "screens/desktop-light-13.png"
+    },
+    {
+      "frame": 14,
+      "caption": "In this four-pixel world only two images exist. Draw each pixel on its own and most results never occur; draw them in order, each given the last, and every result is real.",
+      "spotlight": [],
+      "phone_dark": "screens/phone-dark-14.png",
+      "desktop_light": "screens/desktop-light-14.png"
+    },
+    {
+      "frame": 15,
+      "caption": "Drawing in order needs the chance of each pixel value given every earlier pixel, which is a table over every possible image. Count its entries as the image grows.",
+      "spotlight": [],
+      "phone_dark": "screens/phone-dark-15.png",
+      "desktop_light": "screens/desktop-light-15.png"
+    },
+    {
+      "frame": 16,
+      "caption": "F⁻¹ is a fixed rule, so the same u always gives the same height and the randomness lives in u. A generator does the same with many numbers, turning a random noise image into a picture.",
+      "spotlight": [],
+      "phone_dark": "screens/phone-dark-16.png",
+      "desktop_light": "screens/desktop-light-16.png"
+    },
+    {
+      "frame": 17,
+      "caption": "Fix one training photo and call it x₀. Its noisy copies scatter around √ᾱₜ·x₀, the mean for this one photo, with spread √(1 − ᾱₜ), where ᾱₜ is Step 4's kept share.",
+      "spotlight": [],
+      "phone_dark": "screens/phone-dark-17.png",
+      "desktop_light": "screens/desktop-light-17.png"
+    },
+    {
+      "frame": 18,
+      "caption": "When sampling, nobody hands you x₀. Each training height gets a weight for how well it explains the noisy value, and the best guess of x₀ is their weighted average.",
+      "spotlight": [],
+      "phone_dark": "screens/phone-dark-18.png",
+      "desktop_light": "screens/desktop-light-18.png"
+    },
+    {
+      "frame": 19,
+      "caption": "Start from pure noise at step 99. Each step guesses x₀, moves part of the way toward the guess and adds a little fresh noise, and every chain ends on a height.",
+      "spotlight": [],
+      "phone_dark": "screens/phone-dark-19.png",
+      "desktop_light": "screens/desktop-light-19.png"
+    },
+    {
+      "frame": 20,
+      "caption": "Run the same steps on four dog photos, starting from a pure-noise image. At step 99 the guess is the average of all four dogs, and it sharpens into one dog as t falls.",
+      "spotlight": [],
+      "phone_dark": "screens/phone-dark-20.png",
+      "desktop_light": "screens/desktop-light-20.png"
+    },
+    {
+      "frame": 21,
+      "caption": "With the exact best guess the sampler can only return training heights, so the data is everything it knows. A smoother guess, such as a fitted bell, returns new heights in between.",
+      "spotlight": [],
+      "phone_dark": "screens/phone-dark-21.png",
+      "desktop_light": "screens/desktop-light-21.png"
+    },
+    {
+      "frame": 22,
+      "caption": "Each weight in the guess is Bayes' theorem: prior times likelihood, divided by the total. The prior is the chance of each height before seeing noise, and the likelihood is how well it explains the noisy value.",
+      "spotlight": [],
+      "phone_dark": "screens/phone-dark-22.png",
+      "desktop_light": "screens/desktop-light-22.png"
+    },
+    {
+      "frame": 23,
+      "caption": "Five assumptions carry the whole chain from heights to a dog. Click one to jump to the frame where it does its work.",
+      "spotlight": [],
+      "phone_dark": "screens/phone-dark-23.png",
+      "desktop_light": "screens/desktop-light-23.png"
+    },
+    {
+      "frame": 24,
+      "caption": "Swap a convnet for a transformer and the loss and the sampler stay the same. The network is a fixed function, and what its design adds is a preference for which functions are easy to learn.",
+      "spotlight": [],
+      "phone_dark": "screens/phone-dark-24.png",
+      "desktop_light": "screens/desktop-light-24.png"
+    },
+    {
+      "frame": 25,
+      "caption": "Each rung changes one thing from the rung below. Teach upward one change at a time, and check each rung on numbers you can drag.",
+      "spotlight": [],
+      "phone_dark": "screens/phone-dark-25.png",
+      "desktop_light": "screens/desktop-light-25.png"
+    }
+  ],
+  "numbers": null,
+  "must_fix": [],
+  "should_check": []
+}

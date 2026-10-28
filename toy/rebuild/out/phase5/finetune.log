@@ -1,0 +1,19 @@
+device cuda:0 | node mscluster109.ms.wits.ac.za | pid 4052086
+loaded rebuild/out/phase5/pretrained-all-quadrants.pt
+fine-tune step 0: expert A's weights moved 0.0000 (L2) from the pretrained ones
+fine-tune step 0: exact interior 0.159 quadrant 0.228 | MALA, tuned interior 0.158 quadrant 0.228 TV 0.34 | UHA interior 0.163 quadrant 0.226 TV 0.34
+fine-tune step 10: expert A's weights moved 0.5834 (L2) from the pretrained ones
+fine-tune step 10: exact interior 0.089 quadrant 0.145 | MALA, tuned interior 0.104 quadrant 0.162 TV 0.33 | UHA interior 0.122 quadrant 0.193 TV 0.32
+fine-tune step 30: expert A's weights moved 1.6992 (L2) from the pretrained ones
+fine-tune step 30: exact interior 0.001 quadrant 0.002 | MALA, tuned interior 0.056 quadrant 0.080 TV 0.33 | UHA interior 0.068 quadrant 0.101 TV 0.42
+fine-tune step 100: expert A's weights moved 3.7819 (L2) from the pretrained ones
+fine-tune step 100: exact interior 0.005 quadrant 0.172 | MALA, tuned interior 0.004 quadrant 0.186 TV 0.13 | UHA interior 0.005 quadrant 0.198 TV 0.14
+fine-tune step 300: expert A's weights moved 5.1866 (L2) from the pretrained ones
+fine-tune step 300: exact interior 0.000 quadrant 0.118 | MALA, tuned interior 0.000 quadrant 0.133 TV 0.10 | UHA interior 0.001 quadrant 0.143 TV 0.10
+fine-tune step 1000: expert A's weights moved 6.1790 (L2) from the pretrained ones
+fine-tune step 1000: exact interior 0.000 quadrant 0.190 | MALA, tuned interior 0.000 quadrant 0.239 TV 0.09 | UHA interior 0.000 quadrant 0.235 TV 0.09
+fine-tune step 3000: expert A's weights moved 7.3975 (L2) from the pretrained ones
+fine-tune step 3000: exact interior 0.000 quadrant 0.158 | MALA, tuned interior 0.000 quadrant 0.220 TV 0.11 | UHA interior 0.000 quadrant 0.230 TV 0.10
+fine-tune step 10000: expert A's weights moved 9.1484 (L2) from the pretrained ones
+fine-tune step 10000: exact interior 0.000 quadrant 0.021 | MALA, tuned interior 0.000 quadrant 0.291 TV 0.90 | UHA interior 0.000 quadrant 0.287 TV 0.90
+from scratch, 10000 steps: exact interior 0.000 quadrant 0.203 | MALA, tuned interior 0.000 quadrant 0.251 TV 0.10 | UHA interior 0.000 quadrant 0.255 TV 0.09

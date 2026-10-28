@@ -1,0 +1,125 @@
+PASS  embedded c2_even: equal to scene_key.json
+PASS  embedded c2_adjacent: equal to scene_key.json
+PASS  embedded c1: equal to scene_key.json
+PASS  embedded b2_plain: equal to scene_key.json
+PASS  embedded b2_divided: equal to scene_key.json
+PASS  embedded support_pins: equal to scene_key.json
+PASS  embedded one_blob_inside_3std: equal to scene_key.json
+PASS  page compute c2even {"eps":0.25} in_TR_blob vs walk key: got 0.249965776036299, want 0.24996577603629255
+PASS  page compute c2even {"eps":0.25} in_BR_blob vs walk key: got 0.24996576521152042, want 0.24996576521151517
+PASS  page compute c2even {"eps":0.25} in_TL_blob vs walk key: got 0.2499657652115211, want 0.24996576521151512
+PASS  page compute c2even {"eps":0.25} in_BL_blob vs walk key: got 0.24996575438674268, want 0.2499657543867377
+PASS  page compute c2even {"eps":0.25} at_origin vs walk key: got 0.00008007097648238823, want 0.00008007097648238563
+PASS  page compute c2even {"eps":0.25} Z vs walk key: got 0.8842205458030935, want 0.8842205458030832
+PASS  page compute c2even {"eps":0.1} in_TR_blob vs walk key: got 0.06249461045777073, want 0.06249461045777165
+PASS  page compute c2even {"eps":0.1} in_BR_blob vs walk key: got 0.4374369223610658, want 0.43743692236106296
+PASS  page compute c2even {"eps":0.1} in_TL_blob vs walk key: got 0.43743692236106146, want 0.4374369223610629
+PASS  page compute c2even {"eps":0.1} in_BL_blob vs walk key: got 0.062494605175604304, want 0.062494605175604505
+PASS  page compute c2even {"eps":0.1} at_origin vs walk key: got 0.00007999164235666587, want 0.00007999164235666546
+PASS  page compute c2even {"eps":0.1} Z vs walk key: got 0.5659011495983902, want 0.565901149598368
+PASS  page compute c2even {"eps":0.05} in_TR_blob vs walk key: got 0.02777772794220846, want 0.027777727942208705
+PASS  page compute c2even {"eps":0.05} in_BR_blob vs walk key: got 0.47215380283119274, want 0.4721538028311889
+PASS  page compute c2even {"eps":0.05} in_TL_blob vs walk key: got 0.47215380283118724, want 0.4721538028311888
+PASS  page compute c2even {"eps":0.05} in_BL_blob vs walk key: got 0.02777772569106692, want 0.02777772569106728
+PASS  page compute c2even {"eps":0.05} at_origin vs walk key: got 0.0000799779324503459, want 0.00007997793245034581
+PASS  page compute c2even {"eps":0.05} Z vs walk key: got 0.3183193969947131, want 0.3183193969947007
+PASS  page compute c2even {"eps":0} in_TR_blob vs walk key: got 0.005918033917482614, want 0.0059180339174819425
+PASS  page compute c2even {"eps":0} in_BR_blob vs walk key: got 0.0059321337608215915, want 0.005932133760820826
+PASS  page compute c2even {"eps":0} in_TL_blob vs walk key: got 0.005932133760821501, want 0.005932133760820826
+PASS  page compute c2even {"eps":0} in_BL_blob vs walk key: got 0.00594623360416047, want 0.005946233604159709
+PASS  page compute c2even {"eps":0} at_origin vs walk key: got 0.9889013343746517, want 0.9889013343745204
+PASS  page compute c2even {"eps":0} Z vs walk key: got 7.89985520260303e-10, want 7.899855202603722e-10
+PASS  page compute c2adj {"eps":0.1} in_TR_blob vs walk key: got 0.4998518193651507, want 0.49985181936512013
+PASS  page compute c2adj {"eps":0.1} in_BR_blob vs walk key: got 0.000033291771435824926, want 0.000033291771435822405
+PASS  page compute c2adj {"eps":0.1} in_TL_blob vs walk key: got 0.00003329177143582466, want 0.00003329177143582241
+PASS  page compute c2adj {"eps":0.1} in_BL_blob vs walk key: got 0.49985177711429196, want 0.49985177711426027
+PASS  page compute c2adj {"eps":0.1} at_origin vs walk key: got 0.0000869362181600324, want 0.00008693621816002621
+PASS  page compute c2adj {"eps":0.1} Z vs walk key: got 0.07075244449997356, want 0.07075244449997543
+PASS  page compute c1 {"r":0.05} in_TR_blob vs walk key: got 0.9889299634163145, want 0.9889299634162941
+PASS  page compute c1 {"r":0.05} in_BR_blob vs walk key: got 0.00007842965391984796, want 0.00007842965391984685
+PASS  page compute c1 {"r":0.05} in_TL_blob vs walk key: got 0.00007842965391984617, want 0.00007842965391984684
+PASS  page compute c1 {"r":0.05} in_BL_blob vs walk key: got 2.282127583743781e-10, want 2.282127583743758e-10
+PASS  page compute c1 {"r":0.05} at_origin vs walk key: got 0.0029894222998516646, want 0.002989422299851628
+PASS  page compute c1 {"r":0.05} Z vs walk key: got 0.049997223003164, want 0.04999722300316258
+PASS  page compute c1 {"r":0} in_TR_blob vs walk key: got 0.07003651653486545, want 0.07003651653486037
+PASS  page compute c1 {"r":0} in_BR_blob vs walk key: got 0.00003165151950119088, want 0.00003165151950118835
+PASS  page compute c1 {"r":0} in_TL_blob vs walk key: got 0.00003165151950118959, want 0.00003165151950118836
+PASS  page compute c1 {"r":0} in_BL_blob vs walk key: got 0.0000317335602440391, want 0.00003173356024403677
+PASS  page compute c1 {"r":0} at_origin vs walk key: got 0.9698512717355704, want 0.9698512717354958
+PASS  page compute c1 {"r":0} Z vs walk key: got 3.783199988875249e-7, want 3.7831999888753797e-7
+PASS  page compute b2plain {} in_TR_blob vs walk key: got 0.999854660204888, want 0.9998546602048294
+PASS  page compute b2plain {} in_BR_blob vs walk key: got 0.000004222143114983466, want 0.000004222143114983229
+PASS  page compute b2plain {} in_TL_blob vs walk key: got 0.000004222143114983388, want 0.000004222143114983229
+PASS  page compute b2plain {} in_BL_blob vs walk key: got 1.3309706748604291e-12, want 1.3309706748603532e-12
+PASS  page compute b2plain {} at_origin vs walk key: got 0.0000803903200526828, want 0.00008039032005267815
+PASS  page compute b2plain {} Z vs walk key: got 0.8842205458030713, want 0.8842205458030828
+PASS  page compute b2div {} in_TR_blob vs walk key: got 0.9889333641268773, want 0.9889333641268455
+PASS  page compute b2div {} in_BR_blob vs walk key: got 0.00007842973215590467, want 0.00007842973215590191
+PASS  page compute b2div {} in_TL_blob vs walk key: got 0.00007842973215590352, want 0.00007842973215590191
+PASS  page compute b2div {} in_BL_blob vs walk key: got 3.611516677239743e-11, want 3.611516677239609e-11
+PASS  page compute b2div {} at_origin vs walk key: got 0.002985993496573656, want 0.002985993496573546
+PASS  page compute b2div {} Z vs walk key: got 0.9999410202838607, want 0.9999410202838535
+PASS  key row c2_even ε=0.25: present
+PASS  key row c2_adjacent ε=0.25: present
+PASS  key row c2_even ε=0.2: present
+PASS  key row c2_adjacent ε=0.2: present
+PASS  key row c2_even ε=0.15: present
+PASS  key row c2_adjacent ε=0.15: present
+PASS  key row c2_even ε=0.1: present
+PASS  key row c2_adjacent ε=0.1: present
+PASS  key row c2_even ε=0.075: present
+PASS  key row c2_adjacent ε=0.075: present
+PASS  key row c2_even ε=0.05: present
+PASS  key row c2_adjacent ε=0.05: present
+PASS  key row c2_even ε=0.025: present
+PASS  key row c2_adjacent ε=0.025: present
+PASS  key row c2_even ε=0.01: present
+PASS  key row c2_adjacent ε=0.01: present
+PASS  key row c2_even ε=0.005: present
+PASS  key row c2_adjacent ε=0.005: present
+PASS  key row c2_even ε=0.001: present
+PASS  key row c2_adjacent ε=0.001: present
+PASS  key row c2_even ε=0: present
+PASS  key row c2_adjacent ε=0: present
+PASS  key row c1 r=0.25: present
+PASS  key row c1 r=0.1: present
+PASS  key row c1 r=0.05: present
+PASS  key row c1 r=0.02: present
+PASS  key row c1 r=0.01: present
+PASS  key row c1 r=0.005: present
+PASS  key row c1 r=0.001: present
+PASS  key row c1 r=0: present
+PASS  support pin TR Z: got 0.000052858321921553956, want 0.00005285832192155436
+PASS  support pin BR Z: got 3.5367764657783405, want 3.536776465778504
+PASS  support pin TL Z: got 7.89985520260303e-10, want 7.899855202603722e-10
+PASS  support pin BL Z: got 0.000052858321921552845, want 0.00005285832192155434
+PASS  narration 0.989 origin, from scratch: shown 0.989, key 0.9889013343745204
+PASS  narration 0.006 top-right, from scratch: shown 0.006, key 0.0059180339174819425
+PASS  narration 0.25 step 0: shown 0.25, key 0.24996577603629255
+PASS  narration 0.50 next door: shown 0.5, key 0.49985181936512013
+PASS  narration 0.989 construction 1: shown 0.989, key 0.9889299634162941
+PASS  narration 0.970 construction 1 r=0: shown 0.97, key 0.9698512717354958
+PASS  narration 0.9999 2b plain: shown 0.9999, key 0.9998546602048294
+PASS  narration 0.989 2b divided: shown 0.989, key 0.9889333641268455
+PASS  narration 0.0278 at ε=0.05: shown 0.0278, key 0.027777727942208705
+PASS  narration 0.472 at ε=0.05: shown 0.472, key 0.4721538028311889
+PASS  narration 0.0625 hand check ε=0.1: shown 0.0625, key 0.06249461045777165
+PASS  narration 0.4375 hand check ε=0.1 (key 0.4374 on the grid): shown 0.4375, key 0.43743692236106296
+PASS  narration 7.9e-10 Z from scratch: shown 7.9e-10, key 7.899855202603722e-10
+PASS  narration 3.54 Z overlap: shown 3.54, key 3.536776465778504
+PASS  narration 1 - e^-4.5 = 0.9889: shown 0.9889, key 0.9888910034617577
+PASS  narration 0.070 top-right ring at r=0: shown 0.07, key 0.07003651653486037
+PASS  narration 0.9886 construction 1 r=0.001: shown 0.9886, key 0.9886139170071689
+PASS  narration Z 0.250 c1 r=0.25: shown 0.25, key 0.24998525507096336
+PASS  narration Z 0.0500 c1 r=0.05: shown 0.05, key 0.04999722300316258
+PASS  narration Z 0.0100 c1 r=0.01: shown 0.01, key 0.00999967018895813
+PASS  narration Z 0.00100 c1 r=0.001: shown 0.001, key 0.0010002668935090134
+PASS  narration Z 3.8e-7 c1 r=0: shown 3.8e-7, key 3.7831999888753797e-7
+PASS  narration 0.006 grid at eps=0 (disclosure): shown 0.006, key 0.0059180339174819425
+PASS  page text carries 0.989: found
+PASS  page text carries 0.006: found
+PASS  page text carries 0.9999: found
+PASS  page text carries 0.970: found
+PASS  page text carries 0.0278: found
+PASS  page text carries 7.9 × 10⁻¹⁰: found
+PASS  124 of 124 checks

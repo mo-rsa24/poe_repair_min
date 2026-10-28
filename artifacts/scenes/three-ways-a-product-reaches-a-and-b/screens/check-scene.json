@@ -1,0 +1,347 @@
+{
+  "page": "/home-mscluster/mmolefe/PhD/reduce-reuse-recycle/artifacts/scenes/three-ways-a-product-reaches-a-and-b/page.html",
+  "baseline": null,
+  "frames": [
+    {
+      "frame": 1,
+      "caption": "Each grey blob is one kind of chest film.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-01.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-01.png"
+    },
+    {
+      "frame": 2,
+      "caption": "A means pneumothorax: every film right of the centre line, x1 > 0.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-02.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-02.png"
+    },
+    {
+      "frame": 3,
+      "caption": "B means no chest drain: every film above the centre line, x2 > 0.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-03.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-03.png"
+    },
+    {
+      "frame": 4,
+      "caption": "Top-right is A and B: pneumothorax without a drain. Can a product of two experts put samples in this circle?",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-04.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-04.png"
+    },
+    {
+      "frame": 5,
+      "caption": "Expert A is trained from scratch on A, not B films only: pneumothorax with a drain.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-05.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-05.png"
+    },
+    {
+      "frame": 6,
+      "caption": "Expert B is trained from scratch on B, not A films only: no pneumothorax, no drain.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-06.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-06.png"
+    },
+    {
+      "frame": 7,
+      "caption": "Support is where a density is not zero. A Gaussian never is, so in practice each expert’s support is its own blob.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-07.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-07.png"
+    },
+    {
+      "frame": 8,
+      "caption": "Composing adds the two experts’ scores. A sum of scores is the score of the product pA(x)·pB(x), rescaled to add up to 1.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-08.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-08.png"
+    },
+    {
+      "frame": 9,
+      "caption": "Predict where the product puts its mass.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-09.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-09.png"
+    },
+    {
+      "frame": 10,
+      "caption": "The product sits at the origin, a blend halfway between the two blobs. It is none of the kinds of film.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-10.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-10.png"
+    },
+    {
+      "frame": 11,
+      "caption": "A product is zero wherever either factor is, and nearly zero wherever either is nearly zero. Only the gap between the blobs survives.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-11.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-11.png"
+    },
+    {
+      "frame": 12,
+      "caption": "Rescaled to add up to 1, 0.989 of the product sits inside the origin circle.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-12.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-12.png"
+    },
+    {
+      "frame": 13,
+      "caption": "Only the blend’s tail reaches the blobs: 0.006 in each circle, top-right included. Turn on the tails to see it.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-13.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-13.png"
+    },
+    {
+      "frame": 14,
+      "caption": "Before rescaling, the product’s total mass Z is 7.9 × 10⁻¹⁰: the overlap of two blobs √2 apart.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-14.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-14.png"
+    },
+    {
+      "frame": 15,
+      "caption": "Move expert B’s blob to top-right, next door to A’s. The blobs overlap more, and Z rises to 5.3 × 10⁻⁵.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-15.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-15.png"
+    },
+    {
+      "frame": 16,
+      "caption": "Put B’s blob on A’s at bottom-right and they overlap fully: Z is 3.54. A product has mass only where both factors do.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-16.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-16.png"
+    },
+    {
+      "frame": 17,
+      "caption": "Pretrain one model on all four kinds of film, then fine-tune one copy of it for each expert.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-17.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-17.png"
+    },
+    {
+      "frame": 18,
+      "caption": "Expert A keeps 1 − 3ε on bottom-right and a leftover ε on each other corner. Expert B is the mirror, on top-left.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-18.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-18.png"
+    },
+    {
+      "frame": 19,
+      "caption": "With no fine-tuning the leftover is a quarter, so both experts are still the pretrained model.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-19.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-19.png"
+    },
+    {
+      "frame": 20,
+      "caption": "Predict the product’s top-right share before any fine-tuning.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-20.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-20.png"
+    },
+    {
+      "frame": 21,
+      "caption": "Squaring four equal blobs keeps four equal blobs, so each holds 0.250. That is where fine-tuning starts.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-21.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-21.png"
+    },
+    {
+      "frame": 22,
+      "caption": "Drag ε toward 0. Top-right’s share follows ε/(2 − 4ε).",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-22.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-22.png"
+    },
+    {
+      "frame": 23,
+      "caption": "Bottom-left is neither: a drain without pneumothorax. It also gets ε × ε, so it ties top-right: 0.0278 each at ε = 0.05.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-23.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-23.png"
+    },
+    {
+      "frame": 24,
+      "caption": "A, not B and B, not A each get ε(1 − 3ε): 0.472 each at ε = 0.05. The product hands back the films already in the data.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-24.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-24.png"
+    },
+    {
+      "frame": 25,
+      "caption": "Suppose each expert keeps leftover only on the two corners beside its own. For both experts those are top-right and bottom-left.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-25.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-25.png"
+    },
+    {
+      "frame": 26,
+      "caption": "Predict top-right’s share when each expert keeps ε = 0.1 next door.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-26.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-26.png"
+    },
+    {
+      "frame": 27,
+      "caption": "Top-right and neither both get ε × ε, and each expert’s own corner gets almost nothing from the other. They split the product: 0.500 each.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-27.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-27.png"
+    },
+    {
+      "frame": 28,
+      "caption": "Swapping x for −x swaps the two experts, so the product always gives top-right and neither the same share. Top-right can never pass ½.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-28.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-28.png"
+    },
+    {
+      "frame": 29,
+      "caption": "Train one conditional model in which a top-right film counts as A and as B. Here 1 film in 4 is top-right.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-29.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-29.png"
+    },
+    {
+      "frame": 30,
+      "caption": "Multiply the two conditionals and divide by the model of all films. Rescaled, that is the composed density.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-30.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-30.png"
+    },
+    {
+      "frame": 31,
+      "caption": "Cut the A-and-B films to 1 in 20: r = 0.05.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-31.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-31.png"
+    },
+    {
+      "frame": 32,
+      "caption": "Predict the composed density’s top-right share at r = 0.05.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-32.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-32.png"
+    },
+    {
+      "frame": 33,
+      "caption": "Near top-right both labels are near certain however rare the films, so 0.989 of the composed density lands in the top-right circle.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-33.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-33.png"
+    },
+    {
+      "frame": 34,
+      "caption": "Before rescaling, the composed density’s total mass Z is about r. Rescaling removes it, which is why rarity does not shrink the share.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-34.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-34.png"
+    },
+    {
+      "frame": 35,
+      "caption": "Drag r down. The top-right share holds at 0.989 to 1 film in 1,000, and is still 0.955 at 1 in 100,000.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-35.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-35.png"
+    },
+    {
+      "frame": 36,
+      "caption": "With no top-right film at all, the product falls back to the blend: 0.970 in the origin circle.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-36.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-36.png"
+    },
+    {
+      "frame": 37,
+      "caption": "Call x1 the lung part. Expert A models x1 from its own films and copies x2 from the background, half at +0.5 and half at −0.5.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-37.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-37.png"
+    },
+    {
+      "frame": 38,
+      "caption": "Call x2 the chest-wall part. Expert B models x2 from its own films and copies x1 from the background.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-38.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-38.png"
+    },
+    {
+      "frame": 39,
+      "caption": "No training film is top-right. Predict where the product of these two experts goes.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-39.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-39.png"
+    },
+    {
+      "frame": 40,
+      "caption": "Top-right is the only corner both experts cover, so the product lands there.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-40.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-40.png"
+    },
+    {
+      "frame": 41,
+      "caption": "The plain product puts 0.9999 of its mass in the top-right circle.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-41.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-41.png"
+    },
+    {
+      "frame": 42,
+      "caption": "Its spread along x1 is 0.106, against 0.150 for a real film blob. x1 enters through both experts, once as A’s part and once as B’s copy of the background.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-42.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-42.png"
+    },
+    {
+      "frame": 43,
+      "caption": "Divide by the background on both coordinates. The copied parts cancel, leaving a(x1)·b(x2).",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-43.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-43.png"
+    },
+    {
+      "frame": 44,
+      "caption": "The divided product is the real top-right blob: 0.989 in its circle, spread 0.150.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-44.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-44.png"
+    },
+    {
+      "frame": 45,
+      "caption": "On chest X-rays a drain changes the lung it treats, so lung and chest wall may not be separate parts.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-45.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-45.png"
+    },
+    {
+      "frame": 46,
+      "caption": "On this toy the exact composed density is known. This one is the one-model product at r = 0.05.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-46.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-46.png"
+    },
+    {
+      "frame": 47,
+      "caption": "A sampler’s histogram can be scored against this target. No sampler has been run on it yet.",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-47.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-47.png"
+    },
+    {
+      "frame": 48,
+      "caption": "ε = 0.1: top-right holds 0.0625; most goes to A, not B (0.437) and B, not A (0.437).",
+      "spotlight": [],
+      "phone_dark": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/phone-dark-48.png",
+      "desktop_light": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/dc3964c8-3ed5-48bb-86ee-6d4c4ed84bf8/scratchpad/s1-check/desktop-light-48.png"
+    }
+  ],
+  "numbers": null,
+  "must_fix": [],
+  "should_check": [
+    "frames 9, 20, 26, 32, 39: question answered with its first option to open the gate; check the next press reveals it"
+  ]
+}

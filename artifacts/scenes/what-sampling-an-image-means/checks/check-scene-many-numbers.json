@@ -1,0 +1,117 @@
+{
+  "page": "/tmp/claude-328600100/-home-mscluster-mmolefe-PhD-reduce-reuse-recycle/4ac5b34b-3599-4be2-b946-a3df30a4430b/scratchpad/series/out/many-numbers.html",
+  "baseline": null,
+  "frames": [
+    {
+      "frame": 1,
+      "caption": "List the four pixel values of a 2 × 2 grey image and the image becomes one point with four coordinates. Your height was a point with one coordinate; the Labrador photo is a point with 49,152.",
+      "spotlight": [
+        {
+          "parts": 16,
+          "lit": 3
+        }
+      ],
+      "phone_dark": "screens/many-numbers/phone-dark-01.png",
+      "desktop_light": "screens/many-numbers/desktop-light-01.png"
+    },
+    {
+      "frame": 2,
+      "caption": "In this toy only two images really occur, top bright and bottom bright, each with a little spread. A density p(x) over all four numbers says how densely real images crowd near each point, and its volume is 1.",
+      "spotlight": [
+        {
+          "parts": 16,
+          "lit": 3
+        }
+      ],
+      "phone_dark": "screens/many-numbers/phone-dark-02.png",
+      "desktop_light": "screens/many-numbers/desktop-light-02.png"
+    },
+    {
+      "frame": 3,
+      "caption": "Read the two pixels together and you see two bumps on the diagonal. Integrate pixel 2 away and pixel 1 alone has two bumps of its own, at −1 and +1, each 1.995 high.",
+      "spotlight": [
+        {
+          "parts": 16,
+          "lit": 3
+        }
+      ],
+      "phone_dark": "screens/many-numbers/phone-dark-03.png",
+      "desktop_light": "screens/many-numbers/desktop-light-03.png"
+    },
+    {
+      "frame": 4,
+      "caption": "One u can only make one number, so a four-pixel image takes four u’s. Draw pixel 1 from its own F, then each next pixel from its F given the pixels already drawn.",
+      "spotlight": [
+        {
+          "parts": 16,
+          "lit": 3
+        }
+      ],
+      "phone_dark": "screens/many-numbers/phone-dark-04.png",
+      "desktop_light": "screens/many-numbers/desktop-light-04.png"
+    },
+    {
+      "frame": 5,
+      "caption": "Draw each pixel from its own marginal and every pixel is right on its own, yet the four ignore each other. Only 2 of the 16 bright and dark patterns are real images.",
+      "spotlight": [
+        {
+          "parts": 16,
+          "lit": 2
+        }
+      ],
+      "phone_dark": "screens/many-numbers/phone-dark-05.png",
+      "desktop_light": "screens/many-numbers/desktop-light-05.png"
+    },
+    {
+      "frame": 6,
+      "caption": "A network only outputs numbers, such as a mean μ for each pixel. Put them into the Gaussian formula and its normaliser makes the area 1 for any μ, so the network never has to.",
+      "spotlight": [
+        {
+          "parts": 16,
+          "lit": 1
+        }
+      ],
+      "phone_dark": "screens/many-numbers/phone-dark-06.png",
+      "desktop_light": "screens/many-numbers/desktop-light-06.png"
+    },
+    {
+      "frame": 7,
+      "caption": "Scene 1 pushed one uniform number through F⁻¹ to get a height. G pushes five Gaussian numbers to get a 2 × 2 image: the sign of z₀ picks the image and the rest add its spread.",
+      "spotlight": [
+        {
+          "parts": 16,
+          "lit": 3
+        }
+      ],
+      "phone_dark": "screens/many-numbers/phone-dark-07.png",
+      "desktop_light": "screens/many-numbers/desktop-light-07.png"
+    },
+    {
+      "frame": 8,
+      "caption": "N(0, I) is fixed in advance and never learned. What is learned is G, here one scale c, chosen so the pushed images match the training images, by the same likelihood score as scene 1.",
+      "spotlight": [
+        {
+          "parts": 16,
+          "lit": 2
+        }
+      ],
+      "phone_dark": "screens/many-numbers/phone-dark-08.png",
+      "desktop_light": "screens/many-numbers/desktop-light-08.png"
+    },
+    {
+      "frame": 9,
+      "caption": "Fix one training photo and call it x₀. Its noisy copies scatter around √ᾱₜ·x₀, the mean for this one photo, with spread √(1 − ᾱₜ), where ᾱₜ is Step 4's kept share.",
+      "spotlight": [
+        {
+          "parts": 16,
+          "lit": 3
+        }
+      ],
+      "phone_dark": "screens/many-numbers/phone-dark-09.png",
+      "desktop_light": "screens/many-numbers/desktop-light-09.png"
+    }
+  ],
+  "numbers": null,
+  "must_fix": [],
+  "should_check": []
+}

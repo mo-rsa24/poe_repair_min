@@ -1,0 +1,79 @@
+
+frame 1
+  default: Shortest 158 cm, tallest 184 cm. 3 of the 10 are taller than you.
+
+frame 2
+  default: Bin width 5 cm: the tallest bar holds 3 of the 10 heights. The bins change the picture; the mean and variance stay the same.
+  preset 1 2 cm bins: Bin width 2 cm: the tallest bar holds 1 of the 10 heights. The bins change the picture; the mean and variance stay the same.
+  preset 2 10 cm bins: Bin width 10 cm: the tallest bar holds 5 of the 10 heights. The bins change the picture; the mean and variance stay the same.
+
+frame 3
+  default: Score −66.43. The best bell scores −34.15, so this one is 32.28 below it.
+  preset 1 Too narrow: Score −50.26. The best bell scores −34.15, so this one is 16.12 below it.
+  preset 2 Too wide: Score −37.47. The best bell scores −34.15, so this one is 3.32 below it.
+  preset 3 Off centre: Score −41.96. The best bell scores −34.15, so this one is 7.81 below it.
+  preset 4 Best bell: This is the best bell: no other μ and σ score higher than −34.15.
+
+frame 4
+  default: Total area under p: 1.0000. The front factor 1/(σ√2π) = 0.0542 is what makes it 1; squeeze σ to 0.1 cm and the peak reads 3.99 per cm, with the area still 1.
+  preset 1 At the mean: Total area under p: 1.0000. The front factor 1/(σ√2π) = 0.0542 is what makes it 1; squeeze σ to 0.1 cm and the peak reads 3.99 per cm, with the area still 1.
+  preset 2 200 cm: Total area under p: 1.0000. The front factor 1/(σ√2π) = 0.0542 is what makes it 1; squeeze σ to 0.1 cm and the peak reads 3.99 per cm, with the area still 1.
+
+frame 5
+  default: 2 of the 10 people fall between 172.0 and 174.0 cm, a share of 0.2. The bell gives 0.103.
+  preset 1 1 cm strip: 1 of the 10 people falls between 172.5 and 173.5 cm, a share of 0.1. The bell gives 0.052.
+  preset 2 10 cm strip: 5 of the 10 people fall between 168.0 and 178.0 cm, a share of 0.5. The bell gives 0.484.
+  preset 3 Width 0: Width 0: area 0. A single exact height has chance zero, even though p(173.0) = 0.0518 per cm.
+
+frame 6
+  default: Read as a density: μ = 170.8 stays fixed and the curve runs over heights, with area 1. At x = 173.0 it reads 0.0518 per cm.
+  preset 1 x = 173, μ = 170.8: Read as a density: μ = 170.8 stays fixed and the curve runs over heights, with area 1. At x = 173.0 it reads 0.0518 per cm.
+  preset 2 x = 180: Read as a density: μ = 170.8 stays fixed and the curve runs over heights, with area 1. At x = 180.0 it reads 0.0248 per cm.
+  preset 3 μ = 180: Read as a likelihood: the height 173 stays fixed and the curve runs over μ, peaking at μ = 173. At μ = 180.0 it reads 0.0345.
+  switch 1 flipped: Read as a likelihood: the height 173 stays fixed and the curve runs over μ, peaking at μ = 173. At μ = 170.8 it reads 0.0518.
+
+frame 7
+  default: The lowest of the ten terms is −4.52, at 184 cm, the dot this bell covers worst.
+  preset 1 σ = 3: The lowest of the ten terms is −11.70, at 184 cm, the dot this bell covers worst.
+  preset 2 μ = 180: The lowest of the ten terms is −7.38, at 158 cm, the dot this bell covers worst.
+  preset 3 Best bell: The lowest of the ten terms is −4.52, at 184 cm, the dot this bell covers worst.
+  switch 1 flipped: One term left: the score ignores nine of the ten people.
+
+frame 8
+  default: The ten distances add to −62.0 cm, so the score still falls as μ grows. Score here −37.70, best −34.15.
+  preset 1 μ = x̄: Slope 0 at μ = 170.8 cm, the average height: the ten distances cancel.
+  preset 2 μ at the median, 171: The ten distances add to −2.0 cm, so the score still falls as μ grows. Score here −34.15, best −34.15.
+  preset 3 μ = 160: The ten distances add to 108.0 cm, so the score still rises as μ grows. Score here −44.92, best −34.15.
+
+frame 9
+  default: Searching 180,861 bells finds the top at μ = 170.80, σ = 7.35 (the 0.05 grid step nearest 7.36), score −34.15.
+  preset 1 σ = s: Searching 180,861 bells finds the top at μ = 170.80, σ = 7.35 (the 0.05 grid step nearest 7.36), score −34.15.
+  preset 2 σ dividing by 9: Searching 180,861 bells finds the top at μ = 170.80, σ = 7.35 (the 0.05 grid step nearest 7.36), score −34.15.
+  preset 3 σ = 4: Searching 180,861 bells finds the top at μ = 170.80, σ = 7.35 (the 0.05 grid step nearest 7.36), score −34.15.
+
+frame 10
+  default: At σ = 2.00 the score is −1.61; halve σ and it rises to −0.92. The score has no top above σ = 0.
+  preset 1 σ = 1: At σ = 1.00 the score is −0.92; halve σ and it rises to −0.23. The score has no top above σ = 0.
+  preset 2 σ = 0.1: At σ = 0.10 the score is 1.38; halve σ and it rises to 2.08. The score has no top above σ = 0.
+  preset 3 Use all 10: With all ten heights the score peaks at σ = 7.36 and falls on both sides, so the spike is gone.
+  switch 1 flipped: With all ten heights the score peaks at σ = 7.36 and falls on both sides, so the spike is gone.
+
+frame 11
+  default: 7 of the 10 people are at or below 173.0 cm, a share of 0.7. The slope of F here is 0.0518 per cm, equal to p(173.0).
+  preset 1 x = μ: 5 of the 10 people are at or below 170.8 cm, a share of 0.5. The slope of F here is 0.0542 per cm, equal to p(170.8).
+  preset 2 x = 190: 10 of the 10 people are at or below 190.0 cm, a share of 1.0. The slope of F here is 0.0018 per cm, equal to p(190.0).
+
+frame 12
+  default: Up from 173.0 cm: F = 0.6175. Switch the reading and feed that share back in to get 173.0 cm again.
+  preset 1 x = 173: Up from 173.0 cm: F = 0.6175. Switch the reading and feed that share back in to get 173.0 cm again.
+  preset 2 u = 0.5: u = 0.500: a share 0.500 of the bell lies below 170.8 cm.
+  preset 3 u = 0.975: u = 0.975 lands 1.96 spreads above the mean: 170.8 + 1.96 × 7.36 = 185.2 cm.
+  switch 1 flipped: u = 0.618 gives 173.0 cm, your height, since F(173) = 0.6175.
+
+frame 13
+  default: 200 draws: mean 171.1 cm, spread 7.58 cm, against the bell’s 170.8 and 7.36.
+  preset 1 10 draws: 10 draws: mean 174.8 cm, spread 7.43 cm, against the bell’s 170.8 and 7.36.
+  preset 2 2000 draws: 2000 draws: mean 170.7 cm, spread 7.40 cm, against the bell’s 170.8 and 7.36.
+  preset 3 New draws: 200 draws: mean 170.7 cm, spread 8.00 cm, against the bell’s 170.8 and 7.36.
+
+browser actions: 51; katex errors: 0; page errors: 0; equations wider than their card: 0 frames

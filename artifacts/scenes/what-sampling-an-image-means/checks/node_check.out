@@ -1,0 +1,43 @@
+frame  1: 0 presets, 0 switches, handles []
+frame  2: 2 presets, 0 switches, handles [bw]
+frame  3: 4 presets, 0 switches, handles [mu, sg]
+frame  4: 2 presets, 0 switches, handles [xq]
+frame  5: 3 presets, 0 switches, handles [xq, w]
+frame  6: 3 presets, 1 switches, handles [xq]
+frame  7: 3 presets, 1 switches, handles [mu, sg]
+frame  8: 3 presets, 0 switches, handles [mu]
+frame  9: 3 presets, 0 switches, handles [sg]
+frame 10: 3 presets, 1 switches, handles [mu, sg]
+frame 11: 2 presets, 0 switches, handles [xq]
+frame 12: 3 presets, 1 switches, handles [xq]
+frame 13: 3 presets, 0 switches, handles [nd]
+
+frames walked: 13; presets exercised: 34; switches toggled both ways: 4; handles driven to min, max and middle: 16; actions: 103
+errors: 0
+frame  1: 3 presets, 0 switches, handles [p1, p2, p3, p4]
+frame  2: 2 presets, 0 switches, handles [d]
+frame  3: 3 presets, 1 switches, handles [q1]
+frame  4: 2 presets, 0 switches, handles [u1, u2, u3, u4]
+frame  5: 1 presets, 1 switches, handles []
+frame  6: 3 presets, 0 switches, handles [m1, sg2]
+frame  7: 2 presets, 1 switches, handles [z0]
+frame  8: 3 presets, 0 switches, handles [c]
+frame  9: 3 presets, 0 switches, handles [t]
+
+frames walked: 9; presets exercised: 22; switches toggled both ways: 3; handles driven to min, max and middle: 15; actions: 82
+errors: 0
+frame  1: 3 presets, 1 switches, handles [t, ri]
+frame  2: 2 presets, 1 switches, handles [t, xt]
+frame  3: 3 presets, 0 switches, handles [t, xt]
+frame  4: 3 presets, 0 switches, handles [t, xt, ri]
+frame  5: 3 presets, 0 switches, handles [t, xt]
+frame  6: 3 presets, 0 switches, handles [t, nc]
+frame  7: 3 presets, 1 switches, handles [t]
+frame  8: 2 presets, 0 switches, handles [k]
+frame  9: 2 presets, 1 switches, handles [nh]
+frame 10: 0 presets, 0 switches, handles []
+frame 11: 0 presets, 1 switches, handles []
+frame 12: 0 presets, 0 switches, handles []
+
+frames walked: 12; presets exercised: 24; switches toggled both ways: 5; handles driven to min, max and middle: 16; actions: 94
+errors: 0

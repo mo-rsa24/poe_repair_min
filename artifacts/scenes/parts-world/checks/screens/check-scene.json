@@ -1,0 +1,81 @@
+{
+  "page": "/home-mscluster/mmolefe/PhD/reduce-reuse-recycle/artifacts/scenes/parts-world/parts-world.html",
+  "baseline": null,
+  "frames": [
+    {
+      "frame": 1,
+      "caption": "Both experts are sure of every pixel, variance 0.01. Each pixel's product has mean 0 and sd 0.071, and that mean is 10 of each expert's standard deviations from its own mean.",
+      "spotlight": [],
+      "phone_dark": "checks/screens/phone-dark-01.png",
+      "desktop_light": "checks/screens/desktop-light-01.png"
+    },
+    {
+      "frame": 2,
+      "caption": "Now the cat's training images share one head and vary in body; the dog's share one body and vary in head. So the cat is loose on the body, the dog on the head.",
+      "spotlight": [],
+      "phone_dark": "checks/screens/phone-dark-02.png",
+      "desktop_light": "checks/screens/desktop-light-02.png"
+    },
+    {
+      "frame": 3,
+      "caption": "Precisions add and the mean is precision-weighted, pixel by pixel. A head pixel weighs the cat's 100 against the dog's 1: 99/101 = 0.980.",
+      "spotlight": [],
+      "phone_dark": "checks/screens/phone-dark-03.png",
+      "desktop_light": "checks/screens/desktop-light-03.png"
+    },
+    {
+      "frame": 4,
+      "caption": "Keep the mosaic's body and make the dog sure on the head too, variance 0.01. log Z measures how much the two experts overlap.",
+      "spotlight": [],
+      "phone_dark": "checks/screens/phone-dark-04.png",
+      "desktop_light": "checks/screens/desktop-light-04.png"
+    },
+    {
+      "frame": 5,
+      "caption": "A sure +1 against a sure −1 adds −98.96 to log Z per pixel; sure against loose adds −2.904. Drag the variances between mosaic and blend.",
+      "spotlight": [],
+      "phone_dark": "checks/screens/phone-dark-05.png",
+      "desktop_light": "checks/screens/desktop-light-05.png"
+    },
+    {
+      "frame": 6,
+      "caption": "Each animal now sits in the left or the right half, ½ each, sure there and loose (mean 0) elsewhere. Multiplying two mixtures gives one component per pair: four.",
+      "spotlight": [],
+      "phone_dark": "checks/screens/phone-dark-06.png",
+      "desktop_light": "checks/screens/desktop-light-06.png"
+    },
+    {
+      "frame": 7,
+      "caption": "A same-half pair puts sure +1 against sure −1 on 8 pixels: ℓ = −803.2. A side-by-side pair meets loose pixels, ℓ = −24.1, so side-by-side pairs hold all but e⁻⁷⁷⁹ of the weight.",
+      "spotlight": [],
+      "phone_dark": "checks/screens/phone-dark-07.png",
+      "desktop_light": "checks/screens/desktop-light-07.png"
+    },
+    {
+      "frame": 8,
+      "caption": "The forward process noises each expert: a cat head pixel becomes variance 0.505, a dog head pixel 1.0. Adding their scores gives the score of these noised experts' product.",
+      "spotlight": [],
+      "phone_dark": "checks/screens/phone-dark-08.png",
+      "desktop_light": "checks/screens/desktop-light-08.png"
+    },
+    {
+      "frame": 9,
+      "caption": "The cat's lead falls from 100 : 1 to 1.98 : 1, so summed scores aim the head at 0.233. The noised product, the correct target, puts it at 0.693.",
+      "spotlight": [],
+      "phone_dark": "checks/screens/phone-dark-09.png",
+      "desktop_light": "checks/screens/desktop-light-09.png"
+    },
+    {
+      "frame": 10,
+      "caption": "Head +0.980, body −0.980: a cat head on a dog body. log Z −46.5.",
+      "spotlight": [],
+      "phone_dark": "checks/screens/phone-dark-10.png",
+      "desktop_light": "checks/screens/desktop-light-10.png"
+    }
+  ],
+  "numbers": null,
+  "must_fix": [],
+  "should_check": [
+    "frames 2, 4, 6, 8: question answered with its first option to open the gate; check the next press reveals it"
+  ]
+}

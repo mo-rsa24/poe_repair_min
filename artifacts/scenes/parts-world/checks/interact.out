@@ -1,0 +1,24 @@
+press 2: 4 options, 4 distinct previews, ghost label present: true
+  after leaving: slot restored: true
+press 4: 4 options, 4 distinct previews, ghost label present: true
+  after leaving: slot restored: true
+press 6: 4 options, 4 distinct previews, ghost label present: true
+  after leaving: slot restored: true
+press 8: 4 options, 4 distinct previews, ghost label present: true
+  after leaving: slot restored: true
+press 5 pin (a) mosaic: live −46.5 | THE PRODUCT EXACT head pixel mean +0.980 body pixel mean −0.980 log Z, overlap −46.5 Head +0.980, body −0.980: a cat head on a dog body. log Z −46.5.
+press 5 pin (b) blend: live −1583.4 | THE PRODUCT EXACT head pixel mean 0 body pixel mean 0 log Z, overlap −1583.4 Head 0, body 0: grey on every pixel, a blend. log Z −1583.4.
+press 5 pin dog head sure too: live −814.9 | THE PRODUCT EXACT head pixel mean 0 body pixel mean −0.980 log Z, overlap −814.9 Head 0, body −0.980: a grey head on a dog body. log Z −814.9.
+press 5 cat body slider to 1: live −814.9
+drag cat precision left 3 stops: formula head = (5 × (+1) + 100 × (−1)) / (5 + 100) = −0.905 | slider value 0.2
+dog precision key right: formula head = (5 × (+1) + 100 × (−1)) / (5 + 100) = −0.905 | press counter 5 of 10
+press 9 abar stop 0: summed scores: (100.00 × +1.000 + 1.00 × (−1.000)) / 101.00 = +0.980 target: √1 × +0.980 = +0.980 | live +0.980
+press 9 abar stop 6: summed scores: (1.98 × +0.707 + 1.00 × (−0.707)) / 2.98 = +0.233 target: √0.5 × +0.980 = +0.693 | live +0.233
+press 9 abar stop 12: summed scores: (1.01 × +0.100 + 1.00 × (−0.100)) / 2.01 = +0.000 target: √0.01 × +0.980 = +0.098 | live +0.000
+explore abar 0.5: At ᾱ = 0.5 summed scores aim the head at +0.233, the target at +0.693.
+explore hand check: Head +0.923, body −0.980: a cat head on a dog body. log Z −58.7.
+explore position varies: Position varies: the side-by-side pairs hold 0.50 each, and the same-half pairs e⁻⁷⁷⁹ of that. | live 1.00
+explore back to fixed: Head +0.923, body −0.980: a cat head on a dog body. log Z −58.7.
+key table: 17 rows, 17 ticked, 0 crossed
+theme now dark
+console errors: none

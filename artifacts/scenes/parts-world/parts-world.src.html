@@ -1,0 +1,828 @@
+<title>The Parts World</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chewy&family=Paprika&family=Mouse+Memoirs&family=Public+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* One stage: cat expert x dog expert = product, each a 4 x 4 tile of 16 pixels (top two rows the
+   head, bottom two the body). Tile colours are the walk's figure: blue is the cat value +1, red the
+   dog value -1, grey 0 (matplotlib coolwarm_r), the same in both themes because they are data.
+   Identity hues: cat blue, dog red, product violet. hot marks the error summed scores make. */
+:root{
+  --paper:#f4f6fa; --panel:#ffffff; --shade:#eceff5; --ink:#17202f; --muted:#576074; --rule:#d9dee8;
+  --cat:#3b4cc0; --catsoft:#e0e6fb; --dog:#b40426; --dogsoft:#fbe1e4;
+  --accent:#6d33e0; --accent-soft:#ece4fd; --hot:#c2570c; --hot-soft:#fdebd9; --ok:#16793c; --ok-soft:#dcf5e5;
+  --shout:"Chewy","Trebuchet MS",system-ui,sans-serif;
+  --title:"Paprika",Georgia,serif;
+  --label:"Mouse Memoirs","Arial Narrow",system-ui,sans-serif;
+  --prose:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --data:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#11141b; --panel:#191d26; --shade:#222733; --ink:#e7eaf1; --muted:#a2aaba; --rule:#303746;
+    --cat:#8caffe; --catsoft:#1d2a4a; --dog:#f4826a; --dogsoft:#3d1a1d;
+    --accent:#b89cff; --accent-soft:#2d2448; --hot:#fb9a52; --hot-soft:#3d2614; --ok:#55d68a; --ok-soft:#12321f;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#11141b; --panel:#191d26; --shade:#222733; --ink:#e7eaf1; --muted:#a2aaba; --rule:#303746;
+  --cat:#8caffe; --catsoft:#1d2a4a; --dog:#f4826a; --dogsoft:#3d1a1d;
+  --accent:#b89cff; --accent-soft:#2d2448; --hot:#fb9a52; --hot-soft:#3d2614; --ok:#55d68a; --ok-soft:#12321f;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--prose);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.data{font-family:var(--data);font-variant-numeric:tabular-nums}
+.app{height:100%;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto}
+.band,.press,.navbar{min-width:0}
+
+.band{display:flex;flex-direction:column;gap:6px;padding-block:12px 4px}
+.bandrow{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 20px}
+.eyebrow{font-family:var(--label);font-size:15px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--shout);font-weight:400;font-size:clamp(26px,3.1vw,42px);line-height:1.05;margin:0;text-wrap:balance}
+.why{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.why .wl{font-family:var(--label);font-size:15px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+.why .wv{font-family:var(--data);font-size:28px;font-weight:600;color:var(--accent);min-width:3.5ch}
+.why .wv.slot{color:var(--muted);border:1.5px dashed var(--rule);border-radius:8px;padding:0 10px}
+.why .wv.hotv{color:var(--hot)}
+.toprow{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between}
+.chaps{display:flex;flex-wrap:wrap;gap:6px}
+.chap{font:inherit;font-size:14px;padding:3px 11px;border-radius:999px;border:1.5px solid var(--rule);background:var(--panel);color:var(--muted);cursor:pointer;min-height:32px}
+.chap.on{border-color:var(--ink);color:var(--ink);font-weight:600}
+.score{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.score .sl{font-family:var(--label);font-size:15px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+.sc{font:inherit;font-size:13px;border:1.5px dashed var(--rule);border-radius:7px;padding:1px 7px;background:transparent;color:var(--muted);cursor:pointer;min-height:28px}
+.sc.right{border-style:solid;border-color:var(--ok);color:var(--ok);background:var(--ok-soft)}
+.sc.wrong{border-style:solid;border-color:var(--hot);color:var(--hot);background:var(--hot-soft)}
+.sc.skipped{border-style:solid}
+.themebtn{font:inherit;font-size:13px;border:1.5px solid var(--rule);background:var(--panel);color:var(--ink);border-radius:999px;padding:2px 10px;cursor:pointer;min-height:30px}
+
+.press{min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:12px;padding-block:6px 10px}
+.press > *{flex-shrink:0}
+.sym{font-family:var(--prose);text-transform:none;letter-spacing:0}
+.say{display:flex;flex-direction:column;gap:3px;min-height:74px}
+h2{font-family:var(--title);font-weight:400;font-size:25px;line-height:1.15;margin:0;text-wrap:balance}
+.say p{margin:0;font-size:18px;line-height:1.5;max-width:80ch}
+.recall{display:flex;flex-wrap:wrap;gap:6px}
+.recall a{font-size:13px;text-decoration:none;border:1px dashed var(--accent);border-radius:999px;padding:1px 10px;color:var(--accent)}
+.stage{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,410px);gap:22px;align-items:start}
+@media (max-width:1000px){.stage{grid-template-columns:minmax(0,1fr)}}
+.leftcol{display:flex;flex-direction:column;gap:12px;min-width:0}
+#pix{max-width:660px}
+.side{display:flex;flex-direction:column;gap:12px;min-width:0}
+
+/* tiles */
+.figs{display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));gap:14px;max-width:calc(var(--n,3) * var(--tw,225px))}
+@media (max-width:640px){.figs{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}}
+figure{margin:0;display:flex;flex-direction:column;gap:4px;min-width:0;transition:opacity .3s ease}
+.dim{opacity:.22}
+figcaption{font-family:var(--label);font-size:17px;letter-spacing:.08em;text-transform:uppercase;line-height:1.1;min-height:2.3em}
+figcaption .math{font-family:var(--prose);text-transform:none;letter-spacing:0;font-size:13px;color:var(--muted);display:block;line-height:1.25}
+@media (max-width:640px){figcaption{font-size:14px}figcaption .math{font-size:12px}}
+figure[data-g="cat"] figcaption{color:var(--cat)} figure[data-g="dog"] figcaption{color:var(--dog)}
+figure[data-g="prod"] figcaption,figure[data-g="tgt"] figcaption{color:var(--accent)} figure[data-g="sum"] figcaption{color:var(--hot)}
+.tile{width:100%;aspect-ratio:1;display:block;border-radius:8px}
+.tile.slot{outline:2px dashed var(--rule);outline-offset:-1px}
+.tl{font-family:var(--label);font-size:21px;letter-spacing:.05em;fill:#fff;paint-order:stroke;stroke:#1b1f2a;stroke-width:4px;stroke-linejoin:round}
+.tv{font-family:var(--data);font-size:25px;font-weight:600;fill:#fff;paint-order:stroke;stroke:#1b1f2a;stroke-width:5px;stroke-linejoin:round}
+.qmark{font-family:var(--shout);font-size:72px;fill:var(--muted)}
+.ghostt{font-family:var(--label);font-size:19px;fill:#fff;paint-order:stroke;stroke:#1b1f2a;stroke-width:4px}
+.draws{display:flex;gap:6px;align-items:center}
+.draws .dl{font-family:var(--label);font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);flex:0 0 auto}
+.draws svg{width:min(26%,52px);aspect-ratio:1;border-radius:4px}
+
+/* one-pixel panel and gauge */
+.panel{background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;min-width:0;transition:opacity .3s ease}
+.lab{font-family:var(--label);font-size:15px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+.panel svg{width:100%;display:block}
+.axl{font-family:var(--data);font-size:15px;fill:var(--muted)}
+.mk{font-family:var(--data);font-size:16px;font-weight:600;paint-order:stroke;stroke:var(--panel);stroke-width:4px;stroke-linejoin:round}
+.mkl{font-family:var(--label);font-size:16px;letter-spacing:.04em;paint-order:stroke;stroke:var(--panel);stroke-width:4px}
+.formula{font-family:var(--data);font-size:16px;background:var(--shade);border-radius:8px;padding:6px 10px;overflow-x:auto;white-space:nowrap}
+.formula .c{color:var(--cat);font-weight:600} .formula .d{color:var(--dog);font-weight:600} .formula .p{color:var(--accent);font-weight:600} .formula .h{color:var(--hot);font-weight:600}
+.drag{cursor:ew-resize;user-select:none;-webkit-user-select:none;touch-action:none;border-radius:4px;padding:0 .25em;outline:1.5px solid transparent;font-weight:600}
+.drag.c{background:var(--catsoft)} .drag.d{background:var(--dogsoft)}
+.drag:hover,.drag.active,.drag:focus-visible{outline-color:currentColor}
+
+/* mixture grid */
+.mix{display:grid;grid-template-columns:110px repeat(2,minmax(0,140px));gap:10px 14px;align-items:center;justify-content:start}
+.mix .hd{display:flex;flex-direction:column;align-items:center;gap:2px;font-family:var(--label);font-size:15px;letter-spacing:.06em;text-transform:uppercase;text-align:center;line-height:1.1}
+.mix .hd svg{width:74px;aspect-ratio:1;border-radius:5px}
+.mix .hd.c{color:var(--cat)} .mix .hd.d{color:var(--dog)}
+.mix .cap{grid-column:1/-1;width:min(820px,calc(100vw - 32px));font-family:var(--label);font-size:17px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.mix .cap .math{font-family:var(--prose);text-transform:none;letter-spacing:0;font-size:13px;color:var(--muted)}
+.pair{display:flex;flex-direction:column;gap:3px;min-width:0;border:2px solid transparent;border-radius:10px;padding:4px;transition:opacity .3s ease,border-color .3s ease}
+.pair.heavy{border-color:var(--accent)}
+.pair.light{opacity:.4}
+.pair.ghost{border-color:var(--ink);border-style:dashed}
+.pw{font-family:var(--data);font-size:19px;font-weight:600;display:flex;justify-content:space-between;gap:6px;flex-wrap:wrap}
+.pw .lw{font-size:14px;font-weight:400;color:var(--muted)}
+.pw .slotv{color:var(--muted);border:1.5px dashed var(--rule);border-radius:6px;padding:0 6px}
+.pw .gv{color:var(--ink);border:1.5px dashed var(--ink);border-radius:6px;padding:0 6px}
+@media (max-width:640px){.mix{grid-template-columns:64px repeat(2,minmax(0,1fr));gap:8px 8px}.mix .hd svg{width:48px}.mix .hd{font-size:13px}}
+
+/* side column */
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.cells{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px 14px}
+.cell{display:flex;flex-direction:column;border-top:1px solid var(--rule);padding-top:4px;min-width:0}
+.cell .cl{font-size:13px;color:var(--muted);line-height:1.25}
+.cell .cv{font-family:var(--data);font-variant-numeric:tabular-nums;font-size:18px;font-weight:600}
+.cell.p .cv{color:var(--accent)} .cell.h .cv{color:var(--hot)}
+.cv.slot{color:var(--muted);font-weight:400}
+.chip{display:inline-block;font-family:var(--label);font-size:14px;letter-spacing:.08em;text-transform:uppercase;border-radius:5px;padding:0 6px;border:1px solid var(--ok);color:var(--ok);background:var(--ok-soft);vertical-align:middle}
+.chip.hot{border-color:var(--hot);color:var(--hot);background:var(--hot-soft)}
+.stateline{font-size:15px;line-height:1.45;margin:0}
+.hint{font-size:13px;color:var(--muted)}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.pill{font:inherit;font-size:14px;padding:4px 11px;border-radius:999px;border:1.5px solid var(--rule);background:var(--panel);color:var(--muted);cursor:pointer;min-height:36px}
+.pill[aria-pressed="true"]{border-color:var(--ink);color:var(--ink);font-weight:600;background:var(--shade)}
+.sl2{display:grid;grid-template-columns:auto minmax(0,1fr) 4.2em;gap:4px 10px;align-items:center}
+.sl2 label{font-size:14px}
+.sl2 label.c{color:var(--cat)} .sl2 label.d{color:var(--dog)}
+.sl2 .v{font-family:var(--data);font-size:15px;text-align:right}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.rangeends{display:flex;justify-content:space-between;font-size:13px;color:var(--muted)}
+.hand{border:1.5px solid var(--accent);border-radius:10px;padding:10px 12px;background:var(--panel);font-size:15px;display:flex;flex-direction:column;gap:6px}
+.hand textarea{font-family:var(--data);font-size:13px;width:100%;min-height:70px;border:1px solid var(--rule);border-radius:6px;background:var(--paper);color:var(--ink);padding:6px}
+.hand details{font-size:14px}
+.hand pre{font-family:var(--data);font-size:13px;margin:4px 0 0;white-space:pre-wrap;background:var(--shade);border-radius:6px;padding:6px}
+
+/* question */
+.q{background:var(--panel);border:1.5px solid var(--rule);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:7px}
+.q .qask{font-size:17px;font-weight:600;line-height:1.4}
+.q .qask u{text-decoration-style:dotted;text-decoration-color:var(--accent);text-underline-offset:3px;cursor:help}
+.q details{font-size:14px;color:var(--muted)}
+.q summary{cursor:pointer}
+.opt{display:flex;gap:9px;align-items:flex-start;text-align:left;width:100%;font:inherit;font-size:15px;line-height:1.4;padding:8px 10px;border-radius:9px;border:1.5px solid var(--rule);background:var(--panel);color:var(--ink);cursor:pointer}
+.opt .ol{flex:0 0 auto;width:22px;height:22px;border-radius:50%;border:1.5px solid currentColor;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--muted)}
+.opt[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.opt .ob{display:flex;flex-direction:column;gap:3px;min-width:0}
+.opt .whyo{font-size:14px;color:var(--muted)}
+.opt .whyo b{color:var(--ink);font-weight:600}
+.opt .tagp{font-family:var(--label);font-size:14px;letter-spacing:.06em;text-transform:uppercase;border-radius:4px;padding:0 6px;background:var(--accent);color:var(--panel);align-self:flex-start}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)} .opt.right .ol{color:var(--ok)}
+.opt.wrong .ol{color:var(--hot)} .opt.wrong.picked{border-color:var(--hot);background:var(--hot-soft)}
+.opt.revealed{cursor:default;padding:6px 9px;font-size:14px}
+.q.done{gap:5px}
+.q.done > .qask:first-of-type{font-size:15px}
+.qverdict{font-size:15px;font-weight:600}
+.qverdict.right{color:var(--ok)} .qverdict.wrong{color:var(--hot)}
+.gloss{font-size:14px;color:var(--muted);margin:0}
+.gloss b{color:var(--ink);font-weight:600}
+
+.navbar{position:sticky;bottom:0;z-index:5;display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--paper);border-top:1px solid var(--rule);padding-top:8px;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+.navbar button{font:inherit;font-size:16px;min-height:44px;padding:0 18px;border-radius:999px;border:1.5px solid var(--rule);background:var(--panel);color:var(--ink);cursor:pointer}
+.navbar button.primary{background:var(--ink);color:var(--paper);border-color:var(--ink);margin-left:auto}
+.navbar button:disabled{opacity:.4;cursor:default}
+.count{font-size:14px;color:var(--muted)}
+.guide{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:6px;cursor:pointer}
+.nudge{flex-basis:100%;font-size:14px;color:var(--hot);background:var(--hot-soft);border-radius:8px;padding:6px 10px}
+details.sources{margin:6px 0 18px;font-size:14px;color:var(--muted)}
+details.sources summary{cursor:pointer;font-size:15px}
+details.sources p{max-width:85ch}
+.tablewrap{overflow-x:auto}
+details.sources table{border-collapse:collapse;margin-top:6px;font-size:13px}
+details.sources td,details.sources th{padding:3px 10px;border-bottom:1px solid var(--rule);text-align:left;white-space:nowrap}
+details.sources td.data{text-align:right}
+[hidden]{display:none!important}
+sub,sup{font-size:12px;line-height:0}
+@media (max-width:640px){.eyebrow{display:none}.chaps,.score{flex-wrap:nowrap;overflow-x:auto;max-width:100%;padding-bottom:2px}.chap,.sc{flex:0 0 auto}.toprow{flex-direction:column;align-items:stretch}.say{min-height:0}h2{font-size:22px}.say p{font-size:17px}.cells{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="app">
+  <header class="band">
+    <div class="bandrow">
+      <div>
+        <div class="eyebrow">Claim 9 · a toy where the cat-dog product is exact</div>
+        <h1>Mosaic, blend or two animals?</h1>
+      </div>
+      <div class="why" aria-live="polite">
+        <span class="wl" id="liveLabel">log Z</span>
+        <span class="wv" id="live">?</span>
+        <button class="themebtn" id="theme" type="button">Dark</button>
+      </div>
+    </div>
+    <div class="toprow">
+      <nav class="chaps" id="chaps" aria-label="Chapters"></nav>
+      <div class="score" id="score" aria-label="Your predictions"></div>
+    </div>
+  </header>
+
+  <main class="press" id="press">
+    <div class="say">
+      <h2 id="pTitle"></h2>
+      <p id="pSay"></p>
+      <div class="recall" id="recall"></div>
+    </div>
+    <div class="stage">
+      <div class="leftcol">
+        <div class="figs" id="figs">
+          <figure data-g="cat" id="fCat"><figcaption id="cCat"></figcaption><svg class="tile" viewBox="0 0 240 240" role="img"></svg><div class="draws"></div></figure>
+          <figure data-g="dog" id="fDog"><figcaption id="cDog"></figcaption><svg class="tile" viewBox="0 0 240 240" role="img"></svg><div class="draws"></div></figure>
+          <figure data-g="prod" id="fProd"><figcaption id="cProd"></figcaption><svg class="tile" viewBox="0 0 240 240" role="img"></svg><div class="draws"></div></figure>
+          <figure data-g="sum" id="fSum"><figcaption id="cSum"></figcaption><svg class="tile" viewBox="0 0 240 240" role="img"></svg><div class="draws"></div></figure>
+        </div>
+        <div class="mix" id="mix" data-g="mix"></div>
+        <div class="panel" id="pix" data-g="pix">
+          <div class="lab" id="pixLab">One head pixel, up close</div>
+          <svg id="pixSvg" viewBox="0 0 640 180" role="img" aria-label="one head pixel: the two experts' bells and the product's mean on a number line"></svg>
+          <div class="formula" id="pixF"></div>
+        </div>
+      </div>
+      <aside class="side" id="side">
+        <div id="qBox"></div>
+        <div class="panel" id="gauge" data-g="gauge">
+          <div class="lab">log Z: how much cat and dog overlap; on this page, higher is more</div>
+          <svg id="gSvg" viewBox="0 0 400 74" role="img" aria-label="log Z on a scale from minus 1700 to 0"></svg>
+        </div>
+        <div id="ctrl"></div>
+        <div id="readout"></div>
+        <div id="extra"></div>
+      </aside>
+    </div>
+    <details class="sources" id="sources"><summary>Where these numbers come from</summary>
+      <p><b>The toy.</b> Every image is 16 numbers drawn as a 4 × 4 tile: pixels 0 to 7 are the top two rows, the head, and 8 to 15 the bottom two rows, the body. The left half is the left two columns. The cat expert's mean is +1 and the dog's −1. Sure means variance 0.01 and loose means variance 1. Every expert is a Gaussian with a diagonal covariance, or in the position chapter a mixture of two, so every product on this page is exact, with no grid and no sampler.</p>
+      <p><b>The one identity.</b> For two diagonal Gaussians, N(x; μ<sub>a</sub>, Σ<sub>a</sub>) N(x; μ<sub>b</sub>, Σ<sub>b</sub>) = Z N(x; μ, Σ), with Σ = (Σ<sub>a</sub><sup>−1</sup> + Σ<sub>b</sub><sup>−1</sup>)<sup>−1</sup>, μ = Σ(Σ<sub>a</sub><sup>−1</sup>μ<sub>a</sub> + Σ<sub>b</sub><sup>−1</sup>μ<sub>b</sub>) and Z = N(μ<sub>a</sub>; μ<sub>b</sub>, Σ<sub>a</sub> + Σ<sub>b</sub>): precisions add and the mean is precision-weighted, pixel by pixel. Textbook: the Matrix Cookbook, section 8.1.8, page 42. log Z is the sum of the 16 pixels' logs, because the log of a product is the sum of the logs (algebra handbook, page 110). Per pixel, log N(μ<sub>a</sub>; μ<sub>b</sub>, v<sub>a</sub> + v<sub>b</sub>) = −½[log(2π(v<sub>a</sub> + v<sub>b</sub>)) + (μ<sub>a</sub> − μ<sub>b</sub>)²/(v<sub>a</sub> + v<sub>b</sub>)]. A sure +1 against a sure −1: −½[log(2π × 0.02) + 4/0.02] = −98.962927. A sure +1 against a loose −1: −½[log(2π × 1.01) + 4/1.01] = −2.904112. A sure ±1 against a loose 0 adds −1.418963; a loose 0 against a loose 0 adds −1.265512. So with the dog sure on the head too, log Z = 8 × (−98.962927) + 8 × (−2.904112) = −814.936. With means +1 and −1 the product's mean on a pixel simplifies to (v<sub>dog</sub> − v<sub>cat</sub>)/(v<sub>dog</sub> + v<sub>cat</sub>): (1 − 0.01)/(1 + 0.01) = 99/101 on the head, and the sign flips on the body. Z is the area under the product, not a share, so it is not bounded by 1: two narrow experts that agree give log Z above 0. "Higher is more overlap" holds on this page because the means stay at +1 and −1.</p>
+      <p><b>Mixtures.</b> A product of two Gaussian mixtures has one component per pair of components, with log weight before normalising ℓ<sub>ij</sub> = log π<sub>i</sub> + log ρ<sub>j</sub> + log N(μ<sub>i</sub>; ν<sub>j</sub>, Σ<sub>i</sub> + Λ<sub>j</sub>) and weight w<sub>ij</sub> = e<sup>ℓ<sub>ij</sub></sup> / Σ<sub>kl</sub> e<sup>ℓ<sub>kl</sub></sup> (mixtures: Mathematics for Machine Learning, page 355). Each placement has weight 0.5, so every pair starts at log 0.25 = −1.386294. A side-by-side pair adds 16 × (−1.418963) = −22.703, giving ℓ = −24.090. A same-half pair adds 8 × (−98.962927) + 8 × (−1.265512) = −801.828, giving ℓ = −803.214. The gap is Δ = 779.124; write r = e<sup>−Δ</sup>. The four weights sum to 2e<sup>ℓ<sub>side</sub></sup>(1 + r), so each side-by-side pair has w = 1/[2(1 + r)] and each same-half pair w = r/[2(1 + r)]. Both are positive; at two decimals they print as 0.50 and 0.00, which the page writes as ≈ 0.50 and ≈ 0.00. A side-by-side component's mean is 100/101 = +0.990 on the cat's half and −0.990 on the dog's.</p>
+      <p><b>Noise.</b> The forward process turns N(μ, v) into N(√ᾱ μ, ᾱ v + 1 − ᾱ). At ᾱ = 0.5 a cat head pixel becomes N(0.707, 0.505) and a dog head pixel N(−0.707, 1.0), so the cat's precision lead falls from 100 : 1 to 1.980 : 1. At that one level, cat score + dog score is the score of the density proportional to the noised cat times the noised dog, whose head mean is (1.980 × 0.707 − 1 × 0.707) / 2.980 = 0.233. The correct intermediate target is the noised product, √0.5 × 0.980 = 0.693. This is the error Du et al. (2023), section 4, equations 11 and 12, describe, computed exactly here. This fixed-level mean does not by itself say what a full reverse run produces, and how much of the mosaic such a run keeps at ᾱ = 1 is not computed. The two families differ even at full noise: each expert becomes N(0, 1), their product is proportional to N(0, ½), and the noised clean product is N(0, 1). Noise is drawn only with position fixed; the mixture case under noise is not on this page.</p>
+      <p><b>The three draws under each tile</b> are illustrative: each is the tile's mean plus its standard deviation times one fixed standard-normal number per pixel (seed 9), so they move smoothly as you drag. Colours clip at ±1. They show which pixels an expert is sure of, not any measured sample.</p>
+      <p><b>Where the numbers come from.</b> The walk's answer key is <span class="data">artifacts/ideas/poe-overlap-dial/example-9-parts-world/numbers.json</span>, written by <span class="data">parts_world.py</span> beside it, with the derivation in the .tex and PDF there. This page's key, <span class="data">artifacts/scenes/parts-world/checks/scene_key.py</span>, copies that script's two functions unchanged and reproduces all 18 of its numbers with a relative gap of 0, then adds every slider stop. The page computes each state live with the same identity; <span class="data">checks/check_page.mjs</span> runs the page's own code against all 2401 variance stops and 247 noise states. The table below is recomputed by this page when it loads. "Image chimeras are mostly mosaics" is the walk's reading of chimera images, stated and not checked against a source.</p>
+      <div class="tablewrap"><table id="keyTable"><thead><tr><th>Setting</th><th>Quantity</th><th>This page</th><th>Answer key</th><th></th></tr></thead><tbody></tbody></table></div>
+    </details>
+  </main>
+
+  <div class="navbar" id="navbar">
+    <button id="back" type="button">◀ Back</button>
+    <span class="count data" id="count"></span>
+    <label class="guide"><input type="checkbox" id="guide" checked> Dim what this press does not use</label>
+    <button id="next" class="primary" type="button">Next ▶</button>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+// ==== KEY:BEGIN (scene_key.json, written by checks/scene_key.py; substituted at build)
+const KEY = __KEY_JSON__;
+// ==== KEY:END ====
+
+// ==== COMPUTE:BEGIN (the closed-form identity of parts_world.py, per pixel)
+const D = 16;
+const HEAD = [0,1,2,3,4,5,6,7], BODY = [8,9,10,11,12,13,14,15];
+const LEFT = [0,1,4,5,8,9,12,13], RIGHT = [2,3,6,7,10,11,14,15];
+const lnN = (x, m, v) => -0.5*Math.log(2*Math.PI*v) - (x - m)*(x - m)/(2*v);
+// gprod: two diagonal Gaussians (arrays of 16) -> the product's mean, variance and log Z
+function gprod(ma, va, mb, vb){
+  const m = [], v = []; let logZ = 0;
+  for (let k = 0; k < D; k++){ const vk = 1/(1/va[k] + 1/vb[k]); v.push(vk); m.push(vk*(ma[k]/va[k] + mb[k]/vb[k])); logZ += lnN(ma[k], mb[k], va[k] + vb[k]); }
+  return {m, v, logZ};
+}
+const fill = x => Array(D).fill(x);
+const avg = (a, idx) => idx.reduce((s, k) => s + a[k], 0)/idx.length;
+function experts(ch, cb, dh, db){
+  const vc = fill(0), vd = fill(0); HEAD.forEach(k => { vc[k] = ch; vd[k] = dh; }); BODY.forEach(k => { vc[k] = cb; vd[k] = db; });
+  return {ma: fill(1), va: vc, mb: fill(-1), vb: vd};
+}
+function single(ch, cb, dh, db){
+  const e = experts(ch, cb, dh, db), p = gprod(e.ma, e.va, e.mb, e.vb);
+  return {head_mean: avg(p.m, HEAD), body_mean: avg(p.m, BODY), head_var: p.v[0], body_var: p.v[8], logZ: p.logZ, m: p.m, v: p.v, e};
+}
+// noise: each expert N(mu, v) becomes N(sqrt(abar) mu, abar v + 1 - abar)
+const noiseG = (m, v, ab) => ({m: m.map(x => Math.sqrt(ab)*x), v: v.map(x => ab*x + 1 - ab)});
+function noised(ch, cb, dh, db, ab){
+  const s = single(ch, cb, dh, db), e = s.e;
+  const nc = noiseG(e.ma, e.va, ab), nd = noiseG(e.mb, e.vb, ab);
+  const pn = gprod(nc.m, nc.v, nd.m, nd.v);          // product of noised experts: what summed scores follow
+  const tg = noiseG(s.m, s.v, ab);                     // noised product: the correct target at this level
+  return {head_summed: avg(pn.m, HEAD), body_summed: avg(pn.m, BODY), head_target: avg(tg.m, HEAD), body_target: avg(tg.m, BODY),
+          cat: nc, dog: nd, summed: pn, target: tg};
+}
+// position varied: each animal sits in the left or right half (0.5 each), sure there, loose (mean 0) elsewhere
+function placed(value, half){ const m = fill(0), v = fill(1); half.forEach(k => { m[k] = value; v[k] = 0.01; }); return {m, v}; }
+const CATC = [{w:0.5, name:"left", ...placed(1, LEFT)}, {w:0.5, name:"right", ...placed(1, RIGHT)}];
+const DOGC = [{w:0.5, name:"left", ...placed(-1, LEFT)}, {w:0.5, name:"right", ...placed(-1, RIGHT)}];
+function mixture(){
+  const pairs = [];
+  CATC.forEach((a, i) => DOGC.forEach((b, j) => { const p = gprod(a.m, a.v, b.m, b.v);
+    pairs.push({name: "cat-" + a.name + " x dog-" + b.name, i, j, logw: Math.log(a.w) + Math.log(b.w) + p.logZ, m: p.m, v: p.v}); }));
+  const mx = Math.max(...pairs.map(p => p.logw)); let t = 0; pairs.forEach(p => { p.w = Math.exp(p.logw - mx); t += p.w; }); pairs.forEach(p => { p.w /= t; });
+  return pairs;
+}
+const VSTOPS = [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1];
+const ASTOPS = [1, 0.95, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0.05, 0.01];
+// ==== COMPUTE:END ====
+
+/* ---------- helpers ---------- */
+const $ = id => document.getElementById(id);
+const el = (tag, attrs, html) => { const e = document.createElement(tag); if (attrs) for (const k in attrs) { if (k === "class") e.className = attrs[k]; else e.setAttribute(k, attrs[k]); } if (html != null) e.innerHTML = html; return e; };
+const store = {
+  get(k, d){ try { const v = localStorage.getItem("parts-world:" + k); return v == null ? d : JSON.parse(v); } catch(e){ return d; } },
+  set(k, v){ try { localStorage.setItem("parts-world:" + k, JSON.stringify(v)); } catch(e){} }
+};
+const M = "−";
+const SUPS = {"−":"⁻","0":"⁰","1":"¹","2":"²","3":"³","4":"⁴","5":"⁵","6":"⁶","7":"⁷","8":"⁸","9":"⁹"};
+const esup = n => "e" + (M + n).split("").map(c => SUPS[c] || c).join("");
+const sgn = (v, d) => { d = d == null ? 3 : d; if (Math.abs(v) < 1e-12) return "0"; return (v > 0 ? "+" : M) + Math.abs(v).toFixed(d); };
+const num = (v, d) => { const s = Math.abs(v).toFixed(d); return (v < 0 && Number(s) !== 0 ? M : "") + s; };
+const vfmt = v => String(v);
+const prec = v => { const p = 1/v; return Math.abs(p - Math.round(p)) < 1e-9 ? String(Math.round(p)) : p.toFixed(2); };
+const CW = [[-1,[180,4,38]],[-0.75,[222,97,77]],[-0.5,[244,154,123]],[-0.25,[244,197,173]],[0,[220,221,221]],[0.25,[183,207,249]],[0.5,[140,175,254]],[0.75,[97,128,233]],[1,[59,76,192]]];
+function cw(v){ v = Math.max(-1, Math.min(1, v)); let i = 0; while (i < CW.length - 2 && v > CW[i+1][0]) i++;
+  const [a, ca] = CW[i], [b, cb] = CW[i+1], t = (v - a)/(b - a);
+  return "rgb(" + ca.map((c, k) => Math.round(c + (cb[k] - c)*t)).join(",") + ")"; }
+// fixed standard-normal numbers for the illustrative draws (seed 9)
+function mulberry(a){ return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0)/4294967296; }; }
+const rnd = mulberry(9);
+const gauss = () => { const u = Math.max(1e-12, rnd()), w = rnd(); return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*w); };
+const EPSD = {}; ["cat","dog","prod","sum"].forEach(f => { EPSD[f] = [0,1,2].map(() => Array.from({length:D}, gauss)); });
+
+/* ---------- tiles ---------- */
+function tileSVG(vals, o){
+  o = o || {}; let h = "";
+  if (o.slot){
+    h += '<rect x="0" y="0" width="240" height="240" fill="var(--shade)"/>';
+    if (o.ghost){ for (let k = 0; k < D; k++){ const r = Math.floor(k/4), c = k % 4; h += '<rect x="' + c*60 + '" y="' + r*60 + '" width="60" height="60" fill="' + cw(o.ghost[k]) + '" opacity="0.8"/>'; }
+      h += '<rect x="3" y="3" width="234" height="234" rx="6" fill="none" stroke="var(--ink)" stroke-width="3" stroke-dasharray="9 6"/>';
+      h += '<text class="ghostt" x="120" y="126" text-anchor="middle">what this option says</text>'; }
+    else h += '<text class="qmark" x="120" y="146" text-anchor="middle">?</text>';
+    return h;
+  }
+  for (let k = 0; k < D; k++){ const r = Math.floor(k/4), c = k % 4; h += '<rect x="' + c*60 + '" y="' + r*60 + '" width="60" height="60" fill="' + cw(vals[k]) + '"/>'; }
+  for (let i = 1; i < 4; i++){ h += '<line x1="' + i*60 + '" y1="0" x2="' + i*60 + '" y2="240" stroke="#ffffff" stroke-opacity="0.35" stroke-width="1"/>'; h += '<line x1="0" y1="' + i*60 + '" x2="240" y2="' + i*60 + '" stroke="#ffffff" stroke-opacity="' + (i === 2 ? 0.9 : 0.35) + '" stroke-width="' + (i === 2 ? 2.5 : 1) + '"/>'; }
+  (o.labels || []).forEach(t => { h += '<text class="' + (t.big ? "tv" : "tl") + '" x="' + (t.x || 120) + '" y="' + t.y + '" text-anchor="middle">' + t.t + '</text>'; });
+  return h;
+}
+const miniSVG = (vals, size) => '<svg viewBox="0 0 240 240" aria-hidden="true">' + tileSVG(vals) + '</svg>';
+function draws(fig, key, m, v, show){
+  const box = fig.querySelector(".draws"); if (!show){ box.innerHTML = ""; return; }
+  let h = '<span class="dl">3 draws</span>';
+  EPSD[key].forEach(eps => { h += miniSVG(m.map((x, k) => x + Math.sqrt(v[k])*eps[k])); });
+  box.innerHTML = h;
+}
+const bandLabels = (head, body, big) => [{y: big ? 70 : 66, t: head, big}, {y: big ? 190 : 186, t: body, big}];
+
+/* ---------- state ---------- */
+// st: {mode:"single"|"mix", ch, cb, dh, db, ab, show:{pix,gauge}, slot:{prod,gauge,w,pix}, ghost}
+let st = {};
+const RESET = () => ({mode:"single", ch:0.01, cb:1, dh:1, db:0.01, ab:1, noiseView:false, show:{pix:false, gauge:true}, slot:{}, ghost:null, mixReveal:true});
+
+/* ---------- the one-pixel panel ---------- */
+const narrow = () => { try { return matchMedia("(max-width:640px)").matches; } catch(e){ return false; } };
+let PWID = 640;
+const PX = x => 20 + (x + 1.4)/2.8*(PWID - 40);
+function bellPath(m, v, H, base){
+  let d = ""; for (let i = 0; i <= 160; i++){ const x = -1.4 + 2.8*i/160; const y = Math.exp(lnN(x, m, v)); d += (i ? "L" : "M") + PX(x).toFixed(1) + "," + (base - y*H).toFixed(1); }
+  return d;
+}
+function drawPix(){
+  const svg = $("pixSvg"), base = 132; let h = "";
+  PWID = narrow() ? 420 : 640; const NR = narrow(); svg.setAttribute("viewBox", "0 0 " + PWID + " " + (NR ? 200 : 180));
+  const s = single(st.ch, st.cb, st.dh, st.db);
+  let cat = {m:1, v:st.ch}, dog = {m:-1, v:st.dh}, marks = [], bells = [];
+  if (st.noiseView){
+    const n = noised(st.ch, st.cb, st.dh, st.db, st.ab);
+    cat = {m:n.cat.m[0], v:n.cat.v[0]}; dog = {m:n.dog.m[0], v:n.dog.v[0]};
+    bells.push({m:cat.m, v:cat.v, c:"var(--cat)", f:"var(--catsoft)"}, {m:dog.m, v:dog.v, c:"var(--dog)", f:"var(--dogsoft)"});
+    if (!st.slot.pix){
+      bells.push({m:n.summed.m[0], v:n.summed.v[0], c:"var(--hot)", f:"none", dash:false}, {m:n.target.m[0], v:n.target.v[0], c:"var(--accent)", f:"none", dash:true});
+      marks.push({x:n.target.m[0], t:"target " + sgn(n.target.m[0]), c:"var(--accent)", row:0}, {x:n.summed.m[0], t:"summed scores " + sgn(n.summed.m[0]), c:"var(--hot)", row:1});
+    }
+  } else {
+    bells.push({m:1, v:st.ch, c:"var(--cat)", f:"var(--catsoft)"}, {m:-1, v:st.dh, c:"var(--dog)", f:"var(--dogsoft)"});
+    if (!st.slot.pix && !st.slot.prod){ bells.push({m:s.m[0], v:s.v[0], c:"var(--accent)", f:"none"}); marks.push({x:s.m[0], t:"product " + sgn(s.m[0]), c:"var(--accent)", row:0}); }
+  }
+  if (st.ghost && st.ghost.pix != null) marks.push({x:st.ghost.pix, t:"what this option says", c:"var(--ink)", row:1, ghost:true});
+  const peak = Math.max(...bells.map(b => Math.exp(lnN(b.m, b.m, b.v))));
+  const H = 76/peak;
+  h += '<line x1="20" y1="' + base + '" x2="' + (PWID - 20) + '" y2="' + base + '" stroke="var(--rule)" stroke-width="1.5"/>';
+  [-1, 0, 1].forEach(t => { h += '<line x1="' + PX(t) + '" y1="' + base + '" x2="' + PX(t) + '" y2="' + (base + 6) + '" stroke="var(--muted)"/><text class="axl" x="' + PX(t) + '" y="' + (base + 22) + '" text-anchor="middle">' + (t > 0 ? "+1" : t < 0 ? M + "1" : "0") + '</text>'; });
+  bells.forEach(b => { h += '<path d="' + bellPath(b.m, b.v, H, base) + (b.f !== "none" ? "L" + PX(1.4) + "," + base + "L" + PX(-1.4) + "," + base + "Z" : "") + '" fill="' + b.f + '" fill-opacity="0.7" stroke="' + b.c + '" stroke-width="2.2"' + (b.dash ? ' stroke-dasharray="7 5"' : "") + '/>'; });
+  // expert labels under the axis, in their own colour
+  const cl = (st.noiseView ? "cat " : "cat ") + sgn(cat.m) + " · precision " + prec(cat.v), dl = "dog " + sgn(dog.m) + " · precision " + prec(dog.v);
+  h += '<text class="mkl" x="' + Math.min(PWID - 4, PX(cat.m) + 8) + '" y="' + (base + 42) + '" text-anchor="end" fill="var(--cat)">' + cl + '</text>';
+  h += '<text class="mkl" x="' + Math.max(4, PX(dog.m) - 8) + '" y="' + (base + (NR ? 62 : 42)) + '" text-anchor="start" fill="var(--dog)">' + dl + '</text>';
+  marks.forEach(mk => { const x = PX(mk.x), y = 17 + mk.row*21;
+    h += '<line x1="' + x + '" y1="' + (y + 4) + '" x2="' + x + '" y2="' + base + '" stroke="' + mk.c + '" stroke-width="2"' + (mk.ghost ? ' stroke-dasharray="5 4"' : "") + '/>';
+    const anchor = x > PWID*0.72 ? "end" : x < PWID*0.28 ? "start" : "middle";
+    h += '<text class="mk" x="' + (anchor === "end" ? x + 6 : anchor === "start" ? x - 6 : x) + '" y="' + y + '" text-anchor="' + anchor + '" fill="' + mk.c + '">' + mk.t + '</text>'; });
+  if (st.slot.pix) h += '<text class="qmark" x="' + PWID/2 + '" y="76" text-anchor="middle" style="font-size:48px">?</text>';
+  svg.innerHTML = h;
+  // the formula on the same clock
+  const f = $("pixF");
+  if (st.noiseView){
+    const n = noised(st.ch, st.cb, st.dh, st.db, st.ab), pc = 1/n.cat.v[0], pd = 1/n.dog.v[0];
+    $("pixLab").innerHTML = 'One head pixel at noise level <span class="sym">ᾱ = ' + st.ab + "</span>";
+    f.innerHTML = st.slot.pix ? 'summed scores: (<span class="c">' + pc.toFixed(2) + '</span> × ' + sgn(n.cat.m[0]) + ' + <span class="d">' + pd.toFixed(2) + '</span> × (' + sgn(n.dog.m[0]) + ')) / ' + (pc + pd).toFixed(2) + ' = <span class="h">?</span>'
+      : 'summed scores: (<span class="c">' + pc.toFixed(2) + '</span> × ' + sgn(n.cat.m[0]) + ' + <span class="d">' + pd.toFixed(2) + '</span> × (' + sgn(n.dog.m[0]) + ')) / ' + (pc + pd).toFixed(2) + ' = <span class="h">' + sgn(n.head_summed) + '</span><br>target: √' + st.ab + ' × ' + sgn(s.head_mean) + ' = <span class="p">' + sgn(n.head_target) + '</span>';
+  } else {
+    $("pixLab").innerHTML = "One head pixel, up close";
+    const pc = 1/st.ch, pd = 1/st.dh, hide = st.slot.prod || st.slot.pix;
+    f.innerHTML = 'head = (<span class="drag c" data-drag="ch" tabindex="0" role="slider" aria-label="cat head precision" aria-valuenow="' + prec(st.ch) + '">' + prec(st.ch) + '</span> × (+1) + <span class="drag d" data-drag="dh" tabindex="0" role="slider" aria-label="dog head precision" aria-valuenow="' + prec(st.dh) + '">' + prec(st.dh) + '</span> × (' + M + '1)) / (' + prec(st.ch) + ' + ' + prec(st.dh) + ') = <span class="p">' + (hide ? "?" : sgn(s.head_mean)) + '</span>';
+  }
+}
+
+/* ---------- the log Z gauge ---------- */
+const GX = z => 14 + (z + 1700)/1700*372;
+function drawGauge(){
+  const svg = $("gSvg"); let h = "";
+  h += '<line x1="14" y1="34" x2="386" y2="34" stroke="var(--rule)" stroke-width="6" stroke-linecap="round"/>';
+  [[KEY.walk.b.logZ, "blend " + num(KEY.walk.b.logZ, 1)], [KEY.walk.a.logZ, "mosaic " + num(KEY.walk.a.logZ, 1)]].forEach(([z, t]) => {
+    h += '<line x1="' + GX(z) + '" y1="28" x2="' + GX(z) + '" y2="40" stroke="var(--muted)" stroke-width="2"/><text class="axl" x="' + GX(z) + '" y="62" text-anchor="' + (z > -200 ? "end" : "start") + '">' + t + '</text>'; });
+  const mark = (z, t, c, dash) => { const x = GX(Math.max(-1700, Math.min(0, z)));
+    h += '<path d="M' + x + ',30 l-8,-14 h16 z" fill="' + (dash ? "none" : c) + '" stroke="' + c + '" stroke-width="2"' + (dash ? ' stroke-dasharray="4 3"' : "") + '/>';
+    h += '<text class="mk" x="' + Math.max(70, Math.min(330, x)) + '" y="12" text-anchor="middle" fill="' + c + '">' + t + '</text>'; };
+  if (st.ghost && st.ghost.gauge != null) mark(st.ghost.gauge, "what this option says", "var(--ink)", true);
+  else if (st.slot.gauge) h += '<text class="mk" x="' + GX(-850) + '" y="14" text-anchor="middle" fill="var(--muted)">log Z = ?</text>';
+  else { const s = single(st.ch, st.cb, st.dh, st.db); mark(s.logZ, "log Z " + num(s.logZ, 1), "var(--accent)"); }
+  svg.innerHTML = h;
+}
+
+/* ---------- the mixture grid ---------- */
+function drawMix(){
+  const box = $("mix"), pairs = mixture(); let h = "";
+  h += '<div class="cap">Cat <span class="sym">×</span> dog, one product per pair of placements<span class="math"> · each tile is that pair\'s mean, w its weight in the product, ℓ its log weight before normalising</span></div>';
+  h += '<div></div>';
+  DOGC.forEach(d => { h += '<div class="hd d">' + miniSVG(d.m) + 'dog on the ' + d.name + ' · ½</div>'; });
+  CATC.forEach((c, i) => {
+    h += '<div class="hd c">' + miniSVG(c.m) + 'cat on the ' + c.name + ' · ½</div>';
+    DOGC.forEach((d, j) => { const p = pairs[i*2 + j];
+      const g = st.ghost && st.ghost.w ? st.ghost.w[i*2 + j] : null;
+      const cls = g != null ? (g > 0 ? " ghost" : "") : (!st.slot.w && st.mixReveal ? (p.w > 0.25 ? " heavy" : " light") : "");
+      const halves = [{x:60, t:sgn(avg(p.m, LEFT))}, {x:180, t:sgn(avg(p.m, RIGHT))}];
+      h += '<div class="pair' + cls + '"><svg class="tile" viewBox="0 0 240 240" role="img" aria-label="' + p.name + '">' + tileSVG(p.m, {labels: halves.map(o => ({x:o.x, y:132, t:o.t, big:true}))}) + '</svg>';
+      if (g != null) h += '<div class="pw"><span class="gv">w ' + g + '</span></div>';
+      else if (st.slot.w) h += '<div class="pw"><span class="slotv">w ?</span><span class="lw">ℓ ?</span></div>';
+      else h += '<div class="pw"><span>w ≈ ' + p.w.toFixed(2) + '</span><span class="lw">ℓ ' + num(p.logw, 1) + '</span></div>';
+      h += '</div>'; });
+  });
+  box.innerHTML = h;
+}
+
+/* ---------- the stage ---------- */
+const CAP = (n, m) => n + '<span class="math">' + m + '</span>';
+function drawStage(){
+  const mix = st.mode === "mix";
+  $("figs").hidden = mix; $("mix").hidden = !mix;
+  $("pix").hidden = mix || !st.show.pix; $("gauge").hidden = mix || !st.show.gauge || st.noiseView;
+  if (mix) drawMix();
+  else {
+    const s = single(st.ch, st.cb, st.dh, st.db), nv = st.noiseView;
+    const n = nv ? noised(st.ch, st.cb, st.dh, st.db, st.ab) : null;
+    $("fSum").hidden = !nv; $("figs").style.setProperty("--n", nv ? 4 : 3); $("figs").style.setProperty("--tw", nv ? "185px" : "225px");
+    const cm = nv ? n.cat.m : s.e.ma, cv = nv ? n.cat.v : s.e.va, dm = nv ? n.dog.m : s.e.mb, dv = nv ? n.dog.v : s.e.vb;
+    const vl = (h, b) => bandLabels("head · var " + h, "body · var " + b);
+    $("cCat").innerHTML = CAP(nv ? "Cat, noised" : "Cat expert", nv ? "mean √ᾱ, var ᾱv + 1 − ᾱ" : "mean +1 on every pixel");
+    $("cDog").innerHTML = CAP(nv ? '<span class="sym">×</span> Dog, noised' : '<span class="sym">×</span> Dog expert', nv ? "mean " + M + "√ᾱ" : "mean " + M + "1 on every pixel");
+    $("fCat").querySelector("svg").innerHTML = tileSVG(cm, {labels: vl(nv ? +cv[0].toFixed(3) : st.ch, nv ? +cv[8].toFixed(3) : st.cb)});
+    $("fDog").querySelector("svg").innerHTML = tileSVG(dm, {labels: vl(nv ? +dv[0].toFixed(3) : st.dh, nv ? +dv[8].toFixed(3) : st.db)});
+    draws($("fCat"), "cat", cm, cv, true); draws($("fDog"), "dog", dm, dv, true);
+    const pSvg = $("fProd").querySelector("svg");
+    if (nv){
+      $("cProd").innerHTML = CAP("Noised product", "the correct target at ᾱ");
+      $("cSum").innerHTML = CAP("Summed scores", "noised cat × noised dog");
+      const hide = !!st.slot.pix;
+      pSvg.innerHTML = hide ? tileSVG(null, {slot:true}) : tileSVG(n.target.m, {labels: bandLabels(sgn(n.head_target), sgn(n.body_target), true)});
+      pSvg.classList.toggle("slot", hide);
+      const sSvg = $("fSum").querySelector("svg");
+      const gh = st.ghost && st.ghost.pix != null ? fill(0).map((_, k) => k < 8 ? st.ghost.pix : n.body_summed) : null;
+      sSvg.innerHTML = hide ? tileSVG(null, {slot:true, ghost: gh}) : tileSVG(n.summed.m, {labels: bandLabels(sgn(n.head_summed), sgn(n.body_summed), true)});
+      sSvg.classList.toggle("slot", hide);
+      draws($("fProd"), "prod", n.target.m, n.target.v, !hide); draws($("fSum"), "sum", n.summed.m, n.summed.v, !hide);
+    } else {
+      $("cProd").innerHTML = CAP('<span class="sym">=</span> Product', "mean, precision-weighted per pixel");
+      const hide = !!st.slot.prod;
+      pSvg.innerHTML = hide ? tileSVG(null, {slot:true, ghost: st.ghost && st.ghost.tile}) : tileSVG(s.m, {labels: bandLabels(sgn(s.head_mean), sgn(s.body_mean), true)});
+      pSvg.classList.toggle("slot", hide);
+      draws($("fProd"), "prod", s.m, s.v, !hide);
+    }
+    if (st.show.pix) drawPix();
+    if (st.show.gauge && !nv) drawGauge();
+  }
+  live(); guide();
+}
+function live(){
+  const L = $("liveLabel"), V = $("live"); let lab, val = null, hot = false;
+  if (st.mode === "mix"){ lab = "weight on the side-by-side pairs"; if (!st.slot.w){ const p = mixture(); val = (p[1].w + p[2].w).toFixed(2); } }
+  else if (st.noiseView){ lab = "head pixel under summed scores"; hot = true; if (!st.slot.pix) val = sgn(noised(st.ch, st.cb, st.dh, st.db, st.ab).head_summed); }
+  else { lab = "log Z, how much they overlap"; if (!st.slot.gauge && !st.slot.prod) val = num(single(st.ch, st.cb, st.dh, st.db).logZ, 1); }
+  L.textContent = lab; V.textContent = val == null ? "?" : val; V.classList.toggle("slot", val == null); V.classList.toggle("hotv", hot && val != null);
+}
+
+/* ---------- readouts ---------- */
+function readout(opts){
+  opts = opts || {}; const box = el("div", {class:"card"});
+  const add = (cells, label, v, cls) => { const c = el("div", {class:"cell " + (cls || "")}); c.appendChild(el("span", {class:"cl"}, label)); c.appendChild(el("span", {class:"cv" + (v == null ? " slot" : "")}, v == null ? "?" : v)); cells.appendChild(c); };
+  const cells = el("div", {class:"cells"});
+  if (st.mode === "mix"){
+    const p = mixture();
+    box.appendChild(el("div", {class:"lab"}, 'The four pairs <span class="chip">exact</span>'));
+    add(cells, "side-by-side pairs, each", st.slot.w ? null : "≈ " + p[1].w.toFixed(2), "p");
+    add(cells, "same-half pair, against a side-by-side one", st.slot.w ? null : esup(Math.round(p[1].logw - p[0].logw)));
+    add(cells, "gap in ℓ", st.slot.w ? null : num(p[1].logw - p[0].logw, 1));
+  } else if (st.noiseView){
+    const n = noised(st.ch, st.cb, st.dh, st.db, st.ab), hide = st.slot.pix;
+    box.appendChild(el("div", {class:"lab"}, 'Head pixel at <span class="sym">ᾱ = ' + st.ab + '</span> <span class="chip">exact</span>'));
+    add(cells, "noised product, the target", hide ? null : sgn(n.head_target), "p");
+    add(cells, "summed scores", hide ? null : sgn(n.head_summed), "h");
+    add(cells, "summed scores fall short by", hide ? null : num(n.head_target - n.head_summed, 3), "h");
+  } else {
+    const s = single(st.ch, st.cb, st.dh, st.db), hp = st.slot.prod, hz = hp || st.slot.gauge;
+    box.appendChild(el("div", {class:"lab"}, 'The product <span class="chip">exact</span>'));
+    add(cells, "head pixel mean", hp ? null : sgn(s.head_mean), "p");
+    add(cells, "body pixel mean", hp ? null : sgn(s.body_mean), "p");
+    add(cells, "log Z, overlap", hz ? null : num(s.logZ, 1));
+  }
+  box.appendChild(cells);
+  if (opts.line) box.appendChild(el("p", {class:"stateline"}, opts.line));
+  return box;
+}
+const ro = opts => { $("readout").innerHTML = ""; $("readout").appendChild(readout(opts)); };
+
+/* ---------- controls ---------- */
+const VLAB = {ch:["Cat, head variance","c"], cb:["Cat, body variance","c"], dh:["Dog, head variance","d"], db:["Dog, body variance","d"]};
+let onVar = () => {};
+function setVar(k, v){ st[k] = v; const inp = $("rng-" + k); if (inp){ inp.value = String(VSTOPS.indexOf(v)); const o = $("val-" + k); if (o) o.textContent = vfmt(v); } drawStage(); onVar(); }
+function varSliders(host, onChange){
+  onVar = onChange;
+  const card = el("div", {class:"card"});
+  card.appendChild(el("div", {class:"lab"}, "How sure each expert is: variance per part"));
+  const g = el("div", {class:"sl2"});
+  ["ch","cb","dh","db"].forEach(k => {
+    g.appendChild(el("label", {class:VLAB[k][1], for:"rng-" + k}, VLAB[k][0]));
+    const inp = el("input", {type:"range", min:"0", max:String(VSTOPS.length - 1), step:"1", id:"rng-" + k, "aria-label":VLAB[k][0]});
+    inp.value = String(VSTOPS.indexOf(st[k])); inp.addEventListener("input", () => setVar(k, VSTOPS[+inp.value])); g.appendChild(inp);
+    g.appendChild(el("span", {class:"v", id:"val-" + k}, vfmt(st[k])));
+  });
+  card.appendChild(g);
+  card.appendChild(el("div", {class:"rangeends"}, "<span>0.01: sure</span><span>1: loose</span>"));
+  const pins = el("div", {class:"row"});
+  [["(a) mosaic", [0.01, 1, 1, 0.01]], ["(b) blend", [0.01, 0.01, 0.01, 0.01]], ["dog head sure too", [0.01, 1, 0.01, 0.01]]].forEach(([t, v]) => {
+    const b = el("button", {class:"pill", type:"button"}, t); b.addEventListener("click", () => { ["ch","cb","dh","db"].forEach((k, i) => { st[k] = v[i]; const inp = $("rng-" + k); if (inp){ inp.value = String(VSTOPS.indexOf(v[i])); $("val-" + k).textContent = vfmt(v[i]); } }); drawStage(); onVar(); }); pins.appendChild(b); });
+  card.appendChild(pins);
+  host.appendChild(card);
+}
+function noiseSlider(host, onChange){
+  const card = el("div", {class:"card"});
+  card.appendChild(el("div", {class:"lab"}, 'How much noise, <span class="sym">ᾱ</span>'));
+  const inp = el("input", {type:"range", min:"0", max:String(ASTOPS.length - 1), step:"1", id:"rng-ab", "aria-label":"noise level abar"});
+  inp.value = String(ASTOPS.indexOf(st.ab)); card.appendChild(inp);
+  card.appendChild(el("div", {class:"rangeends"}, "<span>ᾱ = 1: clean</span><span>ᾱ = 0.01: almost all noise</span>"));
+  inp.addEventListener("input", () => { st.ab = ASTOPS[+inp.value]; st.noiseView = st.ab < 1 || st.noiseLock; drawStage(); onChange(); });
+  host.appendChild(card);
+}
+function pills(host, label, items, cur, onPick){
+  const card = el("div", {class:"card"}); card.appendChild(el("div", {class:"lab"}, label));
+  const row = el("div", {class:"row"});
+  items.forEach(it => { const b = el("button", {class:"pill", type:"button", "aria-pressed": String(it.v === cur)}, it.t);
+    b.addEventListener("click", () => { row.querySelectorAll(".pill").forEach(x => x.setAttribute("aria-pressed", "false")); b.setAttribute("aria-pressed", "true"); onPick(it.v); });
+    row.appendChild(b); });
+  card.appendChild(row); host.appendChild(card); return card;
+}
+// drag the precision numbers inside the formula: one stop per 28 px
+$("pixF").addEventListener("pointerdown", e => {
+  const h = e.target.closest && e.target.closest("[data-drag]"); if (!h || !st.dragOK) return; e.preventDefault();
+  const k = h.dataset.drag, x0 = e.clientX, i0 = VSTOPS.indexOf(st[k]);
+  const mv = ev => { const i = Math.max(0, Math.min(VSTOPS.length - 1, i0 - Math.round((ev.clientX - x0)/28))); if (VSTOPS[i] !== st[k]) setVar(k, VSTOPS[i]); const n = $("pixF").querySelector('[data-drag="' + k + '"]'); if (n) n.classList.add("active"); };
+  const up = () => { window.removeEventListener("pointermove", mv); window.removeEventListener("pointerup", up); window.removeEventListener("pointercancel", up); };
+  window.addEventListener("pointermove", mv); window.addEventListener("pointerup", up); window.addEventListener("pointercancel", up);
+});
+$("pixF").addEventListener("keydown", e => { const h = e.target; if (!h.dataset || !h.dataset.drag || !st.dragOK) return; const k = h.dataset.drag, i = VSTOPS.indexOf(st[k]);
+  let j = null; if (e.key === "ArrowRight" || e.key === "ArrowUp") j = i - 1; if (e.key === "ArrowLeft" || e.key === "ArrowDown") j = i + 1;
+  if (j == null) return; e.preventDefault(); e.stopPropagation(); j = Math.max(0, Math.min(VSTOPS.length - 1, j)); setVar(k, VSTOPS[j]); const n = $("pixF").querySelector('[data-drag="' + k + '"]'); if (n) n.focus(); });
+
+/* ---------- questions ---------- */
+const QST = store.get("q", {});
+const QDEF = {};
+const LET = "ABCD";
+const defineQ = (id, d) => { QDEF[id] = d; };
+const picked = id => !!(QST[id] && QST[id].pick != null);
+function askQ(id){
+  const box = $("qBox"), d = QDEF[id], s = QST[id] || {};
+  if (s.result) return revealQ(id);
+  box.innerHTML = ""; const q = el("div", {class:"q"});
+  q.appendChild(el("div", {class:"lab"}, "Predict: tap one"));
+  q.appendChild(el("div", {class:"qask"}, d.ask));
+  (d.gloss || []).forEach(g => q.appendChild(el("p", {class:"gloss"}, g)));
+  const dt = el("details"); dt.appendChild(el("summary", null, "What is this asking?")); dt.appendChild(el("div", null, d.plain)); q.appendChild(dt);
+  const btns = d.options.map((o, i) => {
+    const b = el("button", {class:"opt", type:"button", "aria-pressed": String(s.pick === i)}, '<span class="ol">' + LET[i] + '</span><span class="ob"><span>' + o.t + '</span></span>');
+    const pv = on => { const p = on ? i : (QST[id] && QST[id].pick != null ? QST[id].pick : null); st.ghost = p == null ? null : d.options[p].ghost; drawStage(); };
+    b.addEventListener("pointerenter", e => { if (e.pointerType === "mouse") pv(true); });
+    b.addEventListener("pointerleave", e => { if (e.pointerType === "mouse") pv(false); });
+    b.addEventListener("focus", () => pv(true)); b.addEventListener("blur", () => pv(false));
+    b.addEventListener("click", () => { QST[id] = {pick:i}; store.set("q", QST); btns.forEach((x, j) => x.setAttribute("aria-pressed", String(j === i))); pv(true); });
+    q.appendChild(b); return b; });
+  q.appendChild(el("div", {class:"hint"}, "Point at an answer to see it drawn on the stage. Next shows the verdict."));
+  box.appendChild(q);
+  st.ghost = s.pick != null ? d.options[s.pick].ghost : null;
+}
+function revealQ(id){
+  const box = $("qBox"), d = QDEF[id], s = QST[id] || {};
+  if (!s.result){ s.result = s.pick == null ? "skipped" : (d.options[s.pick].right ? "right" : "wrong"); QST[id] = s; store.set("q", QST); }
+  renderScore();
+  box.innerHTML = ""; const q = el("div", {class:"q done"});
+  q.appendChild(el("div", {class:"lab"}, "Your prediction, checked"));
+  q.appendChild(el("div", {class:"qask"}, d.ask));
+  d.options.forEach((o, i) => { const mine = s.pick === i;
+    const b = el("div", {class:"opt revealed " + (o.right ? "right" : "wrong") + (mine ? " picked" : "")});
+    b.innerHTML = '<span class="ol">' + (o.right ? "✓" : "✗") + '</span><span class="ob">' + (mine ? '<span class="tagp">your pick</span>' : "") + '<span>' + o.t + '</span><span class="whyo"><b>' + (o.right ? "Right because" : "Tempting because") + ':</b> ' + o.why + '</span></span>';
+    q.appendChild(b); });
+  q.appendChild(el("div", {class:"qverdict " + (s.result === "right" ? "right" : s.result === "wrong" ? "wrong" : "")}, {right:"Right first time.", wrong:"Not this time: the green one is what the stage now shows.", skipped:"No pick made, so this one is scored as seen."}[s.result]));
+  if (d.lesson) q.appendChild(el("div", {class:"qask"}, d.lesson));
+  box.appendChild(q); st.ghost = null;
+}
+const SCORE_ROWS = [{id:"q1", label:"mosaic", press:1}, {id:"q2", label:"overlap", press:3}, {id:"q3", label:"pairs", press:5}, {id:"q4", label:"noise", press:7}];
+function renderScore(){
+  const box = $("score"); box.innerHTML = '<span class="sl">Predictions</span>';
+  SCORE_ROWS.forEach(r => { const s = (QST[r.id] && QST[r.id].result) || "empty";
+    const b = el("button", {class:"sc " + s, type:"button", title: r.label + ": " + ({empty:"not answered yet", right:"right first time", wrong:"missed, answer seen", skipped:"seen without a pick"}[s])}, ({empty:"?", right:"✓", wrong:"✗", skipped:"–"}[s]) + " " + r.label);
+    b.addEventListener("click", () => go(r.press)); box.appendChild(b); });
+}
+const T = (h, b) => fill(0).map((_, k) => k < 8 ? h : b);
+const A = KEY.walk.a, B = KEY.walk.b, C = KEY.walk.c, DD = KEY.walk.d, TIGHT = KEY.a_dog_head_tight, PL = KEY.pixel_logZ;
+defineQ("q1", {
+  ask: "The cat turns <u title='variance 1 on that part: its training images vary there'>loose</u> on the body and the dog loose on the head. What does the product's tile become?",
+  gloss: ["<b>loose</b>: variance 1, because that part varies across the expert's training images. <b>sure</b>: variance 0.01."],
+  plain: "Each pixel of the product is a weighted average of +1 and −1, weighted by how sure each expert is on that pixel. Look at which expert is sure on the head rows and which on the body rows.",
+  options: [
+    {t:"Still grey everywhere: a blend", ghost:{tile:T(0, 0)}, why:"loosening one side breaks the tie on every pixel. A blend needs equal precision, as in press 1."},
+    {t:"A cat head on a dog body", right:true, ghost:{tile:T(0.98, -0.98)}, why:"on the head the cat's precision is 100 and the dog's 1, so the cat wins; on the body it is the other way round."},
+    {t:"A dog head on a cat body", ghost:{tile:T(-0.98, 0.98)}, why:"the loose expert seems to be the one that is free to show. A loose expert gives way: its pull is 1 against 100."},
+    {t:"Blue all over: the cat wins", ghost:{tile:T(0.98, 0.98)}, why:"the cat is still sure on the head. On the body the dog is sure and the cat is loose, so the dog takes the body."}
+  ],
+  lesson: "On every pixel, the surer expert wins."
+});
+defineQ("q2", {
+  ask: "Make the dog <u title='variance 0.01 on the head'>sure</u> on the head too. Where does <u title='the log of Z = N(mu_cat; mu_dog, var_cat + var_dog), summed over the 16 pixels: how much the two experts overlap'>log Z</u> go from " + num(A.logZ, 1) + "?",
+  gloss: ["<b>log Z</b>: the log of Z, the area under cat × dog, summed over 16 pixels. With the means fixed at +1 and −1, higher is more overlap."],
+  plain: "On each head pixel the cat now says +1 firmly and the dog says −1 firmly. Do two firm, opposite answers overlap more or less than a firm one against a vague one?",
+  options: [
+    {t:"Up toward 0: two sure experts agree more", ghost:{gauge:-15}, why:"sure sounds like agreement. Here both are sure of opposite values, which is the strongest disagreement."},
+    {t:"It stays at " + num(A.logZ, 1), ghost:{gauge:A.logZ}, why:"the body did not change. The 8 head pixels did, and log Z sums all 16."},
+    {t:"Down to about " + num(TIGHT.logZ, 0), right:true, ghost:{gauge:TIGHT.logZ}, why:"each head pixel now adds " + num(PL.sure_vs_sure_opposite, 1) + " instead of " + num(PL.sure_vs_loose_opposite, 1) + ": 8 × (" + num(PL.sure_vs_sure_opposite, 2) + ") + 8 × (" + num(PL.sure_vs_loose_opposite, 3) + ") = " + num(TIGHT.logZ, 1) + "."},
+    {t:"Down to " + num(B.logZ, 1) + ", the blend's", ghost:{gauge:B.logZ}, why:"the head is now a blend. The body is still a mosaic, so only half the pixels pay the blend's price."}
+  ],
+  lesson: "Two sure, opposite experts barely overlap: log Z says so before any sample is drawn."
+});
+defineQ("q3", {
+  ask: "Each animal sits in the left or right half, ½ each. Which <u title='one product component per pair of placements: cat-left with dog-left, and so on'>pairs</u> carry the product's weight?",
+  gloss: ["<b>pair</b>: one cat placement multiplied by one dog placement. Four pairs, four components."],
+  plain: "A pair's weight is ¼ times how much its two placements overlap. Look at each pair's tile: where do a sure +1 and a sure −1 land on the same pixels?",
+  options: [
+    {t:"All four, 0.25 each", ghost:{w:[0.25, 0.25, 0.25, 0.25]}, why:"every pair starts at ½ × ½ = ¼. Then each is multiplied by its overlap, and the overlaps differ by a factor of e⁷⁷⁹."},
+    {t:"The same-half pairs, about 0.5 each", ghost:{w:[0.5, 0, 0, 0.5]}, why:"both animals in one half looks like one picture. There a sure +1 meets a sure −1 on 8 pixels: a blend nobody drew."},
+    {t:"The side-by-side pairs, about 0.5 each", right:true, ghost:{w:[0, 0.5, 0.5, 0]}, why:"each sure half meets the other expert's loose half, so the pair overlaps well: ℓ " + num(C["cat-left x dog-right"].logw_unnorm, 1) + " against " + num(C["cat-left x dog-left"].logw_unnorm, 1) + "."},
+    {t:"One pair takes all of it", ghost:{w:[0, 1, 0, 0]}, why:"the two side-by-side pairs are mirror images with the same overlap, so they tie at 0.5."}
+  ],
+  lesson: "A product of mixtures keeps the pairs that agree and drops the ones that clash."
+});
+defineQ("q4", {
+  ask: "At <u title='the forward process keeps sqrt(abar) of the signal and adds noise of variance 1 - abar'>ᾱ</u> = 0.5, summed scores point at the noised cat times the noised dog. Where is that density's head mean?",
+  gloss: ["<b>summed scores</b>: at one noise level, cat score + dog score is the score of the noised cat times the noised dog."],
+  plain: "Noise both bells: the cat head pixel becomes N(0.707, 0.505), the dog's N(−0.707, 1.0). Take their precision-weighted mean.",
+  options: [
+    {t:"+0.980, where the clean product put it", ghost:{pix:A.head_mean}, why:"the clean product's head is +0.980, but noise shrinks every mean by √ᾱ, so nothing at this level sits there."},
+    {t:"+0.693: the clean +0.980 shrunk by √0.5", ghost:{pix:DD.head_mean_noised_product}, why:"that is the noised product, the correct target. Summed scores multiply the noised experts instead."},
+    {t:"+0.233", right:true, ghost:{pix:DD.head_mean_product_of_noised}, why:"noise lifts both variances toward 1, so the cat's lead falls from 100 : 1 to 1.98 : 1: (1.98 × 0.707 − 0.707) / 2.98 = 0.233."},
+    {t:"0: grey, a blend", ghost:{pix:0}, why:"the cat still leads, 1.98 to 1, so the head stays on the cat's side of 0."}
+  ],
+  lesson: "Noising each expert first hands the dog back part of the head."
+});
+
+/* ---------- the presses ---------- */
+const CHAPTERS = [{id:"bl", label:"Blend"}, {id:"mo", label:"Mosaic"}, {id:"tw", label:"Two animals"}, {id:"no", label:"Noise"}, {id:"x", label:"Explore"}];
+const ex = () => $("extra"), ctrl = () => $("ctrl");
+const card = (lab, body) => el("div", {class:"card"}, '<div class="lab">' + lab + '</div><p class="stateline">' + body + '</p>');
+function exploreLine(){
+  if (st.mode === "mix"){ const p = mixture(); return "Position varies: the side-by-side pairs hold about " + p[1].w.toFixed(2) + " each, and the same-half pairs " + esup(Math.round(p[1].logw - p[0].logw)) + " of that."; }
+  if (st.noiseView){ const n = noised(st.ch, st.cb, st.dh, st.db, st.ab); return "At ᾱ = " + st.ab + " summed scores aim the head at " + sgn(n.head_summed) + ", the target at " + sgn(n.head_target) + "."; }
+  const s = single(st.ch, st.cb, st.dh, st.db);
+  const part = m => m > 0.5 ? "cat" : m < -0.5 ? "dog" : "grey";
+  const h = part(s.head_mean), b = part(s.body_mean);
+  const what = h === b ? (h === "grey" ? "grey on every pixel, a blend" : "a " + h + " on every pixel") : "a " + h + " head on a " + b + " body";
+  return "Head " + sgn(s.head_mean) + ", body " + sgn(s.body_mean) + ": " + what + ". log Z " + num(s.logZ, 1) + ".";
+}
+const PRESSES = [
+  {chap:"bl", title:"Sure everywhere: a grey blend",
+    say:"Both experts are sure of every pixel, variance 0.01. Each pixel's product has mean 0 and sd 0.071, and that mean is 10 of each expert's standard deviations from its own mean.",
+    focus:["cat","dog","prod","gauge"],
+    recall:[{href:"https://claude.ai/artifact/2A7YDnfKe8EPsS7yFDVcNT#p2", text:"Second view, the 2D toy (other numbers): Where the Product Lands, press 2"}],
+    enter(){ Object.assign(st, {ch:0.01, cb:0.01, dh:0.01, db:0.01});
+      ex().appendChild(el("div", {class:"card"}, '<div class="lab">Broken run <span class="chip hot">a blend neither expert draws</span></div><p class="stateline">Blend: every pixel <b class="data">0</b>, log Z <span class="data">' + num(B.logZ, 1) + '</span>, product sd <span class="data">' + B.product_sd.toFixed(3) + '</span>. A mosaic keeps the head at <span class="data">' + sgn(A.head_mean) + '</span>: press 3.</p>'));
+      ro(); }},
+  {chap:"mo", title:"Loosen the cat's body", gate:"q1",
+    say:"Now the cat's training images share one head and vary in body; the dog's share one body and vary in head. So the cat is loose on the body, the dog on the head.",
+    focus:["cat","dog","prod"],
+    enter(){ Object.assign(st, {ch:0.01, cb:1, dh:1, db:0.01}); st.slot = {prod:true, gauge:true}; st.show.gauge = false; askQ("q1"); ro(); }},
+  {chap:"mo", title:"Each pixel follows the surer expert",
+    say:"Precisions add and the mean is precision-weighted, pixel by pixel. A head pixel weighs the cat's 100 against the dog's 1: 99/101 = 0.980.",
+    focus:["prod","pix","gauge"],
+    enter(){ Object.assign(st, {ch:0.01, cb:1, dh:1, db:0.01}); st.show.pix = true; revealQ("q1"); ro(); }},
+  {chap:"mo", title:"Make the dog's head sure", gate:"q2",
+    say:"Keep the mosaic's body and make the dog sure on the head too, variance 0.01. log Z measures how much the two experts overlap.",
+    focus:["dog","prod","gauge"],
+    enter(){ Object.assign(st, {ch:0.01, cb:1, dh:0.01, db:0.01}); st.slot = {gauge:true}; askQ("q2"); ro(); }},
+  {chap:"mo", title:"Sure clashes cost overlap",
+    say:"A sure +1 against a sure −1 adds −98.96 to log Z per pixel; sure against loose adds −2.904. Drag the variances between mosaic and blend.",
+    focus:["cat","dog","prod","pix","gauge"],
+    enter(){ Object.assign(st, {ch:0.01, cb:1, dh:0.01, db:0.01}); st.show.pix = true; st.dragOK = true; revealQ("q2");
+      varSliders(ctrl(), () => ro({line:exploreLine()})); ro({line:exploreLine()}); }},
+  {chap:"tw", title:"Let each animal pick a side", gate:"q3",
+    say:"Each animal now sits in the left or the right half, ½ each, sure there and loose (mean 0) elsewhere. Multiplying two mixtures gives one component per pair: four.",
+    focus:["mix"],
+    enter(){ st.mode = "mix"; st.slot = {w:true}; st.mixReveal = false; askQ("q3"); ro(); }},
+  {chap:"tw", title:"Clashing pairs lose their weight",
+    say:"A same-half pair puts sure +1 against sure −1 on 8 pixels: ℓ = −803.2. A side-by-side pair meets loose pixels, ℓ = −24.1, so side-by-side pairs hold all but e⁻⁷⁷⁹ of the weight.",
+    focus:["mix"],
+    enter(){ st.mode = "mix"; st.mixReveal = true; revealQ("q3"); ro(); }},
+  {chap:"no", title:"Noise both experts halfway", gate:"q4",
+    say:"The forward process noises each expert: a cat head pixel becomes variance 0.505, a dog head pixel 1.0. Adding their scores gives the score of these noised experts' product.",
+    focus:["cat","dog","prod","sum","pix"],
+    enter(){ Object.assign(st, {ch:0.01, cb:1, dh:1, db:0.01, ab:0.5, noiseView:true}); st.show.pix = true; st.slot = {pix:true}; askQ("q4"); ro(); }},
+  {chap:"no", title:"Summed scores drag toward grey",
+    say:"The cat's lead falls from 100 : 1 to 1.98 : 1, so summed scores aim the head at 0.233. The noised product, the correct target, puts it at 0.693.",
+    focus:["cat","dog","prod","sum","pix"],
+    enter(){ Object.assign(st, {ch:0.01, cb:1, dh:1, db:0.01, ab:0.5, noiseView:true, noiseLock:true}); st.show.pix = true; revealQ("q4");
+      const say0 = this.say; noiseSlider(ctrl(), () => { $("pSay").textContent = st.ab === 0.5 ? say0 : exploreLine(); ro(); }); ro(); }},
+  {chap:"x", title:"Explore, then check by hand", say:"", focus:null,
+    enter(){ Object.assign(st, {ch:0.01, cb:1, dh:1, db:0.01, ab:1, noiseView:false}); st.show.pix = true; st.dragOK = true;
+      const sayLine = () => { $("pSay").textContent = exploreLine(); ro(); };
+      const box = ctrl(), slot = el("div", {class:"side"});
+      const build = () => { slot.innerHTML = ""; if (st.mode === "single"){ varSliders(slot, sayLine); noiseSlider(slot, sayLine); } };
+      pills(box, "Where each animal sits", [{t:"fixed: whole frame", v:"single"}, {t:"varies: left or right, ½ each", v:"mix"}], "single", v => { st.mode = v; if (v === "mix"){ st.mixReveal = true; } build(); drawStage(); sayLine(); });
+      box.appendChild(slot); build(); sayLine();
+      const hand = el("div", {class:"hand"});
+      hand.innerHTML = '<div>✍️ <b>On paper:</b> set the cat\'s head variance to 0.02 and the dog\'s to 0.5. Precisions 50 and 2, so the head is (50 − 2) / 52 = <span class="data">' + sgn(KEY.hand_check.head_mean) + '</span>. Set the sliders and check.</div>';
+      const ta = el("textarea", {"aria-label":"code from memory", placeholder:"From memory: def gauss_product(ma, va, mb, vb): ... returns m, v, logZ"}); ta.value = store.get("code", ""); ta.addEventListener("input", () => store.set("code", ta.value)); hand.appendChild(ta);
+      hand.appendChild(el("details", null, '<summary>Expected output on setting (a)</summary><pre>head_mean 0.9801980198019802\nbody_mean -0.9801980198019802\nlogZ -46.46578749493179</pre>'));
+      ex().appendChild(hand); }}
+];
+
+/* ---------- engine ---------- */
+let cur = -1, nudged = false;
+function guide(){ const p = PRESSES[cur]; const on = $("guide").checked && p && p.focus;
+  document.querySelectorAll("[data-g]").forEach(f => f.classList.toggle("dim", !!on && !p.focus.includes(f.dataset.g))); }
+function go(i){
+  i = Math.max(0, Math.min(PRESSES.length - 1, i));
+  cur = i; nudged = false; const p = PRESSES[i];
+  const nn = document.querySelector(".nudge"); if (nn) nn.remove();
+  $("pTitle").textContent = p.title; $("pSay").textContent = p.say;
+  const rc = $("recall"); rc.innerHTML = ""; (p.recall || []).forEach(r => rc.appendChild(el("a", {href:r.href, target:"_blank", rel:"noopener"}, r.text)));
+  ["qBox","ctrl","readout","extra"].forEach(id => { $(id).innerHTML = ""; });
+  st = RESET(); onVar = () => {};
+  p.enter();
+  drawStage();
+  $("count").textContent = (i + 1) + " of " + PRESSES.length;
+  $("back").disabled = i === 0; $("next").disabled = i === PRESSES.length - 1;
+  const ci = CHAPTERS.findIndex(c => c.id === p.chap);
+  $("chaps").querySelectorAll(".chap").forEach((b, j) => b.classList.toggle("on", j === ci));
+  store.set("press", i);
+  try { history.replaceState(null, "", "#p" + (i + 1)); } catch(e){}
+  $("press").scrollTop = 0;
+}
+function next(){ const p = PRESSES[cur];
+  if (p.gate && !picked(p.gate) && !nudged){ nudged = true; $("navbar").appendChild(el("div", {class:"nudge"}, "Pick an answer first. Press Next again to see the verdict without one.")); return; }
+  go(cur + 1); }
+CHAPTERS.forEach(c => { const b = el("button", {class:"chap", type:"button"}, c.label); b.addEventListener("click", () => go(PRESSES.findIndex(p => p.chap === c.id))); $("chaps").appendChild(b); });
+$("next").addEventListener("click", next);
+$("back").addEventListener("click", () => go(cur - 1));
+$("guide").addEventListener("change", guide);
+document.addEventListener("keydown", e => { const t = e.target; if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || (t.dataset && t.dataset.drag))) return;
+  if (e.key === "ArrowRight"){ e.preventDefault(); next(); } else if (e.key === "ArrowLeft"){ e.preventDefault(); go(cur - 1); } });
+
+const themeBtn = $("theme");
+const isDark = () => { const a = document.documentElement.getAttribute("data-theme"); if (a) return a === "dark"; try { return matchMedia("(prefers-color-scheme: dark)").matches; } catch(e){ return false; } };
+const syncTheme = () => { themeBtn.textContent = isDark() ? "Light" : "Dark"; };
+themeBtn.addEventListener("click", () => { document.documentElement.setAttribute("data-theme", isDark() ? "light" : "dark"); syncTheme(); });
+syncTheme();
+
+/* key table, recomputed on load */
+function keyTable(){
+  const tb = $("keyTable").querySelector("tbody");
+  const a = single(0.01, 1, 1, 0.01), b = single(0.01, 0.01, 0.01, 0.01), mx = mixture(), d = noised(0.01, 1, 1, 0.01, 0.5);
+  const rows = [
+    ["(a) mosaic", "head mean", a.head_mean, A.head_mean], ["(a) mosaic", "body mean", a.body_mean, A.body_mean], ["(a) mosaic", "log Z", a.logZ, A.logZ],
+    ["(b) blend", "mean", (b.head_mean + b.body_mean)/2, B.mean], ["(b) blend", "product sd", Math.sqrt(b.head_var), B.product_sd], ["(b) blend", "log Z", b.logZ, B.logZ],
+    ["(b) blend", "sds from each expert", (1 - b.head_mean)/0.1, B.sds_from_each_expert]]
+    .concat(mx.map(p => ["(c) " + p.name, "ℓ, log weight before normalising", p.logw, C[p.name].logw_unnorm])).concat(mx.map(p => ["(c) " + p.name, "weight", p.w, C[p.name].weight]))
+    .concat([["(d) ᾱ = 0.5", "head, summed scores", d.head_summed, DD.head_mean_product_of_noised], ["(d) ᾱ = 0.5", "head, noised product", d.head_target, DD.head_mean_noised_product]]);
+  rows.forEach(r => { const ok = Math.abs(r[2] - r[3]) <= 1e-9*Math.max(1, Math.abs(r[3]));
+    const tr = el("tr"); tr.innerHTML = "<td>" + r[0] + "</td><td>" + r[1] + "</td><td class='data'>" + Number(r[2]).toPrecision(8) + "</td><td class='data'>" + Number(r[3]).toPrecision(8) + "</td><td>" + (ok ? "✓" : "✗") + "</td>"; tb.appendChild(tr); });
+}
+let tableBuilt = false;
+$("sources").addEventListener("toggle", () => { if ($("sources").open && !tableBuilt){ tableBuilt = true; keyTable(); } });
+window.addEventListener("load", () => setTimeout(() => { if (!tableBuilt){ tableBuilt = true; keyTable(); } }, 300));
+
+let rz = null; window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => drawStage(), 120); });
+renderScore();
+let start = 0; const m = /^#p(\d+)$/.exec(location.hash || ""); if (m) start = +m[1] - 1; else start = store.get("press", 0);
+go(start);
+})();
+</script>

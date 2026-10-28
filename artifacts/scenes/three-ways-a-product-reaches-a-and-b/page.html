@@ -1,0 +1,892 @@
+<title>Three ways a product reaches A-and-B</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chewy&family=Paprika&family=Mouse+Memoirs&family=Public+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.js"></script>
+<style>
+/* Layout: one square quadrant plot on the left that never leaves the screen, the question,
+   formula and the running ledger of numbers on the right, a sticky Back/Next bar.
+   Identity hues follow the PoE chapter series (Divide Out the Wall): expert A blue, expert B
+   amber, data and background grey, the product violet, the normaliser teal. */
+:root{
+  --paper:#f7f8f6; --panel:#ffffff; --shade:#eef0ed; --ink:#1d2329; --muted:#5c6670; --rule:#dde1dc;
+  --a:#2458d6; --asoft:#dde7fd;
+  --b:#b7791f; --bsoft:#fbefd5;
+  --data:#7b8190; --datasoft:#e8e9ed;
+  --prod:#7c3aed; --prodsoft:#efe7fe;
+  --norm:#0f766e; --normsoft:#d6f1ec;
+  --ok:#15803d; --oksoft:#dcfce7; --hot:#b91c1c; --hotsoft:#fee2e2;
+  --shout:"Chewy","Trebuchet MS",system-ui,sans-serif;
+  --title:"Paprika",Georgia,serif;
+  --label:"Mouse Memoirs","Arial Narrow",system-ui,sans-serif;
+  --prose:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --data-f:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#13161a; --panel:#1b1f25; --shade:#232830; --ink:#e8e9e6; --muted:#a2aab3; --rule:#333944;
+    --a:#82a8ff; --asoft:#1d2a4a; --b:#f0b351; --bsoft:#3a2c12; --data:#a7adba; --datasoft:#2a2d35;
+    --prod:#b799ff; --prodsoft:#2d2347; --norm:#34d3bd; --normsoft:#12342f;
+    --ok:#4ade80; --oksoft:#11301d; --hot:#f87171; --hotsoft:#3a1919;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#13161a; --panel:#1b1f25; --shade:#232830; --ink:#e8e9e6; --muted:#a2aab3; --rule:#333944;
+  --a:#82a8ff; --asoft:#1d2a4a; --b:#f0b351; --bsoft:#3a2c12; --data:#a7adba; --datasoft:#2a2d35;
+  --prod:#b799ff; --prodsoft:#2d2347; --norm:#34d3bd; --normsoft:#12342f;
+  --ok:#4ade80; --oksoft:#11301d; --hot:#f87171; --hotsoft:#3a1919;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+sub,sup{font-size:max(12px,.75em)}
+body{background:var(--paper);color:var(--ink);font-family:var(--prose);font-size:16px;line-height:1.5;margin:0}
+a{color:var(--a)}
+:focus-visible{outline:2px solid var(--prod);outline-offset:2px}
+.page{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px 0}
+@media (min-width:1000px){.page{padding-left:max(28px,env(safe-area-inset-left,0px));padding-right:max(28px,env(safe-area-inset-right,0px))}}
+.mono{font-family:var(--data-f);font-variant-numeric:tabular-nums}
+
+/* why-band */
+.band{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 20px;background:var(--panel);border:1px solid var(--rule);border-radius:12px;padding:10px 16px}
+.band h1{font-family:var(--shout);font-weight:400;font-size:clamp(26px,2.6vw,40px);line-height:1.05;margin:0;letter-spacing:.3px;text-wrap:balance}
+.readout{display:flex;align-items:baseline;gap:10px}
+.readout .rv{font-family:var(--data-f);font-size:clamp(26px,3vw,38px);font-weight:500;color:var(--prod);font-variant-numeric:tabular-nums}
+.readout .rl{font-family:var(--label);font-size:17px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);line-height:1.1;max-width:24ch}
+.readout .want{font-family:var(--data-f);font-size:14px;color:var(--muted)}
+.subrow{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;margin-top:8px}
+.chaps{display:flex;flex-wrap:wrap;gap:6px}
+.chap{border:1.5px solid var(--rule);background:var(--panel);color:var(--muted);font:inherit;font-size:13px;padding:3px 10px;border-radius:999px;cursor:pointer;min-height:30px}
+.chap.on{border-color:var(--ink);color:var(--ink);font-weight:500}
+.score{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.score .lab{font-family:var(--label);font-size:15px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);margin-right:2px}
+.sc{display:inline-flex;align-items:center;gap:4px;font:inherit;font-size:13px;border:1.5px dashed var(--rule);border-radius:8px;padding:1px 7px;background:transparent;color:var(--muted);cursor:pointer;min-height:28px}
+.sc.right{border-style:solid;border-color:var(--ok);color:var(--ok);background:var(--oksoft)}
+.sc.wrong{border-style:solid;border-color:var(--hot);color:var(--hot);background:var(--hotsoft)}
+.sc.skipped{border-style:solid;border-color:var(--muted)}
+
+/* press */
+.press{margin-top:12px}
+.say{display:flex;flex-direction:column;gap:3px;margin-bottom:10px;min-height:70px}
+.say h2{font-family:var(--title);font-weight:400;font-size:25px;line-height:1.15;margin:0;text-wrap:balance}
+.say p{margin:0;font-size:18px;line-height:1.5;max-width:80ch}
+.recall{display:flex;flex-wrap:wrap;gap:6px}
+.recall a{font-size:13px;text-decoration:none;border:1px dashed var(--a);border-radius:999px;padding:2px 10px;color:var(--a)}
+.stage{display:grid;grid-template-columns:auto minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:900px){.stage{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--panel);border:1px solid var(--rule);border-radius:12px;padding:12px;min-width:0}
+.plotwrap{position:relative}
+.plot svg{display:block;width:100%;height:auto;margin:0 auto;touch-action:pan-y}
+@media (min-width:901px){
+  .page{height:100dvh;display:flex;flex-direction:column}
+  header{flex:0 0 auto}
+  .press{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+  .say{flex:0 0 auto}
+  .stage{flex:1 1 auto;min-height:0;align-items:stretch}
+  .plot{height:100%;display:flex;align-items:flex-start;justify-content:center}
+  .plot svg{height:100%;width:auto;max-width:min(54vw,760px);aspect-ratio:640/650}
+  .side{overflow-y:auto;min-height:0;padding-right:4px}
+  .navbar{flex:0 0 auto}
+}
+.side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.stack{display:flex;flex-direction:column;gap:10px;min-width:0;flex:0 0 auto}
+.side>*{flex:0 0 auto}
+.phead{font-family:var(--label);font-size:15px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+
+/* svg text */
+.ax{font-family:var(--label);font-size:20px;letter-spacing:.06em;fill:var(--muted)}
+.qname{font-family:var(--label);font-size:24px;letter-spacing:.05em;text-transform:uppercase}
+.qsub{font-family:var(--prose);font-size:16px;fill:var(--muted)}
+.lab{paint-order:stroke;stroke:var(--panel);stroke-width:5px;stroke-linejoin:round}
+.share{font-family:var(--data-f);font-size:30px;font-weight:500;fill:var(--prod);text-anchor:middle;dominant-baseline:central}
+.share.empty{fill:var(--muted)}
+.share.small{font-size:22px}
+.tagtxt{font-family:var(--prose);font-size:17px;text-anchor:middle;fill:var(--ink)}
+.circ{fill:none;stroke:var(--muted);stroke-width:1.3;stroke-dasharray:4 5;opacity:.75}
+.circ.lit{stroke:var(--prod);stroke-width:2.2;opacity:1;stroke-dasharray:none}
+.axisline{stroke:var(--rule);stroke-width:1.2}
+.zero{stroke:var(--muted);stroke-width:1.3;opacity:.6}
+.ghost{fill:var(--prodsoft);fill-opacity:.55;stroke:var(--prod);stroke-width:2.2;stroke-dasharray:7 5}
+.ghosttxt{font-family:var(--prose);font-size:17px;fill:var(--ink);text-anchor:middle}
+.layer{transition:opacity .3s ease}
+.fadein{animation:fin .3s ease-out}
+@keyframes fin{from{opacity:0}to{opacity:1}}
+.ghosting .share{opacity:0}
+/* one taught concept per press: what came before is grey context, the newest is in full colour */
+.share.old,.qname.old,.qsub.old,.tagtxt.old{fill:var(--muted);opacity:.55}
+.circ.old{opacity:.4}
+.zero.zlit{stroke:var(--ink);opacity:.85;stroke-width:1.8}
+.ax.axa{fill:var(--a)} .ax.axb{fill:var(--b)}
+.rv.old{color:var(--muted)}
+.was{opacity:.45;filter:grayscale(1);transition:opacity .3s ease,filter .3s ease}
+.was .ea,.was .eb,.was .ep,.was .ez,.was .ed,.was .mp{color:var(--muted)!important}
+.noguide .was{opacity:1;filter:none}
+.fresh{animation:fin .35s ease-out}
+.eqrow+.eqrow{margin-top:8px;padding-top:8px;border-top:1px dashed var(--rule)}
+.qdone{font-size:14px;color:var(--muted);padding:2px 4px}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:baseline;gap:6px;border:1.5px solid var(--rule);border-radius:8px;padding:3px 9px;background:var(--panel);font-size:14px}
+.chip .v{font-family:var(--data-f);font-weight:500}
+.chip.z{border-color:var(--norm)} .chip.z .v{color:var(--norm)}
+.chip .badge{font-family:var(--label);font-size:13px;letter-spacing:.1em;text-transform:uppercase;border-radius:4px;padding:0 5px;background:var(--oksoft);color:var(--ok)}
+.chip .badge.gap{background:var(--shade);color:var(--muted)}
+
+/* controls */
+.ctl{display:flex;flex-direction:column;gap:8px}
+.ctl label.rowlab{font-size:15px;color:var(--ink)}
+.ctl input[type=range]{width:100%;accent-color:var(--prod);min-height:30px}
+.ticks{display:flex;justify-content:space-between;font-family:var(--data-f);font-size:12px;color:var(--muted)}
+.ctl .now{font-family:var(--data-f);font-size:15px}
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.pill{border:1.5px solid var(--rule);background:var(--panel);font:inherit;font-size:14px;padding:4px 12px;border-radius:999px;cursor:pointer;color:var(--muted);min-height:36px}
+.pill[aria-pressed="true"]{border-color:var(--prod);color:var(--ink);background:var(--prodsoft);font-weight:500}
+.toggle{display:flex;align-items:center;gap:8px;font-size:15px;cursor:pointer}
+.toggle input{width:18px;height:18px;accent-color:var(--prod)}
+
+/* equation */
+.eq{font-size:18px;overflow-x:auto;overflow-y:hidden;max-width:100%;padding:4px 2px}
+.eq .ea{color:var(--a)} .eq .eb{color:var(--b)} .eq .ep{color:var(--prod)} .eq .ez{color:var(--norm)} .eq .ed{color:var(--data)}
+.mnote{font-size:13px;color:var(--muted);text-align:center}
+.mlines{display:flex;flex-direction:column;gap:6px;font-size:17px}
+.mline{display:flex;flex-wrap:nowrap;align-items:center;gap:2px;overflow-x:auto;overflow-y:hidden;max-width:100%;padding:2px 0}
+.mp{flex:0 0 auto;border-radius:5px;padding:1px 2px;transition:opacity .3s ease}
+.mp.ka{color:var(--a)} .mp.kb{color:var(--b)} .mp.kd{color:var(--data)} .mp.kp{color:var(--prod)}
+.mp.gone{position:relative;opacity:.45}
+.mp.gone::after{content:"";position:absolute;left:-2px;right:-2px;top:50%;border-top:2.5px solid var(--hot);transform:rotate(-14deg)}
+.zoombtn{align-self:flex-start;font:inherit;font-size:14px;border:1.5px solid var(--prod);background:var(--prodsoft);color:var(--ink);border-radius:999px;padding:4px 12px;cursor:pointer;min-height:34px}
+
+/* question */
+.q{border:1.5px solid var(--rule);border-radius:12px;padding:12px;background:var(--panel);display:flex;flex-direction:column;gap:8px}
+.q .qhead{font-family:var(--label);font-size:15px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+.q .qask{font-size:17px;font-weight:500}
+.q .qask u{text-decoration-color:var(--prod);text-decoration-thickness:2px;text-underline-offset:3px;cursor:help}
+.q details{font-size:14.5px;color:var(--muted)}
+.q details summary{cursor:pointer}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;width:100%;font:inherit;font-size:15.5px;line-height:1.4;padding:9px 11px;border-radius:9px;border:1.5px solid var(--rule);background:var(--panel);color:var(--ink);cursor:pointer}
+.opt .ol{flex:0 0 auto;width:24px;height:24px;border-radius:50%;border:1.5px solid currentColor;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--muted)}
+.opt[aria-pressed="true"]{border-color:var(--prod);background:var(--prodsoft)}
+.opt[aria-pressed="true"] .ol{color:var(--prod)}
+.opt .ob{display:flex;flex-direction:column;gap:3px;min-width:0}
+.opt .tagp{font-family:var(--label);font-size:13px;letter-spacing:.08em;text-transform:uppercase;border-radius:4px;padding:0 6px;background:var(--prod);color:var(--panel);align-self:flex-start}
+.opt.right{border-color:var(--ok);background:var(--oksoft)} .opt.right .ol{color:var(--ok)}
+.opt.wrong .ol{color:var(--hot)}
+.opt.wrong.picked{border-color:var(--hot);background:var(--hotsoft)}
+.opt .why{font-size:14px;color:var(--muted)} .opt .why b{color:var(--ink);font-weight:500}
+.opt.revealed{cursor:default}
+.qhint{font-size:13px;color:var(--muted)}
+.qverdict{font-size:15px;font-weight:500}
+.qverdict.right{color:var(--ok)} .qverdict.wrong{color:var(--hot)}
+.gloss{font-size:14px;color:var(--muted);border-left:3px solid var(--prod);padding-left:8px}
+
+/* the running ledger */
+.ledger ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px;max-height:min(40vh,340px);overflow-y:auto}
+.ledger li{display:grid;grid-template-columns:96px minmax(0,1fr);gap:10px;align-items:baseline;font-size:14px;padding:3px 6px;border-radius:6px}
+.ledger li .n{font-family:var(--data-f);font-weight:500;text-align:right}
+.ledger li.new{background:var(--prodsoft)}
+.ledger li.wait{display:none}
+.ledger li.wait .m{font-style:italic}
+.ledger.full ol{max-height:none}
+
+.note{border-left:4px solid var(--muted);background:var(--shade);border-radius:0 8px 8px 0;padding:8px 12px;font-size:15px}
+.catch{border-left:4px solid var(--hot);background:var(--hotsoft);border-radius:0 8px 8px 0;padding:8px 12px;font-size:15.5px}
+.target{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
+.emptyslot{border:2px dashed var(--rule);border-radius:10px;min-height:120px;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--muted);font-size:15px;padding:12px}
+.hand{border:1.5px solid var(--prod);border-radius:10px;padding:10px 12px;background:var(--panel);font-size:16px}
+
+/* nav */
+.navbar{position:sticky;bottom:0;z-index:5;display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--paper);border-top:1px solid var(--rule);margin-top:14px;padding-top:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))}
+.navbar button{font:inherit;font-size:16px;min-height:44px;padding:0 18px;border-radius:999px;border:1.5px solid var(--rule);background:var(--panel);color:var(--ink);cursor:pointer}
+.navbar button.primary{background:var(--ink);color:var(--paper);border-color:var(--ink);margin-left:auto}
+.navbar button:disabled{opacity:.4;cursor:default}
+.count{font-size:14px;color:var(--muted)}
+.guide{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:6px;cursor:pointer}
+.nudge{flex-basis:100%;font-size:14px;color:var(--b);background:var(--bsoft);border-radius:8px;padding:6px 10px}
+
+/* zoom modal */
+.modal{position:fixed;inset:0;z-index:40;background:rgba(10,12,16,.45);display:flex;align-items:center;justify-content:center;padding:16px}
+.modal .box{background:var(--panel);color:var(--ink);border-radius:14px;max-width:720px;width:100%;max-height:90dvh;overflow:auto;padding:16px 18px;border:1px solid var(--rule)}
+.modal h3{font-family:var(--title);font-weight:400;font-size:22px;margin:0 0 8px}
+.modal table{border-collapse:collapse;width:100%;font-size:15px;margin:6px 0}
+.modal th,.modal td{padding:4px 8px;border-bottom:1px solid var(--rule);text-align:left}
+.modal td.mono{text-align:right}
+.modal .close{font:inherit;font-size:15px;border:1.5px solid var(--rule);background:var(--panel);color:var(--ink);border-radius:999px;padding:4px 14px;cursor:pointer;min-height:36px}
+
+details.sources{margin:2px 0 8px;font-size:14px;color:var(--muted)}
+@media (max-width:900px){details.sources{order:7}}
+details.sources summary{cursor:pointer}
+details.sources p{max-width:90ch}
+details.sources table{border-collapse:collapse;margin-top:8px;font-size:13.5px}
+details.sources td,details.sources th{padding:3px 10px;border-bottom:1px solid var(--rule);text-align:left}
+.tablewrap{overflow-x:auto}
+
+@media (max-width:900px){
+  .stage{display:flex;flex-direction:column}
+  .stage>.side{display:contents}
+  .stage>*,.stage>.side>*{min-width:0;max-width:100%;width:100%}
+  .stage .plot{order:1}
+  .stage [data-sub="q"]{order:2}
+  .stage [data-sub="ctl"]{order:3}
+  .stage [data-sub="eq"]{order:4}
+  .stage [data-sub="extra"]{order:5}
+  .stage [data-sub="ledger"]{order:6}
+}
+@media (max-width:600px){.qname{font-size:30px}.qsub{font-size:22px}.ax{font-size:26px}.share{font-size:36px}.share.small{font-size:30px}.tagtxt,.ghosttxt{font-size:22px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="page" id="page">
+  <header>
+    <div class="band">
+      <h1>Can a product make the film nobody trained on?</h1>
+      <div class="readout" id="readout" aria-live="polite"><span class="rl">share of the product in the top-right circle</span><span class="rv" id="rv">?</span></div>
+    </div>
+    <div class="subrow">
+      <nav class="chaps" id="chaps" aria-label="Chapters"></nav>
+      <div class="score" id="score" aria-label="Your predictions"></div>
+    </div>
+  </header>
+
+  <main class="press" id="press">
+    <div class="say">
+      <h2 id="pTitle"></h2>
+      <p id="pSay"></p>
+      <div class="recall" id="recall"></div>
+    </div>
+    <div class="stage" id="stage">
+      <div class="panel plot" data-panel="plot">
+        <svg id="plot" viewBox="0 0 640 650" role="img" aria-label="The four-quadrant toy: x1 across, x2 up, one blob per quadrant, with each expert's density and their product shaded on it">
+          <g id="axes"></g>
+          <g id="layers"></g>
+          <g id="circles"></g>
+          <g id="labels"></g>
+          <g id="ghosts"></g>
+        </svg>
+      </div>
+      <div class="side">
+        <div data-sub="q" id="qBox"></div>
+        <div data-sub="ctl" class="panel ctl" id="ctl"></div>
+        <div data-sub="eq" class="panel" id="eqPanel"><div class="phead" id="eqHead">The formulas, newest last</div><div id="eq"></div></div>
+        <div data-sub="extra" id="extra" class="stack"></div>
+        <div data-sub="ledger" class="panel ledger" id="ledger"><div class="phead">What each label and number means</div><ol id="ledgerList"></ol></div>
+        <details class="sources" id="sources">
+          <summary>Where these numbers come from</summary>
+          <p><b>The toy.</b> One Gaussian blob per quadrant at (±0.5, ±0.5), standard deviation 0.15. A is x1 &gt; 0 (pneumothorax), B is x2 &gt; 0 (no chest drain). The experts are ideal: blob mixtures with chosen weights, no training and no sampler. Every share is the composed density's mass inside a region, computed on a 441 × 441 grid over [−1.1, 1.1]² by the walk's answer key, <span class="mono">artifacts/ideas/when-poe-reaches-a-and-b/runs/answer-key-quadrants/answer_key.py</span> (output <span class="mono">answer_key.json</span>, run 2026-10-17 in the co3 environment).</p>
+          <p><b>The regions.</b> "In a blob's circle" is within 3 standard deviations (0.45) of that blob's centre. "At the origin" is within 3 · 0.15/√2 = 0.32 of (0, 0), the width of the blend two blobs multiply into. The origin circle and the four blob circles overlap a little, so a row's shares can add to slightly more than 1 (at ε = 0: 0.989 + 4 × 0.006).</p>
+          <p><b>What 0.989 is.</b> A 3-std circle holds 1 − e⁻⁴·⁵ = 0.989 of a blob with the data's width. So 0.989 means the whole blob. A product of a blob with itself is narrower (std 0.15/√2 = 0.106), so its circle holds about 0.9999 of it. That is why the shares on a squared mixture read 0.250 rather than 0.247.</p>
+          <p><b>"Zero" on a Gaussian.</b> A Gaussian is never exactly zero. Expert A's density at the top-right centre is 2.2 × 10⁻¹⁰ of its peak, which is what the zero rule means on this toy. Because the tails never quite vanish, the product of the two from-scratch experts is a real density (total mass Z = 7.9 × 10⁻¹⁰, the overlap of two blobs √2 apart), and after rescaling it sits at the origin.</p>
+          <p><b>Values the walk's key did not list.</b> The sliders stop at more values of ε than the key printed (0.2, 0.15, 0.075, 0.03, 0.02, 0.005, and 1e-6 for the next-door case; r = 10⁻⁴, 10⁻⁵, 10⁻⁶ and 10⁻⁸) and the rescue (b) frame quotes the spread along x1. These come from <span class="mono">artifacts/scenes/three-ways-a-product-reaches-a-and-b/scene_key.py</span>, which reproduces every row of the walk's key to a relative gap of 0 before adding them (printout <span class="mono">scene_key.out</span>). The shading on the picture is each density divided by its own peak, so it shows shape only; how much mass there is before rescaling is the Z chip.</p>
+          <p><b>What A and B mean in the numbers.</b> A is the right half and B the top half, but the key labels whole blobs: a film from the bottom-right blob counts as A even when its Gaussian tail crosses x1 = 0. Requiring the exact half-planes would mean indicator functions in p(x, A) and p(x, B), and a recomputed key. The four quadrant names on the picture name the blobs.</p>
+    <p><b>Two kinds of expert.</b> In frames 1 and 2, p<sub>A</sub> and p<sub>B</sub> are separately trained densities. In frame 3, p(x | A) and p(x | B) are conditionals of one model. They are different objects: from scratch, p<sub>A</sub> holds only bottom-right, while p(x | A) holds top-right and bottom-right.</p>
+    <p><b>Which Z.</b> A normaliser belongs to one written-out density, never to a proportionality. Frame 3's Z is the integral of q<sub>r</sub> = p(x, A) p(x, B)/p(x). The conditional form p(x | A) p(x | B)/p(x) equals q<sub>r</sub>/(P(A) P(B)), which rescales to the same composed density with a different integral. Z ≈ r holds while the blobs are far apart; at r = 0 the grid gives 3.8 × 10⁻⁷.</p>
+    <p><b>The ε/(2 − 4ε) and 0.5 lines.</b> Both drop the cross terms between different corners, which are 1.5 × 10⁻⁵ (corners 1 apart) or 2.2 × 10⁻¹⁰ (√2 apart) of a same-corner term. The grid keeps them. The 0.5 ceiling is exact without dropping anything: x → −x turns p<sub>A</sub> into p<sub>B</sub>, so the product is unchanged and the top-right and neither circles hold equal shares.</p>
+    <p><b>Rescue (b)'s background.</b> The background marginal on each coordinate is half at +0.5 and half at −0.5. The two training sets alone (bottom-right and top-left films) give exactly that marginal, so no top-right film is needed anywhere.</p>
+          <p><b>Not on this page yet.</b> No sampler has been run on any of these targets. The walk's claim 4 check (reverse diffusion, annealed ULA, MALA and UHA on ideal experts) produces those numbers, after the two MALA bugs at <span class="mono">anneal_samplers.py:34-39</span> are fixed. A share inside the circle alone cannot score a sampler, since one that collapses onto a single point inside scores 1.0; total variation to the exact grid has to sit beside it (the walk's claim 5).</p>
+          <p>The page recomputes six shares from the same formulas on the same grid when it loads, and sets each beside the key:</p>
+          <div class="tablewrap"><table id="keyTable"><thead><tr><th>Quantity</th><th>This page</th><th>Answer key</th><th></th></tr></thead><tbody><tr><td colspan="4">computing…</td></tr></tbody></table></div>
+        </details>
+      </div>
+    </div>
+  </main>
+
+  <div class="navbar" id="navbar">
+    <button id="back" type="button">◀ Back</button>
+    <span class="count mono" id="count"></span>
+    <label class="guide"><input type="checkbox" id="guide" checked> Grey what is already taught</label>
+    <button id="next" class="primary" type="button">Next ▶</button>
+  </div>
+
+</div>
+
+<script>
+(function(){
+"use strict";
+// ==== KEY:BEGIN (scene_key.json, substituted at build time) ====
+const KEY = {"even":[{"eps":0.25,"formula_TR":0.25,"in_TR_blob":0.24996577603629255,"in_BR_blob":0.24996576521151517,"in_TL_blob":0.24996576521151512,"in_BL_blob":0.2499657543867377,"at_origin":8.007097648238563e-05,"Z":0.8842205458030832,"sd_x1":0.5111225460333927},{"eps":0.2,"formula_TR":0.16666666666666669,"in_TR_blob":0.1666452580080479,"in_BR_blob":0.33328627958439627,"in_TL_blob":0.3332862795843963,"in_BL_blob":0.16664524363288233,"at_origin":8.003553282124875e-05,"Z":0.8488517240025593,"sd_x1":0.5111225460242889},{"eps":0.15,"formula_TR":0.10714285714285715,"in_TR_blob":0.10713060226662043,"in_BR_blob":0.39280093266293753,"in_TL_blob":0.39280093266293753,"in_BL_blob":0.1071305930874502,"at_origin":8.00103210916958e-05,"Z":0.7427452586009874,"sd_x1":0.5111225459917752},{"eps":0.1,"formula_TR":0.0625,"in_TR_blob":0.06249461045777165,"in_BR_blob":0.43743692236106296,"in_TL_blob":0.4374369223610629,"in_BL_blob":0.062494605175604505,"at_origin":7.999164235666546e-05,"Z":0.565901149598368,"sd_x1":0.5111225459104907},{"eps":0.075,"formula_TR":0.04411764705882353,"in_TR_blob":0.044115084419094,"in_BR_blob":0.45581644742374067,"in_TL_blob":0.45581644742374067,"in_BL_blob":0.04411508074158136,"at_origin":7.998416764189812e-05,"Z":0.45095247874666533,"sd_x1":0.5111225458234684},{"eps":0.05,"formula_TR":0.02777777777777778,"in_TR_blob":0.027777727942208705,"in_BR_blob":0.4721538028311889,"in_TL_blob":0.4721538028311888,"in_BL_blob":0.02777772569106728,"at_origin":7.997793245034581e-05,"Z":0.3183193969947007,"sd_x1":0.5111225456449612},{"eps":0.03,"formula_TR":0.015957446808510637,"in_TR_blob":0.015959214751487476,"in_BR_blob":0.48397231478437625,"in_TL_blob":0.48397231478437636,"in_BL_blob":0.015959213532215872,"at_origin":7.997436171454025e-05,"Z":0.19948015574494032,"sd_x1":0.5111225452833894},{"eps":0.02,"formula_TR":0.010416666666666668,"in_TR_blob":0.010419286700130596,"in_BR_blob":0.48951224168784696,"in_TL_blob":0.4895122416878469,"in_BL_blob":0.010419285964580772,"at_origin":7.997383824280172e-05,"Z":0.13581627650399727,"sd_x1":0.5111225448294069},{"eps":0.01,"formula_TR":0.005102040816326531,"in_TR_blob":0.005105478183486543,"in_BR_blob":0.49482604724944124,"in_TL_blob":0.49482604724944124,"in_BL_blob":0.005105477912021871,"at_origin":7.997709225369757e-05,"Z":0.06932289151901237,"sd_x1":0.5111225434649884},{"eps":0.005,"formula_TR":0.0025252525252525255,"in_TR_blob":0.0025290862254321762,"in_BR_blob":0.4974024336453456,"in_TL_blob":0.4974024336453456,"in_BL_blob":0.002529086179217069,"at_origin":7.998703585150408e-05,"Z":0.035015134372504184,"sd_x1":0.5111225407343922},{"eps":0.001,"formula_TR":0.000501002004008016,"in_TR_blob":0.0005051475284349303,"in_BR_blob":0.4994263286484282,"in_TL_blob":0.4994263286484282,"in_BL_blob":0.0005051476614413994,"at_origin":8.007451605550122e-05,"Z":0.0070596176213700915,"sd_x1":0.5111225188855633},{"eps":0.0001,"formula_TR":5.001000200040008e-05,"in_TR_blob":5.423082544677443e-05,"in_BR_blob":0.49987675475994414,"in_TL_blob":0.4998767547599441,"in_BL_blob":5.4231026164935076e-05,"at_origin":8.106819084967728e-05,"Z":0.0007072357507087962,"sd_x1":0.5111222730815642},{"eps":1e-06,"formula_TR":5.00001000002e-07,"in_TR_blob":5.382204162706698e-06,"in_BR_blob":0.49987164648055665,"in_TL_blob":0.49987164648055654,"in_BL_blob":5.3855266302320385e-06,"at_origin":0.0001903813670760289,"Z":7.074540198096318e-06,"sd_x1":0.5110952369255323},{"eps":0.0,"formula_TR":0.0,"in_TR_blob":0.0059180339174819425,"in_BR_blob":0.005932133760820826,"in_TL_blob":0.005932133760820826,"in_BL_blob":0.005946233604159709,"at_origin":0.9889013343745204,"Z":7.899855202603722e-10,"sd_x1":0.10606601717798214}],"adjacent":[{"eps":0.25,"in_TR_blob":0.4999165412039352,"in_BR_blob":8.375614120991755e-06,"in_TL_blob":8.375614120991753e-06,"in_BL_blob":0.499916497905782,"at_origin":8.114256604331476e-05,"Z":0.4421234876795183,"sd_x1":0.511118891210698},{"eps":0.2,"in_TR_blob":0.49990575289455585,"in_BR_blob":1.2528924303090437e-05,"in_TL_blob":1.2528924303090437e-05,"in_BL_blob":0.499905709770962,"at_origin":8.210776692044838e-05,"Z":0.28296748960439627,"sd_x1":0.5111152365530354},{"eps":0.15,"in_TR_blob":0.49988777356679637,"in_BR_blob":1.9450559184310142e-05,"in_TL_blob":1.9450559184310142e-05,"in_BL_blob":0.4998877307341252,"at_origin":8.371679758359092e-05,"Z":0.15917714187788196,"sd_x1":0.5111091457629517},{"eps":0.1,"in_TR_blob":0.49985181936512013,"in_BR_blob":3.3291771435822405e-05,"in_TL_blob":3.329177143582241e-05,"in_BL_blob":0.49985177711426027,"at_origin":8.693621816002621e-05,"Z":0.07075244449997543,"sd_x1":0.5110969653302075},{"eps":0.075,"in_TR_blob":0.49981587110064635,"in_BR_blob":4.7130240936725545e-05,"in_TL_blob":4.7130240936725545e-05,"in_BL_blob":0.49981582943155195,"at_origin":9.01574505987233e-05,"Z":0.03980221469175002,"sd_x1":0.5110847864270739},{"eps":0.05,"in_TR_blob":0.49974399237727885,"in_BR_blob":7.479895455261308e-05,"in_TL_blob":7.47989545526131e-05,"in_BL_blob":0.49974395187157766,"at_origin":9.660534880169032e-05,"Z":0.017693397470676598,"sd_x1":0.5110604332082627},{"eps":0.03,"in_TR_blob":0.49960030611071704,"in_BR_blob":0.00013010350028838086,"in_TL_blob":0.00013010350028838086,"in_BL_blob":0.4996002679312529,"at_origin":0.00010952286269252745,"Z":0.0063721607565672385,"sd_x1":0.5110117451108466},{"eps":0.02,"in_TR_blob":0.49942083161627604,"in_BR_blob":0.00019917258866164326,"in_TL_blob":0.00019917258866164326,"in_BL_blob":0.4994207963435784,"at_origin":0.00012571042878445484,"Z":0.002833481420429022,"sd_x1":0.5109509193486461},{"eps":0.01,"in_TR_blob":0.4988832952574384,"in_BR_blob":0.0004059700848773564,"in_TL_blob":0.0004059700848773564,"in_BL_blob":0.49888326869818583,"at_origin":0.000174543609614467,"Z":0.0007094280982351166,"sd_x1":0.510768670714783},{"eps":0.005,"in_TR_blob":0.49781219779651287,"in_BR_blob":0.0008177291092065736,"in_TL_blob":0.0008177291092065736,"in_BL_blob":0.4978121886334108,"at_origin":0.0002734208385426396,"Z":0.00017788619236727967,"sd_x1":0.510405198546829},{"eps":0.001,"in_TR_blob":0.4894297434852367,"in_BR_blob":0.004025808632893766,"in_TL_blob":0.004025808632893766,"in_BL_blob":0.4894298720437691,"at_origin":0.0011208782501253868,"Z":7.285350182985945e-06,"sd_x1":0.5075455991789116},{"eps":0.0001,"in_TR_blob":0.4133815981775849,"in_BR_blob":0.03175339113866842,"in_TL_blob":0.03175339113866843,"in_BL_blob":0.4133831275295287,"at_origin":0.01586908700627743,"Z":9.266429899188954e-08,"sd_x1":0.4802122806109486},{"eps":1e-06,"in_TR_blob":0.03727741129765479,"in_BR_blob":0.03378249204866286,"in_TL_blob":0.03378249204866286,"in_BL_blob":0.03730071601113716,"at_origin":0.7814230918780627,"Z":1.0084887780742303e-09,"sd_x1":0.1980155248770975}],"c1":[{"r":0.25,"in_TR_blob":0.9889333641268455,"in_BR_blob":7.842973215590192e-05,"in_TL_blob":7.842973215590192e-05,"in_BL_blob":3.6115166772396093e-11,"at_origin":0.002985993496573545,"Z":0.24998525507096336,"sd_x1":0.14996230490748977},{"r":0.05,"in_TR_blob":0.9889299634162941,"in_BR_blob":7.842965391984685e-05,"in_TL_blob":7.842965391984684e-05,"in_BL_blob":2.282127583743758e-10,"at_origin":0.002989422299851628,"Z":0.04999722300316258,"sd_x1":0.149964768932377},{"r":0.01,"in_TR_blob":0.9889076876764095,"in_BR_blob":7.84288425575604e-05,"in_TL_blob":7.84288425575604e-05,"in_BL_blob":1.1886745252153536e-09,"at_origin":0.0030119031515314166,"Z":0.00999967018895813,"sd_x1":0.1499798682963861},{"r":0.001,"in_TR_blob":0.9886139170071689,"in_BR_blob":7.841610409973105e-05,"in_TL_blob":7.841610409973104e-05,"in_BL_blob":1.1990331608310823e-08,"at_origin":0.00331028177460013,"Z":0.0010002668935090134,"sd_x1":0.15016825854329377},{"r":0.0001,"in_TR_blob":0.9855173011501305,"in_BR_blob":7.826941374777108e-05,"in_TL_blob":7.826941374777109e-05,"in_BL_blob":1.196216107697673e-07,"at_origin":0.006517867047978624,"Z":0.0001003518471817124,"sd_x1":0.1521005700484419},{"r":1e-05,"in_TR_blob":0.955460374599868,"in_BR_blob":7.677517105716692e-05,"in_TL_blob":7.677517105716695e-05,"in_BL_blob":1.1576007007517141e-06,"at_origin":0.038088480276475926,"Z":1.0370865688974892e-05,"sd_x1":0.1691401529117826},{"r":1e-06,"in_TR_blob":0.7363776213661052,"in_BR_blob":6.568140784871885e-05,"in_TL_blob":6.568140784871886e-05,"in_BL_blob":8.7227671390532e-06,"at_origin":0.2686192065630839,"Z":1.376332576132313e-06,"sd_x1":0.23725938832018117},{"r":1e-08,"in_TR_blob":0.09348701614080682,"in_BR_blob":3.2863802231044114e-05,"in_TL_blob":3.286380223104412e-05,"in_BL_blob":3.092367235079157e-05,"at_origin":0.9451711792188026,"Z":3.8822815805791706e-07,"sd_x1":0.10989894706988931},{"r":0.0,"in_TR_blob":0.07003651653486037,"in_BR_blob":3.165151950118835e-05,"in_TL_blob":3.165151950118836e-05,"in_BL_blob":3.173356024403677e-05,"at_origin":0.9698512717354958,"Z":3.7831999888753797e-07,"sd_x1":0.08309960025846416}],"b_plain":{"in_TR_blob":0.9998546602048294,"in_BR_blob":4.222143114983229e-06,"in_TL_blob":4.222143114983229e-06,"in_BL_blob":1.3309706748603532e-12,"at_origin":8.039032005267815e-05,"Z":0.8842205458030828,"sd_x1":0.10608361664065975},"b_divided":{"in_TR_blob":0.9889333641268455,"in_BR_blob":7.842973215590191e-05,"in_TL_blob":7.842973215590191e-05,"in_BL_blob":3.611516677239609e-11,"at_origin":0.002985993496573546,"Z":0.9999410202838535,"sd_x1":0.14996230490748977},"circle_holds_data_blob":0.9888910034617577,"circle_holds_data_blob_grid":0.9888750371177414,"cross_adjacent":1.4945338524781451e-05,"cross_diagonal":2.233631436203166e-10,"Z_eps0_closed":7.899855202604074e-10,"A_at_TR_over_peak":2.233631436203166e-10,"tail_ratio_eps0":4477014353.361036,"support":{"BR":{"in_TR_blob":6.825134941260185e-08,"in_BR_blob":0.9998761954264247,"in_TL_blob":2.796741875371623e-20,"in_BL_blob":6.825169331383156e-08,"at_origin":7.899954372589187e-05,"Z":3.536776465778504,"sd_x1":0.10606600537688778},"TR":{"in_TR_blob":0.27793569207655877,"in_BR_blob":0.2779472853144171,"in_TL_blob":9.503810354459449e-11,"in_BL_blob":9.504576418969386e-11,"at_origin":0.03235724615235119,"Z":5.285832192155436e-05,"sd_x1":0.10606600537688773},"TL":{"in_TR_blob":0.0059180339174819425,"in_BR_blob":0.005932133760820826,"in_TL_blob":0.005932133760820826,"in_BL_blob":0.005946233604159709,"at_origin":0.9889013343745204,"Z":7.899855202603722e-10,"sd_x1":0.10606601717798214}}};
+// ==== KEY:END ====
+
+const $=id=>document.getElementById(id);
+const el=(tag,attrs,html)=>{const e=document.createElement(tag);if(attrs)for(const k in attrs){if(k==='class')e.className=attrs[k];else e.setAttribute(k,attrs[k]);}if(html!=null)e.innerHTML=html;return e;};
+const NS='http://www.w3.org/2000/svg';
+const sv=(tag,attrs,parent)=>{const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;};
+const STORE='three-ways-a-and-b:v1';
+const store={get(k,d){try{const v=localStorage.getItem(STORE+':'+k);return v==null?d:JSON.parse(v);}catch(e){return d;}},set(k,v){try{localStorage.setItem(STORE+':'+k,JSON.stringify(v));}catch(e){}}};
+const reduced=()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){return false;}};
+const cssv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const kopts={output:'mathml',strict:false,throwOnError:false};
+const KX=(tex,disp)=>{try{if(window.katex)return katex.renderToString(tex,Object.assign({},kopts,{displayMode:!!disp}));}catch(e){}return '<span class="mono">'+tex.replace(/\\[a-z]+/g,'').replace(/[{}]/g,'')+'</span>';};
+
+// ==== COMPUTE:BEGIN the toy's densities, as the answer key defines them ====
+const S=0.15;
+const MU={TR:[0.5,0.5],BR:[0.5,-0.5],TL:[-0.5,0.5],BL:[-0.5,-0.5]};
+const Q4=['TR','BR','TL','BL'];
+const blob=(q,x,y)=>{const m=MU[q];return Math.exp(-((x-m[0])**2+(y-m[1])**2)/(2*S*S))/(2*Math.PI*S*S);};
+const n1=(v,m)=>Math.exp(-((v-m)**2)/(2*S*S))/Math.sqrt(2*Math.PI*S*S);
+const mix=w=>(x,y)=>Q4.reduce((s,q)=>s+(w[q]||0)*blob(q,x,y),0);
+function leftover(own,eps,where){const w={TR:0,BR:0,TL:0,BL:0};where.forEach(q=>w[q]=eps);w[own]=1-eps*where.length;return w;}
+const D={
+  data:()=>mix({TR:.25,BR:.25,TL:.25,BL:.25}),
+  A:(eps,kind)=>mix(leftover('BR',eps,kind==='adjacent'?['TR','BL']:['TR','TL','BL'])),
+  B:(eps,kind)=>mix(leftover('TL',eps,kind==='adjacent'?['TR','BL']:['TR','BR','BL'])),
+  P2:(eps,kind)=>{const a=D.A(eps,kind),b=D.B(eps,kind);return (x,y)=>a(x,y)*b(x,y);},
+  c1data:r=>{const o=(1-r)/3;return mix({TR:r,BR:o,TL:o,BL:o});},
+  c1:r=>{const o=(1-r)/3;return (x,y)=>{const px=r*blob('TR',x,y)+o*(blob('BR',x,y)+blob('TL',x,y)+blob('BL',x,y));
+    const pa=r*blob('TR',x,y)+o*blob('BR',x,y),pb=r*blob('TR',x,y)+o*blob('TL',x,y);return pa*pb/px;};},
+  bg1:x=>0.5*n1(x,0.5)+0.5*n1(x,-0.5),
+  pA:()=>(x,y)=>n1(x,0.5)*D.bg1(y),
+  pB:()=>(x,y)=>D.bg1(x)*n1(y,0.5),
+  bPlain:()=>(x,y)=>n1(x,0.5)*D.bg1(y)*D.bg1(x)*n1(y,0.5),
+  bDiv:()=>(x,y)=>n1(x,0.5)*n1(y,0.5),
+  pin:q=>(x,y)=>blob('BR',x,y)*blob(q,x,y)
+};
+// shares on the answer key's own grid and regions
+function shares(f){const n=441,lo=-1.1,h=2.2/(n-1);let tot=0;const inq={TR:0,BR:0,TL:0,BL:0};let mid=0;const R2=(3*S)**2,M=3*S/Math.SQRT2;
+  for(let i=0;i<n;i++){const y=lo+i*h;for(let j=0;j<n;j++){const x=lo+j*h;const v=f(x,y);tot+=v;
+    for(const q of Q4){const m=MU[q];if((x-m[0])**2+(y-m[1])**2<R2)inq[q]+=v;}if(Math.hypot(x,y)<M)mid+=v;}}
+  const o={};Q4.forEach(q=>o[q]=inq[q]/tot);o.origin=mid/tot;o.Z=tot*h*h;return o;}
+// ==== COMPUTE:END ====
+
+// ---------- number formats ----------
+function fs(v){ // a share
+  if(v==null)return '?';
+  if(v>=0.995)return v.toFixed(4);
+  if(v>=0.01)return v.toPrecision(3);
+  if(v>=1e-4)return v.toPrecision(1);
+  if(v<=0)return '0';
+  return v.toExponential(0).replace('e-',' × 10⁻').replace(/⁻(\d+)/,(m,d)=>'⁻'+sup(d));
+}
+const sup=d=>String(d).split('').map(c=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[+c]).join('');
+function fz(v){ if(v>=0.01)return v.toPrecision(2); const e=Math.floor(Math.log10(v)),m=v/Math.pow(10,e);return m.toFixed(1)+' × 10⁻'+sup(-e);}
+const epsTex=e=>e===0?'0':e>=1e-3?String(+e.toPrecision(3)):(e===1e-4?'0.0001':'10^{'+Math.round(Math.log10(e))+'}');
+const texNum=v=>{if(v===0)return '0';if(v>=1e-3)return String(+v.toPrecision(3));const ex=Math.floor(Math.log10(v));return (v/Math.pow(10,ex)).toFixed(1)+'\\times10^{'+ex+'}';};
+const fe=e=>e===0?'0':e>=0.001?String(+e.toPrecision(3)):(e===1e-4?'0.0001':e===1e-6?'10⁻⁶':String(e));
+
+// ---------- the key, as the scene reads it ----------
+const EVEN=KEY.even, ADJ=KEY.adjacent, C1=KEY.c1;
+const keyRow=(rows,field,v)=>rows.find(r=>r[field]===v);
+const rowShares=r=>({TR:r.in_TR_blob,BR:r.in_BR_blob,TL:r.in_TL_blob,BL:r.in_BL_blob,origin:r.at_origin,Z:r.Z,sd:r.sd_x1});
+
+// ---------- the plot ----------
+const P0=50,P1=610,SPAN=P1-P0;
+const X=x=>P0+(x+1.1)/2.2*SPAN, Y=y=>P1-(y+1.1)/2.2*SPAN, L=d=>d/2.2*SPAN;
+const GRID=170;
+const hexrgb=h=>{h=h.replace('#','');if(h.length===3)h=h.split('').map(c=>c+c).join('');const n=parseInt(h,16);return [(n>>16)&255,(n>>8)&255,n&255];};
+const cache=new Map();
+function layerURL(key,f,colorVar,logMode){
+  const ck=key+'|'+colorVar+'|'+(logMode?1:0)+'|'+cssv(colorVar);
+  if(cache.has(ck))return cache.get(ck);
+  const vals=new Float64Array(GRID*GRID);let mx=0;
+  for(let i=0;i<GRID;i++){const y=1.1-(i+0.5)/GRID*2.2;for(let j=0;j<GRID;j++){const x=-1.1+(j+0.5)/GRID*2.2;const v=f(x,y);vals[i*GRID+j]=v;if(v>mx)mx=v;}}
+  const c=document.createElement('canvas');c.width=GRID;c.height=GRID;const ctx=c.getContext('2d');const im=ctx.createImageData(GRID,GRID);
+  const [r,g,b]=hexrgb(cssv(colorVar)||'#7c3aed');
+  for(let k=0;k<vals.length;k++){const t=mx>0?vals[k]/mx:0;let a=logMode?(t>0?Math.max(0,1+Math.log10(t)/10):0):Math.pow(t,0.55);
+    im.data[4*k]=r;im.data[4*k+1]=g;im.data[4*k+2]=b;im.data[4*k+3]=Math.round(Math.min(1,a)*235);}
+  ctx.putImageData(im,0,0);const u=c.toDataURL();cache.set(ck,u);return u;
+}
+const QNAME={TR:'A and B',BR:'A, not B',TL:'B, not A',BL:'neither'};
+const QSUB={TR:['pneumothorax, no drain','the rare film'],BR:['pneumothorax','with a drain'],TL:['no pneumothorax','no drain'],BL:['drain without','pneumothorax']};
+const QPOS={TR:[0.5,1.0,'end'],BR:[0.5,-1.0,'end'],TL:[-0.5,1.0,'start'],BL:[-0.5,-1.0,'start']};
+
+// The picture is one state object. Each element carries s: 'new' (taught on this press, drawn in full
+// colour) or 'old' (taught earlier, drawn grey). An element not taught yet is absent, so it is not drawn.
+let S_=null; // the state last drawn
+const dimOn=()=>$('guide').checked;
+const isOld=s=>s==='old'&&dimOn();
+function draw(st){
+  S_=st;
+  // the frame always; each centre line and its axis name only once A or B is taught
+  const ag=$('axes');ag.innerHTML='';
+  sv('rect',{x:P0,y:P0,width:SPAN,height:SPAN,fill:'none',class:'axisline'},ag);
+  if(st.axA){const n=!isOld(st.axA);
+    if(st.axA==='new')sv('rect',{x:X(0),y:P0,width:P1-X(0),height:SPAN,fill:'var(--a)','fill-opacity':0.08,class:reduced()?'':'fadein'},ag);
+    sv('line',{x1:X(0),y1:P0,x2:X(0),y2:P1,class:'zero'+(n?' zlit':'')},ag);
+    const t=sv('text',{x:X(0.55),y:P1+29,class:'ax'+(n?' axa':''),'text-anchor':'middle'},ag);t.textContent='x1 › 0: A, pneumothorax';}
+  if(st.axB){const n=!isOld(st.axB);
+    if(st.axB==='new')sv('rect',{x:P0,y:P0,width:SPAN,height:Y(0)-P0,fill:'var(--b)','fill-opacity':0.08,class:reduced()?'':'fadein'},ag);
+    sv('line',{x1:P0,y1:Y(0),x2:P1,y2:Y(0),class:'zero'+(n?' zlit':'')},ag);
+    const t=sv('text',{x:24,y:Y(0.55),class:'ax'+(n?' axb':''),'text-anchor':'middle',transform:'rotate(-90 24 '+Y(0.55)+')'},ag);t.textContent='x2 › 0: B, no drain';}
+  // densities: a taught one is redrawn grey and faint
+  const lg=$('layers');const prev=[...lg.children];
+  (st.layers||[]).forEach(Lr=>{const o=isOld(Lr.s);const u=layerURL(Lr.key,Lr.f,o?'--muted':Lr.c,st.log);
+    sv('image',{href:u,x:P0,y:P0,width:SPAN,height:SPAN,preserveAspectRatio:'none',class:'layer'+(reduced()?'':' fadein'),opacity:o?0.32:(Lr.o==null?1:Lr.o)},lg);});
+  if(reduced())prev.forEach(o=>o.remove());else setTimeout(()=>prev.forEach(o=>o.remove()),300);
+  // circles
+  const cg=$('circles');cg.innerHTML='';const C=st.circ||{};
+  Q4.concat(['origin']).forEach(q=>{if(!C[q])return;const n=!isOld(C[q]);
+    const c=q==='origin'?[X(0),Y(0),L(3*S/Math.SQRT2)]:[X(MU[q][0]),Y(MU[q][1]),L(0.45)];
+    sv('circle',{cx:c[0],cy:c[1],r:c[2],class:'circ'+(n?' lit':' old')},cg);});
+  // quadrant names, shares and tags
+  const lb=$('labels');lb.innerHTML='';const N=st.names||{};
+  Q4.forEach(q=>{if(!N[q])return;const n=!isOld(N[q]);const [x,y,anc]=QPOS[q];const xx=anc==='end'?X(1.06):X(-1.06);const yy=Y(y);
+    const t=sv('text',{x:xx,y:yy,class:'qname lab'+(n?'':' old'),'text-anchor':anc,fill:q==='TR'?'var(--prod)':'var(--ink)'},lb);t.textContent=QNAME[q];
+    QSUB[q].forEach((s,i)=>{const top=y>0;const u=sv('text',{x:xx,y:top?yy+21+i*19:yy-48+i*19,class:'qsub lab'+(n?'':' old'),'text-anchor':anc},lb);u.textContent=s;});});
+  const U=st.nums||{};
+  Object.keys(U).forEach(q=>{const u=U[q];const n=!isOld(u.s);const p=q==='origin'?[0,0]:MU[q];
+    const t=sv('text',{x:X(p[0]),y:Y(p[1]),class:'share lab'+(u.v<0.01?' small':'')+(n?'':' old')},lb);t.textContent=fs(u.v);});
+  (st.tags||[]).forEach(tg=>{const n=!isOld(tg.s);const t=sv('text',{x:X(tg.x),y:Y(tg.y),class:'tagtxt lab'+(n?'':' old')},lb);t.textContent=tg.t;if(n&&tg.c)t.setAttribute('fill','var('+tg.c+')');});
+  // why-band readout: appears once top-right is taught, and shows a number only once one is on the picture
+  const tr=U.TR;$('readout').hidden=!st.readout;
+  $('rv').textContent=tr?fs(tr.v):'?';$('rv').classList.toggle('old',!!tr&&isOld(tr.s));
+  ghost(null);
+}
+// a ghost: what an option says, drawn on the picture
+function ghost(spec){
+  const g=$('ghosts');g.innerHTML='';$('labels').classList.toggle('ghosting',!!(spec&&(spec.at||[]).some(p=>p[3])));if(!spec)return;
+  (spec.at||[]).forEach(p=>{sv('circle',{cx:X(p[0]),cy:Y(p[1]),r:L(p[2]||0.2),class:'ghost'},g);
+    if(p[3]){const t=sv('text',{x:X(p[0]),y:Y(p[1])+6,class:'share lab'},g);t.textContent=p[3];}});
+  const t=sv('text',{x:X(spec.tx==null?0:spec.tx),y:Y(spec.ty==null?1.0:spec.ty),class:'ghosttxt lab'},g);t.textContent=spec.say;
+}
+
+// ---------- question component (QUESTION_DECODING_FORMAT) ----------
+const Score={rows:[],st:store.get('score',{}),go:null,
+  mark(id,s){if(this.st[id]===s)return;this.st[id]=s;store.set('score',this.st);this.render();},
+  render(){const box=$('score');box.innerHTML='<span class="lab">Predictions</span>';
+    this.rows.forEach(r=>{const s=this.st[r.id]||'empty';const sym={empty:'?',right:'✓',wrong:'✗',skipped:'–'}[s];
+      const b=el('button',{class:'sc '+s,type:'button',title:r.label},'<b>'+sym+'</b> '+r.short);b.addEventListener('click',()=>{if(this.go)this.go(r.press);});box.appendChild(b);});}
+};
+const Qz=(()=>{const defs={},st=store.get('q',{});const save=()=>store.set('q',st);const LT='ABCD';
+  function head(box,def,txt){box.innerHTML='';const q=el('div',{class:'q'});q.appendChild(el('div',{class:'qhead'},txt));
+    q.appendChild(el('div',{class:'qask'},def.ask));
+    (def.words||[]).forEach(w=>q.appendChild(el('div',{class:'gloss'},'<b>'+w[0]+'</b>: '+w[1])));
+    const d=el('details');d.appendChild(el('summary',null,'What is this asking?'));d.appendChild(el('div',null,def.plain));q.appendChild(d);box.appendChild(q);return q;}
+  function ask(box,id){const def=defs[id],s=st[id]||{};if(s.result)return reveal(box,id);
+    const q=head(box,def,'Your prediction: tap one');
+    const bs=def.options.map((o,i)=>{const b=el('button',{class:'opt',type:'button','aria-pressed':String(s.pick===i)},'<span class="ol">'+LT[i]+'</span><span class="ob"><span>'+o.t+'</span></span>');
+      const pv=on=>ghost(on?o.preview:(st[id]&&st[id].pick!=null?def.options[st[id].pick].preview:null));
+      b.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse')pv(true);});b.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse')pv(false);});
+      b.addEventListener('focus',()=>pv(true));b.addEventListener('blur',()=>pv(false));
+      b.addEventListener('click',()=>{st[id]={pick:i};save();bs.forEach((x,j)=>x.setAttribute('aria-pressed',String(j===i)));ghost(o.preview);});
+      q.appendChild(b);return b;});
+    q.appendChild(el('div',{class:'qhint'},'Point at an answer to see it drawn on the picture. Next shows the verdict.'));
+    if(s.pick!=null)ghost(def.options[s.pick].preview);}
+  function reveal(box,id){const def=defs[id];let s=st[id]||{};
+    if(!s.result){s.result=s.pick==null?'skipped':(def.options[s.pick].right?'right':'wrong');st[id]=s;save();}
+    Score.mark(id,s.result);const q=head(box,def,'Your prediction, checked');
+    def.options.forEach((o,i)=>{const mine=s.pick===i;const b=el('div',{class:'opt revealed '+(o.right?'right':'wrong')+(mine?' picked':'')});
+      b.innerHTML='<span class="ol">'+(o.right?'✓':'✗')+'</span><span class="ob">'+(mine?'<span class="tagp">your pick</span>':'')+'<span>'+o.t+'</span><span class="why"><b>'+(o.right?'Right because':'Tempting because')+':</b> '+o.why+'</span></span>';q.appendChild(b);});
+    q.appendChild(el('div',{class:'qverdict '+(s.result==='right'?'right':s.result==='wrong'?'wrong':'')},{right:'Right first time.',wrong:'Not this time. The green one is what the picture shows now.',skipped:'No pick made, so this one counts as seen.'}[s.result]));}
+  function line(id){const s=st[id]||{};const pick=s.pick!=null?LT[s.pick]:'no pick';
+    return el('div',{class:'qdone was'},'Prediction '+id.slice(1)+': '+pick+', '+({right:'right',wrong:'not this time',skipped:'seen without a pick'}[s.result]||'not checked')+'.');}
+  return {define:(id,d)=>defs[id]=d,ask,reveal,line,picked:id=>!!(st[id]&&st[id].pick!=null)};
+})();
+
+// ---------- the running ledger: one row per taught press, the newest on top in full colour ----------
+function renderLedger(i){const ol=$('ledgerList');ol.innerHTML='';const ex=!!PRESSES[i].explore;
+  PRESSES.forEach((p,k)=>{if(k>i||!p.led)return;const l=val(p.led);
+    const li=el('li',{class:ex?'':(k===i?'new fresh':'was')},'<span class="n">'+l[0]+'</span><span class="m">'+l[1]+'</span>');ol.prepend(li);});
+  ol.scrollTop=0;}
+
+// ---------- building one press's state from every press up to it ----------
+// vocab() is what stays taught for the rest of the walk (axes, quadrant names, the top-right circle);
+// plot(), eq and extra belong to one frame and clear when the frame changes.
+const val=x=>typeof x==='function'?x():x;
+let P={}; // this press's parameters: eps, next door or not, r, log shading
+function lay(a,g,key,f,c,s,o){const Lr={g,key,f,c,s,o};const k=a.layers.findIndex(x=>x.g===g);if(k>=0)a.layers[k]=Lr;else a.layers.push(Lr);}
+const num=(a,q,v,s)=>{a.nums[q]={v,s};};
+const c2row=(eps,kind)=>rowShares(keyRow(kind==='adjacent'&&eps>0?ADJ:EVEN,'eps',eps));
+const c1row=r=>rowShares(keyRow(C1,'r',r));
+function build(i){const p=PRESSES[i];const a={names:{},circ:{},layers:[],nums:{},tags:[],eq:[],extra:[],readout:false,log:P.log};
+  for(let k=0;k<=i;k++){const q=PRESSES[k];const s=k===i?'new':'old';
+    if(q.vocab)q.vocab(a,s);
+    if(q.chap!==p.chap)continue;
+    if(q.plot)q.plot(a,s);
+    if(q.eq)a.eq.push({h:q.eq,s});
+    if(q.extra)a.extra.push({f:q.extra,s});}
+  return a;}
+// every state Explore draws: the whole picture at once
+function fullState(kind,v){const a={axA:'on',axB:'on',names:{TR:'new',BR:'new',TL:'new',BL:'new'},circ:{},layers:[],nums:{},tags:[],readout:true};let r;
+  if(kind==='even'||kind==='adjacent'){r=c2row(v,kind);
+    lay(a,'A','A'+kind+v,D.A(v,kind),'--a','new',0.3);lay(a,'B','B'+kind+v,D.B(v,kind),'--b','new',0.3);lay(a,'P','P'+kind+v,D.P2(v,kind),'--prod','new');
+    if(v===0||(kind==='adjacent'&&v<1e-3))a.circ.origin='new';}
+  else if(kind==='c1'){r=c1row(v);lay(a,'data','c1d'+v,D.c1data(v),'--data','new',0.4);lay(a,'P','c1'+v,D.c1(v),'--prod','new');if(r.origin>0.05)a.circ.origin='new';}
+  else{r=rowShares(kind==='plain'?KEY.b_plain:KEY.b_divided);
+    lay(a,'A','pA',D.pA(),'--a','new',0.3);lay(a,'B','pB',D.pB(),'--b','new',0.3);lay(a,'P','b'+kind,kind==='plain'?D.bPlain():D.bDiv(),'--prod','new');}
+  Q4.forEach(q=>{a.circ[q]='new';num(a,q,r[q],'new');});if(a.circ.origin)num(a,'origin',r.origin,'new');
+  a.row=r;return a;}
+
+// ---------- controls ----------
+function ctlClear(){$('ctl').innerHTML='';}
+function slider(label,stops,fmt,idx,onch){const c=$('ctl');
+  const lab=el('label',{class:'rowlab',for:'sl'},label+' <span class="now" id="slnow"></span>');c.appendChild(lab);
+  const s=el('input',{type:'range',id:'sl',min:0,max:stops.length-1,step:1,value:idx,'aria-valuetext':fmt(stops[idx])});c.appendChild(s);
+  const tk=el('div',{class:'ticks'},'<span>'+fmt(stops[0])+'</span><span>'+fmt(stops[stops.length-1])+'</span>');c.appendChild(tk);
+  const up=()=>{const v=stops[+s.value];$('slnow').textContent='= '+fmt(v);s.setAttribute('aria-valuetext',fmt(v));onch(v);};
+  s.addEventListener('input',up);up();return s;}
+function toggle(id,label,on,onch){const t=el('label',{class:'toggle'},'<input type="checkbox" id="'+id+'"'+(on?' checked':'')+'> '+label);$('ctl').appendChild(t);
+  const i=t.querySelector('input');i.addEventListener('change',()=>onch(i.checked));return i;}
+function chips(list){const c=el('div',{class:'chips'});list.forEach(x=>c.appendChild(el('span',{class:'chip '+(x.cls||'')},(x.l?x.l+' ':'')+'<span class="v">'+x.v+'</span>'+(x.b?'<span class="badge'+(x.b==='not run'?' gap':'')+'">'+x.b+'</span>':''))));return c;}
+
+// ---------- zoom modals ----------
+function zoom(title,html){const m=el('div',{class:'modal',role:'dialog','aria-modal':'true'});const b=el('div',{class:'box'});
+  b.innerHTML='<h3>'+title+'</h3>'+html;const c=el('button',{class:'close',type:'button'},'‹ Back to the walk');c.addEventListener('click',()=>m.remove());b.appendChild(c);
+  m.appendChild(b);m.addEventListener('click',e=>{if(e.target===m)m.remove();});document.body.appendChild(m);c.focus();
+  const esc=e=>{if(e.key==='Escape'){m.remove();document.removeEventListener('keydown',esc);}};document.addEventListener('keydown',esc);}
+function zoomBtn(text,title,html){const b=el('button',{class:'zoombtn',type:'button'},'🔬 Zoom in: '+text);b.addEventListener('click',()=>zoom(title,html));return b;}
+const Z0_HTML=()=>'<p>Each expert is one blob: A at (0.5, −0.5), B at (−0.5, 0.5), both with std 0.15. Two Gaussian blobs multiply into one narrower Gaussian halfway between them, here at the origin with std 0.15/√2 = 0.106. Its total mass is how much the two blobs overlap:</p>'+
+  KX('Z=\\int p_A\\,p_B\\,dx=\\frac{e^{-d^2/(4\\cdot0.15^2)}}{4\\pi\\cdot 0.15^2},\\quad d=\\sqrt2',true)+
+  '<p>Why the origin: the two exponents add, and completing the square gives</p>'+
+  KX('\\lVert x-\\mu_A\\rVert^2+\\lVert x-\\mu_B\\rVert^2=2\\Big\\lVert x-\\tfrac{\\mu_A+\\mu_B}{2}\\Big\\rVert^2+\\tfrac12\\lVert\\mu_A-\\mu_B\\rVert^2',true)+
+  '<p>with (μ<sub>A</sub> + μ<sub>B</sub>)/2 = (0, 0). So the rescaled product is a Gaussian at the origin with std 0.15/√2, and the constant term sets Z.</p>'+
+  '<p>With d² = 2 this is <span class="mono">'+fz(KEY.Z_eps0_closed)+'</span>, matching the grid’s <span class="mono">'+fz(keyRow(EVEN,'eps',0).Z)+'</span>. Rescaled to 1, all of it sits at the origin: <span class="mono">0.989</span> inside the origin circle, the same share a 3-std circle holds of any blob of its own width.</p>';
+const C1_HTML=()=>'<p>Write o = (1 − r)/3 for each other corner’s weight. The labelled joints and the base are</p>'+
+  KX('p(x,A)=r\\,\\text{TR}+o\\,\\text{BR},\\quad p(x,B)=r\\,\\text{TR}+o\\,\\text{TL},\\quad p(x)=r\\,\\text{TR}+o\\,(\\text{BR}+\\text{TL}+\\text{BL})',true)+
+  '<p>Near top-right the other blobs are negligible, so</p>'+KX('q_r(x)\\approx\\frac{(r\\,\\text{TR})^2}{r\\,\\text{TR}}=r\\,\\text{TR}',true)+
+  '<p>Near bottom-right p(x,B) is negligible, near top-left p(x,A) is, and near bottom-left both are, so q<sub>r</sub> is tiny there. Rescaling removes r and leaves the whole top-right blob: 0.989 in its circle, Z ≈ r. The approximation needs r to beat the tails of the other blobs at top-right. It holds at 1 in 100,000 (<span class="mono">'+fs(keyRow(C1,'r',1e-5).in_TR_blob)+'</span>), weakens at 1 in a million (<span class="mono">'+fs(keyRow(C1,'r',1e-6).in_TR_blob)+'</span>) and fails at 1 in 10⁸ (<span class="mono">'+fs(keyRow(C1,'r',1e-8).in_TR_blob)+'</span>, with <span class="mono">'+fs(keyRow(C1,'r',1e-8).at_origin)+'</span> in the origin circle).</p>';
+const EPS_HTML=()=>'<p>Multiply the two mixtures and keep the four terms where both experts use the same corner. This is an approximation. Each such term carries the same factor ∫blob², so it cancels when rescaling. Terms that pair two different corners land between them and are scaled by <span class="mono">'+KEY.cross_adjacent.toExponential(1)+'</span> (corners 1 apart) or <span class="mono">'+KEY.cross_diagonal.toExponential(1)+'</span> (√2 apart), so they are dropped.</p>'+
+  '<table><thead><tr><th>Corner</th><th>A’s weight</th><th>B’s weight</th><th>Product</th></tr></thead><tbody>'+
+  '<tr><td>A and B (top-right)</td><td>ε</td><td>ε</td><td>ε²</td></tr><tr><td>A, not B</td><td>1 − 3ε</td><td>ε</td><td>ε(1 − 3ε)</td></tr>'+
+  '<tr><td>B, not A</td><td>ε</td><td>1 − 3ε</td><td>ε(1 − 3ε)</td></tr><tr><td>neither</td><td>ε</td><td>ε</td><td>ε²</td></tr></tbody></table>'+
+  KX('\\text{top-right share}=\\frac{\\text{ε}^2}{2\\text{ε}^2+2\\text{ε}(1-3\\text{ε})}=\\frac{\\text{ε}^2}{2\\text{ε}-4\\text{ε}^2}=\\frac{\\text{ε}}{2-4\\text{ε}}',true)+
+  '<p>Check: ε = 0.1 gives 0.1/1.6 = 0.0625, and the grid gives <span class="mono">'+fs(keyRow(EVEN,'eps',0.1).in_TR_blob)+'</span>. At ε = 1/4 every row is 1/16 and the share is 0.25.</p>';
+
+// ---------- the presses ----------
+Qz.define('q1',{ask:'Where does the <u>product</u> p<sub>A</sub>·p<sub>B</sub> put most of its mass?',
+  words:[['product','multiply A’s density by B’s at every point, then rescale so it adds up to 1']],
+  plain:'Look at where blue and amber are each non-zero. The product can only keep places where both are.',
+  options:[{t:'In the top-right blob: A and B, the film we want',why:'the product is called AND, and top-right is the A-and-B corner. But both experts are about 2 × 10⁻¹⁰ of their peak there.',preview:{at:[[0.5,0.5,0.3]],say:'the product sits on the rare film'}},
+    {t:'Split between bottom-right and top-left',why:'each expert brings its own blob. But at A’s blob B is about 0, so the product is about 0 there too.',preview:{at:[[0.5,-0.5,0.3],[-0.5,0.5,0.3]],say:'it keeps both training corners'}},
+    {t:'At the origin, between the two blobs',right:true,why:'between the blobs neither density is tiny, so the product is largest there: about 4 × 10⁹ times its value at the top-right centre.',preview:{at:[[0,0,0.22]],say:'a blend halfway between'}},
+    {t:'Nowhere: the product is zero',why:'the raw product is almost zero everywhere. A sampler rescales whatever is left, so it still returns samples, at the origin.',preview:{at:[],say:'no samples anywhere'}}]});
+Qz.define('q2',{ask:'With no fine-tuning (ε = 1/4), what share of p<sub>A</sub>·p<sub>B</sub> lands in the top-right circle?',
+  words:[['ε','the leftover each expert keeps on each corner that is not its own']],
+  plain:'Before fine-tuning both experts are the same pretrained density, a quarter on each corner. Multiply it by itself and rescale. How much is top-right?',
+  options:[{t:'1/16, because ¼ × ¼',why:'every corner gets ¼ × ¼, so all four are 1/16. Rescaling to add up to 1 multiplies each by 4.',preview:{at:[[0.5,0.5,0.25,'1/16']],say:'only a sixteenth on top-right'}},
+    {t:'1/4, the same as every corner',right:true,why:'squaring four equal blobs keeps four equal blobs, so each holds a quarter after rescaling.',preview:{at:[[0.5,0.5,0.25,'¼'],[0.5,-0.5,0.25,'¼'],[-0.5,0.5,0.25,'¼'],[-0.5,-0.5,0.25,'¼']],say:'four equal quarters'}},
+    {t:'All of it, since top-right is the one A-and-B corner',why:'that is what AND should mean. But this product never sees a label; it squares a density that is equal everywhere.',preview:{at:[[0.5,0.5,0.32,'1']],say:'everything on the rare film'}}]});
+Qz.define('q3',{ask:'Leftover sits only <u>next door</u>, ε = 0.1 each. What does top-right hold?',
+  words:[['next door','the two corners sharing an edge with the expert’s own: top-right and bottom-left for both experts']],
+  plain:'Each expert keeps a little on top-right and bottom-left only, and nothing on the far corner. Which corners still have both experts non-zero, and how do they split?',
+  options:[{t:'About 0: fine-tuning still wins',why:'the from-scratch experts gave 0.006. But here both experts keep ε on top-right, so the product keeps ε × ε there.',preview:{at:[[0,0,0.2]],say:'back to the blend'}},
+    {t:'About 0.5: a tie with bottom-left',right:true,why:'top-right and bottom-left both get ε × ε, and the expert’s own corners get ε × 0. Two equal corners split the mass in half.',preview:{at:[[0.5,0.5,0.25,'½'],[-0.5,-0.5,0.25,'½']],say:'half top-right, half neither'}},
+    {t:'All of it: top-right is the shared corner',why:'top-right is shared. But bottom-left is shared too, with the same ε × ε.',preview:{at:[[0.5,0.5,0.32,'1']],say:'everything on the rare film'}}]});
+Qz.define('q4',{ask:'Cut the A-and-B films to 1 in 20 (<u>r</u> = 0.05). What does the top-right circle hold?',
+  words:[['r','the share of training films that are A and B: pneumothorax without a drain']],
+  plain:'Make the top-right films five times rarer than at r = 0.25. Does the composed density’s top-right share shrink with them?',
+  options:[{t:'About 0.2: it shrinks five-fold with the data',why:'fewer films there sounds like less mass there. But near top-right the composed density is about r times the top-right blob, and rescaling to 1 removes the r.',preview:{at:[[0.5,0.5,0.14,'0.2']],say:'a fifth as much on top-right'}},
+    {t:'0.989, all of it, still',right:true,why:'near top-right both p(A|x) and p(B|x) are about 1 however rare the films; everywhere else one of them is about 0.',preview:{at:[[0.5,0.5,0.32,'0.989']],say:'nothing changes'}},
+    {t:'It falls back to the blend at the origin',why:'rare can feel like absent. But the base p(x) still has films in the top-right corner.',preview:{at:[[0,0,0.2]],say:'back to the blend'}}]});
+Qz.define('q5',{ask:'No training film is top-right. Where does p<sub>A</sub>·p<sub>B</sub> put its mass now?',
+  words:[['background','the spread of a part over all films: x2 is half at +0.5, half at −0.5']],
+  plain:'Each expert now copies the part it does not model from the background. Look at where blue and amber overlap.',
+  options:[{t:'The blend at the origin, as in frame 1',why:'the training sets are the same two corners as frame 1. But each expert’s density now covers top-right too.',preview:{at:[[0,0,0.2]],say:'back to the blend'}},
+    {t:'The top-right blob',right:true,why:'A covers bottom-right and top-right, B covers top-left and top-right. Top-right is the only corner both cover.',preview:{at:[[0.5,0.5,0.3]],say:'the rare film, from parts'}},
+    {t:'Bottom-right and top-left, the films they trained on',why:'those are the films each expert saw. But B is about 0 at bottom-right, and A is about 0 at top-left.',preview:{at:[[0.5,-0.5,0.3],[-0.5,0.5,0.3]],say:'it keeps both training corners'}}]});
+
+const EPS_STOPS=EVEN.map(r=>r.eps);              // 0.25 … 0
+const R_STOPS=C1.map(r=>r.r);
+const rfmt=v=>v===0?'0':v>=1e-3?String(v):'10⁻'+sup(-Math.round(Math.log10(v)));
+let exCase='even', exIdx=3;
+
+const F_ZERO=()=>KX('p_A(x)\\,p_B(x)=0\\ \\text{wherever}\\ p_A(x)=0\\ \\text{or}\\ p_B(x)=0',true);
+function F_C2(e,kind){
+  const en=epsTex(e);
+  if(kind==='adjacent')return '<div class="eq">'+KX('p_A=(1-2\\text{ε})\\,\\text{BR}+\\text{ε}\\,(\\text{TR}+\\text{BL})',true)+KX('\\text{top-right share}=\\frac{\\text{ε}^2}{\\text{ε}^2+\\text{ε}^2}=\\tfrac12',true)+'</div>';
+  const f=e>0?e/(2-4*e):0;
+  return '<div class="eq">'+KX('p_A=(1-3\\text{ε})\\,\\text{BR}+\\text{ε}\\,(\\text{TR}+\\text{TL}+\\text{BL})',true)+
+    (e>0?KX('\\text{top-right share}\\approx\\frac{\\text{ε}}{2-4\\text{ε}}=\\frac{'+en+'}{'+(+(2-4*e).toPrecision(6))+'}='+texNum(f),true)
+        :KX('\\text{top-right share}\\approx\\frac{\\text{ε}^2}{2\\text{ε}-4\\text{ε}^2}=\\frac{0}{0}',true))+
+    '<div class="mnote">same-corner terms only; cross terms are 1.5 × 10⁻⁵ of a same-corner term or smaller</div></div>';
+}
+const F_C1=r=>{const z=keyRow(C1,'r',r).Z;return '<div class="eq">'+KX('\\frac{p(x\\mid A)\\,p(x\\mid B)}{p(x)}\\;\\propto\\;q_r(x)=\\frac{p(x,A)\\,p(x,B)}{p(x)}=p(x)\\,p(A\\mid x)\\,p(B\\mid x)',true)+KX('Z=\\textstyle\\int q_r\\,dx='+texNum(z)+(r>0?'\\;\\approx\\;r':''),true)+'</div>';};
+function F_PARTS(which){
+  const pieces=[['p_A\\,p_B','kp'],['=','x'],['a(x_1)','ka'],['\\,p_{bg}(x_2)','kd'+(which==='divided'?' gone':'')],['\\cdot','x'],['p_{bg}(x_1)','kd'+(which==='divided'?' gone':'')],['\\,b(x_2)','kb']];
+  let html='<div class="mlines"><div class="mline">'+KX('p_A(x)=a(x_1)\\,p_{bg}(x_2),\\quad p_B(x)=p_{bg}(x_1)\\,b(x_2)')+'</div>';
+  html+='<div class="mline">'+pieces.map(p=>'<span class="mp '+p[1]+'">'+KX(p[0])+'</span>').join('')+(which==='divided'?'<span class="mp">'+KX('\\big/\\,p_{bg}(x_1)\\,p_{bg}(x_2)')+'</span>':'')+'</div>';
+  if(which==='divided')html+='<div class="mline">'+KX('=\\;a(x_1)\\,b(x_2)')+'</div>';
+  return html+'</div>';
+}
+
+function F_SHARE(e,s){
+  if(s==='old')return '<div class="eq">'+KX('\\text{top-right share}\\approx\\frac{\\text{ε}}{2-4\\text{ε}}',true)+'</div>';
+  return '<div class="eq">'+(e>0?KX('\\text{top-right share}\\approx\\frac{\\text{ε}}{2-4\\text{ε}}=\\frac{'+epsTex(e)+'}{'+(+(2-4*e).toPrecision(6))+'}='+texNum(e/(2-4*e)),true)
+      :KX('\\text{top-right share}\\approx\\frac{\\text{ε}^2}{2\\text{ε}-4\\text{ε}^2}=\\frac{0}{0}',true))+
+    '<div class="mnote">same-corner terms only; cross terms are 1.5 × 10⁻⁵ of a same-corner term or smaller</div></div>';
+}
+function F_DIV(){
+  const pieces=[['p_A\\,p_B','kp'],['=','x'],['a(x_1)','ka'],['\\,p_{bg}(x_2)','kd gone'],['\\cdot','x'],['p_{bg}(x_1)','kd gone'],['\\,b(x_2)','kb']];
+  return '<div class="mlines"><div class="mline">'+pieces.map(p=>'<span class="mp '+p[1]+'">'+KX(p[0])+'</span>').join('')+'<span class="mp">'+KX('\\big/\\,p_{bg}(x_1)\\,p_{bg}(x_2)')+'</span></div>'+
+    '<div class="mline">'+KX('=\\;a(x_1)\\,b(x_2)')+'</div></div>';
+}
+const e0=keyRow(EVEN,'eps',0),e25=keyRow(EVEN,'eps',0.25),e05=keyRow(EVEN,'eps',0.05),a01=keyRow(ADJ,'eps',0.1);
+const c05=keyRow(C1,'r',0.05),c001=keyRow(C1,'r',0.001),c1e5=keyRow(C1,'r',1e-5),c0=keyRow(C1,'r',0);
+const R_RARE=R_STOPS.filter(r=>r>=1e-5);
+const kindOf=()=>P.adj?'adjacent':'even';
+// frame 1's drag: B's blob moved to corner q; the product and its shares belong to the new position
+function pinB(a,q,s){lay(a,'B','pinB'+q,(x,y)=>blob(q,x,y),'--b',s);lay(a,'P','pin'+q,D.pin(q),'--prod',s);
+  a.tags=a.tags.filter(t=>t.t!=='expert B');a.nums={};delete a.circ.origin;}
+const wrapEq=tex=>'<div class="eq">'+tex+'</div>';
+
+// One press, one taught concept. ask: a prediction (adds no ledger row); reveal: its answer.
+const PRESSES=[
+ // ---- frame 1: support and the zero rule ----
+ {chap:'c1',title:'Four kinds of chest film',say:'Each grey blob is one kind of chest film.',
+  led:['blob','one kind of chest film: a Gaussian at (±0.5, ±0.5) with std 0.15'],
+  plot:(a,s)=>lay(a,'data','data',D.data(),'--data',s)},
+ {chap:'c1',title:'A is the right half',say:'A means pneumothorax: every film right of the centre line, x1 &gt; 0.',
+  led:['A','the right half, x1 &gt; 0: pneumothorax'],vocab:(a,s)=>{a.axA=s;}},
+ {chap:'c1',title:'B is the top half',say:'B means no chest drain: every film above the centre line, x2 &gt; 0.',
+  led:['B','the top half, x2 &gt; 0: no chest drain'],vocab:(a,s)=>{a.axB=s;}},
+ {chap:'c1',title:'The rare film is top-right',say:'Top-right is A and B: pneumothorax without a drain. Can a product of two experts put samples in this circle?',
+  led:['A and B','top-right, pneumothorax without a drain: the rare film. Its circle reaches 3 std (0.45) from the blob’s centre'],
+  vocab:(a,s)=>{a.names.TR=s;a.circ.TR=s;a.readout=true;}},
+ {chap:'c1',title:'Expert A sees one corner',say:'Expert A is trained from scratch on A, not B films only: pneumothorax with a drain.',
+  led:['expert A','trained from scratch on A, not B films only, the bottom-right blob'],
+  vocab:(a,s)=>{a.names.BR=s;},plot:(a,s)=>{lay(a,'A','A0',D.A(0,'even'),'--a',s);a.tags.push({x:0.5,y:-0.25,t:'expert A',c:'--a',s});}},
+ {chap:'c1',title:'Expert B sees the opposite corner',say:'Expert B is trained from scratch on B, not A films only: no pneumothorax, no drain.',
+  led:['expert B','trained from scratch on B, not A films only, the top-left blob'],
+  vocab:(a,s)=>{a.names.TL=s;},plot:(a,s)=>{lay(a,'B','B0',D.B(0,'even'),'--b',s);a.tags.push({x:-0.5,y:0.25,t:'expert B',c:'--b',s});}},
+ {chap:'c1',title:'Support',say:'Support is where a density is not zero. A Gaussian never is, so in practice each expert’s support is its own blob.',
+  led:()=>['support','where a density is not zero. In practice, each expert’s blob: at top-right, A is '+fz(KEY.A_at_TR_over_peak)+' of its peak'],
+  eq:()=>wrapEq(KX('\\text{support of }p_A=\\{x: p_A(x)\\neq 0\\}',true))},
+ {chap:'c1',title:'Composing makes a product',say:'Composing adds the two experts’ scores. A sum of scores is the score of the product p<sub>A</sub>(x)·p<sub>B</sub>(x), rescaled to add up to 1.',
+  led:['p<sub>A</sub>·p<sub>B</sub>','the product: what adding the two experts’ scores samples from, once rescaled to add up to 1'],
+  eq:()=>wrapEq(KX('\\nabla\\log p_A+\\nabla\\log p_B=\\nabla\\log\\big(p_A\\,p_B\\big)',true))},
+ {chap:'c1',title:'Where does the product go?',say:'Predict where the product puts its mass.',ask:'q1'},
+ {chap:'c1',title:'It lands between them',say:'The product sits at the origin, a blend halfway between the two blobs. It is none of the kinds of film.',reveal:'q1',
+  led:['the blend','where the from-scratch product sits: the origin, between the two blobs, none of the kinds of film'],
+  plot:(a,s)=>{lay(a,'P','P0',D.P2(0,'even'),'--prod',s);a.circ.origin=s;}},
+ {chap:'c1',title:'The zero rule',say:'A product is zero wherever either factor is, and nearly zero wherever either is nearly zero. Only the gap between the blobs survives.',
+  led:['zero rule','p<sub>A</sub>·p<sub>B</sub> is 0 wherever either factor is 0, and tiny wherever either is tiny'],
+  eq:()=>wrapEq(F_ZERO())},
+ {chap:'c1',title:()=>fs(e0.at_origin)+' in the blend',say:()=>'Rescaled to add up to 1, '+fs(e0.at_origin)+' of the product sits inside the origin circle.',
+  led:()=>[fs(e0.at_origin),'the from-scratch product’s share inside the origin circle: the whole blend'],
+  plot:(a,s)=>{num(a,'origin',e0.at_origin,s);a.circ.origin=s;}},
+ {chap:'c1',title:()=>fs(e0.in_TR_blob)+' in each corner',say:()=>'Only the blend’s tail reaches the blobs: '+fs(e0.in_TR_blob)+' in each circle, top-right included. Turn on the tails to see it.',
+  led:()=>[fs(e0.in_TR_blob),'the blend’s tail inside each blob’s circle, the same in all four'],
+  plot:(a,s)=>{Q4.forEach(q=>{num(a,q,e0['in_'+q+'_blob'],s);a.circ[q]=s;});},
+  ctl:re=>toggle('tails','Show the tails (shading on a log scale)',P.log,v=>{P.log=v;re();})},
+ {chap:'c1',title:'Almost no mass to start with',say:()=>'Before rescaling, the product’s total mass Z is '+fz(e0.Z)+': the overlap of two blobs √2 apart.',
+  led:()=>[fz(e0.Z),'Z, the from-scratch product’s total mass before rescaling'],
+  extra:s=>[chips([{l:'Z, B opposite A =',v:fz(e0.Z),cls:'z',b:'real'}]),zoomBtn('where does '+fz(e0.Z)+' come from?','Where '+fz(e0.Z)+' comes from',Z0_HTML())]},
+ {chap:'c1',title:'Move B next door',say:()=>'Move expert B’s blob to top-right, next door to A’s. The blobs overlap more, and Z rises to '+fz(KEY.support.TR.Z)+'.',
+  led:()=>[fz(KEY.support.TR.Z),'Z with B’s blob next door to A’s, at top-right'],
+  plot:(a,s)=>{pinB(a,'TR',s);},
+  extra:s=>[chips([{l:'Z, B next door =',v:fz(KEY.support.TR.Z),cls:'z',b:'real'}])]},
+ {chap:'c1',title:'Put B on A',say:()=>'Put B’s blob on A’s at bottom-right and they overlap fully: Z is '+KEY.support.BR.Z.toPrecision(3)+'. A product has mass only where both factors do.',
+  led:()=>[KEY.support.BR.Z.toPrecision(3),'Z with B’s blob on A’s: full overlap'],
+  plot:(a,s)=>{pinB(a,'BR',s);},
+  extra:s=>[chips([{l:'Z, B on A =',v:KEY.support.BR.Z.toPrecision(3),cls:'z',b:'real'}])]},
+
+ // ---- frame 2: rescue (a), pretraining ----
+ {chap:'c2',title:'Pretraining sees every film',say:'Pretrain one model on all four kinds of film, then fine-tune one copy of it for each expert.',
+  led:['pretrained','one model trained on all four kinds of film; each expert starts as a copy of it'],
+  plot:(a,s)=>{lay(a,'data','data',D.data(),'--data',s);a.tags.push({x:-0.5,y:-0.22,t:'the pretrained model',s});}},
+ {chap:'c2',title:'Fine-tuning leaves a leftover',say:'Expert A keeps 1 − 3ε on bottom-right and a leftover ε on each other corner. Expert B is the mirror, on top-left.',
+  led:['ε','the leftover a fine-tuned expert keeps on each corner that is not its own'],
+  eq:()=>wrapEq(KX('p_A=(1-3\\text{ε})\\,\\text{BR}+\\text{ε}\\,(\\text{TR}+\\text{TL}+\\text{BL})',true))},
+ {chap:'c2',title:'Before fine-tuning, ε = 0.25',say:'With no fine-tuning the leftover is a quarter, so both experts are still the pretrained model.',
+  led:['ε = 0.25','no fine-tuning yet: the pretrained density, a quarter on every corner'],
+  eq:()=>wrapEq(KX('\\text{ε}=\\tfrac14\\;\\Rightarrow\\;p_A=p_B=\\tfrac14\\,(\\text{TR}+\\text{BR}+\\text{TL}+\\text{BL})',true))},
+ {chap:'c2',title:'Predict the share',say:'Predict the product’s top-right share before any fine-tuning.',ask:'q2'},
+ {chap:'c2',title:'A quarter in every corner',reveal:'q2',say:()=>'Squaring four equal blobs keeps four equal blobs, so each holds '+fs(e25.in_TR_blob)+'. That is where fine-tuning starts.',
+  led:()=>[fs(e25.in_TR_blob),'top-right’s share before fine-tuning, the same as every corner’s'],
+  plot:(a,s)=>{lay(a,'P','P25',D.P2(0.25,'even'),'--prod',s);Q4.forEach(q=>{num(a,q,e25['in_'+q+'_blob'],s);a.circ[q]=s;});}},
+ {chap:'c2',title:'Top-right drains as ε/(2 − 4ε)',say:'Drag ε toward 0. Top-right’s share follows ε/(2 − 4ε).',
+  led:()=>['ε/(2 − 4ε)','top-right’s share as fine-tuning drains ε, counting same-corner terms only: '+fs(e05.in_TR_blob)+' at ε = 0.05'],
+  eq:s=>F_SHARE(P.eps,s),
+  plot:(a,s)=>{const r=c2row(P.eps,'even');lay(a,'P','Pe'+P.eps,D.P2(P.eps,'even'),'--prod',s);a.nums={};num(a,'TR',r.TR,s);
+    Q4.forEach(q=>{a.circ[q]=q==='TR'?s:'old';});if(P.eps===0){a.circ.origin=s;num(a,'origin',r.origin,s);}},
+  ctl:re=>slider('Leftover after fine-tuning (ε)',EPS_STOPS,fe,EPS_STOPS.indexOf(P.eps),e=>{if(e!==P.eps){P.eps=e;re();}}),
+  extra:s=>{const out=[zoomBtn('where does ε/(2 − 4ε) come from?','Where ε/(2 − 4ε) comes from',EPS_HTML())];
+    if(P.eps===0)out.push(el('div',{class:'note'},'At exactly ε = 0 every same-corner term is 0, so the term the formula drops is all that is left: the blend, '+fs(e0.at_origin)+' at the origin.'));return out;}},
+ {chap:'c2',title:'Neither keeps pace',say:()=>'Bottom-left is neither: a drain without pneumothorax. It also gets ε × ε, so it ties top-right: '+fs(e05.in_BL_blob)+' each at ε = 0.05.',
+  led:()=>['neither','bottom-left, a drain without pneumothorax. Its share ties top-right’s: '+fs(e05.in_BL_blob)+' at ε = 0.05'],
+  vocab:(a,s)=>{a.names.BL=s;},
+  plot:(a,s)=>{num(a,'BL',c2row(P.eps,'even').BL,s);a.circ.BL=s;}},
+ {chap:'c2',title:'The rest: films you have',say:()=>'A, not B and B, not A each get ε(1 − 3ε): '+fs(e05.in_BR_blob)+' each at ε = 0.05. The product hands back the films already in the data.',
+  led:()=>[fs(e05.in_BR_blob),'A, not B and B, not A each, at ε = 0.05: the films you already have'],
+  plot:(a,s)=>{const r=c2row(P.eps,'even');num(a,'BR',r.BR,s);num(a,'TL',r.TL,s);a.circ.BR=s;a.circ.TL=s;}},
+ {chap:'c2',title:'Leftover only next door',params:{eps:0.1},say:'Suppose each expert keeps leftover only on the two corners beside its own. For both experts those are top-right and bottom-left.',
+  led:['next door','leftover only on the two corners beside an expert’s own: top-right and bottom-left, for both experts'],
+  eq:()=>wrapEq(KX('p_A=(1-2\\text{ε})\\,\\text{BR}+\\text{ε}\\,(\\text{TR}+\\text{BL})',true)+KX('p_B=(1-2\\text{ε})\\,\\text{TL}+\\text{ε}\\,(\\text{TR}+\\text{BL})',true)),
+  plot:(a,s)=>{a.layers=a.layers.filter(l=>l.g!=='P');a.nums={};a.circ={TR:a.circ.TR};
+    lay(a,'A','A'+kindOf()+P.eps,D.A(P.eps,kindOf()),'--a',s,0.85);lay(a,'B','B'+kindOf()+P.eps,D.B(P.eps,kindOf()),'--b',s,0.85);}},
+ {chap:'c2',title:'Predict the tie',params:{eps:0.1},say:'Predict top-right’s share when each expert keeps ε = 0.1 next door.',ask:'q3'},
+ {chap:'c2',title:'A tie at one half',params:{eps:0.1},reveal:'q3',say:()=>'Top-right and neither both get ε × ε, and each expert’s own corner gets almost nothing from the other. They split the product: '+fs(a01.in_TR_blob)+' each.',
+  led:()=>[fs(a01.in_TR_blob),'top-right’s share with the leftover next door, tied with neither’s'],
+  plot:(a,s)=>{const r=c2row(P.eps,kindOf());lay(a,'P','Pa'+kindOf()+P.eps,D.P2(P.eps,kindOf()),'--prod',s);
+    num(a,'TR',r.TR,s);num(a,'BL',r.BL,s);a.circ.TR=s;a.circ.BL=s;}},
+ {chap:'c2',title:'Half is the ceiling',params:{eps:0.1},say:'Swapping x for −x swaps the two experts, so the product always gives top-right and neither the same share. Top-right can never pass ½.',
+  led:['≤ ½','the ceiling for two fine-tuned experts: top-right always ties with neither'],
+  eq:()=>wrapEq(KX('p_A(-x)=p_B(x)\\;\\Rightarrow\\;\\text{share(top-right)}=\\text{share(neither)}\\le\\tfrac12',true)),
+  plot:(a,s)=>{const r=c2row(P.eps,kindOf());a.nums.TR.s=s;a.nums.BL.s=s;a.circ.TR=s;a.circ.BL=s;
+    if(!P.adj){num(a,'BR',r.BR,'old');num(a,'TL',r.TL,'old');a.circ.BR='old';a.circ.TL='old';}
+    if(P.eps===0||(P.adj&&P.eps<1e-3)){a.circ.origin=s;num(a,'origin',r.origin,s);}},
+  ctl:re=>{toggle('adj','Leftover only next door',P.adj,v=>{P.adj=v;re();});
+    slider('Leftover after fine-tuning (ε)',EPS_STOPS,fe,EPS_STOPS.indexOf(P.eps),e=>{if(e!==P.eps){P.eps=e;re();}});},
+  extra:s=>{const e=P.eps,r=c2row(e,kindOf()),out=[];
+    if(P.adj&&e>0&&e<=1e-4)out.push(el('div',{class:'note'},'At ε = '+fe(e)+' the leftover is so small that the blend between the experts’ own corners competes again: '+fs(r.origin)+' at the origin.'));
+    if(e===0)out.push(el('div',{class:'note'},'At ε = 0 these are the from-scratch experts of frame 1 again: the blend holds '+fs(r.origin)+'.'));return out;}},
+
+ // ---- frame 3: rescue (a), one model with contains labels ----
+ {chap:'c3',title:'One model with contains labels',say:'Train one conditional model in which a top-right film counts as A and as B. Here 1 film in 4 is top-right.',
+  led:['contains labels','one conditional model; a top-right film is labelled as containing A and as containing B'],
+  plot:(a,s)=>{lay(a,'data','c1d0.25',D.c1data(0.25),'--data',s);a.tags.push({x:0.5,y:0.2,t:'labelled A and B',s});}},
+ {chap:'c3',title:'Compose its conditionals',say:'Multiply the two conditionals and divide by the model of all films. Rescaled, that is the composed density.',
+  led:['q<sub>r</sub>','p(x, A) p(x, B)/p(x): one model’s two conditionals composed, before rescaling'],
+  eq:()=>wrapEq(KX('\\frac{p(x\\mid A)\\,p(x\\mid B)}{p(x)}\\;\\propto\\;q_r(x)=\\frac{p(x,A)\\,p(x,B)}{p(x)}',true))},
+ {chap:'c3',title:'Make the rare film rare',say:'Cut the A-and-B films to 1 in 20: r = 0.05.',
+  led:['r = 0.05','1 film in 20 is A and B: rare'],
+  plot:(a,s)=>lay(a,'data','c1d0.05',D.c1data(0.05),'--data',s),
+  extra:s=>[chips([{l:'r =',v:'0.05'},{l:'rare:',v:'1 film in 20'}])]},
+ {chap:'c3',title:'Predict the rare case',say:'Predict the composed density’s top-right share at r = 0.05.',ask:'q4'},
+ {chap:'c3',title:'Still the whole blob',reveal:'q4',say:()=>'Near top-right both labels are near certain however rare the films, so '+fs(c05.in_TR_blob)+' of the composed density lands in the top-right circle.',
+  led:()=>[fs(c05.in_TR_blob),'the composed density’s top-right share at r = 0.05: the whole blob'],
+  plot:(a,s)=>{lay(a,'P','c1'+P.r,D.c1(P.r),'--prod',s);num(a,'TR',c1row(P.r).TR,s);a.circ.TR=s;}},
+ {chap:'c3',title:'Z tracks r',say:'Before rescaling, the composed density’s total mass Z is about r. Rescaling removes it, which is why rarity does not shrink the share.',
+  led:()=>['Z ≈ r','the total mass of q<sub>r</sub>: '+fz(c05.Z)+' at r = 0.05'],
+  eq:()=>wrapEq(KX('Z=\\textstyle\\int q_r\\,dx='+texNum(c05.Z)+'\\;\\approx\\;r',true)),
+  extra:s=>[zoomBtn('why is rare enough?','Why rare is enough',C1_HTML())]},
+ {chap:'c3',title:'Rare is enough',params:{r:0.001},say:()=>'Drag r down. The top-right share holds at '+fs(c001.in_TR_blob)+' to 1 film in 1,000, and is still '+fs(c1e5.in_TR_blob)+' at 1 in 100,000.',
+  led:()=>[c001.in_TR_blob.toFixed(4),'top-right’s share at r = 0.001, and still '+fs(c1e5.in_TR_blob)+' at 1 film in 100,000: rare is enough'],
+  plot:(a,s)=>{lay(a,'data','c1d'+P.r,D.c1data(P.r),'--data','old');lay(a,'P','c1'+P.r,D.c1(P.r),'--prod',s);num(a,'TR',c1row(P.r).TR,s);a.circ.TR=s;},
+  ctl:re=>slider('Share of films that are A and B (r)',R_RARE,rfmt,R_RARE.indexOf(P.r),r=>{if(r!==P.r){P.r=r;re();}})},
+ {chap:'c3',title:'Absent is not',params:{r:0},say:()=>'With no top-right film at all, the product falls back to the blend: '+fs(c0.at_origin)+' in the origin circle.',
+  led:()=>['r = 0','absent: no top-right films, so the product falls back to the blend, '+fs(c0.at_origin)+' in the origin circle'],
+  plot:(a,s)=>{lay(a,'data','c1d0',D.c1data(0),'--data','old');lay(a,'P','c10',D.c1(0),'--prod',s);delete a.nums.TR;a.circ.TR='old';a.circ.origin=s;num(a,'origin',c0.at_origin,s);},
+  extra:s=>[chips([{l:'absent:',v:'no top-right films'}])]},
+
+ // ---- frame 4: rescue (b), experts that learn parts ----
+ {chap:'c4',title:'Expert A learns one part',say:'Call x1 the lung part. Expert A models x1 from its own films and copies x2 from the background, half at +0.5 and half at −0.5.',
+  led:['parts expert A','models x1, the lung, from A, not B films, and copies x2 from the background'],
+  eq:()=>'<div class="mline">'+KX('p_A(x)=a(x_1)\\,p_{bg}(x_2)')+'</div>',
+  plot:(a,s)=>{lay(a,'A','pA',D.pA(),'--a',s,0.85);a.tags.push({x:0.5,y:-0.22,t:'A: lung part',c:'--a',s});}},
+ {chap:'c4',title:'Expert B learns the other part',say:'Call x2 the chest-wall part. Expert B models x2 from its own films and copies x1 from the background.',
+  led:['parts expert B','models x2, the chest wall, from B, not A films, and copies x1 from the background'],
+  eq:()=>'<div class="mline">'+KX('p_B(x)=p_{bg}(x_1)\\,b(x_2)')+'</div>',
+  plot:(a,s)=>{lay(a,'B','pB',D.pB(),'--b',s,0.85);a.tags.push({x:-0.5,y:0.22,t:'B: wall part',c:'--b',s});}},
+ {chap:'c4',title:'Predict the parts product',say:'No training film is top-right. Predict where the product of these two experts goes.',ask:'q5'},
+ {chap:'c4',title:'Parts meet at top-right',reveal:'q5',say:'Top-right is the only corner both experts cover, so the product lands there.',
+  led:['top-right','where the parts product lands, though no training film is top-right'],
+  plot:(a,s)=>{lay(a,'P','bplain',D.bPlain(),'--prod',s);a.circ.TR=s;}},
+ {chap:'c4',title:()=>fs(KEY.b_plain.in_TR_blob)+' in the circle',say:()=>'The plain product puts '+fs(KEY.b_plain.in_TR_blob)+' of its mass in the top-right circle.',
+  led:()=>[fs(KEY.b_plain.in_TR_blob),'the plain parts product’s share in the top-right circle'],
+  plot:(a,s)=>{num(a,'TR',KEY.b_plain.in_TR_blob,s);a.circ.TR=s;}},
+ {chap:'c4',title:'But the blob is too narrow',say:()=>'Its spread along x1 is '+KEY.b_plain.sd_x1.toFixed(3)+', against '+KEY.b_divided.sd_x1.toFixed(3)+' for a real film blob. x1 enters through both experts, once as A’s part and once as B’s copy of the background.',
+  led:()=>[KEY.b_plain.sd_x1.toFixed(3),'the plain product’s spread along x1, against '+KEY.b_divided.sd_x1.toFixed(3)+' for a data blob: too narrow'],
+  extra:s=>[chips([{l:'plain product’s spread along x1:',v:KEY.b_plain.sd_x1.toFixed(3),b:'real'},{l:'a data blob’s:',v:KEY.b_divided.sd_x1.toFixed(3)}])]},
+ {chap:'c4',title:'Divide out the background',say:'Divide by the background on both coordinates. The copied parts cancel, leaving a(x1)·b(x2).',
+  recall:[{href:'https://claude.ai/artifact/KS2mvPznS1VKNdWz7B6f85',text:'Second view, on another toy: Divide Out the Wall'}],
+  led:['÷ p<sub>bg</sub>','dividing by the background cancels the part each expert copied'],
+  eq:()=>F_DIV()},
+ {chap:'c4',title:()=>'The real blob, '+fs(KEY.b_divided.in_TR_blob),say:()=>'The divided product is the real top-right blob: '+fs(KEY.b_divided.in_TR_blob)+' in its circle, spread '+KEY.b_divided.sd_x1.toFixed(3)+'.',
+  led:()=>[fs(KEY.b_divided.in_TR_blob),'the divided product’s top-right share, spread '+KEY.b_divided.sd_x1.toFixed(3)+': the real top-right blob'],
+  plot:(a,s)=>{lay(a,'P','bdiv',D.bDiv(),'--prod',s);num(a,'TR',KEY.b_divided.in_TR_blob,s);a.circ.TR=s;},
+  extra:s=>[chips([{l:'divided product’s spread along x1:',v:KEY.b_divided.sd_x1.toFixed(3),b:'real'}])]},
+ {chap:'c4',title:'The catch on real films',say:'On chest X-rays a drain changes the lung it treats, so lung and chest wall may not be separate parts.',
+  led:['the catch','on real films a drain changes the lung it treats, so the parts may not be separate'],
+  extra:s=>[el('div',{class:'catch'},'On real films the catch is whether lung and chest wall are separate parts, since a drain changes the lung it treats.')]},
+
+ // ---- frame 5: rescue (c), a known target for samplers ----
+ {chap:'c5',title:'A known target',say:'On this toy the exact composed density is known. This one is the one-model product at r = 0.05.',
+  led:['exact target','a composed density computed on the grid, with no training and no sampler, that any histogram can be scored against'],
+  eq:()=>F_C1(0.05),
+  plot:(a,s)=>{lay(a,'P','c10.05',D.c1(0.05),'--prod',s);num(a,'TR',c05.in_TR_blob,s);a.circ.TR=s;}},
+ {chap:'c5',title:'Waiting for a sampler',say:'A sampler’s histogram can be scored against this target. No sampler has been run on it yet.',
+  led:['not run','no sampler has been run on any target on this page'],
+  extra:s=>[el('div',{class:'emptyslot'},'A sampler’s histogram goes here. No sampler has been run on this target yet, so there is no number to draw.'),
+    chips([{l:'sampler, top-right circle:',v:'?',b:'not run'},{l:'total variation to the target:',v:'?',b:'not run'}])]},
+
+ // ---- Explore ----
+ {chap:'c6',title:'Every number, and Explore',say:'',explore:true}
+];
+
+// ---------- Explore: narration computed from the values ----------
+const CASES=[['even','Two fine-tuned experts'],['adjacent','Leftover next door'],['c1','One model, contains labels'],['plain','Parts, plain product'],['divided','Parts, divided']];
+function exploreEnter(){ctlClear();const pc=el('div',{class:'pills',role:'group','aria-label':'Which way to compose'});
+  CASES.forEach(([k,t])=>{const b=el('button',{class:'pill',type:'button','data-m':k},t);b.addEventListener('click',()=>{exCase=k;exIdx=k==='c1'?1:3;build();});pc.appendChild(b);});
+  $('ctl').appendChild(pc);const sl=el('div');$('ctl').appendChild(sl);
+  function say(r,label){const tr=r.TR,o=r.origin;let t;
+    if(o!=null&&o>0.5)t=label+': '+fs(o)+' sits in the origin circle, a blend that is none of the four kinds of film.';
+    else if(tr>0.9)t=label+': '+fs(tr)+' of the product is in the top-right circle, the film nobody needs to have trained on.';
+    else if(r.BL>0.3)t=label+': top-right and bottom-left tie at '+fs(tr)+' and '+fs(r.BL)+'.';
+    else t=label+': top-right holds '+fs(tr)+'; most goes to A, not B ('+fs(r.BR)+') and B, not A ('+fs(r.TL)+').';
+    $('pSay').textContent=t;}
+  function show(a,eqHtml,nodes){draw(a);$('eq').innerHTML='';$('eq').appendChild(el('div',{class:'eqrow'},eqHtml));
+    const x=$('extra');x.innerHTML='';nodes.forEach(n=>x.appendChild(n));panels();}
+  function build(){pc.querySelectorAll('.pill').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.m===exCase)));sl.innerHTML='';
+    if(exCase==='even'||exCase==='adjacent'){
+      const stops=EPS_STOPS;
+      const lab=el('label',{class:'rowlab',for:'sl'},'Leftover after fine-tuning (ε) <span class="now" id="slnow"></span>');const s=el('input',{type:'range',id:'sl',min:0,max:stops.length-1,step:1,value:exIdx});
+      sl.appendChild(lab);sl.appendChild(s);sl.appendChild(el('div',{class:'ticks'},'<span>0.25</span><span>0</span>'));
+      const up=()=>{exIdx=+s.value;const e=stops[exIdx];$('slnow').textContent='= '+fe(e);const a=fullState(exCase,e);show(a,F_C2(e,exCase),[chips([{l:'Z =',v:fz(a.row.Z),cls:'z',b:'real'}]),hand()]);say(a.row,'ε = '+fe(e));};
+      s.addEventListener('input',up);up();
+    } else if(exCase==='c1'){
+      const lab=el('label',{class:'rowlab',for:'sl'},'Share of films that are A and B (r) <span class="now" id="slnow"></span>');const s=el('input',{type:'range',id:'sl',min:0,max:R_STOPS.length-1,step:1,value:exIdx});
+      sl.appendChild(lab);sl.appendChild(s);sl.appendChild(el('div',{class:'ticks'},'<span>0.25</span><span>0</span>'));
+      const up=()=>{exIdx=+s.value;const r=R_STOPS[exIdx];$('slnow').textContent='= '+rfmt(r);const a=fullState('c1',r);show(a,F_C1(r),[chips([{l:'Z =',v:fz(a.row.Z),cls:'z',b:'real'}]),hand()]);say(a.row,'r = '+rfmt(r));};
+      s.addEventListener('input',up);up();
+    } else {const a=fullState(exCase);show(a,F_PARTS(exCase),[chips([{l:'spread along x1:',v:a.row.sd.toFixed(3),b:'real'}]),hand()]);
+      say(a.row,exCase==='plain'?'Parts, plain product':'Parts, divided by the background');}
+  }
+  build();
+}
+function hand(){return el('div',{class:'hand'},'✍️ On paper: write the four same-corner terms of p<sub>A</sub>·p<sub>B</sub>, add them, and show top-right’s share is ε/(2 − 4ε). Check that ε = 0.1 gives 0.0625, the number on the picture at that stop.');}
+
+// ---------- the engine ----------
+const CHAPS=[['c1','Support and the zero rule'],['c2','Rescue (a): pretraining'],['c3','Rescue (a): one model'],['c4','Rescue (b): parts'],['c5','Rescue (c): samplers'],['c6','Explore']];
+let cur=-1,nudged=false;
+// a side panel shows only when something has been taught into it
+function panels(){const has=id=>$(id).children.length>0;const vis={q:has('qBox'),ctl:has('ctl'),eq:has('eq'),extra:has('extra'),ledger:has('ledgerList')};
+  document.querySelectorAll('[data-sub]').forEach(e=>{e.hidden=!vis[e.dataset.sub];});}
+// redraw this press from scratch: the picture, the formulas and the extras, each item new or greyed
+function render(){const a=build(cur);draw(a);
+  const q=$('eq');q.innerHTML='';a.eq.forEach(e=>q.appendChild(el('div',{class:'eqrow '+(e.s==='old'?'was':'fresh')},typeof e.h==='function'?e.h(e.s):e.h)));
+  const x=$('extra');x.innerHTML='';a.extra.forEach(e=>[].concat(e.f(e.s)||[]).forEach(n=>{n.classList.add(e.s==='old'?'was':'fresh');x.appendChild(n);}));
+  panels();}
+function go(i,dir){
+  i=Math.max(0,Math.min(PRESSES.length-1,i));cur=i;nudged=false;const p=PRESSES[i];
+  const nn=document.querySelector('.nudge');if(nn)nn.remove();
+  document.querySelectorAll('.modal').forEach(m=>m.remove());
+  P=Object.assign({eps:0.05,adj:true,r:0.05,log:false},p.params||{});
+  $('pTitle').textContent=val(p.title);$('pSay').innerHTML=val(p.say)||'';
+  const rc=$('recall');rc.innerHTML='';(p.recall||[]).forEach(r=>rc.appendChild(el('a',{href:r.href,target:'_blank',rel:'noopener'},r.text)));
+  $('qBox').innerHTML='';$('eq').innerHTML='';$('extra').innerHTML='';ctlClear();
+  $('count').textContent=(i+1)+' of '+PRESSES.length;
+  $('back').disabled=i===0;$('next').disabled=i===PRESSES.length-1;
+  const ci=CHAPS.findIndex(c=>c[0]===p.chap);
+  $('chaps').querySelectorAll('.chap').forEach((b,j)=>b.classList.toggle('on',j===ci));
+  renderLedger(i);
+  if(p.explore)exploreEnter();
+  else{
+    if(p.ctl)p.ctl(render);
+    render();
+    if(p.ask)Qz.ask($('qBox'),p.ask);
+    else if(p.reveal)Qz.reveal($('qBox'),p.reveal);
+    else PRESSES.forEach((q,k)=>{if(k<i&&q.reveal&&q.chap===p.chap)$('qBox').appendChild(Qz.line(q.reveal));});
+  }
+  panels();
+  const sd=document.querySelector('.side');if(sd)sd.scrollTop=0;
+  store.set('press',i);
+  try{history.replaceState(null,'','#p'+(i+1));}catch(e){}
+  if(dir){const top=$('press').getBoundingClientRect().top;if(top<0)$('press').scrollIntoView({block:'start',behavior:reduced()?'auto':'smooth'});}
+}
+function next(){const p=PRESSES[cur];if(p.ask&&!Qz.picked(p.ask)&&!nudged){nudged=true;$('navbar').appendChild(el('div',{class:'nudge'},'Pick an answer first. Press Next again to see the verdict without one.'));return;}go(cur+1,1);}
+CHAPS.forEach(([id,t])=>{const b=el('button',{class:'chap',type:'button'},t);b.addEventListener('click',()=>go(PRESSES.findIndex(p=>p.chap===id),0));$('chaps').appendChild(b);});
+Score.rows=[['q1','Where the from-scratch product goes'],['q2','Share before fine-tuning'],['q3','Leftover next door'],['q4','Rare A-and-B films'],['q5','Experts that learn parts']]
+  .map(([id,label])=>({id,short:id.slice(1),label,press:PRESSES.findIndex(p=>p.ask===id)}));
+Score.go=i=>go(i,0);Score.render();
+$('next').addEventListener('click',next);$('back').addEventListener('click',()=>go(cur-1,-1));
+$('guide').addEventListener('change',()=>{document.body.classList.toggle('noguide',!$('guide').checked);if(!PRESSES[cur].explore)render();});
+document.addEventListener('keydown',e=>{const t=e.target;if(t&&(t.tagName==='TEXTAREA'||(t.tagName==='INPUT'&&t.type!=='checkbox')||t.isContentEditable))return;if(document.querySelector('.modal'))return;
+  if(e.key==='ArrowRight'){e.preventDefault();next();}else if(e.key==='ArrowLeft'){e.preventDefault();go(cur-1,-1);}});
+const redrawTheme=()=>{cache.clear();if(S_)draw(S_);};
+try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',redrawTheme);new MutationObserver(redrawTheme).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});}catch(e){}
+let start=0;const m=/^#p(\d+)$/.exec(location.hash||'');if(m)start=+m[1]-1;else start=store.get('press',0);go(start,0);
+
+// ---------- recompute a small key table on load ----------
+setTimeout(()=>{const rows=[
+  ['from scratch (ε = 0): at the origin',shares(D.P2(0,'even')).origin,keyRow(EVEN,'eps',0).at_origin],
+  ['from scratch (ε = 0): Z',shares(D.P2(0,'even')).Z,keyRow(EVEN,'eps',0).Z],
+  ['no fine-tuning (ε = 1/4): top-right',shares(D.P2(0.25,'even')).TR,keyRow(EVEN,'eps',0.25).in_TR_blob],
+  ['ε = 0.1: top-right',shares(D.P2(0.1,'even')).TR,keyRow(EVEN,'eps',0.1).in_TR_blob],
+  ['next door, ε = 0.1: top-right',shares(D.P2(0.1,'adjacent')).TR,keyRow(ADJ,'eps',0.1).in_TR_blob],
+  ['one model, r = 0.05: top-right',shares(D.c1(0.05)).TR,keyRow(C1,'r',0.05).in_TR_blob],
+  ['parts, plain: top-right',shares(D.bPlain()).TR,KEY.b_plain.in_TR_blob],
+  ['parts, divided: top-right',shares(D.bDiv()).TR,KEY.b_divided.in_TR_blob]];
+  const tb=$('keyTable').querySelector('tbody');tb.innerHTML='';
+  rows.forEach(([n,a,b])=>{const ok=Math.abs(a-b)<=1e-6*Math.max(Math.abs(b),1e-12)+1e-12;tb.appendChild(el('tr',null,'<td>'+n+'</td><td class="mono">'+a.toPrecision(6)+'</td><td class="mono">'+b.toPrecision(6)+'</td><td>'+(ok?'✓':'✗')+'</td>'));});
+},400);
+})();
+</script>

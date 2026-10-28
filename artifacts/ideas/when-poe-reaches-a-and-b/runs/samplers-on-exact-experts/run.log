@@ -1,0 +1,60 @@
+== 1. Exact target, checked against the answer key
+   in_TR_blob  this grid 0.9890   answer key 0.9889
+   in_BR_blob  this grid 0.0001   answer key 0.0001
+   in_TL_blob  this grid 0.0001   answer key 0.0001
+   in_BL_blob  this grid 0.0000   answer key 0.0000
+   at_origin   this grid 0.0029   answer key 0.0030
+   abar at level 0 = 0.999369, level 99 = 2.43e-07
+   Takeaway: the target built here matches the answer key, so every sampler is scored against the right density.
+
+== 2. Runs (2,000 samples each)
+   exact samples     seed 0  TR 0.984  TV 0.140
+   reverse diffusion seed 0  TR 0.981  origin 0.021  TV 0.185  evals 100  nonfinite 0.000  0.1s
+   annealed ULA      seed 0  TR 0.985  origin 0.003  TV 0.140  evals 2120  nonfinite 0.000  3.0s
+   annealed UHA      seed 0  TR 0.990  origin 0.001  TV 0.130  evals 2120  nonfinite 0.000  2.9s
+   annealed MALA     seed 0  TR 0.992  origin 0.004  TV 0.132  evals 2221  acceptance 0.600  nonfinite 0.000  11.5s
+   exact samples     seed 1  TR 0.989  TV 0.127
+   reverse diffusion seed 1  TR 0.983  origin 0.019  TV 0.181  evals 100  nonfinite 0.000  0.1s
+   annealed ULA      seed 1  TR 0.992  origin 0.002  TV 0.116  evals 2120  nonfinite 0.000  3.5s
+   annealed UHA      seed 1  TR 0.988  origin 0.004  TV 0.134  evals 2120  nonfinite 0.000  3.1s
+   annealed MALA     seed 1  TR 0.991  origin 0.002  TV 0.118  evals 2221  acceptance 0.601  nonfinite 0.000  11.0s
+   exact samples     seed 2  TR 0.988  TV 0.132
+   reverse diffusion seed 2  TR 0.986  origin 0.021  TV 0.179  evals 100  nonfinite 0.000  0.1s
+   annealed ULA      seed 2  TR 0.988  origin 0.004  TV 0.127  evals 2120  nonfinite 0.000  3.0s
+   annealed UHA      seed 2  TR 0.987  origin 0.004  TV 0.134  evals 2120  nonfinite 0.000  2.9s
+   annealed MALA     seed 2  TR 0.987  origin 0.003  TV 0.123  evals 2221  acceptance 0.600  nonfinite 0.000  9.6s
+
+== 2b. Sweep: reverse diffusion with 1000 cosine levels (is the miss a step-count error?)
+   reverse diffusion 1000 levels seed 0  TR 0.978  origin 0.020  TV 0.181  evals 1000
+   reverse diffusion 1000 levels seed 1  TR 0.978  origin 0.021  TV 0.159  evals 1000
+   reverse diffusion 1000 levels seed 2  TR 0.978  origin 0.021  TV 0.160  evals 1000
+
+== 2c. Control: reverse diffusion with the true noised score of the plain mixture p(x)
+   Same reverse step, same 100 levels; target is p(x) itself, scored against p(x)'s own grid.
+   reverse diffusion on p(x)  seed 0  TV to p(x) grid 0.226  TR 0.050  BR 0.311
+   exact p(x) samples         seed 0  TV to p(x) grid 0.229  TR 0.056  BR 0.309
+   reverse diffusion on p(x)  seed 1  TV to p(x) grid 0.249  TR 0.050  BR 0.318
+   exact p(x) samples         seed 1  TV to p(x) grid 0.234  TR 0.046  BR 0.318
+   reverse diffusion on p(x)  seed 2  TV to p(x) grid 0.236  TR 0.045  BR 0.326
+   exact p(x) samples         seed 2  TV to p(x) grid 0.236  TR 0.057  BR 0.328
+   reverse diffusion on p(x)  TV 0.237 ± 0.012
+   exact p(x) samples         TV 0.233 ± 0.004
+   Takeaway: with a true noised score the reverse step lands on its floor, so the composed miss comes from the summed score, not from the reverse step or the 100-level schedule.
+
+== 3. Summary, mean ± sd over seeds [0, 1, 2]
+   sampler                          top-right share    origin share              TV  score evals    sample centre (x1, x2)  sample std (x1, x2)
+   exact target (grid)                        0.989           0.003                             
+   exact samples                      0.987 ± 0.003   0.003 ± 0.001   0.133 ± 0.006            0            (0.499, 0.502)       (0.150, 0.154)
+   reverse diffusion                  0.983 ± 0.003   0.021 ± 0.001   0.182 ± 0.003          100            (0.465, 0.464)       (0.144, 0.147)
+   annealed ULA                       0.988 ± 0.004   0.003 ± 0.001   0.128 ± 0.012         2120            (0.498, 0.503)       (0.152, 0.152)
+   annealed MALA                      0.990 ± 0.003   0.003 ± 0.001   0.124 ± 0.007         2221            (0.503, 0.500)       (0.151, 0.149)
+   annealed UHA                       0.988 ± 0.002   0.003 ± 0.002   0.132 ± 0.002         2120            (0.499, 0.499)       (0.153, 0.150)
+   reverse diffusion 1000 levels      0.978 ± 0.000   0.021 ± 0.001   0.167 ± 0.012         1000            (0.470, 0.468)       (0.156, 0.154)
+   The origin disc (radius 3σ/√2) overlaps the top-right 3σ disc, so a sample can count in both.
+
+   MALA acceptance (main run, mean over levels): seed 0 0.600, seed 1 0.601, seed 2 0.600
+   MALA acceptance range over levels: min 0.591, max 0.613; clean level 0.598
+   MALA tuned step / level variance: clean level 1.164, level 99 1.167
+   MALA tuning pilot cost: 4140 composed-score evals per seed
+
+wrote results.json and figures to /home-mscluster/mmolefe/PhD/reduce-reuse-recycle/artifacts/ideas/when-poe-reaches-a-and-b/runs/samplers-on-exact-experts  (58s total)

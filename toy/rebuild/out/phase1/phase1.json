@@ -1,0 +1,75 @@
+{
+ "tolerance": 0.1,
+ "rows": [
+  {
+   "panel": "toy_gmm(std=.03)",
+   "tv": 0.1786,
+   "tv_last_step_mean": 0.0748,
+   "floor": 0.048600000000000004,
+   "mark": "matches without the last-step noise"
+  },
+  {
+   "panel": "toy_gauss()",
+   "tv": 0.23750000000000002,
+   "tv_last_step_mean": 0.24,
+   "floor": 0.2379,
+   "mark": "matches"
+  },
+  {
+   "panel": "toy_box(0.7)",
+   "tv": 0.16240000000000002,
+   "tv_last_step_mean": 0.16299999999999998,
+   "floor": 0.1574,
+   "mark": "matches"
+  },
+  {
+   "panel": "toy_box(0.3)",
+   "tv": 0.1092,
+   "tv_last_step_mean": 0.0884,
+   "floor": 0.0644,
+   "mark": "matches"
+  },
+  {
+   "panel": "bar(scale=0.2)",
+   "tv": 0.11499999999999999,
+   "tv_last_step_mean": 0.09780000000000001,
+   "floor": 0.0952,
+   "mark": "matches"
+  },
+  {
+   "panel": "bar_horizontal()",
+   "tv": 0.1036,
+   "tv_last_step_mean": 0.10700000000000001,
+   "floor": 0.09380000000000001,
+   "mark": "matches"
+  },
+  {
+   "panel": "toy_gmm_left()",
+   "tv": 0.11500000000000002,
+   "tv_last_step_mean": 0.101,
+   "floor": 0.06840000000000002,
+   "mark": "matches"
+  },
+  {
+   "panel": "toy_gmm_right()",
+   "tv": 0.12140000000000002,
+   "tv_last_step_mean": 0.1032,
+   "floor": 0.0778,
+   "mark": "matches"
+  },
+  {
+   "panel": "right_bar()",
+   "tv": 0.1196,
+   "tv_last_step_mean": 0.08499999999999999,
+   "floor": 0.0746,
+   "mark": "matches"
+  },
+  {
+   "panel": "left_bar()",
+   "tv": 0.11920000000000001,
+   "tv_last_step_mean": 0.08,
+   "floor": 0.0774,
+   "mark": "matches"
+  }
+ ]
+}

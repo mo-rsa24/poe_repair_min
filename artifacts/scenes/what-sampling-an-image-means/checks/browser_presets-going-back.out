@@ -1,0 +1,67 @@
+
+frame 1
+  default: Row 173 cm: the noisy values form a bell centred at √ᾱₜ × 0.30 = 0.207 with spread 0.722, area 1 across the row.
+  preset 1 t = 10: Row 173 cm: the noisy values form a bell centred at √ᾱₜ × 0.30 = 0.294 with spread 0.182, area 1 across the row.
+  preset 2 t = 90: Row 173 cm: the noisy values form a bell centred at √ᾱₜ × 0.30 = 0.042 with spread 0.990, area 1 across the row.
+  preset 3 Row: 158 cm: Row 158 cm: the noisy values form a bell centred at √ᾱₜ × -1.74 = -1.203 with spread 0.722, area 1 across the row.
+  switch 1 flipped: Column xₜ = 0.30: dividing its ten cells by their sum gives weights adding to 1.0000, largest 0.147 on 173 cm.
+
+frame 2
+  default: The posterior adds to 1.0000. Its largest weight is 0.147, on 173 cm.
+  preset 1 t = 10: The posterior adds to 1.0000. Its largest weight is 0.519, on 173 cm.
+  preset 2 t = 90: The posterior adds to 1.0000. Its largest weight is 0.106, on 184 cm.
+  switch 1 flipped: The posterior adds to 1.0000. Its largest weight is 0.463, on 173 cm.
+
+frame 3
+  default: The weights spread over the equivalent of 8.5 heights, so the guess is 172.4 cm. At t = 99 it is 170.8 cm, the average height x̄ = 170.8.
+  preset 1 t = 99, pure noise: The weights spread over the equivalent of 10.0 heights, so the guess is 170.8 cm. At t = 99 it is 170.8 cm, the average height x̄ = 170.8.
+  preset 2 t = 5, almost clean: The weights spread over the equivalent of 1.7 heights, so the guess is 172.7 cm. At t = 99 it is 170.8 cm, the average height x̄ = 170.8.
+  preset 3 Noisy value −1.5: The weights spread over the equivalent of 4.2 heights, so the guess is 163.1 cm. At t = 99 it is 170.8 cm, the average height x̄ = 170.8.
+
+frame 4
+  default: Multiplying the two bells on a grid gives mean 0.2991 and variance 0.0306; the formula gives 0.2991 and 0.0306.
+  preset 1 t = 5: Multiplying the two bells on a grid gives mean 0.2997 and variance 0.0022; the formula gives 0.2997 and 0.0022.
+  preset 2 t = 95: Multiplying the two bells on a grid gives mean 0.2480 and variance 0.3587; the formula gives 0.2480 and 0.3587.
+  preset 3 x₀ = 158 cm: Multiplying the two bells on a grid gives mean 0.2125 and variance 0.0306; the formula gives 0.2125 and 0.0306.
+
+frame 5
+  default: Both means are 0.2956. Spread: exact mix 0.1779, single bell 0.1749.
+  preset 1 t = 99: Both means are 0.0095. Spread: exact mix 0.9995, single bell 0.9994.
+  preset 2 t = 3: Both means are 0.2918. Spread: exact mix 0.0404, single bell 0.0359.
+  preset 3 t = 3, xₜ = 0.05: Both means are 0.0688. Spread: exact mix 0.0576, single bell 0.0359.
+
+frame 6
+  default: 20 of 20 chains end within 0.5 cm of a training height.
+  preset 1 5 chains: 5 of 5 chains end within 0.5 cm of a training height.
+  preset 2 100 chains: 100 of 100 chains end within 0.5 cm of a training height.
+  preset 3 New noise: 20 of 20 chains end within 0.5 cm of a training height.
+
+frame 7
+  default: The chain ends on the labrador, matching it to three decimals. At step 99 the guess is 0.003 from the average of the four dogs.
+  preset 1 t = 99: The chain ends on the labrador, matching it to three decimals. At step 99 the guess is 0.003 from the average of the four dogs.
+  preset 2 t = 0: The chain ends on the labrador, matching it to three decimals. At step 99 the guess is 0.003 from the average of the four dogs.
+  preset 3 New starting noise: The chain ends on the husky, matching it to three decimals. At step 99 the guess is 0.005 from the average of the four dogs.
+  switch 1 flipped: The chain ends on the labrador, matching it to three decimals. At step 99 the guess is 0.003 from the average of the four dogs.
+
+frame 8
+  default: Area under p(x | tall): 1.0000. Its mean is 178.4 cm, up from 170.8; a share 0.304 of everyone counts as tall.
+  preset 1 k = 165: Area under p(x | tall): 1.0000. Its mean is 173.5 cm, up from 170.8; a share 0.761 of everyone counts as tall.
+  preset 2 k = 185: Area under p(x | tall): 1.0000. Its mean is 184.8 cm, up from 170.8; a share 0.042 of everyone counts as tall.
+
+frame 9
+  default: 200 of 200 chains (100%) end within 0.5 cm of one of the 10 training heights.
+  preset 1 2 training heights: 200 of 200 chains (100%) end within 0.5 cm of one of the 2 training heights.
+  preset 2 5 training heights: 200 of 200 chains (100%) end within 0.5 cm of one of the 5 training heights.
+  switch 1 flipped: 67 of 200 chains (34%) end within 0.5 cm of one of the 10 training heights; the other 133 are heights the data never had.
+
+frame 10
+  default: One of the five, Gaussian forward noise, is a free choice. The other four are bets about the data and the network.
+
+frame 11
+  default: Convnet: each output looks at a small neighbourhood with the same filter everywhere, a built-in bet that nearby pixels matter most.
+  switch 1 flipped: Transformer: every patch compares itself with every other patch from the first layer, with fewer built-in bets about distance.
+
+frame 12
+  default: Three scenes, one toy each: ten heights, a 2 × 2 image, four dogs. The same moves carry across: a density, a fixed map from noise, and Bayes to go back.
+
+browser actions: 41; katex errors: 0; page errors: 0; equations wider than their card: 0 frames

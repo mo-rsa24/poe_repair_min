@@ -1,0 +1,203 @@
+# Mathematics review: the parts-world scene, where one cat-dog product gives a mosaic, a blend or two animals
+
+Page: `artifacts/scenes/parts-world/parts-world.html` (its visible text, press by press, is inlined below). Answer key: `artifacts/ideas/poe-overlap-dial/example-9-parts-world/parts_world.py` and its output `numbers.json`; the page's own key `artifacts/scenes/parts-world/checks/scene_key.py` and its printout `scene_key.out`, both inlined below. There is no paper statement to check; the derivation is in `example-9-parts-world.tex`, whose content the disclosure text repeats.
+
+## What you are doing
+Claude built this page and checked its numbers against the answer key (68 of 68 checks pass, including 2401 variance stops and 247 noise states recomputed from the page's own code). You are the mathematician reading it. Find what is wrong, what jumps, what could be simpler, and which symbols clash, and say what you checked and found right. The page uses plain notation (variance, precision = 1/variance, log Z, w, ᾱ).
+
+## The setting
+D = 16 pixels drawn as a 4 × 4 tile. Pixels 0 to 7 (top two rows) are the head, 8 to 15 (bottom two rows) the body; the left half is the left two columns. The cat expert is N(+1 on every pixel, diagonal variances), the dog expert N(−1 on every pixel, diagonal variances). Sure = variance 0.01, loose = variance 1. Setting (a): cat 0.01 head / 1 body, dog 1 head / 0.01 body. Setting (b): every variance 0.01. Setting (c): each expert is a mixture, weight 0.5 each, of two placements: mean ±1 with variance 0.01 on one half (left or right columns) and mean 0 with variance 1 on the other half. Setting (d): setting (a) under the variance-preserving forward process, N(μ, v) → N(√ᾱ μ, ᾱ v + 1 − ᾱ), at ᾱ = 0.5; "summed scores" means sampling the product of the two noised experts; "the noised product" or "the target" means noising the clean product. Explore lets the learner set the four variances from {0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1} and ᾱ from {1, 0.95, ..., 0.01}. The three small "draws" under each tile are illustrative: mean + sd × fixed standard normals, colour clipped at ±1.
+
+## What each section means
+- **Errors**: anything mathematically wrong. A false equation, a number the answer key or your own working contradicts, a wrong sign, a claim true only under an unstated assumption, a statement about diffusion sampling that overreaches. `severity: must`.
+- **Missing steps**: a derivation that jumps. Give the inserted lines in plain notation, one move per line, with the rule used beneath it. `severity: should`.
+- **Simplifications**: a shorter or more intuitive route, a cleaner worked number. `severity: could`.
+- **Notation clashes**: one symbol used for two things on the page. `severity: should`.
+- **Verified**: the claims and numbers you checked and found right. These go in `summary`, not in `review_findings`.
+
+## Numbers
+You cannot run code in this job. Every number you state comes from the inlined key output or from working shown in the finding. Mark a number you computed by hand `(by hand)`.
+
+## What to return
+In `review_findings`, one entry per finding. `file` is `artifacts/scenes/parts-world/parts-world.html`. `where` names the press number and title (or "Disclosure") and starts with its section in brackets: `[Errors]`, `[Missing steps]`, `[Simplifications]`, `[Notation clashes]`. `finding` quotes the current text, then says what is wrong or missing and why, with the one-line proof or computation. `suggested_text` is the replacement in plain text (the page has no LaTeX renderer; use Unicode). Prose uses no dash as a clause separator. Skip layout and style. `summary` holds the Verified list.
+
+## The answer key: numbers.json
+```json
+{
+ "a": {
+  "head_mean": 0.9801980198019802,
+  "body_mean": -0.9801980198019802,
+  "logZ": -46.46578749493179
+ },
+ "b": {
+  "mean": 0.0,
+  "product_sd": 0.07071067811865475,
+  "logZ": -1583.40683248785,
+  "sds_from_each_expert": 10.0
+ },
+ "c": {
+  "cat-left x dog-left": {
+   "weight": 0.0,
+   "logw_unnorm": -803.213807592922
+  },
+  "cat-left x dog-right": {
+   "weight": 0.5,
+   "logw_unnorm": -24.089705618427917
+  },
+  "cat-right x dog-left": {
+   "weight": 0.5,
+   "logw_unnorm": -24.089705618427917
+  },
+  "cat-right x dog-right": {
+   "weight": 0.0,
+   "logw_unnorm": -803.213807592922
+  }
+ },
+ "d": {
+  "abar": 0.5,
+  "head_mean_product_of_noised": 0.23257000444341597,
+  "head_mean_noised_product": 0.6931046667076061
+ }
+}```
+
+## The page key printout: scene_key.out
+```
+walk key /a/head_mean                                   0.9801980198019802  this script       0.9801980198019802  rel gap 0.0e+00
+walk key /a/body_mean                                  -0.9801980198019802  this script      -0.9801980198019802  rel gap 0.0e+00
+walk key /a/logZ                                        -46.46578749493179  this script       -46.46578749493179  rel gap 0.0e+00
+walk key /b/mean                                                       0.0  this script                      0.0  rel gap 0.0e+00
+walk key /b/product_sd                                 0.07071067811865475  this script      0.07071067811865475  rel gap 0.0e+00
+walk key /b/logZ                                         -1583.40683248785  this script        -1583.40683248785  rel gap 0.0e+00
+walk key /b/sds_from_each_expert                                      10.0  this script                     10.0  rel gap 0.0e+00
+walk key /c/cat-left x dog-left/weight                                 0.0  this script                      0.0  rel gap 0.0e+00
+walk key /c/cat-left x dog-left/logw_unnorm              -803.213807592922  this script        -803.213807592922  rel gap 0.0e+00
+walk key /c/cat-left x dog-right/weight                                0.5  this script                      0.5  rel gap 0.0e+00
+walk key /c/cat-left x dog-right/logw_unnorm           -24.089705618427917  this script      -24.089705618427917  rel gap 0.0e+00
+walk key /c/cat-right x dog-left/weight                                0.5  this script                      0.5  rel gap 0.0e+00
+walk key /c/cat-right x dog-left/logw_unnorm           -24.089705618427917  this script      -24.089705618427917  rel gap 0.0e+00
+walk key /c/cat-right x dog-right/weight                               0.0  this script                      0.0  rel gap 0.0e+00
+walk key /c/cat-right x dog-right/logw_unnorm            -803.213807592922  this script        -803.213807592922  rel gap 0.0e+00
+walk key /d/abar                                                       0.5  this script                      0.5  rel gap 0.0e+00
+walk key /d/head_mean_product_of_noised                0.23257000444341597  this script      0.23257000444341597  rel gap 0.0e+00
+walk key /d/head_mean_noised_product                    0.6931046667076061  this script       0.6931046667076061  rel gap 0.0e+00
+all 18 walk-key numbers reproduced, worst relative gap 0.0e+00
+tight dog head: {'head_mean': 0.0, 'body_mean': -0.9801980198019802, 'head_var': 0.005, 'body_var': 0.009900990099009901, 'logZ': -814.9363099913908}
+hand check (cat head 0.02, dog head 0.5): {'head_mean': 0.9230769230769231, 'body_mean': -0.9801980198019802, 'head_var': 0.019230769230769232, 'body_var': 0.009900990099009901, 'logZ': -58.73792691270739}
+pixel log Z: {'sure_vs_loose_opposite': -2.904111718433237, 'sure_vs_sure_opposite': -98.96292703049062, 'sure_vs_loose_zero': -1.4189632035817517, 'loose_zero_vs_loose_zero': -1.2655121234846454}
+(c) component means: {'cat-left x dog-left': {'left': 0.0, 'right': 0.0, 'var_left': 0.005, 'var_right': 0.5}, 'cat-left x dog-right': {'left': 0.9900990099009901, 'right': -0.9900990099009901, 'var_left': 0.009900990099009901, 'var_right': 0.009900990099009901}, 'cat-right x dog-left': {'left': -0.9900990099009901, 'right': 0.9900990099009901, 'var_left': 0.009900990099009901, 'var_right': 0.009900990099009901}, 'cat-right x dog-right': {'left': 0.0, 'right': 0.0, 'var_left': 0.5, 'var_right': 0.005}}
+(c) gap: 779.124101974494
+(d) noised head: {'cat_var': 0.505, 'dog_var': 1.0, 'precision_ratio': 1.9801980198019802, 'cat_mean': 0.7071067811865476, 'dog_mean': -0.7071067811865476}
+grid states 2401, noise states 247
+```
+
+# The page, press by press (visible text)
+## Press 1: Sure everywhere: a grey blend
+Narration: Both experts are sure of every pixel, variance 0.01. Each pixel's product is 0, which is 10 of each expert's standard deviations from that expert's mean.
+Captions: CAT EXPERT | mean +1 on every pixel / × DOG EXPERT | mean −1 on every pixel / = PRODUCT | mean, precision-weighted per pixel
+Tile labels: head · var 0.01 · body · var 0.01 / head · var 0.01 · body · var 0.01 / 0 · 0
+Gauge: blend −1583.4 · mosaic −46.5 · log Z −1583.4
+Side:   THE PRODUCT EXACT | head pixel mean | 0 | body pixel mean | 0 | log Z, overlap | −1583.4 BROKEN RUN A BLEND NEITHER EXPERT DRAWS | Blend: every pixel 0, log Z −1583.4, product sd 0.071. A mosaic keeps the head at +0.980: press 3.
+
+## Press 2: Loosen the cat's body
+Narration: Now the cat's training images share one head and vary in body; the dog's share one body and vary in head. So the cat is loose on the body, the dog on the head.
+Captions: CAT EXPERT | mean +1 on every pixel / × DOG EXPERT | mean −1 on every pixel / = PRODUCT | mean, precision-weighted per pixel
+Tile labels: head · var 0.01 · body · var 1 / head · var 1 · body · var 0.01 / ?
+Side: PREDICT: TAP ONE | The cat turns loose on the body and the dog loose on the head. What does the product's tile become? | loose: variance 1, because that part varies across the expert's training images. sure: variance 0.01. | What is this asking? | A | Still grey everywhere: a blend | B | A cat head on a dog body | C | A dog head on a cat body | D | Blue all over: the cat wins | Point at an answer to see it drawn on the stage. Next shows the verdict.  THE PRODUCT EXACT | head pixel mean | ? | body pixel mean | ? | log Z, overlap | ? 
+
+## Press 3: Each pixel follows the surer expert
+Narration: Precisions add and the mean is precision-weighted, pixel by pixel. A head pixel weighs the cat's 100 against the dog's 1: 99/101 = 0.980.
+Captions: CAT EXPERT | mean +1 on every pixel / × DOG EXPERT | mean −1 on every pixel / = PRODUCT | mean, precision-weighted per pixel
+Tile labels: head · var 0.01 · body · var 1 / head · var 1 · body · var 0.01 / +0.980 · −0.980
+Pixel panel: −1 · 0 · +1 · cat +1.000 · precision 100 · dog −1.000 · precision 1 · product +0.980 | formula: head = (100 × (+1) + 1 × (−1)) / (100 + 1) = +0.980
+Gauge: blend −1583.4 · mosaic −46.5 · log Z −46.5
+Side: YOUR PREDICTION, CHECKED | The cat turns loose on the body and the dog loose on the head. What does the product's tile become? | ✗ | Still grey everywhere: a blend | Tempting because: loosening one side breaks the tie on every pixel. A blend needs equal precision, as in press 1. | ✓ | A cat head on a dog body | Right because: on the head the cat's precision is 100 and the dog's 1, so the cat wins; on the body it is the other way round. | ✗ | A dog head on a cat body | Tempting because: the loose expert seems to be the one that is free to show. A loose expert gives way: its pull is 1 against 100. | ✗ | Blue all over: the cat wins | Tempting because: the cat is still sure on the head. On the body the dog is sure and the cat is loose, so the dog takes the body. | No pick made, so this one is scored as seen. | On every pixel, the surer expert wins.  THE PRODUCT EXACT | head pixel mean | +0.980 | body pixel mean | −0.980 | log Z, overlap | −46.5 
+
+## Press 4: Make the dog's head sure
+Narration: Keep the mosaic's body and make the dog sure on the head too, variance 0.01. log Z measures how much the two experts overlap.
+Captions: CAT EXPERT | mean +1 on every pixel / × DOG EXPERT | mean −1 on every pixel / = PRODUCT | mean, precision-weighted per pixel
+Tile labels: head · var 0.01 · body · var 1 / head · var 0.01 · body · var 0.01 / 0 · −0.980
+Gauge: blend −1583.4 · mosaic −46.5 · log Z = ?
+Side: PREDICT: TAP ONE | Make the dog sure on the head too. Where does log Z go from −46.5? | log Z: how much the two experts overlap, summed over 16 pixels. Nearer 0 is more overlap. | What is this asking? | A | Up toward 0: two sure experts agree more | B | It stays at −46.5 | C | Down to about −815 | D | Down to −1583.4, the blend's | Point at an answer to see it drawn on the stage. Next shows the verdict.  THE PRODUCT EXACT | head pixel mean | 0 | body pixel mean | −0.980 | log Z, overlap | ? 
+
+## Press 5: Sure clashes cost overlap
+Narration: A sure +1 against a sure −1 adds −99.0 to log Z per pixel; sure against loose adds −2.9. Drag the variances between mosaic and blend.
+Captions: CAT EXPERT | mean +1 on every pixel / × DOG EXPERT | mean −1 on every pixel / = PRODUCT | mean, precision-weighted per pixel
+Tile labels: head · var 0.01 · body · var 1 / head · var 0.01 · body · var 0.01 / 0 · −0.980
+Pixel panel: −1 · 0 · +1 · cat +1.000 · precision 100 · dog −1.000 · precision 100 · product 0 | formula: head = (100 × (+1) + 100 × (−1)) / (100 + 100) = 0
+Gauge: blend −1583.4 · mosaic −46.5 · log Z −814.9
+Side: YOUR PREDICTION, CHECKED | Make the dog sure on the head too. Where does log Z go from −46.5? | ✗ | Up toward 0: two sure experts agree more | Tempting because: sure sounds like agreement. Here both are sure of opposite values, which is the strongest disagreement. | ✗ | It stays at −46.5 | Tempting because: the body did not change. The 8 head pixels did, and log Z sums all 16. | ✓ | Down to about −815 | Right because: each head pixel now adds −99.0 instead of −2.9: 8 × (−99.0) + 8 × (−2.9) = −814.9. | ✗ | Down to −1583.4, the blend's | Tempting because: the head is now a blend. The body is still a mosaic, so only half the pixels pay the blend's price. | No pick made, so this one is scored as seen. | Two sure, opposite experts barely overlap: log Z says so before any sample is drawn. HOW SURE EACH EXPERT IS: VARIANCE PER PART | Cat, head variance | 0.01 | Cat, body variance | 1 | Dog, head variance | 0.01 | Dog, body variance | 0.01 | 0.01: sure | 1: loose | (a) mosaic | (b) blend | dog head sure too THE PRODUCT EXACT | head pixel mean | 0 | body pixel mean | −0.980 | log Z, overlap | −814.9 | Head 0, body −0.980: a grey head on a dog body. log Z −814.9. 
+
+## Press 6: Let each animal pick a side
+Narration: Each animal now sits in the left or the right half, ½ each, sure there and loose (mean 0) elsewhere. Multiplying two mixtures gives one component per pair: four.
+Captions: 
+Tile labels: 
+Pair grid: CAT × DOG, ONE PRODUCT PER PAIR OF PLACEMENTS · w: the pair's weight in the product | DOG ON THE LEFT · ½ | DOG ON THE RIGHT · ½ | CAT ON THE LEFT · ½ | 0 | 0 | w ? | log w ? | +0.990 | −0.990 | w ? | log w ? | CAT ON THE RIGHT · ½ | −0.990 | +0.990 | w ? | log w ? | 0 | 0 | w ? | log w ? | 0 · 0 · +0.990 · −0.990 · −0.990 · +0.990 · 0 · 0
+Side: PREDICT: TAP ONE | Each animal sits in the left or right half, ½ each. Which pairs carry the product's weight? | pair: one cat placement multiplied by one dog placement. Four pairs, four components. | What is this asking? | A | All four, 0.25 each | B | The same-half pairs, 0.5 each | C | The side-by-side pairs, 0.5 each | D | One pair takes all of it | Point at an answer to see it drawn on the stage. Next shows the verdict.  THE FOUR PAIRS EXACT | side-by-side pairs, each | ? | same-half pair, against a side-by-side one | ? | gap in log w | ? 
+
+## Press 7: Clashing pairs lose their weight
+Narration: A same-half pair puts sure +1 against sure −1 on 8 pixels: log w −803.2. A side-by-side pair meets loose pixels instead, −24.1, so it takes all the weight.
+Captions: 
+Tile labels: 
+Pair grid: CAT × DOG, ONE PRODUCT PER PAIR OF PLACEMENTS · w: the pair's weight in the product | DOG ON THE LEFT · ½ | DOG ON THE RIGHT · ½ | CAT ON THE LEFT · ½ | 0 | 0 | w 0 | log w −803.2 | +0.990 | −0.990 | w 0.50 | log w −24.1 | CAT ON THE RIGHT · ½ | −0.990 | +0.990 | w 0.50 | log w −24.1 | 0 | 0 | w 0 | log w −803.2 | 0 · 0 · +0.990 · −0.990 · −0.990 · +0.990 · 0 · 0
+Side: YOUR PREDICTION, CHECKED | Each animal sits in the left or right half, ½ each. Which pairs carry the product's weight? | ✗ | All four, 0.25 each | Tempting because: every pair starts at ½ × ½ = ¼. Then each is multiplied by its overlap, and the overlaps differ by a factor of e⁷⁷⁹. | ✗ | The same-half pairs, 0.5 each | Tempting because: both animals in one half looks like one picture. There a sure +1 meets a sure −1 on 8 pixels: a blend nobody drew. | ✓ | The side-by-side pairs, 0.5 each | Right because: each sure half meets the other expert's loose half, so the pair overlaps well: log w −24.1 against −803.2. | ✗ | One pair takes all of it | Tempting because: the two side-by-side pairs are mirror images with the same overlap, so they tie at 0.5. | No pick made, so this one is scored as seen. | A product of mixtures keeps the pairs that agree and drops the ones that clash.  THE FOUR PAIRS EXACT | side-by-side pairs, each | 0.50 | same-half pair, against a side-by-side one | e⁻⁷⁷⁹ | gap in log w | 779.1 
+
+## Press 8: Noise both experts halfway
+Narration: The forward process noises each expert: a cat head pixel becomes variance 0.505, a dog head pixel 1.0. Summed scores follow the product of these noised experts.
+Captions: CAT, NOISED | mean √ᾱ, var ᾱv + 1 − ᾱ / × DOG, NOISED | mean −√ᾱ / NOISED PRODUCT | the correct target at ᾱ / SUMMED SCORES | noised cat × noised dog
+Tile labels: head · var 0.505 · body · var 1 / head · var 1 · body · var 0.505 / ? / ?
+Pixel panel: −1 · 0 · +1 · cat +0.707 · precision 1.98 · dog −0.707 · precision 1 · ? | formula: summed scores: (1.98 × +0.707 + 1.00 × (−0.707)) / 2.98 = ?
+Side: PREDICT: TAP ONE | At ᾱ = 0.5, summed scores follow the noised cat times the noised dog. Where do they put a head pixel? | summed scores: adding the two experts' scores at each noise level, which samples the product of the noised experts. | What is this asking? | A | +0.980, where the clean product put it | B | +0.693: the clean +0.980 shrunk by √0.5 | C | +0.233 | D | 0: grey, a blend | Point at an answer to see it drawn on the stage. Next shows the verdict.  HEAD PIXEL AT ᾱ = 0.5 EXACT | noised product, the target | ? | summed scores | ? | summed scores fall short by | ? 
+
+## Press 9: Summed scores drag toward grey
+Narration: The cat's lead falls from 100 : 1 to 1.98 : 1, so summed scores put the head at 0.233. The noised product, the correct target, puts it at 0.693.
+Captions: CAT, NOISED | mean √ᾱ, var ᾱv + 1 − ᾱ / × DOG, NOISED | mean −√ᾱ / NOISED PRODUCT | the correct target at ᾱ / SUMMED SCORES | noised cat × noised dog
+Tile labels: head · var 0.505 · body · var 1 / head · var 1 · body · var 0.505 / +0.693 · −0.693 / +0.233 · −0.233
+Pixel panel: −1 · 0 · +1 · cat +0.707 · precision 1.98 · dog −0.707 · precision 1 · target +0.693 · summed scores +0.233 | formula: summed scores: (1.98 × +0.707 + 1.00 × (−0.707)) / 2.98 = +0.233 | target: √0.5 × +0.980 = +0.693
+Side: YOUR PREDICTION, CHECKED | At ᾱ = 0.5, summed scores follow the noised cat times the noised dog. Where do they put a head pixel? | ✗ | +0.980, where the clean product put it | Tempting because: the clean product's head is +0.980, but noise shrinks every mean by √ᾱ, so nothing at this level sits there. | ✗ | +0.693: the clean +0.980 shrunk by √0.5 | Tempting because: that is the noised product, the correct target. Summed scores multiply the noised experts instead. | ✓ | +0.233 | Right because: noise lifts both variances toward 1, so the cat's lead falls from 100 : 1 to 1.98 : 1: (1.98 × 0.707 − 0.707) / 2.98 = 0.233. | ✗ | 0: grey, a blend | Tempting because: the cat still leads, 1.98 to 1, so the head stays on the cat's side of 0. | No pick made, so this one is scored as seen. | Noising each expert first hands the dog back part of the head. HOW MUCH NOISE, ᾱ | ᾱ = 1: clean | ᾱ = 0.01: almost all noise HEAD PIXEL AT ᾱ = 0.5 EXACT | noised product, the target | +0.693 | summed scores | +0.233 | summed scores fall short by | 0.461 
+
+## Press 10: Explore, then check by hand
+Narration: Head +0.980, body −0.980: a cat head on a dog body. log Z −46.5.
+Captions: CAT EXPERT | mean +1 on every pixel / × DOG EXPERT | mean −1 on every pixel / = PRODUCT | mean, precision-weighted per pixel
+Tile labels: head · var 0.01 · body · var 1 / head · var 1 · body · var 0.01 / +0.980 · −0.980
+Pixel panel: −1 · 0 · +1 · cat +1.000 · precision 100 · dog −1.000 · precision 1 · product +0.980 | formula: head = (100 × (+1) + 1 × (−1)) / (100 + 1) = +0.980
+Gauge: blend −1583.4 · mosaic −46.5 · log Z −46.5
+Side:  WHERE EACH ANIMAL SITS | fixed: whole frame | varies: left or right, ½ each | HOW SURE EACH EXPERT IS: VARIANCE PER PART | Cat, head variance | 0.01 | Cat, body variance | 1 | Dog, head variance | 1 | Dog, body variance | 0.01 | 0.01: sure | 1: loose | (a) mosaic | (b) blend | dog head sure too | HOW MUCH NOISE, ᾱ | ᾱ = 1: clean | ᾱ = 0.01: almost all noise THE PRODUCT EXACT | head pixel mean | +0.980 | body pixel mean | −0.980 | log Z, overlap | −46.5 ✍️ On paper: set the cat's head variance to 0.02 and the dog's to 0.5. Precisions 50 and 2, so the head is (50 − 2) / 52 = +0.923. Set the sliders and check. | Expected output on setting (a)
+
+## Reveal on press 3
+YOUR PREDICTION, CHECKED | The cat turns loose on the body and the dog loose on the head. What does the product's tile become? | ✗ | Still grey everywhere: a blend | Tempting because: loosening one side breaks the tie on every pixel. A blend needs equal precision, as in press 1. | ✓ | A cat head on a dog body | Right because: on the head the cat's precision is 100 and the dog's 1, so the cat wins; on the body it is the other way round. | ✗ | A dog head on a cat body | Tempting because: the loose expert seems to be the one that is free to show. A loose expert gives way: its pull is 1 against 100. | ✗ | Blue all over: the cat wins | Tempting because: the cat is still sure on the head. On the body the dog is sure and the cat is loose, so the dog takes the body. | No pick made, so this one is scored as seen. | On every pixel, the surer expert wins.
+
+## Reveal on press 5
+YOUR PREDICTION, CHECKED | Make the dog sure on the head too. Where does log Z go from −46.5? | ✗ | Up toward 0: two sure experts agree more | Tempting because: sure sounds like agreement. Here both are sure of opposite values, which is the strongest disagreement. | ✗ | It stays at −46.5 | Tempting because: the body did not change. The 8 head pixels did, and log Z sums all 16. | ✓ | Down to about −815 | Right because: each head pixel now adds −99.0 instead of −2.9: 8 × (−99.0) + 8 × (−2.9) = −814.9. | ✗ | Down to −1583.4, the blend's | Tempting because: the head is now a blend. The body is still a mosaic, so only half the pixels pay the blend's price. | No pick made, so this one is scored as seen. | Two sure, opposite experts barely overlap: log Z says so before any sample is drawn.
+
+## Reveal on press 7
+YOUR PREDICTION, CHECKED | Each animal sits in the left or right half, ½ each. Which pairs carry the product's weight? | ✗ | All four, 0.25 each | Tempting because: every pair starts at ½ × ½ = ¼. Then each is multiplied by its overlap, and the overlaps differ by a factor of e⁷⁷⁹. | ✗ | The same-half pairs, 0.5 each | Tempting because: both animals in one half looks like one picture. There a sure +1 meets a sure −1 on 8 pixels: a blend nobody drew. | ✓ | The side-by-side pairs, 0.5 each | Right because: each sure half meets the other expert's loose half, so the pair overlaps well: log w −24.1 against −803.2. | ✗ | One pair takes all of it | Tempting because: the two side-by-side pairs are mirror images with the same overlap, so they tie at 0.5. | No pick made, so this one is scored as seen. | A product of mixtures keeps the pairs that agree and drops the ones that clash.
+
+## Reveal on press 9
+YOUR PREDICTION, CHECKED | At ᾱ = 0.5, summed scores follow the noised cat times the noised dog. Where do they put a head pixel? | ✗ | +0.980, where the clean product put it | Tempting because: the clean product's head is +0.980, but noise shrinks every mean by √ᾱ, so nothing at this level sits there. | ✗ | +0.693: the clean +0.980 shrunk by √0.5 | Tempting because: that is the noised product, the correct target. Summed scores multiply the noised experts instead. | ✓ | +0.233 | Right because: noise lifts both variances toward 1, so the cat's lead falls from 100 : 1 to 1.98 : 1: (1.98 × 0.707 − 0.707) / 2.98 = 0.233. | ✗ | 0: grey, a blend | Tempting because: the cat still leads, 1.98 to 1, so the head stays on the cat's side of 0. | No pick made, so this one is scored as seen. | Noising each expert first hands the dog back part of the head.
+
+## Disclosure: where these numbers come from
+Where these numbers come from
+The toy. Every image is 16 numbers drawn as a 4 × 4 tile: pixels 0 to 7 are the top two rows, the head, and 8 to 15 the bottom two rows, the body. The left half is the left two columns. The cat expert's mean is +1 and the dog's −1. Sure means variance 0.01 and loose means variance 1. Every expert is a Gaussian with a diagonal covariance, or in the position chapter a mixture of two, so every product on this page is exact, with no grid and no sampler.
+The one identity. For two diagonal Gaussians, N(x; μa, Σa) N(x; μb, Σb) = Z N(x; μ, Σ), with Σ = (Σa−1 + Σb−1)−1, μ = Σ(Σa−1μa + Σb−1μb) and Z = N(μa; μb, Σa + Σb): precisions add and the mean is precision-weighted, pixel by pixel. Textbook: the Matrix Cookbook, section 8.1.8, page 42. log Z is the sum of the 16 pixels' logs, because the log of a product is the sum of the logs (algebra handbook, page 110). Per pixel: a sure +1 against a loose −1 adds −2.904; a sure +1 against a sure −1 adds −98.963; a sure ±1 against a loose 0 adds −1.419; a loose 0 against a loose 0 adds −1.266. A press may round these to −2.9 and −99.0.
+Mixtures. A product of two Gaussian mixtures has one component per pair of components, with weight wij ∝ πi ρj N(μi; νj, Σi + Λj) (mixtures: Mathematics for Machine Learning, page 355). Each placement has weight 0.5, so every pair starts at log 0.25 = −1.386. A side-by-side pair adds 16 × (−1.419) = −22.703, giving −24.090. A same-half pair adds 8 × (−98.963) + 8 × (−1.266) = −801.828, giving −803.214. The gap is 779.124, so each same-half pair holds e−779 of a side-by-side pair's weight, which prints as 0. A side-by-side component's mean is 100/101 = +0.990 on the cat's half and −0.990 on the dog's.
+Noise. The forward process turns N(μ, v) into N(√ᾱ μ, ᾱ v + 1 − ᾱ). At ᾱ = 0.5 a cat head pixel becomes N(0.707, 0.505) and a dog head pixel N(−0.707, 1.0), so the cat's precision lead falls from 100 : 1 to 1.980 : 1. Summed scores follow the product of the noised experts, (1.980 × 0.707 − 1 × 0.707) / 2.980 = 0.233. The correct intermediate target is the noised product, √0.5 × 0.980 = 0.693. This is the error Du et al. (2023), section 4, equations 11 and 12, describe, computed exactly here. How much of the mosaic a full reverse run keeps at ᾱ = 1 is not computed. Noise is drawn only with position fixed; the mixture case under noise is not on this page.
+The three draws under each tile are illustrative: each is the tile's mean plus its standard deviation times one fixed standard-normal number per pixel (seed 9), so they move smoothly as you drag. Colours clip at ±1. They show which pixels an expert is sure of, not any measured sample.
+Where the numbers come from. The walk's answer key is artifacts/ideas/poe-overlap-dial/example-9-parts-world/numbers.json, written by parts_world.py beside it, with the derivation in the .tex and PDF there. This page's key, artifacts/scenes/parts-world/checks/scene_key.py, copies that script's two functions unchanged and reproduces all 18 of its numbers with a relative gap of 0, then adds every slider stop. The page computes each state live with the same identity; checks/check_page.mjs runs the page's own code against all 2401 variance stops and 247 noise states. The table below is recomputed by this page when it loads. "Image chimeras are mostly mosaics" is the walk's reading of chimera images, stated and not checked against a source.
+Setting	Quantity	This page	Answer key	
+(a) mosaic	head mean	0.98019802	0.98019802	✓
+(a) mosaic	body mean	-0.98019802	-0.98019802	✓
+(a) mosaic	log Z	-46.465787	-46.465787	✓
+(b) blend	mean	0.0000000	0.0000000	✓
+(b) blend	product sd	0.070710678	0.070710678	✓
+(b) blend	log Z	-1583.4068	-1583.4068	✓
+(b) blend	sds from each expert	10.000000	10.000000	✓
+(c) cat-left x dog-left	log w	-803.21381	-803.21381	✓
+(c) cat-left x dog-right	log w	-24.089706	-24.089706	✓
+(c) cat-right x dog-left	log w	-24.089706	-24.089706	✓
+(c) cat-right x dog-right	log w	-803.21381	-803.21381	✓
+(c) cat-left x dog-left	weight	0.0000000	0.0000000	✓
+(c) cat-left x dog-right	weight	0.50000000	0.50000000	✓
+(c) cat-right x dog-left	weight	0.50000000	0.50000000	✓
+(c) cat-right x dog-right	weight	0.0000000	0.0000000	✓
+(d) ᾱ = 0.5	head, summed scores	0.23257000	0.23257000	✓
+(d) ᾱ = 0.5	head, noised product	0.69310467	0.69310467	✓

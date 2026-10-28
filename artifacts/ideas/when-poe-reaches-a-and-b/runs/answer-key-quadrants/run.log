@@ -1,0 +1,18 @@
+construction 2, leftover even eps=0.25           TR=0.25 BR=0.25 TL=0.25 BL=0.25 at_ori=8.007e-05 Z=0.8842  formula=0.25
+construction 2, leftover even eps=0.1            TR=0.06249 BR=0.4374 TL=0.4374 BL=0.06249 at_ori=7.999e-05 Z=0.5659  formula=0.0625
+construction 2, leftover even eps=0.05           TR=0.02778 BR=0.4722 TL=0.4722 BL=0.02778 at_ori=7.998e-05 Z=0.3183  formula=0.02778
+construction 2, leftover even eps=0.01           TR=0.005105 BR=0.4948 TL=0.4948 BL=0.005105 at_ori=7.998e-05 Z=0.06932  formula=0.005102
+construction 2, leftover even eps=0.001          TR=0.0005051 BR=0.4994 TL=0.4994 BL=0.0005051 at_ori=8.007e-05 Z=0.00706  formula=0.000501
+construction 2, leftover even eps=0.0001         TR=5.423e-05 BR=0.4999 TL=0.4999 BL=5.423e-05 at_ori=8.107e-05 Z=0.0007072  formula=5.001e-05
+construction 2, leftover even eps=1e-06          TR=5.382e-06 BR=0.4999 TL=0.4999 BL=5.386e-06 at_ori=0.0001904 Z=7.075e-06  formula=5e-07
+construction 2, leftover even eps=0.0            TR=0.005918 BR=0.005932 TL=0.005932 BL=0.005946 at_ori=0.9889 Z=7.9e-10  formula=0
+construction 2, leftover adjacent only eps=0.1   TR=0.4999 BR=3.329e-05 TL=3.329e-05 BL=0.4999 at_ori=8.694e-05 Z=0.07075  formula=0.5
+construction 2, leftover adjacent only eps=0.01  TR=0.4989 BR=0.000406 TL=0.000406 BL=0.4989 at_ori=0.0001745 Z=0.0007094  formula=0.5
+construction 2, leftover adjacent only eps=0.001 TR=0.4894 BR=0.004026 TL=0.004026 BL=0.4894 at_ori=0.001121 Z=7.285e-06  formula=0.5
+construction 1, contains labels r=0.25           TR=0.9889 BR=7.843e-05 TL=7.843e-05 BL=3.612e-11 at_ori=0.002986 Z=0.25
+construction 1, contains labels r=0.05           TR=0.9889 BR=7.843e-05 TL=7.843e-05 BL=2.282e-10 at_ori=0.002989 Z=0.05
+construction 1, contains labels r=0.01           TR=0.9889 BR=7.843e-05 TL=7.843e-05 BL=1.189e-09 at_ori=0.003012 Z=0.01
+construction 1, contains labels r=0.001          TR=0.9886 BR=7.842e-05 TL=7.842e-05 BL=1.199e-08 at_ori=0.00331 Z=0.001
+construction 1, contains labels r=0.0            TR=0.07004 BR=3.165e-05 TL=3.165e-05 BL=3.173e-05 at_ori=0.9699 Z=3.783e-07
+2b factorised experts, plain product pA*pB r=0.0 TR=0.9999 BR=4.222e-06 TL=4.222e-06 BL=1.331e-12 at_ori=8.039e-05 Z=0.8842
+2b factorised experts, background-divided pA*pB/pbg r=0.0 TR=0.9889 BR=7.843e-05 TL=7.843e-05 BL=3.612e-11 at_ori=0.002986 Z=0.9999

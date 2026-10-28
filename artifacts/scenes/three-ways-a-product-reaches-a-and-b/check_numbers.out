@@ -1,0 +1,124 @@
+PASS  even eps=0.25 TR: page 0.2499658, key 0.2499658
+PASS  even eps=0.25 origin: page 0.00008007098, key 0.00008007098
+PASS  even eps=0.25 Z: page 0.8842205, key 0.8842205
+PASS  even eps=0.2 TR: page 0.1666453, key 0.1666453
+PASS  even eps=0.2 origin: page 0.00008003553, key 0.00008003553
+PASS  even eps=0.2 Z: page 0.8488517, key 0.8488517
+PASS  even eps=0.15 TR: page 0.1071306, key 0.1071306
+PASS  even eps=0.15 origin: page 0.00008001032, key 0.00008001032
+PASS  even eps=0.15 Z: page 0.7427453, key 0.7427453
+PASS  even eps=0.1 TR: page 0.06249461, key 0.06249461
+PASS  even eps=0.1 origin: page 0.00007999164, key 0.00007999164
+PASS  even eps=0.1 Z: page 0.5659011, key 0.5659011
+PASS  even eps=0.075 TR: page 0.04411508, key 0.04411508
+PASS  even eps=0.075 origin: page 0.00007998417, key 0.00007998417
+PASS  even eps=0.075 Z: page 0.4509525, key 0.4509525
+PASS  even eps=0.05 TR: page 0.02777773, key 0.02777773
+PASS  even eps=0.05 origin: page 0.00007997793, key 0.00007997793
+PASS  even eps=0.05 Z: page 0.3183194, key 0.3183194
+PASS  even eps=0.03 TR: page 0.01595921, key 0.01595921
+PASS  even eps=0.03 origin: page 0.00007997436, key 0.00007997436
+PASS  even eps=0.03 Z: page 0.1994802, key 0.1994802
+PASS  even eps=0.02 TR: page 0.01041929, key 0.01041929
+PASS  even eps=0.02 origin: page 0.00007997384, key 0.00007997384
+PASS  even eps=0.02 Z: page 0.1358163, key 0.1358163
+PASS  even eps=0.01 TR: page 0.005105478, key 0.005105478
+PASS  even eps=0.01 origin: page 0.00007997709, key 0.00007997709
+PASS  even eps=0.01 Z: page 0.06932289, key 0.06932289
+PASS  even eps=0.005 TR: page 0.002529086, key 0.002529086
+PASS  even eps=0.005 origin: page 0.00007998704, key 0.00007998704
+PASS  even eps=0.005 Z: page 0.03501513, key 0.03501513
+PASS  even eps=0.001 TR: page 0.0005051475, key 0.0005051475
+PASS  even eps=0.001 origin: page 0.00008007452, key 0.00008007452
+PASS  even eps=0.001 Z: page 0.007059618, key 0.007059618
+PASS  even eps=0.0001 TR: page 0.00005423083, key 0.00005423083
+PASS  even eps=0.0001 origin: page 0.00008106819, key 0.00008106819
+PASS  even eps=0.0001 Z: page 0.0007072358, key 0.0007072358
+PASS  even eps=0.000001 TR: page 0.000005382204, key 0.000005382204
+PASS  even eps=0.000001 origin: page 0.0001903814, key 0.0001903814
+PASS  even eps=0.000001 Z: page 0.000007074540, key 0.000007074540
+PASS  even eps=0 TR: page 0.005918034, key 0.005918034
+PASS  even eps=0 origin: page 0.9889013, key 0.9889013
+PASS  even eps=0 Z: page 7.899855e-10, key 7.899855e-10
+PASS  next door eps=0.25 TR: page 0.4999165, key 0.4999165
+PASS  next door eps=0.25 origin: page 0.00008114257, key 0.00008114257
+PASS  next door eps=0.25 Z: page 0.4421235, key 0.4421235
+PASS  next door eps=0.2 TR: page 0.4999058, key 0.4999058
+PASS  next door eps=0.2 origin: page 0.00008210777, key 0.00008210777
+PASS  next door eps=0.2 Z: page 0.2829675, key 0.2829675
+PASS  next door eps=0.15 TR: page 0.4998878, key 0.4998878
+PASS  next door eps=0.15 origin: page 0.00008371680, key 0.00008371680
+PASS  next door eps=0.15 Z: page 0.1591771, key 0.1591771
+PASS  next door eps=0.1 TR: page 0.4998518, key 0.4998518
+PASS  next door eps=0.1 origin: page 0.00008693622, key 0.00008693622
+PASS  next door eps=0.1 Z: page 0.07075244, key 0.07075244
+PASS  next door eps=0.075 TR: page 0.4998159, key 0.4998159
+PASS  next door eps=0.075 origin: page 0.00009015745, key 0.00009015745
+PASS  next door eps=0.075 Z: page 0.03980221, key 0.03980221
+PASS  next door eps=0.05 TR: page 0.4997440, key 0.4997440
+PASS  next door eps=0.05 origin: page 0.00009660535, key 0.00009660535
+PASS  next door eps=0.05 Z: page 0.01769340, key 0.01769340
+PASS  next door eps=0.03 TR: page 0.4996003, key 0.4996003
+PASS  next door eps=0.03 origin: page 0.0001095229, key 0.0001095229
+PASS  next door eps=0.03 Z: page 0.006372161, key 0.006372161
+PASS  next door eps=0.02 TR: page 0.4994208, key 0.4994208
+PASS  next door eps=0.02 origin: page 0.0001257104, key 0.0001257104
+PASS  next door eps=0.02 Z: page 0.002833481, key 0.002833481
+PASS  next door eps=0.01 TR: page 0.4988833, key 0.4988833
+PASS  next door eps=0.01 origin: page 0.0001745436, key 0.0001745436
+PASS  next door eps=0.01 Z: page 0.0007094281, key 0.0007094281
+PASS  next door eps=0.005 TR: page 0.4978122, key 0.4978122
+PASS  next door eps=0.005 origin: page 0.0002734208, key 0.0002734208
+PASS  next door eps=0.005 Z: page 0.0001778862, key 0.0001778862
+PASS  next door eps=0.001 TR: page 0.4894297, key 0.4894297
+PASS  next door eps=0.001 origin: page 0.001120878, key 0.001120878
+PASS  next door eps=0.001 Z: page 0.000007285350, key 0.000007285350
+PASS  next door eps=0.0001 TR: page 0.4133816, key 0.4133816
+PASS  next door eps=0.0001 origin: page 0.01586909, key 0.01586909
+PASS  next door eps=0.0001 Z: page 9.266430e-8, key 9.266430e-8
+PASS  next door eps=0.000001 TR: page 0.03727741, key 0.03727741
+PASS  next door eps=0.000001 origin: page 0.7814231, key 0.7814231
+PASS  next door eps=0.000001 Z: page 1.008489e-9, key 1.008489e-9
+PASS  one model r=0.25 TR: page 0.9889334, key 0.9889334
+PASS  one model r=0.25 origin: page 0.002985993, key 0.002985993
+PASS  one model r=0.25 Z: page 0.2499853, key 0.2499853
+PASS  one model r=0.05 TR: page 0.9889300, key 0.9889300
+PASS  one model r=0.05 origin: page 0.002989422, key 0.002989422
+PASS  one model r=0.05 Z: page 0.04999722, key 0.04999722
+PASS  one model r=0.01 TR: page 0.9889077, key 0.9889077
+PASS  one model r=0.01 origin: page 0.003011903, key 0.003011903
+PASS  one model r=0.01 Z: page 0.009999670, key 0.009999670
+PASS  one model r=0.001 TR: page 0.9886139, key 0.9886139
+PASS  one model r=0.001 origin: page 0.003310282, key 0.003310282
+PASS  one model r=0.001 Z: page 0.001000267, key 0.001000267
+PASS  one model r=0.0001 TR: page 0.9855173, key 0.9855173
+PASS  one model r=0.0001 origin: page 0.006517867, key 0.006517867
+PASS  one model r=0.0001 Z: page 0.0001003518, key 0.0001003518
+PASS  one model r=0.00001 TR: page 0.9554604, key 0.9554604
+PASS  one model r=0.00001 origin: page 0.03808848, key 0.03808848
+PASS  one model r=0.00001 Z: page 0.00001037087, key 0.00001037087
+PASS  one model r=0.000001 TR: page 0.7363776, key 0.7363776
+PASS  one model r=0.000001 origin: page 0.2686192, key 0.2686192
+PASS  one model r=0.000001 Z: page 0.000001376333, key 0.000001376333
+PASS  one model r=1e-8 TR: page 0.09348702, key 0.09348702
+PASS  one model r=1e-8 origin: page 0.9451712, key 0.9451712
+PASS  one model r=1e-8 Z: page 3.882282e-7, key 3.882282e-7
+PASS  one model r=0 TR: page 0.07003652, key 0.07003652
+PASS  one model r=0 origin: page 0.9698513, key 0.9698513
+PASS  one model r=0 Z: page 3.783200e-7, key 3.783200e-7
+PASS  parts plain TR: page 0.9998547, key 0.9998547
+PASS  parts plain origin: page 0.00008039032, key 0.00008039032
+PASS  parts plain Z: page 0.8842205, key 0.8842205
+PASS  parts divided TR: page 0.9889334, key 0.9889334
+PASS  parts divided origin: page 0.002985993, key 0.002985993
+PASS  parts divided Z: page 0.9999410, key 0.9999410
+PASS  B's blob on BR TR: page 6.825135e-8, key 6.825135e-8
+PASS  B's blob on BR origin: page 0.00007899954, key 0.00007899954
+PASS  B's blob on BR Z: page 3.536776, key 3.536776
+PASS  B's blob on TR TR: page 0.2779357, key 0.2779357
+PASS  B's blob on TR origin: page 0.03235725, key 0.03235725
+PASS  B's blob on TR Z: page 0.00005285832, key 0.00005285832
+PASS  B's blob on TL TR: page 0.005918034, key 0.005918034
+PASS  B's blob on TL origin: page 0.9889013, key 0.9889013
+PASS  B's blob on TL Z: page 7.899855e-10, key 7.899855e-10
+123 of 123 pass

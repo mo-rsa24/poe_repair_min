@@ -1,0 +1,126 @@
+== r = 0.05: exact target, checked against the answer key
+   top-right share: this grid 0.9890, answer key 0.9889
+
+== exact-sample floor (rejection sampling, 2,000 samples)
+   exact samples seed 0  TV 0.140  TR 0.984
+   exact samples seed 1  TV 0.127  TR 0.989
+   exact samples seed 2  TV 0.132  TR 0.988
+   floor (mean over seeds) 0.133
+
+== exact experts
+   exact     reverse diffusion seed 0  TV 0.185  TR 0.981  origin 0.021  centre (0.465, 0.460)  nonfinite 0.000  evals 100  1s
+   exact     annealed MALA     seed 0  TV 0.132  TR 0.992  origin 0.004  centre (0.504, 0.504)  nonfinite 0.000  evals 2221  acceptance 0.600  13s
+   exact     reverse diffusion seed 1  TV 0.181  TR 0.983  origin 0.019  centre (0.464, 0.465)  nonfinite 0.000  evals 100  0s
+   exact     annealed MALA     seed 1  TV 0.118  TR 0.991  origin 0.002  centre (0.502, 0.497)  nonfinite 0.000  evals 2221  acceptance 0.601  17s
+   exact     reverse diffusion seed 2  TV 0.179  TR 0.986  origin 0.021  centre (0.466, 0.466)  nonfinite 0.000  evals 100  0s
+   exact     annealed MALA     seed 2  TV 0.123  TR 0.987  origin 0.003  centre (0.503, 0.500)  nonfinite 0.000  evals 2221  acceptance 0.600  13s
+
+== check: exact experts, clean step on the level-0 density (what trained experts must do)
+   exact, level-0 clean step annealed MALA     seed 0  TV 0.129  TR 0.991  origin 0.004  centre (0.504, 0.504)  nonfinite 0.000  evals 2221  acceptance 0.600  14s
+   exact, level-0 clean step annealed MALA     seed 1  TV 0.125  TR 0.989  origin 0.002  centre (0.502, 0.497)  nonfinite 0.000  evals 2221  acceptance 0.601  16s
+   exact, level-0 clean step annealed MALA     seed 2  TV 0.125  TR 0.987  origin 0.004  centre (0.503, 0.500)  nonfinite 0.000  evals 2221  acceptance 0.600  13s
+
+== trained experts
+   seed 0: TR component count in training sets all 506 / 10000, A 1408 / 10000, B 1363 / 10000; final loss all 0.2650, A 0.1642, B 0.1592
+   relative RMS error of the composed score at noised composed samples, by level: t=0 0.353, t=10 0.089, t=30 0.024, t=60 0.009, t=90 0.006
+   trained   reverse diffusion seed 0  TV 0.194  TR 0.981  origin 0.019  centre (0.460, 0.464)  nonfinite 0.000  evals 100  0s
+   trained   annealed MALA     seed 0  TV 0.203  TR 0.990  origin 0.000  centre (0.483, 0.555)  nonfinite 0.000  evals 2221  acceptance 0.600  27s
+   seed 1: TR component count in training sets all 513 / 10000, A 1373 / 10000, B 1380 / 10000; final loss all 0.2642, A 0.1611, B 0.1649
+   relative RMS error of the composed score at noised composed samples, by level: t=0 0.336, t=10 0.087, t=30 0.023, t=60 0.007, t=90 0.008
+   trained   reverse diffusion seed 1  TV 0.185  TR 0.982  origin 0.022  centre (0.467, 0.468)  nonfinite 0.000  evals 100  0s
+   trained   annealed MALA     seed 1  TV 0.158  TR 0.989  origin 0.007  centre (0.510, 0.505)  nonfinite 0.000  evals 2221  acceptance 0.601  26s
+   seed 2: TR component count in training sets all 522 / 10000, A 1403 / 10000, B 1381 / 10000; final loss all 0.2707, A 0.1614, B 0.1609
+   relative RMS error of the composed score at noised composed samples, by level: t=0 0.332, t=10 0.094, t=30 0.021, t=60 0.011, t=90 0.007
+   trained   reverse diffusion seed 2  TV 0.181  TR 0.985  origin 0.023  centre (0.462, 0.467)  nonfinite 0.000  evals 100  0s
+   trained   annealed MALA     seed 2  TV 0.191  TR 0.984  origin 0.005  centre (0.486, 0.540)  nonfinite 0.000  evals 2221  acceptance 0.600  24s
+
+wrote results_r0.05.json  (168s)
+== r = 0.001: exact target, checked against the answer key
+   top-right share: this grid 0.9887, answer key 0.9886
+
+== exact-sample floor (rejection sampling, 2,000 samples)
+   exact samples seed 0  TV 0.134  TR 0.990
+   exact samples seed 1  TV 0.117  TR 0.987
+   exact samples seed 2  TV 0.122  TR 0.988
+   floor (mean over seeds) 0.124
+
+== exact experts
+   exact     reverse diffusion seed 0  TV 0.679  TR 0.486  origin 0.557  centre (0.213, 0.211)  nonfinite 0.000  evals 100  1s
+   exact     annealed MALA     seed 0  TV 0.130  TR 0.992  origin 0.004  centre (0.504, 0.504)  nonfinite 0.000  evals 2221  acceptance 0.599  25s
+   exact     reverse diffusion seed 1  TV 0.676  TR 0.500  origin 0.542  centre (0.214, 0.214)  nonfinite 0.000  evals 100  0s
+   exact     annealed MALA     seed 1  TV 0.119  TR 0.990  origin 0.003  centre (0.502, 0.497)  nonfinite 0.000  evals 2221  acceptance 0.601  13s
+   exact     reverse diffusion seed 2  TV 0.685  TR 0.516  origin 0.533  centre (0.215, 0.218)  nonfinite 0.000  evals 100  0s
+   exact     annealed MALA     seed 2  TV 0.125  TR 0.985  origin 0.004  centre (0.502, 0.500)  nonfinite 0.000  evals 2221  acceptance 0.600  15s
+
+== check: exact experts, clean step on the level-0 density (what trained experts must do)
+   exact, level-0 clean step annealed MALA     seed 0  TV 0.129  TR 0.990  origin 0.004  centre (0.503, 0.504)  nonfinite 0.000  evals 2221  acceptance 0.599  14s
+   exact, level-0 clean step annealed MALA     seed 1  TV 0.125  TR 0.988  origin 0.003  centre (0.502, 0.497)  nonfinite 0.000  evals 2221  acceptance 0.601  12s
+   exact, level-0 clean step annealed MALA     seed 2  TV 0.128  TR 0.984  origin 0.006  centre (0.501, 0.498)  nonfinite 0.000  evals 2221  acceptance 0.600  10s
+
+== trained experts
+   seed 0: TR component count in training sets all 11 / 10000, A 34 / 10000, B 30 / 10000; final loss all 0.2480, A 0.1180, B 0.1178
+   relative RMS error of the composed score at noised composed samples, by level: t=0 1.127, t=10 0.266, t=30 0.035, t=60 0.007, t=90 0.008
+   trained   reverse diffusion seed 0  TV 0.704  TR 0.466  origin 0.583  centre (0.211, 0.227)  nonfinite 0.000  evals 100  0s
+   trained   annealed MALA     seed 0  TV 0.440  TR 0.985  origin 0.018  centre (0.373, 0.449)  nonfinite 0.000  evals 2221  acceptance 0.600  23s
+   seed 1: TR component count in training sets all 11 / 10000, A 23 / 10000, B 24 / 10000; final loss all 0.2485, A 0.1188, B 0.1198
+   relative RMS error of the composed score at noised composed samples, by level: t=0 1.479, t=10 0.430, t=30 0.051, t=60 0.007, t=90 0.008
+   trained   reverse diffusion seed 1  TV 0.749  TR 0.392  origin 0.656  centre (0.188, 0.182)  nonfinite 0.000  evals 100  1s
+   trained   annealed MALA     seed 1  TV 0.402  TR 0.985  origin 0.003  centre (0.525, 0.611)  nonfinite 0.000  evals 2221  acceptance 0.601  26s
+   seed 2: TR component count in training sets all 11 / 10000, A 27 / 10000, B 30 / 10000; final loss all 0.2562, A 0.1164, B 0.1211
+   relative RMS error of the composed score at noised composed samples, by level: t=0 1.289, t=10 0.436, t=30 0.031, t=60 0.007, t=90 0.007
+   trained   reverse diffusion seed 2  TV 0.691  TR 0.467  origin 0.583  centre (0.241, 0.204)  nonfinite 0.000  evals 100  1s
+   trained   annealed MALA     seed 2  TV 0.331  TR 0.996  origin 0.004  centre (0.424, 0.509)  nonfinite 0.000  evals 2221  acceptance 0.600  24s
+
+wrote results_r0.001.json  (182s)
+== Summary per cell, mean ± sd over seeds 0, 1, 2 (2,000 samples each)
+
+-- r = 0.05   answer key top-right share 0.9889   floor TV 0.133
+   experts                    sampler                        TV  TV above floor  top-right share    origin share     sample centre
+   exact samples              none                0.133 ± 0.006  -0.000 ± 0.006    0.987 ± 0.003   0.003 ± 0.001    (0.499, 0.502)
+   exact                      reverse diffusion   0.182 ± 0.003  +0.049 ± 0.003    0.983 ± 0.003   0.021 ± 0.001    (0.465, 0.464)
+   exact                      annealed MALA       0.124 ± 0.007  -0.009 ± 0.007    0.990 ± 0.003   0.003 ± 0.001    (0.503, 0.500)
+   trained                    reverse diffusion   0.187 ± 0.007  +0.054 ± 0.007    0.982 ± 0.002   0.022 ± 0.002    (0.463, 0.466)
+   trained                    annealed MALA       0.184 ± 0.023  +0.051 ± 0.023    0.987 ± 0.003   0.004 ± 0.004    (0.493, 0.533)
+   exact, level-0 clean step  annealed MALA       0.126 ± 0.002  -0.007 ± 0.002    0.989 ± 0.002   0.003 ± 0.001    (0.503, 0.500)
+   training-set samples drawn from the top-right blob, out of 10,000, per seed:
+     all : seed 0 506 (within 3σ: 503), seed 1 513 (within 3σ: 507), seed 2 522 (within 3σ: 520)
+     A   : seed 0 1408 (within 3σ: 1388), seed 1 1373 (within 3σ: 1353), seed 2 1403 (within 3σ: 1395)
+     B   : seed 0 1363 (within 3σ: 1347), seed 1 1380 (within 3σ: 1368), seed 2 1381 (within 3σ: 1369)
+   relative RMS composed-score error at noised composed samples (mean over seeds): t=0 0.341, t=10 0.090, t=30 0.023, t=60 0.009, t=90 0.007
+   MALA acceptance (mean over levels): exact seed 0 0.600, exact seed 1 0.601, exact seed 2 0.600, trained seed 0 0.600, trained seed 1 0.601, trained seed 2 0.600
+
+-- r = 0.001   answer key top-right share 0.9886   floor TV 0.124
+   experts                    sampler                        TV  TV above floor  top-right share    origin share     sample centre
+   exact samples              none                0.124 ± 0.009  +0.000 ± 0.009    0.988 ± 0.002   0.003 ± 0.001    (0.502, 0.502)
+   exact                      reverse diffusion   0.680 ± 0.005  +0.556 ± 0.005    0.501 ± 0.015   0.544 ± 0.012    (0.214, 0.214)
+   exact                      annealed MALA       0.125 ± 0.006  +0.001 ± 0.006    0.989 ± 0.004   0.004 ± 0.001    (0.503, 0.500)
+   trained                    reverse diffusion   0.715 ± 0.030  +0.590 ± 0.030    0.441 ± 0.043   0.607 ± 0.043    (0.213, 0.205)
+   trained                    annealed MALA       0.391 ± 0.056  +0.267 ± 0.056    0.989 ± 0.006   0.008 ± 0.008    (0.441, 0.523)
+   exact, level-0 clean step  annealed MALA       0.127 ± 0.002  +0.003 ± 0.002    0.987 ± 0.003   0.004 ± 0.002    (0.502, 0.500)
+   training-set samples drawn from the top-right blob, out of 10,000, per seed:
+     all : seed 0 11 (within 3σ: 12), seed 1 11 (within 3σ: 11), seed 2 11 (within 3σ: 11)
+     A   : seed 0 34 (within 3σ: 33), seed 1 23 (within 3σ: 23), seed 2 27 (within 3σ: 28)
+     B   : seed 0 30 (within 3σ: 30), seed 1 24 (within 3σ: 28), seed 2 30 (within 3σ: 30)
+   relative RMS composed-score error at noised composed samples (mean over seeds): t=0 1.299, t=10 0.377, t=30 0.039, t=60 0.007, t=90 0.007
+   MALA acceptance (mean over levels): exact seed 0 0.599, exact seed 1 0.601, exact seed 2 0.600, trained seed 0 0.600, trained seed 1 0.601, trained seed 2 0.600
+
+== Effects on TV above the floor, per seed index then mean ± sd over seeds
+   sampler effect = TV(annealed MALA) - TV(reverse diffusion); negative means MALA is closer.
+   interaction = sampler effect with trained experts - sampler effect with exact experts.
+   Seeds pair by index only: trained seed k and exact sampling seed k share no randomness.
+
+-- r = 0.05
+   sampler_effect_exact       -0.057 ± 0.005   per seed -0.053, -0.062, -0.056   (standard error 0.003)
+   sampler_effect_trained     -0.003 ± 0.021   per seed +0.008, -0.027, +0.010   (standard error 0.012)
+   interaction                +0.054 ± 0.016   per seed +0.062, +0.035, +0.065   (standard error 0.009)
+   expert_effect_reverse      +0.005 ± 0.004   per seed +0.009, +0.004, +0.002   (standard error 0.002)
+   expert_effect_mala         +0.059 ± 0.017   per seed +0.071, +0.039, +0.068   (standard error 0.010)
+
+-- r = 0.001
+   sampler_effect_exact       -0.555 ± 0.006   per seed -0.548, -0.557, -0.561   (standard error 0.004)
+   sampler_effect_trained     -0.324 ± 0.052   per seed -0.264, -0.347, -0.361   (standard error 0.030)
+   interaction                +0.232 ± 0.046   per seed +0.285, +0.210, +0.200   (standard error 0.027)
+   expert_effect_reverse      +0.035 ± 0.034   per seed +0.025, +0.073, +0.006   (standard error 0.020)
+   expert_effect_mala         +0.266 ± 0.054   per seed +0.310, +0.283, +0.206   (standard error 0.031)
+
+wrote results.json and figures to /home-mscluster/mmolefe/PhD/reduce-reuse-recycle/artifacts/ideas/when-poe-reaches-a-and-b/runs/sampler-by-expert-interaction
