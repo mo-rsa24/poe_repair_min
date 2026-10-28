@@ -8,7 +8,7 @@ through the frozen encoders and the frozen UNet.
 
     python scripts/learned_and_token.py --check-token      "<and>" must encode exactly as "and" does
     python scripts/learned_and_token.py --baseline         held-out share removed with the untrained token
-    python scripts/learned_and_token.py --train --steps 2000 --eval-every 500 --name run1
+    python scripts/learned_and_token.py --train --steps 2000 --eval-at 100 300 1000 2000 --name run1
 """
 from __future__ import annotations
 
@@ -220,20 +220,14 @@ def contact_sheet(paths: list[Path], seeds: list[int], title: str, out: Path, si
     return sheet
 
 
-def grid(run_dir: Path, iters: list[int], seeds: list[int], wandb_id: str | None) -> None:
-    """One row per seed: a cat alone, a dog alone, plain PoE, then PoE with <and> at each saved update."""
+def build_grid(run_dir: Path, iters: list[int], seeds: list[int]):
+    """One row per seed: a cat alone, a dog alone, plain PoE, then PoE with <and> at each update in iters."""
     from PIL import Image, ImageDraw
-    from poe_repair.run import make_ctx
 
-    ctx = make_ctx()
-    tok = AndToken(ctx.models)
     A, B = "a cat", "a dog"
-    mono_a = run_dir / "tiles" / "mono_a_cat"
-    mono_b = run_dir / "tiles" / "mono_a_dog"
-    render_tiles(ctx, tok, A, None, [sd for sd in seeds if not (mono_a / f"seed{sd:02d}.png").exists()], False, mono_a)
-    render_tiles(ctx, tok, B, None, [sd for sd in seeds if not (mono_b / f"seed{sd:02d}.png").exists()], False, mono_b)
     heads = [f"{A} alone", f"{B} alone", f"PoE({A}, {B})"] + [f"+ <and>, {it} updates" for it in iters]
-    cols = [lambda sd: mono_a / f"seed{sd:02d}.png", lambda sd: mono_b / f"seed{sd:02d}.png",
+    cols = [lambda sd: run_dir / "tiles" / "mono_a_cat" / f"seed{sd:02d}.png",
+            lambda sd: run_dir / "tiles" / "mono_a_dog" / f"seed{sd:02d}.png",
             lambda sd: run_dir / "tiles" / "plain_poe" / f"seed{sd:02d}.png"] + [
         (lambda sd, it=it: run_dir / "tiles" / f"iter{it:05d}" / f"seed{sd:02d}.png") for it in iters]
     size, pad = 320, 24
@@ -249,8 +243,30 @@ def grid(run_dir: Path, iters: list[int], seeds: list[int], wandb_id: str | None
     full = Image.new("RGB", (rows[0].width, sum(r.height for r in rows)), "white")
     y = 0
     for r in rows:
-        full.paste(r, (0, y)); y += r.height
+        full.paste(r, (0, y))
+        y += r.height
     full.save(run_dir / "grid_all_seeds.png")
+    return rows, full
+
+
+def render_references(ctx, tok, run_dir: Path, seeds: list[int]) -> None:
+    """The columns that do not change with training: each animal alone, and plain PoE of the two."""
+    A, B = "a cat", "a dog"
+    for name, a, b in (("mono_a_cat", A, None), ("mono_a_dog", B, None), ("plain_poe", A, B)):
+        d = run_dir / "tiles" / name
+        todo = [sd for sd in seeds if not (d / f"seed{sd:02d}.png").exists()]
+        if todo:
+            render_tiles(ctx, tok, a, b, todo, False, d)
+
+
+def grid(run_dir: Path, iters: list[int], seeds: list[int], wandb_id: str | None) -> None:
+    """Assemble the grid after the fact from a finished run's saved tiles."""
+    from poe_repair.run import make_ctx
+
+    ctx = make_ctx()
+    tok = AndToken(ctx.models)
+    render_references(ctx, tok, run_dir, seeds)
+    rows, full = build_grid(run_dir, iters, seeds)
     print(f"wrote {run_dir}/grid_all_seeds.png and grid_seedNN.png for {seeds}", flush=True)
     if wandb_id:
         import wandb
@@ -262,7 +278,7 @@ def grid(run_dir: Path, iters: list[int], seeds: list[int], wandb_id: str | None
         run.finish()
 
 
-def train(steps: int, eval_every: int, lr: float, name: str, seed: int, use_wandb: bool,
+def train(steps: int, eval_at: list[int], lr: float, name: str, seed: int, use_wandb: bool,
           render_seeds: list[int]) -> None:
     from poe_repair.run import make_ctx
 
@@ -277,7 +293,7 @@ def train(steps: int, eval_every: int, lr: float, name: str, seed: int, use_wand
     tok = AndToken(models)
     opt = torch.optim.Adam(tok.rows.parameters(), lr=lr)
     rng = random.Random(seed)
-    print(f"train: {len(cells)} cells, {steps} steps, lr {lr}, eval every {eval_every}, out {out}", flush=True)
+    print(f"train: {len(cells)} cells, {steps} steps, lr {lr}, evals at {eval_at}, out {out}", flush=True)
     run_wb = None
     if use_wandb:
         import wandb
@@ -287,6 +303,8 @@ def train(steps: int, eval_every: int, lr: float, name: str, seed: int, use_wand
         print(f"wandb run {run_wb.id} {run_wb.url}", flush=True)
     A, B = "a cat", "a dog"
 
+    rendered: list[int] = []
+
     def evaluate(it: int) -> bool:
         res = share_removed(models, tok, device, dtype)
         fired = report(f"iter {it}", res)
@@ -294,22 +312,19 @@ def train(steps: int, eval_every: int, lr: float, name: str, seed: int, use_wand
             run_wb.log({f"held_out_share/step{st}": sum(v) / len(v) for st, v in res.items()}, step=it)
         if render_seeds:
             import wandb
-            tiles = render_tiles(ctx, tok, A, B, render_seeds, True, out / "tiles" / f"iter{it:05d}")
-            sheet = contact_sheet(tiles, render_seeds, f"PoE({A!r}, {B!r}, '<and>'), after {it} updates",
-                                  out / f"sheet_iter{it:05d}.png")
+            render_tiles(ctx, tok, A, B, render_seeds, True, out / "tiles" / f"iter{it:05d}")
+            rendered.append(it)
+            rows, full = build_grid(out, rendered, render_seeds)
             if run_wb:
-                table = wandb.Table(columns=["iter", "seed", "render"])
-                for sd, pth in zip(render_seeds, tiles):
-                    table.add_data(it, sd, wandb.Image(str(pth)))
-                run_wb.log({"sheet": wandb.Image(sheet), "renders": table}, step=it)
+                table = wandb.Table(columns=["seed", "row"])
+                for sd, r in zip(render_seeds, rows):
+                    table.add_data(sd, wandb.Image(r))
+                run_wb.log({"grid_per_seed": table, "grid_all_seeds": wandb.Image(full)}, step=it)
         return fired
 
+    if render_seeds:
+        render_references(ctx, tok, out, render_seeds)
     evaluate(0)
-    if render_seeds:  # plain PoE of the same two prompts, the reference row
-        ref = render_tiles(ctx, tok, A, B, render_seeds, False, out / "tiles" / "plain_poe")
-        refsheet = contact_sheet(ref, render_seeds, f"plain PoE({A!r}, {B!r})", out / "sheet_plain_poe.png")
-        if run_wb:
-            run_wb.log({"sheet_plain_poe": wandb.Image(refsheet)}, step=0)
     t0, run = time.time(), []
     for it in range(1, steps + 1):
         pair, cell_seed = rng.choice(cells)
@@ -332,7 +347,7 @@ def train(steps: int, eval_every: int, lr: float, name: str, seed: int, use_wand
                   f"rows' norms {[round(r.norm().item(), 4) for r in tok.rows]}, "
                   f"peak memory {torch.cuda.max_memory_allocated() / 2**30:.1f} GiB, "
                   f"{time.time() - t0:.0f} s", flush=True)
-        if eval_every and it % eval_every == 0 or it == steps:
+        if it in eval_at or it == steps:
             fired = evaluate(it)
             torch.save({"rows": [r.detach().cpu() for r in tok.rows], "ids": tok.ids, "iter": it},
                        out / f"rows_iter{it:05d}.pt")
@@ -369,7 +384,7 @@ if __name__ == "__main__":
     ap.add_argument("--baseline", action="store_true")
     ap.add_argument("--train", action="store_true")
     ap.add_argument("--steps", type=int, default=2000)
-    ap.add_argument("--eval-every", type=int, default=500)
+    ap.add_argument("--eval-at", nargs="*", type=int, default=[100, 300, 1000, 2000])
     ap.add_argument("--lr", type=float, default=1e-3)
     ap.add_argument("--name", default="run")
     ap.add_argument("--seed", type=int, default=0)
@@ -382,7 +397,7 @@ if __name__ == "__main__":
     if args.grid:
         grid(args.grid, args.iters, args.render_seeds or list(HELD_OUT[1]), args.wandb_id)
     if args.train:
-        train(args.steps, args.eval_every, args.lr, args.name, args.seed, args.wandb, args.render_seeds)
+        train(args.steps, args.eval_at, args.lr, args.name, args.seed, args.wandb, args.render_seeds)
     if args.check_token:
         check_token()
     if args.baseline:
