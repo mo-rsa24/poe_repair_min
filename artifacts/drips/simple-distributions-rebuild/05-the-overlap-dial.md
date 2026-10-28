@@ -690,6 +690,92 @@ $$
 
 The corner overlap is of order $\sigma^2$, an edge overlap of order σ, and the square of order 1. Integrating the smoothed squares numerically gives $C_0=0.0008$, $C_1=0.053$, $C=0.890$ and $C_D=0.675$ (`p5.deep_mass_C0_corner`, `p5.deep_mass_C1_edges`, `p5.deep_mass_C_square` and `p5.deep_mass_CD_deep_square`). At 5% overlap, about 40 points per set, the numerator is 0.0017 against a denominator of 0.0055 (`p5.deep_mass_formula_numerator_f0.05` and `p5.deep_mass_formula_denominator_f0.05`), so $M_D=0.31$ while f is only 0.05. At 100% the formula gives $C_D/C=0.76$. Over f = 0.01, 0.02, 0.05, 0.1, 0.2, 0.5 and 1 it runs from `0.048` to `0.758` (`p5.deep_mass_formula_MD`). The grid's 3-seed means below are 0.30 and 0.76.
 
+🧸 **Toy:** over 3 data seeds (`overlap-dial.json`), the exact interior mass is `0.00` at 0%, `0.05 ± 0.05` at 1%, `0.09` at 2%, `0.30 ± 0.10` at 5%, `0.51` at 10%, `0.59` at 20%, `0.71` at 50% and `0.76` at 100%. At 1% and 5% it swings by seed, because a handful of shared points decides it. The run behind this document, one more seed, printed `0.0, 0.03, 0.276, 0.486, 0.453, 0.486, 0.709, 0.76`. Its 2% and 5% sit well above the 3-seed means, and its 10% is below its 5%. That is the swing of a single seed at low overlap, where the answer rests on whether a few shared points happen to fall close together, and the reason the curve is drawn as a mean over seeds with its spread. Three seeds give a wide spread and no interval; [the exact interval for a proportion](../../../../../goal-setting/learning/mathematics/statistics/sampling/textbook/07-the-exact-interval.md) puts one on a single run's share, and [the percentile bootstrap](../../../../../goal-setting/learning/mathematics/statistics/sampling/plans/13-the-percentile-bootstrap-derived.md) puts one on the seed mean.
+
+🔤 **The name:** exact curve
+
+---
+
+#### The scene and its table
+
+Turn the overlap dial through eight settings. At each one, draw both training sets, multiply the two ideal experts on the grid, and read off the interior mass. No sampler and no trained network is involved anywhere.
+
+<table>
+<tr><th>overlap f</th><th>expected shared points in each set (800f)</th><th style="color:#4527a0">exact interior mass, mean of 3 data seeds</th></tr>
+<tr style="color:#9e9e9e"><td>0%</td><td>0</td><td>0.00</td></tr>
+<tr><td>1%</td><td>8</td><td>0.05 ± 0.05</td></tr>
+<tr><td>2%</td><td>16</td><td>0.09</td></tr>
+<tr style="background:#fff8e1"><td style="border:2px solid #212121"><b>5%</b></td><td>40</td><td style="border:2px dashed #212121"><b>0.30 ± 0.10</b></td></tr>
+<tr><td>10%</td><td>80</td><td>0.51</td></tr>
+<tr><td>20%</td><td>160</td><td>0.59</td></tr>
+<tr><td>50%</td><td>400</td><td>0.71</td></tr>
+<tr><td>100%</td><td>800</td><td>0.76</td></tr>
+</table>
+
+**How to read this table.** Each row is one setting of the overlap dial. The middle column is how many of a set's 800 training points land in A∩B on average, and the last column is the share of the composed product lying more than 0.15 inside the top-left quadrant. The ± on the 1% and 5% rows is how far the three seeds swing apart.
+
+**What to look for.** The highlighted row. With 40 shared points per set, the product already puts 0.30 of its mass deep in A∩B, six times the overlap share of 0.05. The grey row is the zero-overlap reading of Steps 2 and 3.
+
+---
+
+#### The word: exact
+
+**What the word means.** Exact means worked out from the definition, with nothing estimated on the way. Here the interior mass is read straight off the product of the two ideal experts on the grid, so no sampler draws points and no network stands in for an expert.
+
+$$
+\underbrace{M_D}_{\text{exact interior mass}}
+=
+\underbrace{\sum_{g\in D}}_{\text{every grid point in the interior}}
+\underbrace{\textcolor{#4527a0}{p(g)}}_{\text{normalised product of the two ideal experts}}
+\underbrace{\Delta}_{\text{area of one grid cell}}
+$$
+
+**What the equation says.** Add the product's density times the cell area over every grid point more than 0.15 inside the quadrant. Each term comes from the training points directly, so the only approximation left is the grid's spacing.
+
+**What it means.** The word belongs to the reading. Replace the grid sum with the share of a sampler's draws that land in $D$, and the 5% reading moves from 0.30 to 0.17 for tuned MALA (Step 5).
+
+---
+
+#### The word: curve
+
+**What the word means.** A curve is a line drawn through a run of points, one per setting, so the eye can follow how a reading changes as the setting changes. Here the x-axis is the overlap f and the y-axis is the exact interior mass, one point per row of the table.
+
+$$
+\underbrace{f}_{\text{overlap setting}}
+\;\longmapsto\;
+\underbrace{M_D(f)}_{\text{exact interior mass at that setting}},
+\qquad
+\underbrace{f\in\{0,\,0.01,\,0.02,\,0.05,\,0.1,\,0.2,\,0.5,\,1\}}_{\text{the eight dial settings}}
+$$
+
+**What the equation says.** The curve is the exact interior mass read once at each of the eight overlap settings.
+
+**What it means.** A curve from one data seed is jagged. The run behind this document printed 0.486 at 5% and 0.453 at 10%, so its curve dips where the 3-seed mean climbs from 0.30 to 0.51. Averaging over seeds is what turns the eight points into a shape worth reading.
+
+---
+
+#### All the words together: the formula
+
+The exact curve is the interior-mass formula from the derivation above, evaluated at each overlap setting.
+
+$$
+\underbrace{M_D(f)}_{\text{exact curve at overlap }f}
+=
+\frac{\underbrace{f^2C_D}_{\text{shared-square mass inside the interior}}}{\underbrace{f^2C+f(1-f)C_1+(1-f)^2C_0}_{\text{all of the product's mass}}}
+$$
+
+**What the equation says.** Only the pair where both experts pick their shared square reaches the interior, and its weight grows as $f^2$. The corner term it competes with is tiny ($C_0=0.0008$), so a few shared points are enough for the numerator to dominate.
+
+**Check it on the toy.** At 5% the formula gives 0.31 against the grid's 3-seed mean of 0.30. At 100% both give 0.76.
+
+---
+
+#### The consequence: set the curve beside the straight line M = f
+
+**At 5% overlap.** A reading that grew in step with the data would be 0.05. The exact curve is at 0.30.
+
+**At 10% overlap.** The straight line gives 0.10 and the exact curve 0.51. Turn the dial the other way, from 5% to 0%, and the curve falls from 0.30 to 0.00, so the whole rise comes from the shared points.
+
 🔨 **Build:** one data seed.
 
 ```python
@@ -700,8 +786,6 @@ for f in F:
     exact_curve.append(float((w_ * ((ideal.X1 < -MARGIN) & (ideal.X2 > MARGIN))).sum()))
 print("exact interior A∩B mass:", dict(zip(F, np.round(exact_curve, 3))))
 ```
-
-🧸 **Toy:** over 3 data seeds (`overlap-dial.json`), the exact interior mass is `0.00` at 0%, `0.05 ± 0.05` at 1%, `0.09` at 2%, `0.30 ± 0.10` at 5%, `0.51` at 10%, `0.59` at 20%, `0.71` at 50% and `0.76` at 100%. At 1% and 5% it swings by seed, because a handful of shared points decides it. The run behind this document, one more seed, printed `0.0, 0.03, 0.276, 0.486, 0.453, 0.486, 0.709, 0.76`. Its 2% and 5% sit well above the 3-seed means, and its 10% is below its 5%. That is the swing of a single seed at low overlap, where the answer rests on whether a few shared points happen to fall close together, and the reason the curve is drawn as a mean over seeds with its spread. Three seeds give a wide spread and no interval; [the exact interval for a proportion](../../../../../goal-setting/learning/mathematics/statistics/sampling/textbook/07-the-exact-interval.md) puts one on a single run's share, and [the percentile bootstrap](../../../../../goal-setting/learning/mathematics/statistics/sampling/plans/13-the-percentile-bootstrap-derived.md) puts one on the seed mean.
 
 ## Step 5: the samplers on the dial
 
@@ -720,18 +804,6 @@ Stanford CS236 on why Langevin sampling is annealed across noise levels, in the 
 
 CS236 anneals one model's score; it does not anneal a sum of two models' scores, which is what composition samples. Times are chapter boundaries read from each video's chapter list, not from captions, so each is good to the chapter and the sentence inside it is not checked.
 <!-- /video-table -->
-
-🔨 **Build:** both samplers at 5% and 20% overlap.
-
-```python
-for f in (0.05, 0.2):
-    a_, b_ = data[f]; tgt = ideal.composed_target(tt(a_), tt(b_), lambda a, b: a + b)
-    for name, s in [("tuned MALA", S.tuned_mala(tgt, NS, 2, ideal.V, device=dev)[0]), ("UHA", S.uha(tgt, NS, 2, 0.3 * np.sqrt(ideal.V), device=dev))]:
-        s = s.cpu().numpy()
-        print(f"overlap {f:.0%}, {name}: interior {((s[:, 0] < -MARGIN) & (s[:, 1] > MARGIN)).mean():.3f}  exact {exact_curve[F.index(f)]:.3f}")
-```
-
-The run behind this document printed, against an exact `0.486` on both settings: at 5%, tuned MALA `0.382` and UHA `0.343`; at 20%, `0.442` and `0.468`. The lag is larger at 5% here too.
 
 🧸 **Toy:** over 3 seeds with 2000 samples, tuned MALA and UHA agree with each other within 0.02 everywhere. They reach the exact curve from 20% up (`0.55` against `0.59`; at 50%, `0.72` against `0.71`) and lag below it (5%: `0.17` and `0.18` against `0.30`; 10%: `0.40` against `0.51`).
 
@@ -827,6 +899,18 @@ DataMListic on tuning a Metropolis chain, in the order to watch:
 DataMListic states the 20 to 50 percent rule without deriving it and never mentions effective sample size; the user supplied this video, and DataMListic is not on the creator list. Times are the video's own chapter boundaries, checked against its automatic captions to within a few seconds.
 <!-- /video-table -->
 
+🔨 **Build:** both samplers at 5% and 20% overlap.
+
+```python
+for f in (0.05, 0.2):
+    a_, b_ = data[f]; tgt = ideal.composed_target(tt(a_), tt(b_), lambda a, b: a + b)
+    for name, s in [("tuned MALA", S.tuned_mala(tgt, NS, 2, ideal.V, device=dev)[0]), ("UHA", S.uha(tgt, NS, 2, 0.3 * np.sqrt(ideal.V), device=dev))]:
+        s = s.cpu().numpy()
+        print(f"overlap {f:.0%}, {name}: interior {((s[:, 0] < -MARGIN) & (s[:, 1] > MARGIN)).mean():.3f}  exact {exact_curve[F.index(f)]:.3f}")
+```
+
+The run behind this document printed, against an exact `0.486` on both settings: at 5%, tuned MALA `0.382` and UHA `0.343`; at 20%, `0.442` and `0.468`. The lag is larger at 5% here too.
+
 💥 **Broken run:** reverse diffusion with summed scores on the same targets gives `0.02` at 5%, `0.10` at 10% and `0.24` at 20%, then overshoots at 100%, `0.91` against `0.76`, pulling the square's mass toward its centre. Read without the exact curve, its low-overlap numbers would say the data was missing when the data was there.
 
 ## Step 6: the parts-world dial, and the 386 nats
@@ -872,19 +956,6 @@ Chalmers' multiple object tracking course, from the open web, on multiplying a G
 
 No listed creator multiplies two mixtures. The second factor in this lecture is a measurement model with a detection probability and clutter rather than a second expert, so read each measurement hypothesis as one component of the second mixture; the Kalman update is the product of the pair's two Gaussians. Times are read from automatic captions and good to about 30 seconds.
 <!-- /video-table -->
-
-🔨 **Build:** the exact A∩B weight at every f, for both backgrounds, in closed form.
-
-```python
-from rebuild.phase5_dial import pw_experts, pw_ab
-for bg in (0.01, 1.0):
-    vals = []
-    for f in [0.0, 0.001, 0.01, 0.05, 0.2, 0.5, 1.0]:
-        prod = P.mixture_product(*pw_experts(f, bg)); vals.append(round(float(prod.w[pw_ab(prod.m)].sum()), 3))
-    print(f"background variance {bg}: exact A∩B weight over f = 0 ... 1:", vals)
-prod0 = P.mixture_product(*pw_experts(0.0, 0.01))
-print("0% with an empty background, the main component's half-means:", np.round(P.project(prod0.m[[int(np.argmax(prod0.w))]], (P.LEFT, P.RIGHT))[0], 2))
-```
 
 🧸 **Toy:** with an empty background, `0.000` at 0% and `1.000` from 0.1% up; tuned MALA reaches `0.995` and UHA `1.000` at 0.1%, while reverse diffusion reaches `0.734`, `0.885` at 1% and `0.969` at 5%. With a loose background, `1.000` at every f including 0%: an expert that is loose where its concept is absent composes into A∩B with no overlap data at all.
 
@@ -1041,35 +1112,24 @@ $$
 
 **Add the first overlap example.** The relevant cost changes from a 400-nat mismatch to a 13.81-nat weight penalty. The matching image gains 386.2 nats and becomes dominant.
 
+🔨 **Build:** the exact A∩B weight at every f, for both backgrounds, in closed form.
+
+```python
+from rebuild.phase5_dial import pw_experts, pw_ab
+for bg in (0.01, 1.0):
+    vals = []
+    for f in [0.0, 0.001, 0.01, 0.05, 0.2, 0.5, 1.0]:
+        prod = P.mixture_product(*pw_experts(f, bg)); vals.append(round(float(prod.w[pw_ab(prod.m)].sum()), 3))
+    print(f"background variance {bg}: exact A∩B weight over f = 0 ... 1:", vals)
+prod0 = P.mixture_product(*pw_experts(0.0, 0.01))
+print("0% with an empty background, the main component's half-means:", np.round(P.project(prod0.m[[int(np.argmax(prod0.w))]], (P.LEFT, P.RIGHT))[0], 2))
+```
+
 ## Step 7: pretrain on everything, fine-tune at 0%
 
 **Definition.** One energy model (phase 1) is pretrained on all four quadrants, so it has support everywhere. Two copies are fine-tuned at 0% overlap, A on the bottom-left square and B on the top-right, with [Adam](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/understanding-deep-learning.pdf#page=102) at $10^{-4}$. At each checkpoint, the product of the two fine-tuned experts is read on the grid from their summed t = 0 energies (phase 2, Step 10 says to read this number with care) and by tuned MALA and UHA through all 100 levels.
 
 **Derivation of what would count as rescue.** If fine-tuning only reshapes the experts slowly, the pretrained support in A∩B survives for a while, and fine-tune length becomes a dial. If it erases it at once, pretraining cannot stand in for overlap data.
-
-🔨 **Build:** a short version, 2000 pretraining steps, checkpoints to 300 fine-tune steps, exact read on the grid. Remember phase 1's broken run: the moving-average copy has its gradients switched off, so switch them back on.
-
-```python
-from rebuild.train import train
-from rebuild.compose import ProductEBMDiffusionModel
-from rebuild.model import PortableDiffusionModel
-from rebuild.phase2_compose import trained_target
-pre, _ = train(lambda n, rng=None: rng.uniform(-1, 1, (n, 2)), steps=2000, seed=0, device=dev, log_every=0)
-mA, mB = (copy.deepcopy(pre).requires_grad_(True) for _ in range(2))
-oA, oB = (torch.optim.Adam(m.parameters(), lr=1e-4) for m in (mA, mB))
-r2 = np.random.default_rng(3); done = 0
-for k in [0, 10, 30, 100, 300]:
-    while done < k:
-        for m, o, lo in [(mA, oA, -1.0), (mB, oB, 0.0)]:
-            x = tt(r2.uniform(lo, lo + 1, (1000, 2)))
-            loss = m.loss(x).mean(); o.zero_grad(); loss.backward(); o.step()
-        done += 1
-    ddpm = PortableDiffusionModel(2, 100, ProductEBMDiffusionModel(mA.net, mB.net)).to(dev)
-    w_ = ideal.grid_density(lambda g: trained_target(ddpm, dev).logp(g, 0), dev) * ideal.CELL
-    print(f"fine-tune step {k}: interior A∩B mass {float((w_ * ((ideal.X1 < -MARGIN) & (ideal.X2 > MARGIN))).sum()):.3f}")
-```
-
-The short version behind this document printed `0.040, 0.007, 0.000, 0.008, 0.005` at steps 0, 10, 30, 100, 300. Its pretrained model starts lower than the full run's, because after 2000 steps its t = 0 energy is still peaked at the centre of the square rather than flat across it. It falls to nothing just as fast.
 
 🧸 **Toy:** the full run (`finetune.json`, 10,000 pretraining steps) gives the interior A∩B mass on the grid / tuned MALA / UHA as `0.159 / 0.158 / 0.163` at step 0, `0.089 / 0.104 / 0.122` at step 10, `0.001 / 0.056 / 0.068` at step 30, and `0.005 / 0.004 / 0.0055` at step 100 (`phase5_tables` prints the last as `0.005`); from step 300 on all three are at most `0.001`. Two experts trained from scratch on the same 0% data give `0.000`.
 
@@ -1312,7 +1372,7 @@ $$
 
 **What to look for.** Follow the annotation from step 0 to step 30, where the grid reading falls from 0.159 to 0.001. The samplers lag at step 30, but all three readings enter the circled region at or below 0.001 from step 300 onward.
 
-<a href="../../../rebuild/out/phase5/finetune-pictures.png"><img src="../../../rebuild/out/phase5/finetune-pictures.png" width="140" alt="exact product, tuned MALA and UHA at fine-tune steps 0, 300 and 10000 and from scratch: a full square at step 0, a tight blob at the centre after"></a> <a href="../../../rebuild/out/phase5/finetune-curves.png"><img src="../../../rebuild/out/phase5/finetune-curves.png" width="200" alt="A∩B mass against fine-tune steps, exact, tuned MALA and UHA, with the from-scratch value dotted"></a>
+<a href="../../../toy/rebuild/out/phase5/finetune-pictures.png"><img src="../../../toy/rebuild/out/phase5/finetune-pictures.png" width="140" alt="exact product, tuned MALA and UHA at fine-tune steps 0, 300 and 10000 and from scratch: a full square at step 0, a tight blob at the centre after"></a> <a href="../../../toy/rebuild/out/phase5/finetune-curves.png"><img src="../../../toy/rebuild/out/phase5/finetune-curves.png" width="200" alt="A∩B mass against fine-tune steps, exact, tuned MALA and UHA, with the from-scratch value dotted"></a>
 
 **How to read these pictures.** In the left image, each row is a later training state and each column is a different way to read or sample the product. In the right image, the x-axis is the fine-tune step and the y-axis is A∩B mass. One line is one reading method.
 
@@ -1331,13 +1391,37 @@ Stanford CS224N, then Stanford CME295, on fine-tuning a pretrained model, in the
 Neither measures how fast fine-tuning erases what pretraining gave, which here takes about 100 steps (interior mass from 0.159 to 0.005). Times are chapter boundaries from each video's chapter list, so the sentence inside each is not checked.
 <!-- /video-table -->
 
+🔨 **Build:** a short version, 2000 pretraining steps, checkpoints to 300 fine-tune steps, exact read on the grid. Remember phase 1's broken run: the moving-average copy has its gradients switched off, so switch them back on.
+
+```python
+from rebuild.train import train
+from rebuild.compose import ProductEBMDiffusionModel
+from rebuild.model import PortableDiffusionModel
+from rebuild.phase2_compose import trained_target
+pre, _ = train(lambda n, rng=None: rng.uniform(-1, 1, (n, 2)), steps=2000, seed=0, device=dev, log_every=0)
+mA, mB = (copy.deepcopy(pre).requires_grad_(True) for _ in range(2))
+oA, oB = (torch.optim.Adam(m.parameters(), lr=1e-4) for m in (mA, mB))
+r2 = np.random.default_rng(3); done = 0
+for k in [0, 10, 30, 100, 300]:
+    while done < k:
+        for m, o, lo in [(mA, oA, -1.0), (mB, oB, 0.0)]:
+            x = tt(r2.uniform(lo, lo + 1, (1000, 2)))
+            loss = m.loss(x).mean(); o.zero_grad(); loss.backward(); o.step()
+        done += 1
+    ddpm = PortableDiffusionModel(2, 100, ProductEBMDiffusionModel(mA.net, mB.net)).to(dev)
+    w_ = ideal.grid_density(lambda g: trained_target(ddpm, dev).logp(g, 0), dev) * ideal.CELL
+    print(f"fine-tune step {k}: interior A∩B mass {float((w_ * ((ideal.X1 < -MARGIN) & (ideal.X2 > MARGIN))).sum()):.3f}")
+```
+
+The short version behind this document printed `0.040, 0.007, 0.000, 0.008, 0.005` at steps 0, 10, 30, 100, 300. Its pretrained model starts lower than the full run's, because after 2000 steps its t = 0 energy is still peaked at the centre of the square rather than flat across it. It falls to nothing just as fast.
+
 ## Step 8: the curves
 
 The full runs are `python -m rebuild.phase5_dial` (about 10 minutes on one card) and `python -m rebuild.phase5_finetune` (about 15). Then `python -m rebuild.phase5_tables` prints every number above.
 
 🎞️ **Moving picture:** `rebuild/out/phase5/overlap-dial-quadrant-pictures.png` shows the quadrant toy at 0%, 2%, 20% and 100%, one row each: the training sets, the exact product, tuned MALA, UHA, reverse diffusion. Read it top to bottom as the dial turning. At 0% everything sits on the corner. At 2% the exact product has moved onto the few shared points while the samplers stay mostly on the corner and the $x_2=0$ edge. From 20% up they fill the quadrant.
 
-<a href="../../../rebuild/out/phase5/overlap-dial-quadrant-pictures.png"><img src="../../../rebuild/out/phase5/overlap-dial-quadrant-pictures.png" width="200" alt="the quadrant toy at overlap 0%, 2%, 20% and 100%: training sets, exact product, tuned MALA, UHA, reverse diffusion"></a> <a href="../../../rebuild/out/phase5/overlap-dial-curves.png"><img src="../../../rebuild/out/phase5/overlap-dial-curves.png" width="200" alt="A∩B mass against overlap share, exact and per sampler, on the quadrant toy and the parts world"></a>
+<a href="../../../toy/rebuild/out/phase5/overlap-dial-quadrant-pictures.png"><img src="../../../toy/rebuild/out/phase5/overlap-dial-quadrant-pictures.png" width="200" alt="the quadrant toy at overlap 0%, 2%, 20% and 100%: training sets, exact product, tuned MALA, UHA, reverse diffusion"></a> <a href="../../../toy/rebuild/out/phase5/overlap-dial-curves.png"><img src="../../../toy/rebuild/out/phase5/overlap-dial-curves.png" width="200" alt="A∩B mass against overlap share, exact and per sampler, on the quadrant toy and the parts world"></a>
 
 **How to read these pictures.** In the left image, rows turn the overlap share upward and columns compare the training data, exact product, and three samplers. In the right image, the x-axis is overlap share and the y-axis is A∩B mass. Each point is one overlap setting, and each error bar is [one standard deviation](../../../../../goal-setting/learning/mathematics/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=150) across three data seeds.
 

@@ -579,6 +579,101 @@ $$
 
 🧸 **Toy:** `toy_box(0.7)` has area $1.4^2$, so its density is `0.5102`. `bar(0.2)` has area $0.4\times2$, so its density is `1.25`.
 
+🔤 **The name:** boxes, bars and panels
+
+---
+
+#### The scene and its table
+
+Five of the ten datasets are flat rectangles: every point inside is equally likely and nothing lands outside. Each differs from the others only in its width and height.
+
+<table>
+<tr><th>dataset</th><th>width × height</th><th>area</th><th style="color:#ad1457">density inside, 1/area</th></tr>
+<tr style="background:#fff8e1"><td><b>toy_box(0.7)</b></td><td>1.4 × 1.4</td><td style="border:2px solid #212121">1.96</td><td style="border:2px dashed #212121"><b>0.5102</b></td></tr>
+<tr><td>toy_box(0.3)</td><td>0.6 × 0.6</td><td>0.36</td><td>2.778</td></tr>
+<tr style="background:#fff8e1"><td><b>bar(0.2)</b></td><td>0.4 × 2</td><td style="border:2px solid #212121">0.8</td><td style="border:2px dashed #212121"><b>1.25</b></td></tr>
+<tr><td>bar_horizontal()</td><td>2 × 0.4</td><td>0.8</td><td>1.25</td></tr>
+<tr><td>right_bar(), left_bar()</td><td>0.2 × 2</td><td>0.4</td><td>2.5</td></tr>
+</table>
+
+**How to read this table.** Each row is one flat dataset. The solid boxes are the areas and the dashed boxes the densities they produce, and the two highlighted rows are this step's toy.
+
+**What to look for.** The density column is always one over the area column. Halve the area and the height doubles, which is why the narrow side bars stand at 2.5 while the wide box stands at 0.5102.
+
+---
+
+#### The word: box
+
+**What the word means.** A box is a container with straight sides. Here it is a square, the same width both ways, centred on the origin: `toy_box(s)` covers $[-s,s]^2$.
+
+$$
+\underbrace{p_{\text{box}}(\textcolor{#00838f}{x})}_{\text{box density inside}}
+=
+\frac{1}{\underbrace{(2s)^2}_{\text{side times side}}}
+$$
+
+**What the equation says.** A box of half-width $s$ has side $2s$, so its area is $(2s)^2$ and its height inside is one over that.
+
+**What it means.** Shrink the box from $s=0.7$ to $s=0.3$ and the density rises from 0.5102 to 2.778. The same total probability packed into a smaller square stands taller.
+
+---
+
+#### The word: bar
+
+**What the word means.** A bar is a long thin strip, like a bar of chocolate. Here `bar(scale)` is $2\cdot\text{scale}$ wide and the full 2 high, and `bar_horizontal()` is the same strip turned on its side.
+
+$$
+\underbrace{p_{\text{bar}}(\textcolor{#00838f}{x})}_{\text{bar density inside}}
+=
+\frac{1}{\underbrace{2\cdot\text{scale}}_{\text{width}}\ \cdot\ \underbrace{2}_{\text{height}}}
+$$
+
+**What the equation says.** The bar's area is its narrow width times its full height, and its density is one over that area.
+
+**What it means.** Turn the bar on its side and the density stays 1.25, because the area is still 0.8. Halve its width to 0.2, as `right_bar()` and `left_bar()` do, and the density doubles from 1.25 to 2.5.
+
+---
+
+#### The word: panel
+
+**What the word means.** A panel is one framed picture in a grid of pictures, like one square of a comic strip. Here it is one subplot of the 2 by 5 figure: 1000 samples of one dataset scattered over the square from −1.1 to 1.1.
+
+$$
+\underbrace{\text{panel }k}_{\text{one subplot}}
+=
+\underbrace{\{\textcolor{#00838f}{x}^{(1)},\ldots,\textcolor{#00838f}{x}^{(1000)}\}}_{\text{1000 draws}}
+\sim
+\underbrace{p_k}_{\text{dataset }k\text{'s density}}
+$$
+
+**What the equation says.** Each panel shows 1000 points drawn from one of the ten densities, all on the same axes.
+
+**What it means.** A panel shows density as how tightly the dots pack. The `toy_box(0.3)` panel's 1000 dots crowd 2.778 / 0.5102 = 5.4 times as tightly as the `toy_box(0.7)` panel's.
+
+---
+
+#### All the words together: the formula
+
+Every box and bar is the uniform rectangle density from the definition, with its own width and height.
+
+$$
+\underbrace{p(\textcolor{#00838f}{x})}_{\text{box or bar density}}
+=
+\underbrace{\frac{1}{wh}}_{\text{one over the area}}
+\cdot
+\underbrace{\mathbf 1\{\textcolor{#00838f}{x}\text{ inside}\}}_{\text{1 inside the rectangle, 0 outside}}
+$$
+
+**What the equation says.** Inside the rectangle the height is one over its area, and outside it is zero, so the total probability is exactly 1.
+
+**Check it on the toy.** `toy_box(0.7)` has $w=h=1.4$ and density 0.5102. `bar(0.2)` has $w=0.4$, $h=2$ and density 1.25.
+
+---
+
+#### The consequence: swap the box for the bar
+
+**From the box to the bar.** The area falls from 1.96 to 0.8, so the density rises from 0.5102 to 1.25. In the ten panels the bar's dots sit visibly closer together than the wide box's.
+
 🔨 **Build:** all ten samplers, then the ten panels of `datasets-1000-samples-each.png`.
 
 ```python
@@ -644,7 +739,9 @@ $$
 
 <a href="../../results/how-the-forward-process-dissolves-an-image/why-the-noise-carries-a-square-root.png"><img src="../../results/how-the-forward-process-dissolves-an-image/why-the-noise-carries-a-square-root.png" width="680" alt="Derive 2 of the scene: 300 dots scaled by 0.7223, spread 0.722 and variance 0.522, beside the equation Var(cX) = c squared Var(X)"></a>
 
-**The same reason, with dots.** Scale every dot by 0.7223 and the spread becomes 0.722 while the variance becomes 0.522, which is 1 − ᾱ₅₀. Variance is the square of the scale, so a variance share needs its square root before it multiplies anything. Live: [Derive 2](https://claude.ai/artifact/X7QGLTxssbz41G7iTiRxC9#derive-2).
+**How to read this.** The x-axis runs from −4 to 4. The blue row is 300 draws of X with spread 1, and the orange row is the same 300 draws multiplied by c = 0.7223. The bar under each row spans one spread either side of the middle, and the spread and variance are printed beside it.
+
+**What to look for.** Scale every dot by 0.7223 and the spread becomes 0.722 while the variance becomes 0.522, which is 1 − ᾱ₅₀. Variance is the square of the scale, so a variance share needs its square root before it multiplies anything. Live: [Derive 2](https://claude.ai/artifact/X7QGLTxssbz41G7iTiRxC9#derive-2).
 
 **Why the identity matrix is there.** The same noise variance is used [independently on both coordinates](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/understanding-deep-learning.pdf#page=471). Removing $I$ would leave the scalar variance without saying how it acts on a two-dimensional point.
 
@@ -862,7 +959,9 @@ $$
 
 <a href="../../results/how-the-forward-process-dissolves-an-image/one-cosine-boundary-by-hand.png"><img src="../../results/how-the-forward-process-dissolves-an-image/one-cosine-boundary-by-hand.png" width="680" alt="Timetable 2 of the scene: C at k = 51 worked line by line, position 0.5139, angle 46.25 degrees, cos squared 0.4782, divided by 0.99984, beside a quarter circle with the angle drawn"></a>
 
-**One boundary, line by line, beside its angle.** At k = 51 the position is 0.5139, the angle is 46.25°, cos² of it is 0.4782, and dividing by f(0) = 0.99984 gives C₅₁ = 0.4783. The quarter circle shows the angle; the green bar is cos², the share kept. Live: [Timetable 2](https://claude.ai/artifact/X7QGLTxssbz41G7iTiRxC9#timetable-2).
+**How to read this.** The left panel runs one boundary, k = 51, through the formula line by line. The middle panel is the quarter circle of radius 1: the teal point sits at post 51's angle, and the blue segment along the x-axis is its cosine. The green bar on the right, out of a full bar of 1, is cos², the share kept.
+
+**What to look for.** At k = 51 the position is 0.5139, the angle is 46.25°, the cosine is 0.6915, cos² of it is 0.4782, and dividing by f(0) = 0.99984 gives C₅₁ = 0.4783. The green bar fills just under half, so a little past halfway round the turn, a little under half the clean signal's variance is left. Live: [Timetable 2](https://claude.ai/artifact/X7QGLTxssbz41G7iTiRxC9#timetable-2).
 
 **Why the ratio $k/T$ is there.** It turns boundary numbers from 0 through 100 into positions from 0 through 1. Without division by $T$, the cosine would run through many turns instead of one scheduled interval.
 
@@ -906,7 +1005,21 @@ $$
 
 **On the scene.** [One boundary, term by term](https://claude.ai/artifact/X7QGLTxssbz41G7iTiRxC9#timetable-one-boundary) walks the formula in seven steps (k/T, + δ, ÷ (1 + δ), × π/2, cos, the square, ÷ cos²θ₀). It draws the numerator, denominator and ratio as three bars, with a switch that drops the denominator: switched off, $C_0$ reads 0.99984 and β₅₀ stays 0.031546. [The normaliser cancels](https://claude.ai/artifact/X7QGLTxssbz41G7iTiRxC9#timetable-normaliser-cancels) strikes the two 0.99984s out of β₅₀ one step at a time.
 
-<a id="step4-four-posts-by-hand"></a>**Four posts by hand.** Each line runs the position, the angle, the cosine, its square and the division:
+<a id="step4-four-posts-by-hand"></a>**Four posts by hand.** Each line runs the position, the angle, the cosine, its square and the division. In general, for post k:
+
+$$
+\underbrace{\theta_k}_{\text{angle of post }k}
+=
+\underbrace{\frac{k+0.8}{100.8}}_{\text{position }p_k}
+\cdot
+\underbrace{90^\circ}_{\text{quarter turn}},
+\qquad
+\underbrace{\textcolor{#2e7d32}{C_k}}_{\text{share kept at post }k}
+=
+\frac{\underbrace{\cos^2\theta_k}_{\text{squared cosine at post }k}}{\underbrace{\cos^2\theta_0}_{0.99984\text{, the same for every post}}}
+$$
+
+The four lines below put k = 0, 1, 51 and 100 into it:
 
 $$
 \begin{aligned}
@@ -947,7 +1060,9 @@ $$
 
 <a href="../../results/how-the-forward-process-dissolves-an-image/each-beta-read-off-the-curve.png"><img src="../../results/how-the-forward-process-dissolves-an-image/each-beta-read-off-the-curve.png" width="680" alt="Timetable 3 of the scene: beta at t = 50 computed as 1 minus C51 over C50, beside two bars where the orange top of the second is the share lost"></a>
 
-**One β, read off the curve.** At t = 50, 1 − β₅₀ = C₅₁/C₅₀ = 0.4783/0.4938 = 0.9685, so β₅₀ = 0.0315. In the bars, C₅₀ fills the height and the orange top of the second bar is the 0.0315 that step 50 loses. Live: [Timetable 3](https://claude.ai/artifact/X7QGLTxssbz41G7iTiRxC9#timetable-3).
+**How to read this.** The left panel works β at t = 50 from the two boundary values. The right panel has two bars, C₅₀ = 0.4938 and C₅₁ = 0.4783, both scaled so that C₅₀ fills the full height. On the second bar, green is the share kept and the thin orange top is the share lost.
+
+**What to look for.** The orange top is β₅₀. At t = 50, 1 − β₅₀ = C₅₁/C₅₀ = 0.4783/0.4938 = 0.9685, so β₅₀ = 0.0315: step 50 loses only 3% of what it was handed. Live: [Timetable 3](https://claude.ai/artifact/X7QGLTxssbz41G7iTiRxC9#timetable-3).
 
 **Why the ratio and subtraction are there.** The ratio $C_{t+1}/C_t$ compares consecutive retained-signal boundaries. Subtracting that ratio from 1 converts the share kept into the share replaced by noise.
 
@@ -1190,7 +1305,9 @@ $$
 
 <a href="../../results/how-the-forward-process-dissolves-an-image/two-steps-the-variances-add.png"><img src="../../results/how-the-forward-process-dissolves-an-image/two-steps-the-variances-add.png" width="680" alt="Derive 5 of the scene: the two-step expansion with beta values 0.3 and 0.5, beside a bar splitting one unit into 0.35 dog, 0.15 earlier noise and 0.50 fresh noise"></a>
 
-**Two steps with large βs, so every piece is visible.** With βₜ₋₁ = 0.3 and βₜ = 0.5 the unit of variance splits into 0.35 dog, 0.15 earlier noise shrunk by the second step, and 0.50 fresh noise. This is [Chan's equation 2.9, p. 23](../../../../../goal-setting/learning/papers/deep-learning/diffusion-models/tutorial-on-diffusion-models-for-imaging-and-vision.pdf#page=23) with Chan's α written as 1 − β. Live: [Derive 5](https://claude.ai/artifact/X7QGLTxssbz41G7iTiRxC9#derive-5).
+**How to read this.** The left panel is the two-step expansion, with each piece's variance under its brace. The bar at top right is one unit of variance laid from 0 to 1 and cut into three pieces: blue is the dog, purple the earlier step's noise, orange the fresh noise. The two photos below it are the dog before the two steps and after them. The step sizes are deliberately large, βₜ₋₁ = 0.3 and βₜ = 0.5, so every piece is wide enough to see.
+
+**What to look for.** The unit splits into 0.35 dog, 0.15 earlier noise shrunk by the second step, and 0.50 fresh noise, and the three add to exactly 1. The purple piece is the one people forget: the earlier noise survives, scaled down by the second step. This is [Chan's equation 2.9, p. 23](../../../../../goal-setting/learning/papers/deep-learning/diffusion-models/tutorial-on-diffusion-models-for-imaging-and-vision.pdf#page=23) with Chan's α written as 1 − β. Live: [Derive 5](https://claude.ai/artifact/X7QGLTxssbz41G7iTiRxC9#derive-5).
 
 **Why the square roots are there.** The coefficients multiply random variables, so by the scaling rule their squares determine variance. Using $\beta_t$ directly as the noise coefficient would give noise variance $\beta_t^2$ instead of $\beta_t$.
 
@@ -1560,7 +1677,9 @@ $$
 
 <a href="../../results/how-the-forward-process-dissolves-an-image/the-one-shot-draw-and-its-density.png"><img src="../../results/how-the-forward-process-dissolves-an-image/the-one-shot-draw-and-its-density.png" width="760" alt="Three columns of the scene's density frame on the toy point: t = 50 with q = 0.1419, t = 25 with q = 0.4505, and the centre written without its square root with exponent −0.5987; each column shows the formula with its numbers, the 2D plane with the centre, the displacement and the drawn point, and the exponent against t"></a>
 
-**How to read this.** Each column is one setting of the same toy draw. The top row is the density with its numbers under the braces, the middle row is the plane, shaded by density, with the clean point in blue, the centre as a ring, the orange displacement d and the drawn point in teal, and the bottom row is the exponent at the drawn point against t. In the first two columns the exponent sits at −0.7650 at t = 50 and t = 25 and only the height changes, 0.3050 against 0.9682. In the third, the centre has lost its square root, the displacement is longer than one spread, and the dashed red exponent curve moves with t.
+**How to read this.** Each column is one setting of the same toy draw. The top row is the density with its numbers under the braces, the middle row is the plane, shaded by density, with the clean point in blue, the centre as a ring, the orange displacement d and the drawn point in teal, and the bottom row is the exponent at the drawn point (y-axis, from −1 to 0) against step t (x-axis, 0 to 99).
+
+**What to look for.** In the first two columns the exponent sits at −0.7650 at t = 50 and t = 25 and only the height changes, 0.3050 against 0.9682. In the third, the centre has lost its square root, the displacement is longer than one spread, the exponent is −0.5987 at t = 50, and the dashed red exponent curve moves with t.
 
 **Where it leads.** Take the log and then the slope. The height is a constant, so its slope is zero. Writing $x_t$ out shows where $x_0$ goes: the $\sqrt{\bar\alpha_t}\,x_0$ terms cancel, leaving only the noise, and one square root cancels against $1-\bar\alpha_t$.
 
@@ -1570,11 +1689,31 @@ x_t-\sqrt{\bar\alpha_t}\,x_0=\big(\cancel{\sqrt{\bar\alpha_t}\,x_0}+\sqrt{1-\bar
 \nabla_{x_t}\log q=-\frac{\sqrt{1-\bar\alpha_t}\,\textcolor{#6a1b9a}{\varepsilon}}{1-\bar\alpha_t}=-\frac{\textcolor{#6a1b9a}{\varepsilon}}{\sqrt{1-\bar\alpha_t}}
 $$
 
+$$
+\underbrace{\textcolor{#00838f}{x_t}-\sqrt{\textcolor{#2e7d32}{\bar\alpha_t}}\,\textcolor{#1565c0}{x_0}}_{\text{drawn point minus the centre}}
+=
+\underbrace{\cancel{\sqrt{\textcolor{#2e7d32}{\bar\alpha_t}}\,\textcolor{#1565c0}{x_0}}}_{\text{the clean part of }x_t}
++
+\underbrace{\textcolor{#ef6c00}{\sqrt{1-\bar\alpha_t}}\,\textcolor{#6a1b9a}{\varepsilon}}_{\text{the noise part of }x_t}
+-
+\underbrace{\cancel{\sqrt{\textcolor{#2e7d32}{\bar\alpha_t}}\,\textcolor{#1565c0}{x_0}}}_{\text{the centre subtracted}},
+\qquad
+\underbrace{\nabla_{x_t}\log q}_{\text{score at }x_t}
+=
+-\frac{\underbrace{\textcolor{#ef6c00}{\sqrt{1-\bar\alpha_t}}\,\textcolor{#6a1b9a}{\varepsilon}}_{\text{what survives the cancellation}}}{\underbrace{1-\textcolor{#2e7d32}{\bar\alpha_t}}_{\text{the variance}}}
+=
+\underbrace{-\frac{\textcolor{#6a1b9a}{\varepsilon}}{\textcolor{#ef6c00}{\sqrt{1-\bar\alpha_t}}}}_{\text{noise, reversed and rescaled}}
+$$
+
+**What the equation says.** The clean part of $x_t$ and the centre are the same vector, so subtracting one from the other leaves only the noise. Dividing that noise by the variance cancels one of its two square roots, and the score is the noise reversed and divided by the noise level.
+
 At $t=50$ the score is $(-0.4153,\,1.6613)$. [Step 5](#step-5-the-noise-is-the-score-rescaled) builds on exactly this line.
 
 <a href="../../results/how-the-forward-process-dissolves-an-image/from-the-draw-to-the-density-and-the-score.png"><img src="../../results/how-the-forward-process-dissolves-an-image/from-the-draw-to-the-density-and-the-score.png" width="760" alt="Two scene frames side by side: on the left, draws from the fixed clean point with the centre, the spread circle and a histogram under its Gaussian curve; on the right, the clean point cancelling and the noise vector from the centre to the drawn point"></a>
 
-**Read the two stills.** Left, Derive 7 at its seventh step: the draws from the pinned $x_0$ centre on $\mu$, fill the one-spread circle, and one coordinate's histogram sits under the $\mathcal N(0.3458,\,0.5217)$ bell. Right, Derive 9 at its fourth step: $x_0$ fades as it cancels, and the purple arrow from $\mu$ to $x_t$ is $\sigma\varepsilon=(0.2167,\,-0.8668)$.
+**How to read this.** Two stills from the scene, each a panel of formulas beside its plot. Left, Derive 7 at its seventh step: the plane shows many draws from the pinned clean point $x_0=(0,\,0.5)$, with the centre $\mu$ and the dashed circle one spread (0.7223) wide, and the histogram below has the second coordinate of the draws on the x-axis and their count on the y-axis, under the $\mathcal N(0.3458,\,0.5217)$ curve. Right, Derive 9 at its fourth step: the green rings are the density's contours around $\mu$, and the purple arrow runs from $\mu$ to the drawn point $x_t=(0.2167,\,-0.5210)$.
+
+**What to look for.** On the left, the draws centre on $\mu$ and the histogram follows the bell, so holding $x_0$ fixed gives a Gaussian. On the right, $x_0$ fades as it cancels and the arrow left over is $\sigma\varepsilon=(0.2167,\,-0.8668)$, only the noise. That arrow is what the score below points back along.
 
 <!-- links: step4/density rev=1 -->
 🔗 **Where else this lives**
@@ -1595,9 +1734,9 @@ At $t=50$ the score is $(-0.4153,\,1.6613)$. [Step 5](#step-5-the-noise-is-the-s
 
 <a href="../../results/how-the-forward-process-dissolves-an-image/the-dog-at-five-steps.png"><img src="../../results/how-the-forward-process-dissolves-an-image/the-dog-at-five-steps.png" width="430" alt="The same dog and the same noise draw at t = 0, 25, 50, 75 and 99, with the kept share and the two scales under each"></a> <a href="../../results/how-the-forward-process-dissolves-an-image/what-each-piece-protects.png"><img src="../../results/how-the-forward-process-dissolves-an-image/what-each-piece-protects.png" width="430" alt="Three columns: all pieces on, square roots off, complement off, each a dog above its coefficient chart with the total variance"></a>
 
-**Read the row left to right.** It is the table above on a photo: one dog and one noise draw at t = 0, 25, 50, 75 and 99. At t = 50 the dog is still visible at scale 0.6916, though only 0.4783 of its variance is left.
+**How to read this.** The left image is one row of five photos: the same dog and the same noise draw at t = 0, 25, 50, 75 and 99, with the kept share ᾱ and the dog's and the noise's multipliers printed under each. The right image is three columns, each a different version of the formula: every piece on at t = 50, the square roots removed at t = 50, and ᾱ written where 1 − ᾱ belongs at t = 75. Under each of those photos a chart has step t on the x-axis and the coefficient on the y-axis: blue is the dog's multiplier, orange the noise's, the dotted lines their variance shares, and the dashed line the total variance.
 
-**Read the three columns as three formulas.** With every piece on, the two scales square to 1.0000. Without the square roots they square to 0.4783² + 0.5217² = 0.5009 at t = 50, so the middle steps go grey. With ᾱ in place of 1 − ᾱ, both scales are 0.3654 at t = 75 and the total is 0.2670, so the dog fades to grey and never becomes noise.
+**What to look for.** The row is the table above on a photo: at t = 50 the dog is still visible at scale 0.6916, though only 0.4783 of its variance is left. In the three columns, follow the dashed total-variance line. With every piece on it stays at 1.0000. Without the square roots it dips to 0.4783² + 0.5217² = 0.5009 at t = 50, so the middle steps go grey. With ᾱ in place of 1 − ᾱ, both scales are 0.3654 at t = 75 and the total is 0.2670, so the dog fades to grey and never becomes noise.
 
 <!-- links: step4/consequence rev=2 -->
 🔗 **Where else this lives**
@@ -3435,9 +3574,11 @@ plt.legend(); plt.gca().set_aspect("equal"); plt.savefig("step10-bar-samples.png
 
 ## Step 11: the check against the datasets plot
 
-<a href="../../../rebuild/out/phase1/datasets-against-trained-models.png"><img src="../../../rebuild/out/phase1/datasets-against-trained-models.png" width="200" alt="ten toy datasets in blue above samples from each trained model in orange, each orange panel titled with its TV and sampling-noise baseline"></a>
+<a href="../../../toy/rebuild/out/phase1/datasets-against-trained-models.png"><img src="../../../toy/rebuild/out/phase1/datasets-against-trained-models.png" width="200" alt="ten toy datasets in blue above samples from each trained model in orange, each orange panel titled with its TV and sampling-noise baseline"></a>
 
-The reference run's version of this step: rows 1 and 3 are the data, rows 2 and 4 are the trained models, and each orange panel's title prints the $D_W$ and baseline this step computes. Your run worked when each orange panel has its blue panel's shape. The ring (top left, TV 0.18 against a baseline of 0.05) is the one that misses, with wider modes.
+**How to read this.** This is the reference run's version of this step: four rows of five panels, each panel the square from −1.1 to 1.1 on both axes. Rows 1 and 3, in blue, are 1000 samples from each of the ten datasets. The orange panel directly below each blue one is 1000 samples from the model trained on that dataset, drawn by reverse diffusion. Each orange title prints the total variation $D_W$ this step computes (0 means identical histograms) and, in brackets as "floor", the sampling-noise baseline: the value two independent 1000-sample draws from the data itself would give.
+
+**What to look for.** Your run worked when each orange panel has its blue panel's shape. Nine of the ten models sit within 0.05 of their baseline. The ring (top left, TV 0.18 against a baseline of 0.05) is the one that misses: its orange modes are visibly wider than the blue ones.
 
 **Definition.** The check uses a fixed window
 

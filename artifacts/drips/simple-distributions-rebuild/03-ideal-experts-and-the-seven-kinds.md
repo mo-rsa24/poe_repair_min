@@ -1737,6 +1737,71 @@ plt.tight_layout(); plt.savefig("step11-seven-kinds-exact.png"); plt.close()
 
 🧸 **Toy:** the notebook's printed curves. Co-occurrence at top edges 1.0, 0.8, 0.6, 0.5, 0.4, 0.3: `0.796, 0.818, 0.847, 0.718, 0.481, 0.116`. Contention at 0.5 to 0 rotated: `0.694, 0.664, 0.685, 0.684, 0.657, 0.002`. Interaction at f = 0.3 to 0: `-0.396, -0.394, -0.4, -0.39, -0.394, -0.215`. Negation in-bar mass at w = 0, 0.02, 0.05, 0.1, 0.3, 1: `0.146, 0.121, 0.085, 0.037, 0.0, 0.0`, and mass away from every mode `0.387, 0.384, 0.391, 0.439, 0.863, 1.0`. Your dials draw fresh data, so they move by up to about 0.08 from these where a curve is steep. The run behind this document printed co-occurrence `0.827, 0.833, 0.768, 0.746, 0.425, 0.097`, contention `0.647, 0.722, 0.688, 0.657, 0.687, 0.002` and interaction `-0.399, -0.401, -0.405, -0.391, -0.401, -0.17`. The shapes are the notebook's: a plateau, then a drop at the same dial value. `python -m rebuild.phase3_kinds` draws the notebook's own data and matches every printed value.
 
+🔤 **The name:** dial
+
+---
+
+#### The scene and its table
+
+Each of the four kinds keeps the experts, the composition rule and the measure it had in Steps 7, 8, 10 and 11. One number in how the training data is drawn is turned, the data is drawn again, and the exact measure is read again on the grid.
+
+<table>
+<tr><th>kind</th><th>the number turned</th><th>what is read</th><th>reading at the first setting</th><th>reading at the last setting</th></tr>
+<tr style="background:#fff8e1"><td><b>co-occurrence</b></td><td>top edge of A's bar, 1.0 down to 0.3</td><td>mass in the crossing</td><td style="border:2px solid #212121"><b>0.796</b></td><td style="border:2px dashed #212121"><b>0.116</b></td></tr>
+<tr><td>contention</td><td>share of examples rotated, 0.5 down to 0</td><td>mass with the two objects apart</td><td>0.694</td><td>0.002</td></tr>
+<tr><td>interaction</td><td>overlap share f, 0.3 down to 0</td><td>mean x<sub>1</sub> inside the band</td><td>−0.396</td><td>−0.215</td></tr>
+<tr><td>negation</td><td>weight w on B, 0 up to 1</td><td>ring mass inside the bar</td><td>0.146</td><td>0.0</td></tr>
+</table>
+
+**How to read this table.** Each row is one kind. The second column is the single number the dial turns, with the range it is turned over, and the last two columns are the exact measure at the two ends of that range, from the notebook's printed curves.
+
+**What to look for.** Every dial ends far from where it started. The highlighted row holds between 0.718 and 0.847 while A's bar reaches 0.5 or higher, then falls to 0.116 once the bar stops short of B's band.
+
+---
+
+#### The word: dial
+
+**What the word means.** A dial is a knob you turn to set one number while everything else stays as it was, like the volume on a radio. The plural in the step's name is the four knobs, one per kind.
+
+$$
+\underbrace{v}_{\text{dial setting}}
+\;\longmapsto\;
+\underbrace{\textcolor{#827717}{\mathcal D_A(v)},\ \textcolor{#546e7a}{\mathcal D_B(v)}}_{\text{training sets drawn at that setting}}
+\;\longmapsto\;
+\underbrace{\textcolor{#4527a0}{p_v}}_{\text{exact composition on the grid}}
+$$
+
+**What the equation says.** A setting fixes how the two training sets are drawn, and the two sets fix the exact composition, with nothing else changed between settings.
+
+**What it means.** On the co-occurrence row the knob is the top edge of A's vertical bar. B's band covers $0.4<x_2<0.8$, so the top edge decides how far A's training points reach into it.
+
+---
+
+#### All the words together: the formula
+
+A dial's reading is the kind's own measure, applied to the exact composition drawn at that setting.
+
+$$
+\underbrace{m(v)}_{\text{reading at setting }v}
+=
+\underbrace{\operatorname{measure}}_{\text{the kind's measure from Steps 7 to 11}}
+\Big(
+\underbrace{\textcolor{#4527a0}{p_v(g)}\,\Delta}_{\text{mass of each grid cell at setting }v}
+\Big)
+$$
+
+**What the equation says.** Turn the dial, redraw the data, recompute the exact grid, and apply the same measure as before. This is `measure_grid(measure, exact_grid(*make(v), compose))` in the code below.
+
+**Check it on the toy.** At top edge 1.0 the co-occurrence reading is 0.796, and at 0.3 it is 0.116.
+
+---
+
+#### The consequence: turn the co-occurrence dial past the band's edge
+
+**At top edge 0.5.** A's bar reaches 0.1 into B's band and the crossing holds 0.718 of the product.
+
+**At top edge 0.3.** The bar ends 0.1 below the band's lower edge at 0.4, so A's training data has no point in the crossing, and the reading falls to 0.116. The product cannot place an object where one expert's data never went.
+
 ```python
 for name, vals, make in [
         ("co-occurrence", [1.0, 0.8, 0.6, 0.5, 0.4, 0.3], lambda v: (vbar(N, 0.0, 0.2, -1.0, v), hbar(N, 0.6))),
@@ -1754,9 +1819,9 @@ for name, vals, make in [
 
 ## Step 13: the samplers on every kind
 
-<a href="../../../rebuild/out/phase3/figure1-every-sampler-on-every-kind.png"><img src="../../../rebuild/out/phase3/figure1-every-sampler-on-every-kind.png" width="200" alt="seven rows, one per kind of composition: the two experts, the exact composition, then perfect draws and each sampler's samples, each titled with its TV"></a>
+<a href="../../../toy/rebuild/out/phase3/figure1-every-sampler-on-every-kind.png"><img src="../../../toy/rebuild/out/phase3/figure1-every-sampler-on-every-kind.png" width="200" alt="seven rows, one per kind of composition: the two experts, the exact composition, then perfect draws and each sampler's samples, each titled with its TV"></a>
 
-<a href="../../../rebuild/out/phase3/figure1-every-sampler-on-every-kind.png"><img src="../../../rebuild/out/phase3/figure1-every-sampler-on-every-kind.png" width="760" alt="Seven rows, one per kind of composition. Each row shows expert A, expert B, the exact composition, perfect draws and the samples from every tested sampler, with total variation printed above sampler panels."></a>
+<a href="../../../toy/rebuild/out/phase3/figure1-every-sampler-on-every-kind.png"><img src="../../../toy/rebuild/out/phase3/figure1-every-sampler-on-every-kind.png" width="760" alt="Seven rows, one per kind of composition. Each row shows expert A, expert B, the exact composition, perfect draws and the samples from every tested sampler, with total variation printed above sampler panels."></a>
 
 **How to read this chart.** Rows are composition kinds. Within a row, read from the two input experts to the exact target, then compare each sample panel with that exact panel. A panel title's TV is the binned distance from the exact target, so smaller is closer.
 

@@ -1568,9 +1568,9 @@ print("abar 0.5: head mean, product of noised", round(nm[HEAD].mean(), 4), " noi
 
 ## Step 7: the samplers against exact draws
 
-<a href="../../../rebuild/out/phase4/parts-world-samplers-against-exact.png"><img src="../../../rebuild/out/phase4/parts-world-samplers-against-exact.png" width="200" alt="each sample's two half-means for the mosaic, the blend and co-occurrence, exact draws in purple beside each sampler in black, each titled with projected TV and weight error"></a>
+<a href="../../../toy/rebuild/out/phase4/parts-world-samplers-against-exact.png"><img src="../../../toy/rebuild/out/phase4/parts-world-samplers-against-exact.png" width="200" alt="each sample's two half-means for the mosaic, the blend and co-occurrence, exact draws in purple beside each sampler in black, each titled with projected TV and weight error"></a>
 
-<a href="../../../rebuild/out/phase4/parts-world-samplers-against-exact.png"><img src="../../../rebuild/out/phase4/parts-world-samplers-against-exact.png" width="620" alt="each sample's two half-means for the mosaic, the blend and co-occurrence, exact draws in purple beside each sampler in black, each titled with projected TV and weight error"></a>
+<a href="../../../toy/rebuild/out/phase4/parts-world-samplers-against-exact.png"><img src="../../../toy/rebuild/out/phase4/parts-world-samplers-against-exact.png" width="620" alt="each sample's two half-means for the mosaic, the blend and co-occurrence, exact draws in purple beside each sampler in black, each titled with projected TV and weight error"></a>
 
 **How to read this chart.** The horizontal and vertical axes are the two half-image means. Each point is one 16-pixel sample collapsed to those two numbers. Purple points are exact draws, while black points come from the named sampler.
 

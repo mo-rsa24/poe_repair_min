@@ -1501,7 +1501,7 @@ print("anneal_samplers MALA: variance", round(float(x.var()), 3), " mean accepta
 
 ## Step 7: one accept decision per sample
 
-<a href="../../../rebuild/out/phase2/mala-acceptance-per-sample.png"><img src="../../../rebuild/out/phase2/mala-acceptance-per-sample.png" width="200" alt="histograms of per-sample MALA acceptance on the product, mixture and negation: step 0.001 piles up near 0.95, tuned MALA spreads around 0.6"></a>
+<a href="../../../toy/rebuild/out/phase2/mala-acceptance-per-sample.png"><img src="../../../toy/rebuild/out/phase2/mala-acceptance-per-sample.png" width="200" alt="histograms of per-sample MALA acceptance on the product, mixture and negation: step 0.001 piles up near 0.95, tuned MALA spreads around 0.6"></a>
 
 What per-sample acceptance looks like once each sample decides for itself: one histogram per composition, samples on y, one sample's acceptance over its last 100 moves on x. At step 0.001 (blue) almost every sample accepts almost every move, and tuned MALA (orange) spreads around 0.6. A batch-wide decision would show one bar, not a spread.
 
@@ -2214,7 +2214,7 @@ The run behind this document printed: exact `0.713` (the clean composition), 100
 
 🎞️ **Moving picture:** `step09-ring-times-bar.png`, the four samplers side by side, read against the notebook's own [product picture](../../../toy/rebuild/out/phase2/reference/product-0.png), where green is the Metropolis-adjusted UHA and blue is reverse diffusion.
 
-<a href="../../../rebuild/out/phase2/product-mixture-negation-every-sampler.png"><img src="../../../rebuild/out/phase2/product-mixture-negation-every-sampler.png" width="200" alt="ring times bar, left plus right, and box(0.7) not box(0.3), each with its two experts, the exact composition and every sampler's samples"></a>
+<a href="../../../toy/rebuild/out/phase2/product-mixture-negation-every-sampler.png"><img src="../../../toy/rebuild/out/phase2/product-mixture-negation-every-sampler.png" width="200" alt="ring times bar, left plus right, and box(0.7) not box(0.3), each with its two experts, the exact composition and every sampler's samples"></a>
 
 **How to read this picture.** Each column is one composition. Within a column, compare the two expert shapes, the exact composed target and the point cloud produced by each sampler. In the top ring-times-bar column, a successful sampler concentrates near the two ring modes that lie inside the bar.
 
