@@ -126,13 +126,13 @@ def eps_and(models: dict, tok: "AndToken", st: dict, device, dtype, grad: bool) 
                               timestep_cond=None).sample.float()
 
 
-def share_removed(models, tok, device, dtype) -> dict[int, list[float]]:
-    """Per eval step, the share of the gap closed on each held-out cat x dog seed."""
-    pair, seeds = HELD_OUT
+def share_removed(models, tok, device, dtype, split="heldout", pair=None, seeds=None) -> dict[int, list[float]]:
+    """Per eval step, the share of the gap closed on each seed (held-out cat x dog unless a pair is given)."""
+    pair, seeds = (pair or HELD_OUT[0]), (seeds or HELD_OUT[1])
     out: dict[int, list[float]] = {}
     for step in EVAL_STEPS:
         for seed in seeds:
-            st = load_state("heldout", pair, seed, step, device)
+            st = load_state(split, pair, seed, step, device)
             target, gap = and_target(st)
             e = eps_and(models, tok, st, device, dtype, grad=False)
             out.setdefault(step, []).append(1 - ((e - target).norm() / gap.norm()).item())
@@ -226,10 +226,14 @@ JOINT = "a cat and a dog"
 def build_sheet(run_dir: Path, it: int, seeds: list[int]):
     """Columns: dog alone, cat alone, the joint prompt, PoE(cat, dog), PoE(cat, dog, <and>) after `it` updates;
     one row per seed."""
-    from PIL import Image, ImageDraw
-
     heads = ["a dog alone", "a cat alone", f'"{JOINT}"', "PoE(a cat, a dog)", f"PoE(a cat, a dog, <and>), {it} updates"]
     dirs = [run_dir / "tiles" / n for n in ("mono_a_dog", "mono_a_cat", "joint", "plain_poe", f"iter{it:05d}")]
+    return _sheet(heads, dirs, seeds, run_dir / f"sheet_iter{it:05d}.png")
+
+
+def _sheet(heads: list[str], dirs: list[Path], seeds: list[int], out: Path):
+    from PIL import Image, ImageDraw
+
     size, head, label = 256, 34, 70
     sheet = Image.new("RGB", (label + len(dirs) * size, head + len(seeds) * size), "white")
     d = ImageDraw.Draw(sheet)
@@ -240,8 +244,49 @@ def build_sheet(run_dir: Path, it: int, seeds: list[int]):
         for i, tdir in enumerate(dirs):
             sheet.paste(Image.open(tdir / f"seed{sd:02d}.png").convert("RGB").resize((size, size)),
                         (label + i * size, head + r * size))
-    sheet.save(run_dir / f"sheet_iter{it:05d}.png")
+    sheet.save(out)
     return sheet
+
+
+def pair_prompts(pair: str) -> tuple[str, str, str]:
+    """a_lion__x__a_meerkat -> 'a lion', 'a meerkat', 'a lion and a meerkat'."""
+    a, b = (p.replace("_", " ") for p in pair.split("__x__"))
+    return a, b, f"{a} and {b}"
+
+
+def pairs_sheet(run_dir: Path, it: int, specs: list[str], wandb_id: str | None) -> None:
+    """The five-column sheet and the share removed for other pairs, with the rows saved at update `it`.
+    Each spec is pair:split:seed,seed,... (split is train for a pool pair, heldout for a held-out one)."""
+    from poe_repair.run import make_ctx
+
+    ctx = make_ctx()
+    tok = AndToken(ctx.models)
+    saved = torch.load(run_dir / f"rows_iter{it:05d}.pt", map_location="cpu")
+    with torch.no_grad():
+        for row, new in zip(tok.rows, saved["rows"]):
+            row.copy_(new)
+    sheets = {}
+    for spec in specs:
+        pair, split, seed_txt = spec.split(":")
+        seeds = [int(s) for s in seed_txt.split(",")]
+        a, b, joint = pair_prompts(pair)
+        base = run_dir / "tiles_pairs" / pair
+        for name, pa, pb, third in (("mono_a", a, None, False), ("mono_b", b, None, False), ("joint", joint, None, False),
+                                    ("plain_poe", a, b, False), (f"iter{it:05d}", a, b, True)):
+            todo = [sd for sd in seeds if not (base / name / f"seed{sd:02d}.png").exists()]
+            if todo:
+                render_tiles(ctx, tok, pa, pb, todo, third, base / name)
+        heads = [f"{a} alone", f"{b} alone", f'"{joint}"', f"PoE({a}, {b})", f"PoE({a}, {b}, <and>), {it} updates"]
+        dirs = [base / n for n in ("mono_a", "mono_b", "joint", "plain_poe", f"iter{it:05d}")]
+        sheets[pair] = _sheet(heads, dirs, seeds, run_dir / f"sheet_{pair}_iter{it:05d}.png")
+        res = share_removed(ctx.models, tok, ctx.device, ctx.dtype, split, pair, seeds)
+        print(f"{pair} ({split}) seeds {seeds}, {it} updates, share removed: "
+              + "  ".join(f"step {st}: {sum(v) / len(v):+.3f}" for st, v in res.items()), flush=True)
+    if wandb_id:
+        import wandb
+        run = wandb.init(project="poe-repair-animals-compose", entity="prime_lab", id=wandb_id, resume="allow")
+        run.log({f"sheet_{p}": wandb.Image(sh, caption=f"{p}, {it} updates") for p, sh in sheets.items()}, step=it)
+        run.finish()
 
 
 def render_references(ctx, tok, run_dir: Path, seeds: list[int]) -> None:
@@ -380,7 +425,12 @@ if __name__ == "__main__":
     ap.add_argument("--iters", nargs="*", type=int, default=[0, 500, 1000, 1500, 2000])
     ap.add_argument("--wandb-id")
     ap.add_argument("--render-seeds", nargs="*", type=int, default=[])
+    ap.add_argument("--pairs-sheet", type=Path, metavar="RUN_DIR")
+    ap.add_argument("--iter", type=int, default=8000)
+    ap.add_argument("--pairs", nargs="*", default=[], metavar="PAIR:SPLIT:SEEDS")
     args = ap.parse_args()
+    if args.pairs_sheet:
+        pairs_sheet(args.pairs_sheet, args.iter, args.pairs, args.wandb_id)
     if args.grid:
         grid(args.grid, args.iters, args.render_seeds or list(HELD_OUT[1]), args.wandb_id)
     if args.train:
