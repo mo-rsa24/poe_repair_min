@@ -7,10 +7,12 @@ hook on each encoder's token embedding writes them into the fp16 activations, so
 through the frozen encoders and the frozen UNet.
 
     python scripts/learned_and_token.py --check-token      "<and>" must encode exactly as "and" does
+    python scripts/learned_and_token.py --baseline         held-out share removed with the untrained token
 """
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import sys
 from pathlib import Path
@@ -21,6 +23,11 @@ REPO = Path(os.environ.get("POE_REPO", Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "scripts"))
 
+CACHE = Path(os.environ.get("POE_REPAIR_TRAINING_CACHE",
+                            "/datasets/mmolefe/poe_repair_min/artifacts/caches/training_cache"))
+POOL = REPO / "artifacts/_shared/cross_pair_pool_configs/cells_v58.json"
+HELD_OUT = ("a_cat__x__a_dog", (9, 10, 11, 12, 13, 14, 15, 16))
+EVAL_STEPS = (0, 10, 25, 40)
 TOKEN = "<and>"
 WORD = "and"
 ENCODERS = (("tokenizer", "text_encoder"), ("tokenizer_2", "text_encoder_2"))
@@ -80,6 +87,69 @@ class AndToken:
         return embeds, pooled.to(dtype)
 
 
+def pool_cells() -> list[tuple[str, int]]:
+    """The 182 (pair, seed) training cells, refusing cat x dog and any held-out seed."""
+    cells = [(pair, seed) for pair, seeds in json.loads(POOL.read_text()).items() for seed in seeds]
+    assert HELD_OUT[0] not in {p for p, _ in cells}, "cat x dog is in the pool"
+    assert not {s for _, s in cells} & set(HELD_OUT[1]), "a held-out seed is in the pool"
+    for pair, seed in cells:
+        assert (CACHE / "train" / pair / f"seed_{seed}" / "residuals").is_dir(), f"{pair} seed {seed} not cached"
+    return cells
+
+
+def load_state(split: str, pair: str, seed: int, step: int, device) -> dict:
+    """One cached state: x_t, its timestep and the four raw predictions, in fp32 on the device."""
+    raw = torch.load(CACHE / split / pair / f"seed_{seed}" / "residuals" / f"step_{step:03d}.pt",
+                     map_location="cpu", weights_only=True)
+    return {k: (v.to(device) if k == "timestep" else v.to(device).float()) if torch.is_tensor(v) else v
+            for k, v in raw.items()}
+
+
+def and_target(st: dict) -> tuple[torch.Tensor, torch.Tensor]:
+    """What eps_<and> must equal, and the gap it has to close (guided joint minus PoE, over w)."""
+    target = st["eps_j_raw"] + 2 * st["eps_uncond"] - st["eps_a_raw"] - st["eps_b_raw"]
+    return target, target - st["eps_uncond"]
+
+
+def eps_and(models: dict, tok: "AndToken", st: dict, device, dtype, grad: bool) -> torch.Tensor:
+    from poe_repair.methods._sampling import add_time_ids
+
+    seq, pool = tok.encode(TOKEN, device=device, dtype=dtype, grad=grad)
+    cond = {"text_embeds": pool, "time_ids": add_time_ids(height=1024, width=1024, batch_size=1,
+                                                          device=device, dtype=dtype)}
+    t = torch.as_tensor(st["timestep"], device=device)
+    with torch.set_grad_enabled(grad):
+        return models["unet"](st["x_t"].to(dtype), t, encoder_hidden_states=seq, added_cond_kwargs=cond,
+                              timestep_cond=None).sample.float()
+
+
+def share_removed(models, tok, device, dtype) -> dict[int, list[float]]:
+    """Per eval step, the share of the gap closed on each held-out cat x dog seed."""
+    pair, seeds = HELD_OUT
+    out: dict[int, list[float]] = {}
+    for step in EVAL_STEPS:
+        for seed in seeds:
+            st = load_state("heldout", pair, seed, step, device)
+            target, gap = and_target(st)
+            e = eps_and(models, tok, st, device, dtype, grad=False)
+            out.setdefault(step, []).append(1 - ((e - target).norm() / gap.norm()).item())
+    return out
+
+
+def baseline() -> None:
+    from poe_repair.run import make_ctx
+
+    cells = pool_cells()
+    print(f"pool: {len(cells)} cells over {len({p for p, _ in cells})} pairs; no cat x dog, no seed 9 to 16",
+          flush=True)
+    ctx = make_ctx()
+    tok = AndToken(ctx.models)
+    res = share_removed(ctx.models, tok, ctx.device, ctx.dtype)
+    for step, v in res.items():
+        print(f"step {step:2d}: share removed per seed 9..16 = " + " ".join(f"{x:+.3f}" for x in v)
+              + f"   mean {sum(v) / len(v):+.3f}", flush=True)
+
+
 def check_token() -> None:
     from poe_repair.run import make_ctx
 
@@ -106,6 +176,9 @@ def check_token() -> None:
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--check-token", action="store_true")
+    ap.add_argument("--baseline", action="store_true")
     args = ap.parse_args()
     if args.check_token:
         check_token()
+    if args.baseline:
+        baseline()
