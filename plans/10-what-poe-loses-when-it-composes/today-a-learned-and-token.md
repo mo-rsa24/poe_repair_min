@@ -102,12 +102,16 @@ fast-forwarded to the committed branch. Every path on a launch line is absolute,
 
 ### 4. 🔧 The 2,000-step run (AI, hours, unattended)
 
-- [ ] **Launch** under `nohup`, logging node, device and PID in the header, and report the held-out share
-  removed every 500 steps.
-- [ ] **Apply** [the stop rule](#the-test-written-before-any-render).
+- [x] **Launch** under `nohup`, logging node, device and PID in the header, and report the held-out share
+  removed every 500 steps. ✓ ran 2026-10-28, mscluster109 device 0, log `.../logs/run1.log`. Held-out mean
+  share removed at steps 0, 10, 25, 40: −0.125, +0.012, −0.023, −0.037 at 500 updates; −0.070, +0.008,
+  −0.018, −0.037 at 2,000.
+- [x] **Apply** [the stop rule](#the-test-written-before-any-render). ✓ fired: every step's mean is under
+  10% after 2,000 updates (best single step mean +0.012).
 
 ### 5. 🖼️ The card, the renders and the calls (AI, then you)
 
+- [ ] 🕒 **Not run: the stop rule fired at step 4, so no render is made.**
 - [ ] **Copy** [the test](#the-test-written-before-any-render) into the run's results card before any tile
   is rendered.
 - [ ] **Render** both sets and build the sheets as
