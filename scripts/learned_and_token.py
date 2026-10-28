@@ -45,6 +45,7 @@ class AndToken:
         self.rows = torch.nn.ParameterList()
         self.override: list[torch.Tensor] | None = None  # rows written by `hyper` for the bound pair
         self.hyper: "HyperRows | None" = None
+        self.gate: "LoraGate | None" = None  # set when a LoRA is attached to the UNet
         for tok_key, enc_key in ENCODERS:
             tok, enc = models[tok_key], models[enc_key]
             if tok.add_tokens([TOKEN]) != 1:
@@ -122,6 +123,45 @@ class HyperRows(torch.nn.Module):
         return [base + d for base, d in zip(self.base, self.U(self.V(f)).split(self.dims))]
 
 
+class LoraGate:
+    """One shared switch: the LoRA acts only while `on`, so only the third expert's forward pass uses it."""
+    on = False
+
+
+class LoraLinear(torch.nn.Module):
+    """A frozen Linear plus a rank-r update, added only while the gate is on."""
+
+    def __init__(self, base: torch.nn.Linear, rank: int, gate: LoraGate) -> None:
+        super().__init__()
+        self.base, self.gate = base, gate
+        dev = base.weight.device
+        self.A = torch.nn.Parameter(torch.randn(rank, base.in_features, device=dev) / base.in_features ** 0.5)
+        self.B = torch.nn.Parameter(torch.zeros(base.out_features, rank, device=dev))
+
+    def forward(self, x):
+        y = self.base(x)
+        if self.gate.on:
+            y = y + ((x.float() @ self.A.t()) @ self.B.t()).to(y.dtype)
+        return y
+
+
+def add_lora(tok: "AndToken", rank: int) -> list[torch.nn.Parameter]:
+    """Wrap every cross-attention key and value projection of the UNet; return the new parameters."""
+    tok.gate = LoraGate()
+    params = []
+    for name, mod in list(tok.models["unet"].named_modules()):
+        for leaf in ("to_k", "to_v"):
+            if name.endswith("attn2") and isinstance(getattr(mod, leaf, None), torch.nn.Linear):
+                wrapped = LoraLinear(getattr(mod, leaf), rank, tok.gate)
+                setattr(mod, leaf, wrapped)
+                params += [wrapped.A, wrapped.B]
+    return params
+
+
+def lora_state(tok: "AndToken") -> dict[str, torch.Tensor]:
+    return {n: p.detach().cpu() for n, p in tok.models["unet"].named_parameters() if n.endswith((".A", ".B"))}
+
+
 def pool_cells() -> list[tuple[str, int]]:
     """The 182 (pair, seed) training cells, refusing cat x dog and any held-out seed."""
     cells = [(pair, seed) for pair, seeds in json.loads(POOL.read_text()).items() for seed in seeds]
@@ -158,9 +198,15 @@ def eps_and(models: dict, tok: "AndToken", st: dict, device, dtype, grad: bool, 
     cond = {"text_embeds": pool, "time_ids": add_time_ids(height=1024, width=1024, batch_size=1,
                                                           device=device, dtype=dtype)}
     t = torch.as_tensor(st["timestep"], device=device)
-    with torch.set_grad_enabled(grad):
-        return models["unet"](st["x_t"].to(dtype), t, encoder_hidden_states=seq, added_cond_kwargs=cond,
-                              timestep_cond=None).sample.float()
+    if tok.gate:
+        tok.gate.on = True
+    try:
+        with torch.set_grad_enabled(grad):
+            return models["unet"](st["x_t"].to(dtype), t, encoder_hidden_states=seq, added_cond_kwargs=cond,
+                                  timestep_cond=None).sample.float()
+    finally:
+        if tok.gate:
+            tok.gate.on = False
 
 
 def share_removed(models, tok, device, dtype, split="heldout", pair=None, seeds=None,
@@ -201,6 +247,21 @@ def report(tag: str, res: dict[int, list[float]]) -> bool:
     return all(m < 0.10 for m in means.values())
 
 
+def _unet_eps(tok, unet, x, t, seq, cond, n, third: bool) -> torch.Tensor:
+    """One batched UNet call, or, with a LoRA, the third expert (index n - 2) alone with the LoRA on."""
+    run = lambda ix: unet(x[ix], t, encoder_hidden_states=seq[ix], timestep_cond=None,
+                          added_cond_kwargs={k: v[ix] for k, v in cond.items()}).sample
+    if not (third and tok.gate):
+        return unet(x, t, encoder_hidden_states=seq, added_cond_kwargs=cond, timestep_cond=None).sample
+    others = [k for k in range(n) if k != n - 2]
+    out = torch.empty_like(x)
+    out[others] = run(others)
+    tok.gate.on = True
+    out[[n - 2]] = run([n - 2])
+    tok.gate.on = False
+    return out
+
+
 def render_tiles(ctx, tok, a: str, b: str | None, seeds: list[int], third: bool | str, out_dir: Path) -> list[Path]:
     """PoE(a, b) or PoE(a, b, third) per seed (third is True for the bare token, or the third expert's prompt), the loop and noise of scripts/and_vector_sheet.py."""
     from concept_pair_sheet import NOISE_PAIR
@@ -235,8 +296,7 @@ def render_tiles(ctx, tok, a: str, b: str | None, seeds: list[int], third: bool 
         lat = (init / sigma).to(device=device, dtype=dtype)
         with torch.no_grad():
             for i, t in enumerate(sched.timesteps):
-                eps = unet(sched.scale_model_input(lat.repeat(n, 1, 1, 1), t), t, encoder_hidden_states=seq,
-                           added_cond_kwargs=cond, timestep_cond=None).sample
+                eps = _unet_eps(tok, unet, sched.scale_model_input(lat.repeat(n, 1, 1, 1), t), t, seq, cond, n, bool(third))
                 e_u = eps[-1:]
                 eg = e_u + w * sum(eps[k:k + 1] - e_u for k in range(n - 1))
                 abar = sched.alphas_cumprod[int(t.item())].to(device=device, dtype=dtype)
@@ -297,7 +357,7 @@ def pair_prompts(pair: str) -> tuple[str, str, str]:
 
 
 def pairs_sheet(run_dir: Path, it: int, specs: list[str], wandb_id: str | None, in_sentence: bool = False,
-                hyper_rank: int = 0) -> None:
+                hyper_rank: int = 0, lora_rank: int = 0) -> None:
     """The five-column sheet and the share removed for other pairs, with the rows saved at update `it`.
     Each spec is pair:split:seed,seed,... (split is train for a pool pair, heldout for a held-out one)."""
     from poe_repair.run import make_ctx
@@ -308,6 +368,12 @@ def pairs_sheet(run_dir: Path, it: int, specs: list[str], wandb_id: str | None, 
     with torch.no_grad():
         for row, new in zip(tok.rows, saved["rows"]):
             row.copy_(new)
+    if saved.get("lora"):
+        add_lora(tok, lora_rank)
+        with torch.no_grad():
+            for n, p in tok.models["unet"].named_parameters():
+                if n in saved["lora"]:
+                    p.copy_(saved["lora"][n])
     if saved.get("hyper"):
         tok.hyper = HyperRows(tok, hyper_rank)
         tok.hyper.load_state_dict(saved["hyper"])
@@ -364,7 +430,7 @@ def grid(run_dir: Path, iters: list[int], seeds: list[int], wandb_id: str | None
 
 
 def train(steps: int, eval_at: list[int], lr: float, name: str, seed: int, use_wandb: bool,
-          render_seeds: list[int], in_sentence: bool = False, hyper_rank: int = 0) -> None:
+          render_seeds: list[int], in_sentence: bool = False, hyper_rank: int = 0, lora_rank: int = 0, lora_lr: float = 1e-4) -> None:
     from poe_repair.run import make_ctx
 
     out = Path("/datasets/mmolefe/poe_repair_min/outputs/learned_and_token") / name
@@ -381,7 +447,12 @@ def train(steps: int, eval_at: list[int], lr: float, name: str, seed: int, use_w
         for r in tok.rows:
             r.requires_grad_(False)
     trainable = list(tok.hyper.parameters()) if tok.hyper else list(tok.rows)
-    opt = torch.optim.Adam(trainable, lr=lr)
+    groups = [{"params": trainable, "lr": lr}]
+    if lora_rank:
+        lora_params = add_lora(tok, lora_rank)
+        groups.append({"params": lora_params, "lr": lora_lr})
+        trainable = trainable + lora_params
+    opt = torch.optim.Adam(groups)
     rng = random.Random(seed)
     print(f"train: {len(cells)} cells, {steps} steps, lr {lr}, evals at {eval_at}, out {out}", flush=True)
     run_wb = None
@@ -390,7 +461,8 @@ def train(steps: int, eval_at: list[int], lr: float, name: str, seed: int, use_w
         run_wb = wandb.init(project="poe-repair-animals-compose", entity="prime_lab", name=f"learned-and-{name}",
                             group="learned-and-token", config={"steps": steps, "lr": lr, "pool": POOL.name,
                             "cells": len(cells), "held_out": HELD_OUT[0], "render_seeds": render_seeds,
-                            "in_sentence": in_sentence, "hyper_rank": hyper_rank})
+                            "in_sentence": in_sentence, "hyper_rank": hyper_rank, "lora_rank": lora_rank,
+                            "lora_lr": lora_lr})
         print(f"wandb run {run_wb.id} {run_wb.url}", flush=True)
     A, B = "a cat", "a dog"
 
@@ -439,7 +511,8 @@ def train(steps: int, eval_at: list[int], lr: float, name: str, seed: int, use_w
         if it in eval_at or it == steps:
             fired = evaluate(it)
             torch.save({"rows": [r.detach().cpu() for r in tok.rows], "ids": tok.ids, "iter": it,
-                        "hyper": tok.hyper.state_dict() if tok.hyper else None},
+                        "hyper": tok.hyper.state_dict() if tok.hyper else None,
+                        "lora": lora_state(tok) if tok.gate else None},
                        out / f"rows_iter{it:05d}.pt")
             if it == steps:
                 print(f"stop rule (every step's mean under 10% after {steps} steps): {fired}", flush=True)
@@ -485,16 +558,19 @@ if __name__ == "__main__":
     ap.add_argument("--render-seeds", nargs="*", type=int, default=[])
     ap.add_argument("--in-sentence", action="store_true", help="third expert is 'A <and> B', not the bare token")
     ap.add_argument("--hyper-rank", type=int, default=0, help="rows written from the pair by a rank-r network")
+    ap.add_argument("--lora-rank", type=int, default=0, help="LoRA on the UNet cross-attention keys and values, third expert only")
+    ap.add_argument("--lora-lr", type=float, default=1e-4)
     ap.add_argument("--pairs-sheet", type=Path, metavar="RUN_DIR")
     ap.add_argument("--iter", type=int, default=8000)
     ap.add_argument("--pairs", nargs="*", default=[], metavar="PAIR:SPLIT:SEEDS")
     args = ap.parse_args()
     if args.pairs_sheet:
-        pairs_sheet(args.pairs_sheet, args.iter, args.pairs, args.wandb_id, args.in_sentence, args.hyper_rank)
+        pairs_sheet(args.pairs_sheet, args.iter, args.pairs, args.wandb_id, args.in_sentence, args.hyper_rank, args.lora_rank)
     if args.grid:
         grid(args.grid, args.iters, args.render_seeds or list(HELD_OUT[1]), args.wandb_id)
     if args.train:
-        train(args.steps, args.eval_at, args.lr, args.name, args.seed, args.wandb, args.render_seeds, args.in_sentence, args.hyper_rank)
+        train(args.steps, args.eval_at, args.lr, args.name, args.seed, args.wandb, args.render_seeds, args.in_sentence, args.hyper_rank,
+              args.lora_rank, args.lora_lr)
     if args.check_token:
         check_token()
     if args.baseline:
