@@ -4,7 +4,7 @@
 
 **Why it is run.** This is the check claim 2 of the [overlap-dial idea map](../../ideas/poe-overlap-dial/IDEA_MAP.md) was waiting for.
 
-**What it ends with.** It ends with the curves in `rebuild/out/phase5/overlap-dial-curves.png` and `finetune-curves.png`. The reference is `rebuild/phase5_dial.py` and `rebuild/phase5_finetune.py` on branch `unbuild-walk`.
+**What it ends with.** It ends with the curves in `rebuild/out/phase5/overlap-dial-curves.png` and `finetune-curves.png`. The reference is `rebuild/phase5_dial.py` and `rebuild/phase5_finetune.py` in `toy/` (`toy/rebuild/` for the package).
 
 **How to walk it.** `/drip-execute-plan artifacts/drips/simple-distributions-rebuild/05-the-overlap-dial.md`, one step per message, typing every block yourself. The python blocks, typed in order into `walk05.py` in `/home-mscluster/mmolefe/Playground/PhD/simple-distributions-walk/`, are one runnable script. Phases 1 to 4 are imported from the reference from here on.
 

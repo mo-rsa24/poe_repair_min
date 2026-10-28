@@ -4,7 +4,7 @@
 
 **What you build, and when it ends.** On that footing you build the seven kinds of composition on the paper's toy data, one dial each. It ends when your exact numbers match the kinds notebook's Figure 1 and Figure 2.
 
-**The reference code.** The reference is `rebuild/ideal.py`, `rebuild/kinds.py` and `rebuild/phase3_kinds.py` on branch `unbuild-walk`.
+**The reference code.** The reference is `rebuild/ideal.py`, `rebuild/kinds.py` and `rebuild/phase3_kinds.py` in `toy/` (`toy/rebuild/` for the package).
 
 **How to walk it.** `/drip-execute-plan artifacts/drips/simple-distributions-rebuild/03-ideal-experts-and-the-seven-kinds.md`, one step per message, typing every block yourself. The python blocks, typed in order into `walk03.py` in `/home-mscluster/mmolefe/Playground/PhD/simple-distributions-walk/`, are one runnable script.
 
