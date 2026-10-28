@@ -161,7 +161,67 @@ def report(tag: str, res: dict[int, list[float]]) -> bool:
     return all(m < 0.10 for m in means.values())
 
 
-def train(steps: int, eval_every: int, lr: float, name: str, seed: int) -> None:
+def render_tiles(ctx, tok, a: str, b: str, seeds: list[int], third: bool, out_dir: Path) -> list[Path]:
+    """PoE(a, b) or PoE(a, b, "<and>") per seed, the loop and noise of scripts/and_vector_sheet.py."""
+    from concept_pair_sheet import NOISE_PAIR
+    from poe_repair.composers._helpers import init_latents_for_cell
+    from poe_repair.experiments.interaction_term.cell import cell_from_slug
+    from poe_repair.methods._sampling import add_time_ids, write_decoded_image
+    from poe_repair.runtime import (ddim_prev_from_x0_eps, decode_latents, encode_prompt_sdxl,
+                                    tweedie_mean)
+
+    m, device, dtype, sched, w = ctx.models, ctx.device, ctx.dtype, ctx.scheduler, ctx.guidance_scale
+    enc = lambda q: encode_prompt_sdxl(q, models=m, device=device, dtype=dtype)
+    embs = [enc(a), enc(b)] + ([tok.encode(TOKEN, device=device, dtype=dtype, grad=False)] if third else [])
+    embs.append(enc(""))
+    seq = torch.cat([e for e, _ in embs]).to(dtype)
+    pool = torch.cat([q for _, q in embs]).to(dtype)
+    n = len(embs)
+    unet = m["unet"]
+    was_training = unet.training
+    unet.eval()
+    paths = []
+    out_dir.mkdir(parents=True, exist_ok=True)
+    for seed in seeds:
+        path = out_dir / f"seed{seed:02d}.png"
+        paths.append(path)
+        cell = cell_from_slug(NOISE_PAIR, seed)
+        init, sigma = init_latents_for_cell(cell, ctx)
+        cond = {"text_embeds": pool, "time_ids": add_time_ids(height=cell.height, width=cell.width,
+                                                              batch_size=n, device=device, dtype=dtype)}
+        sched.set_timesteps(ctx.num_inference_steps)
+        lat = (init / sigma).to(device=device, dtype=dtype)
+        with torch.no_grad():
+            for i, t in enumerate(sched.timesteps):
+                eps = unet(sched.scale_model_input(lat.repeat(n, 1, 1, 1), t), t, encoder_hidden_states=seq,
+                           added_cond_kwargs=cond, timestep_cond=None).sample
+                e_u = eps[-1:]
+                eg = e_u + w * sum(eps[k:k + 1] - e_u for k in range(n - 1))
+                abar = sched.alphas_cumprod[int(t.item())].to(device=device, dtype=dtype)
+                lat = ddim_prev_from_x0_eps(scheduler=sched, timestep=t, step_index=i,
+                                            x0=tweedie_mean(lat, abar, eg), eps=eg)
+            write_decoded_image(decode_latents(m, lat).cpu(), path)
+        torch.cuda.empty_cache()
+    unet.train(was_training)
+    return paths
+
+
+def contact_sheet(paths: list[Path], seeds: list[int], title: str, out: Path, size: int = 320):
+    from PIL import Image, ImageDraw
+
+    pad = 26
+    sheet = Image.new("RGB", (len(paths) * size, size + pad), "white")
+    draw = ImageDraw.Draw(sheet)
+    draw.text((6, 6), title, fill="black")
+    for i, (pth, sd) in enumerate(zip(paths, seeds)):
+        sheet.paste(Image.open(pth).convert("RGB").resize((size, size)), (i * size, pad))
+        draw.text((i * size + 6, pad + 4), f"seed {sd}", fill="white")
+    sheet.save(out)
+    return sheet
+
+
+def train(steps: int, eval_every: int, lr: float, name: str, seed: int, use_wandb: bool,
+          render_seeds: list[int]) -> None:
     from poe_repair.run import make_ctx
 
     out = Path("/datasets/mmolefe/poe_repair_min/outputs/learned_and_token") / name
@@ -176,7 +236,38 @@ def train(steps: int, eval_every: int, lr: float, name: str, seed: int) -> None:
     opt = torch.optim.Adam(tok.rows.parameters(), lr=lr)
     rng = random.Random(seed)
     print(f"train: {len(cells)} cells, {steps} steps, lr {lr}, eval every {eval_every}, out {out}", flush=True)
-    report("step 0", share_removed(models, tok, device, dtype))
+    run_wb = None
+    if use_wandb:
+        import wandb
+        run_wb = wandb.init(project="poe-repair-animals-compose", entity="prime_lab", name=f"learned-and-{name}",
+                            group="learned-and-token", config={"steps": steps, "lr": lr, "pool": POOL.name,
+                            "cells": len(cells), "held_out": HELD_OUT[0], "render_seeds": render_seeds})
+        print(f"wandb run {run_wb.id} {run_wb.url}", flush=True)
+    A, B = "a cat", "a dog"
+
+    def evaluate(it: int) -> bool:
+        res = share_removed(models, tok, device, dtype)
+        fired = report(f"iter {it}", res)
+        if run_wb:
+            run_wb.log({f"held_out_share/step{st}": sum(v) / len(v) for st, v in res.items()}, step=it)
+        if render_seeds:
+            import wandb
+            tiles = render_tiles(ctx, tok, A, B, render_seeds, True, out / "tiles" / f"iter{it:05d}")
+            sheet = contact_sheet(tiles, render_seeds, f"PoE({A!r}, {B!r}, '<and>'), after {it} updates",
+                                  out / f"sheet_iter{it:05d}.png")
+            if run_wb:
+                table = wandb.Table(columns=["iter", "seed", "render"])
+                for sd, pth in zip(render_seeds, tiles):
+                    table.add_data(it, sd, wandb.Image(str(pth)))
+                run_wb.log({"sheet": wandb.Image(sheet), "renders": table}, step=it)
+        return fired
+
+    evaluate(0)
+    if render_seeds:  # plain PoE of the same two prompts, the reference row
+        ref = render_tiles(ctx, tok, A, B, render_seeds, False, out / "tiles" / "plain_poe")
+        refsheet = contact_sheet(ref, render_seeds, f"plain PoE({A!r}, {B!r})", out / "sheet_plain_poe.png")
+        if run_wb:
+            run_wb.log({"sheet_plain_poe": wandb.Image(refsheet)}, step=0)
     t0, run = time.time(), []
     for it in range(1, steps + 1):
         pair, cell_seed = rng.choice(cells)
@@ -191,13 +282,16 @@ def train(steps: int, eval_every: int, lr: float, name: str, seed: int) -> None:
         else:
             print(f"iter {it}: non-finite gradient, step skipped", flush=True)
         run.append(sq.mean().item())
+        if run_wb:
+            run_wb.log({"loss": run[-1], "row_norm_1": tok.rows[0].norm().item(),
+                        "row_norm_2": tok.rows[1].norm().item()}, step=it)
         if it % 10 == 0:
             print(f"iter {it}: loss (mean squared error per element) {sum(run[-10:]) / 10:.5f}, "
                   f"rows' norms {[round(r.norm().item(), 4) for r in tok.rows]}, "
                   f"peak memory {torch.cuda.max_memory_allocated() / 2**30:.1f} GiB, "
                   f"{time.time() - t0:.0f} s", flush=True)
         if eval_every and it % eval_every == 0 or it == steps:
-            fired = report(f"iter {it}", share_removed(models, tok, device, dtype))
+            fired = evaluate(it)
             torch.save({"rows": [r.detach().cpu() for r in tok.rows], "ids": tok.ids, "iter": it},
                        out / f"rows_iter{it:05d}.pt")
             if it == steps:
@@ -237,9 +331,11 @@ if __name__ == "__main__":
     ap.add_argument("--lr", type=float, default=1e-3)
     ap.add_argument("--name", default="run")
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--wandb", action="store_true")
+    ap.add_argument("--render-seeds", nargs="*", type=int, default=[])
     args = ap.parse_args()
     if args.train:
-        train(args.steps, args.eval_every, args.lr, args.name, args.seed)
+        train(args.steps, args.eval_every, args.lr, args.name, args.seed, args.wandb, args.render_seeds)
     if args.check_token:
         check_token()
     if args.baseline:
