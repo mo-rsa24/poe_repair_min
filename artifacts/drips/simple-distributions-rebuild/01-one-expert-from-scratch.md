@@ -755,6 +755,10 @@ $$
 
 <a href="../../results/how-the-forward-process-dissolves-an-image/the-schedule-name-taken-apart.png"><img src="../../results/how-the-forward-process-dissolves-an-image/the-schedule-name-taken-apart.png" width="200" alt="Six scene frames: posts 49 to 53 as bars as tall as their kept share with C51 = 0.47826; cos squared against the angle with drops 0.067 at the ends and 0.25 in the middle; the straight line that drops 0.167 every 15 degrees; delta = 0.008 moving post 0 from 0 to 0.714 degrees; and the normaliser on (C0 = 1) and off (C0 reads 0.99984)"></a>
 
+**How to read this.** Six frames from the scene, one per name in the formula. Top left shows posts 49 to 53 as bars as tall as the share each one keeps. Top middle and top right plot the kept share against the angle θ from 0° to 90°, with an orange tick for the drop over each 15°: the green curve is cos², the red line is the straight-line alternative. Bottom left puts the first three posts on a degree ruler, with dashed ticks where they sit when δ = 0. Bottom middle and bottom right are the bars that build C₅₁ and C₀, with the normaliser on and then off.
+
+**What to look for.** Post 51 keeps 0.47826 of the signal's variance. The cos² curve drops only 0.067 over the first and last 15° and 0.25 in the middle, while the straight line drops 0.167 every 15°. The offset δ = 0.008 moves post 0 from 0° to 0.714°, and without the normaliser C₀ reads 0.99984 instead of 1.
+
 <a id="step4-the-quarter-circle-by-hand"></a>**✏️ On paper 1: the plane and the quarter circle.**
 
 1. Draw the x-axis to the right and the y-axis up, meeting at the origin O.
@@ -766,6 +770,10 @@ $$
 **On the scene.** [The point on the plane](https://claude.ai/artifact/X7QGLTxssbz41G7iTiRxC9#timetable-plane) draws the arc with one point on it.
 
 <a href="../../results/how-the-forward-process-dissolves-an-image/the-point-on-the-quarter-circle.png"><img src="../../results/how-the-forward-process-dissolves-an-image/the-point-on-the-quarter-circle.png" width="200" alt="Six quarter-circle frames at post 51: the point (0.6915, 0.7224) at distance 1 from the origin, its two legs cos theta and sin theta against the dog and noise multipliers, the arc of 0.8072 radians at 46.25 degrees, the 101 posts on the arc, points every 15 degrees, and cos squared against the angle with drops 0.067, 0.183, 0.25, 0.25, 0.183, 0.067"></a>
+
+**How to read this.** Six frames of the quarter circle of radius 1, with x and y each running from 0 to 1 and the teal point at post 51 in the first five. The blue segment along the x-axis is cos θ and the orange vertical line is sin θ. The bottom right frame plots cos² θ against the angle, with an orange tick for the drop over each 15°.
+
+**What to look for.** Post 51 sits at (0.6915, 0.7224), exactly 1 from the origin, at 46.25° or 0.8072 rad along the arc. Its two legs are the dog's multiplier 0.6915 and the noise's multiplier 0.7224. The drops per 15° run 0.067, 0.183, 0.25, 0.25, 0.183, 0.067, so the turn removes the least signal at its two ends.
 
 **✏️ On paper 2: polar coordinates, one line from the origin.**
 
@@ -908,6 +916,10 @@ alphas_cumprod = np.cos(((x / timesteps) + s) / (1 + s) * np.pi * 0.5) ** 2
 
 <a href="../../results/how-the-forward-process-dissolves-an-image/where-each-post-position-comes-from.png"><img src="../../results/how-the-forward-process-dissolves-an-image/where-each-post-position-comes-from.png" width="200" alt="Two rows of frames: the paper line with post 0 at 0.714 degrees and post 100 on 90 degrees, C_k falling to C100 = 0, and rebuild/model.py line 16 with each piece labelled; below, the divide by (1 + delta) switched off putting post 100 at 90.72 degrees and C100 = 0.000158, and T = 1000 spacing the posts 0.0893 degrees apart"></a>
 
+**How to read this.** The top row is the paper's line: the 101 posts as ticks on the quarter circle, the kept share C_k against the position u = k/T from 0 to 1, and line 16 of `rebuild/model.py` with each code name braced under its symbol. The bottom row repeats the circle and the curve with the divide by (1 + δ) switched off, and adds a degree ruler of the first 3° at T = 1000, where dashed ticks mark the paper's posts at T = 100.
+
+**What to look for.** With the divide by (1 + δ) in place, post 100 lands on 90.00° and C₁₀₀ = 0. With it off, post 100 overshoots to 90.72° and C₁₀₀ reads 0.000158, so a trace of the signal is left at the last post. At T = 1000 the posts sit 0.0893° apart, 26 of them in the first 3°.
+
 **✏️ On paper 5: play with the quarter turn.**
 
 1. Put the point at 0°, 15°, 30°, 45°, 60°, 75° and 90° and read x² each time: 1, 0.933, 0.75, 0.5, 0.25, 0.067, 0.
@@ -973,8 +985,6 @@ $$
 
 **Why the offset is there.** The value $\delta=0.008$ shifts the cosine slightly before rescaling. The obvious alternative is to start post 0 at exactly 0°, but near 0° cos² is flat: [its slope](../../../../../goal-setting/learning/mathematics/textbooks/calculus/calculus-handbook.pdf#page=19) is
 
-<a href="../../results/how-the-forward-process-dissolves-an-image/why-the-offset-and-the-normaliser.png"><img src="../../results/how-the-forward-process-dissolves-an-image/why-the-offset-and-the-normaliser.png" width="200" alt="Five frames: cos squared with tangent slopes -0.0249 at post 0 and -0.9990 at post 51; the chain rule worked to -2 cos theta sin theta; square root of beta0 as bars, 0.0157 at delta 0, 0.0251 at delta 0.008 and 0.0064 at T = 1000, against one pixel bin of 0.0078; and beta50 = 1 - 0.47819/0.49377 = 0.0315 with both 0.99984 normalisers struck through"></a>
-
 $$
 \frac{d}{d\theta}\cos^2\theta
 =
@@ -984,6 +994,12 @@ $$
 $$
 
 which is 0 at 0°. At post 0's angle, 0.714° or 0.0125 rad, the slope is only −0.0249 per radian, against −0.9990 at 46.25°. So with δ = 0 the first step would barely add noise: post 1 sits at 0.9° and $C_1=\cos^2 0.9^\circ=0.99975$, the first noise share is 0.000247 and its typical miss is 0.0157. With the offset, $\beta_0$ is 0.000631 and the first noise level is 0.0251. Nichol and Dhariwal give the reason in [section 3.2, p. 4](https://arxiv.org/pdf/2102.09672#page=4): they use the offset "to prevent βt from being too small near t = 0", because tiny amounts of noise at the start made it hard for the network to predict ε accurately. They chose s so that $\sqrt{\beta_0}$ is slightly smaller than the pixel bin size 1/127.5 = 0.0078, which gives s = 0.008. That choice was made for long schedules: at T = 1000 the formula gives $\sqrt{\beta_0}=0.0064$, just under one bin, while this page's T = 100 gives 0.0251, about 3.2 bins. Live: [Timetable 5](https://claude.ai/artifact/X7QGLTxssbz41G7iTiRxC9#timetable-5), presets δ = 0 and δ = 0.008, and [why the offset, by the chain rule](https://claude.ai/artifact/X7QGLTxssbz41G7iTiRxC9#timetable-why-offset), with both tangent lines drawn.
+
+<a href="../../results/how-the-forward-process-dissolves-an-image/why-the-offset-and-the-normaliser.png"><img src="../../results/how-the-forward-process-dissolves-an-image/why-the-offset-and-the-normaliser.png" width="200" alt="Five frames: cos squared with tangent slopes -0.0249 at post 0 and -0.9990 at post 51; the chain rule worked to -2 cos theta sin theta; square root of beta0 as bars, 0.0157 at delta 0, 0.0251 at delta 0.008 and 0.0064 at T = 1000, against one pixel bin of 0.0078; and beta50 = 1 - 0.47819/0.49377 = 0.0315 with both 0.99984 normalisers struck through"></a>
+
+**How to read this.** Top left plots cos² θ against θ in radians from 0 to 1.5708 (90°), with a red tangent line at post 0 and another at post 51. Top middle works the chain rule on cos² θ and evaluates it at both posts. Top right draws √β₀, the typical size of the first step's noise, as one bar per setting, against a dotted line at one pixel bin of 0.0078. The bottom row works β₅₀ as a fraction with the normaliser 0.99984 struck from top and bottom, then shows the same division as bars.
+
+**What to look for.** The slope is −0.0249 per radian at post 0 against −0.9990 at post 51, so near 0° the curve barely falls. √β₀ is 0.0157 with δ = 0, 0.0251 with δ = 0.008 and 0.0064 at T = 1000. The two 0.99984s cancel, which leaves β₅₀ = 1 − 0.47819/0.49377 = 0.0315.
 
 **Why division by $1+\delta$ is there.** After adding the offset, this denominator keeps the final boundary at the end of the quarter turn. Removing it would [shift the endpoint as well as the start](#step4-dropping-the-rescale).
 
@@ -996,8 +1012,6 @@ which is 0 at 0°. At post 0's angle, 0.714° or 0.0125 rad, the slope is only �
 3. Write $\beta_t=1-C_{t+1}/C_t$ with both C's as fractions. $\cos^2\theta_0$ sits on top and on the bottom.
 
 **Consequence.** The denominator is one fixed number for every post, so it stretches the whole curve by the same 1.00016 to make post 0 read exactly 1. It cancels in every β, so it never changes how much noise a step adds. At t = 50:
-
-<a href="../../results/how-the-forward-process-dissolves-an-image/one-boundary-term-by-term.png"><img src="../../results/how-the-forward-process-dissolves-an-image/one-boundary-term-by-term.png" width="200" alt="Boundary k = 51 worked in seven underbraced terms ending at C51 = 0.47826, beside two bar panels: divide by cos squared theta0 on gives 0.47826, off reads 0.47819, and beta50 = 0.031546 both ways"></a>
 
 $$
 \beta_{50}
@@ -1014,6 +1028,12 @@ $$
 $$
 
 **On the scene.** [One boundary, term by term](https://claude.ai/artifact/X7QGLTxssbz41G7iTiRxC9#timetable-one-boundary) walks the formula in seven steps (k/T, + δ, ÷ (1 + δ), × π/2, cos, the square, ÷ cos²θ₀). It draws the numerator, denominator and ratio as three bars, with a switch that drops the denominator: switched off, $C_0$ reads 0.99984 and β₅₀ stays 0.031546. [The normaliser cancels](https://claude.ai/artifact/X7QGLTxssbz41G7iTiRxC9#timetable-normaliser-cancels) strikes the two 0.99984s out of β₅₀ one step at a time.
+
+<a href="../../results/how-the-forward-process-dissolves-an-image/one-boundary-term-by-term.png"><img src="../../results/how-the-forward-process-dissolves-an-image/one-boundary-term-by-term.png" width="200" alt="Boundary k = 51 worked in seven underbraced terms ending at C51 = 0.47826, beside two bar panels: divide by cos squared theta0 on gives 0.47826, off reads 0.47819, and beta50 = 0.031546 both ways"></a>
+
+**How to read this.** The left panel runs boundary k = 51 through the formula in seven braced terms, from the position 51/100 to C₅₁. The two bar panels show the top cos² θ₅₁, the bottom cos² θ₀ and their ratio C₅₁, first with the division by cos² θ₀ on (green) and then off (red), with β₅₀ worked under each.
+
+**What to look for.** Dividing by 0.99984 moves C₅₁ from 0.47819 to 0.47826, a change of 0.0155%, and β₅₀ is 0.031546 either way.
 
 <a id="step4-four-posts-by-hand"></a>**Four posts by hand.** Each line runs the position, the angle, the cosine, its square and the division. In general, for post k:
 
@@ -1746,9 +1766,9 @@ At $t=50$ the score is $(-0.4153,\,1.6613)$. [Step 5](#step-5-the-noise-is-the-s
 
 <a href="../../results/how-the-forward-process-dissolves-an-image/the-consequence-page-at-t50.png"><img src="../../results/how-the-forward-process-dissolves-an-image/the-consequence-page-at-t50.png" width="200" alt="The scene first page at t = 50: the formula with 0.6916 the dog and 0.7223 the noise, the noisy dog image x50, the dog plus noise equals x50 row, a chart of the two multipliers and their variance shares against step t, and beta per step on a log scale with beta50 = 0.0315"></a>
 
-**How to read this.** The left image is one row of five photos: the same dog and the same noise draw at t = 0, 25, 50, 75 and 99, with the kept share ᾱ and the dog's and the noise's multipliers printed under each. The right image is three columns, each a different version of the formula: every piece on at t = 50, the square roots removed at t = 50, and ᾱ written where 1 − ᾱ belongs at t = 75. Under each of those photos a chart has step t on the x-axis and the coefficient on the y-axis: blue is the dog's multiplier, orange the noise's, the dotted lines their variance shares, and the dashed line the total variance.
+**How to read this.** The left image is one row of five photos: the same dog and the same noise draw at t = 0, 25, 50, 75 and 99, with the kept share ᾱ and the dog's and the noise's multipliers printed under each. The right image is three columns, each a different version of the formula: every piece on at t = 50, the square roots removed at t = 50, and ᾱ written where 1 − ᾱ belongs at t = 75. Under each of those photos a chart has step t on the x-axis and the coefficient on the y-axis: blue is the dog's multiplier, orange the noise's, the dotted lines their variance shares, and the dashed line the total variance. The image below them is the scene's first page at t = 50: the formula with its two multipliers, the noisy dog x₅₀ built as dog plus noise, a chart of the two multipliers and their variance shares against step t, and β per step against t on a log scale.
 
-**What to look for.** The row is the table above on a photo: at t = 50 the dog is still visible at scale 0.6916, though only 0.4783 of its variance is left. In the three columns, follow the dashed total-variance line. With every piece on it stays at 1.0000. Without the square roots it dips to 0.4783² + 0.5217² = 0.5009 at t = 50, so the middle steps go grey. With ᾱ in place of 1 − ᾱ, both scales are 0.3654 at t = 75 and the total is 0.2670, so the dog fades to grey and never becomes noise.
+**What to look for.** The row is the table above on a photo: at t = 50 the dog is still visible at scale 0.6916, though only 0.4783 of its variance is left. In the three columns, follow the dashed total-variance line. With every piece on it stays at 1.0000. Without the square roots it dips to 0.4783² + 0.5217² = 0.5009 at t = 50, so the middle steps go grey. With ᾱ in place of 1 − ᾱ, both scales are 0.3654 at t = 75 and the total is 0.2670, so the dog fades to grey and never becomes noise. On the first page at t = 50 the dog is multiplied by 0.6916 and the noise by 0.7223, the total variance reads 1.0000, and that step adds β₅₀ = 0.0315, about 50 times the first step's β₀ = 0.000631 on the log-scale chart.
 
 <!-- links: step4/consequence rev=2 -->
 🔗 **Where else this lives**
