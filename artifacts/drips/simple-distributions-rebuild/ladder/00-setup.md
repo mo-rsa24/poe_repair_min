@@ -26,7 +26,7 @@ In a terminal on the cluster:
 ```bash
 mkdir -p ~/Playground/PhD/simple-distributions-walk
 cd ~/Playground/PhD/simple-distributions-walk
-export PYTHONPATH=/home-mscluster/mmolefe/PhD/reduce-reuse-recycle
+export PYTHONPATH=/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -c "import torch, rebuild.model; print('torch', torch.__version__, 'cuda', torch.cuda.is_available())"
 ```
 
@@ -40,7 +40,7 @@ artifacts/drips/simple-distributions-rebuild/: quiz 0, quiz 1.1 and quiz 1.2.
 
 Task: for each quiz, first dispatch prep-cadence (quiz-prep-pulse --build) with the goal and minutes
 below, then dispatch quiz-cadence (mode build, repo
-/home-mscluster/mmolefe/PhD/reduce-reuse-recycle). The goal for all three is "derive the ε-score
+/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain). The goal for all three is "derive the ε-score
 identity and train one 2D expert".
 - Quiz 0, --minutes 90: the college maths under the whole ladder. Logs and exponents, the chain
   rule, the Gaussian density and completing the square, mean and variance under scaling and under
@@ -55,6 +55,7 @@ artifacts/drips/simple-distributions-rebuild/ladder/01-one-diffusion-expert.md a
 line; quiz 1.2 takes it from
 artifacts/drips/simple-distributions-rebuild/01-one-expert-from-scratch.md.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - quiz-cadence stops when a quiz has no coverage file in .quiz-prep/, so prep-cadence runs first for
   each quiz (quiz-cadence, "The preparation gate").
 - The step file 01-one-expert-from-scratch.md already links a textbook page beside each fundamental

@@ -39,7 +39,7 @@ in artifacts/drips/simple-distributions-rebuild/: quiz 3.1 and quiz 3.2.
 
 Task: for each quiz, first dispatch prep-cadence (quiz-prep-pulse --build) with the goal and minutes
 below, then dispatch quiz-cadence (mode build, repo
-/home-mscluster/mmolefe/PhD/reduce-reuse-recycle). The goal for both is "build the ideal expert and
+/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain). The goal for both is "build the ideal expert and
 grade every composition against an exact target".
 - Quiz 3.1, --minutes 40: the college maths under layer 3. Convolving a density with a Gaussian,
   kernel density estimates, softmax weights over training points.
@@ -53,6 +53,7 @@ of artifacts/drips/simple-distributions-rebuild/ladder/03-ideal-experts-and-the-
 quiz 3.2 takes it from
 artifacts/drips/simple-distributions-rebuild/03-ideal-experts-and-the-seven-kinds.md.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - quiz-cadence stops when a quiz has no coverage file in .quiz-prep/, so prep-cadence runs first for
   each quiz (quiz-cadence, "The preparation gate").
 - The step file links a textbook page beside each fundamental it uses and carries timestamped video
@@ -135,6 +136,7 @@ Starts from: quiz 3.1 passed; any question it marked missed becomes a first rung
 drip folder under artifacts/drips/ holds my notation for the two constructions and the summed
 scores.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The ideal expert of x_1, …, x_N at smoothing σ is p_σ(x) = (1/N)Σ N(x; x_i, σ²I), a Gaussian
   kernel density estimate with bandwidth σ (step file 03, step 1).
 - Write the training set as p̂_0(x) = (1/N)Σ δ(x − x_i). Gaussian corruption of variance σ² gives
@@ -199,12 +201,13 @@ Task: walk the step file one step per message in its order, steps 0 to 13, teach
 (disjunction) and 9 (dominance). I type every block myself into
 ~/Playground/PhD/simple-distributions-walk/walk03.py and run it from that folder with
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python and
-PYTHONPATH=/home-mscluster/mmolefe/PhD/reduce-reuse-recycle.
+PYTHONPATH=/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy.
 Starts from: the setup's folder and environment; walk02.py from layer 2; quiz 3.2 passed; the layer
 3 --math drip folder under artifacts/drips/, whose dispatch.md holds my notation.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The reference is rebuild/ideal.py, rebuild/kinds.py and rebuild/phase3_kinds.py; every worked
-  number prints from python -m rebuild.walk_numbers, run from the repo root, as 25 p3. keys; the
+  number prints from python -m rebuild.walk_numbers, run from toy/, as 25 p3. keys; the
   kinds notebook's printed numbers are in
   artifacts/ideas/poe-overlap-dial/kinds-of-composition-on-the-papers-toys.ipynb, and the rebuilt
   run beside them in rebuild/out/phase3/phase3.json (step file 03, opening).
@@ -279,12 +282,13 @@ and UHA do not
 Task: cut run 2 into 4 to 6 pieces, write the step file at the open, and build, teach and test one
 piece per round. I type every block into walk03b.py and run it with
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python and
-PYTHONPATH=/home-mscluster/mmolefe/PhD/reduce-reuse-recycle.
+PYTHONPATH=/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy.
 Starts from: walk03.py from step 4a, whose exact grid, perfect-sample baseline, kinds and dials run
 2 reuses;
 walk02c.py from layer 2, whose tuned MALA it reuses; the notebook named above, whose printed run 2
 table is the answer key.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - Run 2 runs three kinds at the steep points of Figure 2, where a sampler's error and the data's
   limit could be mistaken for each other: co-occurrence with A's top edge at 0.4, contention with 5%
   of each set rotated, interaction at 2% overlap (notebook, cell 17).
@@ -335,7 +339,7 @@ dropped: "samplers that reach the floor", since one perfect draw is random and n
 ### 5. You: compare your numbers with the reference
 
 ```bash
-cd /home-mscluster/mmolefe/PhD/reduce-reuse-recycle
+cd /home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -m rebuild.walk_numbers | grep 'p3\.'
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -m rebuild.phase3_kinds --out ~/Playground/PhD/simple-distributions-walk/phase3-reference
 cd ~/Playground/PhD/simple-distributions-walk
@@ -357,6 +361,7 @@ layer 3 --math drip folder under artifacts/drips/, the step file the --request w
 wrote at its open, and the retrospectives the two layer 3 walks closed on.
 
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The reference sets to link against are the vault notes, journey plans and textbook chapter on
   the Study first line of
   artifacts/drips/simple-distributions-rebuild/ladder/03-ideal-experts-and-the-seven-kinds.md,

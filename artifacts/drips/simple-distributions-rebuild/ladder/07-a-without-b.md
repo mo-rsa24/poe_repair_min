@@ -44,9 +44,9 @@ the ring at w = 0.3 (0.863 expected), the w where A-without-B peaks, and the pos
 per w. Add those numbers to rebuild/walk_numbers.py as phase7() with keys p7.*, and run it once with
 the co3 python.
 
-Task: in /home-mscluster/mmolefe/PhD/reduce-reuse-recycle, on the current branch, write
+Task: in /home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy, on the current branch, write
 rebuild/negation.py (the negation target and the positive-label target for each toy) and
-rebuild/phase7_negation.py (the dial), run from the repo root as python -m rebuild.phase7_negation
+rebuild/phase7_negation.py (the dial), run from toy/ as python -m rebuild.phase7_negation
 with /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python. In this order:
 1. Reproduce the kinds notebook's negation dial on the ring and the bar, exact on the grid
    (ideal.exact_grid with kinds.negation(w)), at w = 0, 0.02, 0.05, 0.1, 0.3 and 1.0, by replaying
@@ -70,6 +70,7 @@ Starts from: nothing before it in this layer. The reference for layers 1 to 5 is
 outputs in rebuild/out/phase1 to phase5; layer 6's reference (rebuild/phase6_guidance.py) may
 already have added p6. keys.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The brick: the pneumothorax target p(x|PTX)^(1+w)/p(x|drain)^w; exact mass in the A-without-B
   cell (quadrant: bottom-left; parts world: cat with no dog) against w, per sampler, in
   rebuild/negation.py and rebuild/phase7_negation.py; reproduce first: in-bar mass 0.146 at w = 0,
@@ -116,7 +117,7 @@ Settled facts:
 - walk_numbers.py holds worked-example numbers, each written by put(key, value); run results
   (masses and total variations per sampler) are read from rebuild/out/phaseN/ instead. Its __main__
   runs (phase1, phase2, phase3, phase5) and writes rebuild/out/walk-numbers.json by a relative path,
-  so it runs from the repo root (rebuild/walk_numbers.py).
+  so it runs from toy/ (rebuild/walk_numbers.py).
 - Tolerances: a dial value to the 3 decimals printed, as rebuild/phase3_kinds.py checks Figure 2; a
   sampler number within 0.03 (rebuild/phase3_kinds.py).
 - rebuild.device.pick_device takes the first card with under 1 GB in use, else the CPU
@@ -162,7 +163,7 @@ without B stays a density".
 
 Task: for each quiz, first dispatch prep-cadence (quiz-prep-pulse --build) with the goal and minutes
 below, then dispatch quiz-cadence (mode build, repo
-/home-mscluster/mmolefe/PhD/reduce-reuse-recycle).
+/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain).
 - Quiz 7.1, --minutes 40: the college maths under layer 7. The quotient of two Gaussians, when an
   integral over the real line converges.
 - Quiz 7.2, --minutes 60: layer 7 itself. When (1 + w) log p_A − w log p_B stays a proper density,
@@ -173,6 +174,7 @@ file, the "A without B (negation)" row of the Bricks table in
 artifacts/drips/simple-distributions-rebuild/REBUILD_WALK.md, and the idea-map claims below. Layer
 7 has no step file yet; its build writes one (step 6 of the ladder file).
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - quiz-cadence stops when a quiz has no coverage file in .quiz-prep/, so prep-cadence runs first for
   each quiz (quiz-cadence, "The preparation gate", as step 2 of ladder/00-setup.md states).
 - pdftotext is not installed on mscluster, so
@@ -238,6 +240,7 @@ stays bounded where dividing by the drain expert does not
 
 Starts from: quiz 7.1 passed; any question it marked missed becomes a first rung.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - For Gaussians, q_a/q_b^α is a density only while 1/v_a − α/v_b > 0: a negative power subtracts
   precision (vault notes Product, Mixture And Negation and Powers Of Gaussians).
 - Where p_B → 0, p_B^(−w) → ∞, so negation pushes mass toward wherever B is least likely, not just
@@ -292,11 +295,12 @@ artifacts/drips/simple-distributions-rebuild/07-a-without-b.md, in the shape of 
 layers 1 to 5; then build, teach and test one piece per round. I run walk07.py from
 ~/Playground/PhD/simple-distributions-walk/ with
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python and
-PYTHONPATH=/home-mscluster/mmolefe/PhD/reduce-reuse-recycle.
+PYTHONPATH=/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy.
 Starts from: quiz 7.2 passed; the layer 7 --math drip folder under artifacts/drips/, whose
 dispatch.md holds my notation (step 4); rebuild/negation.py, rebuild/phase7_negation.py, the p7.
 keys and rebuild/out/phase7/phase7.json (step 1).
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The w grid, the p7. keys, phase7.json and the function in rebuild/negation.py that returns the
   replayed ring and bar are step 1's; walk07.py imports that function and uses the same grid (from
   step 1).
@@ -368,7 +372,7 @@ dropped: nothing
 **Compare.** `python -m rebuild.walk_numbers` prints the `p7.` keys; your `walk07.py` prints the same numbers.
 
 ```bash
-cd /home-mscluster/mmolefe/PhD/reduce-reuse-recycle
+cd /home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -m rebuild.walk_numbers | grep 'p7\.'
 cd ~/Playground/PhD/simple-distributions-walk
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python walk07.py
@@ -385,6 +389,7 @@ a slider, the in-bar modes vanishing and the mass escaping, beside the bounded p
 Starts from: the layer 7 --math drip folder and its dispatch.md (step 4's hand-off); the p7. keys
 and rebuild/out/phase7/phase7.json (step 1).
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The ring and bar: 8 ring modes of std 0.03 at radius 0.5, a bar of half-width 0.2, ideal experts
   smoothed by 0.05 (rebuild/kinds.py).
 - On that pair the exact mass on the 2 in-bar modes is 0.146, 0.121, 0.085, 0.037, 0.0, 0.0 at
@@ -422,6 +427,7 @@ artifacts/drips/simple-distributions-rebuild/07-a-without-b.md, and the retrospe
 walk closed on.
 
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The reference sets to link against are the vault notes on the Study first line of
   artifacts/drips/simple-distributions-rebuild/ladder/07-a-without-b.md; the "A without B
   (negation)" row of the Bricks table in

@@ -46,13 +46,14 @@ B's blob.
 
 Task: for each quiz, first dispatch prep-cadence (quiz-prep-pulse --build) with the goal, minutes
 and topics above, then dispatch quiz-cadence (mode build, repo
-/home-mscluster/mmolefe/PhD/reduce-reuse-recycle). Every path below is from that repo's root.
+/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain). Every path below is from that repo's root, except code paths, which are under toy/.
 Starts from: the miss ledger (quiz-ledger) of every earlier quiz on this ladder. Quiz 5.1 takes its
 material from artifacts/drips/simple-distributions-rebuild/ladder/05-the-overlap-dial.md and its
 Study first line; quiz 5.2 takes it from
 artifacts/drips/simple-distributions-rebuild/05-the-overlap-dial.md, steps 0 to 8, and from step 4
 of the ladder file (the answer key) and its optional Z step.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - quiz-cadence stops when a quiz has no coverage file in
   artifacts/drips/simple-distributions-rebuild/.quiz-prep/, so prep-cadence runs first for each
   quiz (quiz-cadence, "The preparation gate").
@@ -145,6 +146,7 @@ why the product weights shared places most, and what fine-tuning does to inherit
 
 Starts from: quiz 5.1 passed; any question it marked missed becomes a first rung.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The quadrant toy: A is the left half, B the top half, A∩B the top-left quadrant; each expert
   holds 800 points, a share f of them in A∩B, smoothed by σ = 0.05 (step file 05, step 1). Each
   point lands in A∩B independently with probability f, so A has 8 points there on average at 1%
@@ -214,10 +216,11 @@ answer-key numbers listed under step 4 of
 artifacts/drips/simple-distributions-rebuild/ladder/05-the-overlap-dial.md inside the same walk. I
 run walk05.py from ~/Playground/PhD/simple-distributions-walk/ with
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python and
-PYTHONPATH=/home-mscluster/mmolefe/PhD/reduce-reuse-recycle.
+PYTHONPATH=/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy.
 Starts from: the setup's folder and environment; walk04.py from layer 4; quiz 5.2 passed; the
 layer 5 --math drip folder under artifacts/drips/, whose dispatch.md holds my notation.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The reference is rebuild/phase5_dial.py and rebuild/phase5_finetune.py; their results are
   rebuild/out/phase5/overlap-dial.json and finetune.json, printed as tables by
   python -m rebuild.phase5_tables, and the worked numbers are p5. keys of
@@ -353,11 +356,11 @@ The closed form is `p5.mass_within_3sd_2d_half_variance`, and the grid gives `0.
 **Compare.** `python -m rebuild.walk_numbers` prints the `p5.` keys, and `rebuild/out/phase5/` holds the curves; your `walk05.py` prints the same numbers.
 
 ```bash
-cd /home-mscluster/mmolefe/PhD/reduce-reuse-recycle
+cd /home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -m rebuild.walk_numbers | grep 'p5\.'
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -m rebuild.phase5_tables
 cd ~/Playground/PhD/simple-distributions-walk
-export PYTHONPATH=/home-mscluster/mmolefe/PhD/reduce-reuse-recycle
+export PYTHONPATH=/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python walk05.py
 ```
 
@@ -394,7 +397,7 @@ $$
 The two smaller values are `p5.Z_next_door_by_hand` and `p5.Z_opposite_by_hand`. Then compute it with the answer key's grid (one blob of std 0.15 for each expert, a 441 × 441 grid over [−1.1, 1.1]², Z the sum of the product times the cell area), then compare:
 
 ```bash
-cd /home-mscluster/mmolefe/PhD/reduce-reuse-recycle
+cd /home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -c "import json; s = json.load(open('artifacts/scenes/three-ways-a-product-reaches-a-and-b/scene_key.json'))['support']; [print('B at', k, 'Z', f\"{s[k]['Z']:.3g}\", 'origin share', round(s[k]['at_origin'], 3)) for k in ('TL', 'TR', 'BR')]"
 ```
 
@@ -407,13 +410,14 @@ cd /home-mscluster/mmolefe/PhD/reduce-reuse-recycle
 ```text
 /results-scene rebuild/out/phase5/
 
-Starts from: rebuild/out/phase5/ in /home-mscluster/mmolefe/PhD/reduce-reuse-recycle:
+Starts from: rebuild/out/phase5/ in /home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy:
 overlap-dial.json (per seed and overlap, the exact whole-quadrant and deep masses, the
 exact-sample TV floor, and each sampler's masses and TV), finetune.json, dial.log, finetune.log,
 and the figures overlap-dial-curves.png, overlap-dial-quadrant-pictures.png, finetune-curves.png
 and finetune-pictures.png; the layer 5 --math drip folder and its dispatch.md (step 2's
 hand-off), for my notation.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - python -m rebuild.phase5_tables prints the three tables every number on the scene comes from:
   the quadrant toy over 8 overlaps and 3 seeds, the parts world over 7 overlaps and two background
   variances, and the fine-tune variant over 8 checkpoints plus experts trained from scratch
@@ -465,6 +469,7 @@ In the background, dispatch xref-cadence over the files layer 5 of the compositi
 layer 5 --math drip folder under artifacts/drips/ and the retrospective the layer 5 walk closed on.
 
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The reference sets to link against are:
   - the Study first line of
     artifacts/drips/simple-distributions-rebuild/ladder/05-the-overlap-dial.md: the vault notes

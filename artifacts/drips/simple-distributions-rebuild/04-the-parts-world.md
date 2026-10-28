@@ -1839,7 +1839,7 @@ The full table, with 2000 samples per sampler, runs with `python -m rebuild.phas
 ## Step 8: the check against numbers.json
 
 ```python
-ref = json.load(open("/home-mscluster/mmolefe/PhD/reduce-reuse-recycle/artifacts/ideas/poe-overlap-dial/example-9-parts-world/numbers.json"))
+ref = json.load(open("/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/artifacts/ideas/poe-overlap-dial/example-9-parts-world/numbers.json"))
 mine = {"a.head_mean": m_a[HEAD].mean(), "a.logZ": logZ_a, "b.logZ": logZ_b, "b.product_sd": math.sqrt(v_b[0]),
         "c.cat-left x dog-right.weight": w[1], "c.cat-left x dog-left.logw_unnorm": lw[0],
         "d.head_mean_product_of_noised": nm[HEAD].mean()}

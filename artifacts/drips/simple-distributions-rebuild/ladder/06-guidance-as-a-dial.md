@@ -44,9 +44,9 @@ rebuild/parts_world.py, printing A∩B share, total variation and Z per w and th
 parts-world blend appears. Add those numbers to rebuild/walk_numbers.py as phase6() with keys p6.*,
 and run it once with the co3 python.
 
-Task: in /home-mscluster/mmolefe/PhD/reduce-reuse-recycle, on the current branch, write
+Task: in /home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy, on the current branch, write
 rebuild/guidance.py (the guided target as a function of w, for both toys) and
-rebuild/phase6_guidance.py (the dial), run from the repo root as python -m rebuild.phase6_guidance
+rebuild/phase6_guidance.py (the dial), run from toy/ as python -m rebuild.phase6_guidance
 with /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python. Write the guided target
 p(x)·p(A|x)^w·p(B|x)^w in code as (1 − 2w)·log p(x) + w·log p(x, A) + w·log p(x, B).
 - Quadrant toy: the four-quadrant answer-key toy, in closed form on ideal.py's 241 × 241 grid
@@ -66,6 +66,7 @@ p(x)·p(A|x)^w·p(B|x)^w in code as (1 − 2w)·log p(x) + w·log p(x, A) + w·l
 Starts from: nothing before it in this layer. The reference for layers 1 to 5 is in rebuild/ and its
 outputs in rebuild/out/phase1 to phase5.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The brick: the target p(x)·p(A|x)^w·p(B|x)^w computed exactly on the quadrant toy and the parts
   world for w = 1 to 7.5, with A∩B share, total variation and Z per w, in rebuild/guidance.py and
   rebuild/phase6_guidance.py (REBUILD_WALK.md, brick "Guidance as a tilted density").
@@ -114,7 +115,7 @@ Settled facts:
 - walk_numbers.py holds worked-example numbers, each written by put(key, value); run results
   (masses and total variations per sampler) are read from rebuild/out/phaseN/ instead. Its __main__
   runs (phase1, phase2, phase3, phase5) and writes rebuild/out/walk-numbers.json by a relative path,
-  so it runs from the repo root (rebuild/walk_numbers.py).
+  so it runs from toy/ (rebuild/walk_numbers.py).
 - Tolerances: an exact number within 0.005, a sampler number within 0.03
   (rebuild/phase3_kinds.py).
 - rebuild.device.pick_device takes the first card with under 1 GB in use, else the CPU
@@ -158,7 +159,7 @@ guided target exactly and find where the blend appears".
 
 Task: for each quiz, first dispatch prep-cadence (quiz-prep-pulse --build) with the goal and minutes
 below, then dispatch quiz-cadence (mode build, repo
-/home-mscluster/mmolefe/PhD/reduce-reuse-recycle).
+/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain).
 - Quiz 6.1, --minutes 40: the college maths under layer 6. Raising a density to a power and
   renormalising, Bayes' rule p(A|x) ∝ p(x|A)p(A).
 - Quiz 6.2, --minutes 60: layer 6 itself. Classifier-free guidance as p(x)·p(A|x)^w·p(B|x)^w, what
@@ -169,6 +170,7 @@ from that file, the "Guidance as a tilted density" row of the Bricks table in
 artifacts/drips/simple-distributions-rebuild/REBUILD_WALK.md, and the idea-map claims below. Layer
 6 has no step file yet; its build writes one (step 6 of the ladder file).
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - quiz-cadence stops when a quiz has no coverage file in .quiz-prep/, so prep-cadence runs first for
   each quiz (quiz-cadence, "The preparation gate", as step 2 of ladder/00-setup.md states).
 - pdftotext is not installed on mscluster, so
@@ -227,6 +229,7 @@ guidance as p(x)·p(A|x)^w·p(B|x)^w, worked on the quadrant toy's ideal experts
 
 Starts from: quiz 6.1 passed; any question it marked missed becomes a first rung.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - Raising a Gaussian to the power w multiplies its precision by w, so q_a^(w_a)·q_b^(w_b) is a
   Gaussian with precision w_a/v_a + w_b/v_b while that stays positive (vault note Powers Of
   Gaussians).
@@ -279,11 +282,12 @@ artifacts/drips/simple-distributions-rebuild/06-guidance-as-a-dial.md, in the sh
 files for layers 1 to 5; then build, teach and test one piece per round. I run walk06.py from
 ~/Playground/PhD/simple-distributions-walk/ with
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python and
-PYTHONPATH=/home-mscluster/mmolefe/PhD/reduce-reuse-recycle.
+PYTHONPATH=/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy.
 Starts from: quiz 6.2 passed; the layer 6 --math drip folder under artifacts/drips/, whose
 dispatch.md holds my notation (step 4); rebuild/guidance.py, rebuild/phase6_guidance.py, the p6.
 keys and rebuild/out/phase6/phase6.json (step 1).
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The w grid, the p6. keys and phase6.json are step 1's; walk06.py uses the same grid (from step 1).
 - The brick: the target p(x)·p(A|x)^w·p(B|x)^w computed exactly on the quadrant toy and the parts
   world for w = 1 to 7.5, with A∩B share, total variation and Z per w (REBUILD_WALK.md, brick
@@ -348,7 +352,7 @@ dropped: "the walk finds the w where the parts-world blend appears" as a certain
 **Compare.** `python -m rebuild.walk_numbers` prints the `p6.` keys the AI lane added; your `walk06.py` prints the same numbers.
 
 ```bash
-cd /home-mscluster/mmolefe/PhD/reduce-reuse-recycle
+cd /home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -m rebuild.walk_numbers | grep 'p6\.'
 cd ~/Playground/PhD/simple-distributions-walk
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python walk06.py
@@ -365,6 +369,7 @@ the quadrant toy and the parts world as w moves from 1 to 7.5
 Starts from: the layer 6 --math drip folder and its dispatch.md (step 4's hand-off); the p6. keys
 and rebuild/out/phase6/phase6.json (step 1).
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The quadrant toy is the four-quadrant answer-key toy: blobs at (±0.5, ±0.5), std 0.15, A is
   x1 > 0, B is x2 > 0; at w = 1 it puts 0.989 within 3 std of the top-right blob, with Z = r
   (artifacts/ideas/when-poe-reaches-a-and-b/runs/answer-key-quadrants/README.md).
@@ -401,6 +406,7 @@ artifacts/drips/simple-distributions-rebuild/06-guidance-as-a-dial.md, and the r
 layer 6 walk closed on.
 
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The reference sets to link against are the journey plans and vault notes on the Study first line
   of artifacts/drips/simple-distributions-rebuild/ladder/06-guidance-as-a-dial.md; the "Guidance as
   a tilted density" row of the Bricks table in

@@ -45,12 +45,13 @@ weight w_ij ∝ π_i ρ_j N(μ_i; ν_j, Σ_i + Λ_j), the summed-score error at 
 
 Task: for each quiz, first dispatch prep-cadence (quiz-prep-pulse --build) with the goal, minutes
 and topics above, then dispatch quiz-cadence (mode build, repo
-/home-mscluster/mmolefe/PhD/reduce-reuse-recycle). Every path below is from that repo's root.
+/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain). Every path below is from that repo's root, except code paths, which are under toy/.
 Starts from: the miss ledger (quiz-ledger) of every earlier quiz on this ladder. Quiz 4.1 takes its
 material from artifacts/drips/simple-distributions-rebuild/ladder/04-the-parts-world.md and its
 Study first line; quiz 4.2 takes it from
 artifacts/drips/simple-distributions-rebuild/04-the-parts-world.md, steps 0 to 8.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - quiz-cadence stops when a quiz has no coverage file in
   artifacts/drips/simple-distributions-rebuild/.quiz-prep/, so prep-cadence runs first for each
   quiz (quiz-cadence, "The preparation gate").
@@ -132,6 +133,7 @@ artifacts/drips/simple-distributions-rebuild/04-the-parts-world.md set them out
 
 Starts from: quiz 4.1 passed; any question it marked missed becomes a first rung.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - An expert is N(m, diag v) over 16 pixels, each pixel independent, so its log-density is a sum
   over pixels; the cat expert of example 9(a) is tight on the head (v = 0.01) and loose on the
   body (v = 1), the dog the reverse (step file 04, step 2).
@@ -189,10 +191,11 @@ log weight -803.2
 Task: walk the step file one step per message in its order, steps 0 to 8. I run walk04.py from
 ~/Playground/PhD/simple-distributions-walk/ with
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python and
-PYTHONPATH=/home-mscluster/mmolefe/PhD/reduce-reuse-recycle.
+PYTHONPATH=/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy.
 Starts from: the setup's folder and environment; quiz 4.2 passed; the layer 4 --math drip folder
 under artifacts/drips/, whose dispatch.md holds my notation.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The reference is rebuild/parts_world.py and rebuild/phase4_parts_world.py; they match
   numbers.json to 1e-9 relative, largest relative difference 2.87e-16 (REBUILD_WALK.md, brick
   "Parts world"; rebuild/out/phase4/phase4.json).
@@ -273,6 +276,7 @@ test I run by hand. Settled at the invocation: where to build is walk04b.py abov
 Starts from: walk04.py from step 4, finished, and its retrospective; the layer 4 --math drip
 folder.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - Setting (d) is lines 43 to 46 of parts_world.py: setting (a)'s two experts, each noised to
   ᾱ = 0.5, multiplied, and the head mean of that product set beside √0.5 times the clean
   product's head mean (parts_world.py).
@@ -314,11 +318,11 @@ dropped: "a floor of 0.013", now the exact-draw baseline (from the Codex mathema
 **Compare.** `walk_numbers` has no phase 4 keys, so the reference numbers are `artifacts/ideas/poe-overlap-dial/example-9-parts-world/numbers.json` and `rebuild/out/phase4/phase4.json`; your `walk04.py` prints the same numbers.
 
 ```bash
-cd /home-mscluster/mmolefe/PhD/reduce-reuse-recycle
+cd /home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -m json.tool artifacts/ideas/poe-overlap-dial/example-9-parts-world/numbers.json
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -c "import json; d = json.load(open('rebuild/out/phase4/phase4.json'))['settings']; [print(s, '|', c, '| TV', round(x['tv'], 3), '| weight error', round(x['weight_error'], 3), '| half-means', [round(m, 3) for m in x['half_means']]) for s in d for c, x in d[s]['samplers'].items()]"
 cd ~/Playground/PhD/simple-distributions-walk
-export PYTHONPATH=/home-mscluster/mmolefe/PhD/reduce-reuse-recycle
+export PYTHONPATH=/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python walk04.py
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python walk04b.py
 ```
@@ -342,6 +346,7 @@ in artifacts/drips/simple-distributions-rebuild/, and the retrospectives the two
 closed on.
 
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The reference sets to link against are:
   - the Study first line of
     artifacts/drips/simple-distributions-rebuild/ladder/04-the-parts-world.md: the vault notes

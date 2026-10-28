@@ -36,7 +36,7 @@ composition ladder in artifacts/drips/simple-distributions-rebuild/: quiz P.1 an
 
 Task: for each quiz, first dispatch prep-cadence (quiz-prep-pulse --build) with the goal and minutes
 below, then dispatch quiz-cadence (mode build, repo
-/home-mscluster/mmolefe/PhD/reduce-reuse-recycle). The goal for both is "place my correction against
+/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain). The goal for both is "place my correction against
 CO3 and Feynman-Kac correctors".
 - Quiz P.1, --minutes 40: the college maths under the stop. Importance weights, a ratio of two
   densities, sliced Wasserstein-2 at gloss depth.
@@ -50,6 +50,7 @@ the Study first line of
 artifacts/drips/simple-distributions-rebuild/ladder/08a-correction-prior-art.md; quiz P.2 from the
 three papers' pages on the shelf.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - quiz-cadence stops when a quiz has no coverage file in .quiz-prep/, so prep-cadence runs first for
   each quiz (quiz-cadence, "The preparation gate").
 - Quiz P.1's material: Goodfellow et al. 17.2 (importance sampling, p608); the annealed importance
@@ -159,6 +160,7 @@ Starts from: quiz P.1 passed, its misses as the first ideas to slow on; layer 8'
 folder under artifacts/drips/, whose dispatch.md holds my notation for r(x); layer 8's walk08.py
 and walk08b.py.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The PDFs are on the shelf under
   ~/goal-setting/learning/papers/deep-learning/diffusion-models/compositional-diffusion-models/:
   CO3 as region-and-binding-failures/steer-away-from-mode-collisions.pdf, Soiffer et al. as
@@ -248,6 +250,7 @@ composition ladder wrote: the combined read's COMBINE_MAP.md and combined-readin
 retrospective the read closed on.
 
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - COMBINE_MAP.md sits in the journey folder
   ~/goal-setting/learning/deep-learning/diffusion-models/02-sampler-correctors-for-composition/
   under drips/ in its combine-<idea-slug>/ folder (step 2's hand-off).

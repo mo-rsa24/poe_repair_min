@@ -29,10 +29,11 @@ artifacts/ideas/poe-overlap-dial/routes/03-what-a-label-teaches-and-the-toy-axes
 it, until the testbed's candidate causes and its parser are fixed
 
 Task: walk claim 1 of the testbed map, then claims 3 and 5 as far as the parser and the probes need,
-until compile is earned, in repo /home-mscluster/mmolefe/PhD/reduce-reuse-recycle.
+until compile is earned, in repo /home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain.
 Starts from: nothing before it in this layer. The two maps and the route prompt above, read end to
 end.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - Claim 1 is current, marked wrong as stated: SDXL's cause of the cat-dog hybrid is not known, so
   the testbed cannot inherit it. The repair: switch candidate causes one at a time, and a cause
   becomes a candidate for SDXL's hybrid when the signature it leaves in the testbed also appears in
@@ -123,6 +124,7 @@ Task: walk that plan one step per message in its order. I type every block mysel
 folder, and run it with /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python.
 Starts from: the compiled plan and the testbed map step 1 leaves; the route 8 return.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The candidate causes, their signatures and the parser's categories are the ones step 1 settled in
   artifacts/ideas/sdxl-shaped-hybrid-testbed/IDEA_MAP.md (from step 1).
 - The parser is trusted only above 99% correct on 1,000 held-out training draws and on 200
@@ -170,6 +172,7 @@ artifacts/ideas/sdxl-shaped-hybrid-testbed/IDEA_MAP.md, the plan its compile wro
 return, and the retrospective the layer 11 walk closed on.
 
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The reference sets to link against are the "The text-conditioned testbed" row of the Bricks table
   in artifacts/drips/simple-distributions-rebuild/REBUILD_WALK.md, claims 7 and 12 of
   artifacts/ideas/when-poe-reaches-a-and-b/IDEA_MAP.md, and the route prompt

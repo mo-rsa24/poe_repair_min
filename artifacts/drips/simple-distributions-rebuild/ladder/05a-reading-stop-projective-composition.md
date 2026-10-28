@@ -40,7 +40,7 @@ ladder in artifacts/drips/simple-distributions-rebuild/: quiz R.1 and quiz R.2.
 
 Task: for each quiz, first dispatch prep-cadence (quiz-prep-pulse --build) with the goal and minutes
 below, then dispatch quiz-cadence (mode build, repo
-/home-mscluster/mmolefe/PhD/reduce-reuse-recycle). The goal for both is "state when summed scores
+/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain). The goal for both is "state when summed scores
 are exact and place both toys against it".
 - Quiz R.1, --minutes 40: the college maths under the stop. Conditional independence, change of
   variables with a Jacobian.
@@ -55,6 +55,7 @@ Quiz R.2 takes it from the two papers' pages and their read-aheads, which sit in
 sources/mechanisms-of-projective-composition/read-ahead/ and
 sources/local-mechanisms-of-compositional/read-ahead/.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - quiz-cadence stops when a quiz has no coverage file in .quiz-prep/, so prep-cadence runs first for
   each quiz (quiz-cadence, "The preparation gate").
 - The textbook pages for quiz R.1 are Deisenroth et al., Mathematics for Machine Learning 6.7
@@ -199,6 +200,7 @@ the read-aheads sources/mechanisms-of-projective-composition/read-ahead/ and
 sources/local-mechanisms-of-compositional/read-ahead/, and the earlier read's map
 drips/read-mechanisms-of-projective-composition/READ_MAP.md.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The PDFs are on the shelf under ~/goal-setting/learning/papers/, in
   deep-learning/diffusion-models/compositional-diffusion-models/compositional-generalization/ as
   mechanisms-of-projective-composition-of-diffusion-models.pdf and
@@ -300,6 +302,7 @@ Starts from: the combined read's COMBINE_MAP.md under
 ~/goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/drips/ in its
 combine-<idea-slug>/ folder (step 2's hand-off), for my words and the differences the read named.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The scene's toy is the four-quadrant answer key: one Gaussian blob per quadrant at (±0.5, ±0.5),
   std 0.15, A is x1 > 0, B is x2 > 0, products on a 441 × 441 grid over [−1.1, 1.1]²
   (artifacts/ideas/when-poe-reaches-a-and-b/runs/answer-key-quadrants/README.md).
@@ -354,6 +357,7 @@ wrote: the combined read's COMBINE_MAP.md and combined-reading.md, and the retro
 closed on.
 
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - COMBINE_MAP.md sits under
   ~/goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/drips/ in its
   combine-<idea-slug>/ folder (step 2's hand-off).
@@ -391,6 +395,7 @@ sources/mechanisms-of-projective-composition/read-ahead/; the repo
 /home-mscluster/mmolefe/Playground/PhD/projective-composition and its
 runbook/training-edm2-on-clevr.md.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The authors released no code; their CLEVR models were built on NVIDIA's EDM2, cloned at
   reference/edm2 in the repo at commit 4bf8162 (READ_MAP.md, Position; the repo's README.md).
 - The paper trained edm2-img64-xs (124M weights) at batch 2048 on 128 × 2^20 images, 16 hours on
@@ -446,13 +451,14 @@ Task: rebuild both papers' constructions by hand in build order, one brick per r
 against the read-aheads' answer keys. I type every block into a new folder,
 ~/Playground/PhD/simple-distributions-walk/bradley/, run with
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python and
-PYTHONPATH=/home-mscluster/mmolefe/PhD/reduce-reuse-recycle.
+PYTHONPATH=/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy.
 Starts from: this stop's combined read closed (COMBINE_MAP.md, step 2's hand-off); layer 5's
 walk05.py; the answer keys in the journey folder
 ~/goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/, at
 sources/mechanisms-of-projective-composition/checks/ and
 sources/local-mechanisms-of-compositional/checks/.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The answer keys run with uv run --no-project --with numpy --with scipy python checks/<piece>.py
   from the paper's folder; the 2509.16447 keys import the earlier paper's through checks/_earlier.py
   (READ_MAP.md, Position; read-ahead 00-INDEX.md of 2509.16447).

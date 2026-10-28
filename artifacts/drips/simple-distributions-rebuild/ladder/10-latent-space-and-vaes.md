@@ -38,7 +38,7 @@ In the background, prepare and build one quiz for the composition ladder in
 artifacts/drips/simple-distributions-rebuild/: quiz 10.1, on warp invariance.
 
 Task: first dispatch prep-cadence (quiz-prep-pulse --build) with the goal, minutes and topics below,
-then dispatch quiz-cadence (mode build, repo /home-mscluster/mmolefe/PhD/reduce-reuse-recycle). The
+then dispatch quiz-cadence (mode build, repo /home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain). The
 goal is "say why a composition whose exponents sum to 1 survives an invertible warp".
 - Quiz 10.1, --minutes 40: a density pushed through an invertible map x = g(z) picks up the factor
   |det J|⁻¹; a weighted product ∏ p_i^(w_i) then picks up |det J|^(−Σw_i); construction (1),
@@ -50,6 +50,7 @@ artifacts/drips/simple-distributions-rebuild/ladder/10-latent-space-and-vaes.md 
 line, claim 10 of artifacts/ideas/when-poe-reaches-a-and-b/IDEA_MAP.md, and the run card
 artifacts/ideas/when-poe-reaches-a-and-b/runs/compose-before-or-after-a-warp/README.md.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - quiz-cadence stops when a quiz has no coverage file in .quiz-prep/, so prep-cadence runs first
   (quiz-cadence, "The preparation gate").
 - Quiz R.1 at the reading stop already covers change of variables with a Jacobian, so this quiz
@@ -105,6 +106,7 @@ unchanged by an invertible warp
 Starts from: quiz R.1 passed at the reading stop; any question it marked missed on change of
 variables becomes a first rung.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - A density moved through an invertible map x = g(z) picks up |det J|⁻¹. Each conditional and the
   unconditional pick up the same factor, so p(x|A)·p(x|B)/p(x) picks it up once, exactly as the
   latent composition pushed through g does (claim 10 of
@@ -145,6 +147,7 @@ with /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python.
 Starts from: the setup's folder and environment; the layer 10 --math drip folder under
 artifacts/drips/, whose dispatch.md holds my notation (step 2).
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The reference is warp_check.py in the run folder: the quadrant toy in a latent z, one Gaussian
   blob per quadrant at (±0.5, ±0.5) with std 0.15, A∩B share r = 0.05 on the top-right blob and
   (1 − r)/3 on each other blob (warp_check.py).
@@ -189,7 +192,7 @@ dropped: nothing
 ### 4. You: compare your numbers with the reference
 
 ```bash
-cat /home-mscluster/mmolefe/PhD/reduce-reuse-recycle/artifacts/ideas/when-poe-reaches-a-and-b/runs/compose-before-or-after-a-warp/run.log
+cat /home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/artifacts/ideas/when-poe-reaches-a-and-b/runs/compose-before-or-after-a-warp/run.log
 cd ~/Playground/PhD/simple-distributions-walk
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python walk10.py
 ```
@@ -210,10 +213,11 @@ beta-VAE, beta-TCVAE or FactorVAE on the 2D toy shows what happens inside Stable
 read against Theorem 6.1 of arXiv 2502.04549, and what the smallest check is
 
 Task: walk claim 11 from its place under Held claims until the smallest VAE check is chosen or the
-claim is marked dead, in repo /home-mscluster/mmolefe/PhD/reduce-reuse-recycle.
+claim is marked dead, in repo /home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain.
 Starts from: walk10.py and the step 4 comparison, which reproduce run 6 (claim 10's warp check); the
 layer 10 --math drip folder under artifacts/drips/ (step 2).
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - Claim 11 is held. Unsupervised disentanglement is not identifiable without supervision or
   inductive bias (Locatello et al. 2019, confident), so a β-VAE on 2D data may not put A and B on
   separate axes (the map's Held claims row).
@@ -263,6 +267,7 @@ the layer 10 --math drip folder under artifacts/drips/, the retrospective the la
 on, and claim 11 of artifacts/ideas/when-poe-reaches-a-and-b/IDEA_MAP.md.
 
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The reference sets to link against are the two read-ahead chunks on the Study first line of
   artifacts/drips/simple-distributions-rebuild/ladder/10-latent-space-and-vaes.md (the feature-space
   chunk and appendix I), the "Composing in a latent space" row of the Bricks table in

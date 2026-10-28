@@ -41,7 +41,7 @@ in artifacts/drips/simple-distributions-rebuild/: quiz 2.1 and quiz 2.2.
 
 Task: for each quiz, first dispatch prep-cadence (quiz-prep-pulse --build) with the goal and minutes
 below, then dispatch quiz-cadence (mode build, repo
-/home-mscluster/mmolefe/PhD/reduce-reuse-recycle). The goal for both is "compose two experts and
+/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain). The goal for both is "compose two experts and
 use an accept-corrected sampler whose fixed kernel has the composition as its invariant density".
 - Quiz 2.1, --minutes 40: the college maths under layer 2. Normalising constants, Markov chains and
   the Metropolis-Hastings accept ratio, total variation distance, a Langevin step as gradient ascent
@@ -54,6 +54,7 @@ not run and the notation is the step file's. Quiz 2.1 takes its material from th
 of artifacts/drips/simple-distributions-rebuild/ladder/02-composing-two-experts.md; quiz 2.2 takes
 it from artifacts/drips/simple-distributions-rebuild/02-composing-and-sampling.md.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - quiz-cadence stops when a quiz has no coverage file in .quiz-prep/, so prep-cadence runs first for
   each quiz (quiz-cadence, "The preparation gate").
 - The step file links a textbook page beside each fundamental it uses and carries timestamped video
@@ -130,6 +131,7 @@ artifacts/drips/simple-distributions-rebuild/02-composing-and-sampling.md set th
 Starts from: quiz 2.1 passed; any question it marked missed becomes a first rung. Layer 1's --math
 drip folder under artifacts/drips/ holds my notation for q(x_t | x_0) and the score.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - Write a(x) = p(x|A), b(x) = p(x|B) and r(x) for the background density of all the data.
   Construction (1), score(x|A) + score(x|B) − score(x), targets a·b/r, which is
   r(x)·p(A|x)·p(B|x) up to a constant and equals p(x|A,B) when A and B are conditionally
@@ -200,12 +202,13 @@ every block myself into ~/Playground/PhD/simple-distributions-walk/walk02.py
 Task: walk the step file one step per message in its order, steps 0 to 10. I type every block myself
 into ~/Playground/PhD/simple-distributions-walk/walk02.py and run it from that folder with
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python and
-PYTHONPATH=/home-mscluster/mmolefe/PhD/reduce-reuse-recycle.
+PYTHONPATH=/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy.
 Starts from: the setup's folder and environment; quiz 2.2 passed; the layer 2 --math drip folder
 under artifacts/drips/, whose dispatch.md holds my notation.
 Settled facts:
-- The reference is rebuild/compose.py, rebuild/samplers.py and the fixed anneal_samplers.py at the
-  repo root; every worked number prints from python -m rebuild.walk_numbers, run from the repo root,
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
+- The reference is rebuild/compose.py, rebuild/samplers.py and the fixed anneal_samplers.py in
+  toy/; every worked number prints from python -m rebuild.walk_numbers, run from toy/,
   as 53 p2. keys, of which the 14 p2.step9_ keys are read from rebuild/out/phase2/step9.json,
   produced by python -m rebuild.phase2_step9 (step file 02, opening; rebuild/out/walk-numbers.json).
 - Step 0 imports the cosine schedule and the device guard from rebuild/ and the samplers from
@@ -297,6 +300,7 @@ build, teach and test one piece per round. I type every block into walk02b.py an
 Starts from: walk02.py from step 4a; the notebook named above, whose printed outputs are the answer
 key.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - No sampler appears: every density is an ideal expert, its training points smoothed by N(0, σ²I),
   computed exactly on a 241 × 241 grid over [−1.1, 1.1]², and A∩B is the top-left quadrant
   (notebook, cells 0 and 1).
@@ -357,10 +361,11 @@ steps 18 to 82 times larger and reaches the floor on four kinds, while ULA at th
 Task: cut run 1 into 4 to 6 pieces, write the step file at the open, and build, teach and test one
 piece per round. I type the tuned MALA and the ULA comparison into walk02c.py by hand and run it
 with /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python and
-PYTHONPATH=/home-mscluster/mmolefe/PhD/reduce-reuse-recycle.
+PYTHONPATH=/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy.
 Starts from: walk02.py from step 4a, whose per-sample MALA is the move run 1 tunes; the notebook
 named above, whose printed run 1 table is the answer key.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - Run 1 runs on the seven kinds' exact targets: ideal experts with σ = 0.05, 800 points per set,
   2,000 samples, 100 levels, 10 moves per level from N(0, I) (notebook, cells 0 and 2;
   rebuild/kinds.py). Layer 3 builds those targets by hand; here import them from rebuild/kinds.py
@@ -407,7 +412,7 @@ dropped: nothing
 ### 5. You: compare your numbers with the reference
 
 ```bash
-cd /home-mscluster/mmolefe/PhD/reduce-reuse-recycle
+cd /home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -m rebuild.walk_numbers | grep 'p2\.'
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -m pytest tests/test_anneal_samplers.py -s
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -m rebuild.phase3_kinds --out ~/Playground/PhD/simple-distributions-walk/phase3-reference | sed -n '/Run 1/,/Run 2/p'
@@ -442,6 +447,7 @@ landing on them
 
 Starts from: the layer 2 --math drip folder and its dispatch.md (step 2's hand-off).
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - Ring × bar is step file 02's step 9 target: the ring of eight Gaussian modes on a circle of radius
   0.5 (sd 0.03) and the bar uniform on |x1| < 0.2, |x2| < 1, 400 points each, smoothed by σ = 0.05.
   The centres (0, 0.5) and (0, −0.5) are the only ring-mode centres inside the bar. Because both
@@ -487,6 +493,7 @@ layer 2 --math drip folder under artifacts/drips/, the step files the two --requ
 4b and 4c wrote at their open, and the retrospectives the three layer 2 walks closed on.
 
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The reference sets to link against are the journey plans, vault notes and scene on the Study
   first line of artifacts/drips/simple-distributions-rebuild/ladder/02-composing-two-experts.md; the
   layer 2 rows of the Bricks table in artifacts/drips/simple-distributions-rebuild/REBUILD_WALK.md

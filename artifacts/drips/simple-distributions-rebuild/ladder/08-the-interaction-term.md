@@ -44,12 +44,13 @@ from the Gaussian mixtures, and r_t with its gradient at each noise level. Print
 and on, per noise level. Add those numbers to rebuild/walk_numbers.py as phase8() with keys p8.*,
 and run it once with the co3 python.
 
-Task: in /home-mscluster/mmolefe/PhD/reduce-reuse-recycle, write rebuild/interaction.py (the
+Task: in /home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy, write rebuild/interaction.py (the
 functions) and rebuild/phase8_interaction.py (the run, python -m rebuild.phase8_interaction --out
 rebuild/out/phase8), the split the brick row names, and add phase8() to rebuild/walk_numbers.py.
-Run everything from the repo root with /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python.
+Run everything from toy/ with /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python.
 Starts from: rebuild/ as layers 1 to 5 left it; nothing from layer 8's walk.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The brick row: in the parts world with a "wet" rule (the cat half shifts when a dog is present),
   r(x) = log p(x|A,B) − [log p(x|A) + log p(x|B) − log p(x)] in closed form, expected constant
   with the rule off and varying with it on; then the noised r_t and its gradient, written also in
@@ -107,7 +108,7 @@ Settled facts:
 - rebuild/walk_numbers.py prints through put(key, value), its __main__ loop runs phase1, phase2,
   phase3 and phase5 and writes rebuild/out/walk-numbers.json; it holds worked numbers, and run
   results are read from rebuild/out/phase*/ (walk_numbers.py docstring).
-- Every phase is one command from the repo root, python -m rebuild.<script>, with outputs in
+- Every phase is one command from toy/, python -m rebuild.<script>, with outputs in
   rebuild/out/phaseN; pick the device with rebuild.device.pick_device, the GPU guard
   (REBUILD_WALK.md, Pins).
 Outputs:
@@ -151,7 +152,7 @@ in artifacts/drips/simple-distributions-rebuild/: quiz 8.1 and quiz 8.2.
 
 Task: for each quiz, first dispatch prep-cadence (quiz-prep-pulse --build) with the goal and minutes
 below, then dispatch quiz-cadence (mode build, repo
-/home-mscluster/mmolefe/PhD/reduce-reuse-recycle). The goal for both is "define the interaction
+/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain). The goal for both is "define the interaction
 term exactly and say where it lives".
 - Quiz 8.1, --minutes 40: the college maths under layer 8. Bayes' rule for two labels, conditional
   independence, log-odds.
@@ -165,6 +166,7 @@ takes it from that file's steps 2, 4a and 4b, the brick row "The interaction ter
 artifacts/drips/simple-distributions-rebuild/REBUILD_WALK.md, and claim 7 (7.1 to 7.4) of
 artifacts/ideas/poe-overlap-dial/IDEA_MAP.md.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - quiz-cadence stops when a quiz has no coverage file in .quiz-prep/, so prep-cadence runs first for
   each quiz (quiz-cadence, "The preparation gate").
 - The textbook for Bayes is Deisenroth et al. 6.3, p189; log-odds has no passage that teaches it
@@ -236,6 +238,7 @@ Quiz 8.1: (URL lands here)
 Starts from: quiz 8.1 passed; any question it marked missed becomes a first rung. Layer 1's --math
 drip folder under artifacts/drips/ holds my notation for q(x_t | x_0) and the score.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - By Bayes, log p(x|A) = log p(A|x) + log p(x) − log p(A), so r(x) = log p(A,B|x) − log p(A|x) −
   log p(B|x) + log[p(A)p(B)/p(A,B)]: r is the label term plus a constant (the route through
   p(c1, c2 | x), section 8.2 of the textbook on this layer's Study first line;
@@ -289,13 +292,14 @@ Task: cut the layer into 4 to 6 pieces, write the step file at the open, and bui
 one piece per round. I type every block into walk08.py and run it with
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python from
 ~/Playground/PhD/simple-distributions-walk/, with
-PYTHONPATH=/home-mscluster/mmolefe/PhD/reduce-reuse-recycle.
+PYTHONPATH=/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy.
 Starts from: the layer 8 reference from step 0, rebuild/interaction.py,
 rebuild/phase8_interaction.py, rebuild/out/phase8/phase8.json and the p8. keys in
 rebuild/out/walk-numbers.json, whose settings (p8.wet_cat_value, the world's weights, the
 background variance) I use; quiz 8.2 passed; the layer 8 --math drip folder under artifacts/drips/,
 whose dispatch.md holds my notation.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The brick row expects r constant with the rule off and varying with it on, and the noised r_t
   and its gradient in ε-space as ε_joint − ε_A − ε_B + ε_∅ (REBUILD_WALK.md, brick "The
   interaction term, exact").
@@ -356,6 +360,7 @@ and test one piece per round. I type every block into walk08b.py and run it with
 Starts from: walk08.py from step 4a; the p8.label_term_* keys in rebuild/out/walk-numbers.json from
 step 0's reference, which are the exact values.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The toy: points uniform on [−1, 1]², A true when x1 < 0 and B true when x2 > 0 (the A and B of
   rebuild/phase5_dial.py), so A∩B is the top-left quadrant
   (artifacts/ideas/poe-overlap-dial/IDEA_MAP.md, claim 7.4; rebuild/phase5_dial.py docstring).
@@ -402,7 +407,7 @@ dropped: nothing
 **Compare.** `python -m rebuild.walk_numbers` prints the `p8.` keys; your `walk08.py` prints the same numbers.
 
 ```bash
-cd /home-mscluster/mmolefe/PhD/reduce-reuse-recycle
+cd /home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -m rebuild.walk_numbers | grep 'p8\.'
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -m rebuild.phase8_interaction --out ~/Playground/PhD/simple-distributions-walk/phase8-reference | grep 'identity'
 cd ~/Playground/PhD/simple-distributions-walk
@@ -421,6 +426,7 @@ the parts world, with the wet rule as a toggle and the noise level as a slider
 Starts from: the layer 8 --math drip folder and its dispatch.md (step 2's hand-off); the layer 8
 reference's rebuild/out/phase8/phase8.json and its p8. keys (step 0).
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The parts world: 16 pixels drawn as a 4 × 4 image, a cat +1 and a dog −1 on their pixels with
   variance 0.01, each expert a mixture of diagonal Gaussians, so every noised density is exact
   (step file 04-the-parts-world.md, steps 1, 5 and 6).
@@ -460,6 +466,7 @@ layer 8 --math drip folder under artifacts/drips/, the step files the two --requ
 4a and 4b wrote at their open, and the retrospectives the two layer 8 walks closed on.
 
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The reference sets to link against are the journey plans, textbook chapters and vault note on
   the Study first line of
   artifacts/drips/simple-distributions-rebuild/ladder/08-the-interaction-term.md; the layer 8 row

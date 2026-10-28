@@ -46,6 +46,7 @@ artifacts/drips/simple-distributions-rebuild/01-one-expert-from-scratch.md set t
 
 Starts from: quiz 1.1 passed; any question it marked missed becomes a first rung.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The forward process runs T = 100 steps; ᾱ_t = ∏(1 − β_j) from the cosine schedule with offset
   0.008, and q(x_t | x_0) = N(√ᾱ_t x_0, (1 − ᾱ_t) I). Code index t = 0 is the first noisy state, so
   ᾱ_t equals the schedule's boundary value C_{t+1} and ᾱ_0 = 0.9994 (step file 01, step 4).
@@ -90,12 +91,13 @@ Quiz 1.2: https://claude.ai/artifact/HMsmKatwrxvhUL2Q72uTWa
 Task: walk the step file one step per message in its order, steps 0 to 11. I type every block myself
 into ~/Playground/PhD/simple-distributions-walk/walk01.py and run it from that folder with
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python and
-PYTHONPATH=/home-mscluster/mmolefe/PhD/reduce-reuse-recycle.
+PYTHONPATH=/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy.
 Starts from: the setup's folder and environment; quiz 1.2 passed; the layer 1 --math drip folder
 under artifacts/drips/, whose dispatch.md holds my notation.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The reference is rebuild/datasets.py, rebuild/model.py and rebuild/train.py; every worked number
-  prints from python -m rebuild.walk_numbers, run from the repo root, as 41 p1. keys
+  prints from python -m rebuild.walk_numbers, run from toy/, as 41 p1. keys
   (REBUILD_WALK.md, Pins; rebuild/out/walk-numbers.json).
 - The ResNet has 565,506 parameters. The notebook prints 565,606 because it counts out_logvar, which
   the beta_forward variance never reads (REBUILD_WALK.md, brick "ResNet score network").
@@ -118,7 +120,7 @@ Settled facts:
 Outputs:
 - walk01.py: one script that runs end to end and prints each step's worked number;
 - the step file's steps 0 to 11 ticked, and the walk map that holds my place between sittings;
-- a samples figure from my trained expert beside datasets-1000-samples-each.png at the repo root.
+- a samples figure from my trained expert beside datasets-1000-samples-each.png in toy/.
 Target: every p1. number walk01.py prints equals walk_numbers to the digits shown; the parameter
 count is 565,506; after the full 15,001 steps the bar dataset's total variation is within 0.10 of
 its floor. I judge, from the printed lines.
@@ -140,7 +142,7 @@ dropped: "my trained expert's samples match datasets-1000-samples-each.png" as t
 ### 5. You: compare your numbers with the reference
 
 ```bash
-cd /home-mscluster/mmolefe/PhD/reduce-reuse-recycle
+cd /home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -m rebuild.walk_numbers | grep 'p1\.'
 cd ~/Playground/PhD/simple-distributions-walk
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python walk01.py
@@ -156,6 +158,7 @@ ring of eight blurring into one sink as the noise level rises
 
 Starts from: the layer 1 --math drip folder and its dispatch.md (step 2's hand-off).
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The ring of eight is toy_gmm in rebuild/datasets.py: eight Gaussian modes on a circle of radius
   0.5 (rebuild/datasets.py, ring_means).
 - The noise levels to show are the ᾱ_t values walk_numbers prints at t = 0, 25, 50, 75 and 99, the
@@ -185,6 +188,7 @@ In the background, dispatch xref-cadence over the files layer 1 of the compositi
 layer 1 --math drip folder under artifacts/drips/ and the retrospective the layer 1 walk closed on.
 
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The reference sets to link against are the journey plans and vault notes on the Study first line
   of artifacts/drips/simple-distributions-rebuild/ladder/01-one-diffusion-expert.md, and the layer 1
   rows of the Bricks table in artifacts/drips/simple-distributions-rebuild/REBUILD_WALK.md.

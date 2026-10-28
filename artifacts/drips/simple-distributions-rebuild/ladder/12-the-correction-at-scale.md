@@ -55,12 +55,13 @@ term from layer 8, compose rate as the measure.
 
 Task: for each quiz, first dispatch prep-cadence (quiz-prep-pulse --build) with the goal, minutes
 and topics above, then dispatch quiz-cadence (mode build, repo
-/home-mscluster/mmolefe/PhD/reduce-reuse-recycle). Quiz 12.1 first, so quiz 12.2 can rest on it.
+/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain). Quiz 12.1 first, so quiz 12.2 can rest on it.
 Starts from: nothing before it in this layer. Quiz 12.1 takes its material from the Study first
 line of artifacts/drips/simple-distributions-rebuild/ladder/12-the-correction-at-scale.md; quiz 12.2
 from that file's steps 7 and 9 and from layer 8's file,
 artifacts/drips/simple-distributions-rebuild/ladder/08-the-interaction-term.md.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - quiz-cadence stops when a quiz has no coverage file in .quiz-prep/, so prep-cadence runs first
   for each quiz (quiz-cadence, "The preparation gate").
 - pdftotext is not installed on mscluster, so
@@ -129,6 +130,7 @@ and every relative path is inside it.
 Starts from: the walk map artifacts/drips/drain-gap-walk/EXECUTE_WALK.md and the pick-up page
 plans/00-where-we-left-off.md, both in B1's folder.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The walk stands at round 2 of 5: tasks 1.1, 1.2, 3.1 to 3.3, 5.1 and 7.1 are ticked, instruction
   2.1 is confirmed and 4.2 skipped; it waits on instructions 4.1 and 6.1 (my count checks) and my
   prediction of how the folds come out (the walk map; the pick-up page, "Walk 1").
@@ -205,11 +207,12 @@ at /datasets/mmolefe/siim_acr); whether FastDiME trains classifiers on its edits
 the 4,312 follow-up films with no pneumothorax label still carry a drain (estimated at about 1,100)
 
 Task: walk claim 8 with the four questions above, one per round, and mark whether the drain case
-stands, in repo /home-mscluster/mmolefe/PhD/reduce-reuse-recycle.
+stands, in repo /home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain.
 Starts from: step 2's verdict in instruction 11.1 of the drain-gap plan, and the sidecar CSV beside
 sensitivity-by-drain__nih-neatx.png in B1's
 artifacts/results/does-the-classifier-use-the-drain/.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - Claim 8 is wrong as stated; its repair: on the drain shortcut, composition is one arm against
   upweighting the real drain-free films and against masked editing, run only after B1's drain gap
   shows the shortcut exists; composition's own job is a shortcut that cannot be masked, such as AP
@@ -282,6 +285,7 @@ it only if step 2 recorded a gap.
 Starts from: step 2's verdict (a gap: at least 5 points, interval excluding 0); step 3's claim 8
 entry in the idea map, which names the shortcut to target.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - Claim 8's check names four arms, one pneumothorax classifier trained on: the original NIH films;
   the real drain-free films upweighted; plus drain-removed edits of positive films; plus composed
   pneumothorax-without-drain films. All four are tested on real drain-free pneumothorax films
@@ -361,6 +365,7 @@ Task: walk the four questions one per piece, writing each answer into the plan, 
 Starts from: nothing earlier in this layer; the plan, its scope's MASTER_PLAN.md and
 artifacts/results/does-the-fix-reach-unseen-pairs/pair_pool.yaml.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The scope's master plan defines compose rate over the eval seeds and calls support "held-out pairs
   compose above the do-no-harm baseline across most of the 15, direction intact"; the plan's task
   3 collects "compose-rate (binary: yes/no)" per pair ("Reading a result" and Goals in
@@ -424,6 +429,7 @@ from layer 8
 Starts from: quiz 12.1 passed, its misses as first rungs; the layer 8 --math drip folder under
 artifacts/drips/, whose dispatch.md holds my notation for r(x) and ε_joint − ε_A − ε_B + ε_∅.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - A LoRA keeps W frozen and trains a rank-r update BA, (W + BA)x, with r·(in + out) parameters:
   384 for the journey's toy (rank 2, 3 blocks) and 4,956,160 for the real case (rank 8, 210
   modules) (the journey plan 08-lora-update.md).
@@ -471,6 +477,7 @@ Starts from: step 5's refined transfer plan (the compose-rate unit and the held-
 layer 12 --math drip folder (step 7); walk08.py's ε-space term and walk09.py with
 rebuild/phase9_correction.py (from layers 8 and 9).
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The cache is /datasets/mmolefe/poe_repair_min/artifacts/caches/training_cache/; one cell is one
   pair and seed, with residuals/step_NNN.pt per step holding eps_a_raw, eps_b_raw, eps_j_raw,
   eps_uncond and timestep, for all 50 DDIM steps of the uncorrected run at guidance 7.5
@@ -538,7 +545,7 @@ dropped: nothing
 **Compare.** The layer 9 correction on the toys is the reference behaviour: the per-pair effect should move in the direction the toy's fair test predicts for the pair's interaction term.
 
 ```bash
-cd /home-mscluster/mmolefe/PhD/reduce-reuse-recycle
+cd /home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -m rebuild.walk_numbers | grep 'p9\.'
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -c "import json, numpy as np; p = json.load(open('/datasets/mmolefe/poe_repair_min/outputs/showcase/interaction_bound/interaction_bound.json'))['pairs']; [print(k, v['fail_rate'], round(float(np.mean([v['median_bound_by_step'][str(s)] for s in range(10, 41)])))) for k, v in sorted(p.items())]"
 cd ~/Playground/PhD/simple-distributions-walk
@@ -564,6 +571,7 @@ artifacts/ideas/when-poe-reaches-a-and-b/IDEA_MAP.md, its HYPOTHESIS.md if step 
 retrospective the layer 12 walk closed on.
 
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The reference sets to link against are the two journey plans on the Study first line of
   artifacts/drips/simple-distributions-rebuild/ladder/12-the-correction-at-scale.md (the LoRA
   update and the SVD of the real matrix), the "The correction at scale" row of the Bricks table in

@@ -6,11 +6,11 @@ This file tracks the PyTorch rebuild of `notebooks/simple_distributions.ipynb` (
 
 **Machine and interpreter**
 
-mscluster109, cards 0 and 1 (48 GB each, under 1 GB in use when each run started, per the GPU guard in `Playground/PhD/poe_repair_min/environment/hpc/execution-protocol.md`). Python is `/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python` (torch 2.5.1+cu118, NumPy 2.2.6). No JAX anywhere.
+Any mscluster GPU node, in the cluster checkout of poe_repair_min at `/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain` (branch `exec/dog-and-rain`), on a card with under 1 GB in use when the run starts, per the GPU guard in `environment/hpc/execution-protocol.md`. Layers 1 to 5 ran on mscluster109's 48 GB cards. Python is `/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python` (torch 2.5.1+cu118, NumPy 2.2.6). No JAX anywhere.
 
 **Rebuild folder**
 
-`rebuild/` at the repo root, on branch `unbuild-walk`. The repository's own `anneal_samplers.py` carries the MALA and CHA fix on the same branch, and `tests/test_anneal_samplers.py` checks it. Every phase is one command from the repo root, `python -m rebuild.<script>`.
+`toy/rebuild/` in this repo. `toy/anneal_samplers.py`, Du et al.'s sampler file, carries the MALA and CHA fix, and `toy/tests/test_anneal_samplers.py` checks it. The history up to the move is in the record repo `mo-rsa24/reduce-reuse-recycle-walk` (branch `walk`, commit f312a0f). Every phase is one command from toy/, `python -m rebuild.<script>`.
 
 **Outputs**
 
@@ -67,9 +67,9 @@ These are for you to do by hand. Every check above ran in code and printed its n
 
 ### 1. 👀 Look at each phase's picture beside its original
 
-- [ ] **Phase 1.** Open `rebuild/out/phase1/datasets-against-trained-models.png` next to `datasets-1000-samples-each.png` at the repo root. Rows 2 and 4 are the trained models. Each orange panel should have its blue panel's shape. The ring's modes come out wider (sd 0.043 against 0.030), because the notebook's sampler adds noise at t = 0 as well.
+- [ ] **Phase 1.** Open `rebuild/out/phase1/datasets-against-trained-models.png` next to `datasets-1000-samples-each.png` in toy/. Rows 2 and 4 are the trained models. Each orange panel should have its blue panel's shape. The ring's modes come out wider (sd 0.043 against 0.030), because the notebook's sampler adds noise at t = 0 as well.
 - [ ] **Phase 2.** Open `rebuild/out/phase2/product-mixture-negation-every-sampler.png`, then the notebook's own pictures in `rebuild/out/phase2/reference/`. In `product-0.png`, green is the Metropolis-adjusted UHA (the last column of the rebuild figure) and blue is reverse diffusion (the fifth column). Green should sit on the two in-bar ring modes. Blue should also keep the six outer modes, pulled inward. Then open `mala-acceptance-per-sample.png`: at step 0.001 nearly every sample accepts every move, and tuned MALA spreads around 0.6.
-- [ ] **Phase 3.** Run `python -m rebuild.phase3_kinds` from the repo root. Every row should print `ok` or `matches`, and it takes about 2 minutes on one card.
+- [ ] **Phase 3.** Run `python -m rebuild.phase3_kinds` from toy/. Every row should print `ok` or `matches`, and it takes about 2 minutes on one card.
 - [ ] **Phase 4.** Run `python -m rebuild.phase4_parts_world`. The first line should read `largest relative difference 2.87e-16  matches`.
 - [ ] **Phase 5.** Open `rebuild/out/phase5/overlap-dial-curves.png` and `overlap-dial-quadrant-pictures.png`, then `finetune-curves.png` and `finetune-pictures.png`.
 

@@ -46,16 +46,17 @@ artifacts/ideas/when-poe-reaches-a-and-b/runs/sampler-by-expert-interaction/ (MA
 floor with exact experts and +0.267 with trained ones at r = 0.001). Add the numbers to
 rebuild/walk_numbers.py as phase9() with keys p9.*, and run it once with the co3 python.
 
-Task: in /home-mscluster/mmolefe/PhD/reduce-reuse-recycle, write rebuild/correction.py (the
+Task: in /home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy, write rebuild/correction.py (the
 four-blob toy, the trained experts, the correction and its two losses, the scoring) and
 rebuild/phase9_correction.py (the run, python -m rebuild.phase9_correction --out
 rebuild/out/phase9), the split the brick row names, and add phase9() to rebuild/walk_numbers.py.
-Run from the repo root with /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python, on the cards
+Run from toy/ with /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python, on the cards
 rebuild.device.pick_device picks.
 Starts from: layer 8's reference: rebuild/interaction.py (r_t and ∇r_t in float64 for any four
 parts_world.Mixture objects) and the p8. keys in rebuild/out/walk-numbers.json (step 0 of
 artifacts/drips/simple-distributions-rebuild/ladder/08-the-interaction-term.md).
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The brick row: the fair test from the parallel walk, a trained joint {A, B} condition against
   composition alone against composition plus a small correction fine-tuned on the same few A∩B
   samples, at overlap r = 0.05 and 0.001; the correction trained by regression on the exact ∇r_t
@@ -173,7 +174,7 @@ in artifacts/drips/simple-distributions-rebuild/: quiz 9.1 and quiz 9.2.
 
 Task: for each quiz, first dispatch prep-cadence (quiz-prep-pulse --build) with the goal and minutes
 below, then dispatch quiz-cadence (mode build, repo
-/home-mscluster/mmolefe/PhD/reduce-reuse-recycle). The goal for both is "train a correction and
+/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain). The goal for both is "train a correction and
 read the fair test".
 - Quiz 9.1, --minutes 40: the college maths under layer 9. Least-squares regression recovers a
   conditional expectation, the gradient of a scalar function.
@@ -188,6 +189,7 @@ artifacts/drips/simple-distributions-rebuild/REBUILD_WALK.md, claims 4 and 9 and
 artifacts/ideas/when-poe-reaches-a-and-b/IDEA_MAP.md, and run 7's card,
 artifacts/ideas/when-poe-reaches-a-and-b/runs/sampler-by-expert-interaction/README.md.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - quiz-cadence stops when a quiz has no coverage file in .quiz-prep/, so prep-cadence runs first for
   each quiz (quiz-cadence, "The preparation gate").
 - The textbooks are Chen 6.3.3 (p126) and Goodfellow et al. 18.5 (p635), with the conditional-mean
@@ -257,6 +259,7 @@ Quiz 9.1: (URL lands here)
 Starts from: quiz 9.1 passed; any question it marked missed becomes a first rung. The layer 8
 --math drip folder under artifacts/drips/ holds my notation for r(x), r_t and their ε-space form.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - A squared loss is minimised by the conditional mean, so the denoising loss E‖ε_θ(x_t, t) − ε‖²
   is minimised by E[ε | x_t] = −√(1 − ᾱ_t)·∇log q_t(x_t): score matching is a regression (the
   conditional-mean and training-loss chapters on this layer's Study first line; layer 1's
@@ -310,7 +313,7 @@ Task: cut the layer into 4 to 6 pieces, write the step file at the open, and bui
 one piece per round. I type every block into walk09.py and run it with
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python from
 ~/Playground/PhD/simple-distributions-walk/, with
-PYTHONPATH=/home-mscluster/mmolefe/PhD/reduce-reuse-recycle. Training runs in the background
+PYTHONPATH=/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy. Training runs in the background
 beside me.
 Starts from: the layer 9 reference from step 0, rebuild/correction.py,
 rebuild/phase9_correction.py, rebuild/out/phase9/phase9.json and the p9. keys, whose settings
@@ -318,6 +321,7 @@ rebuild/phase9_correction.py, rebuild/out/phase9/phase9.json and the p9. keys, w
 8; quiz 9.2 passed; the layer 9 --math drip folder under artifacts/drips/, whose dispatch.md holds
 my notation.
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The toy is run 7's: four blobs at (±0.5, ±0.5) with σ = 0.15, top-right weight r and (1 − r)/3
   for each other; construction (1), A the right blobs, B the top blobs; the exact joint is the
   top-right blob (the run card, "The toy"). It is not layer 5's quadrant toy.
@@ -374,7 +378,7 @@ dropped: nothing
 **Compare.** `python -m rebuild.walk_numbers` prints the `p9.` keys; your `walk09.py` prints the same total variations within the sampling noise the reference reports.
 
 ```bash
-cd /home-mscluster/mmolefe/PhD/reduce-reuse-recycle
+cd /home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -m rebuild.walk_numbers | grep 'p9\.'
 grep -A 9 '^\*\*r = ' artifacts/ideas/when-poe-reaches-a-and-b/runs/sampler-by-expert-interaction/README.md
 cd ~/Playground/PhD/simple-distributions-walk
@@ -393,6 +397,7 @@ Starts from: the fair-test table walk09.py printed (step 4) and the reference's
 rebuild/out/phase9/phase9.json and fair-test.png (step 0); the layer 9 --math drip folder and its
 dispatch.md for my notation (step 2).
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The fair test: a joint {A, B} condition trained on only the share r of the data that is A and B,
   against composition, against composition plus a small correction fine-tuned on the same few A∩B
   samples, at r = 0.05 and 0.001, with exact and with trained experts, scored by TV against the
@@ -436,6 +441,7 @@ layer 9 --math drip folder under artifacts/drips/, the step file the --request w
 wrote at its open, and the retrospective the layer 9 walk closed on.
 
 Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
 - The reference sets to link against are the textbook chapters, the journey plan and the video on
   the Study first line of
   artifacts/drips/simple-distributions-rebuild/ladder/09-the-correction-learned-back.md; the layer 9
