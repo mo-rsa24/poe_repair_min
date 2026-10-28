@@ -161,7 +161,7 @@ def report(tag: str, res: dict[int, list[float]]) -> bool:
     return all(m < 0.10 for m in means.values())
 
 
-def render_tiles(ctx, tok, a: str, b: str, seeds: list[int], third: bool, out_dir: Path) -> list[Path]:
+def render_tiles(ctx, tok, a: str, b: str | None, seeds: list[int], third: bool, out_dir: Path) -> list[Path]:
     """PoE(a, b) or PoE(a, b, "<and>") per seed, the loop and noise of scripts/and_vector_sheet.py."""
     from concept_pair_sheet import NOISE_PAIR
     from poe_repair.composers._helpers import init_latents_for_cell
@@ -172,7 +172,7 @@ def render_tiles(ctx, tok, a: str, b: str, seeds: list[int], third: bool, out_di
 
     m, device, dtype, sched, w = ctx.models, ctx.device, ctx.dtype, ctx.scheduler, ctx.guidance_scale
     enc = lambda q: encode_prompt_sdxl(q, models=m, device=device, dtype=dtype)
-    embs = [enc(a), enc(b)] + ([tok.encode(TOKEN, device=device, dtype=dtype, grad=False)] if third else [])
+    embs = [enc(a)] + ([enc(b)] if b else []) + ([tok.encode(TOKEN, device=device, dtype=dtype, grad=False)] if third else [])
     embs.append(enc(""))
     seq = torch.cat([e for e, _ in embs]).to(dtype)
     pool = torch.cat([q for _, q in embs]).to(dtype)
@@ -218,6 +218,48 @@ def contact_sheet(paths: list[Path], seeds: list[int], title: str, out: Path, si
         draw.text((i * size + 6, pad + 4), f"seed {sd}", fill="white")
     sheet.save(out)
     return sheet
+
+
+def grid(run_dir: Path, iters: list[int], seeds: list[int], wandb_id: str | None) -> None:
+    """One row per seed: a cat alone, a dog alone, plain PoE, then PoE with <and> at each saved update."""
+    from PIL import Image, ImageDraw
+    from poe_repair.run import make_ctx
+
+    ctx = make_ctx()
+    tok = AndToken(ctx.models)
+    A, B = "a cat", "a dog"
+    mono_a = run_dir / "tiles" / "mono_a_cat"
+    mono_b = run_dir / "tiles" / "mono_a_dog"
+    render_tiles(ctx, tok, A, None, [sd for sd in seeds if not (mono_a / f"seed{sd:02d}.png").exists()], False, mono_a)
+    render_tiles(ctx, tok, B, None, [sd for sd in seeds if not (mono_b / f"seed{sd:02d}.png").exists()], False, mono_b)
+    heads = [f"{A} alone", f"{B} alone", f"PoE({A}, {B})"] + [f"+ <and>, {it} updates" for it in iters]
+    cols = [lambda sd: mono_a / f"seed{sd:02d}.png", lambda sd: mono_b / f"seed{sd:02d}.png",
+            lambda sd: run_dir / "tiles" / "plain_poe" / f"seed{sd:02d}.png"] + [
+        (lambda sd, it=it: run_dir / "tiles" / f"iter{it:05d}" / f"seed{sd:02d}.png") for it in iters]
+    size, pad = 320, 24
+    rows = []
+    for sd in seeds:
+        img = Image.new("RGB", (len(cols) * size, size + pad), "white")
+        d = ImageDraw.Draw(img)
+        for i, (h, c) in enumerate(zip(heads, cols)):
+            d.text((i * size + 6, 6), f"seed {sd}: {h}", fill="black")
+            img.paste(Image.open(c(sd)).convert("RGB").resize((size, size)), (i * size, pad))
+        img.save(run_dir / f"grid_seed{sd:02d}.png")
+        rows.append(img)
+    full = Image.new("RGB", (rows[0].width, sum(r.height for r in rows)), "white")
+    y = 0
+    for r in rows:
+        full.paste(r, (0, y)); y += r.height
+    full.save(run_dir / "grid_all_seeds.png")
+    print(f"wrote {run_dir}/grid_all_seeds.png and grid_seedNN.png for {seeds}", flush=True)
+    if wandb_id:
+        import wandb
+        run = wandb.init(project="poe-repair-animals-compose", entity="prime_lab", id=wandb_id, resume="allow")
+        table = wandb.Table(columns=["seed", "row"])
+        for sd, r in zip(seeds, rows):
+            table.add_data(sd, wandb.Image(r))
+        run.log({"grid_per_seed": table, "grid_all_seeds": wandb.Image(full)})
+        run.finish()
 
 
 def train(steps: int, eval_every: int, lr: float, name: str, seed: int, use_wandb: bool,
@@ -332,8 +374,13 @@ if __name__ == "__main__":
     ap.add_argument("--name", default="run")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--wandb", action="store_true")
+    ap.add_argument("--grid", type=Path, metavar="RUN_DIR")
+    ap.add_argument("--iters", nargs="*", type=int, default=[0, 500, 1000, 1500, 2000])
+    ap.add_argument("--wandb-id")
     ap.add_argument("--render-seeds", nargs="*", type=int, default=[])
     args = ap.parse_args()
+    if args.grid:
+        grid(args.grid, args.iters, args.render_seeds or list(HELD_OUT[1]), args.wandb_id)
     if args.train:
         train(args.steps, args.eval_every, args.lr, args.name, args.seed, args.wandb, args.render_seeds)
     if args.check_token:
