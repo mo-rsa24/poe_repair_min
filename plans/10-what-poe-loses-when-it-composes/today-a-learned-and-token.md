@@ -112,10 +112,14 @@ fast-forwarded to the committed branch. Every path on a launch line is absolute,
 
 ### 5. 🔧 The 8,000-update run with sheets (AI, about 65 min, unattended)
 
-- [ ] **Launch** under `nohup` with W&B logging, sheets and held-out share at updates 0, 300, 1000, 2000,
+- [x] **Launch** under `nohup` with W&B logging, sheets and held-out share at updates 0, 300, 1000, 2000,
   4000 and 8000. Each sheet has seeds 9 to 16 down the rows and, across, a dog alone, a cat alone, "a cat
-  and a dog", PoE(a cat, a dog) and PoE(a cat, a dog, `<and>`).
-- [ ] **Apply** [the stop rule](#the-test-written-before-any-render).
+  and a dog", PoE(a cat, a dog) and PoE(a cat, a dog, `<and>`). ✓ ran 2026-10-28, mscluster109 device 0,
+  W&B `c6f1pmmq`, log `.../logs/run5.log`. Held-out mean share removed at steps 0, 10, 25, 40: −0.113,
+  +0.009, −0.021, −0.025 at 300 updates; −0.143, +0.015, −0.023, −0.013 at 4,000; −0.070, +0.013, −0.005,
+  −0.008 at 8,000. Sheets in `artifacts/results/what-the-and-vector-is-made-of/learned-and-token-sheet-iter*.png`.
+- [x] **Apply** [the stop rule](#the-test-written-before-any-render). ✓ fired: every step's mean is under
+  10% after 8,000 updates (best single step mean +0.015).
 
 ### 6. 🖼️ The card, the renders and the calls (AI, then you)
 
