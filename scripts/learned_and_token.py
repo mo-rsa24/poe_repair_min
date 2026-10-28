@@ -114,10 +114,15 @@ def and_target(st: dict) -> tuple[torch.Tensor, torch.Tensor]:
     return target, target - st["eps_uncond"]
 
 
-def eps_and(models: dict, tok: "AndToken", st: dict, device, dtype, grad: bool) -> torch.Tensor:
+def third_prompt(a: str, b: str, in_sentence: bool) -> str:
+    """The third expert's text: the bare token, or the token between the two animals."""
+    return f"{a} {TOKEN} {b}" if in_sentence else TOKEN
+
+
+def eps_and(models: dict, tok: "AndToken", st: dict, device, dtype, grad: bool, prompt: str = TOKEN) -> torch.Tensor:
     from poe_repair.methods._sampling import add_time_ids
 
-    seq, pool = tok.encode(TOKEN, device=device, dtype=dtype, grad=grad)
+    seq, pool = tok.encode(prompt, device=device, dtype=dtype, grad=grad)
     cond = {"text_embeds": pool, "time_ids": add_time_ids(height=1024, width=1024, batch_size=1,
                                                           device=device, dtype=dtype)}
     t = torch.as_tensor(st["timestep"], device=device)
@@ -126,15 +131,17 @@ def eps_and(models: dict, tok: "AndToken", st: dict, device, dtype, grad: bool) 
                               timestep_cond=None).sample.float()
 
 
-def share_removed(models, tok, device, dtype, split="heldout", pair=None, seeds=None) -> dict[int, list[float]]:
+def share_removed(models, tok, device, dtype, split="heldout", pair=None, seeds=None,
+                  in_sentence: bool = False) -> dict[int, list[float]]:
     """Per eval step, the share of the gap closed on each seed (held-out cat x dog unless a pair is given)."""
     pair, seeds = (pair or HELD_OUT[0]), (seeds or HELD_OUT[1])
+    prompt = third_prompt(*pair_prompts(pair)[:2], in_sentence)
     out: dict[int, list[float]] = {}
     for step in EVAL_STEPS:
         for seed in seeds:
             st = load_state(split, pair, seed, step, device)
             target, gap = and_target(st)
-            e = eps_and(models, tok, st, device, dtype, grad=False)
+            e = eps_and(models, tok, st, device, dtype, grad=False, prompt=prompt)
             out.setdefault(step, []).append(1 - ((e - target).norm() / gap.norm()).item())
     return out
 
@@ -161,8 +168,8 @@ def report(tag: str, res: dict[int, list[float]]) -> bool:
     return all(m < 0.10 for m in means.values())
 
 
-def render_tiles(ctx, tok, a: str, b: str | None, seeds: list[int], third: bool, out_dir: Path) -> list[Path]:
-    """PoE(a, b) or PoE(a, b, "<and>") per seed, the loop and noise of scripts/and_vector_sheet.py."""
+def render_tiles(ctx, tok, a: str, b: str | None, seeds: list[int], third: bool | str, out_dir: Path) -> list[Path]:
+    """PoE(a, b) or PoE(a, b, third) per seed (third is True for the bare token, or the third expert's prompt), the loop and noise of scripts/and_vector_sheet.py."""
     from concept_pair_sheet import NOISE_PAIR
     from poe_repair.composers._helpers import init_latents_for_cell
     from poe_repair.experiments.interaction_term.cell import cell_from_slug
@@ -172,7 +179,7 @@ def render_tiles(ctx, tok, a: str, b: str | None, seeds: list[int], third: bool,
 
     m, device, dtype, sched, w = ctx.models, ctx.device, ctx.dtype, ctx.scheduler, ctx.guidance_scale
     enc = lambda q: encode_prompt_sdxl(q, models=m, device=device, dtype=dtype)
-    embs = [enc(a)] + ([enc(b)] if b else []) + ([tok.encode(TOKEN, device=device, dtype=dtype, grad=False)] if third else [])
+    embs = [enc(a)] + ([enc(b)] if b else []) + ([tok.encode(TOKEN if third is True else third, device=device, dtype=dtype, grad=False)] if third else [])
     embs.append(enc(""))
     seq = torch.cat([e for e, _ in embs]).to(dtype)
     pool = torch.cat([q for _, q in embs]).to(dtype)
@@ -223,10 +230,10 @@ def contact_sheet(paths: list[Path], seeds: list[int], title: str, out: Path, si
 JOINT = "a cat and a dog"
 
 
-def build_sheet(run_dir: Path, it: int, seeds: list[int]):
+def build_sheet(run_dir: Path, it: int, seeds: list[int], third_label: str = "<and>"):
     """Columns: dog alone, cat alone, the joint prompt, PoE(cat, dog), PoE(cat, dog, <and>) after `it` updates;
     one row per seed."""
-    heads = ["a dog alone", "a cat alone", f'"{JOINT}"', "PoE(a cat, a dog)", f"PoE(a cat, a dog, <and>), {it} updates"]
+    heads = ["a dog alone", "a cat alone", f'"{JOINT}"', "PoE(a cat, a dog)", f"PoE(a cat, a dog, {third_label}), {it} updates"]
     dirs = [run_dir / "tiles" / n for n in ("mono_a_dog", "mono_a_cat", "joint", "plain_poe", f"iter{it:05d}")]
     return _sheet(heads, dirs, seeds, run_dir / f"sheet_iter{it:05d}.png")
 
@@ -254,7 +261,7 @@ def pair_prompts(pair: str) -> tuple[str, str, str]:
     return a, b, f"{a} and {b}"
 
 
-def pairs_sheet(run_dir: Path, it: int, specs: list[str], wandb_id: str | None) -> None:
+def pairs_sheet(run_dir: Path, it: int, specs: list[str], wandb_id: str | None, in_sentence: bool = False) -> None:
     """The five-column sheet and the share removed for other pairs, with the rows saved at update `it`.
     Each spec is pair:split:seed,seed,... (split is train for a pool pair, heldout for a held-out one)."""
     from poe_repair.run import make_ctx
@@ -272,14 +279,15 @@ def pairs_sheet(run_dir: Path, it: int, specs: list[str], wandb_id: str | None) 
         a, b, joint = pair_prompts(pair)
         base = run_dir / "tiles_pairs" / pair
         for name, pa, pb, third in (("mono_a", a, None, False), ("mono_b", b, None, False), ("joint", joint, None, False),
-                                    ("plain_poe", a, b, False), (f"iter{it:05d}", a, b, True)):
+                                    ("plain_poe", a, b, False),
+                                    (f"iter{it:05d}", a, b, third_prompt(a, b, in_sentence))):
             todo = [sd for sd in seeds if not (base / name / f"seed{sd:02d}.png").exists()]
             if todo:
                 render_tiles(ctx, tok, pa, pb, todo, third, base / name)
-        heads = [f"{a} alone", f"{b} alone", f'"{joint}"', f"PoE({a}, {b})", f"PoE({a}, {b}, <and>), {it} updates"]
+        heads = [f"{a} alone", f"{b} alone", f'"{joint}"', f"PoE({a}, {b})", f"PoE({a}, {b}, {third_prompt(a, b, in_sentence)}), {it} updates"]
         dirs = [base / n for n in ("mono_a", "mono_b", "joint", "plain_poe", f"iter{it:05d}")]
         sheets[pair] = _sheet(heads, dirs, seeds, run_dir / f"sheet_{pair}_iter{it:05d}.png")
-        res = share_removed(ctx.models, tok, ctx.device, ctx.dtype, split, pair, seeds)
+        res = share_removed(ctx.models, tok, ctx.device, ctx.dtype, split, pair, seeds, in_sentence)
         print(f"{pair} ({split}) seeds {seeds}, {it} updates, share removed: "
               + "  ".join(f"step {st}: {sum(v) / len(v):+.3f}" for st, v in res.items()), flush=True)
     if wandb_id:
@@ -317,7 +325,7 @@ def grid(run_dir: Path, iters: list[int], seeds: list[int], wandb_id: str | None
 
 
 def train(steps: int, eval_at: list[int], lr: float, name: str, seed: int, use_wandb: bool,
-          render_seeds: list[int]) -> None:
+          render_seeds: list[int], in_sentence: bool = False) -> None:
     from poe_repair.run import make_ctx
 
     out = Path("/datasets/mmolefe/poe_repair_min/outputs/learned_and_token") / name
@@ -337,19 +345,21 @@ def train(steps: int, eval_at: list[int], lr: float, name: str, seed: int, use_w
         import wandb
         run_wb = wandb.init(project="poe-repair-animals-compose", entity="prime_lab", name=f"learned-and-{name}",
                             group="learned-and-token", config={"steps": steps, "lr": lr, "pool": POOL.name,
-                            "cells": len(cells), "held_out": HELD_OUT[0], "render_seeds": render_seeds})
+                            "cells": len(cells), "held_out": HELD_OUT[0], "render_seeds": render_seeds,
+                            "in_sentence": in_sentence})
         print(f"wandb run {run_wb.id} {run_wb.url}", flush=True)
     A, B = "a cat", "a dog"
 
     def evaluate(it: int) -> bool:
-        res = share_removed(models, tok, device, dtype)
+        res = share_removed(models, tok, device, dtype, in_sentence=in_sentence)
         fired = report(f"iter {it}", res)
         if run_wb:
             run_wb.log({f"held_out_share/step{st}": sum(v) / len(v) for st, v in res.items()}, step=it)
         if render_seeds:
             import wandb
-            render_tiles(ctx, tok, A, B, render_seeds, True, out / "tiles" / f"iter{it:05d}")
-            sheet = build_sheet(out, it, render_seeds)
+            render_tiles(ctx, tok, A, B, render_seeds, third_prompt(A, B, in_sentence) if in_sentence else True,
+                         out / "tiles" / f"iter{it:05d}")
+            sheet = build_sheet(out, it, render_seeds, third_prompt(A, B, in_sentence) if in_sentence else TOKEN)
             if run_wb:
                 run_wb.log({"sheet": wandb.Image(sheet, caption=f"{it} updates")}, step=it)
         return fired
@@ -362,7 +372,8 @@ def train(steps: int, eval_at: list[int], lr: float, name: str, seed: int, use_w
         pair, cell_seed = rng.choice(cells)
         st = load_state("train", pair, cell_seed, rng.randrange(50), device)
         target, _ = and_target(st)
-        e = eps_and(models, tok, st, device, dtype, grad=True)
+        e = eps_and(models, tok, st, device, dtype, grad=True,
+                    prompt=third_prompt(*pair_prompts(pair)[:2], in_sentence))
         sq = (e - target) ** 2
         opt.zero_grad(set_to_none=True)
         sq.sum().backward()  # summed, so fp16 gradients through the UNet do not underflow; Adam is scale-free
@@ -425,16 +436,17 @@ if __name__ == "__main__":
     ap.add_argument("--iters", nargs="*", type=int, default=[0, 500, 1000, 1500, 2000])
     ap.add_argument("--wandb-id")
     ap.add_argument("--render-seeds", nargs="*", type=int, default=[])
+    ap.add_argument("--in-sentence", action="store_true", help="third expert is 'A <and> B', not the bare token")
     ap.add_argument("--pairs-sheet", type=Path, metavar="RUN_DIR")
     ap.add_argument("--iter", type=int, default=8000)
     ap.add_argument("--pairs", nargs="*", default=[], metavar="PAIR:SPLIT:SEEDS")
     args = ap.parse_args()
     if args.pairs_sheet:
-        pairs_sheet(args.pairs_sheet, args.iter, args.pairs, args.wandb_id)
+        pairs_sheet(args.pairs_sheet, args.iter, args.pairs, args.wandb_id, args.in_sentence)
     if args.grid:
         grid(args.grid, args.iters, args.render_seeds or list(HELD_OUT[1]), args.wandb_id)
     if args.train:
-        train(args.steps, args.eval_at, args.lr, args.name, args.seed, args.wandb, args.render_seeds)
+        train(args.steps, args.eval_at, args.lr, args.name, args.seed, args.wandb, args.render_seeds, args.in_sentence)
     if args.check_token:
         check_token()
     if args.baseline:
