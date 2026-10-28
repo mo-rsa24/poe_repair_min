@@ -38,7 +38,7 @@ sys.path.insert(0, str(REPO / "scripts"))
 from concept_pair_sheet import NOISE_PAIR, OUT, concept_slug, write_sidecar  # noqa: E402
 
 STEER_STEPS = 10        # steps 0 to 9
-LOSS_SCALE = 1024.0     # the backward pass runs in fp16; the loss is scaled up and the gradient scaled back
+LOSS_SCALE = float(os.environ.get("LOSS_SCALE", 1024))   # the backward pass runs in fp16: the loss is scaled up, the gradient scaled back
 TOKEN = 1               # position of a one-word prompt's word: [BOS, word, EOS, pad...]
 
 
@@ -217,12 +217,11 @@ def sheet(out: Path, a: str, b: str, etas: list[tuple[str, float]], seeds: list[
     from main_study_grids import grid
 
     slug = f"{concept_slug(a)}__x__{concept_slug(b)}"
-    ref = lambda col, s: OUT / "and_vector" / slug / f"seed{s:02d}" / f"{col}.png"
-    columns = [("poe", ["PoE, no steering", f'"{a}", "{b}"'])]
-    columns += [(f"eta_{k}", [f"Steered, {k}", f"eta = {v:g}"]) for k, v in etas if v != 0]
+    ref_joint = lambda s: OUT / "and_vector" / slug / f"seed{s:02d}" / "joint.png"
+    columns = [(f"eta_{k}", ["PoE, no steering", f'"{a}", "{b}"'] if v == 0 else [f"Steered, {k}", f"eta = {v:g}"])
+               for k, v in etas]
     columns += [("joint", ["Joint prompt", f'"{a} and {b}"'])]
-    where = lambda key, s: (ref("poe", s) if key == "poe" else ref("joint", s) if key == "joint"
-                            else tile(OUT, slug, s, key[4:]))
+    where = lambda key, s: ref_joint(s) if key == "joint" else tile(OUT, slug, s, key[4:])
     rows = [(f"seed {s}", lambda key, s=s: where(key, s)) for s in seeds]
     out.parent.mkdir(parents=True, exist_ok=True)
     record = grid(rows, columns, out, f'Separation steering on plain PoE: "{a}" and "{b}"', "",
