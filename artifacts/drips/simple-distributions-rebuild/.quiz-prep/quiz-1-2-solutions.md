@@ -1,5 +1,4 @@
 # Quiz 1.2 banked problems: the solutions written here
-
 Standard: QUIZ_PREP_FORMAT v1
 
 ⬅️ [Quiz 1.2 preparation](quiz-1-2.md) · 🏠 [the guide](../PROMPTS.md) · [Layer 1](../ladder/01-one-diffusion-expert.md)
