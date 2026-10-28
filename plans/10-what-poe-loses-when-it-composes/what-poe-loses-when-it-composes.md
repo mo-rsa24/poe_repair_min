@@ -1432,4 +1432,5 @@ script its row names.
 
 - The mention of **the locality test** in [the structural route](route-structural-can-a-toy-reproduce-the-hybrid.md#what-you-will-achieve).
 - The mention of **joint prompt** in [the caption walk on wet camels and wet dogs](today-camel-and-dog-in-the-training-data.md).
+- The mention of **joint prompt** in [the learned-token run](today-a-learned-and-token.md).
 - The mention of **caption fine-tuning** in [the structural route](route-structural-can-a-toy-reproduce-the-hybrid.md).

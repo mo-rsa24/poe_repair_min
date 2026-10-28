@@ -2,11 +2,11 @@
 <!-- template: exempt. Reason: a one-run cluster test, not a plan -->
 
 > [!NOTE]
-> **You will hold:** the share of the gap between the joint prompt and plain PoE that one fitted token
+> **You will hold:** the share of the gap between the [joint prompt](what-poe-loses-when-it-composes.md#21-the-objects) and plain PoE that one fitted token
 > removes on held-out cat × dog (seeds 9 to 16, at steps 0, 10, 25, 40), and two sheets of
 > PoE(animal A, animal B, "<and>") with a call per tile. · **Time:** three sittings of about 1 h, the
 > training runs unattended on mscluster109 · **Stop point:** supported on both marks below, or under 10%
-> removed at every step after 2,000 training steps
+> removed at every step after 8,000 training steps
 
 Walk it with:
 
@@ -60,8 +60,9 @@ the joint render, because the joint reference is wrong on seeds 10, 13, 14 and 1
 | `2` on at least 4 of the 7 seeds in render 1, and on more of seeds 9 to 16 than plain PoE in render 2 | **supported**: one fitted token carries what "and" adds |
 | anything else | **not supported**, with the two counts reported as they fell |
 
-**Stop rule.** Every 500 steps the run logs the held-out share removed. If after 2,000 steps it is under
-10% at every one of steps 0, 10, 25 and 40, stop and report: that is the result and no render is made.
+**Stop rule.** At updates 0, 300, 1000, 2000, 4000 and 8000 the run logs the held-out share removed and a
+sheet. If after 8,000 updates the share is under 10% at every one of steps 0, 10, 25 and 40, stop and
+report: that is the result.
 
 **Share removed** = 1 − ‖ε_<and> − (ε_J + 2ε_∅ − ε_A − ε_B)‖ / ‖ε_J + ε_∅ − ε_A − ε_B‖, one number per
 cached step, on a_cat__x__a_dog seeds 9 to 16 at steps 0, 10, 25 and 40. The denominator is the gap
@@ -100,7 +101,7 @@ fast-forwarded to the committed branch. Every path on a launch line is absolute,
   four steps (−0.142, −0.064, −0.086, −0.052 to −0.116, −0.011, −0.024, −0.033); the per-update loss is
   noisy because each update draws a different pair and step.
 
-### 4. 🔧 The 2,000-step run (AI, hours, unattended)
+### 4. 🔧 The first 2,000-update run (AI, done)
 
 - [x] **Launch** under `nohup`, logging node, device and PID in the header, and report the held-out share
   removed every 500 steps. ✓ ran 2026-10-28, mscluster109 device 0, log `.../logs/run1.log`. Held-out mean
@@ -109,9 +110,15 @@ fast-forwarded to the committed branch. Every path on a launch line is absolute,
 - [x] **Apply** [the stop rule](#the-test-written-before-any-render). ✓ fired: every step's mean is under
   10% after 2,000 updates (best single step mean +0.012).
 
-### 5. 🖼️ The card, the renders and the calls (AI, then you)
+### 5. 🔧 The 8,000-update run with sheets (AI, about 65 min, unattended)
 
-- [ ] 🕒 **Not run: the stop rule fired at step 4, so no render is made.**
+- [ ] **Launch** under `nohup` with W&B logging, sheets and held-out share at updates 0, 300, 1000, 2000,
+  4000 and 8000. Each sheet has seeds 9 to 16 down the rows and, across, a dog alone, a cat alone, "a cat
+  and a dog", PoE(a cat, a dog) and PoE(a cat, a dog, `<and>`).
+- [ ] **Apply** [the stop rule](#the-test-written-before-any-render).
+
+### 6. 🖼️ The card, the renders and the calls (AI, then you)
+
 - [ ] **Copy** [the test](#the-test-written-before-any-render) into the run's results card before any tile
   is rendered.
 - [ ] **Render** both sets and build the sheets as
