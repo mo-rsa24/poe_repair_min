@@ -1,6 +1,10 @@
 # 🔨 Phase 3: ideal experts, exact targets, and the seven kinds of composition
 
-You replace trained networks with ideal experts, each one its training points smoothed by a small [Gaussian](../../../../../Obsidian/Mathematics/Statistics/Distributions/Multivariate%20Normal%20Distribution/Multivariate%20Normal%20Distribution.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=227 "Introduction to probability for data science, section 4.6, The one-dimensional Gaussian random variable: its density with plots of μ and σ moving and widenin..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=306 "Introduction to probability for data science, section 5.6, The d-dimensional Gaussian density with Σ⁻¹, its mean vector and covariance, and the diagonal cova..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=203 "Mathematics for machine learning, section 6.5, The univariate and multivariate densities (equations 6.62 and 6.63, page 204) drawn with 100 samples, then mar..."), [▶1](https://www.youtube.com/watch?v=rzFX5NWojp0&t=0s "StatQuest, The Normal Distribution, Clearly Explained, 0:00 to 3:27, The bell-shaped curve and what its mean and standard deviation set, in the video's openi..."), [▶2](https://www.youtube.com/watch?v=oI3hZJqXJuc&t=135s "StatQuest, The Main Ideas behind Probability Distributions, 2:15 to 5:14, A curve as a distribution, where probability is the area under it over an interval ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/02-densities-and-the-gaussian.md "Chapter 2: Read a density as area and draw a Gaussian from its covariance, deep-learning/diffusion-models/01-poe-derivation-foundations, chapter 02. The Gaus...")</sub>. Their noised densities are then exact at every diffusion step, so the composition can be computed exactly on a grid and every sampler's error measured against it. On that footing you build the seven kinds of composition on the paper's toy data, one dial each. It ends when your exact numbers match the kinds notebook's Figure 1 and Figure 2. The reference is `rebuild/ideal.py`, `rebuild/kinds.py` and `rebuild/phase3_kinds.py` on branch `unbuild-walk`.
+**What this phase does.** You replace trained networks with ideal experts, each one its training points smoothed by a small [Gaussian](../../../../../Obsidian/Mathematics/Statistics/Distributions/Multivariate%20Normal%20Distribution/Multivariate%20Normal%20Distribution.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=227 "Introduction to probability for data science, section 4.6, The one-dimensional Gaussian random variable: its density with plots of μ and σ moving and widenin..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=306 "Introduction to probability for data science, section 5.6, The d-dimensional Gaussian density with Σ⁻¹, its mean vector and covariance, and the diagonal cova..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=203 "Mathematics for machine learning, section 6.5, The univariate and multivariate densities (equations 6.62 and 6.63, page 204) drawn with 100 samples, then mar..."), [▶1](https://www.youtube.com/watch?v=rzFX5NWojp0&t=0s "StatQuest, The Normal Distribution, Clearly Explained, 0:00 to 3:27, The bell-shaped curve and what its mean and standard deviation set, in the video's openi..."), [▶2](https://www.youtube.com/watch?v=oI3hZJqXJuc&t=135s "StatQuest, The Main Ideas behind Probability Distributions, 2:15 to 5:14, A curve as a distribution, where probability is the area under it over an interval ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/02-densities-and-the-gaussian.md "Chapter 2: Read a density as area and draw a Gaussian from its covariance, deep-learning/diffusion-models/01-poe-derivation-foundations, chapter 02. The Gaus...")</sub>. Their noised densities are then exact at every diffusion step, so the composition can be computed exactly on a grid and every sampler's error measured against it.
+
+**What you build, and when it ends.** On that footing you build the seven kinds of composition on the paper's toy data, one dial each. It ends when your exact numbers match the kinds notebook's Figure 1 and Figure 2.
+
+**The reference code.** The reference is `rebuild/ideal.py`, `rebuild/kinds.py` and `rebuild/phase3_kinds.py` on branch `unbuild-walk`.
 
 **How to walk it.** `/drip-execute-plan artifacts/drips/simple-distributions-rebuild/03-ideal-experts-and-the-seven-kinds.md`, one step per message, typing every block yourself. The python blocks, typed in order into `walk03.py` in `/home-mscluster/mmolefe/Playground/PhD/simple-distributions-walk/`, are one runnable script.
 
@@ -72,19 +76,6 @@ $$
 
 which is exactly a [Gaussian kernel density estimate](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=142) with bandwidth σ.
 
-<!-- video-table: kernel-density-estimate rev=1 -->
-ritvikmath on the kernel density estimate, a normal curve centred on every data point and averaged, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | Six fish weights and three candidate estimates: under-smoothed, over-smoothed and just right | Intuition | [ritvikmath, Kernel Density Estimation, 2:38 to 5:17](https://www.youtube.com/watch?v=t1PEhjyzxLA&t=158s) |
-| 2 | A normal curve centred on each of three fish, averaged, and read off at 9.5 lb and at 14 lb | Worked example | [ritvikmath, Kernel Density Estimation, 5:32 to 10:13](https://www.youtube.com/watch?v=t1PEhjyzxLA&t=332s) |
-| 3 | The formula, one over n times the sum of a kernel at x minus each data point, matched to the picture | Intuition | [ritvikmath, Kernel Density Estimation, 10:28 to 13:08](https://www.youtube.com/watch?v=t1PEhjyzxLA&t=628s) |
-| 4 | The bandwidth h is each kernel's standard deviation, and it decides between too many peaks and too few | Intuition | [ritvikmath, Kernel Density Estimation, 14:10 to 15:44](https://www.youtube.com/watch?v=t1PEhjyzxLA&t=850s) |
-
-ritvikmath works in one dimension and does not point out that a Gaussian kernel density estimate is a Gaussian mixture with one equal-weight component per data point. Times are read from automatic captions and good to about 30 seconds.
-<!-- /video-table -->
-
 **Derivation of why it is the ideal, and under which assumptions.** Write the training set as a distribution, [one point mass per training point](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/deep-learning-textbook.pdf#page=81):
 
 $$\widehat p_0(x)=\frac1N\sum_{i=1}^N\delta_{x_i}(x).$$
@@ -119,13 +110,30 @@ $$
 
 **Why the equality chain is there.** The middle expression describes the random operation, while the last expression makes every resulting bump visible. Both routes produce the same density.
 
-which is the sum above. The denoising objective at that noise level, taken as a population [expectation](../../../../../Obsidian/Mathematics/Statistics/Probability/Expected%20Value.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=141 "Introduction to probability for data science, section 3.4, Works with numbers: E[X] = Σ x p(x) and why it equals a dataset's average once repeated values are..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-statistics.pdf#page=81 "Introduction to statistics (Wits lecture notes), section 4.2.3, The expected value of a discrete random variable as the mean over many trials, with E[X] and ..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=196 "Introduction to probability for data science, section 4.2, The integral definition for a continuous variable, with uniform and exponential worked examples (p..."), [▶1](https://www.youtube.com/watch?v=KLs_7b7SKi4&t=309s "StatQuest, Expected Values, Main Ideas, 5:09 to 8:02, Calculating an expected value: each outcome times its probability, added up. Chapter-timed, from the vi..."), [▶2](https://www.youtube.com/watch?v=OSPr6G6Ka-U&t=738s "StatQuest, Expected Values for Continuous Variables, 12:18 to 18:17, Calculating the expected value of an exponential distribution, after deriving the formul..."), [◆](../../../../../goal-setting/learning/mathematics/statistics/conditional-expectation/textbook/01-expectation-and-the-best-constant-guess.md "1. Expectation, and the best constant guess, mathematics/statistics/conditional-expectation, section 1. A fair die's best constant guess under squared error ...")</sub> and minimised over every possible score field (unlimited capacity, global optimum), has $\nabla_y\log p_\sigma(y)$ as its [minimiser](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/the-little-book-of-generative-ai-foundations.pdf#page=126) (phase 1, Step 8). That is the precise sense in which this kernel density estimate is ideal. A real network can do worse, by underfitting or by stopping short of the optimum, or differently, by extrapolating. In 2D the networks in run 2 of the idea map matched it within 0.04 [nats](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/deep-learning-textbook.pdf#page=89), which is evidence from that run and not part of the argument.
+which is the sum above.
 
-**What the rebuild assumes on top.** σ = 0.05 is a chosen smoothing, and it is not the schedule's smallest noise: at t = 0 the cosine schedule's noise [standard deviation](../../../../../Obsidian/Mathematics/Statistics/Variance.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=150 "Introduction to probability for data science, section 3.4.4, Defines variance as E[(X − µ)²] and the standard deviation as its root (Definition 3.7), proves ..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=196 "Mathematics for machine learning, section 6.4.1, Variance as the covariance of a variable with itself (Definition 6.7), then the empirical mean and variance ..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=76 "Deep learning textbook, section 3.8, A short definition of variance and standard deviation beside expectation and covariance."), [▶1](https://www.youtube.com/watch?v=4-FysvtxQEU&t=1551s "Professor Leonard, Statistics 3.3, A standard deviation calculated by hand, 25:51 to 36:43, Works a standard deviation on a small data set by hand. Chapter-t..."), [▶2](https://www.youtube.com/watch?v=SzZ6GpcfoQY&t=236s "StatQuest, Calculating the Mean, Variance and Standard Deviation, Calculating population variance, 3:56 to 5:54, The population variance as the average squar..."), [◆](../../../../../goal-setting/learning/deep-learning/transformers/textbook/06-show-that-variances-of-independent-terms-add.md "Show that variances of independent terms add, deep-learning/transformers, chapter 06. Predicts the spread of a dot product of random vectors by adding the va...")</sub> $\sqrt{1-\bar\alpha_0}$ is `0.0251` (`p1.sqrt_1m_abar_0`). The rebuild takes $p_\sigma$ itself as the clean expert and runs the forward process on it, which is where Step 2's extra term $\bar\alpha_t\sigma^2$ comes from. A model trained directly on the bare training points would instead have component variance $1-\bar\alpha_t$ at step t. With those assumptions stated, the ideal expert is a trained expert with training error removed, and every failure measured on it belongs to the data or the composition.
+**What the ideal expert minimises.** The denoising objective at that noise level, taken as a population [expectation](../../../../../Obsidian/Mathematics/Statistics/Probability/Expected%20Value.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=141 "Introduction to probability for data science, section 3.4, Works with numbers: E[X] = Σ x p(x) and why it equals a dataset's average once repeated values are..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-statistics.pdf#page=81 "Introduction to statistics (Wits lecture notes), section 4.2.3, The expected value of a discrete random variable as the mean over many trials, with E[X] and ..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=196 "Introduction to probability for data science, section 4.2, The integral definition for a continuous variable, with uniform and exponential worked examples (p..."), [▶1](https://www.youtube.com/watch?v=KLs_7b7SKi4&t=309s "StatQuest, Expected Values, Main Ideas, 5:09 to 8:02, Calculating an expected value: each outcome times its probability, added up. Chapter-timed, from the vi..."), [▶2](https://www.youtube.com/watch?v=OSPr6G6Ka-U&t=738s "StatQuest, Expected Values for Continuous Variables, 12:18 to 18:17, Calculating the expected value of an exponential distribution, after deriving the formul..."), [◆](../../../../../goal-setting/learning/mathematics/statistics/conditional-expectation/textbook/01-expectation-and-the-best-constant-guess.md "1. Expectation, and the best constant guess, mathematics/statistics/conditional-expectation, section 1. A fair die's best constant guess under squared error ...")</sub> and minimised over every possible score field (unlimited capacity, global optimum), has $\nabla_y\log p_\sigma(y)$ as its [minimiser](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/the-little-book-of-generative-ai-foundations.pdf#page=126) (phase 1, Step 8). That is the precise sense in which this kernel density estimate is ideal.
+
+**Where a real network differs.** A real network can do worse, by underfitting or by stopping short of the optimum, or differently, by extrapolating. In 2D the networks in run 2 of the idea map matched it within 0.04 [nats](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/deep-learning-textbook.pdf#page=89), which is evidence from that run and not part of the argument.
+
+**What the rebuild assumes on top.** σ = 0.05 is a chosen smoothing, and it is not the schedule's smallest noise: at t = 0 the cosine schedule's noise [standard deviation](../../../../../Obsidian/Mathematics/Statistics/Variance.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=150 "Introduction to probability for data science, section 3.4.4, Defines variance as E[(X − µ)²] and the standard deviation as its root (Definition 3.7), proves ..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=196 "Mathematics for machine learning, section 6.4.1, Variance as the covariance of a variable with itself (Definition 6.7), then the empirical mean and variance ..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=76 "Deep learning textbook, section 3.8, A short definition of variance and standard deviation beside expectation and covariance."), [▶1](https://www.youtube.com/watch?v=4-FysvtxQEU&t=1551s "Professor Leonard, Statistics 3.3, A standard deviation calculated by hand, 25:51 to 36:43, Works a standard deviation on a small data set by hand. Chapter-t..."), [▶2](https://www.youtube.com/watch?v=SzZ6GpcfoQY&t=236s "StatQuest, Calculating the Mean, Variance and Standard Deviation, Calculating population variance, 3:56 to 5:54, The population variance as the average squar..."), [◆](../../../../../goal-setting/learning/deep-learning/transformers/textbook/06-show-that-variances-of-independent-terms-add.md "Show that variances of independent terms add, deep-learning/transformers, chapter 06. Predicts the spread of a dot product of random vectors by adding the va...")</sub> $\sqrt{1-\bar\alpha_0}$ is `0.0251` (`p1.sqrt_1m_abar_0`).
+
+**The clean expert is the smoothed one.** The rebuild takes $p_\sigma$ itself as the clean expert and runs the forward process on it, which is where Step 2's extra term $\bar\alpha_t\sigma^2$ comes from. A model trained directly on the bare training points would instead have component variance $1-\bar\alpha_t$ at step t.
+
+**What that buys.** With those assumptions stated, the ideal expert is a trained expert with training error removed, and every failure measured on it belongs to the data or the composition.
 
 🧸 **Toy:** three training points, (−0.5, −0.5), (−0.6, −0.4), (−0.5, 0.5), with σ = 0.15. At (−0.5, 0) the log-density is `-2.6288` by the formula, and `-2.6288` from scikit-learn's `KernelDensity`.
 
 🔤 **The name:** [ideal expert](../../../../../Obsidian/Artificial%20Intelligence/Generative%20Modeling/Diffusion%20Models/Composition/What%20An%20Expert%20Learns%20From%20Its%20Training%20Set.md)
+
+<!-- links: step1/kernel-density-estimate rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [ritvikmath, Kernel Density Estimation, 5:32 to 10:13](https://www.youtube.com/watch?v=t1PEhjyzxLA&t=332s), a normal curve centred on each of three fish, averaged, and read off at 9.5 lb and at 14 lb.
+- 🎬 Video: [ritvikmath, Kernel Density Estimation, 10:28 to 13:08](https://www.youtube.com/watch?v=t1PEhjyzxLA&t=628s), the formula, one over n times the sum of a kernel at x minus each data point, matched to the picture.
+
+**What the videos leave out.** ritvikmath works in one dimension and does not point out that a Gaussian kernel density estimate is a Gaussian mixture with one equal-weight component per data point. Times are read from automatic captions and good to about 30 seconds.
+<!-- /links -->
 
 ---
 
@@ -417,24 +425,24 @@ $$
 
 **Why the variance divisor is there.** A narrow Gaussian has a steeper score for the same displacement. Removing $v_t$ would give the displacement rather than [the Gaussian score](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/the-little-book-of-generative-ai-foundations.pdf#page=114).
 
-The first line differentiates the logarithm (the $1/N$ cancels). The second writes each $\nabla_x\phi_i$ as $\phi_i\nabla_x\log\phi_i$, which brings out the responsibilities. The third uses the score of an isotropic Gaussian, $(\mu-x)/v$. `logq` below never codes this formula: autograd through its `logsumexp` produces exactly it. At one point, with five training points at t = 50, both give `[-0.4644, -0.3559]` (`p3.mixture_score_autograd` and `p3.mixture_score_formula`).
+**Reading the three lines.** The first line differentiates the logarithm (the $1/N$ cancels). The second writes each $\nabla_x\phi_i$ as $\phi_i\nabla_x\log\phi_i$, which brings out the responsibilities. The third uses the score of an isotropic Gaussian, $(\mu-x)/v$.
+
+**Autograd computes the same thing.** `logq` below never codes this formula: autograd through its `logsumexp` produces exactly it. At one point, with five training points at t = 50, both give `[-0.4644, -0.3559]` (`p3.mixture_score_autograd` and `p3.mixture_score_formula`).
 
 Every annealing target $\pi_t$ and every score the samplers use is therefore exact.
-
-<!-- video-table: sum-of-independent-gaussians rev=1 -->
-3Blue1Brown on why adding two independent Gaussians gives a Gaussian, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | What computing the sum of two random variables directly would look like | Intuition | [3Blue1Brown, Gaussian + Gaussian = Gaussian, 2:10 to 3:38](https://www.youtube.com/watch?v=d_qvLDhkg00&t=130s) |
-| 2 | A visual argument that the sum of two independent Gaussians is again a Gaussian | Proof | [3Blue1Brown, Gaussian + Gaussian = Gaussian, 3:38 to 8:27](https://www.youtube.com/watch?v=d_qvLDhkg00&t=218s) |
-
-No listed creator works the variance rule Var(aX + bY) = a²Var(X) + b²Var(Y) for independent X and Y, which gives the forward process its square roots. Times are chapter boundaries read from each video's chapter list, not from captions, so each is good to the chapter and the sentence inside it is not checked.
-<!-- /video-table -->
 
 🧸 **Toy:** with σ = 0.05, $v_t$ at t = 99, 50, 0 is `1.0`, `0.5229`, `0.00313`.
 
 🔤 **The name:** [exact](../../../../../goal-setting/learning/deep-learning/diffusion-models/06-diffusion-speciation-dynamics/plans/02-speciation/plans/02-exact-mixture-score.md)
+
+<!-- links: step2/sum-of-independent-gaussians rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [3Blue1Brown, Gaussian + Gaussian = Gaussian, 2:10 to 3:38](https://www.youtube.com/watch?v=d_qvLDhkg00&t=130s), what computing the sum of two random variables directly would look like.
+- 🎬 Video: [3Blue1Brown, Gaussian + Gaussian = Gaussian, 3:38 to 8:27](https://www.youtube.com/watch?v=d_qvLDhkg00&t=218s), a visual argument that the sum of two independent Gaussians is again a Gaussian.
+
+**What the videos leave out.** No listed creator works the variance rule Var(aX + bY) = a²Var(X) + b²Var(Y) for independent X and Y, which gives the forward process its square roots. Times are chapter boundaries read from each video's chapter list, not from captions, so each is good to the chapter and the sentence inside it is not checked.
+<!-- /links -->
 
 ---
 
@@ -491,6 +499,51 @@ $$
 **What the equation says.** Every term in the noised mixture is available in closed form, so its density and score can be evaluated at any query point.
 
 **Check it on the toy.** The formula gives variances 1.0, 0.5229 and 0.00313 at steps 99, 50 and 0.
+
+<details><summary>The code that draws this figure</summary>
+
+```python
+# figures/walk03-step2-noised-variance.py
+from pathlib import Path
+import json
+import matplotlib.pyplot as plt
+import numpy as np
+
+INK = "#212121"
+VARIANCE = "#37474f"
+
+repo = Path(__file__).resolve().parents[4]
+with (repo / "rebuild/out/walk-numbers.json").open() as f:
+    values = json.load(f)
+
+SIG = 0.05
+steps = np.array([0, 25, 50, 75, 99])
+abar = np.array([values[f"p1.abar_{t}"] for t in steps])
+variance = 1 - abar + abar * SIG**2
+variance[0] = values["p3.noised_ideal_var_t0_sig0.05"]
+variance[2] = values["p3.noised_ideal_var_t50_sig0.05"]
+variance[4] = values["p3.noised_ideal_var_t99_sig0.05"]
+
+fig, ax = plt.subplots(figsize=(7.2, 3.8))
+ax.plot(steps, variance, color=VARIANCE, marker="o", linewidth=2.5, markersize=7)
+ax.fill_between(steps, 0, variance, color=VARIANCE, alpha=0.08)
+
+for t, value in zip(steps, variance):
+    ax.annotate(f"{value:.4g}", (t, value), xytext=(0, 10), textcoords="offset points",
+                ha="center", color=INK, weight="bold")
+
+ax.text(3, 0.32, "narrow clean kernel", color=INK, weight="bold")
+ax.set_xlabel(r"diffusion step $t$")
+ax.set_ylabel("exact component variance $v_t$\npoints joined by straight segments")
+ax.set_xticks(steps)
+ax.set_ylim(0, 1.12)
+ax.spines[["top", "right"]].set_visible(False)
+ax.grid(axis="y", alpha=0.2)
+fig.tight_layout()
+fig.savefig(Path(__file__).with_suffix(".png"), dpi=160)
+```
+
+</details>
 
 <a href="figures/walk03-step2-noised-variance.png"><img src="figures/walk03-step2-noised-variance.png" width="620" alt="A line chart of exact component variance at steps 0, 50 and 99. The variance rises from 0.00313 through 0.5229 to 1.0 as the diffusion step increases."></a>
 
@@ -595,18 +648,16 @@ $$
 
 **Use the grid.** The count moves from 1 query to 58,081 queries, each with area 8.403e-05. That is enough to normalise and measure every two-dimensional composition in this page.
 
-<!-- video-table: grid-of-cells rev=1 -->
-Professor Leonard on adding up a function over a grid of small rectangles, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | What a double integral measures, and why it is the limit of sums over small rectangles | Intuition | [Calculus 3, 14.1, 10:43 to 30:15](https://www.youtube.com/watch?v=lv_awaaT6gY&t=643s) |
-| 2 | A double integral approximated numerically by a sum over rectangles | Worked example | [Calculus 3, 14.1, 35:35 to 47:03](https://www.youtube.com/watch?v=lv_awaaT6gY&t=2135s) |
-
-Leonard sums a height times a rectangle's area to approximate a volume; he does not divide by the total to make a density, as this section's grid does with 58,081 cells of area 8.403e-05. Times are chapter boundaries from the video's chapter list, so the sentence inside each is not checked.
-<!-- /video-table -->
-
 🔤 **The name:** [responsibility](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/05-predicting-a-score-field.md#52-a-mixtures-score-is-a-weighted-pull)
+
+<!-- links: step3/grid-of-cells rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [Professor Leonard, Calculus 3, 14.1, 10:43 to 30:15](https://www.youtube.com/watch?v=lv_awaaT6gY&t=643s), what a double integral measures, and why it is the limit of sums over small rectangles.
+- 🎬 Video: [Professor Leonard, Calculus 3, 14.1, 35:35 to 47:03](https://www.youtube.com/watch?v=lv_awaaT6gY&t=2135s), a double integral approximated numerically by a sum over rectangles.
+
+**What the videos leave out.** Leonard sums a height times a rectangle's area to approximate a volume; he does not divide by the total to make a density, as this section's grid does with 58,081 cells of area 8.403e-05. Times are chapter boundaries from the video's chapter list, so the sentence inside each is not checked.
+<!-- /links -->
 
 ---
 
@@ -671,18 +722,6 @@ $$
 
 **Replace them with a plain sum.** The score moves to $(1.3192,−0.1786)$. That is a product score, not the score of a mixture.
 
-<!-- video-table: responsibility rev=1 -->
-Luis Serrano, then ritvikmath, on a mixture component's share of one point, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | Hard against soft clustering: a point can belong partly to each cluster | Intuition | [Serrano, Gaussian Mixture Models, 1:56 to 3:36](https://www.youtube.com/watch?v=q71Niz856KE&t=116s) |
-| 2 | Colouring each point by its shares in the clusters | Intuition | [Serrano, Gaussian Mixture Models, 3:36 to 6:10](https://www.youtube.com/watch?v=q71Niz856KE&t=216s) |
-| 3 | γ, the probability that one fish came from class k given its measurements, written with Bayes' theorem as π_k times the class-k normal, divided by the same sum over every class | Proof | [ritvikmath, Gaussian Mixture Model, 8:47 to 10:13](https://www.youtube.com/watch?v=EWd1xRkyEog&t=527s) |
-
-Neither uses the shares to weight score arrows, as the mixture score here does, so the toy's (0.3609, −0.4392) against the plain sum's (1.3192, −0.1786) has no video. Rows 1 and 2 are chapter boundaries from Serrano's chapter list, so the sentence inside each is not checked; row 3 is read from ritvikmath's automatic captions and good to about 30 seconds.
-<!-- /video-table -->
-
 🔨 **Build:**
 
 ```python
@@ -700,29 +739,41 @@ def measure_grid(measure, p): return float(measure(X1, X2, p * CELL))
 print("cell area", f"{CELL:.4g}", " grid points", G * G)
 ```
 
+<!-- links: step3/responsibility rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [Serrano, Gaussian Mixture Models, 3:36 to 6:10](https://www.youtube.com/watch?v=q71Niz856KE&t=216s), each point coloured by its shares in the clusters.
+- 🎬 Video: [ritvikmath, Gaussian Mixture Model, 8:47 to 10:13](https://www.youtube.com/watch?v=EWd1xRkyEog&t=527s), γ, the probability that one fish came from class k given its measurements, written with Bayes' theorem as π_k times the class-k normal, divided by the same sum over every class.
+
+**What the videos leave out.** Neither uses the shares to weight score arrows, as the mixture score here does, so the toy's (0.3609, −0.4392) against the plain sum's (1.3192, −0.1786) has no video. Serrano's time is a chapter boundary from his chapter list, so the sentence inside it is not checked; ritvikmath's is read from automatic captions and good to about 30 seconds.
+<!-- /links -->
+
 ## Step 4: the perfect sampler and the floor
 
-**Definition.** The perfect sampler draws n points straight from the grid [density](../../../../../Obsidian/Mathematics/Statistics/Distributions/Probability%20Density%20Function.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=188 "Introduction to probability for data science, section 4.1, Builds the intuition of probability per unit length, defines the PDF and its properties (Definitio..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=186 "Mathematics for machine learning, section 6.2.2, The density and the CDF (Definitions 6.1 and 6.2), a uniform example (Example 6.3), and discrete against con..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=36 "Pattern recognition and machine learning, section 1.2.1, The density's two conditions (equations 1.25 and 1.26), its link to the CDF, and why a density picks..."), [▶1](https://www.youtube.com/watch?v=QKA4HNEw3aY&t=52s "The Organic Chemistry Tutor, Probability Density Functions, 0:52 to 3:39, Verifies that a given function is a density by checking that its integral equals 1...."), [▶2](https://www.youtube.com/watch?v=oI3hZJqXJuc&t=135s "StatQuest, The Main Ideas behind Probability Distributions, 2:15 to 5:14, A curve as a distribution, with probability read as area under it, not its height. ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/02-densities-and-the-gaussian.md#21-a-density-can-exceed-1 "Chapter 2: Read a density as area and draw a Gaussian from its covariance, deep-learning/diffusion-models/01-poe-derivation-foundations, chapter 02, section ..."), [◈](https://claude.ai/artifact/DBmJtn6xy75sPtQwPEvQZU#nb-sec1 "Kinds of composition notebook, Setup: the ideal expert, The ideal expert's log-density on a grid, in four steps from the 2D Gaussian to its logsumexp form, t...")</sub>, each jittered uniformly inside its cell. Its total variation to the exact density, on 40 × 40 bins of the $[-1.1,1.1]^2$ canvas, is the perfect-sample baseline: the TV that n samples carry with no sampler error, from finite [sampling](../../../../../Obsidian/Mathematics/Statistics/Sampling%20From%20A%20Distribution.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=539 "Pattern recognition and machine learning, chapter 11, Why expectations need samples, ancestral sampling of a directed graph (page 541), standard distribution..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=245 "Introduction to probability for data science, section 4.8, Generates random numbers for any PDF by running a uniform through the inverse CDF, in Python, with..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=606 "Deep learning textbook, section 17.1, Why machine learning samples at all (Monte Carlo estimates of sums and integrals, and sampling as the goal of a generat..."), [▶1](https://www.youtube.com/watch?v=9ixzzPQWuAY&t=474s "ritvikmath, Inverse Transform Sampling, 7:54 to 10:04, Inverts the exponential CDF and turns a uniform draw into an exponential one. Chapter-timed, from the ..."), [▶2](https://www.youtube.com/watch?v=OXDqjdVVePY&t=232s "ritvikmath, Accept-Reject Sampling, 3:52 to 7:45, An easy proposal g scaled by M into an envelope above f, then each draw accepted with probability f/(M g). ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/00-from-scratch-to-sdxl/textbook/l3-stochastic-processes/13-drawing-samples-by-hand.md "Drawing samples by hand: Monte Carlo, inverse transform and accept-reject, deep-learning/diffusion-models/00-from-scratch-to-sdxl, volume L3, section 13. Thr...")</sub> alone. The heading and the code's `floor TV` printout call it the floor. It compares one draw with the known target table, not two draws with each other. A sampler's TV is read against this baseline, never against 0.
+**Definition.** The perfect sampler draws n points straight from the grid [density](../../../../../Obsidian/Mathematics/Statistics/Distributions/Probability%20Density%20Function.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=188 "Introduction to probability for data science, section 4.1, Builds the intuition of probability per unit length, defines the PDF and its properties (Definitio..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=186 "Mathematics for machine learning, section 6.2.2, The density and the CDF (Definitions 6.1 and 6.2), a uniform example (Example 6.3), and discrete against con..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=36 "Pattern recognition and machine learning, section 1.2.1, The density's two conditions (equations 1.25 and 1.26), its link to the CDF, and why a density picks..."), [▶1](https://www.youtube.com/watch?v=QKA4HNEw3aY&t=52s "The Organic Chemistry Tutor, Probability Density Functions, 0:52 to 3:39, Verifies that a given function is a density by checking that its integral equals 1...."), [▶2](https://www.youtube.com/watch?v=oI3hZJqXJuc&t=135s "StatQuest, The Main Ideas behind Probability Distributions, 2:15 to 5:14, A curve as a distribution, with probability read as area under it, not its height. ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/02-densities-and-the-gaussian.md#21-a-density-can-exceed-1 "Chapter 2: Read a density as area and draw a Gaussian from its covariance, deep-learning/diffusion-models/01-poe-derivation-foundations, chapter 02, section ..."), [◈](https://claude.ai/artifact/DBmJtn6xy75sPtQwPEvQZU#nb-sec1 "Kinds of composition notebook, Setup: the ideal expert, The ideal expert's log-density on a grid, in four steps from the 2D Gaussian to its logsumexp form, t...")</sub>, each jittered uniformly inside its cell. Its total variation to the exact density, on 40 × 40 bins of the $[-1.1,1.1]^2$ canvas, is the perfect-sample baseline: the TV that n samples carry with no sampler error, from finite [sampling](../../../../../Obsidian/Mathematics/Statistics/Sampling%20From%20A%20Distribution.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=539 "Pattern recognition and machine learning, chapter 11, Why expectations need samples, ancestral sampling of a directed graph (page 541), standard distribution..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=245 "Introduction to probability for data science, section 4.8, Generates random numbers for any PDF by running a uniform through the inverse CDF, in Python, with..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=606 "Deep learning textbook, section 17.1, Why machine learning samples at all (Monte Carlo estimates of sums and integrals, and sampling as the goal of a generat..."), [▶1](https://www.youtube.com/watch?v=9ixzzPQWuAY&t=474s "ritvikmath, Inverse Transform Sampling, 7:54 to 10:04, Inverts the exponential CDF and turns a uniform draw into an exponential one. Chapter-timed, from the ..."), [▶2](https://www.youtube.com/watch?v=OXDqjdVVePY&t=232s "ritvikmath, Accept-Reject Sampling, 3:52 to 7:45, An easy proposal g scaled by M into an envelope above f, then each draw accepted with probability f/(M g). ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/00-from-scratch-to-sdxl/textbook/l3-stochastic-processes/13-drawing-samples-by-hand.md "Drawing samples by hand: Monte Carlo, inverse transform and accept-reject, deep-learning/diffusion-models/00-from-scratch-to-sdxl, volume L3, section 13. Thr...")</sub> alone.
 
-**Why it is a baseline and not a lower bound.** The baseline is itself random, so a sampler can score below one perfect draw by chance. In `rebuild/out/phase3/phase3.json`, UHA on co-occurrence has TV `0.0977` against the perfect draw's `0.0990`, and reverse diffusion on disjunction `0.214` against `0.231`. Repeating the perfect draw 200 times with `rebuild.ideal.perfect_samples` gives a [standard deviation](../../../../../Obsidian/Mathematics/Statistics/Variance.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=150 "Introduction to probability for data science, section 3.4.4, Defines variance as E[(X − µ)²] and the standard deviation as its root (Definition 3.7), proves ..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=196 "Mathematics for machine learning, section 6.4.1, Variance as the covariance of a variable with itself (Definition 6.7), then the empirical mean and variance ..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=76 "Deep learning textbook, section 3.8, A short definition of variance and standard deviation beside expectation and covariance."), [▶1](https://www.youtube.com/watch?v=4-FysvtxQEU&t=1551s "Professor Leonard, Statistics 3.3, A standard deviation calculated by hand, 25:51 to 36:43, Works a standard deviation on a small data set by hand. Chapter-t..."), [▶2](https://www.youtube.com/watch?v=SzZ6GpcfoQY&t=236s "StatQuest, Calculating the Mean, Variance and Standard Deviation, Calculating population variance, 3:56 to 5:54, The population variance as the average squar..."), [◆](../../../../../goal-setting/learning/deep-learning/transformers/textbook/06-show-that-variances-of-independent-terms-add.md "Show that variances of independent terms add, deep-learning/transformers, chapter 06. Predicts the spread of a dot product of random vectors by adding the va...")</sub> of `0.0062` to `0.0095` per kind at n = 2000 (`p3.perfect_tv_200_redraws_sd_range`); intersection, for example, ranges from `0.0768` to `0.1285` around a mean of `0.1040` (`p3.perfect_tv_200_redraws`). So a sampler within about 0.02 of one perfect draw cannot be told apart from it.
+**Its other name.** The heading and the code's `floor TV` printout call it the floor.
+
+**What it compares.** It compares one draw with the known target table, not two draws with each other. A sampler's TV is read against this baseline, never against 0.
+
+**Why it is a baseline and not a lower bound.** The baseline is itself random, so a sampler can score below one perfect draw by chance. In `rebuild/out/phase3/phase3.json`, UHA on co-occurrence has TV `0.0977` against the perfect draw's `0.0990`, and reverse diffusion on disjunction `0.214` against `0.231`.
+
+**How much one perfect draw moves.** Repeating the perfect draw 200 times with `rebuild.ideal.perfect_samples` gives a [standard deviation](../../../../../Obsidian/Mathematics/Statistics/Variance.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=150 "Introduction to probability for data science, section 3.4.4, Defines variance as E[(X − µ)²] and the standard deviation as its root (Definition 3.7), proves ..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=196 "Mathematics for machine learning, section 6.4.1, Variance as the covariance of a variable with itself (Definition 6.7), then the empirical mean and variance ..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=76 "Deep learning textbook, section 3.8, A short definition of variance and standard deviation beside expectation and covariance."), [▶1](https://www.youtube.com/watch?v=4-FysvtxQEU&t=1551s "Professor Leonard, Statistics 3.3, A standard deviation calculated by hand, 25:51 to 36:43, Works a standard deviation on a small data set by hand. Chapter-t..."), [▶2](https://www.youtube.com/watch?v=SzZ6GpcfoQY&t=236s "StatQuest, Calculating the Mean, Variance and Standard Deviation, Calculating population variance, 3:56 to 5:54, The population variance as the average squar..."), [◆](../../../../../goal-setting/learning/deep-learning/transformers/textbook/06-show-that-variances-of-independent-terms-add.md "Show that variances of independent terms add, deep-learning/transformers, chapter 06. Predicts the spread of a dot product of random vectors by adding the va...")</sub> of `0.0062` to `0.0095` per kind at n = 2000 (`p3.perfect_tv_200_redraws_sd_range`); intersection, for example, ranges from `0.0768` to `0.1285` around a mean of `0.1040` (`p3.perfect_tv_200_redraws`). So a sampler within about 0.02 of one perfect draw cannot be told apart from it.
 
 **What the TV leaves out.** `np.histogram2d` drops any sample outside the canvas, so `sb` then sums to less than 1 and the TV comes out low by half the off-canvas share. In Figure 1's samplers at most `0.0025` of the samples leave the canvas (ULA on disjunction), which moves the TV by about `0.001`, below the two decimals printed (`figure1_off_canvas` in `rebuild/out/phase3/phase3.json`, from `python -m rebuild.phase3_kinds --off-canvas`).
-
-<!-- video-table: total-variation-distance rev=1 -->
-Mary Wootters, from the open web, on the total variation distance between two distributions, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | TV is half the sum of the absolute differences between the two probability tables, which equals the largest difference in probability the two give any one event | Intuition, open web | [Wootters, Total Variation Distance, 0:16 to 1:35](https://www.youtube.com/watch?v=aJP0Bj6jVkI&t=16s) |
-| 2 | Two bar charts split where each is the higher: the two shaded areas are equal, and each one is the TV | Proof, open web | [Wootters, Total Variation Distance, 1:35 to 3:47](https://www.youtube.com/watch?v=aJP0Bj6jVkI&t=95s) |
-| 3 | A fair coin against one that lands heads 0.6 of the time: TV = ½(0.1 + 0.1) = 0.1 | Worked example, open web | [Wootters, Total Variation Distance, 4:34 to 6:42](https://www.youtube.com/watch?v=aJP0Bj6jVkI&t=274s) |
-
-No listed creator covers it. Wootters compares two known tables; she does not estimate TV from two sets of samples on a binning, so the sampling-noise baseline that two draws of the same data reach is not covered. Times are read from automatic captions and good to about 30 seconds.
-<!-- /video-table -->
 
 🧸 **Toy:** for intersection at n = 2000, 200 perfect redraws have TV mean `0.1040`, standard deviation `0.0095`, minimum `0.0768` and maximum `0.1285`.
 
 🔤 **The name:** perfect sampler
+
+<!-- links: step4/total-variation-distance rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [Wootters, Total Variation Distance, 0:16 to 1:35](https://www.youtube.com/watch?v=aJP0Bj6jVkI&t=16s), open web: TV is half the sum of the absolute differences between the two probability tables, which equals the largest difference in probability the two give any one event.
+- 🎬 Video: [Wootters, Total Variation Distance, 4:34 to 6:42](https://www.youtube.com/watch?v=aJP0Bj6jVkI&t=274s), open web: a fair coin against one that lands heads 0.6 of the time, TV = ½(0.1 + 0.1) = 0.1.
+
+**What the videos leave out.** No listed creator covers it. Wootters compares two known tables; she does not estimate TV from two sets of samples on a binning, so the sampling-noise baseline that two draws of the same data reach is not covered. Times are read from automatic captions and good to about 30 seconds.
+<!-- /links -->
 
 ---
 
@@ -798,20 +849,16 @@ $$
 
 **Another perfect draw.** Its TV can be 0.1285. The move of 0.0517 happens without any sampler error, which is why one observed floor cannot be a strict lower bound.
 
-<!-- video-table: inverse-transform-sampling rev=1 -->
-ritvikmath on inverse transform sampling, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | Inverse transform sampling, the idea | Intuition | [ritvikmath, Inverse Transform Sampling, 0:07 to 1:39](https://www.youtube.com/watch?v=9ixzzPQWuAY&t=7s) |
-| 2 | The uniform and the exponential distributions the example uses | Definition | [ritvikmath, Inverse Transform Sampling, 1:39 to 2:36](https://www.youtube.com/watch?v=9ixzzPQWuAY&t=99s) |
-| 3 | The cumulative distribution function | Definition | [ritvikmath, Inverse Transform Sampling, 2:36 to 7:54](https://www.youtube.com/watch?v=9ixzzPQWuAY&t=156s) |
-| 4 | Inverting the exponential CDF, and turning a uniform draw into an exponential one | Worked example | [ritvikmath, Inverse Transform Sampling, 7:54 to 10:04](https://www.youtube.com/watch?v=9ixzzPQWuAY&t=474s) |
-
-The creator's own description says the exponential density on the board is missing its λ in front. Times are chapter boundaries read from the video's chapter list, because YouTube refused its captions on 2026-10-17; what is said inside was judged from the chapter titles and not read.
-<!-- /video-table -->
-
 🔤 **The name:** sampling-noise baseline
+
+<!-- links: step4/inverse-transform-sampling rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [ritvikmath, Inverse Transform Sampling, 0:07 to 1:39](https://www.youtube.com/watch?v=9ixzzPQWuAY&t=7s), inverse transform sampling, the idea.
+- 🎬 Video: [ritvikmath, Inverse Transform Sampling, 7:54 to 10:04](https://www.youtube.com/watch?v=9ixzzPQWuAY&t=474s), inverting the exponential CDF, and turning a uniform draw into an exponential one.
+
+**What the videos leave out.** The creator's own description says the exponential density on the board is missing its λ in front. Times are chapter boundaries read from the video's chapter list, because YouTube refused its captions on 2026-10-17; what is said inside was judged from the chapter titles and not read.
+<!-- /links -->
 
 ---
 
@@ -931,28 +978,32 @@ def show_kind(name, A, B, compose, measure):
     return p
 ```
 
-**Reading the lambdas.** The same letters mean different things in the two kinds of lambda. In a composition, `lambda a, b` takes the two experts' log densities, $\log p_A$ and $\log p_B$, from datasets `A` and `B`. In a measure, `lambda a, b, w` takes coordinates, `a` = $x_1$ and `b` = $x_2$, and `w` is the probability mass at each point: $p\cdot$cell on the grid, $1/n$ per sample. Step 11's negation weight is a third thing, written $w$ in the formula and the constant `0.05` in the code.
+**Reading the lambdas.** The same letters mean different things in the two kinds of lambda. In a composition, `lambda a, b` takes the two experts' log densities, $\log p_A$ and $\log p_B$, from datasets `A` and `B`.
+
+**In a measure.** In a measure, `lambda a, b, w` takes coordinates, `a` = $x_1$ and `b` = $x_2$, and `w` is the probability mass at each point: $p\cdot$cell on the grid, $1/n$ per sample.
+
+**The negation weight.** Step 11's negation weight is a third thing, written $w$ in the formula and the constant `0.05` in the code.
 
 ## Step 5: intersection
 
 **Definition.** One object must satisfy both experts on the same coordinates: the ring times a narrow vertical bar (half-width 0.05). Composition: product. Measure: mass within 0.08 of a ring mode.
 
-<!-- video-table: product-of-experts rev=1 -->
-Stanford CS236 on multiplying models into a product of experts, in the order to watch:
+**Derivation of what success looks like.** The product is large only where both experts are dense, so it concentrates on the two ring modes at (0, ±0.5) that the bar passes through.
 
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | Composing normalised models into one | Intuition | [Stanford CS236, lecture 11, 23:01 to 29:14](https://www.youtube.com/watch?v=m61KiAMCJ5Q&t=1381s) |
-| 2 | The product of experts | Intuition | [Stanford CS236, lecture 11, 54:02 to 57:28](https://www.youtube.com/watch?v=m61KiAMCJ5Q&t=3242s) |
-
-Neither segment composes diffusion models by adding their scores or divides out a background, and no listed creator does. Times are chapter boundaries read from each video's chapter list, not from captions, so each is good to the chapter and the sentence inside it is not checked.
-<!-- /video-table -->
-
-**Derivation of what success looks like.** The product is large only where both experts are dense, so it concentrates on the two ring modes at (0, ±0.5) that the bar passes through. Each is a [Gaussian](../../../../../Obsidian/Mathematics/Statistics/Distributions/Multivariate%20Normal%20Distribution/Multivariate%20Normal%20Distribution.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=227 "Introduction to probability for data science, section 4.6, The one-dimensional Gaussian random variable: its density with plots of μ and σ moving and widenin..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=306 "Introduction to probability for data science, section 5.6, The d-dimensional Gaussian density with Σ⁻¹, its mean vector and covariance, and the diagonal cova..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=203 "Mathematics for machine learning, section 6.5, The univariate and multivariate densities (equations 6.62 and 6.63, page 204) drawn with 100 samples, then mar..."), [▶1](https://www.youtube.com/watch?v=rzFX5NWojp0&t=0s "StatQuest, The Normal Distribution, Clearly Explained, 0:00 to 3:27, The bell-shaped curve and what its mean and standard deviation set, in the video's openi..."), [▶2](https://www.youtube.com/watch?v=oI3hZJqXJuc&t=135s "StatQuest, The Main Ideas behind Probability Distributions, 2:15 to 5:14, A curve as a distribution, where probability is the area under it over an interval ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/02-densities-and-the-gaussian.md "Chapter 2: Read a density as area and draw a Gaussian from its covariance, deep-learning/diffusion-models/01-poe-derivation-foundations, chapter 02. The Gaus...")</sub> bump with its own width ([standard deviation](../../../../../Obsidian/Mathematics/Statistics/Variance.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=150 "Introduction to probability for data science, section 3.4.4, Defines variance as E[(X − µ)²] and the standard deviation as its root (Definition 3.7), proves ..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=196 "Mathematics for machine learning, section 6.4.1, Variance as the covariance of a variable with itself (Definition 6.7), then the empirical mean and variance ..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=76 "Deep learning textbook, section 3.8, A short definition of variance and standard deviation beside expectation and covariance."), [▶1](https://www.youtube.com/watch?v=4-FysvtxQEU&t=1551s "Professor Leonard, Statistics 3.3, A standard deviation calculated by hand, 25:51 to 36:43, Works a standard deviation on a small data set by hand. Chapter-t..."), [▶2](https://www.youtube.com/watch?v=SzZ6GpcfoQY&t=236s "StatQuest, Calculating the Mean, Variance and Standard Deviation, Calculating population variance, 3:56 to 5:54, The population variance as the average squar..."), [◆](../../../../../goal-setting/learning/deep-learning/transformers/textbook/06-show-that-variances-of-independent-terms-add.md "Show that variances of independent terms add, deep-learning/transformers, chapter 06. Predicts the spread of a dot product of random vectors by adding the va...")</sub> about 0.058 along the bar, `p3.intersection_upper_mode_sd_along_bar`), so a ball of radius 0.08 holds `0.71` of the mass (`p3.intersection_mass_within_0.08`), radius 0.12 holds `0.93` (`p3.intersection_mass_within_0.12`) and radius 0.25 holds `0.9999` (`p3.intersection_mass_within_0.25`). The measure records the 0.08 ball. The other `0.29` is the spread of these same two modes, and Gaussian tails elsewhere carry almost nothing.
+**How much mass the measuring circle holds.** Each is a [Gaussian](../../../../../Obsidian/Mathematics/Statistics/Distributions/Multivariate%20Normal%20Distribution/Multivariate%20Normal%20Distribution.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=227 "Introduction to probability for data science, section 4.6, The one-dimensional Gaussian random variable: its density with plots of μ and σ moving and widenin..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=306 "Introduction to probability for data science, section 5.6, The d-dimensional Gaussian density with Σ⁻¹, its mean vector and covariance, and the diagonal cova..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=203 "Mathematics for machine learning, section 6.5, The univariate and multivariate densities (equations 6.62 and 6.63, page 204) drawn with 100 samples, then mar..."), [▶1](https://www.youtube.com/watch?v=rzFX5NWojp0&t=0s "StatQuest, The Normal Distribution, Clearly Explained, 0:00 to 3:27, The bell-shaped curve and what its mean and standard deviation set, in the video's openi..."), [▶2](https://www.youtube.com/watch?v=oI3hZJqXJuc&t=135s "StatQuest, The Main Ideas behind Probability Distributions, 2:15 to 5:14, A curve as a distribution, where probability is the area under it over an interval ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/02-densities-and-the-gaussian.md "Chapter 2: Read a density as area and draw a Gaussian from its covariance, deep-learning/diffusion-models/01-poe-derivation-foundations, chapter 02. The Gaus...")</sub> bump with its own width ([standard deviation](../../../../../Obsidian/Mathematics/Statistics/Variance.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=150 "Introduction to probability for data science, section 3.4.4, Defines variance as E[(X − µ)²] and the standard deviation as its root (Definition 3.7), proves ..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=196 "Mathematics for machine learning, section 6.4.1, Variance as the covariance of a variable with itself (Definition 6.7), then the empirical mean and variance ..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=76 "Deep learning textbook, section 3.8, A short definition of variance and standard deviation beside expectation and covariance."), [▶1](https://www.youtube.com/watch?v=4-FysvtxQEU&t=1551s "Professor Leonard, Statistics 3.3, A standard deviation calculated by hand, 25:51 to 36:43, Works a standard deviation on a small data set by hand. Chapter-t..."), [▶2](https://www.youtube.com/watch?v=SzZ6GpcfoQY&t=236s "StatQuest, Calculating the Mean, Variance and Standard Deviation, Calculating population variance, 3:56 to 5:54, The population variance as the average squar..."), [◆](../../../../../goal-setting/learning/deep-learning/transformers/textbook/06-show-that-variances-of-independent-terms-add.md "Show that variances of independent terms add, deep-learning/transformers, chapter 06. Predicts the spread of a dot product of random vectors by adding the va...")</sub> about 0.058 along the bar, `p3.intersection_upper_mode_sd_along_bar`), so a ball of radius 0.08 holds `0.71` of the mass (`p3.intersection_mass_within_0.08`), radius 0.12 holds `0.93` (`p3.intersection_mass_within_0.12`) and radius 0.25 holds `0.9999` (`p3.intersection_mass_within_0.25`). The measure records the 0.08 ball. The other `0.29` is the spread of these same two modes, and Gaussian tails elsewhere carry almost nothing.
 
 🧸 **Toy:** exact `0.71` (the notebook's printed value). The perfect-sample TV is about 0.10 for 2000 points; it was `0.11` in the notebook's draw and `0.10` in the run behind this document, because the perfect [samples](../../../../../Obsidian/Mathematics/Statistics/Sampling%20From%20A%20Distribution.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=539 "Pattern recognition and machine learning, chapter 11, Why expectations need samples, ancestral sampling of a directed graph (page 541), standard distribution..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=245 "Introduction to probability for data science, section 4.8, Generates random numbers for any PDF by running a uniform through the inverse CDF, in Python, with..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=606 "Deep learning textbook, section 17.1, Why machine learning samples at all (Monte Carlo estimates of sums and integrals, and sampling as the goal of a generat..."), [▶1](https://www.youtube.com/watch?v=9ixzzPQWuAY&t=474s "ritvikmath, Inverse Transform Sampling, 7:54 to 10:04, Inverts the exponential CDF and turns a uniform draw into an exponential one. Chapter-timed, from the ..."), [▶2](https://www.youtube.com/watch?v=OXDqjdVVePY&t=232s "ritvikmath, Accept-Reject Sampling, 3:52 to 7:45, An easy proposal g scaled by M into an envelope above f, then each draw accepted with probability f/(M g). ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/00-from-scratch-to-sdxl/textbook/l3-stochastic-processes/13-drawing-samples-by-hand.md "Drawing samples by hand: Monte Carlo, inverse transform and accept-reject, deep-learning/diffusion-models/00-from-scratch-to-sdxl, volume L3, section 13. Thr...")</sub> come from a different stream.
 
 🔤 **The name:** [intersection](../../../../../Obsidian/Artificial%20Intelligence/Generative%20Modeling/Diffusion%20Models/Composition/The%20Product%20As%20An%20Intersection.md)
+
+<!-- links: step5/product-of-experts rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [Stanford CS236, lecture 11, 23:01 to 29:14](https://www.youtube.com/watch?v=m61KiAMCJ5Q&t=1381s), composing normalised models into one.
+- 🎬 Video: [Stanford CS236, lecture 11, 54:02 to 57:28](https://www.youtube.com/watch?v=m61KiAMCJ5Q&t=3242s), the product of experts.
+
+**What the videos leave out.** Neither segment composes diffusion models by adding their scores or divides out a background, and no listed creator does. Times are chapter boundaries read from each video's chapter list, not from captions, so each is good to the chapter and the sentence inside it is not checked.
+<!-- /links -->
 
 ---
 
@@ -1081,7 +1132,11 @@ $$
 
 **Why the denominator is there.** It normalises the two density weights into shares of the local total. Removing it leaves an unnormalised density slope rather than the score of the mixture.
 
-with $s_A,s_B$ the experts' scores and $r_A,r_B$ the responsibilities, each expert's share of the density at x. This is exactly the gradient of `torch.logaddexp(a, b)`: at one point both give `[0.3609, -0.4392]` (`p3.logaddexp_grad` and `p3.logaddexp_responsibility_weighted`), where the plain sum of the two scores gives `[1.3192, -0.1786]` (`p3.logaddexp_plain_sum`); the factor $\tfrac12$ only shifts the log density by a constant, which the grid normalisation removes. So disjunction has no gap between composing noised experts and noising the composition. Reverse diffusion can still carry the error of its finite steps and its [Gaussian](../../../../../Obsidian/Mathematics/Statistics/Distributions/Multivariate%20Normal%20Distribution/Multivariate%20Normal%20Distribution.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=227 "Introduction to probability for data science, section 4.6, The one-dimensional Gaussian random variable: its density with plots of μ and σ moving and widenin..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=306 "Introduction to probability for data science, section 5.6, The d-dimensional Gaussian density with Σ⁻¹, its mean vector and covariance, and the diagonal cova..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=203 "Mathematics for machine learning, section 6.5, The univariate and multivariate densities (equations 6.62 and 6.63, page 204) drawn with 100 samples, then mar..."), [▶1](https://www.youtube.com/watch?v=rzFX5NWojp0&t=0s "StatQuest, The Normal Distribution, Clearly Explained, 0:00 to 3:27, The bell-shaped curve and what its mean and standard deviation set, in the video's openi..."), [▶2](https://www.youtube.com/watch?v=oI3hZJqXJuc&t=135s "StatQuest, The Main Ideas behind Probability Distributions, 2:15 to 5:14, A curve as a distribution, where probability is the area under it over an interval ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/02-densities-and-the-gaussian.md "Chapter 2: Read a density as area and draw a Gaussian from its covariance, deep-learning/diffusion-models/01-poe-derivation-foundations, chapter 02. The Gaus...")</sub> reverse kernel. Every other kind is a product, where Phase 2, Step 2 says the gap is there.
+with $s_A,s_B$ the experts' scores and $r_A,r_B$ the responsibilities, each expert's share of the density at x.
+
+**The same as the code's `logaddexp`.** This is exactly the gradient of `torch.logaddexp(a, b)`: at one point both give `[0.3609, -0.4392]` (`p3.logaddexp_grad` and `p3.logaddexp_responsibility_weighted`), where the plain sum of the two scores gives `[1.3192, -0.1786]` (`p3.logaddexp_plain_sum`); the factor $\tfrac12$ only shifts the log density by a constant, which the grid normalisation removes.
+
+**Why disjunction has no gap.** Disjunction therefore has no gap between composing noised experts and noising the composition. Reverse diffusion can still carry the error of its finite steps and its [Gaussian](../../../../../Obsidian/Mathematics/Statistics/Distributions/Multivariate%20Normal%20Distribution/Multivariate%20Normal%20Distribution.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=227 "Introduction to probability for data science, section 4.6, The one-dimensional Gaussian random variable: its density with plots of μ and σ moving and widenin..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=306 "Introduction to probability for data science, section 5.6, The d-dimensional Gaussian density with Σ⁻¹, its mean vector and covariance, and the diagonal cova..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=203 "Mathematics for machine learning, section 6.5, The univariate and multivariate densities (equations 6.62 and 6.63, page 204) drawn with 100 samples, then mar..."), [▶1](https://www.youtube.com/watch?v=rzFX5NWojp0&t=0s "StatQuest, The Normal Distribution, Clearly Explained, 0:00 to 3:27, The bell-shaped curve and what its mean and standard deviation set, in the video's openi..."), [▶2](https://www.youtube.com/watch?v=oI3hZJqXJuc&t=135s "StatQuest, The Main Ideas behind Probability Distributions, 2:15 to 5:14, A curve as a distribution, where probability is the area under it over an interval ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/02-densities-and-the-gaussian.md "Chapter 2: Read a density as area and draw a Gaussian from its covariance, deep-learning/diffusion-models/01-poe-derivation-foundations, chapter 02. The Gaus...")</sub> reverse kernel. Every other kind is a product, where Phase 2, Step 2 says the gap is there.
 
 🧸 **Toy:** exact `0.50`.
 
@@ -1168,20 +1223,18 @@ $$
 
 **Replace them with a plain sum.** The [vector](../../../../../Obsidian/Mathematics/Linear%20Algebra/Vector.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/linear-algebra/linear-algebra-textbook.pdf#page=145 "Linear algebra textbook, section 3.1, Vectors drawn as arrows in 2-space and 3-space, then written as ordered n-tuples in Rⁿ (Definition 1, page 150)."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=23 "Mathematics for machine learning, chapter 2 opening, What counts as a vector: anything that adds and scales, with geometric arrows and polynomials as the fir..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=47 "Deep learning textbook, section 2.1, Scalars, vectors, matrices and tensors in the notation the rest of deep learning uses."), [▶1](https://www.youtube.com/watch?v=tr-CUpw--ck&t=1684s "Stanford CME296, lecture 1, 28:04 to 28:52, An image as one vector whose length is the number of pixels times 3, which is what x_0 and x_t are in diffusion. ..."), [▶2](https://www.youtube.com/watch?v=fNk_zzaMoSs&t=0s "3Blue1Brown, Vectors (Essence of linear algebra, chapter 1), Three perspectives on vectors, 0:00 to 2:52, The physics arrow, the computer-science list of num..."), [◆](../../../../../goal-setting/learning/ai-engineering/string-similarity-measures/foundations/plans/06-vectors-dot-product-and-length.md "Compute vectors, the dot product, length and the angle between them, ai-engineering/string-similarity-measures/foundations, plan 06. A text turned into a vec...")</sub> changes to `[1.3192, -0.1786]`. The new vector treats both experts as fully responsible at once, which is a product-style move rather than a disjunction.
 
-<!-- video-table: disjunction-as-a-mixture rev=1 -->
-Yilun Du, from the open web, on composing two energies with the log-sum-exp:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | Taking the log-sum-exp of two energies draws samples from p1(x) plus p2(x), a mixture | Intuition, open web | [Yilun Du, thesis defense, 25:11 to 25:22](https://www.youtube.com/watch?v=7jvWDF6ZXPc&t=1511s) |
-
-Du does not show that a mixture of noised experts is the noised mixture, which is why this kind alone has no gap between the two orders, and no listed creator covers it. The time is read from Du's captions and good to about 30 seconds.
-<!-- /video-table -->
-
 ```python
 p = show_kind("disjunction", vbar(N, -0.4, 0.1), vbar(N, 0.4, 0.2), lambda a, b: torch.logaddexp(a, b),
               lambda a, b, w: (w * (a > 0)).sum())
 ```
+
+<!-- links: step6/disjunction-as-a-mixture rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [Yilun Du, thesis defense, 25:11 to 25:22](https://www.youtube.com/watch?v=7jvWDF6ZXPc&t=1511s), open web: taking the log-sum-exp of two energies draws samples from p1(x) plus p2(x), a mixture.
+
+**What the video leaves out.** Du does not show that a mixture of noised experts is the noised mixture, which is why this kind alone has no gap between the two orders, and no listed creator covers it. The time is read from Du's captions and good to about 30 seconds.
+<!-- /links -->
 
 ## Step 7: co-occurrence
 
@@ -1413,9 +1466,15 @@ $$
 
 **Why proportionality is there.** [The product of two normalised Gaussians is not itself normalised](../../../../../goal-setting/learning/mathematics/textbooks/linear-algebra/matrix-cookbook.pdf#page=42). A constant must still be supplied so the composed target integrates to one.
 
-The coefficient of $\mu$ is below one, so the product moves the mode inward. Each width is the data's spread plus the smoothing σ = 0.05: $s_R^2=0.03^2+0.05^2=0.0034$ and $s_B^2=0.1^2+0.05^2=0.0125$. The shrink factor is $0.0125/0.0159$ = `0.786` (`p3.dominance_shrink_factor`), which moves radius 0.5 to `0.393` (`p3.dominance_shrunk_radius`). That is why the exact mean radius is near `0.40` (`0.4042`, `p3.dominance_exact_mean_radius`).
+**Why the mode moves inward.** The coefficient of $\mu$ is below one, so the product moves the mode inward.
 
-**Derivation of the unequal weights.** The blob's value at a mode sets that mode's weight but cannot move it. For a perfectly round blob every mode at radius 0.5 would get the same factor. The blob here is 800 points of standard deviation 0.1, so radius 0.5 is five standard deviations out, where only a handful of blob points sit, and its smoothed [density](../../../../../Obsidian/Mathematics/Statistics/Distributions/Probability%20Density%20Function.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=188 "Introduction to probability for data science, section 4.1, Builds the intuition of probability per unit length, defines the PDF and its properties (Definitio..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=186 "Mathematics for machine learning, section 6.2.2, The density and the CDF (Definitions 6.1 and 6.2), a uniform example (Example 6.3), and discrete against con..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=36 "Pattern recognition and machine learning, section 1.2.1, The density's two conditions (equations 1.25 and 1.26), its link to the CDF, and why a density picks..."), [▶1](https://www.youtube.com/watch?v=QKA4HNEw3aY&t=52s "The Organic Chemistry Tutor, Probability Density Functions, 0:52 to 3:39, Verifies that a given function is a density by checking that its integral equals 1...."), [▶2](https://www.youtube.com/watch?v=oI3hZJqXJuc&t=135s "StatQuest, The Main Ideas behind Probability Distributions, 2:15 to 5:14, A curve as a distribution, with probability read as area under it, not its height. ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/02-densities-and-the-gaussian.md#21-a-density-can-exceed-1 "Chapter 2: Read a density as area and draw a Gaussian from its covariance, deep-learning/diffusion-models/01-poe-derivation-foundations, chapter 02, section ..."), [◈](https://claude.ai/artifact/DBmJtn6xy75sPtQwPEvQZU#nb-sec1 "Kinds of composition notebook, Setup: the ideal expert, The ideal expert's log-density on a grid, in four steps from the 2D Gaussian to its logsumexp form, t...")</sub> there is far from round: its log density at the eight modes ranges from `-4.96` to `-13.03` (`p3.dominance_blob_logdensity_at_modes`). The ring's own counts per mode (`81` to `116` of 800, `p3.dominance_ring_points_per_mode`) matter much less. Each mode's count times its overlap with the blob's smoothed density predicts mode weights from `0.024` to `0.358` (`p3.dominance_predicted_mode_weights`), against the exact product's `0.029` to `0.352` within 0.25 of each mode (`p3.dominance_exact_mode_mass_within_0.25`). The weights are unequal, and that is what defeats every sampler later.
+**The numbers on the toy.** Each width is the data's spread plus the smoothing σ = 0.05: $s_R^2=0.03^2+0.05^2=0.0034$ and $s_B^2=0.1^2+0.05^2=0.0125$. The shrink factor is $0.0125/0.0159$ = `0.786` (`p3.dominance_shrink_factor`), which moves radius 0.5 to `0.393` (`p3.dominance_shrunk_radius`). That is why the exact mean radius is near `0.40` (`0.4042`, `p3.dominance_exact_mean_radius`).
+
+**Derivation of the unequal weights.** The blob's value at a mode sets that mode's weight but cannot move it. For a perfectly round blob every mode at radius 0.5 would get the same factor.
+
+**Why the blob is not round at the ring.** The blob here is 800 points of standard deviation 0.1, so radius 0.5 is five standard deviations out, where only a handful of blob points sit, and its smoothed [density](../../../../../Obsidian/Mathematics/Statistics/Distributions/Probability%20Density%20Function.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=188 "Introduction to probability for data science, section 4.1, Builds the intuition of probability per unit length, defines the PDF and its properties (Definitio..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=186 "Mathematics for machine learning, section 6.2.2, The density and the CDF (Definitions 6.1 and 6.2), a uniform example (Example 6.3), and discrete against con..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=36 "Pattern recognition and machine learning, section 1.2.1, The density's two conditions (equations 1.25 and 1.26), its link to the CDF, and why a density picks..."), [▶1](https://www.youtube.com/watch?v=QKA4HNEw3aY&t=52s "The Organic Chemistry Tutor, Probability Density Functions, 0:52 to 3:39, Verifies that a given function is a density by checking that its integral equals 1...."), [▶2](https://www.youtube.com/watch?v=oI3hZJqXJuc&t=135s "StatQuest, The Main Ideas behind Probability Distributions, 2:15 to 5:14, A curve as a distribution, with probability read as area under it, not its height. ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/02-densities-and-the-gaussian.md#21-a-density-can-exceed-1 "Chapter 2: Read a density as area and draw a Gaussian from its covariance, deep-learning/diffusion-models/01-poe-derivation-foundations, chapter 02, section ..."), [◈](https://claude.ai/artifact/DBmJtn6xy75sPtQwPEvQZU#nb-sec1 "Kinds of composition notebook, Setup: the ideal expert, The ideal expert's log-density on a grid, in four steps from the 2D Gaussian to its logsumexp form, t...")</sub> there is far from round: its log density at the eight modes ranges from `-4.96` to `-13.03` (`p3.dominance_blob_logdensity_at_modes`). The ring's own counts per mode (`81` to `116` of 800, `p3.dominance_ring_points_per_mode`) matter much less.
+
+**The prediction against the exact product.** Each mode's count times its overlap with the blob's smoothed density predicts mode weights from `0.024` to `0.358` (`p3.dominance_predicted_mode_weights`), against the exact product's `0.029` to `0.352` within 0.25 of each mode (`p3.dominance_exact_mode_mass_within_0.25`). The weights are unequal, and that is what defeats every sampler later.
 
 🧸 **Toy:** exact mean radius `0.40` (the ring's own radius is 0.5).
 
@@ -1710,16 +1769,6 @@ $$
 
 **At `w = 0.3`.** In-bar mass reaches `0.0`, but away mass rises to `0.863`. The bar is removed, yet most [probability](../../../../../Obsidian/Mathematics/Statistics/Probability/Probability.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=31 "Pattern recognition and machine learning, section 1.2, Works with numbers: a red box picked 40% of the time and a blue box 60%, holding apples and oranges, f..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=74 "Introduction to probability for data science, sections 2.2 and 2.3, Probability as a measure of the size of a set, built from a sample space, an event space ..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-statistics.pdf#page=64 "Introduction to statistics (Wits lecture notes), sections 3.5 to 3.7.2, The axioms, the subjective, relative-frequency and classical approaches, the addition..."), [▶1](https://www.youtube.com/watch?v=_EpXHuPnaK0&t=360s "Professor Leonard, Statistics lecture 4.2, Introduction to Probability, 6:00 to 9:00, The sample space, in the chapter of that name, before simple events. Ch..."), [▶2](https://www.youtube.com/watch?v=_EpXHuPnaK0&t=2085s "Professor Leonard, Statistics lecture 4.2, Introduction to Probability, 34:45 to 37:07, Observed against classical probability. Chapter-timed."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/plans/01-probability-you-can-compute.md "Probability as a thing you can compute, deep-learning/diffusion-models/01-poe-derivation-foundations, plan 01. Events and P(A), with a sample space built and...")</sub> also leaves the ring, which is why a small weight is necessary.
 
-<!-- video-table: negation-as-set-difference rev=1 -->
-Yilun Du, from the open web, on subtracting one energy from another:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | Subtracting the second energy from the first leaves low energy on the first set and high energy everywhere else | Intuition, open web | [Yilun Du, thesis defense, 23:21 to 23:36](https://www.youtube.com/watch?v=7jvWDF6ZXPc&t=1401s) |
-
-Du does not show the mass that leaves every mode as the weight grows (0.391 at w = 0.05, 0.863 at w = 0.3), so the reason this step keeps w small has no video. The time is read from Du's captions and good to about 30 seconds.
-<!-- /video-table -->
-
 ```python
 p = show_kind("negation", toy_gmm(N), vbar(N, 0.0, 0.2), lambda a, b: 1.05 * a - 0.05 * b,
               lambda a, b, w: (w * near(a, b, RING[[2, 6]], 0.08)).sum())
@@ -1730,6 +1779,14 @@ plt.tight_layout(); plt.savefig("step11-seven-kinds-exact.png"); plt.close()
 ```
 
 🎞️ **Moving picture:** `step11-seven-kinds-exact.png`, the seven exact compositions in a row. Each is the default state its dial in Step 12 moves away from.
+
+<!-- links: step11/negation-as-set-difference rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [Yilun Du, thesis defense, 23:21 to 23:36](https://www.youtube.com/watch?v=7jvWDF6ZXPc&t=1401s), open web: subtracting the second energy from the first leaves low energy on the first set and high energy everywhere else.
+
+**What the video leaves out.** Du does not show the mass that leaves every mode as the weight grows (0.391 at w = 0.05, 0.863 at w = 0.3), so the reason this step keeps w small has no video. The time is read from Du's captions and good to about 30 seconds.
+<!-- /links -->
 
 ## Step 12: the dials
 
@@ -1818,6 +1875,31 @@ for name, vals, make in [
 - **Right**, with 5% rotated: `0.657`.
 
 ## Step 13: the samplers on every kind
+
+<details><summary>The code that draws this figure</summary>
+
+```python
+# from toy/rebuild/phase3_kinds.py, inside main(); KINDS holds each kind's data, exact grid p and samples
+cols = ["perfect", "reverse diffusion", "ULA", "MALA", "UHA"]
+# Figure 1 picture
+fig, ax = plt.subplots(len(KINDS), 8, figsize=(19, 2.5 * len(KINDS)))
+for r, k in enumerate(KINDS):
+    A, B = k["data"]
+    for j, (d, c, n) in enumerate([(A, "tab:red", "p1"), (B, "tab:blue", "p2")]):
+        ax[r, j].scatter(*d.T, s=1, c=c, alpha=.5); ax[r, j].set_title(n)
+    ax[r, 0].set_ylabel(k["name"], fontsize=9)
+    ax[r, 2].imshow(k["p"], origin="lower", extent=[-ideal.L, ideal.L, -ideal.L, ideal.L], cmap="magma")
+    ax[r, 2].set_title("exact")
+    for j, c in enumerate(cols, start=3):
+        s = k["samples"][c]
+        ax[r, j].scatter(*s.T, s=1, c="k", alpha=.4)
+        ax[r, j].set_title(f"{c}  TV {ideal.tv(s, k['p']):.2f}")
+    for a in ax[r]:
+        a.set_xlim(-ideal.L, ideal.L); a.set_ylim(-ideal.L, ideal.L); a.set_aspect("equal"); a.set_xticks([]); a.set_yticks([])
+plt.tight_layout(); plt.savefig(os.path.join(out_dir, "figure1-every-sampler-on-every-kind.png"), dpi=90); plt.close()
+```
+
+</details>
 
 <a href="../../../toy/rebuild/out/phase3/figure1-every-sampler-on-every-kind.png"><img src="../../../toy/rebuild/out/phase3/figure1-every-sampler-on-every-kind.png" width="200" alt="seven rows, one per kind of composition: the two experts, the exact composition, then perfect draws and each sampler's samples, each titled with its TV"></a>
 

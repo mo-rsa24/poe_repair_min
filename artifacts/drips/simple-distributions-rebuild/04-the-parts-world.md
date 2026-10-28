@@ -1,6 +1,10 @@
 # 🔨 Phase 4: the parts world, where cat × dog is exact in 16 dimensions
 
-A 2D slot holds one number, so the only chimera it can show is a midpoint. Image chimeras are mostly mosaics: some parts follow the cat, others the dog. You build a world of 4 × 4 images whose experts are mixtures of diagonal [Gaussians](../../../../../Obsidian/Mathematics/Statistics/Distributions/Multivariate%20Normal%20Distribution/Multivariate%20Normal%20Distribution.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=227 "Introduction to probability for data science, section 4.6, The one-dimensional Gaussian random variable: its density with plots of μ and σ moving and widenin..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=306 "Introduction to probability for data science, section 5.6, The d-dimensional Gaussian density with Σ⁻¹, its mean vector and covariance, and the diagonal cova..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=203 "Mathematics for machine learning, section 6.5, The univariate and multivariate densities (equations 6.62 and 6.63, page 204) drawn with 100 samples, then mar..."), [▶1](https://www.youtube.com/watch?v=rzFX5NWojp0&t=0s "StatQuest, The Normal Distribution, Clearly Explained, 0:00 to 3:27, The bell-shaped curve and what its mean and standard deviation set, in the video's openi..."), [▶2](https://www.youtube.com/watch?v=oI3hZJqXJuc&t=135s "StatQuest, The Main Ideas behind Probability Distributions, 2:15 to 5:14, A curve as a distribution, where probability is the area under it over an interval ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/02-densities-and-the-gaussian.md "Chapter 2: Read a density as area and draw a Gaussian from its covariance, deep-learning/diffusion-models/01-poe-derivation-foundations, chapter 02. The Gaus...")</sub>, so their products, their noised versions and the noised products are all closed form, with no grid. In it you produce a mosaic, a blend and two animals in one picture, then run the phase 2 samplers against exact draws. It ends when your numbers equal example 9's `numbers.json`. The reference is `rebuild/parts_world.py` and `rebuild/phase4_parts_world.py` on branch `unbuild-walk`.
+**Why a new world.** A 2D slot holds one number, so the only chimera it can show is a midpoint. Image chimeras are mostly mosaics: some parts follow the cat, others the dog.
+
+**What you build.** You build a world of 4 × 4 images whose experts are mixtures of diagonal [Gaussians](../../../../../Obsidian/Mathematics/Statistics/Distributions/Multivariate%20Normal%20Distribution/Multivariate%20Normal%20Distribution.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=227 "Introduction to probability for data science, section 4.6, The one-dimensional Gaussian random variable: its density with plots of μ and σ moving and widenin..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=306 "Introduction to probability for data science, section 5.6, The d-dimensional Gaussian density with Σ⁻¹, its mean vector and covariance, and the diagonal cova..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=203 "Mathematics for machine learning, section 6.5, The univariate and multivariate densities (equations 6.62 and 6.63, page 204) drawn with 100 samples, then mar..."), [▶1](https://www.youtube.com/watch?v=rzFX5NWojp0&t=0s "StatQuest, The Normal Distribution, Clearly Explained, 0:00 to 3:27, The bell-shaped curve and what its mean and standard deviation set, in the video's openi..."), [▶2](https://www.youtube.com/watch?v=oI3hZJqXJuc&t=135s "StatQuest, The Main Ideas behind Probability Distributions, 2:15 to 5:14, A curve as a distribution, where probability is the area under it over an interval ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/02-densities-and-the-gaussian.md "Chapter 2: Read a density as area and draw a Gaussian from its covariance, deep-learning/diffusion-models/01-poe-derivation-foundations, chapter 02. The Gaus...")</sub>, so their products, their noised versions and the noised products are all closed form, with no grid. In it you produce a mosaic, a blend and two animals in one picture, then run the phase 2 samplers against exact draws.
+
+**When it ends.** It ends when your numbers equal example 9's `numbers.json`. The reference is `rebuild/parts_world.py` and `rebuild/phase4_parts_world.py` on branch `unbuild-walk`.
 
 **How to walk it.** `/drip-execute-plan artifacts/drips/simple-distributions-rebuild/04-the-parts-world.md`, one step per message, typing every block yourself. The python blocks, typed in order into `walk04.py` in `/home-mscluster/mmolefe/Playground/PhD/simple-distributions-walk/`, are one runnable script.
 
@@ -47,7 +51,9 @@ Here `cosine_beta_schedule(100)` is the cosine schedule with offset $s=0.008$, i
 
 ## Step 1: an image is 16 numbers
 
-**Definition.** A [sample](../../../../../Obsidian/Mathematics/Statistics/Sampling%20From%20A%20Distribution.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=539 "Pattern recognition and machine learning, chapter 11, Why expectations need samples, ancestral sampling of a directed graph (page 541), standard distribution..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=245 "Introduction to probability for data science, section 4.8, Generates random numbers for any PDF by running a uniform through the inverse CDF, in Python, with..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=606 "Deep learning textbook, section 17.1, Why machine learning samples at all (Monte Carlo estimates of sums and integrals, and sampling as the goal of a generat..."), [▶1](https://www.youtube.com/watch?v=9ixzzPQWuAY&t=474s "ritvikmath, Inverse Transform Sampling, 7:54 to 10:04, Inverts the exponential CDF and turns a uniform draw into an exponential one. Chapter-timed, from the ..."), [▶2](https://www.youtube.com/watch?v=OXDqjdVVePY&t=232s "ritvikmath, Accept-Reject Sampling, 3:52 to 7:45, An easy proposal g scaled by M into an envelope above f, then each draw accepted with probability f/(M g). ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/00-from-scratch-to-sdxl/textbook/l3-stochastic-processes/13-drawing-samples-by-hand.md "Drawing samples by hand: Monte Carlo, inverse transform and accept-reject, deep-learning/diffusion-models/00-from-scratch-to-sdxl, volume L3, section 13. Thr...")</sub> is $x\in\mathbb R^{16}$ drawn as a 4 × 4 image, row by row. Pixels 0 to 7 are the top two rows, the head; 8 to 15 are the body. LEFT is the left two columns, RIGHT the right two. A cat is +1 on its pixels and a dog −1, so the two colours of a diverging colour map tell them apart.
+**Definition.** A [sample](../../../../../Obsidian/Mathematics/Statistics/Sampling%20From%20A%20Distribution.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=539 "Pattern recognition and machine learning, chapter 11, Why expectations need samples, ancestral sampling of a directed graph (page 541), standard distribution..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=245 "Introduction to probability for data science, section 4.8, Generates random numbers for any PDF by running a uniform through the inverse CDF, in Python, with..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=606 "Deep learning textbook, section 17.1, Why machine learning samples at all (Monte Carlo estimates of sums and integrals, and sampling as the goal of a generat..."), [▶1](https://www.youtube.com/watch?v=9ixzzPQWuAY&t=474s "ritvikmath, Inverse Transform Sampling, 7:54 to 10:04, Inverts the exponential CDF and turns a uniform draw into an exponential one. Chapter-timed, from the ..."), [▶2](https://www.youtube.com/watch?v=OXDqjdVVePY&t=232s "ritvikmath, Accept-Reject Sampling, 3:52 to 7:45, An easy proposal g scaled by M into an envelope above f, then each draw accepted with probability f/(M g). ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/00-from-scratch-to-sdxl/textbook/l3-stochastic-processes/13-drawing-samples-by-hand.md "Drawing samples by hand: Monte Carlo, inverse transform and accept-reject, deep-learning/diffusion-models/00-from-scratch-to-sdxl, volume L3, section 13. Thr...")</sub> is $x\in\mathbb R^{16}$ drawn as a 4 × 4 image, row by row. Pixels 0 to 7 are the top two rows, the head; 8 to 15 are the body. LEFT is the left two columns, RIGHT the right two.
+
+**Cat and dog values.** A cat is +1 on its pixels and a dog −1, so the two colours of a diverging colour map tell them apart.
 
 🧸 **Toy:** one 4 × 4 image contains 16 numbers. The first 8 numbers form the head and the last 8 form the body.
 
@@ -110,16 +116,18 @@ $$
 
 **Point at the head.** The selection grows from 1 pixel to 8 pixels. Calling the whole head one pixel would collapse 8 separately stored values into one and lose their locations.
 
-<!-- video-table: pixel rev=1 -->
-Stanford CME296 on what a pixel holds, in the order to watch:
+<!-- links: pixel rev=2 -->
+🔗 **Where else this lives**
 
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | An image is a grid of pixels, height by width, and each pixel holds three numbers, its amounts of red, green and blue | Intuition | [Stanford CME296, lecture 1, 27:09 to 27:59](https://www.youtube.com/watch?v=tr-CUpw--ck&t=1629s) |
-| 2 | Pixel values run from 0 to 255 but are rescaled to between −1 and 1 and treated as continuous | Intuition | [Stanford CME296, lecture 1, 32:58 to 33:23](https://www.youtube.com/watch?v=tr-CUpw--ck&t=1978s) |
+- 🎬 Video: [Stanford CME296, lecture 1, 27:09 to 27:59](https://www.youtube.com/watch?v=tr-CUpw--ck&t=1629s), an image as a grid of pixels, each holding its amounts of red, green and blue.
+- 🎬 Video: [Stanford CME296, lecture 1, 32:58 to 33:23](https://www.youtube.com/watch?v=tr-CUpw--ck&t=1978s), pixel values from 0 to 255 rescaled to between −1 and 1 and treated as continuous.
 
-CME296's pixels carry three colour values each; this walk's carry one number, +1 for a cat and −1 for a dog. Times are read from CME296's captions and good to about 30 seconds.
-<!-- /video-table -->
+<details><summary>How these videos differ from this step</summary>
+
+**Three colours against one number.** CME296's pixels carry three colour values each; this walk's carry one number, +1 for a cat and −1 for a dog. Times are read from CME296's captions and good to about 30 seconds.
+
+</details>
+<!-- /links -->
 
 🔤 **The name:** image as a [vector](../../../../../Obsidian/Mathematics/Linear%20Algebra/Vector.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/linear-algebra/linear-algebra-textbook.pdf#page=145 "Linear algebra textbook, section 3.1, Vectors drawn as arrows in 2-space and 3-space, then written as ordered n-tuples in Rⁿ (Definition 1, page 150)."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=23 "Mathematics for machine learning, chapter 2 opening, What counts as a vector: anything that adds and scales, with geometric arrows and polynomials as the fir..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=47 "Deep learning textbook, section 2.1, Scalars, vectors, matrices and tensors in the notation the rest of deep learning uses."), [▶1](https://www.youtube.com/watch?v=tr-CUpw--ck&t=1684s "Stanford CME296, lecture 1, 28:04 to 28:52, An image as one vector whose length is the number of pixels times 3, which is what x_0 and x_t are in diffusion. ..."), [▶2](https://www.youtube.com/watch?v=fNk_zzaMoSs&t=0s "3Blue1Brown, Vectors (Essence of linear algebra, chapter 1), Three perspectives on vectors, 0:00 to 2:52, The physics arrow, the computer-science list of num..."), [◆](../../../../../goal-setting/learning/ai-engineering/string-similarity-measures/foundations/plans/06-vectors-dot-product-and-length.md "Compute vectors, the dot product, length and the angle between them, ai-engineering/string-similarity-measures/foundations, plan 06. A text turned into a vec...")</sub>
 
@@ -198,15 +206,17 @@ $$
 
 **Add one stored square.** The vector length moves from 16 to 17, so it can no longer be reshaped into the same 4 × 4 grid. The dimension records exactly how many pixel values the image carries.
 
-<!-- video-table: image-as-a-vector rev=1 -->
-Stanford CME296 on an image as one vector:
+<!-- links: image-as-a-vector rev=2 -->
+🔗 **Where else this lives**
 
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | Because every pixel holds numbers, the whole image is one vector whose length is the number of pixels times 3, and x_0 and x_t in diffusion are such vectors | Intuition | [Stanford CME296, lecture 1, 28:04 to 28:52](https://www.youtube.com/watch?v=tr-CUpw--ck&t=1684s) |
+- 🎬 Video: [Stanford CME296, lecture 1, 28:04 to 28:52](https://www.youtube.com/watch?v=tr-CUpw--ck&t=1684s), the whole image as one vector whose length is the number of pixels times 3, which is what x_0 and x_t are in diffusion.
 
-CME296 does not fix the order in which the grid is read into the vector, the row-by-row order that puts this walk's head in entries 0 to 7. The time is read from CME296's captions and good to about 30 seconds.
-<!-- /video-table -->
+<details><summary>How this video differs from this step</summary>
+
+**The reading order.** CME296 does not fix the order in which the grid is read into the vector, the row-by-row order that puts this walk's head in entries 0 to 7. The time is read from CME296's captions and good to about 30 seconds.
+
+</details>
+<!-- /links -->
 
 🔨 **Build:**
 
@@ -251,7 +261,9 @@ $$
 
 **Why negative one half is there.** The minus sign makes [density](../../../../../Obsidian/Mathematics/Statistics/Distributions/Probability%20Density%20Function.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=188 "Introduction to probability for data science, section 4.1, Builds the intuition of probability per unit length, defines the PDF and its properties (Definitio..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=186 "Mathematics for machine learning, section 6.2.2, The density and the CDF (Definitions 6.1 and 6.2), a uniform example (Example 6.3), and discrete against con..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=36 "Pattern recognition and machine learning, section 1.2.1, The density's two conditions (equations 1.25 and 1.26), its link to the CDF, and why a density picks..."), [▶1](https://www.youtube.com/watch?v=QKA4HNEw3aY&t=52s "The Organic Chemistry Tutor, Probability Density Functions, 0:52 to 3:39, Verifies that a given function is a density by checking that its integral equals 1...."), [▶2](https://www.youtube.com/watch?v=oI3hZJqXJuc&t=135s "StatQuest, The Main Ideas behind Probability Distributions, 2:15 to 5:14, A curve as a distribution, with probability read as area under it, not its height. ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/02-densities-and-the-gaussian.md#21-a-density-can-exceed-1 "Chapter 2: Read a density as area and draw a Gaussian from its covariance, deep-learning/diffusion-models/01-poe-derivation-foundations, chapter 02, section ..."), [◈](https://claude.ai/artifact/DBmJtn6xy75sPtQwPEvQZU#nb-sec1 "Kinds of composition notebook, Setup: the ideal expert, The ideal expert's log-density on a grid, in four steps from the 2D Gaussian to its logsumexp form, t...")</sub> fall as mismatch grows, and the half is the [Gaussian](../../../../../Obsidian/Mathematics/Statistics/Distributions/Multivariate%20Normal%20Distribution/Multivariate%20Normal%20Distribution.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=227 "Introduction to probability for data science, section 4.6, The one-dimensional Gaussian random variable: its density with plots of μ and σ moving and widenin..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=306 "Introduction to probability for data science, section 5.6, The d-dimensional Gaussian density with Σ⁻¹, its mean vector and covariance, and the diagonal cova..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=203 "Mathematics for machine learning, section 6.5, The univariate and multivariate densities (equations 6.62 and 6.63, page 204) drawn with 100 samples, then mar..."), [▶1](https://www.youtube.com/watch?v=rzFX5NWojp0&t=0s "StatQuest, The Normal Distribution, Clearly Explained, 0:00 to 3:27, The bell-shaped curve and what its mean and standard deviation set, in the video's openi..."), [▶2](https://www.youtube.com/watch?v=oI3hZJqXJuc&t=135s "StatQuest, The Main Ideas behind Probability Distributions, 2:15 to 5:14, A curve as a distribution, where probability is the area under it over an interval ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/02-densities-and-the-gaussian.md "Chapter 2: Read a density as area and draw a Gaussian from its covariance, deep-learning/diffusion-models/01-poe-derivation-foundations, chapter 02. The Gaus...")</sub> convention paired with variance. Removing the half would double the toy's log-density gap from 1616 to 3232.
 
-**Derivation of what a variance means here.** A small $v_d$ means the expert is consistent on pixel d: its training images all have the same value there. A large $v_d$ means it is loose there. In this example variance 1 is 100 times less precise than variance 0.01, so it pulls on a product much less, but it still pulls. Its [per-pixel score](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/the-little-book-of-generative-ai-foundations.pdf#page=114) is
+**Derivation of what a variance means here.** A small $v_d$ means the expert is consistent on pixel d: its training images all have the same value there. A large $v_d$ means it is loose there.
+
+**How hard a loose pixel pulls.** In this example variance 1 is 100 times less precise than variance 0.01, so it pulls on a product much less, but it still pulls. Its [per-pixel score](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/the-little-book-of-generative-ai-foundations.pdf#page=114) is
 
 $$\nabla_{x_d}\log\mathcal N(x_d;m_d,v_d)=-\frac{x_d-m_d}{v_d},$$
 
@@ -391,17 +403,20 @@ $$
 
 **Add an off-diagonal covariance.** A pair of pixels can then move together, so the charge is no longer determined by 16 separate one-pixel terms. The independent sum used to obtain 1616 no longer applies.
 
-<!-- video-table: diagonal-gaussian rev=1 -->
-Stanford CS229, ritvikmath, then Stanford CME296, on a Gaussian over a vector and the diagonal covariance that makes its coordinates independent, in the order to watch:
+<!-- links: diagonal-gaussian rev=2 -->
+🔗 **Where else this lives**
 
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | The multivariate Gaussian density, written with a mean vector and a covariance matrix | Intuition | [Stanford CS229, Autumn 2018, lecture 5, 8:11 to 18:57](https://www.youtube.com/watch?v=nt63k3bfXS0&t=491s) |
-| 2 | What a covariance matrix holds: each coordinate's variance on the diagonal, each pair's covariance off it | Intuition | [ritvikmath, The Covariance Matrix, 2:40 to 5:23](https://www.youtube.com/watch?v=152tSYtiQbw&t=160s) |
-| 3 | A Gaussian over vectors whose covariance is simplified to a variance times the identity, a diagonal matrix | Intuition | [Stanford CME296, lecture 1, 29:30 to 30:46](https://www.youtube.com/watch?v=tr-CUpw--ck&t=1770s) |
+- 🎬 Video: [ritvikmath, The Covariance Matrix, 2:40 to 5:23](https://www.youtube.com/watch?v=152tSYtiQbw&t=160s), each coordinate's variance on the diagonal and each pair's covariance off it.
+- 🎬 Video: [Stanford CME296, lecture 1, 29:30 to 30:46](https://www.youtube.com/watch?v=tr-CUpw--ck&t=1770s), a Gaussian over vectors whose covariance is simplified to a variance times the identity, a diagonal matrix.
 
-CME296's simplification gives every coordinate the same variance, where this expert gives each pixel its own (0.01 on the head, 1 on the body), and no video splits the log-density into one term per pixel. Rows 1 and 2 are chapter boundaries from each video's chapter list, so the sentence inside each is not checked; row 3 is read from CME296's captions and good to about 30 seconds.
-<!-- /video-table -->
+<details><summary>How these videos differ from this step</summary>
+
+**One variance against one per pixel.** CME296's simplification gives every coordinate the same variance, where this expert gives each pixel its own (0.01 on the head, 1 on the body). No video splits the log-density into one term per pixel.
+
+**How the times were read.** The ritvikmath time is a chapter boundary from the video's chapter list, so the sentence inside it is not checked. The CME296 time is read from its captions and good to about 30 seconds.
+
+</details>
+<!-- /links -->
 
 🔤 **The name:** [precision](../../../../../Obsidian/Mathematics/Statistics/Distributions/Multivariate%20Normal%20Distribution/Products%20And%20Quotients%20Of%20Diagonal%20Gaussians.md)
 
@@ -469,17 +484,18 @@ $$
 
 **After the move.** Changing that variance to 1 gives precision 1 and changes the same eight-pixel contribution from 1600 to 16 nats. Greater variance means less certainty and less pull.
 
-<!-- video-table: precision rev=1 -->
-Machine Learning & Simulation, from the open web, on precision, one over the variance, in the order to watch:
+<!-- links: precision rev=2 -->
+🔗 **Where else this lives**
 
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | The normal written with a precision in place of the variance, and the precision defined | Intuition, open web | [Machine Learning & Simulation, Precision vs Variance, 1:15 to 2:04](https://www.youtube.com/watch?v=2M9VO_52NpQ&t=75s) |
-| 2 | Why use the precision at all | Intuition, open web | [Machine Learning & Simulation, Precision vs Variance, 2:17 to 2:47](https://www.youtube.com/watch?v=2M9VO_52NpQ&t=137s) |
-| 3 | Three Gaussians compared: high variance gives a wide bell, high precision a narrow one, and neither moves the mean | Worked example, open web | [Machine Learning & Simulation, Precision vs Variance, 2:47 to 4:37](https://www.youtube.com/watch?v=2M9VO_52NpQ&t=167s) |
+- 🎬 Video: [Machine Learning & Simulation, Precision vs Variance, 1:15 to 2:04](https://www.youtube.com/watch?v=2M9VO_52NpQ&t=75s), the normal written with a precision in place of the variance, and the precision defined.
+- 🎬 Video: [Machine Learning & Simulation, Precision vs Variance, 2:47 to 4:37](https://www.youtube.com/watch?v=2M9VO_52NpQ&t=167s), three Gaussians compared: high variance gives a wide bell, high precision a narrow one, and neither moves the mean.
 
-No listed creator has a video on precision, and this one does not multiply two Gaussians, where precisions add and weight the mean, which is what the 100-to-1 pull does here. Times are chapter boundaries from the video's chapter list, so the sentence inside each is not checked.
-<!-- /video-table -->
+<details><summary>How this video differs from this step</summary>
+
+**What it leaves out.** No listed creator has a video on precision, so this one is from the open web. It does not multiply two Gaussians, where precisions add and weight the mean, which is what the 100-to-1 pull does here. Times are chapter boundaries from the video's chapter list, so the sentence inside each is not checked.
+
+</details>
+<!-- /links -->
 
 🔤 **The name:** [nat](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/11-kl-cross-entropy-and-cmi.md#114-cmi-from-a-table-in-bits-and-in-nats)
 
@@ -700,18 +716,22 @@ $$
 
 On every pixel the tighter expert dominates the precision-weighted average: the cat sets the head and the dog sets the body. The looser expert still pulls the result slightly toward its own mean, which is why the head lands at $0.9802$ rather than exactly 1.
 
-<!-- video-table: product-of-two-gaussians rev=1 -->
-Michel van Biezen, then Robert Ghrist from the open web, on multiplying two Gaussians, in the order to watch:
+<!-- links: product-of-two-gaussians rev=2 -->
+🔗 **Where else this lives**
 
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | The gain is the estimate's error over the sum of both errors, and the new value moves toward the reading by that share, so the surer of the two pulls harder | Intuition | [Van Biezen, Kalman Filter 3 of 55, 0:28 to 3:51](https://www.youtube.com/watch?v=fpRb1sjFz_M&t=28s) |
-| 2 | One update with numbers: an estimate of 68 with error 2 and a reading of 75 with error 4 give 70.33 with error 1.33 | Worked example | [Van Biezen, Kalman Filter 6 of 55, 0:13 to 2:14](https://www.youtube.com/watch?v=SIQJaqYVtuE&t=13s) |
-| 3 | The product of two one-dimensional Gaussians is a scaled Gaussian, found by simplifying the quadratic in the exponent | Proof, open web | [Ghrist, CalcBLUE 3, 18.4, 0:26 to 4:10](https://www.youtube.com/watch?v=lUORBdNccHc&t=26s) |
-| 4 | The same product in several dimensions | Proof, open web | [Ghrist, CalcBLUE 3, 18.4, 4:10 to 5:53](https://www.youtube.com/watch?v=lUORBdNccHc&t=250s) |
+- 🎬 Video: [Van Biezen, Kalman Filter 6 of 55, 0:13 to 2:14](https://www.youtube.com/watch?v=SIQJaqYVtuE&t=13s), one update with numbers: an estimate of 68 with error 2 and a reading of 75 with error 4 give 70.33 with error 1.33.
+- 🎬 Video: [Ghrist, CalcBLUE 3, 18.4, 0:26 to 4:10](https://www.youtube.com/watch?v=lUORBdNccHc&t=26s), the product of two one-dimensional Gaussians is a scaled Gaussian, found by simplifying the quadratic in the exponent.
 
-Van Biezen works the product as a Kalman filter update and calls the two variances errors: his old value plus the gain times the difference is the precision-weighted mean rearranged, and his new error of 1.33 from 2 and 4 is the two precisions added. No listed creator derives the product of two Gaussian densities, so rows 3 and 4 come from the open web, and no row was found that computes the overlap Z. Rows 1 and 2 are read from automatic captions and good to about 30 seconds; rows 3 and 4 are chapter boundaries, so the sentence inside each is not checked.
-<!-- /video-table -->
+<details><summary>How these videos differ from this step</summary>
+
+**Van Biezen's words for the same thing.** Van Biezen works the product as a Kalman filter update and calls the two variances errors. His old value plus the gain times the difference is the precision-weighted mean rearranged, and his new error of 1.33 from 2 and 4 is the two precisions added.
+
+**What no video covers.** No listed creator derives the product of two Gaussian densities, so the Ghrist segment comes from the open web. No segment was found that computes the overlap Z.
+
+**How the times were read.** The Van Biezen time is read from automatic captions and good to about 30 seconds. The Ghrist time is a chapter boundary, so the sentence inside it is not checked.
+
+</details>
+<!-- /links -->
 
 🧸 **Toy:** example 9(a). On a head pixel the cat has precision 100 and the dog 1, so the mean is $(100-1)/101$ = `0.9802`; the body mirrors it at `-0.9802`. $\log Z$ = `-46.47`: each pixel has a disagreement of 2 over a variance of 1.01, costing $\tfrac12(4/1.01+\log(2\pi\cdot1.01))=2.904$ nats, times 16.
 
@@ -979,21 +999,20 @@ $$
 
 A pair that puts both animals on the same half disagrees by 2 on 8 tight-against-tight pixels, and pays for it in $Z_{ij}$.
 
-<!-- video-table: product-of-two-mixtures rev=1 -->
-Chalmers' multiple object tracking course, from the open web, on multiplying a Gaussian mixture by a second factor, in the order to watch:
+<!-- links: product-of-two-mixtures rev=2 -->
+🔗 **Where else this lives**
 
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | Every pair of an old component and a measurement hypothesis becomes one new component, weighted by the old weight times an integral and normalised over all pairs | Intuition, open web | [Chalmers, Gaussian Sum Filtering: Prediction and Update, 2:38 to 3:38](https://www.youtube.com/watch?v=G_X_dMZUkdI&t=158s) |
-| 2 | With Gaussian factors the integral is the predicted likelihood, which is the pair's overlap, and each new component's mean and covariance come from a Kalman update | Intuition, open web | [Chalmers, Gaussian Sum Filtering: Prediction and Update, 4:20 to 5:15](https://www.youtube.com/watch?v=G_X_dMZUkdI&t=260s) |
-| 3 | Two components and two hypotheses give four numbered components | Worked example, open web | [Chalmers, Gaussian Sum Filtering: Prediction and Update, 6:05 to 7:04](https://www.youtube.com/watch?v=G_X_dMZUkdI&t=365s) |
+- 🎬 Video: [Chalmers, Gaussian Sum Filtering: Prediction and Update, 2:38 to 3:38](https://www.youtube.com/watch?v=G_X_dMZUkdI&t=158s), every pair of an old component and a measurement hypothesis becomes one new component, weighted by the old weight times an integral and normalised over all pairs.
+- 🎬 Video: [Chalmers, Gaussian Sum Filtering: Prediction and Update, 4:20 to 5:15](https://www.youtube.com/watch?v=G_X_dMZUkdI&t=260s), with Gaussian factors that integral is the pair's overlap, and each new component's mean and covariance come from a Kalman update.
 
-**How to read this table.** Read from top to bottom. The first row creates every pair, the second explains each pair's Gaussian calculation, and the third shows the four-component result of two choices paired with two choices.
+<details><summary>How this lecture maps onto this step</summary>
 
 **What to look for.** The lecture's measurement hypotheses play the role of the second expert's components. The shared move is that every old component pairs with every alternative, then the resulting weights are normalised together.
 
-No listed creator multiplies two mixtures. The second factor in this lecture is a measurement model with a detection probability and clutter rather than a second expert, so read each measurement hypothesis as one component of the second mixture; the Kalman update is the product of the pair's two Gaussians. Times are read from automatic captions and good to about 30 seconds.
-<!-- /video-table -->
+**Where the lecture differs.** No listed creator multiplies two mixtures, so this lecture is from the open web. Its second factor is a measurement model with a detection probability and clutter rather than a second expert, so read each measurement hypothesis as one component of the second mixture; the Kalman update is the product of the pair's two Gaussians. Times are read from automatic captions and good to about 30 seconds.
+
+</details>
+<!-- /links -->
 
 🧸 **Toy:** example 9(c) has four pairs. In a side-by-side pair (cat-left × dog-right, or cat-right × dog-left) every pixel puts one tight object value against a loose background at 0, so each of the 16 pixels disagrees by 1 over a variance of $0.01+1=1.01$:
 
@@ -1118,7 +1137,11 @@ $$
 
 **Why the ratio is there.** Dividing by the total makes the weights add to one. It turns the two surviving equal pairs into 0.5 each and the stored same-half pairs into 0 each.
 
-$e^{-779.12}$ is about $4\times10^{-339}$ (`4.27e-339`, `p4.exp_minus_delta`), so the exact same-half weight is `2.14e-339` (`p4.w_same_half_exact`). Both are below the smallest positive float64, about $5\times10^{-324}$ (`p4.float64_smallest_positive`), so $e^{-\Delta}$ [underflows to zero](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/deep-learning-textbook.pdf#page=96) (`p4.exp_minus_delta_float64`). The build therefore prints the side-by-side weights as `0.500` and the same-half weights as `0.000`, and `numbers.json` stores `0.5` and `0.0`. Keep the log-weights when the tiny positive weights matter. The product is two animals in one picture, side by side.
+**How small the same-half weight is.** $e^{-779.12}$ is about $4\times10^{-339}$ (`4.27e-339`, `p4.exp_minus_delta`), so the exact same-half weight is `2.14e-339` (`p4.w_same_half_exact`). Both are below the smallest positive float64, about $5\times10^{-324}$ (`p4.float64_smallest_positive`), so $e^{-\Delta}$ [underflows to zero](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/deep-learning-textbook.pdf#page=96) (`p4.exp_minus_delta_float64`).
+
+**What the build prints.** The build therefore prints the side-by-side weights as `0.500` and the same-half weights as `0.000`, and `numbers.json` stores `0.5` and `0.0`. Keep the log-weights when the tiny positive weights matter.
+
+**What the product is.** The product is two animals in one picture, side by side.
 
 🔤 **The name:** [chimera](../../../../../Obsidian/Artificial%20Intelligence/Generative%20Modeling/Diffusion%20Models/Composition/Kinds%20Of%20Composition.md#mosaic-blend-or-two-animals-from-one-product)
 
@@ -1312,17 +1335,18 @@ $$
 
 **Keep the log-weight.** The same component remains distinguishable at −803.2138 beside −24.0897. The log-scale difference 779.1241 survives even when the ordinary-scale ratio cannot.
 
-<!-- video-table: underflow-and-log-sum-exp rev=1 -->
-Bert Huang, from the open web, on underflow and the log-sum-exp trick, in the order to watch:
+<!-- links: underflow-and-log-sum-exp rev=2 -->
+🔗 **Where else this lives**
 
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | The numerical stability problem when very large or very negative numbers are exponentiated | Intuition, open web | [Bert Huang, Log Sum Exp Trick, 6:55 to 9:16](https://www.youtube.com/watch?v=pZbkVup7fYE&t=415s) |
-| 2 | The log-sum-exp trick | Proof, open web | [Bert Huang, Log Sum Exp Trick, 9:16 to 12:06](https://www.youtube.com/watch?v=pZbkVup7fYE&t=556s) |
-| 3 | The trick worked on numbers | Worked example, open web | [Bert Huang, Log Sum Exp Trick, 17:21 to 20:34](https://www.youtube.com/watch?v=pZbkVup7fYE&t=1041s) |
+- 🎬 Video: [Bert Huang, Log Sum Exp Trick, 6:55 to 9:16](https://www.youtube.com/watch?v=pZbkVup7fYE&t=415s), the numerical stability problem when very large or very negative numbers are exponentiated.
+- 🎬 Video: [Bert Huang, Log Sum Exp Trick, 9:16 to 12:06](https://www.youtube.com/watch?v=pZbkVup7fYE&t=556s), the log-sum-exp trick itself.
 
-No listed creator covers the trick, and Huang's numbers are not this section's log-weights of −803.2138 against −24.0897. Times are chapter boundaries from the video's chapter list, so the sentence inside each is not checked.
-<!-- /video-table -->
+<details><summary>How this video differs from this step</summary>
+
+**What it leaves out.** No listed creator covers the trick, so this video is from the open web, and Huang's numbers are not this section's log-weights of −803.2138 against −24.0897. Times are chapter boundaries from the video's chapter list, so the sentence inside each is not checked.
+
+</details>
+<!-- /links -->
 
 🔨 **Build:**
 
@@ -1585,21 +1609,20 @@ The projection this step defines, drawn: each sample becomes one point (head mea
 
 A separate 2,000 exact draws, scored the same way, give the finite-sample baseline for both: the discrepancy that comes from having only 2,000 samples. It is not a lower bound, and another random sample can score below it by chance. The co-occurrence row below shows this: every sampler's weight error (0.009 to 0.014) sits below the exact draws' 0.026.
 
-<!-- video-table: total-variation-distance rev=1 -->
-Mary Wootters, from the open web, on the total variation distance between two distributions, in the order to watch:
+<!-- links: total-variation-distance rev=2 -->
+🔗 **Where else this lives**
 
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | TV is half the sum of the absolute differences between the two probability tables, which equals the largest difference in probability the two give any one event | Intuition, open web | [Wootters, Total Variation Distance, 0:16 to 1:35](https://www.youtube.com/watch?v=aJP0Bj6jVkI&t=16s) |
-| 2 | Two bar charts split where each is the higher: the two shaded areas are equal, and each one is the TV | Proof, open web | [Wootters, Total Variation Distance, 1:35 to 3:47](https://www.youtube.com/watch?v=aJP0Bj6jVkI&t=95s) |
-| 3 | A fair coin against one that lands heads 0.6 of the time: TV = ½(0.1 + 0.1) = 0.1 | Worked example, open web | [Wootters, Total Variation Distance, 4:34 to 6:42](https://www.youtube.com/watch?v=aJP0Bj6jVkI&t=274s) |
+- 🎬 Video: [Wootters, Total Variation Distance, 0:16 to 1:35](https://www.youtube.com/watch?v=aJP0Bj6jVkI&t=16s), TV as half the sum of the absolute differences between two probability tables, equal to the largest gap the two give any one event.
+- 🎬 Video: [Wootters, Total Variation Distance, 4:34 to 6:42](https://www.youtube.com/watch?v=aJP0Bj6jVkI&t=274s), a fair coin against one that lands heads 0.6 of the time: TV = ½(0.1 + 0.1) = 0.1.
 
-**How to read this table.** Read the rows in order. The first defines the calculation, the second gives its geometric meaning, and the third computes a two-outcome example.
+<details><summary>How this video differs from this step</summary>
 
 **What to look for.** Wootters compares complete probability tables. This step first creates such tables by projecting samples and binning them, so its finite-sample baseline is an additional issue beyond the video.
 
-No listed creator covers it. Wootters compares two known tables; she does not estimate TV from two sets of samples on a binning, so the sampling-noise baseline that two draws of the same data reach is not covered. Times are read from automatic captions and good to about 30 seconds.
-<!-- /video-table -->
+**What it leaves out.** No listed creator covers it, so this video is from the open web. Wootters compares two known tables; she does not estimate TV from two sets of samples on a binning, so the sampling-noise baseline that two draws of the same data reach is not covered. Times are read from automatic captions and good to about 30 seconds.
+
+</details>
+<!-- /links -->
 
 🔤 **The name:** [projected total variation](../../../../../goal-setting/learning/deep-learning/diffusion-models/00-from-scratch-to-sdxl/textbook/l3-stochastic-processes/01-a-markov-chain-and-what-forgetting-means.md#definitions)
 

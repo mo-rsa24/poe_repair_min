@@ -1,12 +1,22 @@
 # 🔨 Phase 2: composing experts, and the samplers that reach the composition
 
-You build the three ways the notebook composes two experts (product, mixture, negation) and the samplers it uses to draw from them: reverse diffusion with the composed score, annealed [Langevin](../../../../../Obsidian/Mathematics/Statistics/Markov%20Chain%20Monte%20Carlo/Langevin%20Dynamics.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/the-little-book-of-generative-ai-foundations.pdf#page=115 "The little book of generative AI foundations, sections 6.1.2 and 6.1.3, The Langevin SDE dXₜ = ∇ log p*(Xₜ) dt + √2 dWₜ and its discrete update, drift for mo..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/probabilistic-machine-learning-advanced-topics.pdf#page=548 "Probabilistic machine learning: advanced topics, sections 12.5.6 and 12.5.7, Langevin Monte Carlo (MALA) as one-step HMC with an accept step, the Langevin di..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/probabilistic-machine-learning-advanced-topics.pdf#page=875 "Probabilistic machine learning: advanced topics, section 24.2.1, Langevin MCMC on an energy-based model, where the score is −∇ₓE_θ(x) so the normaliser drops..."), [▶1](https://www.youtube.com/watch?v=_WaR2fjZpEQ&t=866s "CME296 lecture 2, 14:26 to 18:33, Following the score alone collapses onto the densest region, so Langevin sampling adds a noise term at each step. Caption-r..."), [▶2](https://www.youtube.com/watch?v=_WaR2fjZpEQ&t=3222s "CME296 lecture 2, 53:42 to 58:25, Annealed Langevin dynamics, run at each noise level from the largest σ to the smallest with the score as a compass. Caption..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/00-from-scratch-to-sdxl/textbook/l3-stochastic-processes/08-langevin-dynamics-and-its-stationary-law.md "Langevin dynamics and its stationary law, deep-learning/diffusion-models/00-from-scratch-to-sdxl, volume L3, section 8. Langevin dynamics after the Ornstein-...")</sub> (ULA), Langevin with an accept step (MALA), and Hamiltonian moves with and without an accept step (UHA and the Metropolis-adjusted UHA). Along the way you derive the MALA bug and its fix. It ends when the notebook's ring-times-bar product comes out of your samplers, with each [sample](../../../../../Obsidian/Mathematics/Statistics/Sampling%20From%20A%20Distribution.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=539 "Pattern recognition and machine learning, chapter 11, Why expectations need samples, ancestral sampling of a directed graph (page 541), standard distribution..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=245 "Introduction to probability for data science, section 4.8, Generates random numbers for any PDF by running a uniform through the inverse CDF, in Python, with..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=606 "Deep learning textbook, section 17.1, Why machine learning samples at all (Monte Carlo estimates of sums and integrals, and sampling as the goal of a generat..."), [▶1](https://www.youtube.com/watch?v=9ixzzPQWuAY&t=474s "ritvikmath, Inverse Transform Sampling, 7:54 to 10:04, Inverts the exponential CDF and turns a uniform draw into an exponential one. Chapter-timed, from the ..."), [▶2](https://www.youtube.com/watch?v=OXDqjdVVePY&t=232s "ritvikmath, Accept-Reject Sampling, 3:52 to 7:45, An easy proposal g scaled by M into an envelope above f, then each draw accepted with probability f/(M g). ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/00-from-scratch-to-sdxl/textbook/l3-stochastic-processes/13-drawing-samples-by-hand.md "Drawing samples by hand: Monte Carlo, inverse transform and accept-reject, deep-learning/diffusion-models/00-from-scratch-to-sdxl, volume L3, section 13. Thr...")</sub>'s acceptance on the screen. The reference is `rebuild/compose.py`, `rebuild/samplers.py` and the fixed `anneal_samplers.py` on branch `unbuild-walk`.
+**What you build.** You build the three ways the notebook composes two experts (product, mixture, negation) and the samplers it uses to draw from them: reverse diffusion with the composed score, annealed [Langevin](../../../../../Obsidian/Mathematics/Statistics/Markov%20Chain%20Monte%20Carlo/Langevin%20Dynamics.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/the-little-book-of-generative-ai-foundations.pdf#page=115 "The little book of generative AI foundations, sections 6.1.2 and 6.1.3, The Langevin SDE dXₜ = ∇ log p*(Xₜ) dt + √2 dWₜ and its discrete update, drift for mo..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/probabilistic-machine-learning-advanced-topics.pdf#page=548 "Probabilistic machine learning: advanced topics, sections 12.5.6 and 12.5.7, Langevin Monte Carlo (MALA) as one-step HMC with an accept step, the Langevin di..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/probabilistic-machine-learning-advanced-topics.pdf#page=875 "Probabilistic machine learning: advanced topics, section 24.2.1, Langevin MCMC on an energy-based model, where the score is −∇ₓE_θ(x) so the normaliser drops..."), [▶1](https://www.youtube.com/watch?v=_WaR2fjZpEQ&t=866s "CME296 lecture 2, 14:26 to 18:33, Following the score alone collapses onto the densest region, so Langevin sampling adds a noise term at each step. Caption-r..."), [▶2](https://www.youtube.com/watch?v=_WaR2fjZpEQ&t=3222s "CME296 lecture 2, 53:42 to 58:25, Annealed Langevin dynamics, run at each noise level from the largest σ to the smallest with the score as a compass. Caption..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/00-from-scratch-to-sdxl/textbook/l3-stochastic-processes/08-langevin-dynamics-and-its-stationary-law.md "Langevin dynamics and its stationary law, deep-learning/diffusion-models/00-from-scratch-to-sdxl, volume L3, section 8. Langevin dynamics after the Ornstein-...")</sub> (ULA), Langevin with an accept step (MALA), and Hamiltonian moves with and without an accept step (UHA and the Metropolis-adjusted UHA). Along the way you derive the MALA bug and its fix.
 
-**How to walk it.** `/drip-execute-plan artifacts/drips/simple-distributions-rebuild/02-composing-and-sampling.md`, one step per message, typing every block yourself. Step 6's derivation is worth a `/drip --math` of its own. The python blocks, typed in order into `walk02.py` in `/home-mscluster/mmolefe/Playground/PhD/simple-distributions-walk/`, are one runnable script. Phase 1's pieces are imported from the reference from here on, so this file runs on its own.
+**Where it ends.** It ends when the notebook's ring-times-bar product comes out of your samplers, with each [sample](../../../../../Obsidian/Mathematics/Statistics/Sampling%20From%20A%20Distribution.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=539 "Pattern recognition and machine learning, chapter 11, Why expectations need samples, ancestral sampling of a directed graph (page 541), standard distribution..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=245 "Introduction to probability for data science, section 4.8, Generates random numbers for any PDF by running a uniform through the inverse CDF, in Python, with..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=606 "Deep learning textbook, section 17.1, Why machine learning samples at all (Monte Carlo estimates of sums and integrals, and sampling as the goal of a generat..."), [▶1](https://www.youtube.com/watch?v=9ixzzPQWuAY&t=474s "ritvikmath, Inverse Transform Sampling, 7:54 to 10:04, Inverts the exponential CDF and turns a uniform draw into an exponential one. Chapter-timed, from the ..."), [▶2](https://www.youtube.com/watch?v=OXDqjdVVePY&t=232s "ritvikmath, Accept-Reject Sampling, 3:52 to 7:45, An easy proposal g scaled by M into an envelope above f, then each draw accepted with probability f/(M g). ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/00-from-scratch-to-sdxl/textbook/l3-stochastic-processes/13-drawing-samples-by-hand.md "Drawing samples by hand: Monte Carlo, inverse transform and accept-reject, deep-learning/diffusion-models/00-from-scratch-to-sdxl, volume L3, section 13. Thr...")</sub>'s acceptance on the screen.
+
+**The reference.** The reference is `rebuild/compose.py`, `rebuild/samplers.py` and the fixed `anneal_samplers.py` on branch `unbuild-walk`.
+
+**How to walk it.** `/drip-execute-plan artifacts/drips/simple-distributions-rebuild/02-composing-and-sampling.md`, one step per message, typing every block yourself. Step 6's derivation is worth a `/drip --math` of its own.
+
+**The script you type.** The python blocks, typed in order into `walk02.py` in `/home-mscluster/mmolefe/Playground/PhD/simple-distributions-walk/`, are one runnable script. Phase 1's pieces are imported from the reference from here on, so this file runs on its own.
 
 **What teaches it elsewhere.** The product rule: [the PoE rule, assembled](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/plans/12-the-poe-rule-assembled.md), [PoE on two Gaussians](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/plans/13-poe-on-two-gaussians.md) (with its scenes), and the vault note [Product, Mixture And Negation](../../../../../Obsidian/Artificial%20Intelligence/Generative%20Modeling/Diffusion%20Models/Composition/Product%2C%20Mixture%20And%20Negation.md). Why summed scores miss the product: [The Order Of Multiplying And Noising](../../../../../Obsidian/Artificial%20Intelligence/Generative%20Modeling/Diffusion%20Models/Composition/The%20Order%20Of%20Multiplying%20And%20Noising.md). The samplers: [Langevin dynamics](../../../../../goal-setting/learning/deep-learning/diffusion-models/02-sampler-correctors-for-composition/plans/21-langevin-dynamics.md), [Metropolis-Hastings](../../../../../goal-setting/learning/deep-learning/diffusion-models/02-sampler-correctors-for-composition/plans/12-metropolis-hastings.md), [detailed balance](../../../../../goal-setting/learning/deep-learning/diffusion-models/02-sampler-correctors-for-composition/plans/11-stationary-and-detailed-balance.md), [the Hamiltonian corrector](../../../../../goal-setting/learning/deep-learning/diffusion-models/02-sampler-correctors-for-composition/plans/23-the-hamiltonian-corrector.md), [what is annealed](../../../../../goal-setting/learning/deep-learning/diffusion-models/02-sampler-correctors-for-composition/plans/24-what-is-annealed.md) and [the accept step needs the height](../../../../../goal-setting/learning/deep-learning/diffusion-models/02-sampler-correctors-for-composition/plans/36-the-accept-step-needs-the-height.md), whose scene is [the accept-step scene](https://claude.ai/artifact/LtVupoHgCdoyZgXtxB9817).
 
-**Where the numbers come from.** Worked numbers: `python -m rebuild.walk_numbers`. Trained-model results: `rebuild/out/phase2/phase2.json`. Step 9's shares, with and without a clean final level: `rebuild/out/phase2/step9.json`, produced by `python -m rebuild.phase2_step9` (about a minute); `walk_numbers` reads that file for its `p2.step9_` keys and stops with a message naming the command when the file is missing. Sampler test numbers: `python -m pytest tests/test_anneal_samplers.py -s`.
+**Where the numbers come from.** Worked numbers: `python -m rebuild.walk_numbers`. Trained-model results: `rebuild/out/phase2/phase2.json`.
+
+**The step 9 file.** Step 9's shares, with and without a clean final level: `rebuild/out/phase2/step9.json`, produced by `python -m rebuild.phase2_step9` (about a minute); `walk_numbers` reads that file for its `p2.step9_` keys and stops with a message naming the command when the file is missing.
+
+**Sampler test numbers.** They come from `python -m pytest tests/test_anneal_samplers.py -s`.
 
 ## Steps
 
@@ -49,7 +59,9 @@ T = 100; betas = cosine_beta_schedule(T); abar = np.cumprod(1 - betas)
 
 **Definition.** The [product of experts](../../../../../Obsidian/Artificial%20Intelligence/Generative%20Modeling/Product%20Of%20Experts.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/probabilistic-machine-learning-advanced-topics.pdf#page=873 "Probabilistic machine learning: advanced topics, section 24.1.1, Example: products of experts (PoE), Multiplies a model of thermally stable proteins by a mod..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=587 "Deep learning, section 16.2.4, Energy-based models, Reads each term of an energy function as an expert enforcing one soft constraint, so multiplying their pr..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/probabilistic-machine-learning-advanced-topics.pdf#page=206 "Probabilistic machine learning: advanced topics, section 4.3.3, MRFs with latent variables, Shows a restricted Boltzmann machine's p(x∣z) as a product over i..."), [▶1](https://www.youtube.com/watch?v=m61KiAMCJ5Q&t=1381s "Stanford CS236 lecture 11, 23:01 to 29:14, Composing normalised models into one. Chapter-timed, from the video lessons index."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/plans/13-poe-on-two-gaussians.md "PoE on two Gaussians, end to end, deep-learning/diffusion-models/01-poe-derivation-foundations, plan 13. Composes two 2D Gaussians three separate ways that m..."), [◈](https://claude.ai/artifact/DBmJtn6xy75sPtQwPEvQZU#nb-sec5 "Kinds of composition notebook, Four kinds of composition, Co-occurrence, contention and interaction computed as products of two experts' densities on one grid.")</sub> $p_A$ and $p_B$ is $p(x)=p_A(x)\,p_B(x)/Z$, with $Z=\int p_A p_B\,dx$. In [logs](../../../../../goal-setting/learning/mathematics/textbooks/algebra/algebra-handbook.pdf#page=110), $\log p=\log p_A+\log p_B-\log Z$, and since Z [does not depend on x](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/the-little-book-of-generative-ai-foundations.pdf#page=179) the scores add: $\nabla\log p=\nabla\log p_A+\nabla\log p_B$.
 
-**Two constructions.** The ladder composes two experts in two ways, so the densities need names that stay apart. Write $a(x)=p(x\mid A)$ and $b(x)=p(x\mid B)$ for the two experts and $r(x)$ for the background [density](../../../../../Obsidian/Mathematics/Statistics/Distributions/Probability%20Density%20Function.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=188 "Introduction to probability for data science, section 4.1, Builds the intuition of probability per unit length, defines the PDF and its properties (Definitio..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=186 "Mathematics for machine learning, section 6.2.2, The density and the CDF (Definitions 6.1 and 6.2), a uniform example (Example 6.3), and discrete against con..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=36 "Pattern recognition and machine learning, section 1.2.1, The density's two conditions (equations 1.25 and 1.26), its link to the CDF, and why a density picks..."), [▶1](https://www.youtube.com/watch?v=QKA4HNEw3aY&t=52s "The Organic Chemistry Tutor, Probability Density Functions, 0:52 to 3:39, Verifies that a given function is a density by checking that its integral equals 1...."), [▶2](https://www.youtube.com/watch?v=oI3hZJqXJuc&t=135s "StatQuest, The Main Ideas behind Probability Distributions, 2:15 to 5:14, A curve as a distribution, with probability read as area under it, not its height. ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/02-densities-and-the-gaussian.md#21-a-density-can-exceed-1 "Chapter 2: Read a density as area and draw a Gaussian from its covariance, deep-learning/diffusion-models/01-poe-derivation-foundations, chapter 02, section ..."), [◈](https://claude.ai/artifact/DBmJtn6xy75sPtQwPEvQZU#nb-sec1 "Kinds of composition notebook, Setup: the ideal expert, The ideal expert's log-density on a grid, in four steps from the 2D Gaussian to its logsumexp form, t...")</sub> of all the data. Construction (1) asks for $p(x\mid A,B)$. If $A$ and $B$ are [conditionally independent](../../../../../goal-setting/learning/deep-learning/generative-models/03-sampling-from-a-graph/plans/04-conditional-independence.md) given $x$, then
+**Two constructions.** The ladder composes two experts in two ways, so the densities need names that stay apart. Write $a(x)=p(x\mid A)$ and $b(x)=p(x\mid B)$ for the two experts and $r(x)$ for the background [density](../../../../../Obsidian/Mathematics/Statistics/Distributions/Probability%20Density%20Function.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=188 "Introduction to probability for data science, section 4.1, Builds the intuition of probability per unit length, defines the PDF and its properties (Definitio..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=186 "Mathematics for machine learning, section 6.2.2, The density and the CDF (Definitions 6.1 and 6.2), a uniform example (Example 6.3), and discrete against con..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=36 "Pattern recognition and machine learning, section 1.2.1, The density's two conditions (equations 1.25 and 1.26), its link to the CDF, and why a density picks..."), [▶1](https://www.youtube.com/watch?v=QKA4HNEw3aY&t=52s "The Organic Chemistry Tutor, Probability Density Functions, 0:52 to 3:39, Verifies that a given function is a density by checking that its integral equals 1...."), [▶2](https://www.youtube.com/watch?v=oI3hZJqXJuc&t=135s "StatQuest, The Main Ideas behind Probability Distributions, 2:15 to 5:14, A curve as a distribution, with probability read as area under it, not its height. ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/02-densities-and-the-gaussian.md#21-a-density-can-exceed-1 "Chapter 2: Read a density as area and draw a Gaussian from its covariance, deep-learning/diffusion-models/01-poe-derivation-foundations, chapter 02, section ..."), [◈](https://claude.ai/artifact/DBmJtn6xy75sPtQwPEvQZU#nb-sec1 "Kinds of composition notebook, Setup: the ideal expert, The ideal expert's log-density on a grid, in four steps from the 2D Gaussian to its logsumexp form, t...")</sub> of all the data.
+
+**The first construction.** Construction (1) asks for $p(x\mid A,B)$. If $A$ and $B$ are [conditionally independent](../../../../../goal-setting/learning/deep-learning/generative-models/03-sampling-from-a-graph/plans/04-conditional-independence.md) given $x$, then
 
 $$
 \begin{aligned}
@@ -90,41 +102,28 @@ $$
 
 **Why the ratio is there.** Both experts already contain one copy of the background. Multiplying them counts that background twice, so dividing by one copy leaves it counted once. Removing this ratio changes construction (1) into the direct product used in construction (2).
 
-The first line is [Bayes' rule](../../../../../Obsidian/Mathematics/Statistics/Probability/Bayes%20Theorem.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=105 "Introduction to probability for data science, section 2.4.3, Works with numbers: the theorem with its proof and the law of total probability, then the chance..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=31 "Pattern recognition and machine learning, section 1.2, Works with numbers: a red box of 2 apples and 6 oranges and a blue box of 3 apples and 1 orange, the s..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-statistics.pdf#page=74 "Introduction to statistics (Wits lecture notes), sections 3.7.7 and 3.7.8, Probability tree diagrams, the law of total probability, then Bayes' theorem for a..."), [▶1](https://www.youtube.com/watch?v=HZGCoVF3YvM&t=0s "3Blue1Brown, Bayes theorem, the geometry of changing beliefs, 0:00 to 4:09, The video's opening example, which the next chapter turns into the formula. Chapt..."), [▶2](https://www.youtube.com/watch?v=HZGCoVF3YvM&t=249s "3Blue1Brown, Bayes theorem, the geometry of changing beliefs, 4:09 to 10:13, From a worked example to the general formula. Chapter-timed, from the video less..."), [◆](../../../../../goal-setting/learning/deep-learning/generative-models/03-sampling-from-a-graph/plans/02-bayes-rule.md "Turn a conditional around with Bayes' rule, deep-learning/generative-models/03-sampling-from-a-graph, plan 02. Bayes' rule worked on the fuel gauge's table.")</sub>. The second is the conditional [independence](../../../../../Obsidian/Mathematics/Statistics/Probability/Statistical%20Independence.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-statistics.pdf#page=70 "Introduction to statistics (Wits lecture notes), section 3.7.4, Works with numbers: the product rule for independent events, with a man promoted with probabi..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=101 "Introduction to probability for data science, section 2.4.2, Independence of two events as P[A ∩ B] = P[A] P[B] (Definition 2.23) and as P[A ∣ B] = P[A] (Def..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=267 "Introduction to probability for data science, section 5.1.6, Independent random variables, whose joint PDF is the product of the marginals, checked on two jo..."), [▶1](https://www.youtube.com/watch?v=05JCQswK3hE&t=1447s "Professor Leonard, Statistics lecture 4.4, The Multiplication Rule for 'And' Probabilities, 24:07 to 29:53, Independent against dependent events. Chapter-timed."), [▶2](https://www.youtube.com/watch?v=05JCQswK3hE&t=1793s "Professor Leonard, Statistics lecture 4.4, The Multiplication Rule for 'And' Probabilities, 29:53 to 35:18, The formulas for independent events. Chapter-timed."), [◆](../../../../../goal-setting/learning/deep-learning/generative-models/03-sampling-from-a-graph/plans/03-plain-independence.md "Check independence on a table, deep-learning/generative-models/03-sampling-from-a-graph, plan 03. Independence checked on the fuel gauge's table.")</sub>. The third substitutes $p(A\mid x)=a(x)\,p(A)/r(x)$, and the same for $B$, and drops the constants $p(A)$ and $p(B)$. Construction (2) is the product defined above, $a(x)\,b(x)$. The two differ by the factor $1/r(x)$, so after normalising they agree only when $r(x)$ is constant (almost everywhere) on the region where $a(x)\,b(x)>0$. The idea maps write construction (1) as $p(x\mid A)\,p(x\mid B)/p(x)$, where $p(x)$ is the background; on this page $p(x)$ is the composed density.
+**Line by line.** The first line is [Bayes' rule](../../../../../Obsidian/Mathematics/Statistics/Probability/Bayes%20Theorem.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=105 "Introduction to probability for data science, section 2.4.3, Works with numbers: the theorem with its proof and the law of total probability, then the chance..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=31 "Pattern recognition and machine learning, section 1.2, Works with numbers: a red box of 2 apples and 6 oranges and a blue box of 3 apples and 1 orange, the s..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-statistics.pdf#page=74 "Introduction to statistics (Wits lecture notes), sections 3.7.7 and 3.7.8, Probability tree diagrams, the law of total probability, then Bayes' theorem for a..."), [▶1](https://www.youtube.com/watch?v=HZGCoVF3YvM&t=0s "3Blue1Brown, Bayes theorem, the geometry of changing beliefs, 0:00 to 4:09, The video's opening example, which the next chapter turns into the formula. Chapt..."), [▶2](https://www.youtube.com/watch?v=HZGCoVF3YvM&t=249s "3Blue1Brown, Bayes theorem, the geometry of changing beliefs, 4:09 to 10:13, From a worked example to the general formula. Chapter-timed, from the video less..."), [◆](../../../../../goal-setting/learning/deep-learning/generative-models/03-sampling-from-a-graph/plans/02-bayes-rule.md "Turn a conditional around with Bayes' rule, deep-learning/generative-models/03-sampling-from-a-graph, plan 02. Bayes' rule worked on the fuel gauge's table.")</sub>. The second is the conditional [independence](../../../../../Obsidian/Mathematics/Statistics/Probability/Statistical%20Independence.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-statistics.pdf#page=70 "Introduction to statistics (Wits lecture notes), section 3.7.4, Works with numbers: the product rule for independent events, with a man promoted with probabi..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=101 "Introduction to probability for data science, section 2.4.2, Independence of two events as P[A ∩ B] = P[A] P[B] (Definition 2.23) and as P[A ∣ B] = P[A] (Def..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=267 "Introduction to probability for data science, section 5.1.6, Independent random variables, whose joint PDF is the product of the marginals, checked on two jo..."), [▶1](https://www.youtube.com/watch?v=05JCQswK3hE&t=1447s "Professor Leonard, Statistics lecture 4.4, The Multiplication Rule for 'And' Probabilities, 24:07 to 29:53, Independent against dependent events. Chapter-timed."), [▶2](https://www.youtube.com/watch?v=05JCQswK3hE&t=1793s "Professor Leonard, Statistics lecture 4.4, The Multiplication Rule for 'And' Probabilities, 29:53 to 35:18, The formulas for independent events. Chapter-timed."), [◆](../../../../../goal-setting/learning/deep-learning/generative-models/03-sampling-from-a-graph/plans/03-plain-independence.md "Check independence on a table, deep-learning/generative-models/03-sampling-from-a-graph, plan 03. Independence checked on the fuel gauge's table.")</sub>. The third substitutes $p(A\mid x)=a(x)\,p(A)/r(x)$, and the same for $B$, and drops the constants $p(A)$ and $p(B)$.
 
-<!-- video-table: product-of-experts rev=1 -->
-Stanford CS236 on multiplying models into a product of experts, in the order to watch:
+**How the two constructions differ.** Construction (2) is the product defined above, $a(x)\,b(x)$. The two differ by the factor $1/r(x)$, so after normalising they agree only when $r(x)$ is constant (almost everywhere) on the region where $a(x)\,b(x)>0$.
 
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | Composing normalised models into one | Intuition | [Stanford CS236, lecture 11, 23:01 to 29:14](https://www.youtube.com/watch?v=m61KiAMCJ5Q&t=1381s) |
-| 2 | The product of experts | Intuition | [Stanford CS236, lecture 11, 54:02 to 57:28](https://www.youtube.com/watch?v=m61KiAMCJ5Q&t=3242s) |
+**A clash of notation.** The idea maps write construction (1) as $p(x\mid A)\,p(x\mid B)/p(x)$, where $p(x)$ is the background; on this page $p(x)$ is the composed density.
 
-Neither segment composes diffusion models by adding their scores or divides out a background, and no listed creator does. Times are chapter boundaries read from each video's chapter list, not from captions, so each is good to the chapter and the sentence inside it is not checked.
-<!-- /video-table -->
+**Derivation for two 1D [Gaussians](../../../../../Obsidian/Mathematics/Statistics/Distributions/Multivariate%20Normal%20Distribution/Multivariate%20Normal%20Distribution.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=227 "Introduction to probability for data science, section 4.6, The one-dimensional Gaussian random variable: its density with plots of μ and σ moving and widenin..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=306 "Introduction to probability for data science, section 5.6, The d-dimensional Gaussian density with Σ⁻¹, its mean vector and covariance, and the diagonal cova..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=203 "Mathematics for machine learning, section 6.5, The univariate and multivariate densities (equations 6.62 and 6.63, page 204) drawn with 100 samples, then mar..."), [▶1](https://www.youtube.com/watch?v=rzFX5NWojp0&t=0s "StatQuest, The Normal Distribution, Clearly Explained, 0:00 to 3:27, The bell-shaped curve and what its mean and standard deviation set, in the video's openi..."), [▶2](https://www.youtube.com/watch?v=oI3hZJqXJuc&t=135s "StatQuest, The Main Ideas behind Probability Distributions, 2:15 to 5:14, A curve as a distribution, where probability is the area under it over an interval ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/02-densities-and-the-gaussian.md "Chapter 2: Read a density as area and draw a Gaussian from its covariance, deep-learning/diffusion-models/01-poe-derivation-foundations, chapter 02. The Gaus...")</sub>.** $\mathcal N(x;\mu_A,\sigma_A^2)\,\mathcal N(x;\mu_B,\sigma_B^2)$ has exponent $-\frac{(x-\mu_A)^2}{2\sigma_A^2}-\frac{(x-\mu_B)^2}{2\sigma_B^2}$. Collecting the $x^2$ terms ([completing the square](../../../../../goal-setting/learning/mathematics/textbooks/algebra/algebra-handbook.pdf#page=74)) gives the [precision](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=43) $1/\sigma^2=1/\sigma_A^2+1/\sigma_B^2$; collecting the x terms gives the mean $\mu=\sigma^2(\mu_A/\sigma_A^2+\mu_B/\sigma_B^2)$.
 
-**How to read this table.** Read from row 1 to row 2. The second column says which part of the idea each segment supplies, and the last column opens that exact time range.
+**What is left over.** [The leftover constant](../../../../../goal-setting/learning/mathematics/textbooks/linear-algebra/matrix-cookbook.pdf#page=42) is $Z=\mathcal N(\mu_A;\mu_B,\sigma_A^2+\sigma_B^2)$.
 
-**Derivation for two 1D [Gaussians](../../../../../Obsidian/Mathematics/Statistics/Distributions/Multivariate%20Normal%20Distribution/Multivariate%20Normal%20Distribution.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=227 "Introduction to probability for data science, section 4.6, The one-dimensional Gaussian random variable: its density with plots of μ and σ moving and widenin..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=306 "Introduction to probability for data science, section 5.6, The d-dimensional Gaussian density with Σ⁻¹, its mean vector and covariance, and the diagonal cova..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=203 "Mathematics for machine learning, section 6.5, The univariate and multivariate densities (equations 6.62 and 6.63, page 204) drawn with 100 samples, then mar..."), [▶1](https://www.youtube.com/watch?v=rzFX5NWojp0&t=0s "StatQuest, The Normal Distribution, Clearly Explained, 0:00 to 3:27, The bell-shaped curve and what its mean and standard deviation set, in the video's openi..."), [▶2](https://www.youtube.com/watch?v=oI3hZJqXJuc&t=135s "StatQuest, The Main Ideas behind Probability Distributions, 2:15 to 5:14, A curve as a distribution, where probability is the area under it over an interval ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/02-densities-and-the-gaussian.md "Chapter 2: Read a density as area and draw a Gaussian from its covariance, deep-learning/diffusion-models/01-poe-derivation-foundations, chapter 02. The Gaus...")</sub>.** $\mathcal N(x;\mu_A,\sigma_A^2)\,\mathcal N(x;\mu_B,\sigma_B^2)$ has exponent $-\frac{(x-\mu_A)^2}{2\sigma_A^2}-\frac{(x-\mu_B)^2}{2\sigma_B^2}$. Collecting the $x^2$ terms ([completing the square](../../../../../goal-setting/learning/mathematics/textbooks/algebra/algebra-handbook.pdf#page=74)) gives the [precision](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=43) $1/\sigma^2=1/\sigma_A^2+1/\sigma_B^2$; collecting the x terms gives the mean $\mu=\sigma^2(\mu_A/\sigma_A^2+\mu_B/\sigma_B^2)$. [The leftover constant](../../../../../goal-setting/learning/mathematics/textbooks/linear-algebra/matrix-cookbook.pdf#page=42) is $Z=\mathcal N(\mu_A;\mu_B,\sigma_A^2+\sigma_B^2)$. The tighter expert pulls harder, which is the whole of the mosaic in phase 4 ([products and quotients of diagonal Gaussians](../../../../../Obsidian/Mathematics/Statistics/Distributions/Multivariate%20Normal%20Distribution/Products%20And%20Quotients%20Of%20Diagonal%20Gaussians.md)).
-
-<!-- video-table: product-of-two-gaussians rev=1 -->
-Michel van Biezen, then Robert Ghrist from the open web, on multiplying two Gaussians, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | The gain is the estimate's error over the sum of both errors, and the new value moves toward the reading by that share, so the surer of the two pulls harder | Intuition | [Van Biezen, Kalman Filter 3 of 55, 0:28 to 3:51](https://www.youtube.com/watch?v=fpRb1sjFz_M&t=28s) |
-| 2 | One update with numbers: an estimate of 68 with error 2 and a reading of 75 with error 4 give 70.33 with error 1.33 | Worked example | [Van Biezen, Kalman Filter 6 of 55, 0:13 to 2:14](https://www.youtube.com/watch?v=SIQJaqYVtuE&t=13s) |
-| 3 | The product of two one-dimensional Gaussians is a scaled Gaussian, found by simplifying the quadratic in the exponent | Proof, open web | [Ghrist, CalcBLUE 3, 18.4, 0:26 to 4:10](https://www.youtube.com/watch?v=lUORBdNccHc&t=26s) |
-| 4 | The same product in several dimensions | Proof, open web | [Ghrist, CalcBLUE 3, 18.4, 4:10 to 5:53](https://www.youtube.com/watch?v=lUORBdNccHc&t=250s) |
-
-Van Biezen works the product as a Kalman filter update and calls the two variances errors: his old value plus the gain times the difference is the precision-weighted mean rearranged, and his new error of 1.33 from 2 and 4 is the two precisions added. No listed creator derives the product of two Gaussian densities, so rows 3 and 4 come from the open web, and no row was found that computes the overlap Z. Rows 1 and 2 are read from automatic captions and good to about 30 seconds; rows 3 and 4 are chapter boundaries, so the sentence inside each is not checked.
-<!-- /video-table -->
-
-**How to read this table.** Rows 1 and 2 supply intuition and a numerical update. Rows 3 and 4 derive the density product in one and several dimensions. The order column is the intended viewing order.
+**Which expert wins.** The tighter expert pulls harder, which is the whole of the mosaic in phase 4 ([products and quotients of diagonal Gaussians](../../../../../Obsidian/Mathematics/Statistics/Distributions/Multivariate%20Normal%20Distribution/Products%20And%20Quotients%20Of%20Diagonal%20Gaussians.md)).
 
 🧸 **Toy:** $\mathcal N(0,1)\cdot\mathcal N(2,1)$ is $\mathcal N(1, 0.5)$ with $\log Z=\log\mathcal N(0;2,2)$ = `-2.2655`.
 
 🔤 **The name:** [product of experts](../../../../../goal-setting/learning/deep-learning/diffusion-models/05-poe-composition-diffusion/plans/07-poe-factorisation-and-normaliser.md)
+
+<!-- links: step1/product-of-experts rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [Stanford CS236, lecture 11, 54:02](https://www.youtube.com/watch?v=m61KiAMCJ5Q&t=3242s), the product of experts (chapter-timed, to 57:28).
+- 🎬 Video: [Ghrist, CalcBLUE 3, 18.4, 0:26](https://www.youtube.com/watch?v=lUORBdNccHc&t=26s), the product of two one-dimensional Gaussians simplified to a scaled Gaussian through the quadratic in the exponent (chapter-timed, to 4:10).
+<!-- /links -->
 
 ---
 
@@ -306,17 +305,6 @@ $$
 
 **After normalising.** The log area is 0, which means the area is 1. The shape is retained while its scale becomes probabilistic.
 
-<!-- video-table: normaliser rev=1 -->
-Stanford CS236, then the Organic Chemistry Tutor, on why a density's total area must be 1, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | Why a probability model must be non-negative and integrate to 1 | Intuition | [Stanford CS236, lecture 11, 6:45 to 15:31](https://www.youtube.com/watch?v=m61KiAMCJ5Q&t=405s) |
-| 2 | Checking that a function is a density by integrating it and getting 1 | Worked example | [Organic Chemistry Tutor, Probability Density Functions, 0:52 to 3:39](https://www.youtube.com/watch?v=QKA4HNEw3aY&t=52s) |
-
-Neither computes the area two multiplied Gaussians are left with, which is the toy's log Z of −2.2655. Times are chapter boundaries from each video's chapter list, so the sentence inside each is not checked.
-<!-- /video-table -->
-
 🔨 **Build:** multiply on a grid, normalise, and read off mean, variance and Z.
 
 ```python
@@ -326,6 +314,13 @@ Z = prod.sum() * dx; p = prod / Z
 mean = (xs * p).sum() * dx; var = ((xs - mean) ** 2 * p).sum() * dx
 print("mean", round(mean, 4), " var", round(var, 4), " log Z", round(math.log(Z), 4), " closed form", round(norm.logpdf(0, 2, math.sqrt(2)), 4))
 ```
+
+<!-- links: step1/normaliser rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [Stanford CS236, lecture 11, 6:45](https://www.youtube.com/watch?v=m61KiAMCJ5Q&t=405s), why a probability model must be non-negative and integrate to 1 (chapter-timed, to 15:31).
+- 🎬 Video: [Organic Chemistry Tutor, Probability Density Functions, 0:52](https://www.youtube.com/watch?v=QKA4HNEw3aY&t=52s), checking that a function is a density by integrating it and getting 1 (chapter-timed, to 3:39).
+<!-- /links -->
 
 ## Step 2: why summed noised scores miss the product
 
@@ -555,6 +550,78 @@ $$
 
 **Check it on the toy.** The left route has mean 0.6931. The right route has mean 0.2326. Summing the noised scores follows the right route.
 
+<details><summary>The code that draws this figure</summary>
+
+```python
+# figures/walk02-step2-three-means.py
+import json
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+INDIGO = "#4527a0"
+INK = "#212121"
+
+repo = Path(__file__).resolve().parents[4]
+with (repo / "rebuild/out/walk-numbers.json").open() as f:
+    numbers = json.load(f)
+
+values = np.array([
+    numbers["p2.clean_product_mean"],
+    numbers["p2.noised_product_mean"],
+    numbers["p2.product_of_noised_mean"],
+])
+labels = ["clean product", "product,\nthen noise", "noise,\nthen product"]
+
+fig, ax = plt.subplots(figsize=(7.4, 4.2))
+bars = ax.bar(
+    np.arange(3),
+    values,
+    color=[INDIGO, INDIGO, "white"],
+    edgecolor=[INDIGO, INDIGO, INDIGO],
+    width=0.58,
+)
+
+for bar, a, lw, h in zip(bars, [0.45, 0.75, 1.0], [1.5, 1.5, 2.0], [None, None, "//"]):
+    bar.set_alpha(a)
+    bar.set_linewidth(lw)
+    if h:
+        bar.set_hatch(h)
+
+for bar, value in zip(bars, values):
+    ax.text(
+        bar.get_x() + bar.get_width() / 2,
+        value + 0.035,
+        f"{value:.4f}",
+        ha="center",
+        va="bottom",
+        fontsize=11,
+        weight="bold",
+        color=INK,
+    )
+
+ax.text(
+    2,
+    values[2] + 0.12,
+    "summed noised scores\npoint here",
+    ha="center",
+    va="bottom",
+    color=INK,
+    fontsize=9,
+    weight="bold",
+)
+ax.set_xticks(np.arange(3), labels)
+ax.set_ylabel("mean position")
+ax.set_ylim(0, 1.12)
+ax.spines[["top", "right"]].set_visible(False)
+ax.set_title("Multiplying and noising do not commute")
+fig.tight_layout()
+fig.savefig(Path(__file__).with_suffix(".png"), dpi=160)
+```
+
+</details>
+
 <a href="figures/walk02-step2-three-means.png"><img src="figures/walk02-step2-three-means.png" width="620" alt="Three bars show the clean product mean 0.9802, the noised product mean 0.6931 and the product of the noised experts mean 0.2326. Arrows distinguish product then noise from noise then product."></a>
 
 **How to read this chart.** The y-axis is the mean's position, from 0 to just above 1. The x-axis names the stage or order. Each bar is one mean read from the worked numbers file.
@@ -569,16 +636,6 @@ $$
 
 **Noise first, then multiply.** The mean moves to 0.2326. Better networks or more reverse steps cannot repair an objective that points at this different distribution.
 
-<!-- video-table: summed-noised-scores-miss-the-product rev=1 -->
-Yilun Du, from the open web, on why adding two diffusion models' noised scores does not sample their product:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | A diffusion model learns one energy for each noise level. Adding two models' denoiser outputs and running the usual reverse sampler does not draw from the composed distribution, while treating each level as an energy-based model and sampling it with MCMC does | Intuition, open web | [Yilun Du, thesis defense, 27:10 to 28:43](https://www.youtube.com/watch?v=7jvWDF6ZXPc&t=1630s) |
-
-Du states the mismatch without working it, so the toy's three means (0.9802, 0.6931 and 0.2326) have no video, and no listed creator covers it. Du is the first author of the 2023 paper this step cites. The time is read from Du's captions and good to about 30 seconds.
-<!-- /video-table -->
-
 🔨 **Build:**
 
 ```python
@@ -592,19 +649,12 @@ print("clean product", round(clean, 4), " noised product", round(math.sqrt(a) * 
 
 💥 **Broken run:** this is reverse diffusion's error, and it does not shrink with more steps or better networks. On the 16-pixel mosaic (phase 4) it leaves the head mean at `0.923` where the exact product has `0.980`, a projected TV of `0.732` against a finite-sample baseline of `0.013`.
 
-<!-- video-table: total-variation-distance rev=1 -->
-Mary Wootters, from the open web, on the total variation distance between two distributions, in the order to watch:
+<!-- links: step2/swap-the-order rev=1 -->
+🔗 **Where else this lives**
 
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | TV is half the sum of the absolute differences between the two probability tables, which equals the largest difference in probability the two give any one event | Intuition, open web | [Wootters, Total Variation Distance, 0:16 to 1:35](https://www.youtube.com/watch?v=aJP0Bj6jVkI&t=16s) |
-| 2 | Two bar charts split where each is the higher: the two shaded areas are equal, and each one is the TV | Proof, open web | [Wootters, Total Variation Distance, 1:35 to 3:47](https://www.youtube.com/watch?v=aJP0Bj6jVkI&t=95s) |
-| 3 | A fair coin against one that lands heads 0.6 of the time: TV = ½(0.1 + 0.1) = 0.1 | Worked example, open web | [Wootters, Total Variation Distance, 4:34 to 6:42](https://www.youtube.com/watch?v=aJP0Bj6jVkI&t=274s) |
-
-No listed creator covers it. Wootters compares two known tables; she does not estimate TV from two sets of samples on a binning, so the sampling-noise baseline that two draws of the same data reach is not covered. Times are read from automatic captions and good to about 30 seconds.
-<!-- /video-table -->
-
-**How to read this table.** Read the rows in order. The first gives the definition, the second gives the area picture, and the third computes one small example.
+- 🎬 Video: [Yilun Du, thesis defense, 27:10](https://www.youtube.com/watch?v=7jvWDF6ZXPc&t=1630s), adding two diffusion models' denoiser outputs and running the usual reverse sampler does not draw from the composed distribution (caption-read, to 28:43).
+- 🎬 Video: [Wootters, Total Variation Distance, 0:16](https://www.youtube.com/watch?v=aJP0Bj6jVkI&t=16s), TV as half the sum of the absolute differences between two probability tables, the measure the broken run reports (caption-read, to 1:35).
+<!-- /links -->
 
 ## Step 3: the mixture, and the notebook's temperature
 
@@ -644,7 +694,9 @@ $$
 
 **Why the power is there.** Multiplying energy by 3.5 raises raw density to power 3.5, sharpening each component. With toy energies 1 and 3, the resulting mixture energy is 3.4991 rather than simply selecting the scaled lower energy 3.5.
 
-So the notebook's mixture is the sum of the two unnormalised densities [raised to the power 3.5](../../../../../goal-setting/learning/mathematics/textbooks/algebra/algebra-handbook.pdf#page=109), normalised once at the end. That is a sharpened mixture, which is why its bars come out narrower than the training bars. It is an equal-weight mixture of the two sharpened densities only when $\int\widetilde p_A^{3.5}\,dx=\int\widetilde p_B^{3.5}\,dx$. An energy is fixed only up to a constant, and replacing $E_A$ by $E_A+C$ multiplies A's term by $e^{-3.5C}$, so the offsets of the two energies set the component weights.
+**What the notebook's mixture is.** So the notebook's mixture is the sum of the two unnormalised densities [raised to the power 3.5](../../../../../goal-setting/learning/mathematics/textbooks/algebra/algebra-handbook.pdf#page=109), normalised once at the end. That is a sharpened mixture, which is why its bars come out narrower than the training bars.
+
+**When its weights are equal.** It is an equal-weight mixture of the two sharpened densities only when $\int\widetilde p_A^{3.5}\,dx=\int\widetilde p_B^{3.5}\,dx$. An energy is fixed only up to a constant, and replacing $E_A$ by $E_A+C$ multiplies A's term by $e^{-3.5C}$, so the offsets of the two energies set the component weights.
 
 With $m=\min(E_A,E_B)$ and $\Delta=|E_A-E_B|$, the soft minimum is exactly
 
@@ -739,19 +791,14 @@ $$
 
 **Let the other expert contribute.** The soft result becomes 3.4991. The small move shows that the factor 3.5 has made the lower-energy expert dominate at this gap.
 
-<!-- video-table: temperature rev=1 -->
-Yilun Du, Vizuara and MarbleScience on temperature, the factor that sharpens or flattens a distribution built from energies, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | Scaling an energy's magnitude sets how strongly that factor shapes the composed result | Intuition, open web | [Yilun Du, thesis defense, 21:54 to 22:15](https://www.youtube.com/watch?v=7jvWDF6ZXPc&t=1314s) |
-| 2 | Temperature scaling of the scores before the softmax, recapped | Intuition | [Vizuara, Top-k sampling in Large Language Models, 0:00 to 5:39](https://www.youtube.com/watch?v=EhU32O7DkA4&t=0s) |
-| 3 | Where the word comes from: the Boltzmann distribution behind the softmax, then what changing the temperature does | Intuition, open web | [MarbleScience, What is the Temperature of an AI, 3:45 to 6:09](https://www.youtube.com/watch?v=YjVuJjmgclU&t=225s) |
-
-None multiplies energies by a factor above 1 as the notebook's 3.5 does, which acts as an inverse temperature. Row 1 is read from Du's captions and good to about 30 seconds; rows 2 and 3 are chapter boundaries from each video's chapter list, so the sentence inside each is not checked.
-<!-- /video-table -->
-
 🔤 **The name:** [soft minimum](../../../../../goal-setting/learning/deep-learning/diffusion-models/00-from-scratch-to-sdxl/textbook/l0-simple-maths/01-log-sum-exp-and-the-softmax-gradient.md#the-equations-that-matter)
+
+<!-- links: step3/temperature rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [Yilun Du, thesis defense, 21:54](https://www.youtube.com/watch?v=7jvWDF6ZXPc&t=1314s), scaling an energy's magnitude sets how strongly that factor shapes the composed result (caption-read, to 22:15).
+- 🎬 Video: [MarbleScience, What is the Temperature of an AI, 3:45](https://www.youtube.com/watch?v=YjVuJjmgclU&t=225s), the Boltzmann distribution the word is borrowed from, then what changing the temperature does (chapter-timed, to 6:09).
+<!-- /links -->
 
 ---
 
@@ -834,16 +881,6 @@ $$
 
 **Soft choice.** Keeping the second expert changes the result to 3.4991. As the gap grows, that correction becomes smaller and the soft minimum approaches the hard one.
 
-<!-- video-table: soft-minimum rev=1 -->
-Yilun Du, from the open web, on the soft minimum of two energies:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | Energies read as sets: adding two gives low energy only where both are low, and their soft minimum gives low energy wherever either one is | Intuition, open web | [Yilun Du, thesis defense, 22:42 to 23:21](https://www.youtube.com/watch?v=7jvWDF6ZXPc&t=1362s) |
-
-Du names the soft minimum without its formula or the correction term log(1 + e^(−3.5Δ)), and no listed creator covers it. The time is read from Du's captions and good to about 30 seconds.
-<!-- /video-table -->
-
 🔨 **Build:**
 
 ```python
@@ -856,6 +893,12 @@ print("mixture energy", round(float(-torch.logsumexp(-3.5 * E, 0)), 4), " 3.5 * 
 **How to read this picture.** The notebook's reference run of the left plus right mixture. The x-axis runs from −0.3 to 0.3 and the y-axis from −1 to 1, and each dot is one sample: green from the Metropolis-adjusted UHA sampler and blue from reverse diffusion, the colours Step 9 names.
 
 **What to look for.** The samples form two vertical bands, one near x = −0.12 and one near x = 0.12, each running the full height from −1 to 1, so the mixture keeps both experts' regions. A few blue points sit in the gap between the bands, where neither expert puts much mass.
+
+<!-- links: step3/soft-minimum rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [Yilun Du, thesis defense, 22:42](https://www.youtube.com/watch?v=7jvWDF6ZXPc&t=1362s), energies read as sets: adding two gives low energy only where both are low, and their soft minimum gives low energy wherever either one is (caption-read, to 23:21).
+<!-- /links -->
 
 ## Step 4: negation
 
@@ -1012,17 +1055,6 @@ $$
 
 **With strength 0.3.** The point's raw weight becomes 0.3299 because B has density 2 there. Across the whole Gaussian toy, B's variance must stay above 0.2308 or the normaliser becomes infinite.
 
-<!-- video-table: negation-by-dividing-densities rev=1 -->
-Yilun Du, from the open web, on negation, keeping one distribution while dividing out another, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | Subtracting one energy from another draws samples from p1(x) divided by p2(x) | Intuition, open web | [Yilun Du, thesis defense, 25:22 to 25:37](https://www.youtube.com/watch?v=7jvWDF6ZXPc&t=1522s) |
-| 2 | Set operations nested on images: a gray cylinder behind a yellow cube and not a gray cylinder below a brown cube | Worked example, open web | [Yilun Du, thesis defense, 24:13 to 24:41](https://www.youtube.com/watch?v=7jvWDF6ZXPc&t=1453s) |
-
-Du puts one weight on each energy, so the powers 1 + w and w, and the condition that keeps the normaliser finite, appear in no video. Times are read from Du's captions and good to about 30 seconds.
-<!-- /video-table -->
-
 🔨 **Build:**
 
 ```python
@@ -1034,6 +1066,13 @@ print("negation value", round(0.5 ** 1.3 * 2 ** -0.3, 4))
 **How to read this picture.** The notebook's reference run of box(0.7) not box(0.3). Both axes run from about −0.8 to 0.8, and each dot is one sample: green from the Metropolis-adjusted UHA sampler and blue from reverse diffusion, the colours Step 9 names.
 
 **What to look for.** Green samples sit almost only in the four corners near (±0.7, ±0.7), the parts of the large box furthest from the small one. Blue samples also cluster there but spread thinly over the whole inside of the box, including the centre that dividing by box(0.3) should empty.
+
+<!-- links: step4/negation rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [Yilun Du, thesis defense, 25:22](https://www.youtube.com/watch?v=7jvWDF6ZXPc&t=1522s), subtracting one energy from another draws samples from p1(x) divided by p2(x) (caption-read, to 25:37).
+- 🎬 Video: [Yilun Du, thesis defense, 24:13](https://www.youtube.com/watch?v=7jvWDF6ZXPc&t=1453s), set operations nested on images, a gray cylinder behind a yellow cube and not a gray cylinder below a brown cube (caption-read, to 24:41).
+<!-- /links -->
 
 ## Step 5: Langevin moves, and their bias
 
@@ -1097,19 +1136,15 @@ $$
 
 The first line is stationarity, the second collects the variance terms, and the last two expand $(1-ss)^2$ and cancel ss.
 
-<!-- video-table: langevin-sampling rev=1 -->
-Following the score uphill with noise added, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | Following the score uphill with noise added: Langevin sampling | Definition | [Stanford CS236, lecture 16, 5:30 to 9:30](https://www.youtube.com/watch?v=VsllsC2JMGY&t=330s) |
-
-Start and end times are chapter boundaries from each video; what is said inside was judged from the chapter titles and not read from captions.
-<!-- /video-table -->
-
 🧸 **Toy:** ss = 0.9 gives a stationary variance of `1.8182` where the target's is 1. A simulation of 200,000 chains for 300 moves gives `1.806`.
 
 🔤 **The name:** [unadjusted Langevin algorithm](../../../../../goal-setting/learning/deep-learning/diffusion-models/02-sampler-correctors-for-composition/plans/21-langevin-dynamics.md) (ULA)
+
+<!-- links: step5/langevin-sampling rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [Stanford CS236, lecture 16, 5:30](https://www.youtube.com/watch?v=VsllsC2JMGY&t=330s), following the score uphill with noise added, which is Langevin sampling (chapter-timed, to 9:30).
+<!-- /links -->
 
 ---
 
@@ -1217,6 +1252,47 @@ $$
 
 **Check it on the toy.** At `ss = 0.9`, repeated moves have exact stationary variance `1.8182`. The simulation gives `1.806`, close to that formula and far from the target variance 1.
 
+<details><summary>The code that draws this figure</summary>
+
+```python
+# figures/walk02-step5-ula-variance.py
+from pathlib import Path
+import json
+import matplotlib.pyplot as plt
+import numpy as np
+
+INDIGO = "#4527a0"
+INK = "#212121"
+
+root = Path(__file__).resolve().parents[4]
+with (root / "rebuild/out/walk-numbers.json").open() as f:
+    values = json.load(f)
+
+ss = np.linspace(0.001, 1.7, 500)
+stationary = 2 / (2 - ss)
+toy_ss = 0.9
+toy_formula = values["p2.ula_stationary_var_ss0.9"]
+toy_sim = values["p2.ula_simulated_var_ss0.9"]
+
+fig, ax = plt.subplots(figsize=(7.6, 4.2))
+ax.plot(ss, stationary, color="#37474f", lw=2.5)
+ax.axhline(1, color=INK, ls="--", lw=1.5)
+ax.scatter([toy_ss], [toy_formula], color="#37474f", s=65, zorder=4)
+ax.scatter([toy_ss], [toy_sim], color=INK, marker="x", s=80, lw=2.2, zorder=5)
+ax.annotate("target variance: 1", (1.34, 1), xytext=(1.08, 1.22),
+            arrowprops=dict(arrowstyle="->", color=INK), color=INK)
+ax.annotate(f"formula: {toy_formula:.4f}\nsimulation: {toy_sim:.3f}",
+            (toy_ss, toy_formula), xytext=(0.15, 3.6),
+            arrowprops=dict(arrowstyle="->", color=INK), color=INK, weight="bold")
+ax.set(xlabel="ULA step size ss", ylabel="stationary variance", xlim=(0, 1.7), ylim=(0.8, 7.0))
+ax.set_title("A finite ULA step widens the stationary law")
+ax.spines[["top", "right"]].set_visible(False)
+fig.tight_layout()
+fig.savefig(Path(__file__).with_suffix(".png"), dpi=160)
+```
+
+</details>
+
 <a href="figures/walk02-step5-ula-variance.png"><img src="figures/walk02-step5-ula-variance.png" width="620" alt="ULA stationary variance rises above the target variance one as step size increases. The toy at step size 0.9 is marked at variance 1.8182, with its simulation at 1.806."></a>
 
 **How to read this chart.** The x-axis is ULA step size and the y-axis is long-run variance. The indigo curve is the formula, the horizontal dashed line is the target variance 1, and each marked point is one toy value.
@@ -1300,26 +1376,26 @@ $$
 
 **Why the minimum is there.** The larger directional flow is reduced to match the smaller one. On the toy, using the correct divisor changes acceptance from `0.6977` to `1.0`, which is the adjustment required by the proposal actually sampled.
 
-The first line multiplies $p(x)\,q(x'\mid x)$ into the minimum. The second holds because the minimum is unchanged by swapping $x$ and $x'$. This is [detailed balance](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=556) for the accepted moves; a rejected move leaves the chain where it was, which satisfies it trivially. Integrating both sides over $x$ shows that one move of the fixed MALA kernel leaves p unchanged.
+**Line by line.** The first line multiplies $p(x)\,q(x'\mid x)$ into the minimum. The second holds because the minimum is unchanged by swapping $x$ and $x'$.
 
-**Derivation of the divisor.** A [normal density](../../../../../goal-setting/learning/mathematics/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=227) with [variance](../../../../../Obsidian/Mathematics/Statistics/Variance.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=150 "Introduction to probability for data science, section 3.4.4, Defines variance as E[(X − µ)²] and the standard deviation as its root (Definition 3.7), proves ..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=196 "Mathematics for machine learning, section 6.4.1, Variance as the covariance of a variable with itself (Definition 6.7), then the empirical mean and variance ..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=76 "Deep learning textbook, section 3.8, A short definition of variance and standard deviation beside expectation and covariance."), [▶1](https://www.youtube.com/watch?v=4-FysvtxQEU&t=1551s "Professor Leonard, Statistics 3.3, A standard deviation calculated by hand, 25:51 to 36:43, Works a standard deviation on a small data set by hand. Chapter-t..."), [▶2](https://www.youtube.com/watch?v=SzZ6GpcfoQY&t=236s "StatQuest, Calculating the Mean, Variance and Standard Deviation, Calculating population variance, 3:56 to 5:54, The population variance as the average squar..."), [◆](../../../../../goal-setting/learning/deep-learning/transformers/textbook/06-show-that-variances-of-independent-terms-add.md "Show that variances of independent terms add, deep-learning/transformers, chapter 06. Predicts the spread of a dot product of random vectors by adding the va...")</sub> $2ss$ has log-density $-\frac{|x'-\mu|^2}{2\cdot2ss}+\text{const}=-\frac{|x'-\mu|^2}{4ss}$. The repository's code divided by $2ss^2$, which is the divisor a proposal of variance $ss^2$ would have, so it scored a different proposal from the one it sampled. The two divisors agree only at ss = 2. For ss < 2 the old divisor is too small, so both proposal terms are multiplied by $4ss/2ss^2=2/ss$, and the ratio no longer cancels the asymmetry of the proposal.
+**What it proves.** This is [detailed balance](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=556) for the accepted moves; a rejected move leaves the chain where it was, which satisfies it trivially. Integrating both sides over $x$ shows that one move of the fixed MALA kernel leaves p unchanged.
 
-<!-- video-table: metropolis-hastings rev=1 -->
-ritvikmath, then Stanford CS236, on the Metropolis-Hastings accept step, in the order to watch:
+**Derivation of the divisor.** A [normal density](../../../../../goal-setting/learning/mathematics/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=227) with [variance](../../../../../Obsidian/Mathematics/Statistics/Variance.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=150 "Introduction to probability for data science, section 3.4.4, Defines variance as E[(X − µ)²] and the standard deviation as its root (Definition 3.7), proves ..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=196 "Mathematics for machine learning, section 6.4.1, Variance as the covariance of a variable with itself (Definition 6.7), then the empirical mean and variance ..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=76 "Deep learning textbook, section 3.8, A short definition of variance and standard deviation beside expectation and covariance."), [▶1](https://www.youtube.com/watch?v=4-FysvtxQEU&t=1551s "Professor Leonard, Statistics 3.3, A standard deviation calculated by hand, 25:51 to 36:43, Works a standard deviation on a small data set by hand. Chapter-t..."), [▶2](https://www.youtube.com/watch?v=SzZ6GpcfoQY&t=236s "StatQuest, Calculating the Mean, Variance and Standard Deviation, Calculating population variance, 3:56 to 5:54, The population variance as the average squar..."), [◆](../../../../../goal-setting/learning/deep-learning/transformers/textbook/06-show-that-variances-of-independent-terms-add.md "Show that variances of independent terms add, deep-learning/transformers, chapter 06. Predicts the spread of a dot product of random vectors by adding the va...")</sub> $2ss$ has log-density $-\frac{|x'-\mu|^2}{2\cdot2ss}+\text{const}=-\frac{|x'-\mu|^2}{4ss}$.
 
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | Working out the acceptance probability for a candidate | Proof | [ritvikmath, Metropolis-Hastings, 7:50 to 12:04](https://www.youtube.com/watch?v=yCv2N7wGDCw&t=470s) |
-| 2 | Accepting or rejecting the candidate with that probability | Intuition | [ritvikmath, Metropolis-Hastings, 12:04 to 13:31](https://www.youtube.com/watch?v=yCv2N7wGDCw&t=724s) |
-| 3 | The Metropolis algorithm, the special case with a symmetric proposal | Intuition | [ritvikmath, Metropolis-Hastings, 13:31 to 18:15](https://www.youtube.com/watch?v=yCv2N7wGDCw&t=811s) |
-| 4 | Sampling an energy-based model with MCMC, accepting or rejecting each move | Intuition | [Stanford CS236, lecture 12, 8:35 to 16:25](https://www.youtube.com/watch?v=Nci1Bepcy0g&t=515s) |
+**What the code did instead.** The repository's code divided by $2ss^2$, which is the divisor a proposal of variance $ss^2$ would have, so it scored a different proposal from the one it sampled. The two divisors agree only at ss = 2.
 
-None of these uses a Langevin step as the proposal (MALA) or reads the share of proposals accepted. Times are chapter boundaries read from each video's chapter list, not from captions, so each is good to the chapter and the sentence inside it is not checked.
-<!-- /video-table -->
+**What the wrong divisor does.** For ss < 2 the old divisor is too small, so both proposal terms are multiplied by $4ss/2ss^2=2/ss$, and the ratio no longer cancels the asymmetry of the proposal.
 
 🧸 **Toy:** one move on $\mathcal N(0,1)$ from x = 1 with ss = 0.5 and z = 0.3. The [gradient](../../../../../Obsidian/Mathematics/Calculus/Gradient.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=152 "Mathematics for machine learning, section 5.2, Varies one input at a time to get partial derivatives, stacks them into the gradient, and computes one (Exampl..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/calculus/calculus-textbook.pdf#page=984 "Calculus textbook, section 13.6, Directional derivatives, then the gradient (Definition 13.6.4, page 987) and why it points the way of fastest increase."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=99 "Deep learning textbook, section 4.3, The gradient as the vector of partial derivatives, the directional derivative, and steepest descent."), [▶1](https://www.youtube.com/watch?v=CnVes9TdnPo&t=754s "The Organic Chemistry Tutor, 12:34 to 28:29, Worked gradient problems. Chapter-timed, from the video lessons index."), [▶2](https://www.youtube.com/watch?v=tDPp5uWSIiU&t=3506s "Leonard, Calculus 3, 13.6, 58:26 to 1:15:15, The gradient defined, its properties, and why it points the way of fastest increase. Chapter-timed, from the vid..."), [◆](../../../../../goal-setting/learning/deep-learning/transformers/textbook/08-take-a-slope-and-the-gradient.md "Take a slope and the gradient of a function of two numbers, deep-learning/transformers, chapter 08. The gradient of a squared loss in two numbers a and b, st..."), [◈](https://claude.ai/artifact/DBmJtn6xy75sPtQwPEvQZU#nb-sec2 "Kinds of composition notebook, Same points, two labellings, The denoising loss and one gradient step, showing the gradient is identical under two labellings ...")</sub> is −1, so $x'=1-0.5+\sqrt{1}\cdot0.3$ = `0.8`, and $\log p(x')-\log p(x)$ = `0.18`. With the right divisor 4ss = 2: log forward `-0.045`, log backward `-0.18`, log α = `0.045`, accept with probability `1.0`. With the old divisor 2ss² = 0.5: `-0.18`, `-0.72`, log α = `-0.36`, accept with probability `0.6977`.
 
 🔤 **The name:** [Metropolis-adjusted](../../../../../goal-setting/learning/deep-learning/diffusion-models/02-sampler-correctors-for-composition/plans/36-the-accept-step-needs-the-height.md)
+
+<!-- links: step6/metropolis-hastings rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [ritvikmath, Metropolis-Hastings, 7:50](https://www.youtube.com/watch?v=yCv2N7wGDCw&t=470s), working out the acceptance probability for a candidate (chapter-timed, to 12:04).
+- 🎬 Video: [ritvikmath, Metropolis-Hastings, 13:31](https://www.youtube.com/watch?v=yCv2N7wGDCw&t=811s), the Metropolis algorithm, the special case with a symmetric proposal (chapter-timed, to 18:15).
+<!-- /links -->
 
 ---
 
@@ -1519,7 +1595,15 @@ What per-sample acceptance looks like once each [sample](../../../../../Obsidian
 
 **Definition.** A batch of n samples is n [independent chains](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=555) when the log-density has one entry per sample. Each chain needs its own uniform draw: accept sample i when $\log u_i<\log\alpha_i$, with $u_i\overset{\mathrm{iid}}{\sim}\operatorname{Uniform}(0,1)$.
 
-**Derivation of why one decision for the batch is wrong.** The old class made one decision per move for the whole batch. It summed the proposal terms over every sample, compared one $\log u$ with that single $\log\alpha$, and moved every sample or none. Sharing $u$ is not what forces this: one $u$ compared with each sample's own $\alpha_i$ lets the samples decide differently, which couples the chains but leaves each sample accepting with its right [probability](../../../../../Obsidian/Mathematics/Statistics/Probability/Probability.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=31 "Pattern recognition and machine learning, section 1.2, Works with numbers: a red box picked 40% of the time and a blue box 60%, holding apples and oranges, f..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=74 "Introduction to probability for data science, sections 2.2 and 2.3, Probability as a measure of the size of a set, built from a sample space, an event space ..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-statistics.pdf#page=64 "Introduction to statistics (Wits lecture notes), sections 3.5 to 3.7.2, The axioms, the subjective, relative-frequency and classical approaches, the addition..."), [▶1](https://www.youtube.com/watch?v=_EpXHuPnaK0&t=360s "Professor Leonard, Statistics lecture 4.2, Introduction to Probability, 6:00 to 9:00, The sample space, in the chapter of that name, before simple events. Ch..."), [▶2](https://www.youtube.com/watch?v=_EpXHuPnaK0&t=2085s "Professor Leonard, Statistics lecture 4.2, Introduction to Probability, 34:45 to 37:07, Observed against classical probability. Chapter-timed."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/plans/01-probability-you-can-compute.md "Probability as a thing you can compute, deep-learning/diffusion-models/01-poe-derivation-foundations, plan 01. Events and P(A), with a sample space built and...")</sub>. One scalar decision is a valid [Metropolis-Hastings](../../../../../Obsidian/Mathematics/Statistics/Markov%20Chain%20Monte%20Carlo/Markov%20Chain%20Monte%20Carlo.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=553 "Pattern recognition and machine learning, section 11.2, The Metropolis algorithm with a symmetric proposal, drawn as accepted and rejected steps on a 2D Gaus..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/probabilistic-machine-learning-advanced-topics.pdf#page=526 "Probabilistic machine learning: advanced topics, sections 12.1 to 12.2, The Metropolis-Hastings algorithm (Algorithm 12.1), why it works, and the choice of p..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=611 "Deep learning textbook, section 17.3, MCMC for energy-based models: running many chains in parallel, the distribution q(t) over their states converging to th..."), [▶1](https://www.youtube.com/watch?v=KmqTrm-bn8k&t=141s "ritvikmath, Coding MCMC, 2:21 to 5:50, One chain written in Python, at its accept or reject step. Chapter-timed, from the video lessons index."), [▶2](https://www.youtube.com/watch?v=yApmR-c_hKU&t=247s "ritvikmath, Markov Chain Monte Carlo, 4:07 to 8:24, Drawing samples by running a Markov chain whose long-run distribution is the target. Chapter-timed, from ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/00-from-scratch-to-sdxl/textbook/l3-stochastic-processes/03-metropolis-hastings-and-why-z-cancels.md "3. Metropolis-Hastings, and why Z cancels, deep-learning/diffusion-models/00-from-scratch-to-sdxl, volume L3, section 3. Why a product of densities can be sa...")</sub> step for the batch taken as one joint state, whose target is [the product of the n samples' densities](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=200), and that joint chain does satisfy [detailed balance](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=556). Its cost is that its $\log\alpha$ is a sum of n samples' terms, so the batch's acceptance falls toward 0 as n grows: on $\mathcal N(0,1)$, started at the target with ss = 1.5 for 200 moves, the joint chain accepts `0.615` of its moves at n = 1, `0.02` at n = 10 and `0.0` at n = 100 and at n = 4000 (`p2.batch_mala_joint_accept_n1` to `p2.batch_mala_joint_accept_n4000`). One acceptance history is shared by every sample. The fixed class draws one uniform per sample when the energy has shape (n,), and keeps one draw per move when the energy is a scalar. That scalar case is `inf_sample.py`'s `gradient_cha`, whose energy is a sum over a batch of copies of one image, so the batch there really is one joint chain.
+**Derivation of why one decision for the batch is wrong.** The old class made one decision per move for the whole batch. It summed the proposal terms over every sample, compared one $\log u$ with that single $\log\alpha$, and moved every sample or none.
+
+**What actually forces it.** Sharing $u$ is not what forces this: one $u$ compared with each sample's own $\alpha_i$ lets the samples decide differently, which couples the chains but leaves each sample accepting with its right [probability](../../../../../Obsidian/Mathematics/Statistics/Probability/Probability.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=31 "Pattern recognition and machine learning, section 1.2, Works with numbers: a red box picked 40% of the time and a blue box 60%, holding apples and oranges, f..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=74 "Introduction to probability for data science, sections 2.2 and 2.3, Probability as a measure of the size of a set, built from a sample space, an event space ..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-statistics.pdf#page=64 "Introduction to statistics (Wits lecture notes), sections 3.5 to 3.7.2, The axioms, the subjective, relative-frequency and classical approaches, the addition..."), [▶1](https://www.youtube.com/watch?v=_EpXHuPnaK0&t=360s "Professor Leonard, Statistics lecture 4.2, Introduction to Probability, 6:00 to 9:00, The sample space, in the chapter of that name, before simple events. Ch..."), [▶2](https://www.youtube.com/watch?v=_EpXHuPnaK0&t=2085s "Professor Leonard, Statistics lecture 4.2, Introduction to Probability, 34:45 to 37:07, Observed against classical probability. Chapter-timed."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/plans/01-probability-you-can-compute.md "Probability as a thing you can compute, deep-learning/diffusion-models/01-poe-derivation-foundations, plan 01. Events and P(A), with a sample space built and...")</sub>.
+
+**What one decision is valid for.** One scalar decision is a valid [Metropolis-Hastings](../../../../../Obsidian/Mathematics/Statistics/Markov%20Chain%20Monte%20Carlo/Markov%20Chain%20Monte%20Carlo.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=553 "Pattern recognition and machine learning, section 11.2, The Metropolis algorithm with a symmetric proposal, drawn as accepted and rejected steps on a 2D Gaus..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/probabilistic-machine-learning-advanced-topics.pdf#page=526 "Probabilistic machine learning: advanced topics, sections 12.1 to 12.2, The Metropolis-Hastings algorithm (Algorithm 12.1), why it works, and the choice of p..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=611 "Deep learning textbook, section 17.3, MCMC for energy-based models: running many chains in parallel, the distribution q(t) over their states converging to th..."), [▶1](https://www.youtube.com/watch?v=KmqTrm-bn8k&t=141s "ritvikmath, Coding MCMC, 2:21 to 5:50, One chain written in Python, at its accept or reject step. Chapter-timed, from the video lessons index."), [▶2](https://www.youtube.com/watch?v=yApmR-c_hKU&t=247s "ritvikmath, Markov Chain Monte Carlo, 4:07 to 8:24, Drawing samples by running a Markov chain whose long-run distribution is the target. Chapter-timed, from ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/00-from-scratch-to-sdxl/textbook/l3-stochastic-processes/03-metropolis-hastings-and-why-z-cancels.md "3. Metropolis-Hastings, and why Z cancels, deep-learning/diffusion-models/00-from-scratch-to-sdxl, volume L3, section 3. Why a product of densities can be sa...")</sub> step for the batch taken as one joint state, whose target is [the product of the n samples' densities](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=200), and that joint chain does satisfy [detailed balance](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=556).
+
+**What it costs.** Its cost is that its $\log\alpha$ is a sum of n samples' terms, so the batch's acceptance falls toward 0 as n grows: on $\mathcal N(0,1)$, started at the target with ss = 1.5 for 200 moves, the joint chain accepts `0.615` of its moves at n = 1, `0.02` at n = 10 and `0.0` at n = 100 and at n = 4000 (`p2.batch_mala_joint_accept_n1` to `p2.batch_mala_joint_accept_n4000`). One acceptance history is shared by every sample.
+
+**What the fixed class does.** The fixed class draws one uniform per sample when the energy has shape (n,), and keeps one draw per move when the energy is a scalar. That scalar case is `inf_sample.py`'s `gradient_cha`, whose energy is a sum over a batch of copies of one image, so the batch there really is one joint chain.
 
 🧸 **Toy:** 4000 chains on $\mathcal N(0, 1)$ at ss = 1.5 for 10 moves. Each sample's acceptance fraction has mean `0.656` and sd `0.153` across samples, histogram over 0.0, 0.1, …, 1.0 `[0, 2, 18, 80, 279, 557, 947, 1001, 732, 312, 72]`. One decision for the whole batch would make all 4000 entries equal; one $u$ shared across samples but compared with each sample's own $\alpha_i$ would not.
 
@@ -1594,6 +1678,48 @@ $$
 
 **Check it on the toy.** The 4000 per-sample histories spread across acceptance fractions from 0 to 1, with mean `0.656`. One batch-wide decision would make all 4000 histories report the same fraction.
 
+<details><summary>The code that draws this figure</summary>
+
+```python
+# figures/walk02-step7-joint-chain-acceptance.py
+from pathlib import Path
+import json
+import matplotlib.pyplot as plt
+import numpy as np
+
+INK = "#212121"
+
+root = Path(__file__).resolve().parents[4]
+with (root / "rebuild/out/walk-numbers.json").open() as f:
+    values = json.load(f)
+
+n = np.array([1, 10, 100, 4000])
+acceptance = np.array([
+    values["p2.batch_mala_joint_accept_n1"],
+    values["p2.batch_mala_joint_accept_n10"],
+    values["p2.batch_mala_joint_accept_n100"],
+    values["p2.batch_mala_joint_accept_n4000"],
+])
+
+fig, ax = plt.subplots(figsize=(7.6, 4.2))
+ax.plot(n, acceptance, color="#37474f", marker="o", lw=2.5, ms=7)
+for x, y in zip(n, acceptance):
+    ax.annotate(f"{y:.3g}", (x, y), xytext=(6, 8), textcoords="offset points",
+                ha="left", color=INK, weight="bold")
+ax.set_xscale("log")
+ax.set_xticks(n, ["1", "10", "100", "4000"])
+ax.set(xlabel="samples forced into one joint chain, n (log scale)",
+       ylabel="share of 200 moves accepted", ylim=(-0.04, 0.7))
+ax.set_title("One batch-wide decision freezes as the batch grows")
+ax.annotate("nearly no joint moves survive", (10, acceptance[1]), xytext=(35, 0.24),
+            arrowprops=dict(arrowstyle="->", color=INK), color=INK)
+ax.spines[["top", "right"]].set_visible(False)
+fig.tight_layout()
+fig.savefig(Path(__file__).with_suffix(".png"), dpi=160)
+```
+
+</details>
+
 <a href="figures/walk02-step7-joint-chain-acceptance.png"><img src="figures/walk02-step7-joint-chain-acceptance.png" width="620" alt="Joint-chain MALA acceptance falls from 0.615 with one sample to 0.02 with ten samples and zero with 100 and 4000 samples."></a>
 
 **How to read this chart.** The x-axis is the number of samples forced into one joint chain and uses a logarithmic scale. The y-axis is the accepted share of 200 moves. Each mark is one row of the table.
@@ -1608,18 +1734,6 @@ $$
 
 **Give each sample its own decision.** The 4000-chain toy has mean per-sample acceptance `0.656` instead of one frozen batch history. The name “chain” tells you where the decision belongs.
 
-<!-- video-table: markov-chain rev=1 -->
-ritvikmath on what a chain is and how a sampler runs one, in the order to watch:
-
-| Order | What it covers | Kind | Code it writes | Watch |
-|---|---|---|---|---|
-| 1 | A Markov chain by example: its state space, and the assumption that the next state depends only on the current one | Intuition | | [ritvikmath, Markov Chains, 0:37 to 2:50](https://www.youtube.com/watch?v=prZMpThbU3E&t=37s) |
-| 2 | Drawing samples by running a Markov chain whose long-run distribution is the target | Intuition | | [ritvikmath, Markov Chain Monte Carlo, 4:07 to 8:24](https://www.youtube.com/watch?v=yApmR-c_hKU&t=247s) |
-| 3 | One chain in Python, at its accept or reject step | Code walk | the accept-reject step of one chain | [ritvikmath, Coding MCMC, 2:21 to 5:50](https://www.youtube.com/watch?v=KmqTrm-bn8k&t=141s) |
-
-ritvikmath runs one chain at a time, so many chains side by side, each with its own accept decision, and a joint chain whose acceptance falls to 0 have no video. Times are chapter boundaries from each video's chapter list, so the sentence inside each is not checked.
-<!-- /video-table -->
-
 🔨 **Build:**
 
 ```python
@@ -1630,6 +1744,13 @@ acc = s.last_accept.numpy()
 print("acceptance per sample: mean", round(acc.mean(), 3), " sd", round(acc.std(), 3))
 sns.histplot(acc, bins=11); plt.xlabel("one sample's acceptance over 10 moves"); plt.savefig("step07-acceptance.png"); plt.close()
 ```
+
+<!-- links: step7/markov-chain rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [ritvikmath, Markov Chains, 0:37](https://www.youtube.com/watch?v=prZMpThbU3E&t=37s), a Markov chain by example: its state space, and the next state depending only on the current one (chapter-timed, to 2:50).
+- 🎬 Video: [ritvikmath, Coding MCMC, 2:21](https://www.youtube.com/watch?v=KmqTrm-bn8k&t=141s), one chain written in Python, at its accept or reject step (chapter-timed, to 5:50).
+<!-- /links -->
 
 ## Step 8: Hamiltonian moves
 
@@ -1814,19 +1935,14 @@ $$
 
 **After the step.** Position `1.105` and momentum `0.18425` give total energy `0.62749`. The state moves, while the total changes by only `0.00249`.
 
-<!-- video-table: hamiltonian-monte-carlo rev=1 -->
-Meerkat Statistics, then Ben Lambert, both from the open web, on the Hamiltonian that gives each sample a momentum, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | The Hamiltonian physics mapped onto sampling | Intuition, open web | [Meerkat Statistics, Hamiltonian Monte Carlo, 1:26 to 2:22](https://www.youtube.com/watch?v=2zr7cMjltAI&t=86s) |
-| 2 | Sampling a momentum for the sample | Intuition, open web | [Meerkat Statistics, Hamiltonian Monte Carlo, 2:22 to 3:08](https://www.youtube.com/watch?v=2zr7cMjltAI&t=142s) |
-| 3 | The joint distribution over position and momentum | Intuition, open web | [Ben Lambert, The intuition behind Hamiltonian Monte Carlo, 10:17 to 16:58](https://www.youtube.com/watch?v=a-wydhEuAm0&t=617s) |
-
-No listed creator has a Hamiltonian Monte Carlo video, and neither works a step with numbers, as the toy's energy moving from 0.625 to 0.62749 does. Times are chapter boundaries from each video's chapter list, so the sentence inside each is not checked.
-<!-- /video-table -->
-
 🔤 **The name:** [leapfrog](../../../../../goal-setting/learning/deep-learning/diffusion-models/02-sampler-correctors-for-composition/plans/23-the-hamiltonian-corrector.md)
+
+<!-- links: step8/hamiltonian-monte-carlo rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [Meerkat Statistics, Hamiltonian Monte Carlo, 1:26](https://www.youtube.com/watch?v=2zr7cMjltAI&t=86s), the Hamiltonian physics mapped onto sampling (chapter-timed, to 2:22).
+- 🎬 Video: [Ben Lambert, The intuition behind Hamiltonian Monte Carlo, 10:17](https://www.youtube.com/watch?v=a-wydhEuAm0&t=617s), the joint distribution over position and momentum (chapter-timed, to 16:58).
+<!-- /links -->
 
 ---
 
@@ -1902,6 +2018,45 @@ $$
 
 **Check it on the toy.** The stages give `0.5 → 0.35` for momentum, `1 → 1.105` for position, and `0.35 → 0.18425` for momentum. Energy moves only from `0.625` to `0.62749`.
 
+<details><summary>The code that draws this figure</summary>
+
+```python
+# figures/walk02-step8-leapfrog-energy.py
+from pathlib import Path
+import json
+import matplotlib.pyplot as plt
+
+BROWN = "#6d4c41"
+INK = "#212121"
+
+root = Path(__file__).resolve().parents[4]
+with (root / "rebuild/out/walk-numbers.json").open() as f:
+    values = json.load(f)
+
+before = values["p2.leapfrog_H_before"]
+after = values["p2.leapfrog_H_after"]
+delta = after - before
+
+fig, ax = plt.subplots(figsize=(6.8, 4.2))
+xs = [0, 1]
+ax.plot(xs, [before, after], color=BROWN, marker="o", ms=9, lw=2)
+for x, value in zip(xs, [before, after]):
+    ax.annotate(f"{value:.5f}", (x, value), xytext=(0, 10), textcoords="offset points",
+                ha="center", color=INK, weight="bold")
+ax.annotate(f"change: +{delta:.5f}, about 0.4% of H", (0.5, (before + after) / 2),
+            xytext=(0.5, after + 0.0035), ha="center", color=INK,
+            arrowprops=dict(arrowstyle="-", color=INK, lw=0.8))
+ax.set_xticks(xs, ["before\n(x=1, v=0.5)", "after\n(x'=1.105, v'=0.18425)"])
+ax.set_xlim(-0.4, 1.4)
+ax.set(ylabel="Hamiltonian energy H (axis zoomed: starts at 0.615)", ylim=(0.615, 0.633))
+ax.set_title("One leapfrog step nearly keeps total energy")
+ax.spines[["top", "right"]].set_visible(False)
+fig.tight_layout()
+fig.savefig(Path(__file__).with_suffix(".png"), dpi=160)
+```
+
+</details>
+
 <a href="figures/walk02-step8-leapfrog-energy.png"><img src="figures/walk02-step8-leapfrog-energy.png" width="620" alt="Two nearly level points compare Hamiltonian energy before and after one leapfrog step: 0.625 and 0.62749, a change of 0.00249."></a>
 
 **How to read this chart.** The x-axis separates the state before and after one leapfrog step. The y-axis is Hamiltonian energy, zoomed to start at 0.615. Each point is the total energy of one endpoint state.
@@ -1915,18 +2070,6 @@ $$
 **Take one forward step.** Energy moves from `0.625` to `0.62749` while position moves from `1` to `1.105`.
 
 **Flip and repeat.** Flipping the final momentum and taking the same step returns position from `1.105` to `1` and momentum from `-0.18425` to `-0.5`. The staggered rule supplies a numerical route back.
-
-<!-- video-table: leapfrog rev=1 -->
-Meerkat Statistics, from the open web, on simulating the motion in discrete steps, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | Simulating the system's dynamics, position and momentum moving together | Intuition, open web | [Meerkat Statistics, Hamiltonian Monte Carlo, 3:08 to 6:38](https://www.youtube.com/watch?v=2zr7cMjltAI&t=188s) |
-| 2 | Numerical integration of that motion | Intuition, open web | [Meerkat Statistics, Hamiltonian Monte Carlo, 6:38 to 7:16](https://www.youtube.com/watch?v=2zr7cMjltAI&t=398s) |
-| 3 | The numerical error a finite step leaves, and the accept step that corrects it | Intuition, open web | [Meerkat Statistics, Hamiltonian Monte Carlo, 8:49 to 10:33](https://www.youtube.com/watch?v=2zr7cMjltAI&t=529s) |
-
-The chapter titles do not name the leapfrog scheme, so which integrator Meerkat uses is not checked, and no video reverses a step by flipping the momentum as the toy does. Times are chapter boundaries from the video's chapter list, so the sentence inside each is not checked.
-<!-- /video-table -->
 
 🔨 **Build:**
 
@@ -1947,6 +2090,13 @@ s = AnnealedCHASampler(1, 200, [0.6], 0.5, [1.0], 3, lambda x, t: (logp(x), grad
 x = s.sample_step(3 * torch.randn(4000, 1), 0, None, {})
 print("fixed CHA on N(0,1): variance", round(float(x.var()), 3))
 ```
+
+<!-- links: step8/leapfrog rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [Meerkat Statistics, Hamiltonian Monte Carlo, 6:38](https://www.youtube.com/watch?v=2zr7cMjltAI&t=398s), numerical integration of the position and momentum motion (chapter-timed, to 7:16).
+- 🎬 Video: [Meerkat Statistics, Hamiltonian Monte Carlo, 8:49](https://www.youtube.com/watch?v=2zr7cMjltAI&t=529s), the numerical error a finite step leaves, and the accept step that corrects it (chapter-timed, to 10:33).
+<!-- /links -->
 
 ## Step 9: annealing through the noise levels
 
@@ -2021,22 +2171,6 @@ which is `p3.noised_ideal_var_t0_sig0.05`, and its mean is scaled by $\sqrt{\bar
 
 Reaching the clean composition takes an explicit clean level or a final denoising step. The reference adds the first: `python -m rebuild.phase2_step9` reruns this step with the same seeds and, after the anneal, gives each sampler one more level of the same 10 moves on the clean composition, with the step size the rule below gives at $\bar\alpha=1$, where $\nu=\sigma^2$: ss = 0.05·σ² for ULA and MALA, h = 0.3·σ for UHA. It reports the shares both ways, and the shares after the clean level are read against 0.713.
 
-<!-- video-table: annealed-langevin rev=1 -->
-Stanford CS236 on why Langevin sampling is annealed across noise levels, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | Where plain Langevin sampling fails | Intuition | [Stanford CS236, lecture 14, 5:44 to 9:13](https://www.youtube.com/watch?v=E69Lp_T9nVg&t=344s) |
-| 2 | What adding noise does for the score and for sampling | Intuition | [Stanford CS236, lecture 14, 9:13 to 19:08](https://www.youtube.com/watch?v=E69Lp_T9nVg&t=553s) |
-| 3 | Sampling across many noise scales, noisiest first | Intuition | [Stanford CS236, lecture 14, 23:54 to 28:43](https://www.youtube.com/watch?v=E69Lp_T9nVg&t=1434s) |
-
-CS236 anneals one model's score; it does not anneal a sum of two models' scores, which is what composition samples. Times are chapter boundaries read from each video's chapter list, not from captions, so each is good to the chapter and the sentence inside it is not checked.
-<!-- /video-table -->
-
-**How to read this table.** Read from row 1 to row 3. The first row shows the failure that motivates the method, the second shows what noise changes, and the third follows samples from the noisiest scale toward the least noisy scale.
-
-**What to look for.** The third row supplies the ordering used here. This page applies that order to the indigo product target, whose score comes from two experts rather than one.
-
 **Derivation of the step sizes.** At level t a smoothed expert's variance is
 
 $$
@@ -2059,11 +2193,22 @@ $$
 
 **Why the square is there.** The clean width is 0.05, but variances are being added. The square converts that width to 0.0025 before it enters the blend.
 
-written $\nu_t$ so it stays apart from Step 8's momentum $v$; the code's array `V` holds these values, and `logq` calls the same quantity `v`. [A Langevin move's noise](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/the-little-book-of-generative-ai-foundations.pdf#page=116) is $\sqrt{2ss}$, so a move that is a fixed fraction of the local width $\sqrt{\nu_t}$ needs ss proportional to $\nu_t$: `0.05·ν_t` for ULA and MALA. A [leapfrog step](../../../../../Obsidian/Mathematics/Statistics/Markov%20Chain%20Monte%20Carlo/Hamiltonian%20Monte%20Carlo.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=564 "Pattern recognition and machine learning, section 11.5, Dynamical systems with position, momentum and the Hamiltonian, the leapfrog discretization, then hybr..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/probabilistic-machine-learning-advanced-topics.pdf#page=543 "Probabilistic machine learning: advanced topics, sections 12.5.1 to 12.5.4, Hamiltonian mechanics, integrating Hamilton's equations (Euler, modified Euler, l..."), [3](../../../../../goal-setting/learning/papers/deep-learning/diffusion-models/compositional-diffusion-models/sampling-composed-models/compositional-generation-with-energy-based-diffusion-models-and-mcmc.pdf#page=12 "Du and others 2023, Reduce, reuse, recycle: compositional generation with energy-based diffusion models and MCMC, appendix B.1, HMC with the leapfrog integra..."), [▶1](https://www.youtube.com/watch?v=2zr7cMjltAI&t=86s "Meerkat Statistics, Hamiltonian Monte Carlo, 1:26 to 2:22, The Hamiltonian physics mapped onto sampling. Chapter-timed, from the video lessons index."), [▶2](https://www.youtube.com/watch?v=2zr7cMjltAI&t=142s "Meerkat Statistics, Hamiltonian Monte Carlo, 2:22 to 3:08, Sampling a momentum for the sample. Chapter-timed, from the video lessons index."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/00-from-scratch-to-sdxl/textbook/l3-stochastic-processes/09-hamiltonian-dynamics-and-what-momentum-buys.md "9. Hamiltonian dynamics, and what momentum buys, deep-learning/diffusion-models/00-from-scratch-to-sdxl, volume L3, section 9. Why Langevin crawls through th...")</sub> moves x by $h\,v$ with v of size about 1, so UHA uses h = `0.3·√ν_t`. Tuned MALA starts there and multiplies its step by $e^{(\text{acceptance}-0.6)}$ after every move, so it settles near 0.6 acceptance.
+**Its name in the code.** The variance is written $\nu_t$ so it stays apart from Step 8's momentum $v$; the code's array `V` holds these values, and `logq` calls the same quantity `v`.
+
+**The step size for ULA and MALA.** [A Langevin move's noise](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/the-little-book-of-generative-ai-foundations.pdf#page=116) is $\sqrt{2ss}$, so a move that is a fixed fraction of the local width $\sqrt{\nu_t}$ needs ss proportional to $\nu_t$: `0.05·ν_t` for ULA and MALA.
+
+**The step sizes for UHA and tuned MALA.** A [leapfrog step](../../../../../Obsidian/Mathematics/Statistics/Markov%20Chain%20Monte%20Carlo/Hamiltonian%20Monte%20Carlo.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=564 "Pattern recognition and machine learning, section 11.5, Dynamical systems with position, momentum and the Hamiltonian, the leapfrog discretization, then hybr..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/probabilistic-machine-learning-advanced-topics.pdf#page=543 "Probabilistic machine learning: advanced topics, sections 12.5.1 to 12.5.4, Hamiltonian mechanics, integrating Hamilton's equations (Euler, modified Euler, l..."), [3](../../../../../goal-setting/learning/papers/deep-learning/diffusion-models/compositional-diffusion-models/sampling-composed-models/compositional-generation-with-energy-based-diffusion-models-and-mcmc.pdf#page=12 "Du and others 2023, Reduce, reuse, recycle: compositional generation with energy-based diffusion models and MCMC, appendix B.1, HMC with the leapfrog integra..."), [▶1](https://www.youtube.com/watch?v=2zr7cMjltAI&t=86s "Meerkat Statistics, Hamiltonian Monte Carlo, 1:26 to 2:22, The Hamiltonian physics mapped onto sampling. Chapter-timed, from the video lessons index."), [▶2](https://www.youtube.com/watch?v=2zr7cMjltAI&t=142s "Meerkat Statistics, Hamiltonian Monte Carlo, 2:22 to 3:08, Sampling a momentum for the sample. Chapter-timed, from the video lessons index."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/00-from-scratch-to-sdxl/textbook/l3-stochastic-processes/09-hamiltonian-dynamics-and-what-momentum-buys.md "9. Hamiltonian dynamics, and what momentum buys, deep-learning/diffusion-models/00-from-scratch-to-sdxl, volume L3, section 9. Why Langevin crawls through th...")</sub> moves x by $h\,v$ with v of size about 1, so UHA uses h = `0.3·√ν_t`. Tuned MALA starts there and multiplies its step by $e^{(\text{acceptance}-0.6)}$ after every move, so it settles near 0.6 acceptance.
 
 🧸 **Toy:** the notebook's ring × bar, as exact ideal experts (400 points each, smoothed by σ = 0.05), so the target is known exactly. The centres (0, 0.5) and (0, −0.5) are the only ring-mode centres inside the bar, and the composition puts `0.933` of its mass within 0.2 of them (`p2.step9_clean_mass_within_0.2_of_in_bar_centres`). Both experts are Gaussian smoothed, so the product keeps nonzero tails everywhere: `0.065` of its mass lies within 0.2 of the other six ring modes (`p2.step9_clean_mass_within_0.2_of_other_six`), and `0.003` lies farther than 0.2 from every ring-mode centre (`p2.step9_clean_mass_beyond_0.2_of_every_centre`). Within 0.1 of the two in-bar centres, the radius this step scores with, the share is `0.713` (`p2.step9_exact_share_clean`), because that radius also cuts off part of each in-bar mode's own spread: within 0.15 it is already `0.900` (`p2.step9_clean_mass_within_0.15_of_in_bar_centres`).
 
 🔤 **The name:** [annealing](../../../../../goal-setting/learning/deep-learning/diffusion-models/00-from-scratch-to-sdxl/textbook/l3-stochastic-processes/10-annealing-on-three-axes-and-annealed-importance-sampling.md)
+
+<!-- links: step9/annealed-langevin rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [Stanford CS236, lecture 14, 5:44](https://www.youtube.com/watch?v=E69Lp_T9nVg&t=344s), where plain Langevin sampling fails (chapter-timed, to 9:13).
+- 🎬 Video: [Stanford CS236, lecture 14, 23:54](https://www.youtube.com/watch?v=E69Lp_T9nVg&t=1434s), sampling across many noise scales, noisiest first, the order this step applies to the two-expert product (chapter-timed, to 28:43).
+<!-- /links -->
 
 ---
 
@@ -2220,7 +2365,13 @@ for a, (k, s_) in zip(ax, out.items()):
 plt.tight_layout(); plt.savefig("step09-ring-times-bar.png"); plt.close()
 ```
 
-The run behind this document printed: exact `0.713` (the clean composition), 1000 perfect draws `0.718`, ULA `0.356`, MALA `0.370`, UHA `0.563`, reverse diffusion `0.468` (`p2.step9_share_perfect_1000`, `p2.step9_share_ULA_annealed_to_pi0` and so on). The three annealed samplers end at $\pi_0$, so their shares are read against its `0.636`. With the clean final level the reference gives ULA `0.407`, MALA `0.411` and UHA `0.620` (`p2.step9_share_ULA_plus_clean_level` and so on, and `rebuild/out/phase2/step9.json`), read against `0.713`. The clean level lifts each sampler by 0.04 to 0.06, and all three stay below both targets. ULA and MALA at `0.05·ν_t` leave stragglers on the six outer modes, because MALA at that step accepts nearly every move and so behaves like ULA. UHA's longer moves get further. The kinds notebook's Figure 1 found the same order on this kind with 800 points and 2000 samples: exact 0.71, UHA 0.66, reverse diffusion 0.62, ULA 0.51, MALA 0.50.
+**What the run printed.** The run behind this document printed: exact `0.713` (the clean composition), 1000 perfect draws `0.718`, ULA `0.356`, MALA `0.370`, UHA `0.563`, reverse diffusion `0.468` (`p2.step9_share_perfect_1000`, `p2.step9_share_ULA_annealed_to_pi0` and so on). The three annealed samplers end at $\pi_0$, so their shares are read against its `0.636`.
+
+**What the clean level adds.** With the clean final level the reference gives ULA `0.407`, MALA `0.411` and UHA `0.620` (`p2.step9_share_ULA_plus_clean_level` and so on, and `rebuild/out/phase2/step9.json`), read against `0.713`. The clean level lifts each sampler by 0.04 to 0.06, and all three stay below both targets.
+
+**Why UHA gets further.** ULA and MALA at `0.05·ν_t` leave stragglers on the six outer modes, because MALA at that step accepts nearly every move and so behaves like ULA. UHA's longer moves get further.
+
+**The notebook agrees.** The kinds notebook's Figure 1 found the same order on this kind with 800 points and 2000 samples: exact 0.71, UHA 0.66, reverse diffusion 0.62, ULA 0.51, MALA 0.50.
 
 💥 **Broken run:** tuned MALA, which raises its step until acceptance falls to 0.6, reaches the perfect-sample baseline on this kind (TV 0.11 against a baseline of 0.11 in the kinds notebook's run 1), while ULA at the same tuned steps sends samples off to infinity. The accept step is what makes the large steps safe.
 
@@ -2228,11 +2379,36 @@ The run behind this document printed: exact `0.713` (the clean composition), 100
 
 <a href="../../../toy/rebuild/out/phase2/reference/product-0.png"><img src="../../../toy/rebuild/out/phase2/reference/product-0.png" width="200" alt="Scatter of green and blue samples on the eight-mode ring times bar product: most points sit on the two modes at (0, 0.5) and (0, -0.5), and blue points also sit on the six outer ring modes"></a>
 
+<details><summary>The code that draws this figure</summary>
+
+```python
+# toy/rebuild/phase2_compose.py, the end of main(): COMPOSITIONS, cols, grids, samples and report are built earlier in main()
+fig, ax = plt.subplots(len(COMPOSITIONS), 3 + len(cols), figsize=(2.3 * (3 + len(cols)), 2.6 * len(COMPOSITIONS)))
+for r, (name, a, b, *_rest) in enumerate(COMPOSITIONS):
+    da, db = PANELS[a](1000, rng=rng), PANELS[b](1000, rng=rng)
+    ax[r, 0].scatter(*da.T, s=1, c="tab:red"); ax[r, 0].set_title(a, fontsize=8); ax[r, 0].set_ylabel(name, fontsize=8)
+    ax[r, 1].scatter(*db.T, s=1, c="tab:blue"); ax[r, 1].set_title(b, fontsize=8)
+    ax[r, 2].imshow(grids[name], origin="lower", extent=[-ideal.L, ideal.L, -ideal.L, ideal.L], cmap="magma")
+    ax[r, 2].set_title("exact, trained experts", fontsize=8)
+    for j, c in enumerate(cols, start=3):
+        s = samples[name][c]; rr = report[r]["samplers"][c]
+        ax[r, j].scatter(*s.T, s=1, c="k", alpha=.4); ax[r, j].set_title(f"{c}\n{rr['measure']:.2f} · TV {rr['tv']:.2f}", fontsize=8)
+    for x_ in ax[r]:
+        x_.set_xlim(-ideal.L, ideal.L); x_.set_ylim(-ideal.L, ideal.L); x_.set_aspect("equal"); x_.set_xticks([]); x_.set_yticks([])
+plt.tight_layout(); plt.savefig(os.path.join(out, "product-mixture-negation-every-sampler.png"), dpi=90); plt.close()
+```
+
+</details>
+
 <a href="../../../toy/rebuild/out/phase2/product-mixture-negation-every-sampler.png"><img src="../../../toy/rebuild/out/phase2/product-mixture-negation-every-sampler.png" width="200" alt="ring times bar, left plus right, and box(0.7) not box(0.3), each with its two experts, the exact composition and every sampler's samples"></a>
 
-**How to read this picture.** Each column is one composition. Within a column, compare the two expert shapes, the exact composed target and the point cloud produced by each sampler. In the top ring-times-bar column, a successful sampler concentrates near the two ring modes that lie inside the bar. The smaller picture beside it is the notebook's own reference run of the same ring × bar product, with both axes in the toy's units: each dot is one sample, green from the Metropolis-adjusted UHA and blue from reverse diffusion.
+**How to read this picture.** Each column is one composition. Within a column, compare the two expert shapes, the exact composed target and the point cloud produced by each sampler. In the top ring-times-bar column, a successful sampler concentrates near the two ring modes that lie inside the bar.
 
-**What to look for.** In the top row, compare the two in-bar modes with the six outer ring modes. Samplers that follow the product move mass into the two shared regions. Reverse diffusion leaves visible mass near the six outer modes, even though the bar expert disagrees there. The reference picture shows the same split: green sits almost only on the two in-bar modes at (0, 0.5) and (0, −0.5), while blue also fills all six outer ring modes.
+**The smaller picture.** The smaller picture beside it is the notebook's own reference run of the same ring × bar product, with both axes in the toy's units: each dot is one sample, green from the Metropolis-adjusted UHA and blue from reverse diffusion.
+
+**What to look for.** In the top row, compare the two in-bar modes with the six outer ring modes. Samplers that follow the product move mass into the two shared regions. Reverse diffusion leaves visible mass near the six outer modes, even though the bar expert disagrees there.
+
+**The same split in the reference.** The reference picture shows the same split: green sits almost only on the two in-bar modes at (0, 0.5) and (0, −0.5), while blue also fills all six outer ring modes.
 
 The reference run of the same check on the trained experts, with the mixture and negation rows added. The top row is this step's ring × bar: the samplers that reach the two in-bar modes are the ones that worked, and reverse diffusion keeps the six outer modes, pulled inward.
 

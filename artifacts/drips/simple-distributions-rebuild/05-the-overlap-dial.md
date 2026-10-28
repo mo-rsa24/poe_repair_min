@@ -1,6 +1,10 @@
 # 🔨 Phase 5: the overlap dial, and whether a product reaches A-and-B its experts never saw
 
-You turn one dial, the share of A-and-B examples in each expert's training set, from 0% to 100%, and measure how much of the product's mass lands in A∩B. You do it on the quadrant toy with ideal experts (exact, with samplers beside it), on the parts world (exact in 16 pixels), and with trained experts pretrained on every placement and then fine-tuned at 0% overlap. This is the check claim 2 of the [overlap-dial idea map](../../ideas/poe-overlap-dial/IDEA_MAP.md) was waiting for. It ends with the curves in `rebuild/out/phase5/overlap-dial-curves.png` and `finetune-curves.png`. The reference is `rebuild/phase5_dial.py` and `rebuild/phase5_finetune.py` on branch `unbuild-walk`.
+**What you do.** You turn one dial, the share of A-and-B examples in each expert's training set, from 0% to 100%, and measure how much of the product's mass lands in A∩B. You do it on the quadrant toy with ideal experts (exact, with samplers beside it), on the parts world (exact in 16 pixels), and with trained experts pretrained on every placement and then fine-tuned at 0% overlap.
+
+**Why it is run.** This is the check claim 2 of the [overlap-dial idea map](../../ideas/poe-overlap-dial/IDEA_MAP.md) was waiting for.
+
+**What it ends with.** It ends with the curves in `rebuild/out/phase5/overlap-dial-curves.png` and `finetune-curves.png`. The reference is `rebuild/phase5_dial.py` and `rebuild/phase5_finetune.py` on branch `unbuild-walk`.
 
 **How to walk it.** `/drip-execute-plan artifacts/drips/simple-distributions-rebuild/05-the-overlap-dial.md`, one step per message, typing every block yourself. The python blocks, typed in order into `walk05.py` in `/home-mscluster/mmolefe/Playground/PhD/simple-distributions-walk/`, are one runnable script. Phases 1 to 4 are imported from the reference from here on.
 
@@ -45,20 +49,9 @@ N, NS, MARGIN = 800, 1000, 0.15
 
 ## Step 1: two experts and an overlap share
 
-**Definition.** A is "left half" and B is "top half"; A∩B is the top-left quadrant. Expert A trains on 800 points with $x_1\sim U(-1,0)$, of which a share f have $x_2\sim U(0,1)$ (A and B) and the rest $x_2\sim U(-1,0)$ (A only). Expert B mirrors it: $x_2\sim U(0,1)$, a share f with $x_1\sim U(-1,0)$, the rest $x_1\sim U(0,1)$. The experts are ideal (phase 3), smoothed by σ = 0.05. The labels never enter (claim 1): to expert A, the overlap points are just part of its set.
+**Definition.** A is "left half" and B is "top half"; A∩B is the top-left quadrant. Expert A trains on 800 points with $x_1\sim U(-1,0)$, of which a share f have $x_2\sim U(0,1)$ (A and B) and the rest $x_2\sim U(-1,0)$ (A only). Expert B mirrors it: $x_2\sim U(0,1)$, a share f with $x_1\sim U(-1,0)$, the rest $x_1\sim U(0,1)$.
 
-<!-- video-table: kernel-density-estimate rev=1 -->
-ritvikmath on the kernel density estimate, a normal curve centred on every data point and averaged, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | Six fish weights and three candidate estimates: under-smoothed, over-smoothed and just right | Intuition | [ritvikmath, Kernel Density Estimation, 2:38 to 5:17](https://www.youtube.com/watch?v=t1PEhjyzxLA&t=158s) |
-| 2 | A normal curve centred on each of three fish, averaged, and read off at 9.5 lb and at 14 lb | Worked example | [ritvikmath, Kernel Density Estimation, 5:32 to 10:13](https://www.youtube.com/watch?v=t1PEhjyzxLA&t=332s) |
-| 3 | The formula, one over n times the sum of a kernel at x minus each data point, matched to the picture | Intuition | [ritvikmath, Kernel Density Estimation, 10:28 to 13:08](https://www.youtube.com/watch?v=t1PEhjyzxLA&t=628s) |
-| 4 | The bandwidth h is each kernel's standard deviation, and it decides between too many peaks and too few | Intuition | [ritvikmath, Kernel Density Estimation, 14:10 to 15:44](https://www.youtube.com/watch?v=t1PEhjyzxLA&t=850s) |
-
-ritvikmath works in one dimension and does not point out that a Gaussian kernel density estimate is a Gaussian mixture with one equal-weight component per data point. Times are read from automatic captions and good to about 30 seconds.
-<!-- /video-table -->
+**What the experts are.** The experts are ideal (phase 3), smoothed by σ = 0.05. The labels never enter (claim 1): to expert A, the overlap points are just part of its set.
 
 🧸 **Toy:** each of A's 800 points [lands in A∩B independently with probability f](../../../../../goal-setting/learning/mathematics/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=159), so the count K of A's points in A∩B is random. [Its expectation](../../../../../goal-setting/learning/mathematics/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=162) is
 
@@ -94,6 +87,12 @@ $$
 and the count printed for one data draw fluctuates around these values. At 0%, A's set is the bottom-left square and B's the top-right square, and the two squares touch only at the origin.
 
 🔤 **The name:** [overlap share](../../../../../Obsidian/Artificial%20Intelligence/Generative%20Modeling/Diffusion%20Models/Composition/What%20An%20Expert%20Learns%20From%20Its%20Training%20Set.md)
+
+<!-- links: step1/overlap-share rev=2 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [ritvikmath, Kernel Density Estimation, 5:32](https://www.youtube.com/watch?v=t1PEhjyzxLA&t=332s), a normal curve centred on each of three fish and averaged, which is how each ideal expert smooths its 800 points; [same video, 14:10](https://www.youtube.com/watch?v=t1PEhjyzxLA&t=850s), the bandwidth as each kernel's standard deviation, this step's σ. Both work in one dimension, and neither says that a Gaussian kernel density estimate is a Gaussian mixture with one equal-weight component per data point.
+<!-- /links -->
 
 ---
 
@@ -228,17 +227,6 @@ $$
 
 **Change the probability.** Raising $f$ from 0.01 to 0.05 raises the long-run average from 8 to 40. A particular printed count may sit on either side of its average.
 
-<!-- video-table: expectation-as-a-weighted-sum rev=1 -->
-StatQuest on the expected value, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | Calculating an expected value: each outcome times its probability, added up | Worked example | [StatQuest, Expected Values, Main Ideas, 5:09 to 8:02](https://www.youtube.com/watch?v=KLs_7b7SKi4&t=309s) |
-| 2 | The notation for an expected value | Intuition | [StatQuest, Expected Values, Main Ideas, 8:02 to 10:30](https://www.youtube.com/watch?v=KLs_7b7SKi4&t=482s) |
-
-StatQuest does not work the expected count of a binomial, n times p, which is this step's 800f (8 at f = 0.01, 40 at f = 0.05). Times are chapter boundaries from each video's chapter list, so the sentence inside each is not checked.
-<!-- /video-table -->
-
 🔨 **Build:**
 
 ```python
@@ -250,11 +238,19 @@ A, B = make_sets(0.05)
 print("points of A in A∩B at 5%:", int(((A[:, 0] < 0) & (A[:, 1] > 0)).sum()), "(expected about 40)")
 ```
 
+<!-- links: step1/expectation-repeat rev=2 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [StatQuest, Expected Values, Main Ideas, 5:09](https://www.youtube.com/watch?v=KLs_7b7SKi4&t=309s), each outcome times its probability, added up; [same video, 8:02](https://www.youtube.com/watch?v=KLs_7b7SKi4&t=482s), the notation for an expected value. Neither works the expected count of a binomial, n times p, which is this step's 800f (8 at f = 0.01, 40 at f = 0.05).
+<!-- /links -->
+
 ## Step 2: at 0%, the product sits on the corner
 
 **Definition.** The composition is the product $p_Ap_B$, computed exactly on the grid as in phase 3.
 
-**Derivation.** Near the corner, each expert is a square smoothed by σ, so along $x_1$ expert A's [density](../../../../../Obsidian/Mathematics/Statistics/Distributions/Probability%20Density%20Function.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=188 "Introduction to probability for data science, section 4.1, Builds the intuition of probability per unit length, defines the PDF and its properties (Definitio..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=186 "Mathematics for machine learning, section 6.2.2, The density and the CDF (Definitions 6.1 and 6.2), a uniform example (Example 6.3), and discrete against con..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=36 "Pattern recognition and machine learning, section 1.2.1, The density's two conditions (equations 1.25 and 1.26), its link to the CDF, and why a density picks..."), [▶1](https://www.youtube.com/watch?v=QKA4HNEw3aY&t=52s "The Organic Chemistry Tutor, Probability Density Functions, 0:52 to 3:39, Verifies that a given function is a density by checking that its integral equals 1...."), [▶2](https://www.youtube.com/watch?v=oI3hZJqXJuc&t=135s "StatQuest, The Main Ideas behind Probability Distributions, 2:15 to 5:14, A curve as a distribution, with probability read as area under it, not its height. ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/02-densities-and-the-gaussian.md#21-a-density-can-exceed-1 "Chapter 2: Read a density as area and draw a Gaussian from its covariance, deep-learning/diffusion-models/01-poe-derivation-foundations, chapter 02, section ..."), [◈](https://claude.ai/artifact/DBmJtn6xy75sPtQwPEvQZU#nb-sec1 "Kinds of composition notebook, Setup: the ideal expert, The ideal expert's log-density on a grid, in four steps from the 2D Gaussian to its logsumexp form, t...")</sub> falls off as $\Phi(-x_1/\sigma)$ and expert B's rises as $\Phi(x_1/\sigma)$, with Φ [the normal CDF](../../../../../goal-setting/learning/mathematics/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=230), and the same holds along $x_2$. Their product along each axis is $\Phi(-x/\sigma)\,\Phi(x/\sigma)$. To see where it peaks, put $u=\Phi(x/\sigma)$. [The normal curve is symmetric](../../../../../goal-setting/learning/mathematics/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=232), so $\Phi(-x/\sigma)=1-u$, and [completing the square](../../../../../goal-setting/learning/mathematics/textbooks/algebra/algebra-handbook.pdf#page=74) gives
+**Derivation.** Near the corner, each expert is a square smoothed by σ, so along $x_1$ expert A's [density](../../../../../Obsidian/Mathematics/Statistics/Distributions/Probability%20Density%20Function.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=188 "Introduction to probability for data science, section 4.1, Builds the intuition of probability per unit length, defines the PDF and its properties (Definitio..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=186 "Mathematics for machine learning, section 6.2.2, The density and the CDF (Definitions 6.1 and 6.2), a uniform example (Example 6.3), and discrete against con..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=36 "Pattern recognition and machine learning, section 1.2.1, The density's two conditions (equations 1.25 and 1.26), its link to the CDF, and why a density picks..."), [▶1](https://www.youtube.com/watch?v=QKA4HNEw3aY&t=52s "The Organic Chemistry Tutor, Probability Density Functions, 0:52 to 3:39, Verifies that a given function is a density by checking that its integral equals 1...."), [▶2](https://www.youtube.com/watch?v=oI3hZJqXJuc&t=135s "StatQuest, The Main Ideas behind Probability Distributions, 2:15 to 5:14, A curve as a distribution, with probability read as area under it, not its height. ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/02-densities-and-the-gaussian.md#21-a-density-can-exceed-1 "Chapter 2: Read a density as area and draw a Gaussian from its covariance, deep-learning/diffusion-models/01-poe-derivation-foundations, chapter 02, section ..."), [◈](https://claude.ai/artifact/DBmJtn6xy75sPtQwPEvQZU#nb-sec1 "Kinds of composition notebook, Setup: the ideal expert, The ideal expert's log-density on a grid, in four steps from the 2D Gaussian to its logsumexp form, t...")</sub> falls off as $\Phi(-x_1/\sigma)$ and expert B's rises as $\Phi(x_1/\sigma)$, with Φ [the normal CDF](../../../../../goal-setting/learning/mathematics/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=230), and the same holds along $x_2$. Their product along each axis is $\Phi(-x/\sigma)\,\Phi(x/\sigma)$.
+
+**Where it peaks.** To see where it peaks, put $u=\Phi(x/\sigma)$. [The normal curve is symmetric](../../../../../goal-setting/learning/mathematics/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=232), so $\Phi(-x/\sigma)=1-u$, and [completing the square](../../../../../goal-setting/learning/mathematics/textbooks/algebra/algebra-handbook.pdf#page=74) gives
 
 $$
 \begin{aligned}
@@ -288,7 +284,9 @@ $$
 
 **Why the inequality is there.** A square cannot be negative, so subtracting it cannot exceed one quarter. The toy reaches 0.25 only at the boundary.
 
-Equality needs $u=\tfrac12$, which happens only at $x=0$. So the profile is largest at 0 (where it equals $\tfrac12\cdot\tfrac12$ = `0.25`) and symmetric about 0, and the product's mass is a blob on the corner, split evenly across the boundary lines. Half of its mass along one axis lies within `0.0302` of the boundary, less than one σ. That distance comes from integrating the profile numerically (`p5.corner_profile_half_mass_within`), not from the algebra above.
+**Where equality holds.** Equality needs $u=\tfrac12$, which happens only at $x=0$. So the profile is largest at 0 (where it equals $\tfrac12\cdot\tfrac12$ = `0.25`) and symmetric about 0, and the product's mass is a blob on the corner, split evenly across the boundary lines.
+
+**How narrow the blob is.** Half of its mass along one axis lies within `0.0302` of the boundary, less than one σ. That distance comes from integrating the profile numerically (`p5.corner_profile_half_mass_within`), not from the algebra above.
 
 🧸 **Toy:** at 0% overlap the exact composition puts `0.20 ± 0.02` (3 data seeds) in the whole top-left quadrant, all of it in that sliver around the corner. Almost none of it is more than 3σ inside: the deep mass is below `1.1e-6` in each of the 3 seeds (`overlap-dial.json`) and rounds to `0.00`. The run behind this document printed `0.145` and `0.0`. That seed's whole-quadrant share is below the three seeds' 0.20 ± 0.02, because the sliver's split depends on how the few training points nearest the corner happen to fall. The interior number does not move.
 
@@ -636,7 +634,9 @@ $$
 
 **Definition.** For each f in 0, 1, 2, 5, 10, 20, 50 and 100%, draw both sets, compute the exact product on the grid, and record the interior mass.
 
-**Derivation of why it rises faster than f.** The product's mass at a point is the product of both experts' densities there. Outside A∩B at least one expert is near zero almost everywhere, so even a few points shared by both sets carry a large share of the product. To see how large, average over the data draw. Write $s_{\mathrm{BL}}$, $s_{\mathrm{TL}}$ and $s_{\mathrm{TR}}$ for the bottom-left, top-left and top-right unit squares smoothed by σ. Expert A is then $(1-f)\,s_{\mathrm{BL}}+f\,s_{\mathrm{TL}}$ and expert B is $(1-f)\,s_{\mathrm{TR}}+f\,s_{\mathrm{TL}}$, and multiplying out gives
+**Derivation of why it rises faster than f.** The product's mass at a point is the product of both experts' densities there. Outside A∩B at least one expert is near zero almost everywhere, so even a few points shared by both sets carry a large share of the product.
+
+**Averaging over the data draw.** To see how large, average over the data draw. Write $s_{\mathrm{BL}}$, $s_{\mathrm{TL}}$ and $s_{\mathrm{TR}}$ for the bottom-left, top-left and top-right unit squares smoothed by σ. Expert A is then $(1-f)\,s_{\mathrm{BL}}+f\,s_{\mathrm{TL}}$ and expert B is $(1-f)\,s_{\mathrm{TR}}+f\,s_{\mathrm{TL}}$, and multiplying out gives
 
 $$
 p_Ap_B=(1-f)^2\,s_{\mathrm{BL}}s_{\mathrm{TR}}+f(1-f)\,(s_{\mathrm{BL}}+s_{\mathrm{TR}})\,s_{\mathrm{TL}}+f^2\,s_{\mathrm{TL}}^2.
@@ -660,7 +660,9 @@ $$
 
 **Why the powers are there.** The corner pair chooses the non-overlap component twice, giving $(1-f)^2$. The shared pair chooses the overlap component twice, giving $f^2$.
 
-The rule used is [the distributive law](../../../../../goal-setting/learning/mathematics/textbooks/algebra/algebra-handbook.pdf#page=16). Each term integrates to a constant: $C_0=\int s_{\mathrm{BL}}s_{\mathrm{TR}}$ is the overlap at the corner, $C_1=\int(s_{\mathrm{BL}}+s_{\mathrm{TR}})\,s_{\mathrm{TL}}$ the overlap along two edges, $C=\int s_{\mathrm{TL}}^2$ the whole square, and $C_D$ the part of $C$ inside the interior $D$. Only the last term reaches $D$; the other two reach it through tails no larger than $\Phi(-3)=0.0013$ (`p5.phi_minus_3`). Normalising over the whole plane, the interior mass is
+**The rule and its constants.** The rule used is [the distributive law](../../../../../goal-setting/learning/mathematics/textbooks/algebra/algebra-handbook.pdf#page=16). Each term integrates to a constant: $C_0=\int s_{\mathrm{BL}}s_{\mathrm{TR}}$ is the overlap at the corner, $C_1=\int(s_{\mathrm{BL}}+s_{\mathrm{TR}})\,s_{\mathrm{TL}}$ the overlap along two edges, $C=\int s_{\mathrm{TL}}^2$ the whole square, and $C_D$ the part of $C$ inside the interior $D$.
+
+**Which term reaches the interior.** Only the last term reaches $D$; the other two reach it through tails no larger than $\Phi(-3)=0.0013$ (`p5.phi_minus_3`). Normalising over the whole plane, the interior mass is
 
 $$
 M_D(f)=\frac{f^2C_D}{f^2C+f(1-f)\,C_1+(1-f)^2\,C_0}.
@@ -688,7 +690,11 @@ $$
 
 **Why the powers are there.** Both experts must choose their shared component to make deep mass, which gives $f^2$. At full overlap, setting $f$ to 1 removes the edge and corner terms and leaves $C_D/C=0.76$.
 
-The corner overlap is of order $\sigma^2$, an edge overlap of order σ, and the square of order 1. Integrating the smoothed squares numerically gives $C_0=0.0008$, $C_1=0.053$, $C=0.890$ and $C_D=0.675$ (`p5.deep_mass_C0_corner`, `p5.deep_mass_C1_edges`, `p5.deep_mass_C_square` and `p5.deep_mass_CD_deep_square`). At 5% overlap, about 40 points per set, the numerator is 0.0017 against a denominator of 0.0055 (`p5.deep_mass_formula_numerator_f0.05` and `p5.deep_mass_formula_denominator_f0.05`), so $M_D=0.31$ while f is only 0.05. At 100% the formula gives $C_D/C=0.76$. Over f = 0.01, 0.02, 0.05, 0.1, 0.2, 0.5 and 1 it runs from `0.048` to `0.758` (`p5.deep_mass_formula_MD`). The grid's 3-seed means below are 0.30 and 0.76.
+**The sizes of the constants.** The corner overlap is of order $\sigma^2$, an edge overlap of order σ, and the square of order 1. Integrating the smoothed squares numerically gives $C_0=0.0008$, $C_1=0.053$, $C=0.890$ and $C_D=0.675$ (`p5.deep_mass_C0_corner`, `p5.deep_mass_C1_edges`, `p5.deep_mass_C_square` and `p5.deep_mass_CD_deep_square`).
+
+**The formula at 5%.** At 5% overlap, about 40 points per set, the numerator is 0.0017 against a denominator of 0.0055 (`p5.deep_mass_formula_numerator_f0.05` and `p5.deep_mass_formula_denominator_f0.05`), so $M_D=0.31$ while f is only 0.05.
+
+**Across the dial.** At 100% the formula gives $C_D/C=0.76$. Over f = 0.01, 0.02, 0.05, 0.1, 0.2, 0.5 and 1 it runs from `0.048` to `0.758` (`p5.deep_mass_formula_MD`). The grid's 3-seed means below are 0.30 and 0.76.
 
 🧸 **Toy:** over 3 data seeds (`overlap-dial.json`), the exact interior mass is `0.00` at 0%, `0.05 ± 0.05` at 1%, `0.09` at 2%, `0.30 ± 0.10` at 5%, `0.51` at 10%, `0.59` at 20%, `0.71` at 50% and `0.76` at 100%. At 1% and 5% it swings by seed, because a handful of shared points decides it. The run behind this document, one more seed, printed `0.0, 0.03, 0.276, 0.486, 0.453, 0.486, 0.709, 0.76`. Its 2% and 5% sit well above the 3-seed means, and its 10% is below its 5%. That is the swing of a single seed at low overlap, where the answer rests on whether a few shared points happen to fall close together, and the reason the curve is drawn as a mean over seeds with its spread. Three seeds give a wide spread and no interval; [the exact interval for a proportion](../../../../../goal-setting/learning/mathematics/statistics/sampling/textbook/07-the-exact-interval.md) puts one on a single run's share, and [the percentile bootstrap](../../../../../goal-setting/learning/mathematics/statistics/sampling/plans/13-the-percentile-bootstrap-derived.md) puts one on the seed mean.
 
@@ -791,23 +797,19 @@ print("exact interior A∩B mass:", dict(zip(F, np.round(exact_curve, 3))))
 
 **Definition.** Tuned MALA and UHA from phase 2, on the exact annealing targets of phase 3, scored by their interior mass beside the exact one.
 
-**Derivation of the lag.** Annealing starts at high noise, where both experts are broad and their product is one blob near the centre. As the noise falls, the product splits into separated pieces: the corner blob, and small clusters where shared points sit. The weight each piece should get only becomes clear at low noise, by which time the pieces are far apart, and local moves do not carry mass between them. That is the mode-weight failure the dominance kind showed in phase 3, and it bites hardest when the A∩B pieces are few and small.
+**Derivation of the lag.** Annealing starts at high noise, where both experts are broad and their product is one blob near the centre. As the noise falls, the product splits into separated pieces: the corner blob, and small clusters where shared points sit.
 
-<!-- video-table: annealed-langevin rev=1 -->
-Stanford CS236 on why Langevin sampling is annealed across noise levels, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | Where plain Langevin sampling fails | Intuition | [Stanford CS236, lecture 14, 5:44 to 9:13](https://www.youtube.com/watch?v=E69Lp_T9nVg&t=344s) |
-| 2 | What adding noise does for the score and for sampling | Intuition | [Stanford CS236, lecture 14, 9:13 to 19:08](https://www.youtube.com/watch?v=E69Lp_T9nVg&t=553s) |
-| 3 | Sampling across many noise scales, noisiest first | Intuition | [Stanford CS236, lecture 14, 23:54 to 28:43](https://www.youtube.com/watch?v=E69Lp_T9nVg&t=1434s) |
-
-CS236 anneals one model's score; it does not anneal a sum of two models' scores, which is what composition samples. Times are chapter boundaries read from each video's chapter list, not from captions, so each is good to the chapter and the sentence inside it is not checked.
-<!-- /video-table -->
+**Why local moves cannot fix it.** The weight each piece should get only becomes clear at low noise, by which time the pieces are far apart, and local moves do not carry mass between them. That is the mode-weight failure the dominance kind showed in phase 3, and it bites hardest when the A∩B pieces are few and small.
 
 🧸 **Toy:** over 3 seeds with 2000 [samples](../../../../../Obsidian/Mathematics/Statistics/Sampling%20From%20A%20Distribution.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=539 "Pattern recognition and machine learning, chapter 11, Why expectations need samples, ancestral sampling of a directed graph (page 541), standard distribution..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=245 "Introduction to probability for data science, section 4.8, Generates random numbers for any PDF by running a uniform through the inverse CDF, in Python, with..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=606 "Deep learning textbook, section 17.1, Why machine learning samples at all (Monte Carlo estimates of sums and integrals, and sampling as the goal of a generat..."), [▶1](https://www.youtube.com/watch?v=9ixzzPQWuAY&t=474s "ritvikmath, Inverse Transform Sampling, 7:54 to 10:04, Inverts the exponential CDF and turns a uniform draw into an exponential one. Chapter-timed, from the ..."), [▶2](https://www.youtube.com/watch?v=OXDqjdVVePY&t=232s "ritvikmath, Accept-Reject Sampling, 3:52 to 7:45, An easy proposal g scaled by M into an envelope above f, then each draw accepted with probability f/(M g). ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/00-from-scratch-to-sdxl/textbook/l3-stochastic-processes/13-drawing-samples-by-hand.md "Drawing samples by hand: Monte Carlo, inverse transform and accept-reject, deep-learning/diffusion-models/00-from-scratch-to-sdxl, volume L3, section 13. Thr...")</sub>, tuned MALA and UHA agree with each other within 0.02 everywhere. They reach the exact curve from 20% up (`0.55` against `0.59`; at 50%, `0.72` against `0.71`) and lag below it (5%: `0.17` and `0.18` against `0.30`; 10%: `0.40` against `0.51`).
 
 🔤 **The name:** [tuned](../../../../../Obsidian/Mathematics/Statistics/Markov%20Chain%20Monte%20Carlo/Step%20Size%20And%20The%20Accept%20Step.md)
+
+<!-- links: step5/samplers rev=2 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [Stanford CS236, lecture 14, 5:44](https://www.youtube.com/watch?v=E69Lp_T9nVg&t=344s), where plain Langevin sampling fails; [same lecture, 23:54](https://www.youtube.com/watch?v=E69Lp_T9nVg&t=1434s), sampling across many noise scales, noisiest first. CS236 anneals one model's score, not the sum of two models' scores that composition samples.
+<!-- /links -->
 
 ---
 
@@ -864,7 +866,9 @@ $$
 
 **Move from five to twenty percent overlap.** Tuned MALA moves from 0.17 against 0.30 to 0.55 against 0.59. Tuning stays fixed, while the target becomes easier for local moves to track.
 
-**The whole-distribution check.** A sampler can match one region's mass while putting the rest of its samples in the wrong places, so the reference also scores every sampler over the whole canvas. Divide $[-1.1,1.1]^2$ into a $40\times40$ grid of bins (`ideal.EDGES`). Let $p_{ij}$ be the exact mass in bin $(i,j)$ and $\widehat p_{ij}$ the fraction of sampler draws that land there. Then
+**The whole-distribution check.** A sampler can match one region's mass while putting the rest of its samples in the wrong places, so the reference also scores every sampler over the whole canvas.
+
+**How the canvas is binned.** Divide $[-1.1,1.1]^2$ into a $40\times40$ grid of bins (`ideal.EDGES`). Let $p_{ij}$ be the exact mass in bin $(i,j)$ and $\widehat p_{ij}$ the fraction of sampler draws that land there. Then
 
 $$
 \operatorname{TV}(\widehat p,p)=\frac12\sum_{i,j}\left|\widehat p_{ij}-p_{ij}\right|.
@@ -886,18 +890,9 @@ $$
 
 **Why one half is there.** Moving mass makes one bin lose what another gains, so the absolute differences count that movement twice. At five percent the tuned MALA value is 0.24 with the factor, rather than double that discrepancy.
 
-The rule used is [total variation](../../../../../goal-setting/learning/deep-learning/diffusion-models/00-from-scratch-to-sdxl/textbook/l3-stochastic-processes/01-a-markov-chain-and-what-forgetting-means.md#definitions) between two discrete [distributions](../../../../../Obsidian/Mathematics/Statistics/Distributions/Distributions.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=126 "Introduction to probability for data science, section 3.2, Works the PMF of the number of heads in two coin flips (Example 3.5), defines the PMF (Definition ..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=184 "Mathematics for machine learning, section 6.2, Discrete probabilities from a table of counts (Example 6.2), continuous probabilities with the density and the..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=72 "Deep learning textbook, section 3.3, A probability distribution as a description of how likely each state is, with probability mass functions for discrete va..."), [▶1](https://www.youtube.com/watch?v=oI3hZJqXJuc&t=41s "StatQuest, The Main Ideas behind Probability Distributions, Statistical Distribution, 0:41 to 2:15, A distribution as the shape of how often each value turns..."), [▶2](https://www.youtube.com/watch?v=oI3hZJqXJuc&t=135s "StatQuest, The Main Ideas behind Probability Distributions, 2:15 to 5:14, A curve as a distribution, with probability read as area. Chapter-timed, from the v...")</sub> (`ideal.tv`). Even 2,000 draws taken straight from the exact grid have a nonzero TV, because there are only 2,000 of them; that value is the sampling-noise baseline. At 5% overlap tuned MALA's mean TV is `0.24` and UHA's `0.23`, against a baseline of `0.15`. At 20% they are `0.18` and `0.19` against `0.18` (`phase5_tables`, first table). The TV tells the same story as the interior mass: the samplers still lag at 5% and reach the target at 20%.
+**Where the formula comes from.** The rule used is [total variation](../../../../../goal-setting/learning/deep-learning/diffusion-models/00-from-scratch-to-sdxl/textbook/l3-stochastic-processes/01-a-markov-chain-and-what-forgetting-means.md#definitions) between two discrete [distributions](../../../../../Obsidian/Mathematics/Statistics/Distributions/Distributions.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=126 "Introduction to probability for data science, section 3.2, Works the PMF of the number of heads in two coin flips (Example 3.5), defines the PMF (Definition ..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=184 "Mathematics for machine learning, section 6.2, Discrete probabilities from a table of counts (Example 6.2), continuous probabilities with the density and the..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=72 "Deep learning textbook, section 3.3, A probability distribution as a description of how likely each state is, with probability mass functions for discrete va..."), [▶1](https://www.youtube.com/watch?v=oI3hZJqXJuc&t=41s "StatQuest, The Main Ideas behind Probability Distributions, Statistical Distribution, 0:41 to 2:15, A distribution as the shape of how often each value turns..."), [▶2](https://www.youtube.com/watch?v=oI3hZJqXJuc&t=135s "StatQuest, The Main Ideas behind Probability Distributions, 2:15 to 5:14, A curve as a distribution, with probability read as area. Chapter-timed, from the v...")</sub> (`ideal.tv`). Even 2,000 draws taken straight from the exact grid have a nonzero TV, because there are only 2,000 of them; that value is the sampling-noise baseline.
 
-<!-- video-table: tuning-a-metropolis-chain rev=1 -->
-DataMListic on tuning a Metropolis chain, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | Step sizes too small, too large and just right, and the 20 to 50 percent acceptance-rate target | Intuition | [DataMListic, Metropolis-Hastings Explained, 2:00 to 2:22](https://www.youtube.com/watch?v=7IpvsfRgTTY&t=120s) |
-| 2 | Burn-in: discard the early samples so the chain forgets where it started | Intuition | [DataMListic, Metropolis-Hastings Explained, 2:22 to 2:34](https://www.youtube.com/watch?v=7IpvsfRgTTY&t=142s) |
-
-DataMListic states the 20 to 50 percent rule without deriving it and never mentions effective sample size; the user supplied this video, and DataMListic is not on the creator list. Times are the video's own chapter boundaries, checked against its automatic captions to within a few seconds.
-<!-- /video-table -->
+**What the samplers score.** At 5% overlap tuned MALA's mean TV is `0.24` and UHA's `0.23`, against a baseline of `0.15`. At 20% they are `0.18` and `0.19` against `0.18` (`phase5_tables`, first table). The TV tells the same story as the interior mass: the samplers still lag at 5% and reach the target at 20%.
 
 🔨 **Build:** both samplers at 5% and 20% overlap.
 
@@ -913,11 +908,25 @@ The run behind this document printed, against an exact `0.486` on both settings:
 
 💥 **Broken run:** reverse diffusion with summed scores on the same targets gives `0.02` at 5%, `0.10` at 10% and `0.24` at 20%, then overshoots at 100%, `0.91` against `0.76`, pulling the square's mass toward its centre. Read without the exact curve, its low-overlap numbers would say the data was missing when the data was there.
 
+<!-- links: step5/agreement-accuracy rev=2 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [DataMListic, Metropolis-Hastings Explained, 2:00](https://www.youtube.com/watch?v=7IpvsfRgTTY&t=120s), step sizes too small, too large and just right, and the 20 to 50 percent acceptance-rate target, stated without a derivation; [same video, 2:22](https://www.youtube.com/watch?v=7IpvsfRgTTY&t=142s), burn-in, discarding the early samples so the chain forgets where it started.
+<!-- /links -->
+
 ## Step 6: the parts-world dial, and the 386 nats
 
-**Definition.** A is "contains a cat", B is "contains a dog". At overlap f, expert A's set is cat-only images with weight 1 − f (the cat on one half, background on the other) and cat-and-dog images with weight f (the cat on one half, the dog on the other); B likewise. Each expert is [the Gaussian mixture](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=447) of its placements, with [variance](../../../../../Obsidian/Mathematics/Statistics/Variance.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=150 "Introduction to probability for data science, section 3.4.4, Defines variance as E[(X − µ)²] and the standard deviation as its root (Definition 3.7), proves ..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=196 "Mathematics for machine learning, section 6.4.1, Variance as the covariance of a variable with itself (Definition 6.7), then the empirical mean and variance ..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=76 "Deep learning textbook, section 3.8, A short definition of variance and standard deviation beside expectation and covariance."), [▶1](https://www.youtube.com/watch?v=4-FysvtxQEU&t=1551s "Professor Leonard, Statistics 3.3, A standard deviation calculated by hand, 25:51 to 36:43, Works a standard deviation on a small data set by hand. Chapter-t..."), [▶2](https://www.youtube.com/watch?v=SzZ6GpcfoQY&t=236s "StatQuest, Calculating the Mean, Variance and Standard Deviation, Calculating population variance, 3:56 to 5:54, The population variance as the average squar..."), [◆](../../../../../goal-setting/learning/deep-learning/transformers/textbook/06-show-that-variances-of-independent-terms-add.md "Show that variances of independent terms add, deep-learning/transformers, chapter 06. Predicts the spread of a dot product of random vectors by adding the va...")</sub> 0.01 on object pixels. The background half has mean 0 and a variance that is the setting: 0.01, an empty half as definite as an object, or 1.0, where the expert says nothing about the other half (example 9(c)). A [sample](../../../../../Obsidian/Mathematics/Statistics/Sampling%20From%20A%20Distribution.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=539 "Pattern recognition and machine learning, chapter 11, Why expectations need samples, ancestral sampling of a directed graph (page 541), standard distribution..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=245 "Introduction to probability for data science, section 4.8, Generates random numbers for any PDF by running a uniform through the inverse CDF, in Python, with..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=606 "Deep learning textbook, section 17.1, Why machine learning samples at all (Monte Carlo estimates of sums and integrals, and sampling as the goal of a generat..."), [▶1](https://www.youtube.com/watch?v=9ixzzPQWuAY&t=474s "ritvikmath, Inverse Transform Sampling, 7:54 to 10:04, Inverts the exponential CDF and turns a uniform draw into an exponential one. Chapter-timed, from the ..."), [▶2](https://www.youtube.com/watch?v=OXDqjdVVePY&t=232s "ritvikmath, Accept-Reject Sampling, 3:52 to 7:45, An easy proposal g scaled by M into an envelope above f, then each draw accepted with probability f/(M g). ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/00-from-scratch-to-sdxl/textbook/l3-stochastic-processes/13-drawing-samples-by-hand.md "Drawing samples by hand: Monte Carlo, inverse transform and accept-reject, deep-learning/diffusion-models/00-from-scratch-to-sdxl, volume L3, section 13. Thr...")</sub> is A∩B when one half's mean is above 0.75 and the other's below −0.75.
+**Definition.** A is "contains a cat", B is "contains a dog". At overlap f, expert A's set is cat-only images with weight 1 − f (the cat on one half, background on the other) and cat-and-dog images with weight f (the cat on one half, the dog on the other); B likewise.
 
-**Derivation of the flip.** With an empty background and f = 0, the best product pair is cat-left-only × dog-right-only. On the left half the cat (+1) meets the dog expert's background (0), and on the right half the dog meets the cat expert's background. Both are tight, so [each half lands halfway](../../../../../goal-setting/learning/mathematics/textbooks/computer-vision/computer-vision-textbook.pdf#page=76): a ghost with half-means (0.5, −0.5). Its 16 mismatched pixels cost $16\times\frac{1^2}{2\times0.02}$ = `400` [nats](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/deep-learning-textbook.pdf#page=89) ([the constant of a product of Gaussians](../../../../../goal-setting/learning/mathematics/textbooks/linear-algebra/matrix-cookbook.pdf#page=42)). At f = 0.001, each expert gives its matching cat-and-dog component weight 0.0005 and the single-object component the ghost uses weight 0.4995. The matching pair has no mismatch and pays only for those small weights, a log-weight difference from the ghost pair of
+**What each expert is.** Each expert is [the Gaussian mixture](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=447) of its placements, with [variance](../../../../../Obsidian/Mathematics/Statistics/Variance.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=150 "Introduction to probability for data science, section 3.4.4, Defines variance as E[(X − µ)²] and the standard deviation as its root (Definition 3.7), proves ..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=196 "Mathematics for machine learning, section 6.4.1, Variance as the covariance of a variable with itself (Definition 6.7), then the empirical mean and variance ..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=76 "Deep learning textbook, section 3.8, A short definition of variance and standard deviation beside expectation and covariance."), [▶1](https://www.youtube.com/watch?v=4-FysvtxQEU&t=1551s "Professor Leonard, Statistics 3.3, A standard deviation calculated by hand, 25:51 to 36:43, Works a standard deviation on a small data set by hand. Chapter-t..."), [▶2](https://www.youtube.com/watch?v=SzZ6GpcfoQY&t=236s "StatQuest, Calculating the Mean, Variance and Standard Deviation, Calculating population variance, 3:56 to 5:54, The population variance as the average squar..."), [◆](../../../../../goal-setting/learning/deep-learning/transformers/textbook/06-show-that-variances-of-independent-terms-add.md "Show that variances of independent terms add, deep-learning/transformers, chapter 06. Predicts the spread of a dot product of random vectors by adding the va...")</sub> 0.01 on object pixels. The background half has mean 0 and a variance that is the setting: 0.01, an empty half as definite as an object, or 1.0, where the expert says nothing about the other half (example 9(c)).
+
+**When a sample counts.** A [sample](../../../../../Obsidian/Mathematics/Statistics/Sampling%20From%20A%20Distribution.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=539 "Pattern recognition and machine learning, chapter 11, Why expectations need samples, ancestral sampling of a directed graph (page 541), standard distribution..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=245 "Introduction to probability for data science, section 4.8, Generates random numbers for any PDF by running a uniform through the inverse CDF, in Python, with..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=606 "Deep learning textbook, section 17.1, Why machine learning samples at all (Monte Carlo estimates of sums and integrals, and sampling as the goal of a generat..."), [▶1](https://www.youtube.com/watch?v=9ixzzPQWuAY&t=474s "ritvikmath, Inverse Transform Sampling, 7:54 to 10:04, Inverts the exponential CDF and turns a uniform draw into an exponential one. Chapter-timed, from the ..."), [▶2](https://www.youtube.com/watch?v=OXDqjdVVePY&t=232s "ritvikmath, Accept-Reject Sampling, 3:52 to 7:45, An easy proposal g scaled by M into an envelope above f, then each draw accepted with probability f/(M g). ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/00-from-scratch-to-sdxl/textbook/l3-stochastic-processes/13-drawing-samples-by-hand.md "Drawing samples by hand: Monte Carlo, inverse transform and accept-reject, deep-learning/diffusion-models/00-from-scratch-to-sdxl, volume L3, section 13. Thr...")</sub> is A∩B when one half's mean is above 0.75 and the other's below −0.75.
+
+**Derivation of the flip.** With an empty background and f = 0, the best product pair is cat-left-only × dog-right-only. On the left half the cat (+1) meets the dog expert's background (0), and on the right half the dog meets the cat expert's background. Both are tight, so [each half lands halfway](../../../../../goal-setting/learning/mathematics/textbooks/computer-vision/computer-vision-textbook.pdf#page=76): a ghost with half-means (0.5, −0.5).
+
+**What the ghost costs.** Its 16 mismatched pixels cost $16\times\frac{1^2}{2\times0.02}$ = `400` [nats](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/deep-learning-textbook.pdf#page=89) ([the constant of a product of Gaussians](../../../../../goal-setting/learning/mathematics/textbooks/linear-algebra/matrix-cookbook.pdf#page=42)).
+
+**What the matching pair costs.** At f = 0.001, each expert gives its matching cat-and-dog component weight 0.0005 and the single-object component the ghost uses weight 0.4995. The matching pair has no mismatch and pays only for those small weights, a log-weight difference from the ghost pair of
 
 $$
 2\ln\frac{0.0005}{0.4995}=-13.81,
@@ -945,21 +954,15 @@ $$
 
 a cost of `13.81` nats. The rule used is multiplying the two mixture weights and taking logarithms. So the real two-animal image wins by $400-13.81$ = `386.2` nats, a factor of $e^{386}$, and the A∩B weight goes from `0.000` at 0% to `1.000` (to three decimals) at the first overlapping image.
 
-<!-- video-table: product-of-two-mixtures rev=1 -->
-Chalmers' multiple object tracking course, from the open web, on multiplying a Gaussian mixture by a second factor, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | Every pair of an old component and a measurement hypothesis becomes one new component, weighted by the old weight times an integral and normalised over all pairs | Intuition, open web | [Chalmers, Gaussian Sum Filtering: Prediction and Update, 2:38 to 3:38](https://www.youtube.com/watch?v=G_X_dMZUkdI&t=158s) |
-| 2 | With Gaussian factors the integral is the predicted likelihood, which is the pair's overlap, and each new component's mean and covariance come from a Kalman update | Intuition, open web | [Chalmers, Gaussian Sum Filtering: Prediction and Update, 4:20 to 5:15](https://www.youtube.com/watch?v=G_X_dMZUkdI&t=260s) |
-| 3 | Two components and two hypotheses give four numbered components | Worked example, open web | [Chalmers, Gaussian Sum Filtering: Prediction and Update, 6:05 to 7:04](https://www.youtube.com/watch?v=G_X_dMZUkdI&t=365s) |
-
-No listed creator multiplies two mixtures. The second factor in this lecture is a measurement model with a detection probability and clutter rather than a second expert, so read each measurement hypothesis as one component of the second mixture; the Kalman update is the product of the pair's two Gaussians. Times are read from automatic captions and good to about 30 seconds.
-<!-- /video-table -->
-
 🧸 **Toy:** with an empty background, `0.000` at 0% and `1.000` from 0.1% up; tuned MALA reaches `0.995` and UHA `1.000` at 0.1%, while reverse diffusion reaches `0.734`, `0.885` at 1% and `0.969` at 5%. With a loose background, `1.000` at every f including 0%: an expert that is loose where its concept is absent composes into A∩B with no overlap data at all.
 
 🔤 **The name:** [ghost](../../../../../Obsidian/Artificial%20Intelligence/Generative%20Modeling/Diffusion%20Models/Composition/Composing%20Models%20With%20A%20Background.md#words-this-uses)
+
+<!-- links: step6/ghost rev=2 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [Chalmers, Gaussian Sum Filtering: Prediction and Update, 2:38](https://www.youtube.com/watch?v=G_X_dMZUkdI&t=158s), every pair of an old component and a new hypothesis becomes one component, weighted by the old weight times an integral, the same pairing that makes the ghost pair and the matching pair here; [same video, 6:05](https://www.youtube.com/watch?v=G_X_dMZUkdI&t=365s), two components and two hypotheses giving four. The second factor there is a measurement model with clutter rather than a second expert, so read each hypothesis as one component of the second mixture.
+<!-- /links -->
 
 ---
 
@@ -1236,18 +1239,13 @@ $$
 
 **Remove pretraining.** Training the two experts from scratch on the same 0% overlap data gives 0.000. The prefix predicts the difference because it names the earlier source of support.
 
-<!-- video-table: pretraining rev=1 -->
-Stanford CME295, then Stanford CS224N, on pretraining, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | What pretraining a large language model is | Intuition | [Stanford CME295, lecture 4, 7:19 to 13:26](https://www.youtube.com/watch?v=VlA_jt_3Qc4&t=439s) |
-| 2 | Why pretrain on broad data first | Intuition | [Stanford CS224N 2023, lecture 9, 14:56 to 19:39](https://www.youtube.com/watch?v=DGfCRXuNA2w&t=896s) |
-
-Both pretrain language models on text; neither pretrains a small energy model on a square, and neither asks whether the pretrained support survives later training. Times are chapter boundaries from each video's chapter list, so the sentence inside each is not checked.
-<!-- /video-table -->
-
 🔤 **The name:** [fine-tune](../../../../../Obsidian/Artificial%20Intelligence/Generative%20Modeling/Diffusion%20Models/Composition/When%20Neither%20Training%20Set%20Holds%20A%20And%20B.md#the-four-quadrant-answer-key)
+
+<!-- links: step7/remove-pretraining rev=2 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [Stanford CME295, lecture 4, 7:19](https://www.youtube.com/watch?v=VlA_jt_3Qc4&t=439s), what pretraining a large language model is; [Stanford CS224N 2023, lecture 9, 14:56](https://www.youtube.com/watch?v=DGfCRXuNA2w&t=896s), why pretrain on broad data first. Both pretrain language models on text, and neither asks whether the pretrained support survives later training.
+<!-- /links -->
 
 ---
 
@@ -1366,11 +1364,133 @@ $$
 
 **After 100 steps.** They are 0.005, 0.004, and 0.0055. The inherited support is effectively gone within about 100 steps at this learning rate.
 
+<details><summary>The code that draws this figure</summary>
+
+```python
+# from figures/walk05-step7-finetune-decay.py (the whole script)
+from pathlib import Path
+import json
+
+import matplotlib.pyplot as plt
+from matplotlib.patches import Ellipse
+
+INDIGO = "#4527a0"
+NEAR_BLACK = "#212121"
+
+repo = Path(__file__).resolve().parents[4]
+data_path = repo / "rebuild" / "out" / "phase5" / "finetune.json"
+with data_path.open() as f:
+    data = json.load(f)
+
+checkpoints = data["checkpoints"]
+steps = [row["steps"] for row in checkpoints]
+series = [
+    ("grid", [row["exact"]["interior"] for row in checkpoints], "o", "-"),
+    ("tuned MALA", [row["MALA, tuned"]["interior"] for row in checkpoints], "s", "--"),
+    ("UHA", [row["UHA"]["interior"] for row in checkpoints], "^", ":"),
+]
+
+fig, ax = plt.subplots(figsize=(8.6, 4.8))
+for label, values, marker, linestyle in series:
+    ax.plot(
+        steps,
+        values,
+        color=INDIGO,
+        marker=marker,
+        linestyle=linestyle,
+        linewidth=2,
+        markersize=5,
+        alpha=1.0 if label == "grid" else 0.72,
+    )
+
+label_x = 11
+for label, values, _, _ in series:
+    y = values[steps.index(10)]
+    offset = {"grid": -0.011, "tuned MALA": 0.0, "UHA": 0.011}[label]
+    ax.text(label_x, y + offset, label, color=INDIGO, fontsize=9, va="center")
+
+start = checkpoints[0]["exact"]["interior"]
+step30 = next(row["exact"]["interior"] for row in checkpoints if row["steps"] == 30)
+
+ax.add_patch(
+    Ellipse(
+        (420, 0.0012),
+        width=520,
+        height=0.009,
+        fill=False,
+        edgecolor=NEAR_BLACK,
+        linewidth=1.8,
+        linestyle="--",
+    )
+)
+ax.text(300, 0.016, "all at most 0.001\nfrom step 300", color=NEAR_BLACK, fontsize=9)
+
+for x, y, text in [(0, start, "0.159"), (30, step30, "0.001")]:
+    ax.annotate(
+        text,
+        (x, y),
+        xytext=(14, 6) if x == 30 else (0, 9),
+        textcoords="offset points",
+        ha="left" if x == 30 else "center",
+        color=NEAR_BLACK,
+        fontsize=9,
+        weight="bold",
+    )
+
+ax.set_xscale("symlog", linthresh=10)
+ax.set_xlim(-1, 12000)
+ax.set_ylim(-0.006, 0.18)
+ax.set_xlabel("fine-tune step (linear from 0 to 10, log scale above)")
+ax.set_ylabel("interior $A\\cap B$ mass\n(share of the composed target)")
+ax.set_title("Pretrained interior support disappears during fine-tuning")
+ax.grid(axis="y", color="#e0e0e0", linewidth=0.8)
+ax.spines[["top", "right"]].set_visible(False)
+fig.tight_layout()
+fig.savefig(Path(__file__).with_suffix(".png"), dpi=160)
+```
+
+</details>
+
 <a href="figures/walk05-step7-finetune-decay.png"><img src="figures/walk05-step7-finetune-decay.png" width="620" alt="Interior A-and-B mass against fine-tune steps for the grid, tuned MALA, and UHA. All begin near 0.16 and are at most 0.001 from step 300 onward."></a>
 
 **How to read this chart.** The x-axis is the number of fine-tune updates, shown on a compressed scale so the early checkpoints remain visible. The y-axis is the share of the composed target inside the deep A∩B region. Each marked line reads the same target by the grid, tuned MALA, or UHA.
 
 **What to look for.** Follow the annotation from step 0 to step 30, where the grid reading falls from 0.159 to 0.001. The samplers lag at step 30, but all three readings enter the circled region at or below 0.001 from step 300 onward.
+
+<details><summary>The code that draws this figure</summary>
+
+```python
+# from toy/rebuild/phase5_finetune.py, lines 101 to 127 (end of main(); rows, scratch and pics come from the lines above them)
+colors = {"exact": "k", "MALA, tuned": "tab:orange", "UHA": "tab:green"}
+fig, ax = plt.subplots(1, 2, figsize=(11, 4))
+xs = np.arange(len(CHECKPOINTS))
+for a, key in zip(ax, ["interior", "quadrant"]):
+    for c in ["exact", "MALA, tuned", "UHA"]:
+        a.plot(xs, [r[c][key] for r in rows], marker="o", c=colors[c], label=c if c != "exact" else "exact composition of the fine-tuned experts")
+        a.axhline(scratch[c][key], c=colors[c], ls=":", lw=1)
+    a.set_xticks(xs); a.set_xticklabels([str(k) for k in CHECKPOINTS])
+    a.set_xlabel("fine-tune steps at 0% overlap (dotted: experts trained from scratch on the same data)")
+    a.set_ylabel("share of the product's mass")
+    a.set_title("A∩B mass " + ("at least 0.15 inside the top-left quadrant" if key == "interior" else "in the whole top-left quadrant"), fontsize=9)
+    a.set_ylim(-0.02, 0.5); a.legend(fontsize=7)
+plt.tight_layout(); plt.savefig(os.path.join(out, "finetune-curves.png"), dpi=100); plt.close()
+
+keys = [0, 300, 10000, "scratch"]
+fig, ax = plt.subplots(len(keys), 3, figsize=(7.5, 2.5 * len(keys)))
+for r, k in enumerate(keys):
+    p, smp = pics[k]
+    ax[r, 0].imshow(p, origin="lower", extent=[-ideal.L, ideal.L, -ideal.L, ideal.L], cmap="magma")
+    ax[r, 0].set_ylabel(f"fine-tune {k}" if k != "scratch" else "from scratch")
+    ax[r, 0].set_title("exact, trained experts", fontsize=8)
+    for j, c in enumerate(smp, start=1):
+        ax[r, j].scatter(*smp[c].T, s=1, c="k", alpha=.4); ax[r, j].set_title(c, fontsize=8)
+    for a in ax[r]:
+        a.set_xlim(-ideal.L, ideal.L); a.set_ylim(-ideal.L, ideal.L); a.set_aspect("equal"); a.set_xticks([]); a.set_yticks([])
+        a.axhline(0, c="grey", lw=.4); a.axvline(0, c="grey", lw=.4)
+plt.tight_layout(); plt.savefig(os.path.join(out, "finetune-pictures.png"), dpi=90); plt.close()
+```
+
+</details>
 
 <a href="../../../toy/rebuild/out/phase5/finetune-pictures.png"><img src="../../../toy/rebuild/out/phase5/finetune-pictures.png" width="140" alt="exact product, tuned MALA and UHA at fine-tune steps 0, 300 and 10000 and from scratch: a full square at step 0, a tight blob at the centre after"></a> <a href="../../../toy/rebuild/out/phase5/finetune-curves.png"><img src="../../../toy/rebuild/out/phase5/finetune-curves.png" width="200" alt="A∩B mass against fine-tune steps, exact, tuned MALA and UHA, with the from-scratch value dotted"></a>
 
@@ -1378,18 +1498,9 @@ $$
 
 **What to look for.** Compare the full square at step 0 with the tight centre blob at step 300. On the curves, the grid responds first, while tuned MALA and UHA take longer to reach the same low interior mass.
 
-The pictures show the support going: at step 0 the product fills the square, and by step 300 it is the same centre blob as the from-scratch experts (bottom row). The curves put the numbers above on y against fine-tune steps on x, with deep mass on the left and whole-quadrant mass on the right. The grid loses the inherited deep support by step 30, while the samplers take until about step 100 to follow it. In 2D, fine-tuning erases the pretrained support within about 100 steps at this learning rate; a smaller rate stretches that axis.
+**What the pictures show.** The pictures show the support going: at step 0 the product fills the square, and by step 300 it is the same centre blob as the from-scratch experts (bottom row).
 
-<!-- video-table: fine-tuning rev=1 -->
-Stanford CS224N, then Stanford CME295, on fine-tuning a pretrained model, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | Pretraining followed by fine-tuning on a task's own data | Intuition | [Stanford CS224N 2023, lecture 9, 29:58 to 35:53](https://www.youtube.com/watch?v=DGfCRXuNA2w&t=1798s) |
-| 2 | Supervised fine-tuning of a pretrained language model | Intuition | [Stanford CME295, lecture 4, 1:02:31 to 1:09:21](https://www.youtube.com/watch?v=VlA_jt_3Qc4&t=3751s) |
-
-Neither measures how fast fine-tuning erases what pretraining gave, which here takes about 100 steps (interior mass from 0.159 to 0.005). Times are chapter boundaries from each video's chapter list, so the sentence inside each is not checked.
-<!-- /video-table -->
+**What the curves show.** The curves put the numbers above on y against fine-tune steps on x, with deep mass on the left and whole-quadrant mass on the right. The grid loses the inherited deep support by step 30, while the samplers take until about step 100 to follow it. In 2D, fine-tuning erases the pretrained support within about 100 steps at this learning rate; a smaller rate stretches that axis.
 
 🔨 **Build:** a short version, 2000 pretraining steps, checkpoints to 300 fine-tune steps, exact read on the grid. Remember phase 1's broken run: the moving-average copy has its [gradients](../../../../../Obsidian/Mathematics/Calculus/Gradient.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=152 "Mathematics for machine learning, section 5.2, Varies one input at a time to get partial derivatives, stacks them into the gradient, and computes one (Exampl..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/calculus/calculus-textbook.pdf#page=984 "Calculus textbook, section 13.6, Directional derivatives, then the gradient (Definition 13.6.4, page 987) and why it points the way of fastest increase."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=99 "Deep learning textbook, section 4.3, The gradient as the vector of partial derivatives, the directional derivative, and steepest descent."), [▶1](https://www.youtube.com/watch?v=CnVes9TdnPo&t=754s "The Organic Chemistry Tutor, 12:34 to 28:29, Worked gradient problems. Chapter-timed, from the video lessons index."), [▶2](https://www.youtube.com/watch?v=tDPp5uWSIiU&t=3506s "Leonard, Calculus 3, 13.6, 58:26 to 1:15:15, The gradient defined, its properties, and why it points the way of fastest increase. Chapter-timed, from the vid..."), [◆](../../../../../goal-setting/learning/deep-learning/transformers/textbook/08-take-a-slope-and-the-gradient.md "Take a slope and the gradient of a function of two numbers, deep-learning/transformers, chapter 08. The gradient of a squared loss in two numbers a and b, st..."), [◈](https://claude.ai/artifact/DBmJtn6xy75sPtQwPEvQZU#nb-sec2 "Kinds of composition notebook, Same points, two labellings, The denoising loss and one gradient step, showing the gradient is identical under two labellings ...")</sub> switched off, so switch them back on.
 
@@ -1415,11 +1526,65 @@ for k in [0, 10, 30, 100, 300]:
 
 The short version behind this document printed `0.040, 0.007, 0.000, 0.008, 0.005` at steps 0, 10, 30, 100, 300. Its pretrained model starts lower than the full run's, because after 2000 steps its t = 0 energy is still peaked at the centre of the square rather than flat across it. It falls to nothing just as fast.
 
+<!-- links: step7/update-count rev=2 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [Stanford CS224N 2023, lecture 9, 29:58](https://www.youtube.com/watch?v=DGfCRXuNA2w&t=1798s), pretraining followed by fine-tuning on a task's own data; [Stanford CME295, lecture 4, 1:02:31](https://www.youtube.com/watch?v=VlA_jt_3Qc4&t=3751s), supervised fine-tuning of a pretrained language model. Neither measures how fast fine-tuning erases what pretraining gave, which here takes about 100 steps (interior mass from 0.159 to 0.005).
+<!-- /links -->
+
 ## Step 8: the curves
 
 The full runs are `python -m rebuild.phase5_dial` (about 10 minutes on one card) and `python -m rebuild.phase5_finetune` (about 15). Then `python -m rebuild.phase5_tables` prints every number above.
 
 🎞️ **Moving picture:** `rebuild/out/phase5/overlap-dial-quadrant-pictures.png` shows the quadrant toy at 0%, 2%, 20% and 100%, one row each: the training sets, the exact product, tuned MALA, UHA, reverse diffusion. Read it top to bottom as the dial turning. At 0% everything sits on the corner. At 2% the exact product has moved onto the few shared points while the samplers stay mostly on the corner and the $x_2=0$ edge. From 20% up they fill the quadrant.
+
+<details><summary>The code that draws this figure</summary>
+
+```python
+# from toy/rebuild/phase5_dial.py, lines 149 to 188 (plot_curves and plot_pictures; OVERLAPS_2D, OVERLAPS_PW and SAMPLERS are set at the top of that file)
+def plot_curves(q_rows, pw_rows, out):
+    colors = {"exact": "k", "MALA, tuned": "tab:orange", "UHA": "tab:green", "reverse diffusion": "tab:blue"}
+    fig, ax = plt.subplots(1, 3, figsize=(16, 4.4))
+    xs = np.arange(len(OVERLAPS_2D))
+    for key, a, title in [("interior", ax[0], "quadrant toy: A∩B mass at least 0.15 inside the top-left quadrant"),
+                          ("quadrant", ax[1], "quadrant toy: A∩B mass in the whole top-left quadrant")]:
+        ex = np.array([[r[f"exact_{key}"] for r in q_rows if r["overlap"] == f] for f in OVERLAPS_2D])
+        a.errorbar(xs, ex.mean(1), ex.std(1), c="k", marker="o", lw=2, label="exact composition", capsize=3)
+        for c in SAMPLERS:
+            v = np.array([[r[c][key] for r in q_rows if r["overlap"] == f] for f in OVERLAPS_2D])
+            a.errorbar(xs + 0.08 * (SAMPLERS.index(c) + 1), v.mean(1), v.std(1), c=colors[c], marker=".", label=c, capsize=2)
+        a.set_xticks(xs); a.set_xticklabels([f"{f:.0%}" for f in OVERLAPS_2D])
+        a.set_xlabel("A-and-B share of each training set (3 seeds, bars 1 sd)")
+        a.set_ylabel("share of the composition's mass"); a.set_title(title, fontsize=9); a.set_ylim(-0.03, 1.03); a.legend(fontsize=7)
+    xs2 = np.arange(len(OVERLAPS_PW))
+    for bg, ls in [(0.01, "-"), (1.0, "--")]:
+        rr = [r for r in pw_rows if r["background_variance"] == bg]
+        ax[2].plot(xs2, [r["exact_weight_ab"] for r in rr], c="k", ls=ls, marker="o", lw=2, label=f"exact, background variance {bg}")
+        for c in SAMPLERS[:2]:
+            ax[2].plot(xs2, [r[c]["ab"] for r in rr], c=colors[c], ls=ls, marker=".", label=f"{c}, background variance {bg}")
+    ax[2].set_xticks(xs2); ax[2].set_xticklabels([f"{f:g}" for f in OVERLAPS_PW])
+    ax[2].set_xlabel("share of cat-and-dog images in each expert's training set"); ax[2].set_ylabel("share of samples with a cat half and a dog half")
+    ax[2].set_title("parts world: A∩B mass of the product", fontsize=9); ax[2].set_ylim(-0.03, 1.03); ax[2].legend(fontsize=6)
+    plt.tight_layout(); plt.savefig(os.path.join(out, "overlap-dial-curves.png"), dpi=100); plt.close()
+
+
+def plot_pictures(pics, out):
+    show = [0.0, 0.02, 0.2, 1.0]
+    fig, ax = plt.subplots(len(show), 5, figsize=(12, 2.5 * len(show)))
+    for r, f in enumerate(show):
+        A, B = pics[(f, "data")]
+        ax[r, 0].scatter(*A.T, s=1, c="tab:red", alpha=.5); ax[r, 0].scatter(*B.T, s=1, c="tab:blue", alpha=.5)
+        ax[r, 0].set_title("A (red), B (blue)", fontsize=8); ax[r, 0].set_ylabel(f"overlap {f:.0%}")
+        ax[r, 1].imshow(pics[(f, "exact")], origin="lower", extent=[-ideal.L, ideal.L, -ideal.L, ideal.L], cmap="magma"); ax[r, 1].set_title("exact", fontsize=8)
+        for j, c in enumerate(SAMPLERS, start=2):
+            ax[r, j].scatter(*pics[(f, c)].T, s=1, c="k", alpha=.4); ax[r, j].set_title(c, fontsize=8)
+        for a in ax[r]:
+            a.set_xlim(-ideal.L, ideal.L); a.set_ylim(-ideal.L, ideal.L); a.set_aspect("equal"); a.set_xticks([]); a.set_yticks([])
+            a.axhline(0, c="grey", lw=.4); a.axvline(0, c="grey", lw=.4)
+    plt.tight_layout(); plt.savefig(os.path.join(out, "overlap-dial-quadrant-pictures.png"), dpi=90); plt.close()
+```
+
+</details>
 
 <a href="../../../toy/rebuild/out/phase5/overlap-dial-quadrant-pictures.png"><img src="../../../toy/rebuild/out/phase5/overlap-dial-quadrant-pictures.png" width="200" alt="the quadrant toy at overlap 0%, 2%, 20% and 100%: training sets, exact product, tuned MALA, UHA, reverse diffusion"></a> <a href="../../../toy/rebuild/out/phase5/overlap-dial-curves.png"><img src="../../../toy/rebuild/out/phase5/overlap-dial-curves.png" width="200" alt="A∩B mass against overlap share, exact and per sampler, on the quadrant toy and the parts world"></a>
 

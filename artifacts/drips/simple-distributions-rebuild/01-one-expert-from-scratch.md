@@ -2,11 +2,15 @@
 
 You build, in PyTorch, everything the notebook needs to train one 2D diffusion expert: its ten toy datasets, the cosine noise schedule, the ResNet, the energy wrapper whose [gradient](../../../../../Obsidian/Mathematics/Calculus/Gradient.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=152 "Mathematics for machine learning, section 5.2, Varies one input at a time to get partial derivatives, stacks them into the gradient, and computes one (Exampl..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/calculus/calculus-textbook.pdf#page=984 "Calculus textbook, section 13.6, Directional derivatives, then the gradient (Definition 13.6.4, page 987) and why it points the way of fastest increase."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=99 "Deep learning textbook, section 4.3, The gradient as the vector of partial derivatives, the directional derivative, and steepest descent."), [▶1](https://www.youtube.com/watch?v=CnVes9TdnPo&t=754s "The Organic Chemistry Tutor, 12:34 to 28:29, Worked gradient problems. Chapter-timed, from the video lessons index."), [▶2](https://www.youtube.com/watch?v=tDPp5uWSIiU&t=3506s "Leonard, Calculus 3, 13.6, 58:26 to 1:15:15, The gradient defined, its properties, and why it points the way of fastest increase. Chapter-timed, from the vid..."), [◆](../../../../../goal-setting/learning/deep-learning/transformers/textbook/08-take-a-slope-and-the-gradient.md "Take a slope and the gradient of a function of two numbers, deep-learning/transformers, chapter 08. The gradient of a squared loss in two numbers a and b, st..."), [◈](https://claude.ai/artifact/DBmJtn6xy75sPtQwPEvQZU#nb-sec2 "Kinds of composition notebook, Same points, two labellings, The denoising loss and one gradient step, showing the gradient is identical under two labellings ...")</sub> is the noise prediction, the training loop with a moving average, and the reverse sampler. It ends when your trained model's [samples](../../../../../Obsidian/Mathematics/Statistics/Sampling%20From%20A%20Distribution.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=539 "Pattern recognition and machine learning, chapter 11, Why expectations need samples, ancestral sampling of a directed graph (page 541), standard distribution..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=245 "Introduction to probability for data science, section 4.8, Generates random numbers for any PDF by running a uniform through the inverse CDF, in Python, with..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=606 "Deep learning textbook, section 17.1, Why machine learning samples at all (Monte Carlo estimates of sums and integrals, and sampling as the goal of a generat..."), [▶1](https://www.youtube.com/watch?v=9ixzzPQWuAY&t=474s "ritvikmath, Inverse Transform Sampling, 7:54 to 10:04, Inverts the exponential CDF and turns a uniform draw into an exponential one. Chapter-timed, from the ..."), [▶2](https://www.youtube.com/watch?v=OXDqjdVVePY&t=232s "ritvikmath, Accept-Reject Sampling, 3:52 to 7:45, An easy proposal g scaled by M into an envelope above f, then each draw accepted with probability f/(M g). ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/00-from-scratch-to-sdxl/textbook/l3-stochastic-processes/13-drawing-samples-by-hand.md "Drawing samples by hand: Monte Carlo, inverse transform and accept-reject, deep-learning/diffusion-models/00-from-scratch-to-sdxl, volume L3, section 13. Thr...")</sub> match `datasets-1000-samples-each.png`. The reference is `rebuild/datasets.py`, `rebuild/model.py` and `rebuild/train.py` on branch `unbuild-walk`; open them only after your step runs.
 
-**How to walk it.** `/drip-execute-plan artifacts/drips/simple-distributions-rebuild/01-one-expert-from-scratch.md`, one step per message, typing every block yourself. Each step gives the definition, its derivation, the toy with its numbers, then the code in small pieces. Run each piece before typing the next. The python blocks, typed in order into one file, are one runnable script.
+**How to walk it.** `/drip-execute-plan artifacts/drips/simple-distributions-rebuild/01-one-expert-from-scratch.md`, one step per message, typing every block yourself. Each step gives the definition, its derivation, the toy with its numbers, then the code in small pieces.
+
+**How to type the code.** Run each piece before typing the next. The python blocks in the steps, typed in order into one file, are one runnable script; the collapsed blocks above the figures are separate scripts that only draw the pictures.
 
 **Where to type.** A fresh folder, `/home-mscluster/mmolefe/Playground/PhD/simple-distributions-walk/`, one file `walk01.py`. Run it with `/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python walk01.py`.
 
-**What teaches it elsewhere.** The forward process and the schedule: [the schedule and one reverse step](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/plans/10-schedule-and-reverse-step.md) and the textbook's [forward process by hand](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/09-the-forward-process-by-hand.md). Noise prediction as the score: [noise prediction is the score](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/plans/11-noise-prediction-is-the-score.md). The energy: [a scalar energy whose gradient is the noise prediction](../../../../../goal-setting/learning/deep-learning/diffusion-models/02-sampler-correctors-for-composition/plans/34-a-scalar-energy-whose-gradient-is-the-score.md) and the vault note [The Energy Parameterisation](../../../../../Obsidian/Artificial%20Intelligence/Generative%20Modeling/Diffusion%20Models/Composition/The%20Energy%20Parameterisation.md). The big picture: [Diffusion Models](../../../../../Obsidian/Artificial%20Intelligence/Generative%20Modeling/Diffusion%20Models/Diffusion%20Models.md) and [Multivariate Normal Distribution](../../../../../Obsidian/Mathematics/Statistics/Distributions/Multivariate%20Normal%20Distribution/Multivariate%20Normal%20Distribution.md).
+**What teaches it elsewhere.** The forward process and the schedule: [the schedule and one reverse step](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/plans/10-schedule-and-reverse-step.md) and the textbook's [forward process by hand](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/09-the-forward-process-by-hand.md). Noise prediction as the score: [noise prediction is the score](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/plans/11-noise-prediction-is-the-score.md).
+
+**Where the energy and the big picture are taught.** The energy: [a scalar energy whose gradient is the noise prediction](../../../../../goal-setting/learning/deep-learning/diffusion-models/02-sampler-correctors-for-composition/plans/34-a-scalar-energy-whose-gradient-is-the-score.md) and the vault note [The Energy Parameterisation](../../../../../Obsidian/Artificial%20Intelligence/Generative%20Modeling/Diffusion%20Models/Composition/The%20Energy%20Parameterisation.md). The big picture: [Diffusion Models](../../../../../Obsidian/Artificial%20Intelligence/Generative%20Modeling/Diffusion%20Models/Diffusion%20Models.md) and [Multivariate Normal Distribution](../../../../../Obsidian/Mathematics/Statistics/Distributions/Multivariate%20Normal%20Distribution/Multivariate%20Normal%20Distribution.md).
 
 **Where the numbers come from.** Every worked number below is printed by `python -m rebuild.walk_numbers` (saved to `rebuild/out/walk-numbers.json`), and every result number comes from `rebuild/out/phase1/phase1.json`.
 
@@ -254,6 +258,66 @@ $$
 
 **Check it on the toy.** At the centre the exponential is 1, so the density is 0.7979. One $\sigma$ away, multiplying by 0.607 gives 0.4839.
 
+<details><summary>The code that draws this figure</summary>
+
+```python
+# figures/step1-gaussian-density.py
+import json
+import math
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+from matplotlib.patches import Ellipse
+
+DARK_GREY = "#37474f"
+ANNOTATION = "#212121"
+
+root = Path(__file__).resolve().parents[4]
+values = json.loads((root / "rebuild/out/walk-numbers.json").read_text())
+peak = values["p1.normal_pdf_0_mu0_sd0.5"]
+one_sd = values["p1.normal_pdf_0.5_mu0_sd0.5"]
+sd = 0.5
+area_without_constant = 0.5 * math.sqrt(2 * math.pi)
+
+xs = [-2.0 + i * 0.01 for i in range(401)]
+normalized = [peak * math.exp(-(x * x) / (2 * sd * sd)) for x in xs]
+without_constant = [math.exp(-(x * x) / (2 * sd * sd)) for x in xs]
+
+fig, axes = plt.subplots(1, 2, figsize=(8.8, 3.9), sharex=True, sharey=True)
+
+axes[0].plot(xs, normalized, color=DARK_GREY, linewidth=2.5)
+axes[0].scatter([-0.5, 0.5], [one_sd, one_sd], color=ANNOTATION, zorder=3)
+axes[0].add_patch(Ellipse((0, one_sd), 1.3, 0.11, fill=False, edgecolor=ANNOTATION,
+                          linewidth=1.8, linestyle="--"))
+axes[0].annotate("same height: 0.4839", xy=(0.5, one_sd), xytext=(0.7, 0.67),
+                 arrowprops=dict(arrowstyle="->", color=ANNOTATION), color=ANNOTATION, fontsize=9)
+axes[0].annotate("peak: 0.7979", xy=(0, peak), xytext=(-1.65, 0.98),
+                 arrowprops=dict(arrowstyle="-|>", color=ANNOTATION), color=ANNOTATION,
+                 fontsize=10, fontweight="bold")
+axes[0].text(0, 0.08, "area = 1", ha="center", color="#37474f", fontweight="bold")
+axes[0].set_title("① Gaussian density, constant kept")
+
+axes[1].plot(xs, without_constant, color=DARK_GREY, linewidth=2.5)
+axes[1].annotate("peak rises to 1", xy=(0, 1), xytext=(-1.7, 1.12),
+                 arrowprops=dict(arrowstyle="-|>", color=ANNOTATION), color=ANNOTATION,
+                 fontsize=10, fontweight="bold")
+axes[1].text(0, 0.08, f"area = {area_without_constant:.4f}", ha="center",
+             color="#37474f", fontweight="bold")
+axes[1].set_title("② Front constant removed")
+
+for ax in axes:
+    ax.axhline(0, color="#666666", linewidth=0.8)
+    ax.set_xlim(-2, 2)
+    ax.set_ylim(0, 1.25)
+    ax.set_xlabel("position x")
+    ax.spines[["top", "right"]].set_visible(False)
+axes[0].set_ylabel("density height")
+fig.tight_layout()
+fig.savefig(Path(__file__).with_suffix(".png"), dpi=160)
+```
+
+</details>
+
 <a href="figures/step1-gaussian-density.png"><img src="figures/step1-gaussian-density.png" width="620" alt="Two Gaussian-shaped curves. The normalized curve has peak 0.7979 and area 1. The curve without its front constant has peak 1 and area 1.2533. Equal points at minus and plus 0.5 are circled at height 0.4839 on the normalized curve."></a>
 
 **How to read this chart.** The x-axis is position and the y-axis is density height. Each point on a curve is one density value. The left panel keeps the constant, while the right panel removes only that constant.
@@ -269,20 +333,6 @@ $$
 **Move one $\sigma$.** The height moves from 0.7979 to 0.4839. The ratio is 0.607 because the square and the divisor reduce the exponent to −1/2.
 
 🎞️ **Moving picture:** the [Gaussian bell scrubber](https://claude.ai/artifact/RM96fos4RSjrCYak7pAqeZ) puts every piece of this formula under your finger. Drag μ, x, the σ in the front constant and the σ in the divisor, or switch the constant and the square off. The area turns amber the moment the curve stops being a density.
-
-<!-- video-table: gaussian-density rev=1 -->
-StatQuest, then 3Blue1Brown, on the Gaussian density and why its formula has the pieces it has, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | A curve as a distribution: probability is the area under it over an interval, not its height at a point | Intuition | [StatQuest, Main Ideas behind Probability Distributions, 2:15 to 5:14](https://www.youtube.com/watch?v=oI3hZJqXJuc&t=135s) |
-| 2 | The Gaussian formula unpacked one piece at a time | Intuition | [3Blue1Brown, But what is the Central Limit Theorem?, 15:54 to 20:47](https://www.youtube.com/watch?v=zeJD6dqJ5lo&t=954s) |
-| 3 | Stripped of its constants the bell is e^(−x²), whose area is √π, so dividing by √π makes the area 1 | Intuition | [3Blue1Brown, Why π is in the normal distribution, 2:07 to 2:59](https://www.youtube.com/watch?v=cy8r7WSuT1I&t=127s) |
-| 4 | Two demands on a density in the plane, that it depend only on distance from the centre and that x and y be independent, which make it the product g(x)·g(y) | Intuition | [3Blue1Brown, Why π is in the normal distribution, 13:15 to 15:18](https://www.youtube.com/watch?v=cy8r7WSuT1I&t=795s) |
-| 5 | Those two demands force the shape e^(c·r²) with c negative, and a constant in front then rescales the volume to 1 | Proof | [3Blue1Brown, Why π is in the normal distribution, 15:18 to 21:34](https://www.youtube.com/watch?v=cy8r7WSuT1I&t=918s) |
-
-No video found evaluates the density's height at a point, as the toy's 0.7979 and 0.4839 do, or shows a height above 1, as the bar's 1.25 is. Rows 3 to 5 are read from 3Blue1Brown's captions and good to about 30 seconds; rows 1 and 2 are chapter boundaries from each video's chapter list, so the sentence inside each is not checked.
-<!-- /video-table -->
 
 🔨 **Build:** type the formula yourself, then compare with SciPy's.
 
@@ -301,6 +351,13 @@ xs = np.linspace(-2, 2, 401)
 plt.figure(figsize=(4, 2.5)); plt.plot(xs, normal_pdf(xs, 0, 0.5)); plt.axvline(0.5, ls=":")
 plt.title("N(x; 0, 0.5^2)"); plt.tight_layout(); plt.savefig("step01-gaussian.png"); plt.close()
 ```
+
+<!-- links: step1/consequence rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [3Blue1Brown, But what is the Central Limit Theorem?, 15:54](https://www.youtube.com/watch?v=zeJD6dqJ5lo&t=954s), the Gaussian formula unpacked one piece at a time.
+- 🎬 Video: [3Blue1Brown, Why π is in the normal distribution, 2:07](https://www.youtube.com/watch?v=cy8r7WSuT1I&t=127s), stripped of its constants the bell has area √π, so dividing by √π makes the area 1.
+<!-- /links -->
 
 ## Step 2: the ring of eight
 
@@ -339,18 +396,6 @@ $$
 **Why the radius and square are there.** Multiplication by 0.5 places every mean at radius 0.5. The power in $0.03^2$ converts the [standard deviation](../../../../../goal-setting/learning/mathematics/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=150) 0.03 into a [variance](../../../../../Obsidian/Mathematics/Statistics/Variance.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=150 "Introduction to probability for data science, section 3.4.4, Defines variance as E[(X − µ)²] and the standard deviation as its root (Definition 3.7), proves ..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=196 "Mathematics for machine learning, section 6.4.1, Variance as the covariance of a variable with itself (Definition 6.7), then the empirical mean and variance ..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=76 "Deep learning textbook, section 3.8, A short definition of variance and standard deviation beside expectation and covariance."), [▶1](https://www.youtube.com/watch?v=4-FysvtxQEU&t=1551s "Professor Leonard, Statistics 3.3, A standard deviation calculated by hand, 25:51 to 36:43, Works a standard deviation on a small data set by hand. Chapter-t..."), [▶2](https://www.youtube.com/watch?v=SzZ6GpcfoQY&t=236s "StatQuest, Calculating the Mean, Variance and Standard Deviation, Calculating population variance, 3:56 to 5:54, The population variance as the average squar..."), [◆](../../../../../goal-setting/learning/deep-learning/transformers/textbook/06-show-that-variances-of-independent-terms-add.md "Show that variances of independent terms add, deep-learning/transformers, chapter 06. Predicts the spread of a dot product of random vectors by adding the va...")</sub>; replacing it by 0.03 would make each bump much wider.
 
 **Derivation of how to [sample](../../../../../Obsidian/Mathematics/Statistics/Sampling%20From%20A%20Distribution.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=539 "Pattern recognition and machine learning, chapter 11, Why expectations need samples, ancestral sampling of a directed graph (page 541), standard distribution..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=245 "Introduction to probability for data science, section 4.8, Generates random numbers for any PDF by running a uniform through the inverse CDF, in Python, with..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=606 "Deep learning textbook, section 17.1, Why machine learning samples at all (Monte Carlo estimates of sums and integrals, and sampling as the goal of a generat..."), [▶1](https://www.youtube.com/watch?v=9ixzzPQWuAY&t=474s "ritvikmath, Inverse Transform Sampling, 7:54 to 10:04, Inverts the exponential CDF and turns a uniform draw into an exponential one. Chapter-timed, from the ..."), [▶2](https://www.youtube.com/watch?v=OXDqjdVVePY&t=232s "ritvikmath, Accept-Reject Sampling, 3:52 to 7:45, An easy proposal g scaled by M into an envelope above f, then each draw accepted with probability f/(M g). ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/00-from-scratch-to-sdxl/textbook/l3-stochastic-processes/13-drawing-samples-by-hand.md "Drawing samples by hand: Monte Carlo, inverse transform and accept-reject, deep-learning/diffusion-models/00-from-scratch-to-sdxl, volume L3, section 13. Thr...")</sub> it.** A mixture is sampled in two draws: pick a component k with [probability](../../../../../Obsidian/Mathematics/Statistics/Probability/Probability.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=31 "Pattern recognition and machine learning, section 1.2, Works with numbers: a red box picked 40% of the time and a blue box 60%, holding apples and oranges, f..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=74 "Introduction to probability for data science, sections 2.2 and 2.3, Probability as a measure of the size of a set, built from a sample space, an event space ..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-statistics.pdf#page=64 "Introduction to statistics (Wits lecture notes), sections 3.5 to 3.7.2, The axioms, the subjective, relative-frequency and classical approaches, the addition..."), [▶1](https://www.youtube.com/watch?v=_EpXHuPnaK0&t=360s "Professor Leonard, Statistics lecture 4.2, Introduction to Probability, 6:00 to 9:00, The sample space, in the chapter of that name, before simple events. Ch..."), [▶2](https://www.youtube.com/watch?v=_EpXHuPnaK0&t=2085s "Professor Leonard, Statistics lecture 4.2, Introduction to Probability, 34:45 to 37:07, Observed against classical probability. Chapter-timed."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/plans/01-probability-you-can-compute.md "Probability as a thing you can compute, deep-learning/diffusion-models/01-poe-derivation-foundations, plan 01. Events and P(A), with a sample space built and...")</sub> 1/8, then draw $m_k+0.03\,z$ with $z\sim\mathcal N(0,I)$. The density of the result is the [weighted sum](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=190) above, because the two draws are independent.
-
-<!-- video-table: gaussian-mixture rev=1 -->
-ritvikmath on the Gaussian mixture model, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | Each class is its own Gaussian with a mean and a covariance, and π is the share of the data in each class | Intuition | [ritvikmath, Gaussian Mixture Model, 0:31 to 3:33](https://www.youtube.com/watch?v=EWd1xRkyEog&t=31s) |
-| 2 | The density of one fish: π for tuna times the tuna Gaussian, plus π for salmon times the salmon Gaussian, because the fish came from one or the other | Worked example | [ritvikmath, Gaussian Mixture Model, 3:36 to 6:23](https://www.youtube.com/watch?v=EWd1xRkyEog&t=216s) |
-| 3 | The same sum written for K components | Intuition | [ritvikmath, Gaussian Mixture Model, 7:58 to 8:43](https://www.youtube.com/watch?v=EWd1xRkyEog&t=478s) |
-
-He goes on to fit the mixture with the EM algorithm, which composing experts does not need, and he never multiplies or noises a mixture. Times are read from automatic captions and good to about 30 seconds.
-<!-- /video-table -->
 
 🧸 **Toy:** at the mode $(0.5,0)$, the centred component contributes
 
@@ -394,6 +439,13 @@ $$
 and again the other seven do not change the displayed value. At the centre, $(0,0)$, all eight modes are 0.5 away, which is 16.7 standard deviations, so their average equals any one component's density there: `8.49e-59`. The ring is effectively empty in the middle.
 
 🔤 **The name:** [mixture](../../../../../goal-setting/learning/deep-learning/generative-models/03-sampling-from-a-graph/plans/28-mixture-as-a-marginal.md) (the ring of eight)
+
+<!-- links: step2/intro rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [ritvikmath, Gaussian Mixture Model, 0:31](https://www.youtube.com/watch?v=EWd1xRkyEog&t=31s), each class is its own Gaussian, and π is the share of the data in each class.
+- 🎬 Video: [ritvikmath, Gaussian Mixture Model, 3:36](https://www.youtube.com/watch?v=EWd1xRkyEog&t=216s), the density of one fish worked as a weighted sum of two Gaussians.
+<!-- /links -->
 
 ---
 
@@ -505,17 +557,6 @@ $$
 
 **Move into the ring.** From $(0,0)$ to $(0.5,0)$, the density changes from 8.49e-59 to 22.1. The name “mixture” explains why one high component can dominate locally even though all eight remain in the sum.
 
-<!-- video-table: mixture-components-and-weights rev=1 -->
-Stanford CME296, then Luis Serrano, on a density built as a weighted sum of Gaussian bumps, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | Noise every training point with the same Gaussian and the result is a mixture of Gaussians, one bump per point; a larger σ spreads every bump wider | Intuition | [CME296, lecture 2, 26:04 to 29:43](https://www.youtube.com/watch?v=_WaR2fjZpEQ&t=1564s) |
-| 2 | The Gaussian mixture model itself, after the video's clustering set-up | Intuition | [Serrano, Gaussian Mixture Models, 10:33 to 17:27](https://www.youtube.com/watch?v=q71Niz856KE&t=633s) |
-
-Neither evaluates a mixture at a point between its bumps, as the ring's centre gives 8.49e-59, and no proof was found; ritvikmath's fish in the Gaussian mixture table is the worked example. Row 1 is read from CME296's captions and good to about 30 seconds; row 2 is a chapter boundary from Serrano's chapter list, so the sentence inside it is not checked.
-<!-- /video-table -->
-
 🔨 **Build:** the sampler and the density.
 
 ```python
@@ -551,6 +592,13 @@ sns.kdeplot(x=pts[:, 0], y=pts[:, 1], fill=True, levels=20, bw_adjust=0.5, ax=ax
 ax.scatter(*pts[:400].T, s=2, c="k"); ax.set_aspect("equal"); ax.set_xlim(-1.1, 1.1); ax.set_ylim(-1.1, 1.1)
 plt.tight_layout(); plt.savefig("step02-ring.png"); plt.close()
 ```
+
+<!-- links: step2/consequence rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [CME296, lecture 2, 26:04](https://www.youtube.com/watch?v=_WaR2fjZpEQ&t=1564s), noising every training point gives a mixture with one bump per point.
+- 🎬 Video: [Serrano, Gaussian Mixture Models, 10:33](https://www.youtube.com/watch?v=q71Niz856KE&t=633s), the Gaussian mixture model itself.
+<!-- /links -->
 
 ## Step 3: boxes and bars, and the ten panels
 
@@ -735,7 +783,9 @@ $$
 
 **Why the complements are there.** The signal receives variance share $\bar\alpha_t$, while the noise receives the remaining share. At $t=50$, the signal share is 0.4783 and the noise standard deviation is 0.7223.
 
-**Why the square roots are there.** The formula multiplies point coordinates, so it needs [standard-deviation scales](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=200) rather than variance shares. At $t=50$, the clean point is multiplied by 0.6916, not by 0.4783. Removing the square root would give the clean term the wrong variance. The rule behind this, [scaling a draw scales its variance by the square](#step4-the-scaling-rule), is derived with the one-shot formula below.
+**Why the square roots are there.** The formula multiplies point coordinates, so it needs [standard-deviation scales](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=200) rather than variance shares. At $t=50$, the clean point is multiplied by 0.6916, not by 0.4783.
+
+**What removing one would do.** Removing the square root would give the clean term the wrong variance. The rule behind this, [scaling a draw scales its variance by the square](#step4-the-scaling-rule), is derived with the one-shot formula below.
 
 <a href="../../results/how-the-forward-process-dissolves-an-image/why-the-noise-carries-a-square-root.png"><img src="../../results/how-the-forward-process-dissolves-an-image/why-the-noise-carries-a-square-root.png" width="680" alt="Derive 2 of the scene: 300 dots scaled by 0.7223, spread 0.722 and variance 0.522, beside the equation Var(cX) = c squared Var(X)"></a>
 
@@ -745,9 +795,15 @@ $$
 
 **Why the identity [matrix](../../../../../Obsidian/Mathematics/Linear%20Algebra/Matrix.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/linear-algebra/linear-algebra-textbook.pdf#page=39 "Linear algebra textbook, section 1.3, Matrix notation, then the row-by-column product worked on a 2 by 3 times a 3 by 4 matrix (Example 5, page 43)."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=28 "Mathematics for machine learning, section 2.2, Matrix addition and multiplication, inverse and transpose, and a system of linear equations written compactly ..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=50 "Deep learning textbook, section 2.2, The matrix product, the element-wise product and its properties, as deep learning uses them."), [▶1](https://www.youtube.com/watch?v=QtAZsWseIKk&t=511s "tilestats, Matrices and matrix operations for beginners 1/2, Matrix multiplication, 8:31 to 12:27, Matrix multiplication for beginners, followed in the next ..."), [▶2](https://www.youtube.com/watch?v=kYB8IZa5AuE&t=212s "3Blue1Brown, Linear transformations and matrices (Essence of linear algebra, chapter 3), Basis vectors and matrices, 3:32 to 6:18, A matrix read as where the..."), [◆](../../../../../goal-setting/learning/deep-learning/transformers/textbook/03-multiply-two-matrices-row-by-column.md "Multiply two matrices row by column and say why the order matters, deep-learning/transformers, chapter 03. The same two matrices multiplied in both orders, t...")</sub> is there.** The same noise variance is used [independently on both coordinates](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/understanding-deep-learning.pdf#page=471). Removing $I$ would leave the scalar variance without saying how it acts on a two-dimensional point.
 
-**Indexing convention.** The code's step index t runs from 0 to 99, and code index t = 0 is already the first noisy state, so $\bar\alpha_0=0.9994$ and not 1. The common paper notation shifts every index by one: code step t is paper step t + 1. This page keeps $x_0$ as the name of the clean point, as the other layers of the ladder do, so $x_0$ always means the clean point, and $x_t$ for t = 0 to 99 means the noisy point at code step t. Where the one-step formula below or Step 10's reverse step is evaluated at t = 0, its $x_{t-1}$ is the clean point $x_0$ and its $\bar\alpha_{t-1}$ is taken as 1.
+**Indexing convention.** The code's step index t runs from 0 to 99, and code index t = 0 is already the first noisy state, so $\bar\alpha_0=0.9994$ and not 1. The common paper notation shifts every index by one: code step t is paper step t + 1.
 
-**The cosine schedule.** Let the fixed offset be $\delta=0.008$ (the code's argument `s`). 100 steps have 101 boundaries, the way 100 gaps need 101 fence posts. [A boundary value](../../../../../Obsidian/Artificial%20Intelligence/Generative%20Modeling/Diffusion%20Models/The%20Cosine%20Noise%20Schedule.md#the-boundary-values-c_k) $C_k$ is the share of the clean signal's variance still kept at post k, for k = 0, …, 100. Steps live between the posts, and step t runs from post t to post t + 1. The formula for $C_k$ lives on a quarter circle, so build that circle by hand first, on paper, at 10 cm to 1 unit.
+**What the names mean on this page.** This page keeps $x_0$ as the name of the clean point, as the other layers of the ladder do, so $x_0$ always means the clean point, and $x_t$ for t = 0 to 99 means the noisy point at code step t. Where the one-step formula below or Step 10's reverse step is evaluated at t = 0, its $x_{t-1}$ is the clean point $x_0$ and its $\bar\alpha_{t-1}$ is taken as 1.
+
+**The cosine schedule.** Let the fixed offset be $\delta=0.008$ (the code's argument `s`). 100 steps have 101 boundaries, the way 100 gaps need 101 fence posts.
+
+**What a boundary value is.** [A boundary value](../../../../../Obsidian/Artificial%20Intelligence/Generative%20Modeling/Diffusion%20Models/The%20Cosine%20Noise%20Schedule.md#the-boundary-values-c_k) $C_k$ is the share of the clean signal's variance still kept at post k, for k = 0, …, 100. Steps live between the posts, and step t runs from post t to post t + 1.
+
+**Where the formula lives.** The formula for $C_k$ lives on a quarter circle, so build that circle by hand first, on paper, at 10 cm to 1 unit.
 
 **Quick reference.** Keep the [trigonometry handbook](../../../../../Obsidian/Mathematics/references/textbooks/trigonometry/trigonometry-handbook.pdf) open beside this section: [radians and degrees, p. 7](../../../../../Obsidian/Mathematics/references/textbooks/trigonometry/trigonometry-handbook.pdf#page=7), [the unit circle, p. 10](../../../../../Obsidian/Mathematics/references/textbooks/trigonometry/trigonometry-handbook.pdf#page=10), [the squared cosine, p. 16](../../../../../Obsidian/Mathematics/references/textbooks/trigonometry/trigonometry-handbook.pdf#page=16).
 
@@ -755,7 +811,11 @@ $$
 
 <a href="../../results/how-the-forward-process-dissolves-an-image/the-schedule-name-taken-apart.png"><img src="../../results/how-the-forward-process-dissolves-an-image/the-schedule-name-taken-apart.png" width="200" alt="Six scene frames: posts 49 to 53 as bars as tall as their kept share with C51 = 0.47826; cos squared against the angle with drops 0.067 at the ends and 0.25 in the middle; the straight line that drops 0.167 every 15 degrees; delta = 0.008 moving post 0 from 0 to 0.714 degrees; and the normaliser on (C0 = 1) and off (C0 reads 0.99984)"></a>
 
-**How to read this.** Six frames from the scene, one per name in the formula. Top left shows posts 49 to 53 as bars as tall as the share each one keeps. Top middle and top right plot the kept share against the angle θ from 0° to 90°, with an orange tick for the drop over each 15°: the green curve is cos², the red line is the straight-line alternative. Bottom left puts the first three posts on a degree ruler, with dashed ticks where they sit when δ = 0. Bottom middle and bottom right are the bars that build C₅₁ and C₀, with the normaliser on and then off.
+**How to read this.** Six frames from the scene, one per name in the formula.
+
+**The top row.** Top left shows posts 49 to 53 as bars as tall as the share each one keeps. Top middle and top right plot the kept share against the angle θ from 0° to 90°, with an orange tick for the drop over each 15°: the green curve is cos², the red line is the straight-line alternative.
+
+**The bottom row.** Bottom left puts the first three posts on a degree ruler, with dashed ticks where they sit when δ = 0. Bottom middle and bottom right are the bars that build C₅₁ and C₀, with the normaliser on and then off.
 
 **What to look for.** Post 51 keeps 0.47826 of the signal's variance. The cos² curve drops only 0.067 over the first and last 15° and 0.25 in the middle, while the straight line drops 0.167 every 15°. The offset δ = 0.008 moves post 0 from 0° to 0.714°, and without the normaliser C₀ reads 0.99984 instead of 1.
 
@@ -890,7 +950,9 @@ p_{100}&=0.0079365+100\times0.0099206=1 &&\to\ 90^\circ
 \end{aligned}
 $$
 
-**Why the straight line is there.** Equal steps in u move every post the same distance round the arc, $a/T=0.0099206$ of the way, which is 0.8929°. Check it on two neighbours: $p_{51}-p_{50}=0.51389-0.50397=0.00992$, and 0.00992 × 90° = 0.893°. All the unevenness in the noise then comes from cos², which [On paper 5](#step4-the-quarter-circle-by-hand) measures. Without the offset a = 1, and each post moves exactly 0.9°.
+**Why the straight line is there.** Equal steps in u move every post the same distance round the arc, $a/T=0.0099206$ of the way, which is 0.8929°. Check it on two neighbours: $p_{51}-p_{50}=0.51389-0.50397=0.00992$, and 0.00992 × 90° = 0.893°.
+
+**What is left uneven.** All the unevenness in the noise then comes from cos², which [On paper 5](#step4-the-quarter-circle-by-hand) measures. Without the offset a = 1, and each post moves exactly 0.9°.
 
 <a id="step4-dropping-the-rescale"></a>**Why $b+a=1$ is there.** It keeps post 100 on the y-axis. Drop the ÷ (1 + δ), so that p = u + δ, and follow post 100:
 
@@ -993,11 +1055,21 @@ $$
 -2\cos\theta\sin\theta,
 $$
 
-which is 0 at 0°. At post 0's angle, 0.714° or 0.0125 rad, the slope is only −0.0249 per radian, against −0.9990 at 46.25°. So with δ = 0 the first step would barely add noise: post 1 sits at 0.9° and $C_1=\cos^2 0.9^\circ=0.99975$, the first noise share is 0.000247 and its typical miss is 0.0157. With the offset, $\beta_0$ is 0.000631 and the first noise level is 0.0251. Nichol and Dhariwal give the reason in [section 3.2, p. 4](https://arxiv.org/pdf/2102.09672#page=4): they use the offset "to prevent βt from being too small near t = 0", because tiny amounts of noise at the start made it hard for the network to predict ε accurately. They chose s so that $\sqrt{\beta_0}$ is slightly smaller than the pixel bin size 1/127.5 = 0.0078, which gives s = 0.008. That choice was made for long schedules: at T = 1000 the formula gives $\sqrt{\beta_0}=0.0064$, just under one bin, while this page's T = 100 gives 0.0251, about 3.2 bins. Live: [Timetable 5](https://claude.ai/artifact/X7QGLTxssbz41G7iTiRxC9#timetable-5), presets δ = 0 and δ = 0.008, and [why the offset, by the chain rule](https://claude.ai/artifact/X7QGLTxssbz41G7iTiRxC9#timetable-why-offset), with both tangent lines drawn.
+which is 0 at 0°. At post 0's angle, 0.714° or 0.0125 rad, the slope is only −0.0249 per radian, against −0.9990 at 46.25°.
+
+**What δ = 0 would do.** So with δ = 0 the first step would barely add noise: post 1 sits at 0.9° and $C_1=\cos^2 0.9^\circ=0.99975$, the first noise share is 0.000247 and its typical miss is 0.0157. With the offset, $\beta_0$ is 0.000631 and the first noise level is 0.0251.
+
+**Why the paper adds the offset.** Nichol and Dhariwal give the reason in [section 3.2, p. 4](https://arxiv.org/pdf/2102.09672#page=4): they use the offset "to prevent βt from being too small near t = 0", because tiny amounts of noise at the start made it hard for the network to predict ε accurately. They chose s so that $\sqrt{\beta_0}$ is slightly smaller than the pixel bin size 1/127.5 = 0.0078, which gives s = 0.008.
+
+**Why the first step is bigger on this page.** That choice was made for long schedules: at T = 1000 the formula gives $\sqrt{\beta_0}=0.0064$, just under one bin, while this page's T = 100 gives 0.0251, about 3.2 bins.
+
+**Live on the scene.** [Timetable 5](https://claude.ai/artifact/X7QGLTxssbz41G7iTiRxC9#timetable-5), presets δ = 0 and δ = 0.008, and [why the offset, by the chain rule](https://claude.ai/artifact/X7QGLTxssbz41G7iTiRxC9#timetable-why-offset), with both tangent lines drawn.
 
 <a href="../../results/how-the-forward-process-dissolves-an-image/why-the-offset-and-the-normaliser.png"><img src="../../results/how-the-forward-process-dissolves-an-image/why-the-offset-and-the-normaliser.png" width="200" alt="Five frames: cos squared with tangent slopes -0.0249 at post 0 and -0.9990 at post 51; the chain rule worked to -2 cos theta sin theta; square root of beta0 as bars, 0.0157 at delta 0, 0.0251 at delta 0.008 and 0.0064 at T = 1000, against one pixel bin of 0.0078; and beta50 = 1 - 0.47819/0.49377 = 0.0315 with both 0.99984 normalisers struck through"></a>
 
-**How to read this.** Top left plots cos² θ against θ in radians from 0 to 1.5708 (90°), with a red tangent line at post 0 and another at post 51. Top middle works the chain rule on cos² θ and evaluates it at both posts. Top right draws √β₀, the typical size of the first step's noise, as one bar per setting, against a dotted line at one pixel bin of 0.0078. The bottom row works β₅₀ as a fraction with the normaliser 0.99984 struck from top and bottom, then shows the same division as bars.
+**How to read this.** Top left plots cos² θ against θ in radians from 0 to 1.5708 (90°), with a red tangent line at post 0 and another at post 51. Top middle works the chain rule on cos² θ and evaluates it at both posts. Top right draws √β₀, the typical size of the first step's noise, as one bar per setting, against a dotted line at one pixel bin of 0.0078.
+
+**The bottom row.** The bottom row works β₅₀ as a fraction with the normaliser 0.99984 struck from top and bottom, then shows the same division as bars.
 
 **What to look for.** The slope is −0.0249 per radian at post 0 against −0.9990 at post 51, so near 0° the curve barely falls. √β₀ is 0.0157 with δ = 0, 0.0251 with δ = 0.008 and 0.0064 at T = 1000. The two 0.99984s cancel, which leaves β₅₀ = 1 − 0.47819/0.49377 = 0.0315.
 
@@ -1151,7 +1223,9 @@ $$
 \Big].
 $$
 
-**What the equation says.** $X-\mu$ is the miss, how far one draw lands from the mean $\mu$. Squaring it makes left and right misses both count, and positive. $\mathbb E$ averages over all draws. Its square root, the standard deviation, is the typical miss, in the same units as $X$.
+**What the equation says.** $X-\mu$ is the miss, how far one draw lands from the mean $\mu$. Squaring it makes left and right misses both count, and positive.
+
+**From the average to the typical miss.** $\mathbb E$ averages over all draws. Its square root, the standard deviation, is the typical miss, in the same units as $X$.
 
 **The rule, derived.** The draw being scaled is $\varepsilon$, a standard normal draw with mean 0 and variance 1, so its typical miss is 1. Let $Y=c\,\varepsilon$ for a fixed number c. Its mean is $\mathbb E[Y]=c\cdot\mathbb E[\varepsilon]=c\cdot0=0$, so a miss of Y is just Y itself:
 
@@ -1224,7 +1298,11 @@ Rounding c to 0.9309 before squaring gives 0.8666; the exact multiplier gives 0.
  99  ████████████████████  1.0000   ████████████████████  1.0000
 ```
 
-**How to read this.** Each row is one step of the schedule. The left bar is the noise multiplier $c=\sqrt{1-\bar\alpha_t}$ and the right bar is its variance $c^2=1-\bar\alpha_t$. At step 25 the noise is already 0.4054 wide but holds only 0.1644 of the variance. For c below 1, c² is smaller than c, so the noise looks big long before it owns most of the variance, and the two columns meet only at step 99. Live: [Derive 2](https://claude.ai/artifact/X7QGLTxssbz41G7iTiRxC9#derive-2) scales 300 dots by 0.7223, and the chart Dog fades, noise grows on [the first page](https://claude.ai/artifact/X7QGLTxssbz41G7iTiRxC9#change) draws the variance shares dotted beside the multipliers.
+**How to read this.** Each row is one step of the schedule. The left bar is the noise multiplier $c=\sqrt{1-\bar\alpha_t}$ and the right bar is its variance $c^2=1-\bar\alpha_t$.
+
+**Why the two columns differ.** At step 25 the noise is already 0.4054 wide but holds only 0.1644 of the variance. For c below 1, c² is smaller than c, so the noise looks big long before it owns most of the variance, and the two columns meet only at step 99.
+
+**Live on the scene.** [Derive 2](https://claude.ai/artifact/X7QGLTxssbz41G7iTiRxC9#derive-2) scales 300 dots by 0.7223, and the chart Dog fades, noise grows on [the first page](https://claude.ai/artifact/X7QGLTxssbz41G7iTiRxC9#change) draws the variance shares dotted beside the multipliers.
 
 <a id="step4-variances-add"></a>**The second rule: independent variances add.** Every forward step adds fresh noise on top of the noise already there, and merging all of it into one term needs [the variance of a sum](../../../../../Obsidian/Mathematics/Statistics/Distributions/Multivariate%20Normal%20Distribution/Sums%20Of%20Independent%20Gaussians.md). Two draws X and Y are [independent](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/plans/01-probability-you-can-compute.md#2--build-the-two-joint-tables-that-decide-independence) when knowing one tells you nothing about the other. Each has mean 0 here.
 
@@ -1267,7 +1345,9 @@ $$
 
 The cross products XY are 1, −1, −1 and 1, and their average is 0.
 
-**What breaks without [independence](../../../../../Obsidian/Mathematics/Statistics/Probability/Statistical%20Independence.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-statistics.pdf#page=70 "Introduction to statistics (Wits lecture notes), section 3.7.4, Works with numbers: the product rule for independent events, with a man promoted with probabi..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=101 "Introduction to probability for data science, section 2.4.2, Independence of two events as P[A ∩ B] = P[A] P[B] (Definition 2.23) and as P[A ∣ B] = P[A] (Def..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=267 "Introduction to probability for data science, section 5.1.6, Independent random variables, whose joint PDF is the product of the marginals, checked on two jo..."), [▶1](https://www.youtube.com/watch?v=05JCQswK3hE&t=1447s "Professor Leonard, Statistics lecture 4.4, The Multiplication Rule for 'And' Probabilities, 24:07 to 29:53, Independent against dependent events. Chapter-timed."), [▶2](https://www.youtube.com/watch?v=05JCQswK3hE&t=1793s "Professor Leonard, Statistics lecture 4.4, The Multiplication Rule for 'And' Probabilities, 29:53 to 35:18, The formulas for independent events. Chapter-timed."), [◆](../../../../../goal-setting/learning/deep-learning/generative-models/03-sampling-from-a-graph/plans/03-plain-independence.md "Check independence on a table, deep-learning/generative-models/03-sampling-from-a-graph, plan 03. Independence checked on the fuel gauge's table.")</sub>.** Let Y = X. Now X + Y = 2X, and the scaling rule gives Var(2X) = 4, not 2. The cross term XY = X² averages to 1 instead of 0, which supplies the missing 2. Live: [Derive 3](https://claude.ai/artifact/X7QGLTxssbz41G7iTiRxC9#derive-3), preset Noise copies the picture: with a = 0.6 and b = 0.8 the variance becomes (0.6 + 0.8)² = 1.96 instead of 1, and the cross term 0.96 is the gap.
+**What breaks without [independence](../../../../../Obsidian/Mathematics/Statistics/Probability/Statistical%20Independence.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-statistics.pdf#page=70 "Introduction to statistics (Wits lecture notes), section 3.7.4, Works with numbers: the product rule for independent events, with a man promoted with probabi..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=101 "Introduction to probability for data science, section 2.4.2, Independence of two events as P[A ∩ B] = P[A] P[B] (Definition 2.23) and as P[A ∣ B] = P[A] (Def..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=267 "Introduction to probability for data science, section 5.1.6, Independent random variables, whose joint PDF is the product of the marginals, checked on two jo..."), [▶1](https://www.youtube.com/watch?v=05JCQswK3hE&t=1447s "Professor Leonard, Statistics lecture 4.4, The Multiplication Rule for 'And' Probabilities, 24:07 to 29:53, Independent against dependent events. Chapter-timed."), [▶2](https://www.youtube.com/watch?v=05JCQswK3hE&t=1793s "Professor Leonard, Statistics lecture 4.4, The Multiplication Rule for 'And' Probabilities, 29:53 to 35:18, The formulas for independent events. Chapter-timed."), [◆](../../../../../goal-setting/learning/deep-learning/generative-models/03-sampling-from-a-graph/plans/03-plain-independence.md "Check independence on a table, deep-learning/generative-models/03-sampling-from-a-graph, plan 03. Independence checked on the fuel gauge's table.")</sub>.** Let Y = X. Now X + Y = 2X, and the scaling rule gives Var(2X) = 4, not 2. The cross term XY = X² averages to 1 instead of 0, which supplies the missing 2.
+
+**Live on the scene.** [Derive 3](https://claude.ai/artifact/X7QGLTxssbz41G7iTiRxC9#derive-3), preset Noise copies the picture: with a = 0.6 and b = 0.8 the variance becomes (0.6 + 0.8)² = 1.96 instead of 1, and the cross term 0.96 is the gap.
 
 **The rule on two noise terms from the schedule.**
 
@@ -1295,7 +1375,9 @@ $$
 \underbrace{\sqrt{\beta_t}\,\textcolor{#6a1b9a}{\varepsilon_t}}_{\text{fresh noise}}.
 $$
 
-The first term shrinks everything already present, signal and old noise alike. The second adds fresh noise with variance $\beta_t$, by the scaling rule. The draw $\varepsilon_t$ is new at this step, so it is independent of everything before it. Start from any state z and take steps j and j + 1:
+**What each term does.** The first term shrinks everything already present, signal and old noise alike. The second adds fresh noise with variance $\beta_t$, by the scaling rule. The draw $\varepsilon_t$ is new at this step, so it is independent of everything before it.
+
+**Two steps in a row.** Start from any state z and take steps j and j + 1:
 
 $$
 \begin{aligned}
@@ -1331,13 +1413,19 @@ $$
 \end{aligned}
 $$
 
-**What the equation says.** Each step scales everything already present, then adds fresh independent noise. Across two steps the kept signal shares multiply, while the two independent noise variances add to the complement of that product. The noise variance is one minus the signal share, and the signal share $(1-\beta_j)(1-\beta_{j+1})$ is the square of the signal multiplier. [Understanding deep learning, section 18.2.1, equations 18.4 to 18.6](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/understanding-deep-learning.pdf#page=366) works the same two steps, with its $z_t$ for our $s_t$, its $x$ for the clean point and its $\alpha_t$ for our $\bar\alpha_t$.
+**What the equation says.** Each step scales everything already present, then adds fresh independent noise. Across two steps the kept signal shares multiply, while the two independent noise variances add to the complement of that product. The noise variance is one minus the signal share, and the signal share $(1-\beta_j)(1-\beta_{j+1})$ is the square of the signal multiplier.
+
+**The same two steps in a textbook.** [Understanding deep learning, section 18.2.1, equations 18.4 to 18.6](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/understanding-deep-learning.pdf#page=366) works the same two steps, with its $z_t$ for our $s_t$, its $x$ for the clean point and its $\alpha_t$ for our $\bar\alpha_t$.
 
 <a href="../../results/how-the-forward-process-dissolves-an-image/two-steps-the-variances-add.png"><img src="../../results/how-the-forward-process-dissolves-an-image/two-steps-the-variances-add.png" width="680" alt="Derive 5 of the scene: the two-step expansion with beta values 0.3 and 0.5, beside a bar splitting one unit into 0.35 dog, 0.15 earlier noise and 0.50 fresh noise"></a>
 
-**How to read this.** The left panel is the two-step expansion, with each piece's variance under its brace. The bar at top right is one unit of variance laid from 0 to 1 and cut into three pieces: blue is the dog, purple the earlier step's noise, orange the fresh noise. The two photos below it are the dog before the two steps and after them. The step sizes are deliberately large, βₜ₋₁ = 0.3 and βₜ = 0.5, so every piece is wide enough to see.
+**How to read this.** The left panel is the two-step expansion, with each piece's variance under its brace. The bar at top right is one unit of variance laid from 0 to 1 and cut into three pieces: blue is the dog, purple the earlier step's noise, orange the fresh noise. The two photos below it are the dog before the two steps and after them.
 
-**What to look for.** The unit splits into 0.35 dog, 0.15 earlier noise shrunk by the second step, and 0.50 fresh noise, and the three add to exactly 1. The purple piece is the one people forget: the earlier noise survives, scaled down by the second step. This is [Chan's equation 2.9, p. 23](../../../../../goal-setting/learning/papers/deep-learning/diffusion-models/tutorial-on-diffusion-models-for-imaging-and-vision.pdf#page=23) with Chan's α written as 1 − β. Live: [Derive 5](https://claude.ai/artifact/X7QGLTxssbz41G7iTiRxC9#derive-5).
+**Why the steps are so large.** The step sizes are deliberately large, βₜ₋₁ = 0.3 and βₜ = 0.5, so every piece is wide enough to see.
+
+**What to look for.** The unit splits into 0.35 dog, 0.15 earlier noise shrunk by the second step, and 0.50 fresh noise, and the three add to exactly 1. The purple piece is the one people forget: the earlier noise survives, scaled down by the second step.
+
+**Where else it is drawn.** This is [Chan's equation 2.9, p. 23](../../../../../goal-setting/learning/papers/deep-learning/diffusion-models/tutorial-on-diffusion-models-for-imaging-and-vision.pdf#page=23) with Chan's α written as 1 − β. Live: [Derive 5](https://claude.ai/artifact/X7QGLTxssbz41G7iTiRxC9#derive-5).
 
 **Why the square roots are there.** The coefficients multiply [random variables](../../../../../Obsidian/Mathematics/Statistics/Probability/Random%20Variable.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=121 "Introduction to probability for data science, section 3.1, Works it on four outcomes ♣, ♢, ♡, ♠ mapped to the numbers 1 to 4, explains why a function is call..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-statistics.pdf#page=80 "Introduction to statistics (Wits lecture notes), section 4.2, A discrete random variable and its probability distribution, with a worked example (Example 4.1..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=180 "Mathematics for machine learning, section 6.1.2, A random variable as a function from outcomes to a target space of states, discrete or continuous."), [▶1](https://www.youtube.com/watch?v=OSPr6G6Ka-U&t=90s "StatQuest, Expected Values for Continuous Variables, 1:30 to 3:42, Discrete and continuous variables defined, before the exponential distribution. Chapter-ti..."), [▶2](https://www.youtube.com/watch?v=shrTfDUB9Hk&t=0s "Professor Leonard, Statistics lecture 6.2, Introduction to the Normal Distribution and Continuous Random Variables, 0:00 to 41:13, Continuous distributions, ...")</sub>, so by the scaling rule their squares determine variance. Using $\beta_t$ directly as the noise coefficient would give noise variance $\beta_t^2$ instead of $\beta_t$.
 
@@ -1385,7 +1473,9 @@ $$
 
 The typical misses are 0.7001 for the old noise and 0.1776 for the fresh noise. Combined they give $\sqrt{0.5217}=0.7223$, while adding the misses directly would wrongly give 0.8777.
 
-**Broken: forget to shrink the old noise.** Add step 50's fresh noise without shrinking the old: 0.5062 + 0.0315 = 0.5377. The total variance becomes 0.4783 + 0.5377 = 1.0160, above 1. Forgetting the shrink at every step makes the noise variance the plain sum of the βs, and the total climbs with every step: 1.2085 at step 50 and 7.879 at step 99. The $\sqrt{1-\beta_t}$ in front of $s_{t-1}$ is what keeps the total at 1.
+**Broken: forget to shrink the old noise.** Add step 50's fresh noise without shrinking the old: 0.5062 + 0.0315 = 0.5377. The total variance becomes 0.4783 + 0.5377 = 1.0160, above 1.
+
+**What it does over the whole run.** Forgetting the shrink at every step makes the noise variance the plain sum of the βs, and the total climbs with every step: 1.2085 at step 50 and 7.879 at step 99. The $\sqrt{1-\beta_t}$ in front of $s_{t-1}$ is what keeps the total at 1.
 
 **Every step, by induction.** The claim is that after code step t
 
@@ -1444,21 +1534,16 @@ $$
 
 This is the Definition's sampling formula, and [the density heading below](#step4-the-one-shot-density) turns it into $q(x_t\mid x_0)$.
 
-<!-- video-table: forward-process rev=1 -->
-Stanford CS236, then Vizuara, on the forward process, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | The noising process that turns data into noise | Intuition | [Stanford CS236, lecture 16, 12:22 to 16:23](https://www.youtube.com/watch?v=VsllsC2JMGY&t=742s) |
-| 2 | Many small noising steps combined into one transition to any noise level | Proof | [Stanford CS236, lecture 16, 16:23 to 19:05](https://www.youtube.com/watch?v=VsllsC2JMGY&t=983s) |
-| 3 | Why each step scales the mean down as well as adding noise | Intuition | [Vizuara, Principles of Diffusion Models, lecture 3, 33:51 to 42:46](https://www.youtube.com/watch?v=Dx-1agEjlJs&t=2031s) |
-
-Vizuara is added for row 3, which no CS236 chapter covers; neither noises a two-dimensional Gaussian cloud and checks the closed form. Times are chapter boundaries read from each video's chapter list, not from captions, so each is good to the chapter and the sentence inside it is not checked.
-<!-- /video-table -->
-
 🧸 **Toy:** $\beta_0$ = `0.000631`, $\beta_{99}$ = `0.999`. $\bar\alpha$ at t = 0, 25, 50, 75, 99: `0.9994`, `0.8356`, `0.4783`, `0.1335`, `0.0`. The noise standard deviation $\sqrt{1-\bar\alpha_t}$ at the same steps: `0.0251`, `0.4054`, `0.7223`, `0.9309`, `1.0`.
 
 🔤 **The name:** [forward process](../../../../../goal-setting/learning/deep-learning/diffusion-models/02-sampler-correctors-for-composition/plans/06-the-forward-process.md) and cosine schedule
+
+<!-- links: step4/intro rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [Stanford CS236, lecture 16, 12:22](https://www.youtube.com/watch?v=VsllsC2JMGY&t=742s), the noising process that turns data into noise.
+- 🎬 Video: [Stanford CS236, lecture 16, 16:23](https://www.youtube.com/watch?v=VsllsC2JMGY&t=983s), many small noising steps combined into one jump to any noise level.
+<!-- /links -->
 
 ---
 
@@ -1614,6 +1699,53 @@ $$
 
 **Check it on the toy.** At $t=50$, the table supplies $\bar\alpha_{50}=0.4783$ and noise level 0.7223. Those are the values used to produce Step 5's $x_{50}$.
 
+<details><summary>The code that draws this figure</summary>
+
+```python
+# figures/step4-cosine-schedule.py
+import json
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+
+GREEN = "#2e7d32"
+ORANGE = "#ef6c00"
+ANNOTATION = "#212121"
+
+root = Path(__file__).resolve().parents[4]
+values = json.loads((root / "rebuild/out/walk-numbers.json").read_text())
+steps = [0, 25, 50, 75, 99]
+kept = [values[f"p1.abar_{t}"] for t in steps]
+noise = [values[f"p1.sqrt_1m_abar_{t}"] for t in steps]
+
+fig, ax = plt.subplots(figsize=(7.6, 4.2))
+ax.plot(steps, kept, marker="o", linewidth=2.5, color=GREEN)
+ax.plot(steps, noise, marker="o", linewidth=2.5, color=ORANGE)
+
+for t, value in zip(steps, kept):
+    ax.text(t, value + 0.055, f"{value:.4f}" if value else "0.0",
+            ha="center", color=GREEN, fontsize=8)
+for t, value in zip(steps, noise):
+    if t == 0:
+        ax.text(t + 3, value + 0.035, f"{value:.4f}", ha="left",
+                color=ORANGE, fontsize=8)
+    else:
+        ax.text(t, value - 0.09, f"{value:.4f}" if value < 1 else "1.0",
+                ha="center", color=ORANGE, fontsize=8)
+
+ax.text(79, 0.07, "kept share  ᾱₜ", color=GREEN, fontweight="bold", ha="right")
+ax.text(79, 1.045, "noise level  √(1−ᾱₜ)", color=ORANGE, fontweight="bold", ha="right")
+ax.set_xlabel("code step t")
+ax.set_ylabel("schedule value")
+ax.set_xticks(steps)
+ax.set_ylim(0, 1.12)
+ax.spines[["top", "right"]].set_visible(False)
+fig.tight_layout()
+fig.savefig(Path(__file__).with_suffix(".png"), dpi=160)
+```
+
+</details>
+
 <a href="figures/step4-cosine-schedule.png"><img src="figures/step4-cosine-schedule.png" width="620" alt="A chart across steps 0, 25, 50, 75 and 99. The kept signal share falls from 0.9994 to 0 while the noise level rises from 0.0251 to 1."></a>
 
 **How to read this chart.** The x-axis is code step $t$ and the y-axis runs from 0 to 1. Each mark is one row of the table. The green marks show the kept signal share $\bar\alpha_t$, while the orange marks show the noise standard deviation.
@@ -1673,7 +1805,9 @@ $$
 \exp\!\Big(-\underbrace{\frac{|x-\mu|^2}{2\sigma^2}}_{\text{squared distance, in widths}}\Big).
 $$
 
-$|x-\mu|^2$ is the squared distance from the centre, and dividing by $2\sigma^2$ measures that distance against the width. $\exp(-\cdot)$ makes the height fall as the point moves away from the centre. $1/(2\pi\sigma^2)$ scales the bump so it holds total probability 1; with independent coordinates it is [the product of two 1D fronts](../../../../../goal-setting/learning/mathematics/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=307), $1/\sqrt{2\pi\sigma^2}$ each. Put $\mu=\sqrt{\bar\alpha_t}\,x_0$ and $\sigma^2=1-\bar\alpha_t$ and it is the density above.
+**What each piece does.** $|x-\mu|^2$ is the squared distance from the centre, and dividing by $2\sigma^2$ measures that distance against the width. $\exp(-\cdot)$ makes the height fall as the point moves away from the centre.
+
+**Why the front constant is there.** $1/(2\pi\sigma^2)$ scales the bump so it holds total probability 1; with independent coordinates it is [the product of two 1D fronts](../../../../../goal-setting/learning/mathematics/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=307), $1/\sqrt{2\pi\sigma^2}$ each. Put $\mu=\sqrt{\bar\alpha_t}\,x_0$ and $\sigma^2=1-\bar\alpha_t$ and it is the density above.
 
 **In one dimension first.** A clean value 0.5 at t = 50 has centre $0.6916\times0.5=0.3458$ and standard deviation 0.7223, so its peak height is $1/(\sqrt{2\pi}\times0.7223)=0.5523$.
 
@@ -1766,9 +1900,19 @@ At $t=50$ the score is $(-0.4153,\,1.6613)$. [Step 5](#step-5-the-noise-is-the-s
 
 <a href="../../results/how-the-forward-process-dissolves-an-image/the-consequence-page-at-t50.png"><img src="../../results/how-the-forward-process-dissolves-an-image/the-consequence-page-at-t50.png" width="200" alt="The scene first page at t = 50: the formula with 0.6916 the dog and 0.7223 the noise, the noisy dog image x50, the dog plus noise equals x50 row, a chart of the two multipliers and their variance shares against step t, and beta per step on a log scale with beta50 = 0.0315"></a>
 
-**How to read this.** The left image is one row of five photos: the same dog and the same noise draw at t = 0, 25, 50, 75 and 99, with the kept share ᾱ and the dog's and the noise's multipliers printed under each. The right image is three columns, each a different version of the formula: every piece on at t = 50, the square roots removed at t = 50, and ᾱ written where 1 − ᾱ belongs at t = 75. Under each of those photos a chart has step t on the x-axis and the coefficient on the y-axis: blue is the dog's multiplier, orange the noise's, the dotted lines their variance shares, and the dashed line the total variance. The image below them is the scene's first page at t = 50: the formula with its two multipliers, the noisy dog x₅₀ built as dog plus noise, a chart of the two multipliers and their variance shares against step t, and β per step against t on a log scale.
+**How to read this.** The left image is one row of five photos: the same dog and the same noise draw at t = 0, 25, 50, 75 and 99, with the kept share ᾱ and the dog's and the noise's multipliers printed under each.
 
-**What to look for.** The row is the table above on a photo: at t = 50 the dog is still visible at scale 0.6916, though only 0.4783 of its variance is left. In the three columns, follow the dashed total-variance line. With every piece on it stays at 1.0000. Without the square roots it dips to 0.4783² + 0.5217² = 0.5009 at t = 50, so the middle steps go grey. With ᾱ in place of 1 − ᾱ, both scales are 0.3654 at t = 75 and the total is 0.2670, so the dog fades to grey and never becomes noise. On the first page at t = 50 the dog is multiplied by 0.6916 and the noise by 0.7223, the total variance reads 1.0000, and that step adds β₅₀ = 0.0315, about 50 times the first step's β₀ = 0.000631 on the log-scale chart.
+**The three columns.** The right image is three columns, each a different version of the formula: every piece on at t = 50, the square roots removed at t = 50, and ᾱ written where 1 − ᾱ belongs at t = 75. Under each of those photos a chart has step t on the x-axis and the coefficient on the y-axis: blue is the dog's multiplier, orange the noise's, the dotted lines their variance shares, and the dashed line the total variance.
+
+**The page below them.** The image below them is the scene's first page at t = 50: the formula with its two multipliers, the noisy dog x₅₀ built as dog plus noise, a chart of the two multipliers and their variance shares against step t, and β per step against t on a log scale.
+
+**What to look for.** The row is the table above on a photo: at t = 50 the dog is still visible at scale 0.6916, though only 0.4783 of its variance is left.
+
+**The dashed line in the three columns.** In the three columns, follow the dashed total-variance line. With every piece on it stays at 1.0000. Without the square roots it dips to 0.4783² + 0.5217² = 0.5009 at t = 50, so the middle steps go grey.
+
+**The column with ᾱ swapped in.** With ᾱ in place of 1 − ᾱ, both scales are 0.3654 at t = 75 and the total is 0.2670, so the dog fades to grey and never becomes noise.
+
+**The first page at t = 50.** On the first page at t = 50 the dog is multiplied by 0.6916 and the noise by 0.7223, the total variance reads 1.0000, and that step adds β₅₀ = 0.0315, about 50 times the first step's β₀ = 0.000631 on the log-scale chart.
 
 <!-- links: step4/consequence rev=2 -->
 🔗 **Where else this lives**
@@ -1776,20 +1920,8 @@ At $t=50$ the score is $(-0.4153,\,1.6613)$. [Step 5](#step-5-the-noise-is-the-s
 - 🎞️ Scene: [the first page](https://claude.ai/artifact/X7QGLTxssbz41G7iTiRxC9#change). Press Drop the square roots, Drop the complement, Offset δ = 0 and Remove the clip in turn; the status line turns red whenever the total variance leaves 1.
 - 📄 Paper: [Nichol and Dhariwal (2021), p. 4](https://arxiv.org/pdf/2102.09672#page=4), why δ and the 0.999 clip are there, in their words.
 - 🎬 Video: [CME296 lecture 1, 38:00](https://www.youtube.com/watch?v=tr-CUpw--ck&t=2280s), what small early βs and large late ones buy.
+- 🎬 Video: [CME296, lecture 1, 35:19](https://www.youtube.com/watch?v=tr-CUpw--ck&t=2119s), one step written out, and why it keeps the variance fixed.
 <!-- /links -->
-
-<!-- video-table: forward-process-and-noise-schedule rev=1 -->
-Stanford CME296, then Stanford CS236, on one forward step, the noise schedule and the jump straight to step t, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | The noise schedule is the set of coefficients weighting the image and the noise; one step is x_t = √(1 − β_t)·x_{t−1} + √β_t·ε, and it keeps the variance fixed | Intuition | [CME296, lecture 1, 35:19 to 37:57](https://www.youtube.com/watch?v=tr-CUpw--ck&t=2119s) |
-| 2 | Why β_t starts small and grows: little noise near the clean image teaches details, more noise near the end teaches overall shape | Intuition | [CME296, lecture 1, 38:00 to 39:06](https://www.youtube.com/watch?v=tr-CUpw--ck&t=2280s) |
-| 3 | Unroll two steps and add the independent noise variances, and x_t comes straight from x_0, with ᾱ_t the product of the α's | Proof | [CME296, lecture 1, 39:07 to 45:40](https://www.youtube.com/watch?v=tr-CUpw--ck&t=2347s) |
-| 4 | How the noise schedule is chosen | Intuition | [Stanford CS236, lecture 16, 47:58 to 51:46](https://www.youtube.com/watch?v=VsllsC2JMGY&t=2878s) |
-
-No segment was confirmed to cover the cosine schedule by name, and none works the schedule table's numbers. Rows 1 to 3 are read from CME296's captions and good to about 30 seconds; row 4 is a chapter boundary from CS236's chapter list, so the sentence inside it is not checked.
-<!-- /video-table -->
 
 🔨 **Build:**
 
@@ -1916,21 +2048,11 @@ $$
 
 **Why the product, square root and minus sign are there.** They convert the marginal score to the noise-prediction scale. At $t=50$, the scale is 0.7223. Without that factor, the target would remain a score; without the minus sign, it would point in the opposite direction.
 
-where $q_t$ is the density of all noisy points at step t. So a trained network that predicts ε predicts the marginal score up to the factor $-1/\sqrt{1-\bar\alpha_t}$. That factor is the notebook's `_sqrt_recipm1_alphas_cumprod_custom`, and it is why the samplers use `-p_gradient` as the score. The worked numerical instance below verifies the conditional identity for one chosen clean point and one chosen noise draw. Step 8 derives the marginal identity used by the trained network.
+where $q_t$ is the density of all noisy points at step t. So a trained network that predicts ε predicts the marginal score up to the factor $-1/\sqrt{1-\bar\alpha_t}$.
 
-<!-- video-table: noise-prediction-is-the-score rev=1 -->
-Vizuara, then Deepia from the open web, on why a network that predicts the added noise is predicting the score, in the order to watch:
+**Where the factor shows up in the code.** That factor is the notebook's `_sqrt_recipm1_alphas_cumprod_custom`, and it is why the samplers use `-p_gradient` as the score.
 
-| Order | What it covers | Kind | Code it writes | Watch |
-|---|---|---|---|---|
-| 1 | Noise a clean point with a Gaussian of standard deviation σ, take the log of that Gaussian and its gradient: the score of the noised point given the clean one is −(x̃ − x)/σ² | Proof | | [Vizuara, Principles of Diffusion Models, lecture 6, 32:45 to 38:19](https://www.youtube.com/watch?v=6ELzfPXUqps&t=1965s) |
-| 2 | That score points from the noised point back to the clean one, so it is the added noise, which is what a DDPM network is trained to predict | Intuition | | [Vizuara, Principles of Diffusion Models, lecture 6, 38:19 to 40:25](https://www.youtube.com/watch?v=6ELzfPXUqps&t=2299s) |
-| 3 | The training loss in code, with the target score written as −(x − x̃)/σ² and reduced to −ε/σ | Code walk | the loss whose target is `-noise / sigma` | [Vizuara, Principles of Diffusion Models, lecture 6, 42:54 to 44:49](https://www.youtube.com/watch?v=6ELzfPXUqps&t=2574s) |
-| 4 | The denoiser that minimises squared error returns the average clean point given the noisy one | Intuition, open web | | [Deepia, Unadjusted Langevin Algorithm, 1:34 to 5:43](https://www.youtube.com/watch?v=m0OTso2Dc2U&t=94s) |
-| 5 | Tweedie's formula: that average gives the score of the whole noised distribution, the step from one point's score to the marginal score | Proof, open web | | [Deepia, Unadjusted Langevin Algorithm, 5:43 to 10:23](https://www.youtube.com/watch?v=m0OTso2Dc2U&t=343s) |
-
-Vizuara noises with x̃ = x + σε and no shrinking of x, so the factor is 1/σ where a DDPM schedule has 1/√(1 − ᾱ_t); no listed creator covers the marginal step, so rows 4 and 5 come from Deepia on the open web. Rows 1 to 3 are read from automatic captions and good to about 30 seconds; rows 4 and 5 are chapter boundaries from the video's chapter list, so the sentence inside each is not checked.
-<!-- /video-table -->
+**What is checked here and what later.** The worked numerical instance below verifies the conditional identity for one chosen clean point and one chosen noise draw. Step 8 derives the marginal identity used by the trained network.
 
 🧸 **Toy:** let $x_0=(0,0.5)$, let $\varepsilon=(0.3,-1.2)$, and use code step $t=50$. The schedule gives
 
@@ -2000,6 +2122,13 @@ $$
 **Why the minus sign is there.** The sampled noise points away from the conditional centre, while the score points toward increasing density. Removing the minus sign would give $(0.4153,-1.6613)$, the opposite direction.
 
 🔤 **The name:** [score](../../../../../goal-setting/learning/deep-learning/diffusion-models/02-sampler-correctors-for-composition/plans/03-the-score-of-a-gaussian.md)
+
+<!-- links: step5/intro rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [Vizuara, Principles of Diffusion Models, lecture 6, 38:19](https://www.youtube.com/watch?v=6ELzfPXUqps&t=2299s), the score of a noised point is the added noise, rescaled.
+- 🎬 Video: [Deepia, Unadjusted Langevin Algorithm, 5:43](https://www.youtube.com/watch?v=m0OTso2Dc2U&t=343s), Tweedie's formula, the step from one point's score to the marginal score.
+<!-- /links -->
 
 ---
 
@@ -2098,19 +2227,6 @@ $$
 
 **Use squared distance alone.** Its gradient points away from the centre. The score needs both the minus sign and the $2(1-\bar\alpha_t)$ divisor from the log-density.
 
-<!-- video-table: score-as-gradient-of-log-density rev=1 -->
-Stanford CME296 on the score, the gradient of the log-density, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | From a point of low density, the gradient of p(x) points toward higher density | Intuition | [CME296, lecture 2, 6:20 to 8:17](https://www.youtube.com/watch?v=_WaR2fjZpEQ&t=380s) |
-| 2 | Why the gradient of p itself is hard to use and the gradient of log p is not: the normalising constant's gradient is zero, ∇log p = ∇p / p points the same way as ∇p, and the ratio is numerically steadier | Proof | [CME296, lecture 2, 8:17 to 13:22](https://www.youtube.com/watch?v=_WaR2fjZpEQ&t=497s) |
-| 3 | That gradient is the score, taken with respect to the point x and not a model's parameters; its arrows are longest far from the data | Intuition | [CME296, lecture 2, 13:22 to 14:30](https://www.youtube.com/watch?v=_WaR2fjZpEQ&t=802s) |
-| 4 | The score of a one-dimensional Gaussian is −(x − μ)/σ², an arrow pointing at the mean | Intuition | [CME296, lecture 2, 21:28 to 24:12](https://www.youtube.com/watch?v=_WaR2fjZpEQ&t=1288s) |
-
-The lecture states the Gaussian's score without deriving it and works no numbers; the step from added noise to the score of a noised point is in the noise-prediction table. Times are read from the lecture's captions and good to about 30 seconds.
-<!-- /video-table -->
-
 🔨 **Build:** compute the conditional score by autograd on the log-density of $q(x_t\mid x_0)$ and compare with $-\varepsilon/\sqrt{1-\bar\alpha_t}$. This checks the conditional identity only.
 
 ```python
@@ -2122,6 +2238,13 @@ score, = torch.autograd.grad(logq, xt_)
 print("x_t", np.round(xt_.detach().numpy(), 4), " score", np.round(score.numpy(), 4),
       " -eps/sd", np.round((-eps_ / math.sqrt(1 - abar[t])).numpy(), 4))
 ```
+
+<!-- links: step5/consequence rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [CME296, lecture 2, 13:22](https://www.youtube.com/watch?v=_WaR2fjZpEQ&t=802s), the gradient of log p is the score, with arrows longest far from the data.
+- 🎬 Video: [CME296, lecture 2, 21:28](https://www.youtube.com/watch?v=_WaR2fjZpEQ&t=1288s), the score of a one-dimensional Gaussian, −(x − μ)/σ².
+<!-- /links -->
 
 ## Step 6: the ResNet that sees the step
 
@@ -2191,7 +2314,13 @@ $$
 
 **Why the final addition is there.** It preserves the old state while adding a correction. At initialisation $W_o u$ is zero, so the block maps $r$ to $r$. Removing the skip changes that same zero-correction block from the identity into a map that returns zero.
 
-The branch widths are 128 to 256 to 256 to 128. After four blocks, the output layer maps $r$ back to two numbers. In the code, `x` plays the role of $r$ inside `Block.forward` and `h` plays the role of $u$. SiLU is $u\cdot\sigma(u)$. LayerNorm subtracts the mean of the 128 numbers, divides by their [standard deviation](../../../../../Obsidian/Mathematics/Statistics/Variance.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=150 "Introduction to probability for data science, section 3.4.4, Defines variance as E[(X − µ)²] and the standard deviation as its root (Definition 3.7), proves ..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=196 "Mathematics for machine learning, section 6.4.1, Variance as the covariance of a variable with itself (Definition 6.7), then the empirical mean and variance ..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=76 "Deep learning textbook, section 3.8, A short definition of variance and standard deviation beside expectation and covariance."), [▶1](https://www.youtube.com/watch?v=4-FysvtxQEU&t=1551s "Professor Leonard, Statistics 3.3, A standard deviation calculated by hand, 25:51 to 36:43, Works a standard deviation on a small data set by hand. Chapter-t..."), [▶2](https://www.youtube.com/watch?v=SzZ6GpcfoQY&t=236s "StatQuest, Calculating the Mean, Variance and Standard Deviation, Calculating population variance, 3:56 to 5:54, The population variance as the average squar..."), [◆](../../../../../goal-setting/learning/deep-learning/transformers/textbook/06-show-that-variances-of-independent-terms-add.md "Show that variances of independent terms add, deep-learning/transformers, chapter 06. Predicts the spread of a dot product of random vectors by adding the va...")</sub>, then applies a learned scale and offset ([layer norm, by hand](../../../../../goal-setting/learning/deep-learning/transformers/plans/40-normalise-a-vector-by-hand-with-layer.md)). The block's last layer and the output layer start at zero, so each block starts as the identity and the whole network starts by outputting 0.
+**The sizes.** The branch widths are 128 to 256 to 256 to 128. After four blocks, the output layer maps $r$ back to two numbers.
+
+**The code's names.** In the code, `x` plays the role of $r$ inside `Block.forward` and `h` plays the role of $u$.
+
+**The two functions inside a block.** SiLU is $u\cdot\sigma(u)$. LayerNorm subtracts the mean of the 128 numbers, divides by their [standard deviation](../../../../../Obsidian/Mathematics/Statistics/Variance.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=150 "Introduction to probability for data science, section 3.4.4, Defines variance as E[(X − µ)²] and the standard deviation as its root (Definition 3.7), proves ..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=196 "Mathematics for machine learning, section 6.4.1, Variance as the covariance of a variable with itself (Definition 6.7), then the empirical mean and variance ..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=76 "Deep learning textbook, section 3.8, A short definition of variance and standard deviation beside expectation and covariance."), [▶1](https://www.youtube.com/watch?v=4-FysvtxQEU&t=1551s "Professor Leonard, Statistics 3.3, A standard deviation calculated by hand, 25:51 to 36:43, Works a standard deviation on a small data set by hand. Chapter-t..."), [▶2](https://www.youtube.com/watch?v=SzZ6GpcfoQY&t=236s "StatQuest, Calculating the Mean, Variance and Standard Deviation, Calculating population variance, 3:56 to 5:54, The population variance as the average squar..."), [◆](../../../../../goal-setting/learning/deep-learning/transformers/textbook/06-show-that-variances-of-independent-terms-add.md "Show that variances of independent terms add, deep-learning/transformers, chapter 06. Predicts the spread of a dot product of random vectors by adding the va...")</sub>, then applies a learned scale and offset ([layer norm, by hand](../../../../../goal-setting/learning/deep-learning/transformers/plans/40-normalise-a-vector-by-hand-with-layer.md)).
+
+**How it starts.** The block's last layer and the output layer start at zero, so each block starts as the identity and the whole network starts by outputting 0.
 
 $$
 \underbrace{\operatorname{SiLU}(u)}_{\text{smooth nonlinear activation}}
@@ -2206,7 +2335,11 @@ $$
 
 **Why the sigmoid is there.** It makes the gate vary smoothly from almost zero to almost one. Replacing it by a constant would merely rescale every activation and would not provide the input-dependent nonlinearity used by the branch.
 
-**Derivation of the parameter count.** A linear layer from a to b has $ab+b$ parameters. Embedding: $100\times32$ = `3200`. Input layer: $2\cdot128+128$ = `384`. One block: LayerNorm $2\cdot128$, plus $(128\cdot256+256)+(32\cdot256+256)+(256\cdot256+256)+(256\cdot128+128)$ = `140416`. Output layer: $128\cdot2+2$ = `258`. Total $3200+384+4\cdot140416+258$ = `565506`. The notebook prints 565,606: its extra 100 are `out_logvar`, one learned variance per step, which the `beta_forward` sampler never reads.
+**Derivation of the parameter count.** A linear layer from a to b has $ab+b$ parameters. Embedding: $100\times32$ = `3200`. Input layer: $2\cdot128+128$ = `384`.
+
+**The blocks and the total.** One block: LayerNorm $2\cdot128$, plus $(128\cdot256+256)+(32\cdot256+256)+(256\cdot256+256)+(256\cdot128+128)$ = `140416`. Output layer: $128\cdot2+2$ = `258`. Total $3200+384+4\cdot140416+258$ = `565506`.
+
+**Why the notebook prints 100 more.** The notebook prints 565,606: its extra 100 are `out_logvar`, one learned variance per step, which the `beta_forward` sampler never reads.
 
 $$
 \underbrace{N_{\mathrm{linear}}}_{\text{parameters in a linear layer from }a\text{ to }b}
@@ -2348,20 +2481,6 @@ $$
 
 **Remove the skip.** The parameter count remains 565,506, but a zero correction branch now maps the input to zero. The name predicts the behavioural change even though the count does not move.
 
-<!-- video-table: residual-network rev=1 -->
-Stanford CS231N, then Stanford CS224N and Vizuara, on residual networks, in the order to watch:
-
-| Order | What it covers | Kind | Code it writes | Watch |
-|---|---|---|---|---|
-| 1 | ResNet and residual learning | Intuition | | [Stanford CS231N, lecture 6, 29:03 to 37:07](https://www.youtube.com/watch?v=aVJy4O5TOk8&t=1743s) |
-| 2 | How the residual blocks are stacked into the full ResNet | Intuition | | [Stanford CS231N, lecture 6, 37:07 to 42:00](https://www.youtube.com/watch?v=aVJy4O5TOk8&t=2227s) |
-| 3 | A layer's output is added to its input, so the layer learns only the leftover correction, and the gradient through the skip path is 1 | Intuition | | [Stanford CS224N 2023, lecture 8, 58:51 to 59:58](https://www.youtube.com/watch?v=LWMzyfvuehA&t=3531s) |
-| 4 | The shortcut connection written out as maths | Proof | | [Vizuara, shortcut connections, 9:59 to 14:50](https://www.youtube.com/watch?v=2r0QahNdwMw&t=599s) |
-| 5 | A five-layer network's gradients printed layer by layer, without shortcuts and then with them | Code walk | the per-layer gradient printout, with and without shortcuts | [Vizuara, shortcut connections, 22:55 to 30:48](https://www.youtube.com/watch?v=2r0QahNdwMw&t=1375s) |
-
-None counts parameters or zeroes a correction branch to show the block becomes the identity, which is this section's check, and CS224N and Vizuara add the shortcut inside a transformer, not a noise predictor. Rows 3 and 5 are read from automatic captions and good to about 30 seconds; rows 1, 2 and 4 are chapter boundaries from each video's chapter list, so the sentence inside each is not checked.
-<!-- /video-table -->
-
 🔨 **Build:**
 
 ```python
@@ -2394,6 +2513,13 @@ print("parameters:", sum(p.numel() for p in ResNet().parameters()))
 ```
 
 It prints `parameters: 565506`.
+
+<!-- links: step6/consequence rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [Stanford CS224N 2023, lecture 8, 58:51](https://www.youtube.com/watch?v=LWMzyfvuehA&t=3531s), the layer learns only the leftover correction, and the gradient through the skip is 1.
+- 🎬 Video: [Vizuara, shortcut connections, 22:55](https://www.youtube.com/watch?v=2r0QahNdwMw&t=1375s), a five-layer network's gradients printed without shortcuts and then with them.
+<!-- /links -->
 
 ## Step 7: the energy wrapper
 
@@ -2605,19 +2731,6 @@ $$
 
 **Remember the borrowed meaning.** The landscape behaves like a physical energy picture, but its coordinates are data coordinates and its shape is learned for diffusion.
 
-<!-- video-table: energy-function rev=1 -->
-Stanford CS236, then Vizuara, on the energy behind an energy-based model, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | The partition function, the constant that turns an energy into a density | Intuition | [Stanford CS236, lecture 11, 15:31 to 23:01](https://www.youtube.com/watch?v=m61KiAMCJ5Q&t=931s) |
-| 2 | How an energy function is defined | Intuition | [Stanford CS236, lecture 11, 29:14 to 34:29](https://www.youtube.com/watch?v=m61KiAMCJ5Q&t=1754s) |
-| 3 | The model's energy and energy in physics | Intuition | [Stanford CS236, lecture 11, 34:29 to 40:20](https://www.youtube.com/watch?v=m61KiAMCJ5Q&t=2069s) |
-| 4 | Why energy-based models are hard to train, and where the score comes in | Intuition | [Vizuara, Principles of Diffusion Models, lecture 5, 24:00 to 30:11](https://www.youtube.com/watch?v=zRyD7GQ9RHs&t=1440s) |
-
-None takes the gradient of a learned energy to get a noise prediction, as this model does, and no proof or worked example was found. Times are chapter boundaries read from each video's chapter list, not from captions, so each is good to the chapter and the sentence inside it is not checked.
-<!-- /video-table -->
-
 🔨 **Build:**
 
 ```python
@@ -2634,6 +2747,13 @@ model = Energy(ResNet())
 x = torch.tensor([[0.3, -0.1]]); tt = torch.tensor([50])
 print("E", round(float(model.energy(x, tt)), 4), " eps_hat", model(x, tt).numpy().round(4))
 ```
+
+<!-- links: step7/consequence rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [Stanford CS236, lecture 11, 29:14](https://www.youtube.com/watch?v=m61KiAMCJ5Q&t=1754s), how an energy function is defined.
+- 🎬 Video: [Vizuara, Principles of Diffusion Models, lecture 5, 24:00](https://www.youtube.com/watch?v=zRyD7GQ9RHs&t=1440s), why energy-based models are hard to train, and where the score comes in.
+<!-- /links -->
 
 ## Step 8: the denoising loss
 
@@ -2660,17 +2780,6 @@ $$
 **Why the factor one half is there.** There are two coordinates, so one half turns their summed squared error into their mean. Removing it would double every reported loss without changing which prediction is best.
 
 **Why the [expectation](../../../../../Obsidian/Mathematics/Statistics/Probability/Expected%20Value.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=141 "Introduction to probability for data science, section 3.4, Works with numbers: E[X] = Σ x p(x) and why it equals a dataset's average once repeated values are..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-statistics.pdf#page=81 "Introduction to statistics (Wits lecture notes), section 4.2.3, The expected value of a discrete random variable as the mean over many trials, with E[X] and ..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=196 "Introduction to probability for data science, section 4.2, The integral definition for a continuous variable, with uniform and exponential worked examples (p..."), [▶1](https://www.youtube.com/watch?v=KLs_7b7SKi4&t=309s "StatQuest, Expected Values, Main Ideas, 5:09 to 8:02, Calculating an expected value: each outcome times its probability, added up. Chapter-timed, from the vi..."), [▶2](https://www.youtube.com/watch?v=OSPr6G6Ka-U&t=738s "StatQuest, Expected Values for Continuous Variables, 12:18 to 18:17, Calculating the expected value of an exponential distribution, after deriving the formul..."), [◆](../../../../../goal-setting/learning/mathematics/statistics/conditional-expectation/textbook/01-expectation-and-the-best-constant-guess.md "1. Expectation, and the best constant guess, mathematics/statistics/conditional-expectation, section 1. A fair die's best constant guess under squared error ...")</sub> is there.** One noisy point cannot represent all clean points, times and noise draws. The [expectation](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=193) ([video, 11:33](https://www.youtube.com/watch?v=Mi8wnYc1m04&t=693s)) averages the charge across those draws. Replacing it with one draw would make the displayed loss depend on that draw rather than the training population.
-
-<!-- video-table: epsilon-loss-as-code rev=1 -->
-The epsilon loss written as code, in the order to watch:
-
-| Order | What it covers | Kind | Code it writes | Watch |
-|---|---|---|---|---|
-| 1 | Adding noise to a batch and training the network to predict that noise | Code walk | the training step | [Vizuara, DDPM practical, 30:07 to 39:32](https://www.youtube.com/watch?v=6to_EG3SJgs&t=1807s) |
-| 2 | A small DDPM end to end, training function first | Code walk | the training function and the sampling function | [Umar Jamil, 13:00 to 21:11](https://www.youtube.com/watch?v=I1sPXkm2NH4&t=780s) |
-
-Start and end times are chapter boundaries from each video; what is said inside was judged from the chapter titles and not read from captions.
-<!-- /video-table -->
 
 **Derivation of why it learns the score.** For fixed $x_t$ and t, [the minimiser](../../../../../goal-setting/learning/mathematics/textbooks/machine-learning/the-little-book-of-generative-ai-foundations.pdf#page=126) of $\mathbb E|\hat\varepsilon-\varepsilon|^2$ is $\mathbb E[\varepsilon\mid x_t]$. By Step 5's conditional identity each training point's ε is $-\sqrt{1-\bar\alpha_t}$ times its conditional score. What remains is to show that averaging the conditional scores over the [posterior](../../../../../goal-setting/learning/mathematics/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=105) of the clean point gives the [marginal](../../../../../Obsidian/Mathematics/Statistics/Distributions/Marginal%20Distribution.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=266 "Introduction to probability for data science, section 5.1.5, Defines the marginal PMF and the marginal PDF (Definition 5.3) and works the marginals of a unif..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=32 "Pattern recognition and machine learning, section 1.2, The sum rule derived from counts in a grid of cells (Figure 1.10), with p(X) named the marginal probab..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=74 "Deep learning textbook, section 3.4, The marginal probability by the sum rule for discrete variables and by an integral for continuous ones, and where the na..."), [▶1](https://www.youtube.com/watch?v=Mi8wnYc1m04&t=1381s "CS229 lecture 3, 23:01 to 26:37, Joint and marginal densities, integrating one variable out. Chapter-timed, from the video lessons index."), [▶2](https://www.youtube.com/watch?v=tr-CUpw--ck&t=2793s "CME296 lecture 1, 46:33 to 56:16, Reviews marginalisation over T variables while setting up diffusion training, and shows that summing over every noise traje..."), [◆](../../../../../goal-setting/learning/deep-learning/generative-models/03-sampling-from-a-graph/plans/01-joint-marginal-conditional.md "Read a joint, a marginal and a conditional off one table, deep-learning/generative-models/03-sampling-from-a-graph, plan 01. Works marginals on the fuel gaug...")</sub> score of $q_t$.
 
@@ -2840,33 +2949,16 @@ $$
 
 **Why the equality chain is there.** The first equality identifies the squared-error optimum. The second translates that optimum into a score. At $t=50$, the translation uses 0.7223; omitting it keeps the direction but gives the wrong magnitude.
 
-<!-- video-table: score-matching rev=1 -->
-Stanford CS236, then Vizuara, on score matching, the loss that fits a model's score using only samples of the data, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | The Fisher divergence, the squared distance between the model's score and the data's score | Intuition | [Stanford CS236, lecture 12, 34:37 to 38:02](https://www.youtube.com/watch?v=Nci1Bepcy0g&t=2077s) |
-| 2 | Integration by parts removes the unknown data score from that loss | Proof | [Stanford CS236, lecture 12, 38:02 to 46:28](https://www.youtube.com/watch?v=Nci1Bepcy0g&t=2282s) |
-| 3 | The score matching objective that results, which needs only samples | Intuition | [Stanford CS236, lecture 12, 46:28 to 50:36](https://www.youtube.com/watch?v=Nci1Bepcy0g&t=2788s) |
-| 4 | What the two terms of that objective do: the trace pulls nearby points in toward the data, the norm makes the score zero on the data | Intuition | [Vizuara, Principles of Diffusion Models, lecture 6, 5:20 to 9:23](https://www.youtube.com/watch?v=6ELzfPXUqps&t=320s) |
-| 5 | Why it is not used on images: the trace needs the whole D by D matrix, so its cost grows as D², 784² for a 28 by 28 image | Intuition | [Vizuara, Principles of Diffusion Models, lecture 6, 9:23 to 12:43](https://www.youtube.com/watch?v=6ELzfPXUqps&t=563s) |
-
-Neither works score matching on numbers, and the denoising version that diffusion training uses is its own table. Rows 1 to 3 are chapter boundaries from CS236's chapter list, so the sentence inside each is not checked; rows 4 and 5 are read from Vizuara's automatic captions and good to about 30 seconds.
-<!-- /video-table -->
-
-<!-- video-table: denoising-score-matching rev=1 -->
-Denoising score matching itself, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | Denoising score matching, derived | Proof | [Stanford CS236, lecture 13, 29:16 to 44:39](https://www.youtube.com/watch?v=8G-OsDs1RLI&t=1756s) |
-
-Start and end times are chapter boundaries from each video; what is said inside was judged from the chapter titles and not read from captions.
-<!-- /video-table -->
-
 🧸 **Toy:** the untrained network predicts $2x_t$. On `bar(0.2)` data its loss is `0.79` (200,000 draws); the trained models in `rebuild/out/phase1` end near 0.2.
 
 🔤 **The name:** [denoising loss](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/plans/21-the-elbo-to-the-epsilon-loss.md)
+
+<!-- links: step8/intro rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [Vizuara, DDPM practical, 30:07](https://www.youtube.com/watch?v=6to_EG3SJgs&t=1807s), the training step that noises a batch and predicts the noise, in code.
+- 🎬 Video: [Stanford CS236, lecture 13, 29:16](https://www.youtube.com/watch?v=8G-OsDs1RLI&t=1756s), denoising score matching, derived.
+<!-- /links -->
 
 ---
 
@@ -2952,19 +3044,6 @@ $$
 
 **After training.** The models end near 0.2. The move downward is the direct sign that the prediction became better at identifying the added noise.
 
-<!-- video-table: denoising-loss-from-the-elbo rev=1 -->
-Stanford CME296, then Stanford CS236, on where the denoising loss comes from, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | The KL divergence between two Gaussians, the true reverse step and the learned one, reduces to the squared distance between the predicted noise and the noise that was added | Proof | [CME296, lecture 1, 1:18:03 to 1:21:03](https://www.youtube.com/watch?v=tr-CUpw--ck&t=4683s) |
-| 2 | The loss read term by term: the sampled step t, the clean image x_0, the noise ε, and the network ε_θ given the noised image √ᾱ_t·x_0 + √(1 − ᾱ_t)·ε together with t | Intuition | [CME296, lecture 1, 1:21:12 to 1:24:04](https://www.youtube.com/watch?v=tr-CUpw--ck&t=4872s) |
-| 3 | The exact KL puts a weight on each step's error, and DDPM sets every weight to 1 | Intuition | [CME296, lecture 1, 1:26:17 to 1:27:03](https://www.youtube.com/watch?v=tr-CUpw--ck&t=5177s) |
-| 4 | Predicting the noise shown to be the same as denoising score matching | Proof | [Stanford CS236, lecture 16, 39:01 to 41:48](https://www.youtube.com/watch?v=VsllsC2JMGY&t=2341s) |
-
-CME296 says the KL simplifies without writing the steps out, and neither trains on numbers, so the 0.79 before training has no video. Rows 1 to 3 are read from CME296's captions and good to about 30 seconds; row 4 is a chapter boundary from CS236's chapter list, so the sentence inside it is not checked.
-<!-- /video-table -->
-
 🔨 **Build:** the loss, then one gradient step.
 
 ```python
@@ -2991,6 +3070,13 @@ model.zero_grad(set_to_none=True)
 It prints `parameters with a gradient: 45 of 45`.
 
 💥 **Broken run:** set `create_graph=False` in `loss_fn`. Here the failure is loud: `loss.backward()` stops with `element 0 of tensors does not require grad and does not have a grad_fn`, because ε̂ no longer depends on the weights at all. The silent version of the same mistake is in Step 9.
+
+<!-- links: step8/consequence rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [CME296, lecture 1, 1:21:12](https://www.youtube.com/watch?v=tr-CUpw--ck&t=4872s), the loss read term by term.
+- 🎬 Video: [Stanford CS236, lecture 16, 39:01](https://www.youtube.com/watch?v=VsllsC2JMGY&t=2341s), predicting the noise shown to be denoising score matching.
+<!-- /links -->
 
 ## Step 9: training with a moving average
 
@@ -3131,20 +3217,6 @@ $$
 
 **After 692.8 steps.** That entry's share is 0.0005. At any moment the newest entry has the largest individual share, and each entry's share halves every 692.8 steps.
 
-<!-- video-table: exponential-moving-average rev=1 -->
-Andrew Ng (DeepLearning.AI, from the open web) on the exponentially weighted average, in the order to watch:
-
-| Order | What it covers | Kind | Code it writes | Watch |
-|---|---|---|---|---|
-| 1 | London's daily temperatures smoothed with v = 0.9·v + 0.1·θ, one day at a time | Worked example, open web | | [Ng, Exponentially Weighted Averages, 0:21 to 2:36](https://www.youtube.com/watch?v=lAq96T8FkTw&t=21s) |
-| 2 | The average covers roughly 1/(1 − β) recent values: β = 0.98 is smoother and lags, β = 0.5 is noisy and quick | Intuition, open web | | [Ng, Exponentially Weighted Averages, 2:36 to 5:21](https://www.youtube.com/watch?v=lAq96T8FkTw&t=156s) |
-| 3 | Unrolling the update: the value k steps back carries weight 0.1 × 0.9^k, so the weights fall exponentially with age | Proof, open web | | [Ng, Understanding Exponentially Weighted Averages, 0:41 to 4:36](https://www.youtube.com/watch?v=NxTFlzBjS-4&t=41s) |
-| 4 | 0.9 to the power 10 is about 1/e, so an entry's weight falls to about a third after 1/(1 − β) steps | Intuition, open web | | [Ng, Understanding Exponentially Weighted Averages, 4:36 to 6:50](https://www.youtube.com/watch?v=NxTFlzBjS-4&t=276s) |
-| 5 | The update as one line inside a loop, keeping a single number in memory | Code walk, open web | `v = beta * v + (1 - beta) * theta` | [Ng, Understanding Exponentially Weighted Averages, 6:50 to 9:25](https://www.youtube.com/watch?v=NxTFlzBjS-4&t=410s) |
-
-No listed creator has a video on it. Ng averages temperatures with β = 0.9, not model weights with 0.999, and he measures the fade by 1/e, not by the half-life of 692.8 steps. Times are read from automatic captions and good to about 30 seconds.
-<!-- /video-table -->
-
 🔨 **Build:** 2000 steps on the bar (the full run used 15,001 and takes about 5 minutes on a card).
 
 ```python
@@ -3165,6 +3237,13 @@ plt.savefig("step09-loss.png"); plt.close()
 The [loss](../../../../../Obsidian/Artificial%20Intelligence/Machine%20Learning/Loss%20Function.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/understanding-deep-learning.pdf#page=33 "Understanding deep learning, section 2.2.2, Works the idea with numbers: each choice of intercept and slope for a line through twelve points gets one loss (7..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=60 "Pattern recognition and machine learning, section 1.5.2, A loss matrix for cancer diagnosis that charges 1000 for missing a cancer and 1 for a false alarm, a..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/understanding-deep-learning.pdf#page=70 "Understanding deep learning, sections 5.1 to 5.2, A recipe that builds a loss for any kind of output from maximum likelihood: choose a distribution over the ..."), [▶1](https://www.youtube.com/watch?v=pdqofxJeBN8&t=3230s "CS231n lecture 2, 53:50 to 57:30, Defines the loss as the average of per-example losses that optimisation will minimise, after showing data a line cannot sep..."), [▶2](https://www.youtube.com/watch?v=cmNIMjPYdgM&t=879s "CS229 lecture 2, 14:39 to 17:41, Chooses the line that minimises prediction errors on the training data, empirical risk minimisation, and contrasts it with a..."), [◆](../../../../../goal-setting/learning/machine-learning/classical-ml-from-scratch/MASTER_PLAN.md "Classical ML from Scratch, machine-learning/classical-ml-from-scratch. Goal 1 derives linear and logistic regression from a loss function and gradient descen..."), [◈](https://claude.ai/artifact/DBmJtn6xy75sPtQwPEvQZU#nb-sec2 "Kinds of composition notebook, Same points, two labellings, The denoising loss and one gradient step, showing the gradient is identical under two labellings ...")</sub> falls from about 0.8 to about 0.2 within the first few hundred steps, then flattens. The run behind this document logged `0.802` at step 0 and `0.221` at step 1950.
 
 💥 **Broken run:** [fine-tune](../../../../../Obsidian/Artificial%20Intelligence/Large%20Language%20Models/Fine-Tuning.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/natural-language-processing/hands-on-large-language-models.pdf#page=503 "Hands-on large language models, chapter 12, Instruction tuning with QLoRA, Works supervised fine-tuning end to end in code: TinyLlama, a base model that cann..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/ai-engineering/ai-engineering.pdf#page=173 "AI engineering, chapter 2, Supervised finetuning, Why a pre-trained model completes 'How to make pizza' instead of answering it, and the demonstration data (..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/ai-engineering/ai-engineering.pdf#page=596 "AI engineering, chapter 7, Finetuning overview, Fine-tuning as transfer learning, why it needs a few hundred examples where training from scratch needs milli..."), [▶1](https://www.youtube.com/watch?v=VlA_jt_3Qc4&t=3739s "CME295 lecture 4, 1:02:19 to 1:08:32, Starts from 'can I wash my teddy bear in the washing machine?', which a pretrained model only continues, and defines SF..."), [▶2](https://www.youtube.com/watch?v=hHC-SF3utxg&t=3857s "CS229 lecture 16, 1:04:17 to 1:08:20, Instruction tuning as supervised fine-tuning: minimise −Σₜ log p_θ(y_t ∣ x, y_<t) over instruction and response pairs, ..."), [◆](../../../../../goal-setting/learning/ai-engineering/one-business-end-to-end/open-models/plans/03-opt-as-the-baseline.md "OPT as the baseline: a 2022 base model on structured output, and why it fails, ai-engineering/one-business-end-to-end/open-models, plan 03. Runs a base model...")</sub> the moving average itself, `copy.deepcopy(ema)`, without switching its [gradients](../../../../../Obsidian/Mathematics/Calculus/Gradient.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/mathematics-for-machine-learning.pdf#page=152 "Mathematics for machine learning, section 5.2, Varies one input at a time to get partial derivatives, stacks them into the gradient, and computes one (Exampl..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/calculus/calculus-textbook.pdf#page=984 "Calculus textbook, section 13.6, Directional derivatives, then the gradient (Definition 13.6.4, page 987) and why it points the way of fastest increase."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=99 "Deep learning textbook, section 4.3, The gradient as the vector of partial derivatives, the directional derivative, and steepest descent."), [▶1](https://www.youtube.com/watch?v=CnVes9TdnPo&t=754s "The Organic Chemistry Tutor, 12:34 to 28:29, Worked gradient problems. Chapter-timed, from the video lessons index."), [▶2](https://www.youtube.com/watch?v=tDPp5uWSIiU&t=3506s "Leonard, Calculus 3, 13.6, 58:26 to 1:15:15, The gradient defined, its properties, and why it points the way of fastest increase. Chapter-timed, from the vid..."), [◆](../../../../../goal-setting/learning/deep-learning/transformers/textbook/08-take-a-slope-and-the-gradient.md "Take a slope and the gradient of a function of two numbers, deep-learning/transformers, chapter 08. The gradient of a squared loss in two numbers a and b, st..."), [◈](https://claude.ai/artifact/DBmJtn6xy75sPtQwPEvQZU#nb-sec2 "Kinds of composition notebook, Same points, two labellings, The denoising loss and one gradient step, showing the gradient is identical under two labellings ...")</sub> back on. Nothing errors: the loss prints every step. But after 10 Adam steps at learning rate $10^{-4}$ the weights have moved `0.0` (L2 distance from the start) and the loss sits at `0.783`. The same 10 steps on a copy with `requires_grad_(True)` move the weights `0.4642` and bring the loss to `0.545`. This is the mistake that made the first phase 5 fine-tune run report the same number at every checkpoint, and printing how far the weights moved is what caught it.
+
+<!-- links: step9/consequence rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [Ng, Understanding Exponentially Weighted Averages, 0:41](https://www.youtube.com/watch?v=NxTFlzBjS-4&t=41s), the value k steps back carries weight 0.1 × 0.9^k.
+- 🎬 Video: [Ng, Understanding Exponentially Weighted Averages, 4:36](https://www.youtube.com/watch?v=NxTFlzBjS-4&t=276s), an entry's weight falls to about 1/e after 1/(1 − β) steps.
+<!-- /links -->
 
 ## Step 10: the reverse step
 
@@ -3455,22 +3534,16 @@ $$
 
 The two coefficients of the posterior mean are $c_1$ and $c_2$, and the sampler puts $\hat x_0$ where the clean point $x_0$ stands. At code step $t=0$, take $\bar\alpha_{-1}=1$ as the limiting clean state (the `Ap` tensor in the build below). The variance $\lambda_t^{-1}$ is the `beta_reverse` choice the notebook did not take.
 
-<!-- video-table: product-of-two-gaussians rev=1 -->
-Michel van Biezen, then Robert Ghrist from the open web, on multiplying two Gaussians, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | The gain is the estimate's error over the sum of both errors, and the new value moves toward the reading by that share, so the surer of the two pulls harder | Intuition | [Van Biezen, Kalman Filter 3 of 55, 0:28 to 3:51](https://www.youtube.com/watch?v=fpRb1sjFz_M&t=28s) |
-| 2 | One update with numbers: an estimate of 68 with error 2 and a reading of 75 with error 4 give 70.33 with error 1.33 | Worked example | [Van Biezen, Kalman Filter 6 of 55, 0:13 to 2:14](https://www.youtube.com/watch?v=SIQJaqYVtuE&t=13s) |
-| 3 | The product of two one-dimensional Gaussians is a scaled Gaussian, found by simplifying the quadratic in the exponent | Proof, open web | [Ghrist, CalcBLUE 3, 18.4, 0:26 to 4:10](https://www.youtube.com/watch?v=lUORBdNccHc&t=26s) |
-| 4 | The same product in several dimensions | Proof, open web | [Ghrist, CalcBLUE 3, 18.4, 4:10 to 5:53](https://www.youtube.com/watch?v=lUORBdNccHc&t=250s) |
-
-Van Biezen works the product as a Kalman filter update and calls the two variances errors: his old value plus the gain times the difference is the precision-weighted mean rearranged, and his new error of 1.33 from 2 and 4 is the two precisions added. No listed creator derives the product of two Gaussian densities, so rows 3 and 4 come from the open web, and no row was found that computes the overlap Z. Rows 1 and 2 are read from automatic captions and good to about 30 seconds; rows 3 and 4 are chapter boundaries, so the sentence inside each is not checked.
-<!-- /video-table -->
-
 🧸 **Toy:** at t = 50, $c_1$ = `0.04249`, $c_2$ = `0.95472`, the posterior variance is `0.0306`, and $\sqrt{\beta_{50}}$ = `0.1776`. At t = 0, $c_1$ = `1.0`, $c_2$ = `0.0` and the posterior variance is `0.0`, so the last step should return $\hat x_0$ itself, but `beta_forward` still adds noise of sd `0.0251`.
 
 🔤 **The name:** [reverse step](../../../../../goal-setting/learning/deep-learning/diffusion-models/02-sampler-correctors-for-composition/plans/07-one-reverse-step-and-the-schedule.md) and [posterior](../../../../../goal-setting/learning/deep-learning/diffusion-models/01-poe-derivation-foundations/textbook/10-completing-the-square.md#104-the-reverse-posterior-qx_t-1--x_t-x_0)
+
+<!-- links: step10/intro rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [Van Biezen, Kalman Filter 6 of 55, 0:13](https://www.youtube.com/watch?v=SIQJaqYVtuE&t=13s), one update with numbers: 68 with error 2 and 75 with error 4 give 70.33 with error 1.33.
+- 🎬 Video: [Ghrist, CalcBLUE 3, 18.4, 0:26](https://www.youtube.com/watch?v=lUORBdNccHc&t=26s), the product of two one-dimensional Gaussians is a scaled Gaussian, proved.
+<!-- /links -->
 
 ---
 
@@ -3571,19 +3644,6 @@ $$
 
 **Read the consequence.** The final posterior mean trusts $\hat x_0$ entirely. Adding noise with standard deviation 0.0251 at that point is a sampler choice, not a requirement of the posterior.
 
-<!-- video-table: ddpm-posterior-and-reverse-step rev=1 -->
-Stanford CME296 on the posterior a DDPM reverse step samples from, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | What q(x_{t−1} given x_t and x_0) asks for: the less noisy image, given the noisy one and the clean one, which training can compute because it knows x_0 | Intuition | [CME296, lecture 1, 1:08:56 to 1:10:05](https://www.youtube.com/watch?v=tr-CUpw--ck&t=4136s) |
-| 2 | Bayes' rule and the Markov property make it proportional to a product of two Gaussians, so it is a Gaussian; its mean is stated, not derived | Proof | [CME296, lecture 1, 1:10:09 to 1:16:33](https://www.youtube.com/watch?v=tr-CUpw--ck&t=4209s) |
-| 3 | The posterior is exact but uses x_0, which only training has, and the learned reverse step is assumed Gaussian too | Intuition | [CME296, lecture 1, 1:16:33 to 1:18:03](https://www.youtube.com/watch?v=tr-CUpw--ck&t=4593s) |
-| 4 | Sampling: start from noise and step from T down to 0, each step a mean built from the noisy image and the predicted noise, plus fresh noise | Intuition | [CME296, lecture 1, 1:28:10 to 1:29:19](https://www.youtube.com/watch?v=tr-CUpw--ck&t=5290s) |
-
-The lecture states the posterior's mean and variance without deriving them (the product-of-two-Gaussians table derives a product's mean), and it does not show the coefficients reaching 1 and 0 at the last step. Times are read from the lecture's captions and good to about 30 seconds.
-<!-- /video-table -->
-
 🔨 **Build:**
 
 ```python
@@ -3604,11 +3664,55 @@ plt.figure(figsize=(4, 4)); plt.scatter(*bar(2000).T, s=1, label="data"); plt.sc
 plt.legend(); plt.gca().set_aspect("equal"); plt.savefig("step10-bar-samples.png"); plt.close()
 ```
 
+<!-- links: step10/consequence rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [CME296, lecture 1, 1:10:09](https://www.youtube.com/watch?v=tr-CUpw--ck&t=4209s), the posterior as a product of two Gaussians, so a Gaussian.
+- 🎬 Video: [CME296, lecture 1, 1:28:10](https://www.youtube.com/watch?v=tr-CUpw--ck&t=5290s), sampling from noise down to step 0, one mean plus fresh noise per step.
+<!-- /links -->
+
 ## Step 11: the check against the datasets plot
+
+<details><summary>The code that draws this figure</summary>
+
+```python
+# toy/rebuild/phase1_check.py, the function that draws the ten panel pairs (helpers tv_samples and sample_last_mean are defined above it there)
+def main(ckpt, out):
+    dev = pick_device(); print(describe(dev))
+    torch.manual_seed(1); rng = np.random.default_rng(1)
+    rows, fig = [], plt.figure(figsize=(16.5, 13))
+    fig.suptitle("1000 samples per dataset (rows 1, 3) and from each trained PyTorch model by reverse diffusion (rows 2, 4)")
+    for j, (name, fn) in enumerate(PANELS.items()):
+        m = load(os.path.join(ckpt, slug(name) + ".pt"), dev)
+        with torch.no_grad():
+            ms = m.sample(5000, dev).cpu().numpy()
+            mm = sample_last_mean(m, 5000, dev).cpu().numpy()
+        d1, d2 = fn(5000, rng=rng), fn(5000, rng=rng)
+        tv, tv_mean, floor = tv_samples(ms, d1), tv_samples(mm, d1), tv_samples(d2, d1)
+        ok = tv - floor <= TOL
+        ok_mean = tv_mean - floor <= TOL
+        mk = "matches" if ok else ("matches without the last-step noise" if ok_mean else "differs")
+        rows.append(dict(panel=name, tv=tv, tv_last_step_mean=tv_mean, floor=floor, mark=mk))
+        print(f"{name:>18}: TV model {tv:.3f} (last-step mean {tv_mean:.3f})  floor {floor:.3f}  gap {tv - floor:+.3f}  {mk}")
+        r, c = 2 * (j // 5), j % 5
+        for rr, pts, title, col in [(r, d1[:1000], name, "tab:blue"), (r + 1, ms[:1000], f"model, TV {tv:.2f} (floor {floor:.2f})", "tab:orange")]:
+            a = fig.add_subplot(4, 5, rr * 5 + c + 1)
+            a.scatter(pts[:, 0], pts[:, 1], s=2, c=col)
+            a.set_xlim(-1.1, 1.1); a.set_ylim(-1.1, 1.1); a.set_title(title, fontsize=9); a.set_aspect("equal")
+    plt.tight_layout(); plt.savefig(os.path.join(out, "datasets-against-trained-models.png"), dpi=90)
+    json.dump(dict(tolerance=TOL, rows=rows), open(os.path.join(out, "phase1.json"), "w"), indent=1)
+    print("all match" if all(r["mark"].startswith("matches") for r in rows) else "some differ")
+```
+
+</details>
 
 <a href="../../../toy/rebuild/out/phase1/datasets-against-trained-models.png"><img src="../../../toy/rebuild/out/phase1/datasets-against-trained-models.png" width="200" alt="ten toy datasets in blue above samples from each trained model in orange, each orange panel titled with its TV and sampling-noise baseline"></a>
 
-**How to read this.** This is the reference run's version of this step: four rows of five panels, each panel the square from −1.1 to 1.1 on both axes. Rows 1 and 3, in blue, are 1000 [samples](../../../../../Obsidian/Mathematics/Statistics/Sampling%20From%20A%20Distribution.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=539 "Pattern recognition and machine learning, chapter 11, Why expectations need samples, ancestral sampling of a directed graph (page 541), standard distribution..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=245 "Introduction to probability for data science, section 4.8, Generates random numbers for any PDF by running a uniform through the inverse CDF, in Python, with..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=606 "Deep learning textbook, section 17.1, Why machine learning samples at all (Monte Carlo estimates of sums and integrals, and sampling as the goal of a generat..."), [▶1](https://www.youtube.com/watch?v=9ixzzPQWuAY&t=474s "ritvikmath, Inverse Transform Sampling, 7:54 to 10:04, Inverts the exponential CDF and turns a uniform draw into an exponential one. Chapter-timed, from the ..."), [▶2](https://www.youtube.com/watch?v=OXDqjdVVePY&t=232s "ritvikmath, Accept-Reject Sampling, 3:52 to 7:45, An easy proposal g scaled by M into an envelope above f, then each draw accepted with probability f/(M g). ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/00-from-scratch-to-sdxl/textbook/l3-stochastic-processes/13-drawing-samples-by-hand.md "Drawing samples by hand: Monte Carlo, inverse transform and accept-reject, deep-learning/diffusion-models/00-from-scratch-to-sdxl, volume L3, section 13. Thr...")</sub> from each of the ten datasets. The orange panel directly below each blue one is 1000 samples from the model trained on that dataset, drawn by reverse diffusion. Each orange title prints the total variation $D_W$ this step computes (0 means identical [histograms](../../../../../Obsidian/Mathematics/Statistics/Histogram.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=129 "Introduction to probability for data science, sections 3.2.4 to 3.2.5, Works a histogram of English letter frequencies and of N die throws approaching the PM..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=139 "Pattern recognition and machine learning, section 2.5, The histogram as a density estimate, p_i = n_i / (N Δ_i), drawn for three bin widths on 50 points from..."), [▶1](https://www.youtube.com/watch?v=qBigTkBLU6g&t=34s "StatQuest, Histograms, Clearly Explained, 0:34 to 3:42, Builds a histogram by stacking measurements into bins. Chapter-timed."), [▶2](https://www.youtube.com/watch?v=AbHn39y8eUo&t=3170s "Professor Leonard, Statistics Lecture 2.2, Data visualization, 52:50 to 1:02:41, Draws the frequency distribution built earlier in the lecture as graphs. Cha..."), [◆](../../../../../goal-setting/learning/deep-learning/generative-models/03-sampling-from-a-graph/plans/06-inverse-cdf-in-code.md "Write the inverse-CDF draw as a function and check its histogram, deep-learning/generative-models/03-sampling-from-a-graph, plan 06. Checks draws from the ex...")</sub>) and, in brackets as "floor", the sampling-noise baseline: the value two independent 1000-sample draws from the data itself would give.
+**How to read this.** This is the reference run's version of this step: four rows of five panels, each panel the square from −1.1 to 1.1 on both axes.
+
+**Blue and orange.** Rows 1 and 3, in blue, are 1000 [samples](../../../../../Obsidian/Mathematics/Statistics/Sampling%20From%20A%20Distribution.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=539 "Pattern recognition and machine learning, chapter 11, Why expectations need samples, ancestral sampling of a directed graph (page 541), standard distribution..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=245 "Introduction to probability for data science, section 4.8, Generates random numbers for any PDF by running a uniform through the inverse CDF, in Python, with..."), [3](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/deep-learning-textbook.pdf#page=606 "Deep learning textbook, section 17.1, Why machine learning samples at all (Monte Carlo estimates of sums and integrals, and sampling as the goal of a generat..."), [▶1](https://www.youtube.com/watch?v=9ixzzPQWuAY&t=474s "ritvikmath, Inverse Transform Sampling, 7:54 to 10:04, Inverts the exponential CDF and turns a uniform draw into an exponential one. Chapter-timed, from the ..."), [▶2](https://www.youtube.com/watch?v=OXDqjdVVePY&t=232s "ritvikmath, Accept-Reject Sampling, 3:52 to 7:45, An easy proposal g scaled by M into an envelope above f, then each draw accepted with probability f/(M g). ..."), [◆](../../../../../goal-setting/learning/deep-learning/diffusion-models/00-from-scratch-to-sdxl/textbook/l3-stochastic-processes/13-drawing-samples-by-hand.md "Drawing samples by hand: Monte Carlo, inverse transform and accept-reject, deep-learning/diffusion-models/00-from-scratch-to-sdxl, volume L3, section 13. Thr...")</sub> from each of the ten datasets. The orange panel directly below each blue one is 1000 samples from the model trained on that dataset, drawn by reverse diffusion.
+
+**The number in each orange title.** Each orange title prints the total variation $D_W$ this step computes (0 means identical [histograms](../../../../../Obsidian/Mathematics/Statistics/Histogram.md#where-to-learn-this)<sub>[1](../../../../../Obsidian/Mathematics/references/textbooks/statistics/introduction-to-probability-for-data-science.pdf#page=129 "Introduction to probability for data science, sections 3.2.4 to 3.2.5, Works a histogram of English letter frequencies and of N die throws approaching the PM..."), [2](../../../../../Obsidian/Mathematics/references/textbooks/machine-learning/pattern-recognition-and-machine-learning.pdf#page=139 "Pattern recognition and machine learning, section 2.5, The histogram as a density estimate, p_i = n_i / (N Δ_i), drawn for three bin widths on 50 points from..."), [▶1](https://www.youtube.com/watch?v=qBigTkBLU6g&t=34s "StatQuest, Histograms, Clearly Explained, 0:34 to 3:42, Builds a histogram by stacking measurements into bins. Chapter-timed."), [▶2](https://www.youtube.com/watch?v=AbHn39y8eUo&t=3170s "Professor Leonard, Statistics Lecture 2.2, Data visualization, 52:50 to 1:02:41, Draws the frequency distribution built earlier in the lecture as graphs. Cha..."), [◆](../../../../../goal-setting/learning/deep-learning/generative-models/03-sampling-from-a-graph/plans/06-inverse-cdf-in-code.md "Write the inverse-CDF draw as a function and check its histogram, deep-learning/generative-models/03-sampling-from-a-graph, plan 06. Checks draws from the ex...")</sub>) and, in brackets as "floor", the sampling-noise baseline: the value two independent 1000-sample draws from the data itself would give.
 
 **What to look for.** Your run worked when each orange panel has its blue panel's shape. Nine of the ten models sit within 0.05 of their baseline. The ring (top left, TV 0.18 against a baseline of 0.05) is the one that misses: its orange modes are visibly wider than the blue ones.
 
@@ -3676,25 +3780,24 @@ $$
 
 **Why one half is there.** Moving probability mass makes one bin lose what another gains, so the absolute differences count that moved mass twice. Without the half, the ring's reported 0.179 would become 0.358.
 
-from 0 (same histogram) to 1 (no shared bin). Points outside $W$ are omitted from the sum but remain in the denominator $n$, because `np.histogram2d` drops them while the code divides by the full sample count. Thus $D_W$ is a windowed, TV-style histogram discrepancy. It is ordinary total variation on the displayed bins only when every point lies in $W$.
+from 0 (same histogram) to 1 (no shared bin). Points outside $W$ are omitted from the sum but remain in the denominator $n$, because `np.histogram2d` drops them while the code divides by the full sample count.
 
-Two independent data draws usually have nonzero $D_W$ because their finite-sample bin counts differ. Their reported value is a sampling-noise baseline for this sample size and binning. It is not a strict lower bound, since another independent draw can fall above or below it. The code prints it under the label `floor`.
+**What kind of distance this is.** Thus $D_W$ is a windowed, TV-style histogram discrepancy. It is ordinary total variation on the displayed bins only when every point lies in $W$.
 
-<!-- video-table: total-variation-distance rev=1 -->
-Mary Wootters, from the open web, on the total variation distance between two distributions, in the order to watch:
+**The sampling-noise baseline.** Two independent data draws usually have nonzero $D_W$ because their finite-sample bin counts differ. Their reported value is a sampling-noise baseline for this sample size and binning.
 
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | TV is half the sum of the absolute differences between the two probability tables, which equals the largest difference in probability the two give any one event | Intuition, open web | [Wootters, Total Variation Distance, 0:16 to 1:35](https://www.youtube.com/watch?v=aJP0Bj6jVkI&t=16s) |
-| 2 | Two bar charts split where each is the higher: the two shaded areas are equal, and each one is the TV | Proof, open web | [Wootters, Total Variation Distance, 1:35 to 3:47](https://www.youtube.com/watch?v=aJP0Bj6jVkI&t=95s) |
-| 3 | A fair coin against one that lands heads 0.6 of the time: TV = ½(0.1 + 0.1) = 0.1 | Worked example, open web | [Wootters, Total Variation Distance, 4:34 to 6:42](https://www.youtube.com/watch?v=aJP0Bj6jVkI&t=274s) |
-
-No listed creator covers it. Wootters compares two known tables; she does not estimate TV from two sets of samples on a binning, so the sampling-noise baseline that two draws of the same data reach is not covered. Times are read from automatic captions and good to about 30 seconds.
-<!-- /video-table -->
+**What the baseline is not.** It is not a strict lower bound, since another independent draw can fall above or below it. The code prints it under the label `floor`.
 
 🧸 **Toy:** on 40 × 40 bins of $[-1.5,1.5]^2$ with 5000 points per side, the full run (`rebuild/out/phase1/phase1.json`) gives the bar a $D_W$ of `0.115` against a sampling-noise baseline of `0.095`. The ring gives `0.179` against a baseline of `0.049`.
 
 🔤 **The name:** [total variation distance](../../../../../goal-setting/learning/deep-learning/diffusion-models/00-from-scratch-to-sdxl/textbook/l3-stochastic-processes/01-a-markov-chain-and-what-forgetting-means.md#definitions)
+
+<!-- links: step11/intro rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [Wootters, Total Variation Distance, 0:16](https://www.youtube.com/watch?v=aJP0Bj6jVkI&t=16s), TV as half the summed absolute differences between two tables.
+- 🎬 Video: [Wootters, Total Variation Distance, 4:34](https://www.youtube.com/watch?v=aJP0Bj6jVkI&t=274s), a fair coin against a 0.6 coin, TV = 0.1.
+<!-- /links -->
 
 ---
 
@@ -3782,6 +3885,62 @@ $$
 
 **Check it on the toy.** With last-step noise, the ring gives 0.179 against baseline 0.049. Returning the last-step mean gives 0.075, which is closer to the baseline.
 
+<details><summary>The code that draws this figure</summary>
+
+```python
+# figures/step11-total-variation.py
+import json
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+from matplotlib.patches import Ellipse
+
+ANNOTATION = "#212121"
+DARK_GREY = "#455a64"
+MID_GREY = "#78909c"
+LIGHT_GREY = "#b0bec5"
+
+root = Path(__file__).resolve().parents[4]
+phase1 = json.loads((root / "rebuild/out/phase1/phase1.json").read_text())
+rows = {row["panel"]: row for row in phase1["rows"]}
+panels = [
+    ("① bar(scale=0.2)", rows["bar(scale=0.2)"]),
+    ("② toy_gmm(std=.03)", rows["toy_gmm(std=.03)"]),
+]
+labels = ["with last\nnoise", "without last\nnoise", "sampling\nbaseline"]
+colors = [DARK_GREY, MID_GREY, LIGHT_GREY]
+
+fig, axes = plt.subplots(1, 2, figsize=(8.8, 4.0), sharey=True)
+for ax, (title, row) in zip(axes, panels):
+    vals = [row["tv"], row["tv_last_step_mean"], row["floor"]]
+    bars = ax.bar(labels, vals, color=colors, width=0.64, edgecolor="white")
+    for index, (bar, value) in enumerate(zip(bars, vals)):
+        if index == 0:
+            y = value + 0.009
+            colour = ANNOTATION
+        else:
+            y = value - 0.011
+            colour = "white" if index == 1 else ANNOTATION
+        ax.text(bar.get_x() + bar.get_width() / 2, y,
+                f"{value:.3f}", ha="center", fontsize=10,
+                fontweight="bold", color=colour)
+    ax.set_title(title)
+    ax.set_ylim(0, 0.23)
+    ax.spines[["top", "right"]].set_visible(False)
+    ax.add_patch(Ellipse((1.5, min(vals[1], vals[2]) + 0.004), 1.9,
+                         abs(vals[1] - vals[2]) + 0.020, fill=False,
+                         edgecolor=ANNOTATION, linewidth=1.8, linestyle="--"))
+    ax.annotate("compare with baseline", xy=(1.5, max(vals[1], vals[2]) + 0.002),
+                xytext=(0.55, 0.208),
+                arrowprops=dict(arrowstyle="-|>", color=ANNOTATION),
+                color=ANNOTATION, fontsize=9, fontweight="bold")
+axes[0].set_ylabel(r"windowed total variation $D_W$")
+fig.tight_layout()
+fig.savefig(Path(__file__).with_suffix(".png"), dpi=160)
+```
+
+</details>
+
 <a href="figures/step11-total-variation.png"><img src="figures/step11-total-variation.png" width="620" alt="Two bar-chart panels for the bar and ring datasets. Each compares total variation with last noise, without last noise, and the sampling-noise baseline. The ring falls from 0.179 to 0.075 against baseline 0.049."></a>
 
 **How to read this chart.** The y-axis is $D_W$, with zero meaning matching displayed histograms. The x-axis names the sampler choice or baseline. Each bar is one entry from the table, and its value is printed above it.
@@ -3835,21 +3994,9 @@ $$
 
 **Why the square root is there.** The sum 0.001531 is a variance, not the width shown in the plot. Its square root is 0.0391, which puts the result back in the same standard-deviation units as the incoming 0.03.
 
-This is the width predicted from the last noise alone. The trained sampler's measured width is `0.0425`, so the remaining difference can also contain model and earlier reverse-step error. Empirically, returning the last-step mean with `last_noise=False` (Step 10) lowers the ring's $D_W$ from `0.179` to `0.075`, against the sampling-noise baseline `0.049`. The notebook's sampler also adds noise at code step $t=0$.
+**What the measured width adds.** This is the width predicted from the last noise alone. The trained sampler's measured width is `0.0425`, so the remaining difference can also contain model and earlier reverse-step error.
 
-<!-- video-table: total-variation-distance-properties rev=1 -->
-Philippe Rigollet (MIT 18.650, from the open web) on total variation distance as a true distance between distributions, in the order to watch:
-
-| Order | What it covers | Kind | Watch |
-|---|---|---|---|
-| 1 | TV is the largest gap the two distributions give any one event; a TV of 0.01 puts every probability within 0.01 of the true one | Intuition, open web | [Rigollet, MIT 18.650 lecture 4, 35:35 to 40:18](https://www.youtube.com/watch?v=rLlZpnT02ZU&t=2135s) |
-| 2 | For densities, TV is half the area between the two curves, drawn for two Gaussians | Intuition, open web | [Rigollet, MIT 18.650 lecture 4, 45:54 to 48:37](https://www.youtube.com/watch?v=rLlZpnT02ZU&t=2754s) |
-| 3 | It is a distance: symmetric, never negative, zero only when the two distributions agree, and it obeys the triangle inequality | Proof, open web | [Rigollet, MIT 18.650 lecture 4, 48:41 to 51:37](https://www.youtube.com/watch?v=rLlZpnT02ZU&t=2921s) |
-| 4 | Half the summed gap equals the largest event gap, which is reached on the set where one density is above the other | Proof, open web | [Rigollet, MIT 18.650 lecture 4, 51:49 to 1:00:17](https://www.youtube.com/watch?v=rLlZpnT02ZU&t=3109s) |
-| 5 | Why TV is hard to estimate from samples: it is not an average of anything over the data, which is why maximum likelihood turns to KL instead | Intuition, open web | [Rigollet, MIT 18.650 lecture 4, 1:02:26 to 1:05:03](https://www.youtube.com/watch?v=rLlZpnT02ZU&t=3746s) |
-
-No listed creator covers it. Rigollet never bins two sample sets, so the sampling-noise baseline still has no video, and his only number is the 0.01 bound; Wootters' coin in the earlier total variation table is the worked example. Times are read from automatic captions and good to about 30 seconds.
-<!-- /video-table -->
+**What removing the last noise does.** Empirically, returning the last-step mean with `last_noise=False` (Step 10) lowers the ring's $D_W$ from `0.179` to `0.075`, against the sampling-noise baseline `0.049`. The notebook's sampler also adds noise at code step $t=0$.
 
 🔨 **Build:**
 
@@ -3863,4 +4010,13 @@ def tv(a, b):
 print("bar: TV model", round(tv(sample(ema, 5000), bar(5000)), 3), " floor", round(tv(bar(5000), bar(5000)), 3))
 ```
 
-After 2000 steps the bar is not there yet: the run behind this document printed a $D_W$ of `0.239` against a sampling-noise baseline of `0.098`. Part of the gap is the moving average, which at step 2000 still carries weights from the first few hundred steps (Step 9's half-life is 693). The 15,001-step model reaches `0.115` against `0.095`, within the 0.10 the check allows. To see all ten models at full length, run `python -m rebuild.train` per dataset (or `bash rebuild/launch_phase1.sh`) and then `python -m rebuild.phase1_check`, and open `rebuild/out/phase1/datasets-against-trained-models.png`.
+**What the short run reaches.** After 2000 steps the bar is not there yet: the run behind this document printed a $D_W$ of `0.239` against a sampling-noise baseline of `0.098`. Part of the gap is the moving average, which at step 2000 still carries weights from the first few hundred steps (Step 9's half-life is 693).
+
+**The full-length models.** The 15,001-step model reaches `0.115` against `0.095`, within the 0.10 the check allows. To see all ten models at full length, run `python -m rebuild.train` per dataset (or `bash rebuild/launch_phase1.sh`) and then `python -m rebuild.phase1_check`, and open `rebuild/out/phase1/datasets-against-trained-models.png`.
+
+<!-- links: step11/consequence rev=1 -->
+🔗 **Where else this lives**
+
+- 🎬 Video: [Rigollet, MIT 18.650 lecture 4, 45:54](https://www.youtube.com/watch?v=rLlZpnT02ZU&t=2754s), for densities, TV is half the area between the two curves.
+- 🎬 Video: [Rigollet, MIT 18.650 lecture 4, 1:02:26](https://www.youtube.com/watch?v=rLlZpnT02ZU&t=3746s), why TV is hard to estimate from samples.
+<!-- /links -->
