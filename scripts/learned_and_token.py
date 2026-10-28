@@ -8,11 +8,14 @@ through the frozen encoders and the frozen UNet.
 
     python scripts/learned_and_token.py --check-token      "<and>" must encode exactly as "and" does
     python scripts/learned_and_token.py --baseline         held-out share removed with the untrained token
+    python scripts/learned_and_token.py --train --steps 2000 --eval-every 500 --name run1
 """
 from __future__ import annotations
 
 import argparse
 import json
+import random
+import time
 import os
 import sys
 from pathlib import Path
@@ -150,6 +153,57 @@ def baseline() -> None:
               + f"   mean {sum(v) / len(v):+.3f}", flush=True)
 
 
+def report(tag: str, res: dict[int, list[float]]) -> bool:
+    """One line per eval step; True when the 10% stop rule fires (every step's mean under 10%)."""
+    means = {st: sum(v) / len(v) for st, v in res.items()}
+    print(f"{tag} held-out share removed, mean over seeds 9..16: "
+          + "  ".join(f"step {st}: {m:+.3f}" for st, m in means.items()), flush=True)
+    return all(m < 0.10 for m in means.values())
+
+
+def train(steps: int, eval_every: int, lr: float, name: str, seed: int) -> None:
+    from poe_repair.run import make_ctx
+
+    out = Path("/datasets/mmolefe/poe_repair_min/outputs/learned_and_token") / name
+    out.mkdir(parents=True, exist_ok=True)
+    cells = pool_cells()
+    ctx = make_ctx()
+    models, device, dtype = ctx.models, ctx.device, ctx.dtype
+    models["unet"].requires_grad_(False)
+    models["unet"].enable_gradient_checkpointing()
+    models["unet"].train()
+    tok = AndToken(models)
+    opt = torch.optim.Adam(tok.rows.parameters(), lr=lr)
+    rng = random.Random(seed)
+    print(f"train: {len(cells)} cells, {steps} steps, lr {lr}, eval every {eval_every}, out {out}", flush=True)
+    report("step 0", share_removed(models, tok, device, dtype))
+    t0, run = time.time(), []
+    for it in range(1, steps + 1):
+        pair, cell_seed = rng.choice(cells)
+        st = load_state("train", pair, cell_seed, rng.randrange(50), device)
+        target, _ = and_target(st)
+        e = eps_and(models, tok, st, device, dtype, grad=True)
+        sq = (e - target) ** 2
+        opt.zero_grad(set_to_none=True)
+        sq.sum().backward()  # summed, so fp16 gradients through the UNet do not underflow; Adam is scale-free
+        if all(torch.isfinite(r.grad).all() for r in tok.rows):
+            opt.step()
+        else:
+            print(f"iter {it}: non-finite gradient, step skipped", flush=True)
+        run.append(sq.mean().item())
+        if it % 10 == 0:
+            print(f"iter {it}: loss (mean squared error per element) {sum(run[-10:]) / 10:.5f}, "
+                  f"rows' norms {[round(r.norm().item(), 4) for r in tok.rows]}, "
+                  f"peak memory {torch.cuda.max_memory_allocated() / 2**30:.1f} GiB, "
+                  f"{time.time() - t0:.0f} s", flush=True)
+        if eval_every and it % eval_every == 0 or it == steps:
+            fired = report(f"iter {it}", share_removed(models, tok, device, dtype))
+            torch.save({"rows": [r.detach().cpu() for r in tok.rows], "ids": tok.ids, "iter": it},
+                       out / f"rows_iter{it:05d}.pt")
+            if it == steps:
+                print(f"stop rule (every step's mean under 10% after {steps} steps): {fired}", flush=True)
+
+
 def check_token() -> None:
     from poe_repair.run import make_ctx
 
@@ -177,7 +231,15 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--check-token", action="store_true")
     ap.add_argument("--baseline", action="store_true")
+    ap.add_argument("--train", action="store_true")
+    ap.add_argument("--steps", type=int, default=2000)
+    ap.add_argument("--eval-every", type=int, default=500)
+    ap.add_argument("--lr", type=float, default=1e-3)
+    ap.add_argument("--name", default="run")
+    ap.add_argument("--seed", type=int, default=0)
     args = ap.parse_args()
+    if args.train:
+        train(args.steps, args.eval_every, args.lr, args.name, args.seed)
     if args.check_token:
         check_token()
     if args.baseline:
