@@ -93,8 +93,12 @@ fast-forwarded to the committed branch. Every path on a launch line is absolute,
 
 ### 3. 🔧 The trainer, 50 steps (AI, ~15 min)
 
-- [ ] **Run** 50 training steps with UNet gradient checkpointing and the 1 GB guard.
-- [ ] **📸 You should see** the loss fall and the peak memory printed under 48 GB.
+- [x] **Run** 50 training steps with UNet gradient checkpointing and the 1 GB guard.
+  ✓ ran 2026-10-28 on mscluster109 device 0, log `.../logs/smoke.log`.
+- [x] **📸 You should see** the held-out share rise and the peak memory printed under 48 GB.
+  ✓ confirmed by hand 2026-10-28 ("done", screenshot of the log): peak 7.4 GiB, held-out means rose at all
+  four steps (−0.142, −0.064, −0.086, −0.052 to −0.116, −0.011, −0.024, −0.033); the per-update loss is
+  noisy because each update draws a different pair and step.
 
 ### 4. 🔧 The 2,000-step run (AI, hours, unattended)
 
