@@ -262,7 +262,8 @@ def _unet_eps(tok, unet, x, t, seq, cond, n, third: bool) -> torch.Tensor:
     return out
 
 
-def render_tiles(ctx, tok, a: str, b: str | None, seeds: list[int], third: bool | str, out_dir: Path) -> list[Path]:
+def render_tiles(ctx, tok, a: str, b: str | None, seeds: list[int], third: bool | str, out_dir: Path,
+                 oracle: bool = False) -> list[Path]:
     """PoE(a, b) or PoE(a, b, third) per seed (third is True for the bare token, or the third expert's prompt), the loop and noise of scripts/and_vector_sheet.py."""
     from concept_pair_sheet import NOISE_PAIR
     from poe_repair.composers._helpers import init_latents_for_cell
@@ -280,6 +281,8 @@ def render_tiles(ctx, tok, a: str, b: str | None, seeds: list[int], third: bool 
     seq = torch.cat([e for e, _ in embs]).to(dtype)
     pool = torch.cat([q for _, q in embs]).to(dtype)
     n = len(embs)
+    if oracle:  # the third slot is set each step to the exact target, so the product must equal the guided joint
+        seq_j, pool_j = (x.to(dtype) for x in enc(f"{a} and {b}"))
     unet = m["unet"]
     was_training = unet.training
     unet.eval()
@@ -298,6 +301,12 @@ def render_tiles(ctx, tok, a: str, b: str | None, seeds: list[int], third: bool 
             for i, t in enumerate(sched.timesteps):
                 eps = _unet_eps(tok, unet, sched.scale_model_input(lat.repeat(n, 1, 1, 1), t), t, seq, cond, n, bool(third))
                 e_u = eps[-1:]
+                if oracle:
+                    cond_j = {"text_embeds": pool_j, "time_ids": add_time_ids(height=cell.height, width=cell.width,
+                                                                              batch_size=1, device=device, dtype=dtype)}
+                    e_j = unet(sched.scale_model_input(lat, t), t, encoder_hidden_states=seq_j,
+                               added_cond_kwargs=cond_j, timestep_cond=None).sample
+                    eps[n - 2] = e_j[0] + 2 * e_u[0] - eps[0] - eps[1]
                 eg = e_u + w * sum(eps[k:k + 1] - e_u for k in range(n - 1))
                 abar = sched.alphas_cumprod[int(t.item())].to(device=device, dtype=dtype)
                 lat = ddim_prev_from_x0_eps(scheduler=sched, timestep=t, step_index=i,
@@ -348,6 +357,29 @@ def _sheet(heads: list[str], dirs: list[Path], seeds: list[int], out: Path):
                         (label + i * size, head + r * size))
     sheet.save(out)
     return sheet
+
+
+def oracle_sheet(out_dir: Path, pair: str, seeds: list[int]) -> None:
+    """The sampler check: joint, plain PoE and PoE with the exact target in the third slot, same seeds and noise.
+    The last column must equal the first up to half-precision rounding, else the target or the sampler is wrong."""
+    from PIL import Image
+    import numpy as np
+    from poe_repair.run import make_ctx
+
+    ctx = make_ctx()
+    tok = AndToken(ctx.models)
+    a, b, joint = pair_prompts(pair)
+    render_tiles(ctx, tok, joint, None, seeds, False, out_dir / "joint")
+    render_tiles(ctx, tok, a, b, seeds, False, out_dir / "plain_poe")
+    render_tiles(ctx, tok, a, b, seeds, True, out_dir / "oracle", oracle=True)
+    for n in ("plain_poe", "oracle"):
+        d = [np.abs(np.asarray(Image.open(out_dir / n / f"seed{sd:02d}.png").convert("RGB"), dtype=float)
+                    - np.asarray(Image.open(out_dir / "joint" / f"seed{sd:02d}.png").convert("RGB"), dtype=float)).mean()
+             for sd in seeds]
+        print(f"{n} vs joint, mean absolute pixel difference per seed (0 to 255): "
+              + " ".join(f"{x:.2f}" for x in d) + f"   mean {sum(d) / len(d):.2f}", flush=True)
+    _sheet([f'"{joint}"', f"PoE({a}, {b})", f"PoE({a}, {b}, exact target)"],
+           [out_dir / "joint", out_dir / "plain_poe", out_dir / "oracle"], seeds, out_dir / "sheet_oracle.png")
 
 
 def pair_prompts(pair: str) -> tuple[str, str, str]:
@@ -563,10 +595,13 @@ if __name__ == "__main__":
     ap.add_argument("--hyper-rank", type=int, default=0, help="rows written from the pair by a rank-r network")
     ap.add_argument("--lora-rank", type=int, default=0, help="LoRA on the UNet cross-attention keys and values, third expert only")
     ap.add_argument("--lora-lr", type=float, default=1e-4)
+    ap.add_argument("--oracle-sheet", type=Path, metavar="OUT_DIR")
     ap.add_argument("--pairs-sheet", type=Path, metavar="RUN_DIR")
     ap.add_argument("--iter", type=int, default=8000)
     ap.add_argument("--pairs", nargs="*", default=[], metavar="PAIR:SPLIT:SEEDS")
     args = ap.parse_args()
+    if args.oracle_sheet:
+        oracle_sheet(args.oracle_sheet, HELD_OUT[0], args.render_seeds or list(HELD_OUT[1]))
     if args.pairs_sheet:
         pairs_sheet(args.pairs_sheet, args.iter, args.pairs, args.wandb_id, args.in_sentence, args.hyper_rank, args.lora_rank)
     if args.grid:
