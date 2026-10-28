@@ -398,10 +398,58 @@ The two smaller values are `p5.Z_next_door_by_hand` and `p5.Z_opposite_by_hand`.
 
 ```bash
 cd /home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy
-/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -c "import json; s = json.load(open('artifacts/scenes/three-ways-a-product-reaches-a-and-b/scene_key.json'))['support']; [print('B at', k, 'Z', f\"{s[k]['Z']:.3g}\", 'origin share', round(s[k]['at_origin'], 3)) for k in ('TL', 'TR', 'BR')]"
+/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -c "import json; s = json.load(open('../artifacts/scenes/three-ways-a-product-reaches-a-and-b/scene_key.json'))['support']; [print('B at', k, 'Z', f\"{s[k]['Z']:.3g}\", 'origin share', round(s[k]['at_origin'], 3)) for k in ('TL', 'TR', 'BR')]"
 ```
 
 ⏱ you 30 to 60 min · stop: it prints `B at TL Z 7.9e-10 origin share 0.989`, `B at TR Z 5.29e-05 origin share 0.032` and `B at BR Z 3.54 origin share 0.0`, and your three Z values match to the digits shown. The 0.989 at the origin with B opposite is where the normalised product's mass sits, so a sampler that reaches the product returns samples there.
+
+### 5c. AI, then you: this layer's samplers on layer 4b's pictures
+
+**Why this step exists.** Layer 4b and this layer disagree on whether reverse diffusion finds the pair once the pair is in training: 4b's guided-sum DDIM draws the two shapes apart 17 of 200 times at a caption share of 1 in 20, while the parts world's reverse diffusion reaches 0.969 of the exact mass at 5% ([the two walks reconciled](../../../notes/what-poe-loses-when-it-composes/two-walks-reconciled.md), disagreement 2). The two toys also tune MALA to different acceptances (about one half against 0.6, disagreement 6), and 4b reports counts where this layer reports total variation (disagreement 11). Running this layer's samplers on 4b's pictures leaves one difference standing, the size of the picture (1,536 numbers against 2), so the answer says whether the size is what drives the gap.
+
+```text
+Task: in /home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy, write
+rebuild/settle_samplers_on_pictures.py and run it: layer 5's samplers on layer 4b's 8 × 16
+circle-and-square experts, against the exact product, at a caption share of 1 in 20.
+Starts from: artifacts/notes/what-poe-loses-when-it-composes/fig_ddim_guided.py (4b's pictures:
+three red circles and three blue squares at columns 3, 8 and 13 of row 4, the pair picture, σ = 0.1,
+the 16-picture library and read_out's six kinds, the cosine schedule, guided-sum DDIM);
+artifacts/notes/what-poe-loses-when-it-composes/toy_sampler_hybrids.py (an earlier 16 × 32 version
+with exact draws, reverse diffusion and annealed MALA on the product); rebuild/samplers.py and
+anneal_samplers.py (this layer's ULA, MALA, tuned MALA and UHA).
+Settled facts:
+- Code paths (rebuild/, anneal_samplers.py, tests/, notebooks/) are under toy/ in this repo, and python -m rebuild.<script> runs from toy/.
+- The exact product at share 1 in 20 and σ = 0.1 puts its weight on the pair with itself, because
+  that pairing has d² = 0 against 32 and more for every other (today-the-toy-failure-in-six-checkpoints.md,
+  checkpoint 5).
+- 4b measured with 200 DDIM steps: no pair, w = 1 gives 122 overlay and 78 pale-apart; pair at 1 in 20,
+  w = 1 gives 115 overlay, 68 pale-apart and 17 apart (fig-ddim-guided.json).
+- At 50 steps and w = 7.5 the DDIM overshoots into single shapes; use 200 steps (same file).
+- This layer's tuned MALA lags the exact mass at low overlap, 0.17 against 0.30 at 5%
+  (phase5_tables).
+Outputs: toy/rebuild/out/settle/samplers-on-pictures.json and .png. For each sampler (exact draws,
+reverse diffusion on summed scores, guided-sum DDIM at w = 1, annealed ULA, annealed MALA tuned to
+an acceptance of 0.57, annealed UHA): counts over read_out's six kinds out of 200, total variation
+between that six-kind histogram and the exact draws' histogram, and MALA's measured acceptance per
+noise level. The figure: one row per sampler, eight samples each, with its counts on the row.
+Target, written before the run: if reverse diffusion and tuned MALA each put at least 0.9 of their
+draws on "apart", the gap was 4b's guided-sum DDIM and not the picture's size, so 4b's sentence
+"the failure is in the sampler" narrows to that sampler; if each puts under 0.3 on "apart", the
+size drives it, and layer 12's reliance on samplers recovering most of the mass is in doubt; between
+0.3 and 0.9 is inconclusive and the next run doubles the steps.
+Progress: one line per sampler as it finishes, with its counts.
+Proof: python -m rebuild.settle_samplers_on_pictures --check prints the exact draws' histogram,
+which must put at least 195 of 200 on "apart".
+Limits: CPU or one card under 1 GB in use; under 30 minutes; seed 0; nothing outside toy/rebuild/.
+Hand-off: write the six rows and which of the three outcomes held into this step, under "Result".
+```
+
+added: the whole step, from the reconcile file's disagreements 2, 6 and 11, with the starting scripts and numbers from 4b's files
+dropped: nothing
+
+**Result:** (lands here)
+
+⏱ you ~20 min to read the rows · AI ~40 min, beside step 5b · stop: the six rows are filled in and one of the three outcomes is named
 
 ### 6. AI, in the background: the scene
 

@@ -380,7 +380,7 @@ dropped: nothing
 ```bash
 cd /home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -m rebuild.walk_numbers | grep 'p9\.'
-grep -A 9 '^\*\*r = ' artifacts/ideas/when-poe-reaches-a-and-b/runs/sampler-by-expert-interaction/README.md
+grep -A 9 '^\*\*r = ' ../artifacts/ideas/when-poe-reaches-a-and-b/runs/sampler-by-expert-interaction/README.md
 cd ~/Playground/PhD/simple-distributions-walk
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python walk09.py
 ```

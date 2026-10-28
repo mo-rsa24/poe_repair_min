@@ -109,9 +109,9 @@ Layers 4, 4b and 5 were built on two toys, and the two disagree in places. [The 
 | # | The disagreement | Settled by | At |
 |---|---|---|---|
 | 1 | Which picture the exact product fuses into: the overlay (4b, 200 of 200) or the ghost and two animals (4, by background spread) | a run: checkpoint 3 with the background at σ 1.0, and the parts world with cat and dog encoded so they do not cancel | before 4b's close |
-| 2 | Whether reverse diffusion finds the pair once it is in training: 17 of 200 on 4b against 0.969 of the exact mass on 4 | a run: layer 5's samplers on 4b's 8 × 16 toy at a share of 1 in 20 | layer 5, step 5 |
-| 6 | MALA's acceptance: tuned to about one half on 4b, to 0.6 on 2 and 5; the "accepts nearly every move" step accepted 0.377 in 1,536 dimensions | the same run as 2, tuned to one stated acceptance | layer 5, step 5 |
-| 11 | Counts alone (4b) against counts with total variation (5) | the same run as 2, reporting total variation to the exact draws beside the counts | layer 5, step 5 |
+| 2 | Whether reverse diffusion finds the pair once it is in training: 17 of 200 on 4b against 0.969 of the exact mass on 4 | a run: layer 5's samplers on 4b's 8 × 16 toy at a share of 1 in 20 | layer 5, step 5c |
+| 6 | MALA's acceptance: tuned to about one half on 4b, to 0.6 on 2 and 5; the "accepts nearly every move" step accepted 0.377 in 1,536 dimensions | the same run as 2, tuned to one stated acceptance | layer 5, step 5c |
+| 11 | Counts alone (4b) against counts with total variation (5) | the same run as 2, reporting total variation to the exact draws beside the counts | layer 5, step 5c |
 | 3, 4, 5, 7, 8, 9, 10, 12 | sentences in the write-up and the structural route that state as settled what depends on a setting | a rewrite, no run | before layer 6 |
 
 **Ideas that tie the ladder together.** Eight ideas, each with an exact toy check and a cost, ranked by how far each moves the goal per hour: [the ideas memo](../../ideas/ideas-that-tie-the-ladder-together.md). The layers they attach to link the ones they use.

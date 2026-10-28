@@ -416,7 +416,7 @@ cd /home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -m rebuild.walk_numbers | grep 'p2\.'
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -m pytest tests/test_anneal_samplers.py -s
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -m rebuild.phase3_kinds --out ~/Playground/PhD/simple-distributions-walk/phase3-reference | sed -n '/Run 1/,/Run 2/p'
-grep -o 'largest difference[^"]*' artifacts/ideas/poe-overlap-dial/what-an-expert-learns-and-kinds-of-composition.ipynb
+grep -o 'largest difference[^"]*' ../artifacts/ideas/poe-overlap-dial/what-an-expert-learns-and-kinds-of-composition.ipynb
 cd ~/Playground/PhD/simple-distributions-walk
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python walk02.py
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python walk02b.py

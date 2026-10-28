@@ -319,7 +319,7 @@ dropped: "a floor of 0.013", now the exact-draw baseline (from the Codex mathema
 
 ```bash
 cd /home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy
-/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -m json.tool artifacts/ideas/poe-overlap-dial/example-9-parts-world/numbers.json
+/home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -m json.tool ../artifacts/ideas/poe-overlap-dial/example-9-parts-world/numbers.json
 /home-mscluster/mmolefe/miniforge3/envs/co3/bin/python -c "import json; d = json.load(open('rebuild/out/phase4/phase4.json'))['settings']; [print(s, '|', c, '| TV', round(x['tv'], 3), '| weight error', round(x['weight_error'], 3), '| half-means', [round(m, 3) for m in x['half_means']]) for s in d for c, x in d[s]['samplers'].items()]"
 cd ~/Playground/PhD/simple-distributions-walk
 export PYTHONPATH=/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain/toy

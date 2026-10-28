@@ -241,6 +241,23 @@ it, then say what you see before moving on.
   `claude --resume 7d7e9267-8dbd-410e-9119-a9cb72be2161` if it is closed).
   ```
 
+- [ ] **⚖️ Settle against the parts world: which picture the product fuses into.** This toy's product
+  draws the same-place overlay 200 of 200. The cluster ladder's [parts world](../../artifacts/drips/simple-distributions-rebuild/ladder/04-the-parts-world.md),
+  at the same σ = 0.1, draws a pale "ghost" (this toy's "pale, apart") with a tight background and two
+  full animals with a loose one ([the two walks reconciled](../../artifacts/notes/what-poe-loses-when-it-composes/two-walks-reconciled.md),
+  disagreement 1). Two runs move one thing each, so the gap is named:
+  - **This toy with a loose background.** Add a blank picture to each word's set with its own spread
+    σ_bg = 1.0, keep the shapes at σ = 0.1, and draw 200 from the exact product.
+  - **The parts world encoded like this toy.** Encode cat and dog on separate channels instead of +1
+    and −1 on the same pixels, so the two cannot cancel, and draw 200 from its exact product
+    (`toy/rebuild/parts_world.py`, from `toy/`).
+  - **✅ Check, written before running:** if this toy with the loose background draws mostly two
+    shapes apart, the background spread is what decides the picture on both toys. If the
+    channel-encoded parts world draws overlays, the encoding decides it. If neither moves, the toys
+    differ in something else, and that goes back to the reconcile file as an open row.
+  - **What it changes:** the write-up's general sentence on which picture the product fuses into
+    (§8.2) is rewritten to name the setting it holds for.
+
 ### 4. 🔧 The exact sum: the control
 
 - **📖 Read first:** [§2.2, the two operators](what-poe-loses-when-it-composes.md#22-two-operators), and "what the sum does" in [§8.2](what-poe-loses-when-it-composes.md#82-the-model-of-a-word-in-plain-terms).
