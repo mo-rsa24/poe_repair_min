@@ -64,16 +64,19 @@ class AndToken:
         """The repo's SDXL prompt encoding, with the new token known and gradient optional."""
         m = self.models
         with torch.set_grad_enabled(grad):
-            outs = []
+            outs, all_ids = [], []
             for tok_key, enc_key in ENCODERS:
                 tok = m[tok_key]
                 ids = tok([prompt], padding="max_length", max_length=tok.model_max_length,
                           truncation=True, return_tensors="pt").input_ids.to(device)
+                all_ids.append(ids)
                 outs.append(m[enc_key](ids, output_hidden_states=True))
             embeds = torch.cat([outs[0].hidden_states[-2], outs[1].hidden_states[-2]], dim=-1).to(dtype)
-            pooled = outs[1][0]
-            if pooled.ndim != 2:
-                pooled = outs[1].text_embeds
+            # HF pools at the highest token id, which is "<and>" (49408) rather than the end token
+            # (49407), so pool at the first end-of-text position and project, as the library does.
+            eos = (all_ids[1] == m["tokenizer_2"].eos_token_id).int().argmax(dim=-1)
+            last = outs[1].last_hidden_state[torch.arange(len(eos), device=device), eos]
+            pooled = m["text_encoder_2"].text_projection(last)
         return embeds, pooled.to(dtype)
 
 
@@ -83,6 +86,13 @@ def check_token() -> None:
     ctx = make_ctx()
     tok = AndToken(ctx.models)
     kw = dict(device=ctx.device, dtype=ctx.dtype, grad=False)
+    from poe_repair.runtime import encode_prompt_sdxl
+
+    for p in ("and", "dog and cat"):
+        er, pr = encode_prompt_sdxl(p, models=ctx.models, device=ctx.device, dtype=ctx.dtype)
+        em, pm = tok.encode(p, **kw)
+        print(f"repo encoder vs this one on {p!r}: embeds {(er - em).abs().max().item():.3g}, "
+              f"pooled {(pr - pm).abs().max().item():.3g}", flush=True)
     for a, b in (("and", TOKEN), ("dog and cat", f"dog {TOKEN} cat")):
         ea, pa = tok.encode(a, **kw)
         eb, pb = tok.encode(b, **kw)
