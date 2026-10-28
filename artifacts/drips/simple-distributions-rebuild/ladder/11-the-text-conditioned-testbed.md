@@ -1,8 +1,16 @@
-# ◇ Layer 11: the 32 × 32 text-conditioned testbed
+# ⭐ Layer 11: the 32 × 32 text-conditioned testbed
 
-⬅️ [Layer 10: latent space](10-latent-space-and-vaes.md) · 🏠 [the guide](../PROMPTS.md) · [Layer 12: at scale](12-the-correction-at-scale.md) ➡️
+⬅️ [Layer 10: latent space](10-latent-space-and-vaes.md) · 🏠 [the guide](../PROMPTS.md) · Layer 11b: cats and dogs (step file written at its open) · [Layer 12: at scale](12-the-correction-at-scale.md) ➡️
 
-**Why it is optional.** The toys cannot show failures that come from the text encoder or cross-attention, such as leakage or a dropped concept. The goal does not need that explanation. A paper about Stable Diffusion's hybrids would.
+**Why it is critical.** The toys cannot show failures that come from the text encoder or cross-attention, such as leakage or a dropped concept, and SDXL has both. A correction that works on the toys and fails on SDXL could be failing on either, so each gets its own rung ([the axes](../PROMPTS.md#the-axes-one-new-variable-per-rung), rungs g, h and i).
+
+**Three builds, one variable each.** Step 2's build runs in three stages on the same 32 × 32 data, and each stage is compared only with the one before it:
+
+- **Build A, a text encoder.** Labels become learned embeddings that condition the denoiser by addition, with no attention. Against layer 10, only the conditioning changes.
+- **Build B, cross-attention.** The same embeddings enter through cross-attention instead. Against build A, only the route the text takes changes.
+- **Build C, two encoders.** A second encoder's embedding is joined to the first, as in SDXL. Against build B, only the second encoder is new.
+
+The idea walk in step 1 picks the candidate causes each stage tests; its plan sets the bars.
 
 **Depth.** Gloss until the idea walk below compiles; its plan then sets the depth and the quizzes.
 

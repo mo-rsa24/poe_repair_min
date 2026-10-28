@@ -1,8 +1,8 @@
-# ◇ Layer 10: latent space and VAEs
+# ⭐ Layer 10: latent space and VAEs
 
 ⬅️ [Layer 9: the correction](09-the-correction-learned-back.md) · 🏠 [the guide](../PROMPTS.md) · [Layer 11: the testbed](11-the-text-conditioned-testbed.md) ➡️
 
-**Why it is optional.** Construction (1) and negation are unchanged by an invertible change of space, so the guided compositions Stable Diffusion runs carry over to its latent. This layer matters only if you compose with the plain product in a latent, or want to explain what the latent does.
+**Why it is critical.** The latent is the one variable this rung adds ([the axes](../PROMPTS.md#the-axes-one-new-variable-per-rung), rung f). Construction (1) and negation are unchanged by an invertible change of space, so the guided compositions Stable Diffusion runs would carry over to its latent if its VAE were invertible. It is not: the decoder loses detail, so whether the invariance survives has to be measured on a VAE, not assumed from the theorem. The plain product in a latent is a second reason, since it is not invariant even under an invertible warp.
 
 **Depth.** Own: why a composition whose exponents sum to 1 survives an invertible warp. Build: composing before and after a warp. Quiz R.1 already covered change of variables, so this layer has one quiz. You 2.2 to 4.7 h in all.
 

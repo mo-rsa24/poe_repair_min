@@ -65,6 +65,26 @@ Each quiz on the college maths beneath a layer adds 20 to 40 minutes. A `--reque
 
 A walk ends when its bar is checked. A box running out is the warning to switch to `--depth objective` or `faster`, and a missed bar gets one round of diagnose, fix and recheck at half the box.
 
+## The axes: one new variable per rung
+
+SDXL can fail to compose for many reasons at once: two text encoders, image and text embeddings, cross-attention, a VAE, a learned denoiser, the PoE rule and its sampler, guidance, and what the training captions say. None of them can be held fixed inside SDXL. So the ladder adds them one at a time, from a 2D toy up, and each rung's comparison with the rung below differs in that one variable only. A rung that adds two at once cannot say which one did it.
+
+| Rung | The variable this rung adds | Held as on the rung below | Layer |
+|---|---|---|---|
+| a | a learned expert, against the ideal one | the data, the rule, the sampler | 1, 3 |
+| b | the combination rule and the sampler (Du's notebook: tuned samplers beat plain PoE) | the experts | 2 |
+| c | co-occurrence in the data: how much of A-and-B each training set holds | the rule, the samplers | 4, 4b, 5 |
+| d | guidance | the data at a fixed share | 6 |
+| e | the interaction term, defined, then a correction learned back | everything below | 8, 9 |
+| f | a VAE latent, which SDXL's decoder cannot invert exactly | the toy experts and the correction | 10 |
+| g | a text encoder: labels become embeddings, no attention yet | the latent, the data | 11, build A |
+| h | cross-attention between the image and the text embeddings | the encoder | 11, build B |
+| i | a second text encoder, as SDXL has | the attention | 11, build C |
+| j | real images: curated cats and dogs, with the caption co-occurrence set by hand | the architecture of build C | 11b |
+| k | SDXL itself | the correction from j | 12 |
+
+Layer 7 (negation), the reading stop and the prior-art stop are side rungs: they add no variable, and the rungs above do not depend on them except where a layer names them. Every rung's falsification line names the one variable it moved; a result from a rung that moved two is marked mixed where it is reported.
+
 ## The ladder
 
 ```text
@@ -74,12 +94,12 @@ A walk ends when its bar is checked. A box running out is the warning to switch 
  ▼
  reading stop ─▶ 6 guidance ─▶ 7 A without B ─▶ 8 interaction term ─▶ prior art ─▶ 9 correction
                                                                                          │
- ┌───────────────────────────────────────────────────────────────────────────────────────┤
- ▼                                                                                       ▼
- 12 the correction at scale (the goal)                                         ◇ 10, ◇ 11 (optional)
+ ┌───────────────────────────────────────────────────────────────────────────────────────┘
+ ▼
+ 10 latent ─▶ 11 text: A encoder ─▶ B attention ─▶ C two encoders ─▶ 11b cats and dogs ─▶ 12 at scale (the goal)
 ```
 
-⭐ marks the critical path. ◇ marks what is optional: layers 10 and 11, the CLEVR reproduction and the Bradley rebuild.
+⭐ marks the critical path. ◇ marks what is optional: the CLEVR reproduction and the Bradley rebuild.
 
 | Layer | File | What you finish with | Your time |
 |---|---|---|---|
@@ -96,8 +116,9 @@ A walk ends when its bar is checked. A box running out is the warning to switch 
 | ⭐ 8: the interaction term | [08-the-interaction-term.md](ladder/08-the-interaction-term.md) | r(x) in the pixels and in the labels | 3.3 to 6.7 h, rough |
 | ⭐ correction prior art | [08a-correction-prior-art.md](ladder/08a-correction-prior-art.md) | your correction placed against CO3 and Feynman-Kac | 2 to 4 h, rough |
 | ⭐ 9: the correction | [09-the-correction-learned-back.md](ladder/09-the-correction-learned-back.md) | the fair test's answer | 2.3 to 4.7 h, rough |
-| ◇ 10: latent space | [10-latent-space-and-vaes.md](ladder/10-latent-space-and-vaes.md) | warp invariance in code, and the smallest VAE check | 2.2 to 4.7 h |
-| ◇ 11: the testbed | [11-the-text-conditioned-testbed.md](ladder/11-the-text-conditioned-testbed.md) | the testbed's candidate causes and parser | 1 to 2 h before its build |
+| ⭐ 10: latent space | [10-latent-space-and-vaes.md](ladder/10-latent-space-and-vaes.md) | warp invariance in code, and whether it survives a VAE that cannot invert exactly | 2.2 to 4.7 h |
+| ⭐ 11: the text-conditioned testbed | [11-the-text-conditioned-testbed.md](ladder/11-the-text-conditioned-testbed.md) | the testbed built in three stages, one variable each: a text encoder, then cross-attention, then a second encoder | 1 to 2 h before its builds; the builds timed by the plan its idea walk writes |
+| ⭐ 11b: cats and dogs | not written yet: `/drip-execute-plan --request` writes its step file at its open | a small text-to-image model trained on curated cat and dog photos, with the share of captions naming both set by hand, and the overlap dial read on real images | unknown until its open cuts the pieces |
 | ⭐ 12: the correction at scale | [12-the-correction-at-scale.md](ladder/12-the-correction-at-scale.md) | the drain gap, the transfer plan, the LoRA on held-out pairs | 8.3 to 16.2 h, plus the gated experiment |
 
 **Layer 4b** is the parts world's question asked on pictures. It was walked as its own plan before this guide took it in, so it keeps its own file and its own walk folder (`artifacts/drips/toy-failure-six-checkpoints/`). Its code is typed in `~/playground/deep-learning/poe-structural-toy/`.
@@ -118,6 +139,6 @@ Layers 4, 4b and 5 were built on two toys, and the two disagree in places. [The 
 
 **The prompt shape.** Every prompt carries the fields `~/.claude/PROMPT_FORMAT.md` asks for. The walks and builds carry all nine (task, starts from, settled facts with their source, outputs, target, progress, proof, limits, hand-off). The maths drips, quiz builds and scenes carry at least starts from, settled facts, outputs and hand-off. Under each prompt, `added:` and `dropped:` lines say how it differs from the guide's earlier version of it. Each background prompt writes its quiz or scene URL back into its own step, in place of a `(URL lands here)` line. Layers 6, 7, 10 and 12 number their steps from 1; the other layers put the one-layer-ahead background prompts at step 0.
 
-**What the critical path costs.** About 48 hours of your time to finish, inside a 91-hour box. That counts quiz 0, two quizzes a layer, the scenes and a `/drip-retro` after each build. The AI's share is about 1.5 hours a layer for the quizzes and their preparation, plus about 45 minutes a scene, nearly all of it beside your work (estimates: neither quiz agent has a measured run). Layer 12's drain experiment is not counted, because it runs only if the drain-gap test passes. Layers 10 and 11 add 3 to 7 hours before layer 11's build, which is timed by the plan its walk writes.
+**What the critical path costs.** About 48 hours of your time to finish, inside a 91-hour box. That counts quiz 0, two quizzes a layer, the scenes and a `/drip-retro` after each build. The AI's share is about 1.5 hours a layer for the quizzes and their preparation, plus about 45 minutes a scene, nearly all of it beside your work (estimates: neither quiz agent has a measured run). Layer 12's drain experiment is not counted, because it runs only if the drain-gap test passes. Layers 10, 11 and 11b are on the critical path but not in the 48 hours: layer 10 adds 2.2 to 4.7 hours, and layers 11 and 11b are timed by the plans their opens write.
 
 **Start here:** [the setup](ladder/00-setup.md).
