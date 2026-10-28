@@ -398,7 +398,8 @@ def pairs_sheet(run_dir: Path, it: int, specs: list[str], wandb_id: str | None, 
     if wandb_id:
         import wandb
         run = wandb.init(project="poe-repair-animals-compose", entity="prime_lab", id=wandb_id, resume="allow")
-        run.log({f"sheet_{p}": wandb.Image(sh, caption=f"{p}, {it} updates") for p, sh in sheets.items()}, step=it)
+        # no step=: a finished run's step counter is past `it`, and W&B drops an earlier step
+        run.log({**{f"sheet_{p}": wandb.Image(sh, caption=f"{p}, {it} updates") for p, sh in sheets.items()}, "sheet_iter": it})
         run.finish()
 
 
