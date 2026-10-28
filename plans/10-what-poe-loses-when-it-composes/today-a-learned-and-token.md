@@ -2,10 +2,10 @@
 <!-- template: exempt. Reason: a one-run cluster test, not a plan -->
 
 > [!NOTE]
-> **You will hold:** the share of the gap between the joint prompt and PoE's guided prediction that one
-> fitted token removes (seeds 1 to 8, steps 0, 10, 25, 40), and a sheet of PoE("dog", "cat", "<and>") on
-> seeds 1 to 8 with a call per tile. · **Time:** three sittings of about 1 h, the training itself runs
-> unattended on mscluster109 · **Stop point:** supported on at least 4 of 7 counted seeds, or under 10%
+> **You will hold:** the share of the gap between the joint prompt and plain PoE that one fitted token
+> removes on held-out cat × dog (seeds 9 to 16, at steps 0, 10, 25, 40), and two sheets of
+> PoE(animal A, animal B, "<and>") with a call per tile. · **Time:** three sittings of about 1 h, the
+> training runs unattended on mscluster109 · **Stop point:** supported on both marks below, or under 10%
 > removed at every step after 2,000 training steps
 
 Walk it with:
@@ -28,55 +28,66 @@ Navigation: 📋 [Contents](#contents) | [Next](#the-test-written-before-any-ren
 **Nine third experts have failed.** Text-embedding arithmetic and seven real phrases (the joint prompt
 "dog and cat" included) draw a clear dog and a clear cat on 0 of 7 counted seeds, and two hybrids on 4 to 5
 ([claim 2 of the idea map](../../artifacts/ideas/the-and-vector-as-a-third-expert/IDEA_MAP.md)). The joint
-prompt alone draws a clear pair on 7 of 8 seeds.
+prompt alone draws a clear pair on 7 of 8 seeds. The bar is a clear pair where the strongest third expert
+there is gives two hybrids.
 
 **This run fits the third expert instead of choosing it.** One new token `<and>` gets a trainable input
 embedding row in each of SDXL's two text encoders, initialised from the word "and". Nothing else is
-trained: not the UNet, not the rest of either text encoder, and "dog" and "cat" stay the plain frozen
-prompts. The fit asks the three-expert product to match the guided joint prompt at states on the joint
-prompt's own trajectory.
+trained: not the UNet, not the rest of either text encoder, and the two animal prompts stay the plain
+frozen prompts. The token is the same for every pair, and it is fitted over the curated pool of 182 cells
+(48 pairs) in `artifacts/_shared/cross_pair_pool_configs/cells_v58.json`, read from the training cache. Cat
+× dog is in no list, and seeds 9 to 16 are never trained on.
+
+**The loss, per cached state.** ‖ε_<and>(x_t) − (ε_J + 2ε_∅ − ε_A − ε_B)‖², which makes the three-expert
+product equal the guided joint at w = 7.5. Only ε_<and> carries gradient.
 
 ## The test, written before any render
 
 Navigation: ⬅️ [Previous](#why-this-exists) | 📋 [Contents](#contents) | [Next](#steps) ➡️
 
-**Render:** PoE("dog", "cat", "<and>") on seeds 1 to 8 with the loop and noise of
-`scripts/and_vector_sheet.py`. Seeds 1 to 7 count; seed 8 is shown. Calls are made from full-size tiles:
-`2` one clear dog and one clear cat, `2h` two animals with at least one a hybrid, `h` one hybrid, `1` one
-plain animal, `x` no animal.
+**Two renders, both with the loop and noise of `scripts/and_vector_sheet.py`:**
+
+1. PoE("dog", "cat", "<and>") on seeds 1 to 7.
+2. PoE("a cat", "a dog", "<and>") on held-out seeds 9 to 16, beside plain PoE("a cat", "a dog") on the same
+   seeds.
+
+**Calls, from full-size tiles:** `2` a clear dog and a clear cat, `2h` two hybrids, `1` one animal, `x`
+no animal. Two hybrids is a failure. On seeds 9 to 16 each render is judged directly, never by distance to
+the joint render, because the joint reference is wrong on seeds 10, 13, 14 and 15.
 
 | Result | Reading |
 |---|---|
-| `2` on at least 4 of 7 counted seeds | **supported**: one fitted token carries what "and" adds |
-| `2` on 0 to 3 of 7, including every `2h` | **not supported**: a fitted token also fails the strict mark |
+| `2` on at least 4 of the 7 seeds in render 1, and on more of seeds 9 to 16 than plain PoE in render 2 | **supported**: one fitted token carries what "and" adds |
+| anything else | **not supported**, with the two counts reported as they fell |
 
-**Stop rule.** After 2,000 training steps, if the share removed on seeds 1 to 8 is under 10% at every one
-of steps 0, 10, 25 and 40, stop and report: that is the result and no render is made.
+**Stop rule.** Every 500 steps the run logs the held-out share removed. If after 2,000 steps it is under
+10% at every one of steps 0, 10, 25 and 40, stop and report: that is the result and no render is made.
 
-**Share removed** = 1 − ‖ε_joint_guided − ε_PoE3_guided‖ / ‖ε_joint_guided − ε_PoE2_guided‖, where
-ε_joint_guided = ε_∅ + w(ε_joint − ε_∅), the PoE guided predictions sum the three (or two) experts'
-guidance terms, w = 7.5, measured at the joint prompt's own DDIM states on seeds 1 to 8.
+**Share removed** = 1 − ‖ε_<and> − (ε_J + 2ε_∅ − ε_A − ε_B)‖ / ‖ε_J + ε_∅ − ε_A − ε_B‖, one number per
+cached step, on a_cat__x__a_dog seeds 9 to 16 at steps 0, 10, 25 and 40. The denominator is the gap
+between the guided joint and plain PoE, divided by w.
 
 ## Steps
 
 Navigation: ⬅️ [Previous](#the-test-written-before-any-render) | 📋 [Contents](#contents) | [Next](#what-it-cannot-claim) ➡️
 
-Cluster runs go through `scripts/cluster.sh`; the script path is absolute on the launch line, outputs go
-to `/datasets/mmolefe/poe_repair_min/outputs/learned_and_token/`, and the device is mscluster109 device 0
-(RTX A6000, 48 GB) on the shared-device path with a guard that aborts at more than 1 GB in use.
+Cluster runs use the worktree at `/home-mscluster/mmolefe/Playground/PhD/poe_repair_min-dog-and-rain`,
+fast-forwarded to the committed branch. Every path on a launch line is absolute, outputs go to
+`/datasets/mmolefe/poe_repair_min/outputs/learned_and_token/`, and the device is mscluster109 device 0
+(RTX A6000, 48 GB) on the shared-device path, with a guard that aborts at more than 1 GB in use.
 
-### 1. 🔧 The token (AI, ~20 min)
+### 1. 🔧 The token (AI, done)
 
-- [ ] **Write** `scripts/learned_and_token.py` with `<and>` added to both tokenizers and a gradient-carrying
-  encode path, the two rows held in fp32 and written into the fp16 embedding tables.
-- [ ] **Verify** that the prompt "<and>" encodes to exactly what "and" encodes to, in both encoders.
-- [ ] **📸 You should see** the maximum absolute difference between the two encodings printed as 0.
+- [x] **Write** `scripts/learned_and_token.py` with `<and>` added to both tokenizers and a gradient-carrying
+  encode path, pooled at the end-of-text position.
+- [x] **Verify** that "<and>" encodes exactly as "and" does, and that the encode path matches the repo's.
+  ✓ verified 2026-10-28 on mscluster109: difference 0 in embeds and pooled, both prompts.
 
-### 2. 🔧 The state cache and the starting row (AI, ~40 min)
+### 2. 🔧 The pool loader and the starting row (AI, ~40 min)
 
-- [ ] **Run** the joint prompt's 50-step DDIM trajectory on the 29 seeds (the 21 training seeds and seeds 1
-  to 8), keeping ε_∅, ε_dog, ε_cat and ε_joint at every state.
-- [ ] **Report** the share removed on seeds 1 to 8 at steps 0, 10, 25 and 40 with the untrained token.
+- [ ] **Load** the 182 cells from the training cache, asserting that none is cat × dog and none is a seed
+  from 9 to 16.
+- [ ] **Report** the held-out share removed at steps 0, 10, 25 and 40 with the untrained token.
 
 ### 3. 🔧 The trainer, 50 steps (AI, ~15 min)
 
@@ -85,25 +96,25 @@ to `/datasets/mmolefe/poe_repair_min/outputs/learned_and_token/`, and the device
 
 ### 4. 🔧 The 2,000-step run (AI, hours, unattended)
 
-- [ ] **Launch** under `nohup`, logging node, device and PID in the header, and report the share removed at
-  the four steps at 500, 1,000 and 2,000 steps.
+- [ ] **Launch** under `nohup`, logging node, device and PID in the header, and report the held-out share
+  removed every 500 steps.
 - [ ] **Apply** [the stop rule](#the-test-written-before-any-render).
 
-### 5. 🖼️ The card, the render and the calls (AI, then you)
+### 5. 🖼️ The card, the renders and the calls (AI, then you)
 
 - [ ] **Copy** [the test](#the-test-written-before-any-render) into the run's results card before any tile
   is rendered.
-- [ ] **Render** seeds 1 to 8 and build the sheet beside the earlier sheets in
-  `artifacts/results/what-the-and-vector-is-made-of/`.
-- [ ] **Call** each tile from the full-size contact sheet, one seed per message.
+- [ ] **Render** both sets and build the sheets as
+  `artifacts/results/what-the-and-vector-is-made-of/learned-and-token-*.png`.
+- [ ] **Call** each tile from full-size tiles, one seed per message.
 - [ ] **List** the nearest real words to the fitted row in each encoder, by cosine over the vocabulary.
 
 ## What it cannot claim
 
 Navigation: ⬅️ [Previous](#steps) | 📋 [Contents](#contents)
 
-**One token, one pair.** A pass shows one fitted token composing dog and cat on these seeds, not that it
+**One token, one pair held out.** A pass shows one fitted token composing cat and dog, not that it
 transfers to another pair.
 
-**Fitted on one set of states, used on another.** The fit sees the joint prompt's trajectory; the render
+**Fitted on cached states, used on the states it visits.** The fit sees the cache's trajectory; the render
 visits the states the three-expert product reaches.
