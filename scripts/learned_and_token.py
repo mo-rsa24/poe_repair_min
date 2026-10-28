@@ -205,7 +205,7 @@ def eps_and(models: dict, tok: "AndToken", st: dict, device, dtype, grad: bool, 
             return models["unet"](st["x_t"].to(dtype), t, encoder_hidden_states=seq, added_cond_kwargs=cond,
                                   timestep_cond=None).sample.float()
     finally:
-        if tok.gate:
+        if tok.gate and not grad:  # with grad, the caller keeps the gate on through backward so checkpointing recomputes the same graph
             tok.gate.on = False
 
 
@@ -494,6 +494,8 @@ def train(steps: int, eval_at: list[int], lr: float, name: str, seed: int, use_w
         sq = (e - target) ** 2
         opt.zero_grad(set_to_none=True)
         sq.sum().backward()  # summed, so fp16 gradients through the UNet do not underflow; Adam is scale-free
+        if tok.gate:
+            tok.gate.on = False
         if all(torch.isfinite(r.grad).all() for r in trainable if r.grad is not None):
             opt.step()
         else:
