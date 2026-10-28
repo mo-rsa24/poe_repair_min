@@ -43,6 +43,8 @@ class AndToken:
         self.models = models
         self.ids: list[int] = []
         self.rows = torch.nn.ParameterList()
+        self.override: list[torch.Tensor] | None = None  # rows written by `hyper` for the bound pair
+        self.hyper: "HyperRows | None" = None
         for tok_key, enc_key in ENCODERS:
             tok, enc = models[tok_key], models[enc_key]
             if tok.add_tokens([TOKEN]) != 1:
@@ -66,9 +68,15 @@ class AndToken:
             if not mask.any():
                 return out
             out = out.clone()
-            out[mask] = self.rows[k].to(out.dtype)
+            out[mask] = (self.rows if self.override is None else self.override)[k].to(out.dtype)
             return out
         return splice
+
+    def bind(self, a: str, b: str, grad: bool = False) -> None:
+        """With a hyper network, write the rows for this pair; otherwise the rows stay as they are."""
+        if self.hyper is not None:
+            with torch.set_grad_enabled(grad):
+                self.override = self.hyper(self, a, b)
 
     def encode(self, prompt: str, *, device, dtype, grad: bool) -> tuple[torch.Tensor, torch.Tensor]:
         """The repo's SDXL prompt encoding, with the new token known and gradient optional."""
@@ -88,6 +96,30 @@ class AndToken:
             last = outs[1].last_hidden_state[torch.arange(len(eos), device=device), eos]
             pooled = m["text_encoder_2"].text_projection(last)
         return embeds, pooled.to(dtype)
+
+
+class HyperRows(torch.nn.Module):
+    """Writes the two rows from the two animals: the "and" rows plus U(V(f)). f is built from each animal's pooled
+    text vector, f = [pooled_A + pooled_B, pooled_A * pooled_B] rescaled to unit mean square, so A, B and B, A agree.
+    U starts at zero, so the rows start as plain "and"."""
+
+    def __init__(self, tok: "AndToken", rank: int) -> None:
+        super().__init__()
+        self.device = tok.rows[0].device
+        self.base = [r.detach().clone() for r in tok.rows]
+        self.dims = [r.numel() for r in tok.rows]
+        self.V = torch.nn.Linear(2 * 1280, rank, bias=False)
+        self.U = torch.nn.Linear(rank, sum(self.dims), bias=False)
+        torch.nn.init.zeros_(self.U.weight)
+        self.to(self.device)
+
+    def forward(self, tok: "AndToken", a: str, b: str) -> list[torch.Tensor]:
+        unet = tok.models["unet"]
+        with torch.no_grad():
+            pa, pb = (tok.encode(q, device=unet.device, dtype=unet.dtype, grad=False)[1].float()[0] for q in (a, b))
+            f = torch.cat([pa + pb, pa * pb])
+            f = f / f.pow(2).mean().sqrt()
+        return [base + d for base, d in zip(self.base, self.U(self.V(f)).split(self.dims))]
 
 
 def pool_cells() -> list[tuple[str, int]]:
@@ -136,6 +168,7 @@ def share_removed(models, tok, device, dtype, split="heldout", pair=None, seeds=
     """Per eval step, the share of the gap closed on each seed (held-out cat x dog unless a pair is given)."""
     pair, seeds = (pair or HELD_OUT[0]), (seeds or HELD_OUT[1])
     prompt = third_prompt(*pair_prompts(pair)[:2], in_sentence)
+    tok.bind(*pair_prompts(pair)[:2])
     out: dict[int, list[float]] = {}
     for step in EVAL_STEPS:
         for seed in seeds:
@@ -179,6 +212,8 @@ def render_tiles(ctx, tok, a: str, b: str | None, seeds: list[int], third: bool 
 
     m, device, dtype, sched, w = ctx.models, ctx.device, ctx.dtype, ctx.scheduler, ctx.guidance_scale
     enc = lambda q: encode_prompt_sdxl(q, models=m, device=device, dtype=dtype)
+    if third and b:
+        tok.bind(a, b)
     embs = [enc(a)] + ([enc(b)] if b else []) + ([tok.encode(TOKEN if third is True else third, device=device, dtype=dtype, grad=False)] if third else [])
     embs.append(enc(""))
     seq = torch.cat([e for e, _ in embs]).to(dtype)
@@ -261,7 +296,8 @@ def pair_prompts(pair: str) -> tuple[str, str, str]:
     return a, b, f"{a} and {b}"
 
 
-def pairs_sheet(run_dir: Path, it: int, specs: list[str], wandb_id: str | None, in_sentence: bool = False) -> None:
+def pairs_sheet(run_dir: Path, it: int, specs: list[str], wandb_id: str | None, in_sentence: bool = False,
+                hyper_rank: int = 0) -> None:
     """The five-column sheet and the share removed for other pairs, with the rows saved at update `it`.
     Each spec is pair:split:seed,seed,... (split is train for a pool pair, heldout for a held-out one)."""
     from poe_repair.run import make_ctx
@@ -272,6 +308,9 @@ def pairs_sheet(run_dir: Path, it: int, specs: list[str], wandb_id: str | None, 
     with torch.no_grad():
         for row, new in zip(tok.rows, saved["rows"]):
             row.copy_(new)
+    if saved.get("hyper"):
+        tok.hyper = HyperRows(tok, hyper_rank)
+        tok.hyper.load_state_dict(saved["hyper"])
     sheets = {}
     for spec in specs:
         pair, split, seed_txt = spec.split(":")
@@ -325,7 +364,7 @@ def grid(run_dir: Path, iters: list[int], seeds: list[int], wandb_id: str | None
 
 
 def train(steps: int, eval_at: list[int], lr: float, name: str, seed: int, use_wandb: bool,
-          render_seeds: list[int], in_sentence: bool = False) -> None:
+          render_seeds: list[int], in_sentence: bool = False, hyper_rank: int = 0) -> None:
     from poe_repair.run import make_ctx
 
     out = Path("/datasets/mmolefe/poe_repair_min/outputs/learned_and_token") / name
@@ -337,7 +376,12 @@ def train(steps: int, eval_at: list[int], lr: float, name: str, seed: int, use_w
     models["unet"].enable_gradient_checkpointing()
     models["unet"].train()
     tok = AndToken(models)
-    opt = torch.optim.Adam(tok.rows.parameters(), lr=lr)
+    if hyper_rank:
+        tok.hyper = HyperRows(tok, hyper_rank)
+        for r in tok.rows:
+            r.requires_grad_(False)
+    trainable = list(tok.hyper.parameters()) if tok.hyper else list(tok.rows)
+    opt = torch.optim.Adam(trainable, lr=lr)
     rng = random.Random(seed)
     print(f"train: {len(cells)} cells, {steps} steps, lr {lr}, evals at {eval_at}, out {out}", flush=True)
     run_wb = None
@@ -346,7 +390,7 @@ def train(steps: int, eval_at: list[int], lr: float, name: str, seed: int, use_w
         run_wb = wandb.init(project="poe-repair-animals-compose", entity="prime_lab", name=f"learned-and-{name}",
                             group="learned-and-token", config={"steps": steps, "lr": lr, "pool": POOL.name,
                             "cells": len(cells), "held_out": HELD_OUT[0], "render_seeds": render_seeds,
-                            "in_sentence": in_sentence})
+                            "in_sentence": in_sentence, "hyper_rank": hyper_rank})
         print(f"wandb run {run_wb.id} {run_wb.url}", flush=True)
     A, B = "a cat", "a dog"
 
@@ -372,27 +416,30 @@ def train(steps: int, eval_at: list[int], lr: float, name: str, seed: int, use_w
         pair, cell_seed = rng.choice(cells)
         st = load_state("train", pair, cell_seed, rng.randrange(50), device)
         target, _ = and_target(st)
+        tok.bind(*pair_prompts(pair)[:2], grad=True)
         e = eps_and(models, tok, st, device, dtype, grad=True,
                     prompt=third_prompt(*pair_prompts(pair)[:2], in_sentence))
         sq = (e - target) ** 2
         opt.zero_grad(set_to_none=True)
         sq.sum().backward()  # summed, so fp16 gradients through the UNet do not underflow; Adam is scale-free
-        if all(torch.isfinite(r.grad).all() for r in tok.rows):
+        if all(torch.isfinite(r.grad).all() for r in trainable if r.grad is not None):
             opt.step()
         else:
             print(f"iter {it}: non-finite gradient, step skipped", flush=True)
         run.append(sq.mean().item())
         if run_wb:
-            run_wb.log({"loss": run[-1], "row_norm_1": tok.rows[0].norm().item(),
-                        "row_norm_2": tok.rows[1].norm().item()}, step=it)
+            now = tok.override if tok.override is not None else tok.rows
+            run_wb.log({"loss": run[-1], "row_norm_1": now[0].norm().item(),
+                        "row_norm_2": now[1].norm().item()}, step=it)
         if it % 10 == 0:
             print(f"iter {it}: loss (mean squared error per element) {sum(run[-10:]) / 10:.5f}, "
-                  f"rows' norms {[round(r.norm().item(), 4) for r in tok.rows]}, "
+                  f"rows' norms {[round(r.norm().item(), 4) for r in (tok.override if tok.override is not None else tok.rows)]}, "
                   f"peak memory {torch.cuda.max_memory_allocated() / 2**30:.1f} GiB, "
                   f"{time.time() - t0:.0f} s", flush=True)
         if it in eval_at or it == steps:
             fired = evaluate(it)
-            torch.save({"rows": [r.detach().cpu() for r in tok.rows], "ids": tok.ids, "iter": it},
+            torch.save({"rows": [r.detach().cpu() for r in tok.rows], "ids": tok.ids, "iter": it,
+                        "hyper": tok.hyper.state_dict() if tok.hyper else None},
                        out / f"rows_iter{it:05d}.pt")
             if it == steps:
                 print(f"stop rule (every step's mean under 10% after {steps} steps): {fired}", flush=True)
@@ -437,16 +484,17 @@ if __name__ == "__main__":
     ap.add_argument("--wandb-id")
     ap.add_argument("--render-seeds", nargs="*", type=int, default=[])
     ap.add_argument("--in-sentence", action="store_true", help="third expert is 'A <and> B', not the bare token")
+    ap.add_argument("--hyper-rank", type=int, default=0, help="rows written from the pair by a rank-r network")
     ap.add_argument("--pairs-sheet", type=Path, metavar="RUN_DIR")
     ap.add_argument("--iter", type=int, default=8000)
     ap.add_argument("--pairs", nargs="*", default=[], metavar="PAIR:SPLIT:SEEDS")
     args = ap.parse_args()
     if args.pairs_sheet:
-        pairs_sheet(args.pairs_sheet, args.iter, args.pairs, args.wandb_id, args.in_sentence)
+        pairs_sheet(args.pairs_sheet, args.iter, args.pairs, args.wandb_id, args.in_sentence, args.hyper_rank)
     if args.grid:
         grid(args.grid, args.iters, args.render_seeds or list(HELD_OUT[1]), args.wandb_id)
     if args.train:
-        train(args.steps, args.eval_at, args.lr, args.name, args.seed, args.wandb, args.render_seeds, args.in_sentence)
+        train(args.steps, args.eval_at, args.lr, args.name, args.seed, args.wandb, args.render_seeds, args.in_sentence, args.hyper_rank)
     if args.check_token:
         check_token()
     if args.baseline:
