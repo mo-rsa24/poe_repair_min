@@ -22,7 +22,7 @@
 
 ### 1. You: the typing folder and the environment
 
-You make the folder your walk files live in, and check that the cluster's `co3` Python can import torch and the reference code. Nothing is installed: `co3` already has torch 2.5.1 (see [the environments list](/home/molef/.claude/ENVIRONMENTS.md)).
+You make the folder your walk files live in, and check that the cluster's `co3` Python can import torch and the reference code. Nothing is installed: `co3` already has torch 2.5.1 (see [the environments list](../../../../../../.claude/ENVIRONMENTS.md)).
 
 In a terminal on the cluster:
 
