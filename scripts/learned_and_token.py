@@ -220,39 +220,34 @@ def contact_sheet(paths: list[Path], seeds: list[int], title: str, out: Path, si
     return sheet
 
 
-def build_grid(run_dir: Path, iters: list[int], seeds: list[int]):
-    """One row per seed: a cat alone, a dog alone, plain PoE, then PoE with <and> at each update in iters."""
+JOINT = "a cat and a dog"
+
+
+def build_sheet(run_dir: Path, it: int, seeds: list[int]):
+    """Columns: dog alone, cat alone, the joint prompt, PoE(cat, dog), PoE(cat, dog, <and>) after `it` updates;
+    one row per seed."""
     from PIL import Image, ImageDraw
 
-    A, B = "a cat", "a dog"
-    heads = [f"{A} alone", f"{B} alone", f"PoE({A}, {B})"] + [f"+ <and>, {it} updates" for it in iters]
-    cols = [lambda sd: run_dir / "tiles" / "mono_a_cat" / f"seed{sd:02d}.png",
-            lambda sd: run_dir / "tiles" / "mono_a_dog" / f"seed{sd:02d}.png",
-            lambda sd: run_dir / "tiles" / "plain_poe" / f"seed{sd:02d}.png"] + [
-        (lambda sd, it=it: run_dir / "tiles" / f"iter{it:05d}" / f"seed{sd:02d}.png") for it in iters]
-    size, pad = 320, 24
-    rows = []
-    for sd in seeds:
-        img = Image.new("RGB", (len(cols) * size, size + pad), "white")
-        d = ImageDraw.Draw(img)
-        for i, (h, c) in enumerate(zip(heads, cols)):
-            d.text((i * size + 6, 6), f"seed {sd}: {h}", fill="black")
-            img.paste(Image.open(c(sd)).convert("RGB").resize((size, size)), (i * size, pad))
-        img.save(run_dir / f"grid_seed{sd:02d}.png")
-        rows.append(img)
-    full = Image.new("RGB", (rows[0].width, sum(r.height for r in rows)), "white")
-    y = 0
-    for r in rows:
-        full.paste(r, (0, y))
-        y += r.height
-    full.save(run_dir / "grid_all_seeds.png")
-    return rows, full
+    heads = ["a dog alone", "a cat alone", f'"{JOINT}"', "PoE(a cat, a dog)", f"PoE(a cat, a dog, <and>), {it} updates"]
+    dirs = [run_dir / "tiles" / n for n in ("mono_a_dog", "mono_a_cat", "joint", "plain_poe", f"iter{it:05d}")]
+    size, head, label = 256, 34, 70
+    sheet = Image.new("RGB", (label + len(dirs) * size, head + len(seeds) * size), "white")
+    d = ImageDraw.Draw(sheet)
+    for i, h in enumerate(heads):
+        d.text((label + i * size + 6, 10), h, fill="black")
+    for r, sd in enumerate(seeds):
+        d.text((6, head + r * size + size // 2), f"seed {sd}", fill="black")
+        for i, tdir in enumerate(dirs):
+            sheet.paste(Image.open(tdir / f"seed{sd:02d}.png").convert("RGB").resize((size, size)),
+                        (label + i * size, head + r * size))
+    sheet.save(run_dir / f"sheet_iter{it:05d}.png")
+    return sheet
 
 
 def render_references(ctx, tok, run_dir: Path, seeds: list[int]) -> None:
-    """The columns that do not change with training: each animal alone, and plain PoE of the two."""
-    A, B = "a cat", "a dog"
-    for name, a, b in (("mono_a_cat", A, None), ("mono_a_dog", B, None), ("plain_poe", A, B)):
+    """The columns that do not change with training: each animal alone, the joint prompt, and plain PoE."""
+    for name, a, b in (("mono_a_dog", "a dog", None), ("mono_a_cat", "a cat", None), ("joint", JOINT, None),
+                       ("plain_poe", "a cat", "a dog")):
         d = run_dir / "tiles" / name
         todo = [sd for sd in seeds if not (d / f"seed{sd:02d}.png").exists()]
         if todo:
@@ -260,21 +255,19 @@ def render_references(ctx, tok, run_dir: Path, seeds: list[int]) -> None:
 
 
 def grid(run_dir: Path, iters: list[int], seeds: list[int], wandb_id: str | None) -> None:
-    """Assemble the grid after the fact from a finished run's saved tiles."""
+    """Assemble the sheets after the fact from a finished run's saved tiles."""
     from poe_repair.run import make_ctx
 
     ctx = make_ctx()
     tok = AndToken(ctx.models)
     render_references(ctx, tok, run_dir, seeds)
-    rows, full = build_grid(run_dir, iters, seeds)
-    print(f"wrote {run_dir}/grid_all_seeds.png and grid_seedNN.png for {seeds}", flush=True)
+    sheets = {it: build_sheet(run_dir, it, seeds) for it in iters}
+    print(f"wrote {run_dir}/sheet_iterNNNNN.png for {iters}", flush=True)
     if wandb_id:
         import wandb
         run = wandb.init(project="poe-repair-animals-compose", entity="prime_lab", id=wandb_id, resume="allow")
-        table = wandb.Table(columns=["seed", "row"])
-        for sd, r in zip(seeds, rows):
-            table.add_data(sd, wandb.Image(r))
-        run.log({"grid_per_seed": table, "grid_all_seeds": wandb.Image(full)})
+        for it, sh in sheets.items():
+            run.log({"sheet": wandb.Image(sh, caption=f"{it} updates")}, step=it)
         run.finish()
 
 
@@ -303,8 +296,6 @@ def train(steps: int, eval_at: list[int], lr: float, name: str, seed: int, use_w
         print(f"wandb run {run_wb.id} {run_wb.url}", flush=True)
     A, B = "a cat", "a dog"
 
-    rendered: list[int] = []
-
     def evaluate(it: int) -> bool:
         res = share_removed(models, tok, device, dtype)
         fired = report(f"iter {it}", res)
@@ -313,13 +304,9 @@ def train(steps: int, eval_at: list[int], lr: float, name: str, seed: int, use_w
         if render_seeds:
             import wandb
             render_tiles(ctx, tok, A, B, render_seeds, True, out / "tiles" / f"iter{it:05d}")
-            rendered.append(it)
-            rows, full = build_grid(out, rendered, render_seeds)
+            sheet = build_sheet(out, it, render_seeds)
             if run_wb:
-                table = wandb.Table(columns=["seed", "row"])
-                for sd, r in zip(render_seeds, rows):
-                    table.add_data(sd, wandb.Image(r))
-                run_wb.log({"grid_per_seed": table, "grid_all_seeds": wandb.Image(full)}, step=it)
+                run_wb.log({"sheet": wandb.Image(sheet, caption=f"{it} updates")}, step=it)
         return fired
 
     if render_seeds:
