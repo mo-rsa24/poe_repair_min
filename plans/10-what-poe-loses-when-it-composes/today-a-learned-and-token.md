@@ -146,6 +146,40 @@ before it is called. Null if every step's mean is under 10% at 8,000, 16,000 and
 - [ ] **Launch** three runs with `--lora-rank 32 --lora-lr 1e-4`: the bare token, the token in the
   sentence, and rows written from the pair (`--hyper-rank 16`), each with held-out sheets at 300, 1,000,
   2,000, 4,000, 8,000 and 16,000 updates, then nine-pair sheets at 8,000 and 30,000 logged to W&B.
+- [ ] **Render** held-out cat × dog with the third expert's push scaled by λ (0.5, 1.5, 2, 3, beside the
+  λ 0 plain PoE and the trained λ 1 columns) for each run, at 2,000 updates and at the last checkpoint.
+  Supported if any λ gives a clear cat and a clear dog on more seeds than λ 1 does; null if no λ does.
+
+### 8. 🔧 Train on the states the three-expert sampler visits (AI, build, then about 6 h unattended)
+
+The token is fitted on states that plain PoE visited and then used on states its own three-expert
+sampling reaches. Every 1,000 updates, sample 24 training cells with the current third expert, record
+at each of the 50 steps the image state and the four raw predictions (the joint prompt costs one extra
+pass), and add them to the pool. Each update then draws half from the cached states and half from the
+on-policy ones. Same loss, and the bare token with a rank-32 LoRA as in run9a.
+
+**Written before the run.** Supported if the held-out share removed is over 10% at any of steps 0, 10,
+25 and 40 at 30,000 updates, with sheets read before it is called. Null if every step's mean is under
+10% at 8,000, 16,000 and 30,000. The share on the on-policy states is reported beside it.
+
+- [ ] **Build** the on-policy collection and the mixed draw behind `--on-policy-every` and
+  `--on-policy-cells`, smoke it for 50 updates, then launch.
+
+### 9. 🔧 Train on the picture, with a reward on the final render (AI, build, then about 6 h unattended)
+
+The repo already fine-tunes its correction LoRA against a differentiable reward on the render (the
+plurality objective: each animal reads as itself, the two regions differ, and ImageReward fidelity),
+with the reward's gradient taken over the late steps. This step points that machinery at the third
+expert's parameters, starting from the last checkpoint of run9a, with the fidelity term on and an
+anchor to the starting parameters so the picture quality cannot be spent on the reward.
+
+**Written before the run.** Supported if the instance-count scorer reads two animals on at least 4 of
+8 held-out cat × dog seeds where plain PoE reads two on none, and by eye at least 4 of those are a cat
+and a dog, with reward fidelity no more than 0.05 below the start. Null otherwise. The scorer cannot
+tell a cat and a dog from two dogs, so the eye read counts.
+
+- [ ] **Build** the reward fine-tune for the token and LoRA parameters from the existing trainer, smoke
+  it, then launch against run9a's last checkpoint.
 
 ## What it cannot claim
 
