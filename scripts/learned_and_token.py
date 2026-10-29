@@ -462,6 +462,39 @@ def grid(run_dir: Path, iters: list[int], seeds: list[int], wandb_id: str | None
         run.finish()
 
 
+# The W&B samples panel: one image per pair and seed, joint | plain PoE | PoE with the third expert, logged at every
+# evaluation step. in_in is a training pair, out_out a held-out pair.
+SAMPLES = [("out_out", "a_cat__x__a_dog", [9, 10, 11, 12, 13, 14, 15, 16]),
+           ("out_out", "an_elephant__x__a_penguin", [9, 10]),
+           ("in_in", "a_typewriter__x__a_cactus", [1]),
+           ("in_in", "a_lion__x__a_meerkat", [1])]
+
+
+def log_samples(ctx, tok, out: Path, run_wb, it: int, in_sentence: bool) -> None:
+    import wandb
+    from PIL import Image, ImageDraw
+
+    for tag, pair, seeds in SAMPLES:
+        a, b, joint = pair_prompts(pair)
+        base = out / "tiles" if pair == HELD_OUT[0] else out / "tiles_pairs" / pair  # cat x dog tiles are already rendered
+        third = third_prompt(a, b, in_sentence) if in_sentence else True
+        for name, pa, pb, th in (("joint", joint, None, False), ("plain_poe", a, b, False), (f"iter{it:05d}", a, b, third)):
+            todo = [sd for sd in seeds if not (base / name / f"seed{sd:02d}.png").exists()]
+            if todo:
+                render_tiles(ctx, tok, pa, pb, todo, th, base / name)
+        heads = [f'"{joint}"', f"PoE({a}, {b})", f"PoE({a}, {b}, {TOKEN}), {it} updates"]
+        for sd in seeds:
+            tiles = [Image.open(base / n / f"seed{sd:02d}.png").convert("RGB").resize((256, 256))
+                     for n in ("joint", "plain_poe", f"iter{it:05d}")]
+            img = Image.new("RGB", (768, 290), "white")
+            d = ImageDraw.Draw(img)
+            d.text((6, 4), f"{pair} seed {sd}", fill="black")
+            for k, (h, t) in enumerate(zip(heads, tiles)):
+                d.text((k * 256 + 6, 18), h[:46], fill="black")
+                img.paste(t, (k * 256, 34))
+            run_wb.log({f"samples/{tag}/{pair}/seed_{sd:02d}": wandb.Image(img, caption=f"{it} updates")}, step=it)
+
+
 def train(steps: int, eval_at: list[int], lr: float, name: str, seed: int, use_wandb: bool,
           render_seeds: list[int], in_sentence: bool = False, hyper_rank: int = 0, lora_rank: int = 0, lora_lr: float = 1e-4) -> None:
     from poe_repair.run import make_ctx
@@ -511,6 +544,7 @@ def train(steps: int, eval_at: list[int], lr: float, name: str, seed: int, use_w
             sheet = build_sheet(out, it, render_seeds, third_prompt(A, B, in_sentence) if in_sentence else TOKEN)
             if run_wb:
                 run_wb.log({"sheet": wandb.Image(sheet, caption=f"{it} updates")}, step=it)
+                log_samples(ctx, tok, out, run_wb, it, in_sentence)
         return fired
 
     if render_seeds:
