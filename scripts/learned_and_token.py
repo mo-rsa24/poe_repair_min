@@ -262,9 +262,11 @@ def _unet_eps(tok, unet, x, t, seq, cond, n, third: bool) -> torch.Tensor:
     return out
 
 
-def render_tiles(ctx, tok, a: str, b: str | None, seeds: list[int], third: bool | str, out_dir: Path,
-                 oracle: bool = False, lam: float = 1.0) -> list[Path]:
-    """PoE(a, b) or PoE(a, b, third) per seed (third is True for the bare token, or the third expert's prompt), the loop and noise of scripts/and_vector_sheet.py."""
+def render_tiles(ctx, tok, a: str, b: str | None, seeds: list[int], third: bool | str, out_dir: Path | None,
+                 oracle: bool = False, lam: float = 1.0, record: list | None = None) -> list[Path]:
+    """PoE(a, b) or PoE(a, b, third) per seed (third is True for the bare token, or the third expert's prompt), the loop and noise of scripts/and_vector_sheet.py.
+    With `record` (and out_dir None) no image is made: each step's image state and the four raw predictions are appended to it,
+    in the cache's own layout, so the three-expert sampler's own states can be trained on."""
     from concept_pair_sheet import NOISE_PAIR
     from poe_repair.composers._helpers import init_latents_for_cell
     from poe_repair.experiments.interaction_term.cell import cell_from_slug
@@ -281,15 +283,16 @@ def render_tiles(ctx, tok, a: str, b: str | None, seeds: list[int], third: bool 
     seq = torch.cat([e for e, _ in embs]).to(dtype)
     pool = torch.cat([q for _, q in embs]).to(dtype)
     n = len(embs)
-    if oracle:  # the third slot is set each step to the exact target, so the product must equal the guided joint
+    if oracle or record is not None:  # oracle: the third slot is the exact target; record: the joint's raw prediction is stored
         seq_j, pool_j = (x.to(dtype) for x in enc(f"{a} and {b}"))
     unet = m["unet"]
     was_training = unet.training
     unet.eval()
     paths = []
-    out_dir.mkdir(parents=True, exist_ok=True)
+    if out_dir is not None:
+        out_dir.mkdir(parents=True, exist_ok=True)
     for seed in seeds:
-        path = out_dir / f"seed{seed:02d}.png"
+        path = out_dir / f"seed{seed:02d}.png" if out_dir is not None else None
         paths.append(path)
         cell = cell_from_slug(NOISE_PAIR, seed)
         init, sigma = init_latents_for_cell(cell, ctx)
@@ -301,12 +304,17 @@ def render_tiles(ctx, tok, a: str, b: str | None, seeds: list[int], third: bool 
             for i, t in enumerate(sched.timesteps):
                 eps = _unet_eps(tok, unet, sched.scale_model_input(lat.repeat(n, 1, 1, 1), t), t, seq, cond, n, bool(third))
                 e_u = eps[-1:]
-                if oracle:
+                if oracle or record is not None:
                     cond_j = {"text_embeds": pool_j, "time_ids": add_time_ids(height=cell.height, width=cell.width,
                                                                               batch_size=1, device=device, dtype=dtype)}
                     e_j = unet(sched.scale_model_input(lat, t), t, encoder_hidden_states=seq_j,
                                added_cond_kwargs=cond_j, timestep_cond=None).sample
+                if oracle:
                     eps[n - 2] = e_j[0] + 2 * e_u[0] - eps[0] - eps[1]
+                if record is not None:
+                    record.append({"x_t": lat.detach().cpu(), "timestep": t.detach().cpu(),
+                                   "eps_j_raw": e_j.detach().cpu(), "eps_uncond": e_u.detach().cpu(),
+                                   "eps_a_raw": eps[0:1].detach().cpu(), "eps_b_raw": eps[1:2].detach().cpu()})
                 terms = [eps[k:k + 1] - e_u for k in range(n - 1)]
                 if third and lam != 1.0:
                     terms[-1] = lam * terms[-1]  # the third expert's push, turned down or up
@@ -314,7 +322,8 @@ def render_tiles(ctx, tok, a: str, b: str | None, seeds: list[int], third: bool 
                 abar = sched.alphas_cumprod[int(t.item())].to(device=device, dtype=dtype)
                 lat = ddim_prev_from_x0_eps(scheduler=sched, timestep=t, step_index=i,
                                             x0=tweedie_mean(lat, abar, eg), eps=eg)
-            write_decoded_image(decode_latents(m, lat).cpu(), path)
+            if record is None:
+                write_decoded_image(decode_latents(m, lat).cpu(), path)
         torch.cuda.empty_cache()
     unet.train(was_training)
     return paths
@@ -541,7 +550,8 @@ def log_samples(ctx, tok, out: Path, run_wb, it: int, in_sentence: bool) -> None
 
 
 def train(steps: int, eval_at: list[int], lr: float, name: str, seed: int, use_wandb: bool,
-          render_seeds: list[int], in_sentence: bool = False, hyper_rank: int = 0, lora_rank: int = 0, lora_lr: float = 1e-4) -> None:
+          render_seeds: list[int], in_sentence: bool = False, hyper_rank: int = 0, lora_rank: int = 0, lora_lr: float = 1e-4,
+          on_policy_every: int = 0, on_policy_cells: int = 12, on_policy_frac: float = 0.5) -> None:
     from poe_repair.run import make_ctx
 
     out = Path("/datasets/mmolefe/poe_repair_min/outputs/learned_and_token") / name
@@ -576,12 +586,50 @@ def train(steps: int, eval_at: list[int], lr: float, name: str, seed: int, use_w
                             "lora_lr": lora_lr})
         print(f"wandb run {run_wb.id} {run_wb.url}", flush=True)
     A, B = "a cat", "a dog"
+    buffer: list[list] = []  # rounds of (pair, state) taken from the three-expert sampler's own trajectories
+    flat: list = []
+    rng2 = random.Random(seed + 1)
+
+    def to_dev(st: dict) -> dict:
+        return {k: (v.to(device) if k == "timestep" else v.to(device).float()) if torch.is_tensor(v) else v
+                for k, v in st.items()}
+
+    def collect(it: int) -> None:
+        """Sample cells with the current third expert and keep each step's state and the four raw predictions."""
+        t_c, new = time.time(), []
+        for pair, sd in rng2.sample(cells, on_policy_cells):
+            a, b, _ = pair_prompts(pair)
+            rec: list = []
+            try:
+                render_tiles(ctx, tok, a, b, [sd], third_prompt(a, b, in_sentence) if in_sentence else True, None, record=rec)
+            except Exception as err:  # for example a seed whose starting noise is not in the cache
+                print(f"iter {it}: on-policy cell {pair} seed {sd} skipped: {err}", flush=True)
+                continue
+            new += [(pair, st) for st in rec]
+        buffer.append(new)
+        del buffer[:-6]
+        flat[:] = [x for rd in buffer for x in rd]
+        print(f"iter {it}: on-policy round, {len(new)} states from {on_policy_cells} cells, buffer {len(flat)} states, "
+              f"{time.time() - t_c:.0f} s", flush=True)
 
     def evaluate(it: int) -> bool:
         res = share_removed(models, tok, device, dtype, in_sentence=in_sentence)
         fired = report(f"iter {it}", res)
         if run_wb:
             run_wb.log({f"held_out_share/step{st}": sum(v) / len(v) for st, v in res.items()}, step=it)
+        if buffer and buffer[-1]:
+            sh = []
+            with torch.no_grad():
+                for pair, st0 in buffer[-1][::max(1, len(buffer[-1]) // 60)]:
+                    st = to_dev(st0)
+                    target, gap = and_target(st)
+                    tok.bind(*pair_prompts(pair)[:2])
+                    e = eps_and(models, tok, st, device, dtype, grad=False,
+                                prompt=third_prompt(*pair_prompts(pair)[:2], in_sentence))
+                    sh.append(1 - ((e - target).norm() / gap.norm()).item())
+            print(f"iter {it}: share removed on {len(sh)} on-policy states (newest round), mean {sum(sh) / len(sh):+.3f}", flush=True)
+            if run_wb:
+                run_wb.log({"on_policy/share": sum(sh) / len(sh), "on_policy/states": len(flat)}, step=it)
         if render_seeds:
             import wandb
             render_tiles(ctx, tok, A, B, render_seeds, third_prompt(A, B, in_sentence) if in_sentence else True,
@@ -597,8 +645,14 @@ def train(steps: int, eval_at: list[int], lr: float, name: str, seed: int, use_w
     evaluate(0)
     t0, run = time.time(), []
     for it in range(1, steps + 1):
-        pair, cell_seed = rng.choice(cells)
-        st = load_state("train", pair, cell_seed, rng.randrange(50), device)
+        if on_policy_every and it % on_policy_every == 0:
+            collect(it)
+        if flat and rng.random() < on_policy_frac:
+            pair, st0 = rng.choice(flat)
+            st = to_dev(st0)
+        else:
+            pair, cell_seed = rng.choice(cells)
+            st = load_state("train", pair, cell_seed, rng.randrange(50), device)
         target, _ = and_target(st)
         tok.bind(*pair_prompts(pair)[:2], grad=True)
         e = eps_and(models, tok, st, device, dtype, grad=True,
@@ -674,6 +728,9 @@ if __name__ == "__main__":
     ap.add_argument("--hyper-rank", type=int, default=0, help="rows written from the pair by a rank-r network")
     ap.add_argument("--lora-rank", type=int, default=0, help="LoRA on the UNet cross-attention keys and values, third expert only")
     ap.add_argument("--lora-lr", type=float, default=1e-4)
+    ap.add_argument("--on-policy-every", type=int, default=0, help="every N updates, sample cells with the current third expert and train on those states too")
+    ap.add_argument("--on-policy-cells", type=int, default=12)
+    ap.add_argument("--on-policy-frac", type=float, default=0.5, help="share of updates drawn from the on-policy states")
     ap.add_argument("--oracle-sheet", type=Path, metavar="OUT_DIR")
     ap.add_argument("--lambda-sheet", type=Path, metavar="RUN_DIR")
     ap.add_argument("--lams", nargs="*", type=float, default=[0.5, 1.5, 2.0, 3.0])
@@ -691,7 +748,7 @@ if __name__ == "__main__":
         grid(args.grid, args.iters, args.render_seeds or list(HELD_OUT[1]), args.wandb_id)
     if args.train:
         train(args.steps, args.eval_at, args.lr, args.name, args.seed, args.wandb, args.render_seeds, args.in_sentence, args.hyper_rank,
-              args.lora_rank, args.lora_lr)
+              args.lora_rank, args.lora_lr, args.on_policy_every, args.on_policy_cells, args.on_policy_frac)
     if args.check_token:
         check_token()
     if args.baseline:
