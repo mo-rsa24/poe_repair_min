@@ -25,14 +25,14 @@ Walk it with:
 
 Navigation: 📋 [Contents](#contents) | [Next](#the-test-written-before-any-render) ➡️
 
-**Nine third experts have failed.** Text-embedding arithmetic and seven real phrases (the joint prompt
+**Nine third experts have failed.** [Text-embedding arithmetic](../../../../goal-setting/learning/deep-learning/diffusion-models/text-embedding-arithmetic-in-sdxl/MASTER_PLAN.md) and seven real phrases (the joint prompt
 "dog and cat" included) draw a clear dog and a clear cat on 0 of 7 counted seeds, and two hybrids on 4 to 5
 ([claim 2 of the idea map](../../artifacts/ideas/the-and-vector-as-a-third-expert/IDEA_MAP.md)). The joint
 prompt alone draws a clear pair on 7 of 8 seeds. The bar is a clear pair where the strongest third expert
 there is gives two hybrids.
 
-**This run fits the third expert instead of choosing it.** One new token `<and>` gets a trainable input
-embedding row in each of SDXL's two text encoders, initialised from the word "and". Nothing else is
+**This run fits the third expert instead of choosing it.** One new token `<and>` gets a [trainable input
+embedding row](../../../../goal-setting/learning/deep-learning/diffusion-models/text-embedding-arithmetic-in-sdxl/plans/15-what-textual-inversion-optimises.md) in each of SDXL's two text encoders, initialised from the word "and". Nothing else is
 trained: not the UNet, not the rest of either text encoder, and the two animal prompts stay the plain
 frozen prompts. The token is the same for every pair, and it is fitted over the curated pool of 182 cells
 (48 pairs) in `artifacts/_shared/cross_pair_pool_configs/cells_v58.json`, read from the training cache. Cat
@@ -118,6 +118,7 @@ fast-forwarded to the committed branch. Every path on a launch line is absolute,
   W&B `c6f1pmmq`, log `.../logs/run5.log`. Held-out mean share removed at steps 0, 10, 25, 40: −0.113,
   +0.009, −0.021, −0.025 at 300 updates; −0.143, +0.015, −0.023, −0.013 at 4,000; −0.070, +0.013, −0.005,
   −0.008 at 8,000. Sheets in `artifacts/results/what-the-and-vector-is-made-of/learned-and-token-sheet-iter*.png`.
+  <a href="../../artifacts/results/what-the-and-vector-is-made-of/learned-and-token-sheet-iter08000.png"><img src="../../artifacts/results/what-the-and-vector-is-made-of/learned-and-token-sheet-iter08000.png" width="140" alt="Sheet at 8,000 updates: seeds 9 to 16 down the rows; columns a dog alone, a cat alone, the joint prompt 'a cat and a dog', PoE(a cat, a dog), and PoE with the fitted token. Both PoE columns show one animal mixing dog and cat features on every seed."></a>
 - [x] **Apply** [the stop rule](#the-test-written-before-any-render). ✓ fired: every step's mean is under
   10% after 8,000 updates (best single step mean +0.015).
 
@@ -129,6 +130,22 @@ fast-forwarded to the committed branch. Every path on a launch line is absolute,
   `artifacts/results/what-the-and-vector-is-made-of/learned-and-token-*.png`.
 - [ ] **Call** each tile from full-size tiles, one seed per message.
 - [ ] **List** the nearest real words to the fitted row in each encoder, by cosine over the vocabulary.
+
+### 7. 🔧 A rank-32 LoRA on every variant, 30,000 updates (AI, about 8 h of training, unattended)
+
+The pooled LoRA that already composes 7 of 8 held-out cat × dog seeds was best between 30,000 and
+90,000 updates at rank 32, learning rate 1e-4, weight decay 0, where plain PoE composes 0 of 8
+([the checkpoint finding](../../report/does-training-longer-help-the-pooled-lora/which-checkpoint-composes-best-and-does-more-correction-help.md)).
+The rank-8 runs here stopped at 8,000 updates, so this step gives each variant that recipe, with the
+LoRA on the third expert's pass only.
+
+**Written before the runs.** Held-out share removed at steps 0, 10, 25 and 40, read at 8,000, 16,000
+and 30,000 updates. Supported if any step's mean is over 10% at 30,000 updates, with sheets read
+before it is called. Null if every step's mean is under 10% at 8,000, 16,000 and 30,000.
+
+- [ ] **Launch** three runs with `--lora-rank 32 --lora-lr 1e-4`: the bare token, the token in the
+  sentence, and rows written from the pair (`--hyper-rank 16`), each with held-out sheets at 300, 1,000,
+  2,000, 4,000, 8,000 and 16,000 updates, then nine-pair sheets at 8,000 and 30,000 logged to W&B.
 
 ## What it cannot claim
 
