@@ -263,7 +263,7 @@ def _unet_eps(tok, unet, x, t, seq, cond, n, third: bool) -> torch.Tensor:
 
 
 def render_tiles(ctx, tok, a: str, b: str | None, seeds: list[int], third: bool | str, out_dir: Path,
-                 oracle: bool = False) -> list[Path]:
+                 oracle: bool = False, lam: float = 1.0) -> list[Path]:
     """PoE(a, b) or PoE(a, b, third) per seed (third is True for the bare token, or the third expert's prompt), the loop and noise of scripts/and_vector_sheet.py."""
     from concept_pair_sheet import NOISE_PAIR
     from poe_repair.composers._helpers import init_latents_for_cell
@@ -307,7 +307,10 @@ def render_tiles(ctx, tok, a: str, b: str | None, seeds: list[int], third: bool 
                     e_j = unet(sched.scale_model_input(lat, t), t, encoder_hidden_states=seq_j,
                                added_cond_kwargs=cond_j, timestep_cond=None).sample
                     eps[n - 2] = e_j[0] + 2 * e_u[0] - eps[0] - eps[1]
-                eg = e_u + w * sum(eps[k:k + 1] - e_u for k in range(n - 1))
+                terms = [eps[k:k + 1] - e_u for k in range(n - 1)]
+                if third and lam != 1.0:
+                    terms[-1] = lam * terms[-1]  # the third expert's push, turned down or up
+                eg = e_u + w * sum(terms)
                 abar = sched.alphas_cumprod[int(t.item())].to(device=device, dtype=dtype)
                 lat = ddim_prev_from_x0_eps(scheduler=sched, timestep=t, step_index=i,
                                             x0=tweedie_mean(lat, abar, eg), eps=eg)
@@ -380,6 +383,48 @@ def oracle_sheet(out_dir: Path, pair: str, seeds: list[int]) -> None:
               + " ".join(f"{x:.2f}" for x in d) + f"   mean {sum(d) / len(d):.2f}", flush=True)
     _sheet([f'"{joint}"', f"PoE({a}, {b})", f"PoE({a}, {b}, exact target)"],
            [out_dir / "joint", out_dir / "plain_poe", out_dir / "oracle"], seeds, out_dir / "sheet_oracle.png")
+
+
+def lambda_sheet(run_dir: Path, it: int, lams: list[float], wandb_id: str | None, in_sentence: bool = False,
+                 hyper_rank: int = 0, lora_rank: int = 0) -> None:
+    """Held-out cat x dog with the third expert's push scaled by lambda: joint | plain PoE (0) | each lambda | the trained 1.
+    Rows are seeds 9 to 16; the lambda 1 column is the tile the training run already rendered at `it` updates."""
+    from poe_repair.run import make_ctx
+
+    ctx = make_ctx()
+    tok = AndToken(ctx.models)
+    saved = torch.load(run_dir / f"rows_iter{it:05d}.pt", map_location="cpu")
+    with torch.no_grad():
+        for row, new in zip(tok.rows, saved["rows"]):
+            row.copy_(new)
+    if saved.get("lora"):
+        add_lora(tok, lora_rank)
+        with torch.no_grad():
+            for n, p in tok.models["unet"].named_parameters():
+                if n in saved["lora"]:
+                    p.copy_(saved["lora"][n])
+    if saved.get("hyper"):
+        tok.hyper = HyperRows(tok, hyper_rank)
+        tok.hyper.load_state_dict(saved["hyper"])
+    A, B = "a cat", "a dog"
+    seeds = list(HELD_OUT[1])
+    third = third_prompt(A, B, in_sentence) if in_sentence else True
+    base = run_dir / "tiles"
+    cols = [("joint", f'"{JOINT}"', base / "joint"), ("lam0", "PoE(a cat, a dog), lambda 0", base / "plain_poe")]
+    for lam in sorted(set(lams) | {1.0}):
+        if lam in (0.0,):
+            continue
+        d = base / f"iter{it:05d}" if lam == 1.0 else run_dir / "tiles_lambda" / f"iter{it:05d}_lam{lam:g}"
+        if lam != 1.0:
+            render_tiles(ctx, tok, A, B, [sd for sd in seeds if not (d / f"seed{sd:02d}.png").exists()], third, d, lam=lam)
+        cols.append((f"lam{lam:g}", f"{TOKEN} at lambda {lam:g}, {it} updates", d))
+    sheet = _sheet([c[1] for c in cols], [c[2] for c in cols], seeds, run_dir / f"sheet_lambda_iter{it:05d}.png")
+    print(f"wrote {run_dir}/sheet_lambda_iter{it:05d}.png for lambda {sorted(set(lams) | {1.0})}", flush=True)
+    if wandb_id:
+        import wandb
+        run = wandb.init(project="poe-repair-animals-compose", entity="prime_lab", id=wandb_id, resume="allow")
+        run.log({"lambda_sheet": wandb.Image(sheet, caption=f"{it} updates, third expert scaled by lambda")})
+        run.finish()
 
 
 def pair_prompts(pair: str) -> tuple[str, str, str]:
@@ -630,10 +675,14 @@ if __name__ == "__main__":
     ap.add_argument("--lora-rank", type=int, default=0, help="LoRA on the UNet cross-attention keys and values, third expert only")
     ap.add_argument("--lora-lr", type=float, default=1e-4)
     ap.add_argument("--oracle-sheet", type=Path, metavar="OUT_DIR")
+    ap.add_argument("--lambda-sheet", type=Path, metavar="RUN_DIR")
+    ap.add_argument("--lams", nargs="*", type=float, default=[0.5, 1.5, 2.0, 3.0])
     ap.add_argument("--pairs-sheet", type=Path, metavar="RUN_DIR")
     ap.add_argument("--iter", type=int, default=8000)
     ap.add_argument("--pairs", nargs="*", default=[], metavar="PAIR:SPLIT:SEEDS")
     args = ap.parse_args()
+    if args.lambda_sheet:
+        lambda_sheet(args.lambda_sheet, args.iter, args.lams, args.wandb_id, args.in_sentence, args.hyper_rank, args.lora_rank)
     if args.oracle_sheet:
         oracle_sheet(args.oracle_sheet, HELD_OUT[0], args.render_seeds or list(HELD_OUT[1]))
     if args.pairs_sheet:
